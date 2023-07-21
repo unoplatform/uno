@@ -18,8 +18,6 @@ namespace Windows.UI.Xaml
 
 		public IntPtr Handle { get; }
 
-		public string Name { get; set; }
-
 		internal bool IsMeasureDirtyPath => throw new NotSupportedException("Reference assembly");
 
 		internal bool IsArrangeDirtyPath => throw new NotSupportedException("Reference assembly");

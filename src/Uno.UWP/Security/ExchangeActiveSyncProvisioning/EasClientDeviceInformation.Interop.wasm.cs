@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Windows.Security.ExchangeActiveSyncProvisioning
 {
@@ -7,7 +6,8 @@ namespace __Windows.Security.ExchangeActiveSyncProvisioning
 	{
 		internal static partial class NativeMethods
 		{
+			[JSImport("globalThis.Windows.System.Profile.AnalyticsVersionInfo.getUserAgent")]
+			internal static partial string GetUserAgent();
 		}
 	}
 }
-#endif

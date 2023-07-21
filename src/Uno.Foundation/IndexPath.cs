@@ -8,7 +8,7 @@ namespace Uno.UI;
 /// </summary>
 [DebuggerDisplay("{DebugDisplay,nq}")]
 [EditorBrowsable(EditorBrowsableState.Never)]
-public partial struct IndexPath : IComparable<IndexPath>
+internal partial struct IndexPath : IComparable<IndexPath>
 {
 	public int Row { get; }
 	public int Section { get; }

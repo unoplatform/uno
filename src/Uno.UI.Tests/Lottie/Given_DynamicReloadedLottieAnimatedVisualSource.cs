@@ -6,9 +6,14 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.UI;
 using FluentAssertions;
-using Microsoft.Toolkit.Uwp.UI.Lottie;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Threading;
+
+#if HAS_UNO_WINUI
+using CommunityToolkit.WinUI.Lottie;
+#else
+using Microsoft.Toolkit.Uwp.UI.Lottie;
+#endif
 
 namespace Uno.UI.Tests.Lottie
 {

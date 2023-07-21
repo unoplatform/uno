@@ -3,7 +3,7 @@ using System;
 using Windows.UI.Xaml;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 using Windows.UI.Xaml.Controls;
-using System.Net.Http;
+using Windows.Web.Http;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
@@ -21,11 +21,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		{
 			var url = "http://requestb.in/rw35narw";
 			MyTextBlock.Text = $"Inspect data at {url}?inspect";
-			var request = new HttpRequestMessage
-			{
-				RequestUri = new Uri(url),
-				Method = HttpMethod.Get
-			};
+			var request = new HttpRequestMessage(HttpMethod.Get, new Uri(url));
 			request.Headers.Add("HELLO", "TESTTEST, TEST2");
 			request.Headers.Add("HELLO2", "TEST111");
 			MyWebView2.NavigateWithHttpRequestMessage(request);

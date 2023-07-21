@@ -52,6 +52,9 @@ public partial class ApiInformation
 		}
 	}
 
+	internal static bool IsMethodPresent(Type type, string methodName)
+		=> IsImplementedByUno(type?.GetMethod(methodName));
+
 	public static bool IsMethodPresent(string typeName, string methodName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
@@ -63,10 +66,16 @@ public partial class ApiInformation
 			?.GetMethods()
 			?.FirstOrDefault(m => m.Name == methodName && m.GetParameters().Length == inputParameterCount));
 
+	internal static bool IsEventPresent(Type type, string methodName)
+		=> IsImplementedByUno(type?.GetEvent(methodName));
+
 	public static bool IsEventPresent(string typeName, string eventName)
 		=> IsImplementedByUno(
 			GetValidType(typeName)
 			?.GetEvent(eventName));
+
+	internal static bool IsPropertyPresent(Type type, string methodName)
+		=> IsImplementedByUno(type?.GetProperty(methodName));
 
 	public static bool IsPropertyPresent(string typeName, string propertyName)
 		=> IsImplementedByUno(
@@ -144,7 +153,7 @@ public partial class ApiInformation
 
 	internal static void TryRaiseNotImplemented(string type, string memberName)
 	{
-		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m={Uri.EscapeDataString(type + "." + memberName)}";
+		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
 
 		if (IsFailWhenNotImplemented)
 		{

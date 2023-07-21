@@ -1,4 +1,4 @@
-﻿#if NET461
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067 // This event is never used
 #endif
 

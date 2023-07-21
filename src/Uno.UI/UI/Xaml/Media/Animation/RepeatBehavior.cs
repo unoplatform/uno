@@ -38,11 +38,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			Count = 0;
 		}
 
-		public double Count { get; set; }
+		public double Count;
 
-		public TimeSpan Duration { get; set; }
+		public TimeSpan Duration;
 
-		public RepeatBehaviorType Type { get; set; }
+		public RepeatBehaviorType Type;
 
 		public bool HasCount => Type == RepeatBehaviorType.Count;
 

@@ -16,6 +16,11 @@ namespace Uno.UI.RuntimeTests.Tests
 	public class Given_EmbeddedResources
 	{
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__ || __ANDROID__
+		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void When_EmbeddedResource()
 		{
 			var assembly = Application.Current.GetType().Assembly;

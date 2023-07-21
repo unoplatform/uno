@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if !NET461
+#if !IS_UNIT_TESTS
 using System;
 using System.Collections.Generic;
 using System.Linq;

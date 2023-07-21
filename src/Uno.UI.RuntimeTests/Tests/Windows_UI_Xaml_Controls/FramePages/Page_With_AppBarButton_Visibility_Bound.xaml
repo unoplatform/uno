@@ -11,11 +11,22 @@
 	<Grid>
 		<CommandBar Content="Page with AppBarButton">
 			<CommandBar.PrimaryCommands>
-				<AppBarButton Visibility="{Binding ButtonVisibility, FallbackValue=Collapsed}">
+				<AppBarButton Visibility="{Binding ButtonVisibility, FallbackValue=Collapsed}"
+							  x:Name="innerBarButton"
+							  x:FieldModifier="public">
 					<TextBlock x:Name="innerTextBlock"
 							   x:FieldModifier="public"
 							   Text="{Binding ButtonText}" />
 				</AppBarButton>
+				<AppBarButton Label="Order"
+							  Foreground="White">
+					<AppBarButton.Icon>
+						<BitmapIcon ShowAsMonochrome="True"
+									x:Name="innerIcon"
+									x:FieldModifier="public"
+									UriSource="{Binding CommandBarIcon}" />
+					</AppBarButton.Icon>
+				</AppBarButton>				
 			</CommandBar.PrimaryCommands>
 		</CommandBar>
 	</Grid>

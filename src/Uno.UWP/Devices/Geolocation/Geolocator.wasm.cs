@@ -9,17 +9,14 @@ using Uno;
 using Windows.Foundation;
 using static Uno.Foundation.WebAssemblyRuntime;
 
-#if NET7_0_OR_GREATER
 using System.Runtime.InteropServices.JavaScript;
 
 using NativeMethods = __Windows.Devices.Geolocation.Geolocator.NativeMethods;
-#endif
 
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
 	{
-		private const string JsType = "Windows.Devices.Geolocation.Geolocator";
 		private const uint Wgs84SpatialReferenceId = 4326;
 
 		private static List<TaskCompletionSource<GeolocationAccessStatus>> _pendingAccessRequests = new List<TaskCompletionSource<GeolocationAccessStatus>>();
@@ -43,23 +40,13 @@ namespace Windows.Devices.Geolocation
 			BroadcastStatusChanged(PositionStatus.Initializing); //GPS is initializing
 			_positionChangedRequestId = Guid.NewGuid().ToString();
 			_positionChangedSubscriptions.TryAdd(_positionChangedRequestId, this);
-#if NET7_0_OR_GREATER
 			NativeMethods.StartPositionWatch(ActualDesiredAccuracyInMeters, _positionChangedRequestId);
-#else
-			var command = $"{JsType}.startPositionWatch({ActualDesiredAccuracyInMeters},\"{_positionChangedRequestId}\")";
-			InvokeJS(command);
-#endif
 		}
 
 		partial void StopPositionChanged()
 		{
 			_positionChangedSubscriptions.TryRemove(_positionChangedRequestId, out var _);
-#if NET7_0_OR_GREATER
 			NativeMethods.StopPositionWatch(ActualDesiredAccuracyInMeters, _positionChangedRequestId);
-#else
-			var command = $"{JsType}.stopPositionWatch({ActualDesiredAccuracyInMeters},\"{_positionChangedRequestId}\")";
-			InvokeJS(command);
-#endif
 		}
 
 		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
@@ -74,13 +61,7 @@ namespace Windows.Devices.Geolocation
 
 					if (_pendingAccessRequests.Count == 1)
 					{
-#if NET7_0_OR_GREATER
 						NativeMethods.RequestAccess();
-#else
-						//there are no access requests currently waiting for resolution, we need to invoke the check in JS
-						var command = $"{JsType}.requestAccess()";
-						InvokeJS(command);
-#endif
 					}
 				}
 
@@ -124,19 +105,11 @@ namespace Windows.Devices.Geolocation
 				var completionRequest = new TaskCompletionSource<Geoposition>();
 				var requestId = Guid.NewGuid().ToString();
 				_pendingGeopositionRequests.TryAdd(requestId, completionRequest);
-#if NET7_0_OR_GREATER
 				NativeMethods.GetGeoposition(ActualDesiredAccuracyInMeters, maximumAge.TotalMilliseconds, timeout.TotalMilliseconds, requestId);
-#else
-				var command = FormattableString.Invariant($"{JsType}.getGeoposition({ActualDesiredAccuracyInMeters},{maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},\"{requestId}\")");
-				InvokeJS(command);
-#endif
 				return await completionRequest.Task;
 			});
 		}
 
-#if NET7_0_OR_GREATER
-		[JSExport]
-#endif
 		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
 			BroadcastStatusChanged(PositionStatus.Ready); //whenever a location is successfully retrieved, GPS has state of Ready
@@ -162,9 +135,6 @@ namespace Windows.Devices.Geolocation
 			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
 		}
 
-#if NET7_0_OR_GREATER
-		[JSExport]
-#endif
 		public static int DispatchError(string currentPositionRequestResult, string requestId)
 		{
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
@@ -205,9 +175,6 @@ namespace Windows.Devices.Geolocation
 		/// </summary>
 		/// <param name="serializedAccessStatus">Serialized string value from the <see cref="GeolocationAccessStatus"/> enum</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
-#if NET7_0_OR_GREATER
-		[JSExport]
-#endif
 		public static int DispatchAccessRequest(string serializedAccessStatus)
 		{
 			if (serializedAccessStatus is null)
@@ -292,6 +259,25 @@ namespace Windows.Devices.Geolocation
 				speed: speed);
 			return geocoordinate;
 		}
+	}
+}
+
+namespace Uno.Devices.Geolocation
+{
+	public sealed partial class Geolocator
+	{
+		[JSExport]
+		public static int DispatchAccessRequest(string serializedAccessStatus)
+			=> global::Windows.Devices.Geolocation.Geolocator.DispatchAccessRequest(serializedAccessStatus);
+
+		[JSExport]
+		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
+			=> global::Windows.Devices.Geolocation.Geolocator.DispatchGeoposition(serializedGeoposition, requestId);
+
+		[JSExport]
+		public static int DispatchError(string currentPositionRequestResult, string requestId)
+			=> global::Windows.Devices.Geolocation.Geolocator.DispatchError(currentPositionRequestResult, requestId);
+
 	}
 }
 #endif

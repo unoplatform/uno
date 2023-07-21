@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -34,7 +30,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="System.Memory" Version="4.5.2" />
 		<PackageReference Include="SkiaSharp.HarfBuzz" />
 	</ItemGroup>
@@ -60,8 +55,6 @@
 	<PropertyGroup>
 		<PageExclusions>$(PlatformItemsBasePath)Themes\WinUI\Resources\**\*.xaml</PageExclusions>
 		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-
-		<CompileTypeScriptDependsOn>_UnoSourceGenerator; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
 	</PropertyGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />

@@ -90,6 +90,11 @@ namespace Uno.Media.Playback
 		TimeSpan Position { get; set; }
 
 		/// <summary>
+		/// Determines if the current media content is video
+		/// </summary>
+		bool? IsVideo { get; }
+
+		/// <summary>
 		/// Sets the transport controls bounds so that video can be displayed around controls
 		/// </summary>
 		void SetTransportControlsBounds(Rect bounds);

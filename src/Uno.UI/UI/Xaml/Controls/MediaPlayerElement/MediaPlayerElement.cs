@@ -13,11 +13,6 @@ namespace Windows.UI.Xaml.Controls
 	[TemplatePart(Name = MediaPlayerPresenterName, Type = typeof(MediaPlayerPresenter))]
 	[TemplatePart(Name = LayoutRootName, Type = typeof(Grid))]
 	public partial class MediaPlayerElement
-#if __IOS__ || __ANDROID__ || __MACOS__
-		// To avoid causing FrameworkElement.Dispose to become virtual (and cause a breaking change),
-		// we keep the disposable for existing platforms, but we don't implement it for the other targets.
-		: IDisposable
-#endif
 	{
 		private const string PosterImageName = "PosterImage";
 		private const string TransportControlsPresenterName = "TransportControlsPresenter";
@@ -63,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (source == null)
 				{
-					mpe.TogglePosterImage(true);
+					mpe.ShowPosterImage(true);
 				}
 			}
 		}
@@ -91,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (mpe.MediaPlayer == null || mpe.MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
 				{
-					mpe.TogglePosterImage(true);
+					mpe.ShowPosterImage(true);
 				}
 			});
 		}
@@ -167,14 +162,14 @@ namespace Windows.UI.Xaml.Controls
 #else
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
-#if !__NETSTD_REFERENCE__ && !NET461
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
-#if !__NETSTD_REFERENCE__ && !NET461
+#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
 #endif
 
@@ -222,7 +217,8 @@ namespace Windows.UI.Xaml.Controls
 				if (args.OldValue is Windows.Media.Playback.MediaPlayer oldMediaPlayer)
 				{
 					oldMediaPlayer.MediaFailed -= mpe.OnMediaFailed;
-					oldMediaPlayer.MediaFailed -= mpe.OnMediaOpened;
+					oldMediaPlayer.MediaOpened -= mpe.OnMediaOpened;
+					oldMediaPlayer.VideoRatioChanged -= mpe.OnVideoRatioChanged;
 					oldMediaPlayer.Dispose();
 				}
 
@@ -231,26 +227,32 @@ namespace Windows.UI.Xaml.Controls
 					newMediaPlayer.Source = mpe.Source;
 					newMediaPlayer.MediaFailed += mpe.OnMediaFailed;
 					newMediaPlayer.MediaOpened += mpe.OnMediaOpened;
+					newMediaPlayer.VideoRatioChanged -= mpe.OnVideoRatioChanged;
 					mpe.TransportControls?.SetMediaPlayer(newMediaPlayer);
 					mpe._isTransportControlsBound = true;
 				}
 			};
 		}
 
-		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer session, object args)
+		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				TogglePosterImage(true);
-			});
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(!sender.IsVideo));
 		}
 
-		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer session, object args)
+		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, object args)
 		{
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-			{
-				TogglePosterImage(false);
-			});
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(true));
+		}
+
+		private void OnMediaOpened(Windows.Media.Playback.MediaPlayer sender, object args)
+		{
+			_ = Dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() => ShowPosterImage(!sender.IsVideo));
 		}
 
 		#endregion
@@ -326,12 +328,16 @@ namespace Windows.UI.Xaml.Controls
 					&& AutoPlay)
 				{
 					MediaPlayer.Play();
-					TogglePosterImage(false);
 				}
 			}
 		}
 
-		private void TogglePosterImage(bool showPoster)
+		// The PosterSource is displayed in the following situations:
+		//  - When a valid source is not set.For example, Source is not set, Source was set to Null, or the source is invalid (as is the case when a MediaFailed event fires).
+		//  - While media is loading. For example, a valid source is set, but the MediaOpened event has not fired yet.
+		//  - When media is streaming to another device.
+		//  - When the media is audio only.
+		private void ShowPosterImage(bool showPoster)
 		{
 			if (PosterSource != null)
 			{
@@ -365,10 +371,8 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayerPresenter?.ApplyStretch();
 			}
 
-			if (!IsLoaded && MediaPlayer.PlaybackSession.PlaybackState == MediaPlaybackState.None)
-			{
-				TogglePosterImage(true);
-			}
+			// For video content, show the poster source until it is ready to be displayed.
+			ShowPosterImage(true);
 
 			if (!_isTransportControlsBound)
 			{

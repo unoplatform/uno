@@ -16,6 +16,7 @@ using MUXControlsTestApp;
 namespace Uno.UI.RuntimeTests.MUX.Microsoft_UI_Xaml_Controls
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class NumberBoxTests : MUXApiTestBase
 	{
 		[TestMethod]

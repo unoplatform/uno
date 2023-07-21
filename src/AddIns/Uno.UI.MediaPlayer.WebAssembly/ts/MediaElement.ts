@@ -13,6 +13,10 @@ namespace Uno.UI.Media {
 			return document.getElementById(htmlId.toString()).currentTime;
 		}
 
+		public static getPaused(htmlId: number): number {
+			return document.getElementById(htmlId.toString()).paused;
+		}
+
 		public static setCurrentPosition(htmlId: number, currentTime: number) {
 			document.getElementById(htmlId.toString()).currentTime = currentTime;
 		}

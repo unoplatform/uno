@@ -13,6 +13,8 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Windows.UI.Xaml.Media.Imaging;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Media
 {
 	//Android partial for Brush
@@ -85,6 +87,23 @@ namespace Windows.UI.Xaml.Media
 				gradientBrush.RegisterDisposablePropertyChangedCallback(
 					GradientBrush.OpacityProperty,
 					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is RadialGradientBrush radialGradientBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(radialGradientBrush.FallbackColorWithOpacity);
+
+				radialGradientBrush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.FallbackColorProperty,
+					(s, colorArg) => colorSetter((s as RadialGradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				radialGradientBrush.RegisterDisposablePropertyChangedCallback(
+					RadialGradientBrush.OpacityProperty,
+					(s, colorArg) => colorSetter((s as RadialGradientBrush).FallbackColorWithOpacity)
 				).DisposeWith(disposables);
 
 				return disposables;

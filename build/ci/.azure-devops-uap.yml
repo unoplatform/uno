@@ -8,14 +8,16 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Pipeline_Validations
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+    # Only build for net7
+    UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
 
   steps:
   - checkout: self
@@ -30,8 +32,7 @@ jobs:
   # Required until Uno.Xaml can build without all targets enabled
   - template: templates/jdk-setup.yml
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 18362
-    displayName: Insider SDK
+  - template: templates/install-windows-sdk.yml
 
   - task: MSBuild@1
     inputs:
@@ -39,7 +40,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.18362 /p:UnoDisableTargetFrameworksCIOverride=true /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /p:UnoTargetFrameworkOverride=uap10.0.19041 /detailedsummary /bl:$(build.artifactstagingdirectory)/build-uap.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

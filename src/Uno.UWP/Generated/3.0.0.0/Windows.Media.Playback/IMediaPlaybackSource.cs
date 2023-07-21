@@ -2,8 +2,8 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IMediaPlaybackSource 
 	{

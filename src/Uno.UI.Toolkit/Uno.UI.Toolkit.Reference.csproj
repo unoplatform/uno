@@ -1,10 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(IsRunningInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -25,10 +21,6 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -55,7 +47,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_OverrideTargetFramework Condition="'$(_OverrideTargetFramework)' == 'uap10.0.18362'">UAP</_OverrideTargetFramework>
+			<_OverrideTargetFramework Condition="'$(_OverrideTargetFramework)' == 'uap10.0.19041'">UAP</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>

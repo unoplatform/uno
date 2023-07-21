@@ -27,6 +27,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Samples\UnitTests\UnitTestsPage.xaml.cs">
       <DependentUpon>UnitTestsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)StringToStyleDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)MainPage.xaml">

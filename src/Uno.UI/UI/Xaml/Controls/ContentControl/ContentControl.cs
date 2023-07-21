@@ -37,7 +37,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class ContentControl : Control, IEnumerable
 	{
 		private View? _contentTemplateRoot;
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Content DependencyProperty
 
-		public virtual object Content
+		public object Content
 		{
 			get
 			{
@@ -151,11 +151,11 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
-		protected virtual void OnContentChanged(object oldValue, object newValue)
+		protected virtual void OnContentChanged(object oldContent, object newContent)
 		{
 			if (IsContentPresenterBypassEnabled)
 			{
-				if (newValue is View
+				if (newContent is View
 					// This case is to support the ability for the content
 					// control to be templated while having a Content as a view.
 					// The template then needs to TemplateBind to the Content to function
@@ -164,22 +164,22 @@ namespace Windows.UI.Xaml.Controls
 				)
 				{
 					// If the content is a view, no need to delay the inclusion in the visual tree
-					ContentTemplateRoot = newValue as View;
+					ContentTemplateRoot = newContent as View;
 				}
-				else if (oldValue != null && newValue == null)
+				else if (oldContent != null && newContent == null)
 				{
 					// The content is being reset, remove the existing content properly.
 					ContentTemplateRoot = null;
 				}
 
-				if (newValue != null)
+				if (newContent != null)
 				{
 					SetUpdateTemplate();
 				}
 			}
 		}
 
-		protected virtual void OnContentTemplateChanged(DataTemplate oldTemplate, DataTemplate newTemplate)
+		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
 			if (IsContentPresenterBypassEnabled)
 			{
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector dataTemplateSelector1, DataTemplateSelector dataTemplateSelector2)
+		protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 		{
 			if (IsContentPresenterBypassEnabled)
 			{
@@ -218,7 +218,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void UnregisterContentTemplateRoot();
 
 #nullable disable // Public members should stay nullable-oblivious for now to stay consistent with WinUI
-		public virtual View ContentTemplateRoot
+		public View ContentTemplateRoot
 		{
 			get
 			{
@@ -245,7 +245,13 @@ namespace Windows.UI.Xaml.Controls
 
 					UpdateContentTransitions(null, this.ContentTransitions);
 				}
+
+				OnContentTemplateRootSet();
 			}
+		}
+
+		private protected virtual void OnContentTemplateRootSet()
+		{
 		}
 
 		#region Transitions Dependency Property
@@ -444,7 +450,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Android 5.0 does not have this limitation, because ART requires greater stack sizes.
 		/// </summary>
 		/// <remarks>
-		/// If the default style for the current type has a Template property, 
+		/// If the default style for the current type has a Template property,
 		/// we know that the IsContentPresenterBypassEnabled will be false once the style has been set.
 		/// Return false in this case, even if the Template is null.
 		/// </remarks>

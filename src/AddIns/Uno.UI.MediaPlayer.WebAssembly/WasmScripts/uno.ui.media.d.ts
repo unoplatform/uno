@@ -3,6 +3,7 @@ declare namespace Uno.UI.Media {
         static videoWidth(htmlId: number): number;
         static videoHeight(htmlId: number): number;
         static getCurrentPosition(htmlId: number): number;
+        static getPaused(htmlId: number): number;
         static setCurrentPosition(htmlId: number, currentTime: number): void;
         static setAttribute(htmlId: number, name: string, value: string): void;
         static removeAttribute(htmlId: number, name: string): void;

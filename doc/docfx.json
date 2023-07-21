@@ -41,7 +41,7 @@
         "disableGitFeatures": false,
         "globalMetadata": {
             "_appLogoPath": "images/uno-logo.png",
-            "_enableSearch": "true",
+            "_enableSearch": false,
             "_appFaviconPath": "images/UnoLogoSmall.png",
             "_disableContribution": false,
             "_gitContribute": {
@@ -79,6 +79,9 @@
               "branch": "main"
             }
           }
+        },
+        "sitemap": {
+          "baseUrl": "https://platform.uno/docs/"
         }
     }
 }

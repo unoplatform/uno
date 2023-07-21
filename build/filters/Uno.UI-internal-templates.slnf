@@ -1,0 +1,8 @@
+{
+  "solution": {
+    "path": "..\\..\\src\\Uno.UI.sln",
+    "projects": [
+      "SolutionTemplate\\Uno.ProjectTemplates.Dotnet\\Uno.ProjectTemplates.Dotnet.csproj",
+    ]
+  }
+}

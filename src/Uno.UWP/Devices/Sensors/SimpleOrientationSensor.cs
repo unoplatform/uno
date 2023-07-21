@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 	{
 		#region Static
 
-		public static SimpleOrientationSensor _instance;
+		private static SimpleOrientationSensor _instance;
 
 		public static SimpleOrientationSensor GetDefault()
 		{
@@ -65,21 +65,6 @@ namespace Windows.Devices.Sensors
 
 #if __ANDROID__ || __IOS__
 		private void SetCurrentOrientation(SimpleOrientation orientation)
-		{
-			if (CoreDispatcher.Main.HasThreadAccess)
-			{
-				CalculateCurrentOrientation(orientation);
-			}
-			else
-			{
-				_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					CalculateCurrentOrientation(orientation);
-				});
-			}
-		}
-
-		private void CalculateCurrentOrientation(SimpleOrientation orientation)
 		{
 			if (_currentOrientation != orientation)
 			{

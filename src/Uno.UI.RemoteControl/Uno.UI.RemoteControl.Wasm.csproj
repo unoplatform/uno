@@ -1,11 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -21,7 +17,7 @@
 
 		<Nullable>enable</Nullable>
 
-		<UnoRuntimeIdentifier Condition="'$(TargetFramework)'=='netstandard2.0'">WebAssembly</UnoRuntimeIdentifier>
+		<UnoRuntimeIdentifier>WebAssembly</UnoRuntimeIdentifier>
 		<PlatformItemsBasePath>..\Uno.UI.RemoteControl\</PlatformItemsBasePath>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
@@ -60,8 +56,6 @@
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
 	</ItemGroup>
-
-	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
 	<Target Name="_UnoUIRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 

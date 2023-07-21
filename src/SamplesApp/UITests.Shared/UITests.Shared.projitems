@@ -518,6 +518,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\ProximitySensorTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1262,6 +1266,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Native_With_AppBarButton_Binding.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\IconSourceTests\IconSourceElementTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1591,6 +1599,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Source_Nullify.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Binding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -1967,6 +1979,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Focus.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_SingleSelection_Focus.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2522,6 +2538,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\VariableSizedWrapGrid\VariableSizedWrapGridTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ViewBoxTests\ViewBox_Alignment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2893,7 +2913,7 @@
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_ComboBoxSetNull.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
-    </Page>    
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControl_FindName.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3278,6 +3298,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mp3_Extension.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mov_Extension.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3287,6 +3311,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original_MsAppxSource.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original_MsAppdataSource.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5442,6 +5474,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\LightSensorTests.xaml.cs">
       <DependentUpon>LightSensorTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\ProximitySensorTests.xaml.cs">
+      <DependentUpon>ProximitySensorTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
       <DependentUpon>MagnetometerTests.xaml</DependentUpon>
     </Compile>
@@ -5678,12 +5713,19 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\BorderWithNullBrushAndNonZeroThickness.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BorderTests\PanelWithNullBrushAndNonZeroThickness.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Native_With_AppBarButton_Binding.xaml.cs">
+      <DependentUpon>CommandBar_Native_With_AppBarButton_Binding.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageSourceWriteableBitmapInvalidate_Stretch.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\IconSourceTests\IconSourceElementTests.xaml.cs">
       <DependentUpon>IconSourceElementTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageViewViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Source_Nullify.xaml.cs">
       <DependentUpon>Image_Source_Nullify.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_Binding.xaml.cs">
+      <DependentUpon>SvgImageSource_Binding.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_BringIntoView.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\SvgImageSource_FromMsAppData.xaml.cs" />
@@ -6426,6 +6468,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Focus.xaml.cs">
       <DependentUpon>ListView_Focus.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_SingleSelection_Focus.xaml.cs">
+      <DependentUpon>ListView_SingleSelection_Focus.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Resizing.xaml.cs">
       <DependentUpon>ListView_Resizing.xaml</DependentUpon>
     </Compile>
@@ -6824,6 +6869,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\UIElementCollectionTests\UIElementCollection_Insert.xaml.cs">
       <DependentUpon>UIElementCollection_Insert.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\VariableSizedWrapGrid\VariableSizedWrapGridTests.xaml.cs">
+      <DependentUpon>VariableSizedWrapGridTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewPage.xaml.cs">
       <DependentUpon>TreeViewPage.xaml</DependentUpon>
     </Compile>
@@ -7121,6 +7169,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mkv_Extension.xaml.cs">
       <DependentUpon>MediaPlayerElement_Mkv_Extension.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mp3_Extension.xaml.cs">
+      <DependentUpon>MediaPlayerElement_Mp3_Extension.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Mov_Extension.xaml.cs">
       <DependentUpon>MediaPlayerElement_Mov_Extension.xaml</DependentUpon>
     </Compile>
@@ -7129,6 +7180,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original.xaml.cs">
       <DependentUpon>MediaPlayerElement_Original.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original_MsAppxSource.xaml.cs">
+      <DependentUpon>MediaPlayerElement_Original_MsAppxSource.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Original_MsAppdataSource.xaml.cs">
+      <DependentUpon>MediaPlayerElement_Original_MsAppdataSource.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\DatePickerViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Models\DateTimePickerViewModel.cs" />
@@ -8901,6 +8958,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\cart.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\check.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CheckBox.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\closeIcon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colored-ellipse.jpg" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
@@ -8912,6 +8970,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\exclamation.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Diagnostics\movie_type_dbox.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\filter.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\Even Badder Mofo.ttf" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Fonts\FamilyGuy-4grW.ttf" />
@@ -8954,8 +9013,12 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_200_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-dark\ThemeTestImage.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\theme-light\ThemeTestImage.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Thumbnails\Getting_Started_with_Uno_Platform_for_Figma.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\UnoGalleryLogo_Dark.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\UnoGalleryLogo_Light.scale-100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Videos\Getting_Started_with_Uno_Platform_for_Figma.mp4">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png" />

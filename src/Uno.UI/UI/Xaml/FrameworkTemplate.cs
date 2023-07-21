@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Markup;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -25,7 +26,8 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	public delegate View? FrameworkTemplateBuilder(object? owner);
 
-	public partial class FrameworkTemplate : DependencyObject
+	[ContentProperty(Name = "Template")]
+	public partial class FrameworkTemplate : DependencyObject, IFrameworkTemplateInternal
 	{
 		internal readonly FrameworkTemplateBuilder? _viewFactory;
 		private readonly int _hashCode;
@@ -66,7 +68,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <returns>A potentially cached instance of the template</returns>
 		/// <remarks>
-		/// The owner of the template is the system, which means that an 
+		/// The owner of the template is the system, which means that an
 		/// instance that has been detached from its parent may be reused at any time.
 		/// If a control needs to be the owner of a created instance, it needs to use <see cref="LoadContent"/>.
 		/// </remarks>
@@ -84,7 +86,7 @@ namespace Windows.UI.Xaml
 		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
-		public View? LoadContent()
+		View? IFrameworkTemplateInternal.LoadContent()
 		{
 			View? view = null;
 #if !HAS_EXPENSIVE_TRYFINALLY
@@ -139,12 +141,12 @@ namespace Windows.UI.Xaml
 				// Same instance
 				ReferenceEquals(left, right)
 
-				// Same delegate (possible if the delegate was created from a 
+				// Same delegate (possible if the delegate was created from a
 				// lambda, which are cached automatically by the C# compiler (as of v6.0)
 				|| left?._viewFactory == right?._viewFactory
 
-				// Same target method (instance or static) (possible if the delegate was created from a 
-				// method group, which are *not* cached by the C# compiler (required by 
+				// Same target method (instance or static) (possible if the delegate was created from a
+				// method group, which are *not* cached by the C# compiler (required by
 				// the C# spec as of version 6.0)
 				|| (
 					ReferenceEquals(left?._viewFactory?.Target, right?._viewFactory?.Target)

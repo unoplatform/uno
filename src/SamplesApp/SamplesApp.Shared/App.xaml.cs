@@ -83,6 +83,10 @@ namespace SamplesApp
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
 
+#if __SKIA__
+			ApplicationView.PreferredLaunchViewSize = new Windows.Foundation.Size(1024, 768);
+#endif
+
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
@@ -102,7 +106,7 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !NET6_0_OR_GREATER
+#if __IOS__ && !__MACCATALYST__
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 

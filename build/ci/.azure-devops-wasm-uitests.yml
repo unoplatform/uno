@@ -6,23 +6,25 @@ jobs:
   displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
-  dependsOn: winui_convert_tree
-
   pool:
     vmImage: ${{ parameters.vmImage }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
+    # Only build for net7
+    UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
+
   strategy:
     matrix:
       UWP:
         UNO_UWP_BUILD: true
-        XAML_FLAVOR_BUILD: UWP 
+        XAML_FLAVOR_BUILD: UWP
 
       WinUI:
         UNO_UWP_BUILD: false
-        XAML_FLAVOR_BUILD: WinUI 
+        XAML_FLAVOR_BUILD: WinUI
 
   steps:
   - checkout: self
@@ -37,10 +39,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/dotnet-install.yml
-
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
 
     displayName: 'Build sample app (net7.0)'
 
@@ -67,7 +67,6 @@ jobs:
   displayName: 'Run WebAssembly Snapshots Tests'
   dependsOn:
   - Wasm_UITests_Build
-  - SamplesApp_UITests_Build
 
   container: nv-bionic-wasm
 
@@ -88,14 +87,6 @@ jobs:
     inputs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - template: templates/dotnet-install.yml
 
   - bash: |
       set -euo pipefail
@@ -136,10 +127,10 @@ jobs:
 
 
 - job: Wasm_UITests_Automated
-  displayName: 'Run WebAssembly Automated Test'
+  displayName: ' WebAssembly Tests'
   dependsOn:
   - Wasm_UITests_Build
-  - SamplesApp_UITests_Build
+
   container: nv-bionic-wasm
 
   strategy:
@@ -147,52 +138,52 @@ jobs:
       net7_default:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
-        UITEST_TEST_TIMEOUT: '120000'
+        UITEST_TEST_TIMEOUT: '120s'
 
       net7_benchmarks:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
-        UITEST_TEST_TIMEOUT: '120000'
+        UITEST_TEST_TIMEOUT: '120s'
 
       net7_uwp_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '1800s'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_01:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '1800s'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_02:
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '1800s'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_00:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '1800s'
         UITEST_RUNTIME_TEST_GROUP: 0
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_01:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '1800s'
         UITEST_RUNTIME_TEST_GROUP: 1
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_02:
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
-        UITEST_TEST_TIMEOUT: '1800000'
+        UITEST_TEST_TIMEOUT: '1800s'
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
@@ -215,12 +206,6 @@ jobs:
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0

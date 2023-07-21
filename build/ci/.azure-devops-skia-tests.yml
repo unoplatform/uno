@@ -11,8 +11,6 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
-  dependsOn: Pipeline_Validations
-
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
@@ -20,6 +18,10 @@ jobs:
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+    # Only build for net7
+    UnoDisableNet8Mobile: true
+    UnoDisableNet8: true
 
   steps:
    
@@ -218,7 +220,7 @@ jobs:
 
 - job: Uno_Islands_Skia_Wpf_Runtime_Tests_Build
   displayName: 'Run Uno Islands Skia WPF Runtime Tests'
-  timeoutInMinutes: 120
+  timeoutInMinutes: 45
 
   pool:
     vmImage: ${{ parameters.vmImage }}

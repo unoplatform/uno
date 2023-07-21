@@ -35,7 +35,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class ItemsControl : Control, IItemsControl
 	{
 		protected IVectorChangedEventArgs _inProgressVectorChange;
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		private ItemCollection _items = new ItemCollection();
 		private (object Source, IEnumerable Snapshot)? _cachedItemsSource;
 
-		// This gets prepended to MaterializedContainers to ensure it's being considered 
+		// This gets prepended to MaterializedContainers to ensure it's being considered
 		// even if it might not yet have be added to the ItemsPanel (e.eg., NativeListViewBase).
 		private DependencyObject _containerBeingPrepared;
 
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 		internal ScrollViewer ScrollViewer { get; private set; }
 
 		/// <summary>
-		/// This template is stored here in order to allow for 
+		/// This template is stored here in order to allow for
 		/// FrameworkTemplate pooling to function properly when an ItemTemplateSelector has been
 		/// specified.
 		/// </summary>
@@ -417,7 +417,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (currentItem == null)
 			{
-				// Null is treated as 'just before the first item.' 
+				// Null is treated as 'just before the first item.'
 				if (direction == 1)
 				{
 					var firstNonEmptySection = IsGrouping ? GetNextNonEmptySection(-1, 1).Value : 0;
@@ -497,10 +497,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Gets a flattened item index. Unlike <see cref="GetDisplayIndexFromIndexPath(IndexPath)"/>, this can not be overridden to adjust for 
+		/// Gets a flattened item index. Unlike <see cref="GetDisplayIndexFromIndexPath(IndexPath)"/>, this can not be overridden to adjust for
 		/// supplementary elements (eg headers) on derived controls. This represents the (flattened) index in the data source as opposed
 		/// to the 'display' index.
-		/// 
+		///
 		/// Note that the <see cref="IndexPath"/> is still the 'display' value in that it doesn't 'know about' empty groups if HidesIfEmpty is set to true.
 		/// </summary>
 		internal int GetIndexFromIndexPath(Uno.UI.IndexPath indexPath)
@@ -623,7 +623,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (string.IsNullOrEmpty(oldDisplayMemberPath) && string.IsNullOrEmpty(newDisplayMemberPath))
 			{
-				return; // nothing 
+				return; // nothing
 			}
 
 			Refresh();
@@ -730,7 +730,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
 
-			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't
 			// remove the handler.
 			void handler(object s, NotifyCollectionChangedEventArgs e)
 			{
@@ -759,7 +759,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var thatRef = (this as IWeakReferenceProvider)?.WeakReference;
 
-			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't 
+			// This is a workaround for a bug with EventRegistrationTokenTable on Xamarin, where subscribing/unsubscribing to a class method directly won't
 			// remove the handler.
 			void handler(IObservableVector<object> s, IVectorChangedEventArgs e)
 			{
@@ -800,7 +800,7 @@ namespace Windows.UI.Xaml.Controls
 				var insideLoop = i;
 
 				// TODO: At present we listen to changes on ICollectionViewGroup.Group, which supports 'observable of observable groups'
-				// using CollectionViewSource. The correct way to do this would be for CollectionViewGroup.GroupItems to instead implement 
+				// using CollectionViewSource. The correct way to do this would be for CollectionViewGroup.GroupItems to instead implement
 				// INotifyCollectionChanged.
 				INotifyCollectionChanged observableGroup = group.GroupItems as INotifyCollectionChanged ?? group.Group as INotifyCollectionChanged;
 				// Prefer INotifyCollectionChanged for, eg, batched item changes
@@ -899,7 +899,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// During an update, this will represent the group state immediately prior to the update. 
+		/// During an update, this will represent the group state immediately prior to the update.
 		/// </summary>
 		internal int GetCachedGroupCount(int groupIndex)
 			=> _groupCounts[groupIndex];
@@ -971,7 +971,7 @@ namespace Windows.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = ItemsPanel?.LoadContent() ?? new StackPanel();
+			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() ?? new StackPanel();
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
@@ -988,13 +988,6 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual View ResolveInternalItemsPanel(View itemsPanel)
 		{
 			return itemsPanel;
-		}
-
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			SyncDataContext();
 		}
 
 		private protected virtual void UpdateItems(NotifyCollectionChangedEventArgs args)
@@ -1465,7 +1458,7 @@ namespace Windows.UI.Xaml.Controls
 					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
 				{
 					// In these cases, we return the index only if the item is its own container
-					// and the container is in fact the new item, not the old one					
+					// and the container is in fact the new item, not the old one
 					var item = ItemFromIndex(index);
 					if (IsItemItsOwnContainer(item) && Equals(item, container))
 					{
@@ -1552,7 +1545,7 @@ namespace Windows.UI.Xaml.Controls
 					_inProgressVectorChange.CollectionChange == CollectionChange.Reset)
 				{
 					// In case the item is not its own container, the new one is not assigned
-					// yet and we return null.						
+					// yet and we return null.
 					adjustedIndex = -1;
 				}
 			}
@@ -1606,7 +1599,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IEnumerable<DependencyObject> MaterializedContainers =>
 			GetItemsPanelChildren()
-#if !NET461 // TODO
+#if !IS_UNIT_TESTS // TODO
 				.Prepend(_containerBeingPrepared) // we put it first, because it's the most likely to be requested
 #endif
 				.Trim()
@@ -1732,29 +1725,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !HAS_UNO_4_0_OR_LATER
-		// Methods to remove or make internal when moving to Uno 4.0
-		// https://github.com/unoplatform/uno/issues/2240
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected virtual void SyncDataContext()
-		{
-		}
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void SetNeedsUpdateItems()
-			=> UpdateItems();
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public bool UpdateItemsIfNeeded()
-			=> UpdateItems();
-
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		protected virtual bool UpdateItems()
-		{
-			UpdateItems(null);
-			return true;
-		}
-#endif
+		internal void SetNeedsUpdateItems()
+			=> UpdateItems(null);
 	}
 }

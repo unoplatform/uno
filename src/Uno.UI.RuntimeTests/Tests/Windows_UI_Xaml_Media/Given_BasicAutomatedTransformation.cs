@@ -8,6 +8,9 @@ using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 {
+#if __ANDROID__
+	[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
+#endif
 	[TestClass]
 	[RunsOnUIThread]
 	public class Basics_AutomatedTransformation

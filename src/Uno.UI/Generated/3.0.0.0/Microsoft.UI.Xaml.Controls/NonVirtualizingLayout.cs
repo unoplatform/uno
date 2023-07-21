@@ -9,15 +9,15 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NonVirtualizingLayout.NonVirtualizingLayout()
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void InitializeForContextCore( global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext context)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.NonVirtualizingLayout", "void NonVirtualizingLayout.InitializeForContextCore(NonVirtualizingLayoutContext context)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void UninitializeForContextCore( global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayoutContext context)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Controls.NonVirtualizingLayout", "void NonVirtualizingLayout.UninitializeForContextCore(NonVirtualizingLayoutContext context)");

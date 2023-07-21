@@ -77,7 +77,11 @@ namespace Windows.UI.Xaml.Media
 			{
 				try
 				{
-					var image = await imageSource.Open(ct, targetWidth: (int)drawRect.Width, targetHeight: (int)drawRect.Height);
+					var image = await imageSource.Open(ct,
+						targetImage: null,
+						targetWidth: (int)drawRect.Width,
+						targetHeight: (int)drawRect.Height);
+
 					if (image.Bitmap != null || imageSource.IsImageLoadedToUiDirectly)
 					{
 						OnImageOpened();

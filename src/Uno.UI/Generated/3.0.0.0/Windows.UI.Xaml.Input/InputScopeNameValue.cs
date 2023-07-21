@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Chat
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.NameOrPhoneNumber
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.EmailNameOrAddress
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Private = 61,
 		#endif
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Maps

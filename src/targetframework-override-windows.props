@@ -1,0 +1,16 @@
+<Project>
+
+	<Choose>
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net7.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>net7.0-windows</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+		<When Condition="$(UnoTargetFrameworkOverride.StartsWith('net8.0'))">
+			<PropertyGroup>
+				<TargetFrameworks>net8.0-windows</TargetFrameworks>
+			</PropertyGroup>
+		</When>
+	</Choose>
+
+</Project>

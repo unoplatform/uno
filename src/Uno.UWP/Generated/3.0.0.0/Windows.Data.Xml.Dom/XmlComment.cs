@@ -57,15 +57,15 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlComment.Prefix.set
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlComment.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlComment.SelectNodes(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlComment.SelectSingleNodeNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IXmlNode%20XmlComment.SelectSingleNodeNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlComment.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=XmlNodeList%20XmlComment.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");

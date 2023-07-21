@@ -34,7 +34,7 @@ namespace Windows.UI.ViewManagement
 		/// In Uno Platform this returns the value of <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/>.
 		/// The default is false.
 		/// </remarks>
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool HighContrast => WinRTFeatureConfiguration.Accessibility.HighContrast;
 
 		/// <summary>
@@ -44,7 +44,7 @@ namespace Windows.UI.ViewManagement
 		/// In Uno Platform this returns the value of <see cref="WinRTFeatureConfiguration.Accessibility.HighContrastScheme"/>.
 		/// The default is "High Contrast Black".
 		/// </remarks>
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public string HighContrastScheme => WinRTFeatureConfiguration.Accessibility.HighContrastScheme;
 
 		/// <summary>
@@ -53,7 +53,7 @@ namespace Windows.UI.ViewManagement
 		/// <remarks>
 		///	Raised when <see cref="WinRTFeatureConfiguration.Accessibility.HighContrast"/> changes.
 		/// </remarks>
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event TypedEventHandler<AccessibilitySettings, object> HighContrastChanged;
 
 		internal static void OnHighContrastChanged()

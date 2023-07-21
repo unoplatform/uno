@@ -330,8 +330,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
-#if NET461 || __MACOS__ || __SKIA__
-		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for NET461 and SKIA")]
+#if IS_UNIT_TESTS || __MACOS__ || __SKIA__
+		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()
 		{
@@ -446,6 +446,70 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var image = new Image() { Source = bitmapImage };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Null()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(null);
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Set_Null()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			svgImageSource.UriSource = null;
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImageFailed()
+		{
+			var image = new Image() { Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			bool imageFailedRaised = false;
+			image.ImageFailed += (s, e) =>
+			{
+				imageFailedRaised = true;
+			};
+			image.Source = new BitmapImage(new Uri("ms-appx:///image/definitely/does/not/exist.png"));
+
+			await WindowHelper.WaitFor(() => imageFailedRaised);
 		}
 
 		[TestMethod]

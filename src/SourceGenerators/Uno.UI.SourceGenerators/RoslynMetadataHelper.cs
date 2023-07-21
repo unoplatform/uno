@@ -6,10 +6,6 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.XamlGenerator;
 
-#if NETFRAMEWORK
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.Roslyn
 {
 	internal class RoslynMetadataHelper

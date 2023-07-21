@@ -1,4 +1,4 @@
-﻿#if NET461 || UNO_REFERENCE_API || __MACOS__
+﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -646,8 +646,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -655,8 +655,8 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -982,10 +982,9 @@ namespace Windows.UI.Xaml.Controls
 #if __WASM__
 			if (args.Handled)
 			{
-				// Marking the routed event as Handled makes the browser call
-				// preventDefault() for key events. This is a problem as it
-				// breaks the browser caret navigation within the input.
-				((IPreventDefaultHandling)args).DoNotPreventDefault = true;
+				// Marking the routed event as Handled makes the browser call preventDefault() for key events.
+				// This is a problem as it breaks the browser caret navigation within the input.
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
 			}
 #endif
 		}

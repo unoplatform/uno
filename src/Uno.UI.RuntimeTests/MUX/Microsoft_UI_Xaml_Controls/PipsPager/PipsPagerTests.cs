@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class PipsPagerTests : MUXApiTestBase
 	{
 		[TestMethod]

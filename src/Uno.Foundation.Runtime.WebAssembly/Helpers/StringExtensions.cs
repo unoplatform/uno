@@ -6,13 +6,13 @@ using System.Text.RegularExpressions;
 
 namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 {
-	internal static class StringExtensions
+	internal static partial class StringExtensions
 	{
-		private static readonly Lazy<Regex> _newLineRegex = new Lazy<Regex>(() => new Regex(@"^", RegexOptions.Multiline));
+		private static readonly Lazy<Regex> _newLineRegex = new Lazy<Regex>(() => NewLineFast());
 
 		public static string Indent(this string text, int indentCount = 1)
 		{
-			return _newLineRegex.Value.Replace(text, new String('\t', indentCount));
+			return _newLineRegex.Value.Replace(text, new string('\t', indentCount));
 		}
 
 		public static string JoinBy(this IEnumerable<string> items, string joinBy)
@@ -29,5 +29,15 @@ namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 		{
 			return !string.IsNullOrWhiteSpace(instance);
 		}
+
+#if !DISABLE_GENERATED_REGEX
+		[GeneratedRegex("^", RegexOptions.Multiline)]
+#endif
+		private static partial Regex NewLineFast();
+
+#if DISABLE_GENERATED_REGEX
+		private static partial Regex NewLineFast()
+			=> new Regex("^", RegexOptions.Multiline);
+#endif
 	}
 }

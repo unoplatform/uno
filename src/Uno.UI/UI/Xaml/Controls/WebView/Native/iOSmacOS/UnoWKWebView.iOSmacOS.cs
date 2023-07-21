@@ -616,7 +616,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			}
 			else
 			{
-				if (NSJsonSerialization.IsValidJSONObject(result))
+				if (result is not null && NSJsonSerialization.IsValidJSONObject(result))
 				{
 					var serializedData = NSJsonSerialization.Serialize(result, default, out var serializationError);
 					if (serializationError != null)

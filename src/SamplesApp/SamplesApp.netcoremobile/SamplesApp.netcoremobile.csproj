@@ -1,9 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
+		<TargetFrameworks>net8.0-android;net8.0-ios</TargetFrameworks>
+		<TargetFrameworks>$(TargetFrameworks);net8.0-maccatalyst;net8.0-macos</TargetFrameworks>
+
 		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<SingleProject>true</SingleProject>
 
 		<OutputType>Exe</OutputType>
@@ -26,7 +30,7 @@
 		Required for Catalyst nuget restore to revalidate
 		once transitive dependencies have been updated.
 		-->
-		<NoWarn>$(NoWarn);NU1703</NoWarn>
+		<NoWarn>$(NoWarn);NU1703;SYSLIB1045</NoWarn>
 
 		<!--
 		aab is the default packaging format in net6 API 31.
@@ -115,7 +119,6 @@
 		</PackageReference>
 
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
@@ -128,6 +131,7 @@
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'ios'">
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
+		<PackageReference Include="Xamarin.TestCloud.Agent" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'maccatalyst'">
@@ -174,6 +178,6 @@
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
 	<Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.targets" />
 
-	<Import Project="..\..\..\build\uno.winui.single-project.targets" />
+	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
 </Project>

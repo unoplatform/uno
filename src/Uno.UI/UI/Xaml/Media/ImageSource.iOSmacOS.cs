@@ -1,4 +1,5 @@
-﻿using System;
+﻿#nullable enable
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
@@ -101,21 +102,14 @@ public partial class ImageSource
 	{
 		var image = OpenBundleFromString(BundleName) ?? OpenBundleFromString(BundlePath);
 
-		if (image is not null)
+		if (image is null)
 		{
-			_imageData = ImageData.FromNative(image);
-		}
-		else
-		{
-			_imageData = ImageData.Empty;
+			this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundleName ?? BundlePath ?? "");
+
+			return _imageData = ImageData.Empty;
 		}
 
-		if (!_imageData.HasData)
-		{
-			this.Log().ErrorFormat("Unable to locate bundle resource [{0}]", BundleName ?? BundlePath);
-		}
-
-		return _imageData;
+		return _imageData = ImageData.FromNative(image);
 	}
 
 	/// <summary>
@@ -145,7 +139,7 @@ public partial class ImageSource
 	/// <paramref name="targetWidth"/> and <paramref name="targetHeight"/> can be used to improve performance by fetching / decoding only the required size.
 	/// Depending on stretching, only one of each can be provided.
 	/// </remarks>
-	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData> asyncImage)
+	private protected virtual bool TryOpenSourceAsync(CancellationToken ct, int? targetWidth, int? targetHeight, [NotNullWhen(true)] out Task<ImageData>? asyncImage)
 	{
 		asyncImage = default;
 		return false;

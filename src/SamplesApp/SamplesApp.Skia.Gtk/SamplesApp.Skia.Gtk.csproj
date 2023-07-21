@@ -1,25 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netcoreapp3.1;net5.0</TargetFrameworks>
+		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
 		<RollForward>Major</RollForward>
 		<ApplicationManifest>app.manifest</ApplicationManifest>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='netstandard2.0'">
-		<TargetFrameworks>netcoreapp3.1</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'=='net7.0'">
-		<TargetFrameworks>net7.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!='' and '$(UnoTargetFrameworkOverride)'!='netstandard2.0'">
-		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
-	</PropertyGroup>
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -60,9 +46,9 @@
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
-	<Import Project="..\..\..\build\*.Skia.Gtk.props" />
-	<Import Project="..\..\..\build\*.Skia.Gtk.targets" />
-	<Import Project="..\..\..\build\uno.winui.runtime-replace.targets" />
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.props" />
+	<Import Project="..\..\..\build\nuget\*.Skia.Gtk.targets" />
+	<Import Project="..\..\..\build\nuget\uno.winui.runtime-replace.targets" />
 
 	<Target Name="ValidateTransientLocalAssets" AfterTargets="Build" Condition="'$(TargetFramework)'!=''">
 		<Message Text="Validating local assets" Importance="high" />

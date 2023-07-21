@@ -53,9 +53,6 @@ namespace MyProject
 		{
 		}
 		static partial void RegisterDefaultStyles_Grid_Uses_New_Assigned_ContentProperty_Syntax_9f853e56098ff21d39f15479035509ef();
-		[global::System.Obsolete("This method is provided for binary backward compatibility. It will always return null.")]
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		public static object FindResource(string name) => null;
 		
 	}
 }

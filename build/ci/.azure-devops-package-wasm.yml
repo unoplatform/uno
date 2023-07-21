@@ -3,9 +3,7 @@ parameters:
 
 jobs:
 - job: wasm_package_build
-  displayName: 'Build WebAssembly Package Binaries'
-
-  dependsOn: winui_convert_tree
+  displayName: 'WebAssembly Package Binaries'
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -24,11 +22,10 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
-
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+    # Disabled until the wasm bootstrap can be updated to .NET 8 Pre 3 or later
+    UnoDisableNet8Mobile: true
 
   steps:
   - checkout: self
@@ -41,6 +38,11 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
+
+  - script: |
+      cp global.json global-net7.json
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
 
   - template: templates/dotnet-install.yml
 

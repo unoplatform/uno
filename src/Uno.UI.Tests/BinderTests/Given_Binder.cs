@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -17,7 +16,6 @@ using System.ComponentModel;
 using Uno.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
 using System.Threading;
@@ -309,7 +307,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(SolidColorBrushHelper.Tomato.Color, (targetA.Brush as SolidColorBrush).Color);
 
 			// This test used to fail because changing the DataContext would dispose the previous PropertyChanged subscription,
-			// which would clear the value and RaisePropertyChanged with null, 
+			// which would clear the value and RaisePropertyChanged with null,
 			// which would propagate that value up to the new DataContext (with TwoWay binding enabled).
 			control.DataContext = targetB;
 			Assert.AreEqual(20, targetB.TargetValue);
@@ -323,7 +321,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(SolidColorBrushHelper.Olive.Color, (targetB.Brush as SolidColorBrush).Color);
 
 			// Making sure that TargetValue is only set once (object initializer)
-			// There used to be issues where changing the DataContext would cause TwoWay binding to propagate invalid changes to the source. 
+			// There used to be issues where changing the DataContext would cause TwoWay binding to propagate invalid changes to the source.
 			Assert.AreEqual(1, targetA.TargetValueSetCount);
 			Assert.AreEqual(1, targetA.TargetValueSetCount);
 			Assert.AreEqual(1, targetA.BrushSetCount);

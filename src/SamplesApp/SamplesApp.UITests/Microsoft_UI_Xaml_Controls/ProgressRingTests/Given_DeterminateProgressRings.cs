@@ -7,6 +7,9 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.ProgressRingTests
 {
+#if !HAS_UNO_WINUI
+	[Ignore("Lottie for SkiaSharp is not available for UWP")]
+#endif
 	public partial class Given_DeterminateProgressRings : SampleControlUITestBase
 	{
 		private const string red = "#FF0000";

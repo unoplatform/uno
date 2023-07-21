@@ -1,16 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core' or '$(BuildingInsideVisualStudio)'=='true'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
-	</PropertyGroup>
-
-	<Import Project="../../targetframework-override.props" />
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
+		<TargetFrameworks>net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -19,7 +9,7 @@
 		<RootNamespace>Uno.UI.Media</RootNamespace>
 		<IsPackable>false</IsPackable>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-		
+
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.MediaPlayer.WebAssembly</PackageId>
 	</PropertyGroup>
 

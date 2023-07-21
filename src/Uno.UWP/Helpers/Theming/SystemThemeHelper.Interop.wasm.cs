@@ -1,5 +1,4 @@
-﻿#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
+﻿using System.Runtime.InteropServices.JavaScript;
 
 namespace __Uno.Helpers.Theming;
 
@@ -14,4 +13,3 @@ internal partial class SystemThemeHelper
 		internal static partial string GetSystemTheme();
 	}
 }
-#endif

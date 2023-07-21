@@ -13,7 +13,7 @@ using Windows.UI.Xaml;
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
 	[TestClass]
-#if !NET461
+#if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif
 	public class Given_FindName

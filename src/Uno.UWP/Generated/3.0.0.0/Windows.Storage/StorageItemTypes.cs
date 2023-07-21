@@ -3,7 +3,6 @@
 namespace Windows.Storage
 {
 	#if false || false || false || false || false || false || false
-	[global::System.FlagsAttribute]
 	public   enum StorageItemTypes : uint
 	{
 		// Skipping already declared field Windows.Storage.StorageItemTypes.None

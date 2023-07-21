@@ -1,3 +1,4 @@
+#if !HAS_UNO_WINUI
 #nullable enable
 
 using System;
@@ -18,3 +19,4 @@ public sealed partial class WindowCreatedEventArgs
 	/// </summary>
 	public Window Window { get; }
 }
+#endif

@@ -4,6 +4,7 @@ using System.Text;
 using Uno;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 
@@ -59,6 +60,26 @@ namespace Windows.UI.Xaml
 		internal void AddChild(UIElement child, int? index = null)
 		{
 			child.SetParent(this);
+		}
+
+		partial void OnMeasurePartial(Size slotSize)
+		{
+			MeasureCallCount++;
+			AvailableMeasureSize = slotSize;
+
+			if (DesiredSizeSelector != null)
+			{
+				var desiredSize = DesiredSizeSelector(slotSize);
+
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+				RequestedDesiredSize = desiredSize;
+			}
+			else if (RequestedDesiredSize != null)
+			{
+				var desiredSize = RequestedDesiredSize.Value;
+
+				LayoutInformation.SetDesiredSize(this, desiredSize);
+			}
 		}
 	}
 }

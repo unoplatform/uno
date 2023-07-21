@@ -14,6 +14,8 @@ using Uno.Foundation;
 using Uno.Disposables;
 using Uno;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Shapes
 {
 	[Markup.ContentProperty(Name = "SvgChildren")]
@@ -100,6 +102,15 @@ namespace Windows.UI.Xaml.Shapes
 						() => GetDefs().Remove(gradient)
 					);
 					break;
+				case RadialGradientBrush rgb:
+					var radialGradient = rgb.ToSvgElement();
+					var radialGradientId = radialGradient.HtmlId;
+					GetDefs().Add(radialGradient);
+					svgElement.SetStyle("fill", $"url(#{radialGradientId})");
+					_fillBrushSubscription.Disposable = new DisposableAction(
+						() => GetDefs().Remove(radialGradient)
+					);
+					break;
 				case AcrylicBrush ab:
 					svgElement.SetStyle("fill", ab.FallbackColorWithOpacity.ToHexString());
 					_fillBrushSubscription.Disposable = null;
@@ -142,6 +153,15 @@ namespace Windows.UI.Xaml.Shapes
 					svgElement.SetStyle("stroke", $"url(#{gradientId})");
 					_strokeBrushSubscription.Disposable = new DisposableAction(
 						() => GetDefs().Remove(gradient)
+					);
+					break;
+				case RadialGradientBrush rgb:
+					var radialGradient = rgb.ToSvgElement();
+					var radialGradientId = radialGradient.HtmlId;
+					GetDefs().Add(radialGradient);
+					svgElement.SetStyle("stroke", $"url(#{radialGradientId})");
+					_strokeBrushSubscription.Disposable = new DisposableAction(
+						() => GetDefs().Remove(radialGradient)
 					);
 					break;
 				case AcrylicBrush ab:

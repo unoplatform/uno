@@ -155,7 +155,9 @@ namespace <#= mixin.NamespaceName #>
 
 		public event RoutedEventHandler Loaded;
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+#endif
 
 		public event RoutedEventHandler Unloaded;
 
@@ -241,7 +243,7 @@ namespace <#= mixin.NamespaceName #>
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
 
-		public virtual Thickness Margin
+		public Thickness Margin
 		{
 			get => GetMarginValue();
 			set => SetMarginValue(value);
@@ -585,15 +587,13 @@ namespace <#= mixin.NamespaceName #>
 
 		partial void OnUnloadedPartial();
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsEnabled Dependency Property
 
 		[GeneratedDependencyProperty(
 			DefaultValue = true,
 			Options = FrameworkPropertyMetadataOptions.Inherits,
 			ChangedCallback = true
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-			, CoerceCallback = true
-#endif
 		)]
 		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
@@ -603,17 +603,8 @@ namespace <#= mixin.NamespaceName #>
 			set => SetIsEnabledValue(value);
 		}
 
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
-#endif
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-			// Calling the internal override (WinUI compatibility) -- See FrameworkElement.cs
-			_isEnabledChangedEventArgs.SourceEvent = e;
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
-#endif
-
 			var newValue = (bool)e.NewValue;
 			UserInteractionEnabled = newValue; // Set iOS native equivalent
 
@@ -621,7 +612,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		#endregion
-
+#endif
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Opacity Dependency Property
@@ -929,7 +920,13 @@ namespace <#= mixin.NamespaceName #>
 		public override UIView HitTest(CGPoint point, UIEvent uievent)
 		{
 			//If IsHitTestVisible is false, ignore children
-			if (!IsHitTestVisible || !IsEnabled)
+			if (!IsHitTestVisible ||
+#if <#= mixin.IsFrameworkElement #> //IsFrameworkElement
+				this is Windows.UI.Xaml.Controls.Control { IsEnabled: false }
+#else
+				!IsEnabled
+#endif
+			)
 			{
 				return null;
 			}

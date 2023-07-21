@@ -7,7 +7,7 @@ using System.Drawing;
 
 namespace Windows.UI.Xaml.Media
 {
-	public abstract partial class Brush
+	public partial class Brush
 	{
 		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter, Action imageBrushCallback = null)
 		{

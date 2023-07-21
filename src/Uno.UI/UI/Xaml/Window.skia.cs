@@ -2,6 +2,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
@@ -12,93 +13,110 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 
-namespace Windows.UI.Xaml
+namespace Windows.UI.Xaml;
+
+public sealed partial class Window
 {
-	public sealed partial class Window
+	// private ScrollViewer _rootScrollViewer;
+	private Border? _rootBorder;
+
+	private bool _shown;
+
+	partial void InitPlatform()
 	{
-		// private ScrollViewer _rootScrollViewer;
-		private Border? _rootBorder;
+		Dispatcher = CoreDispatcher.Main;
+		CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 
-		partial void InitPlatform()
+		Compositor = new Compositor();
+	}
+
+	internal event EventHandler Shown;
+
+	public Compositor Compositor { get; private set; }
+
+	internal void OnNativeSizeChanged(Size size)
+	{
+		var newBounds = new Rect(0, 0, size.Width, size.Height);
+
+		if (newBounds != Bounds)
 		{
-			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-
-			Compositor = new Compositor();
-		}
-
-		internal void OnNativeSizeChanged(Size size)
-		{
-			var newBounds = new Rect(0, 0, size.Width, size.Height);
-
-			if (newBounds != Bounds)
+			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"OnNativeSizeChanged: {size}");
-				}
+				this.Log().Debug($"OnNativeSizeChanged: {size}");
+			}
 
-				Bounds = newBounds;
+			Bounds = newBounds;
 
-				_rootVisual?.XamlRoot?.InvalidateMeasure();
-				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
+			_rootVisual?.XamlRoot?.InvalidateMeasure();
+			RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
-				ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
+			ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);
+		}
+	}
+
+	private void InternalSetContent(UIElement content)
+	{
+		if (_rootVisual == null)
+		{
+			_rootBorder = new Border();
+			CoreServices.Instance.PutVisualRoot(_rootBorder);
+			_rootVisual = CoreServices.Instance.MainRootVisual;
+
+			if (_rootVisual?.XamlRoot is null)
+			{
+				throw new InvalidOperationException("The root visual was not created.");
 			}
 		}
 
-		public Compositor Compositor { get; private set; }
-
-		private void InternalSetContent(UIElement content)
+		if (_rootBorder != null)
 		{
-			if (_rootVisual == null)
-			{
-				_rootBorder = new Border();
-				CoreServices.Instance.PutVisualRoot(_rootBorder);
-				_rootVisual = CoreServices.Instance.MainRootVisual;
+			_rootBorder.Child = _content = content;
+		}
 
-				if (_rootVisual?.XamlRoot == null)
-				{
-					throw new InvalidOperationException("The root visual could not be created.");
-				}
+		TryLoadRootVisual();
+	}
 
-				CoreWindow.SetInvalidateRender(_rootVisual.XamlRoot.QueueInvalidateRender);
-
-				UIElement.LoadingRootElement(_rootVisual);
-
-				Compositor.RootVisual = _rootVisual.Visual;
-
-				_rootVisual?.XamlRoot.InvalidateMeasure();
-
-				UIElement.RootElementLoaded(_rootVisual);
-			}
-
+	internal void DisplayFullscreen(UIElement content)
+	{
+		if (content == null)
+		{
+			FullWindowMediaRoot.Child = null;
 			if (_rootBorder != null)
 			{
-				_rootBorder.Child = _content = content;
+				_rootBorder.Visibility = Visibility.Visible;
 			}
+			FullWindowMediaRoot.Visibility = Visibility.Collapsed;
+		}
+		else
+		{
+			FullWindowMediaRoot.Visibility = Visibility.Visible;
+			if (_rootBorder != null)
+			{
+				_rootBorder.Visibility = Visibility.Collapsed;
+			}
+			FullWindowMediaRoot.Child = content;
+		}
+	}
+
+	partial void ShowPartial()
+	{
+		_shown = true;
+		Shown?.Invoke(this, EventArgs.Empty);
+
+		TryLoadRootVisual();
+	}
+
+	private void TryLoadRootVisual()
+	{
+		if (!_shown)
+		{
+			return;
 		}
 
-		internal void DisplayFullscreen(UIElement content)
-		{
-			if (content == null)
-			{
-				FullWindowMediaRoot.Child = null;
-				if (_rootBorder != null)
-				{
-					_rootBorder.Visibility = Visibility.Visible;
-				}
-				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				FullWindowMediaRoot.Visibility = Visibility.Visible;
-				if (_rootBorder != null)
-				{
-					_rootBorder.Visibility = Visibility.Collapsed;
-				}
-				FullWindowMediaRoot.Child = content;
-			}
-		}
+		UIElement.LoadingRootElement(_rootVisual);
+
+		_rootVisual.XamlRoot!.InvalidateMeasure();
+
+		UIElement.RootElementLoaded(_rootVisual);
 	}
 }

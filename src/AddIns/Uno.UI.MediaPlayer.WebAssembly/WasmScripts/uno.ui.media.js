@@ -15,6 +15,9 @@ var Uno;
                 static getCurrentPosition(htmlId) {
                     return document.getElementById(htmlId.toString()).currentTime;
                 }
+                static getPaused(htmlId) {
+                    return document.getElementById(htmlId.toString()).paused;
+                }
                 static setCurrentPosition(htmlId, currentTime) {
                     document.getElementById(htmlId.toString()).currentTime = currentTime;
                 }

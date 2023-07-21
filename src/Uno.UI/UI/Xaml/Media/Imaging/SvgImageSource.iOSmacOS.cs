@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿#nullable enable
+using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
@@ -32,10 +33,16 @@ partial class SvgImageSource
 	{
 		try
 		{
-			if (Stream != null)
+			if (Stream is not null)
 			{
 				Stream.Position = 0;
 				using var data = NSData.FromStream(Stream);
+
+				if (data is null)
+				{
+					return ImageData.Empty;
+				}
+
 				var bytes = data.ToArray();
 				return ImageData.FromBytes(bytes);
 			}
@@ -49,18 +56,21 @@ partial class SvgImageSource
 
 			if (HasBundle)
 			{
+				if (BundlePath is null)
+				{
+					return ImageData.Empty;
+				}
+
 				return OpenSvgBundle(BundlePath);
 			}
 
-			if (Downloader == null)
+			if (Downloader is null)
 			{
 				return await DownloadSvgAsync(ct);
 			}
 			else
 			{
-				var localFileUri = await Download(ct, AbsoluteUri);
-
-				if (localFileUri == null)
+				if (AbsoluteUri is null || await Download(ct, AbsoluteUri) is not { } localFileUri)
 				{
 					return ImageData.Empty;
 				}
@@ -76,13 +86,16 @@ partial class SvgImageSource
 
 	private ImageData OpenSvgBundle(string bundlePath)
 	{
-		var directoryName = global::System.IO.Path.GetDirectoryName(bundlePath);
-		var fileName = global::System.IO.Path.GetFileNameWithoutExtension(bundlePath);
-		var fileExtension = global::System.IO.Path.GetExtension(bundlePath);
+		var directoryName = global::System.IO.Path.GetDirectoryName(bundlePath) ?? string.Empty;
+		var fileName = global::System.IO.Path.GetFileNameWithoutExtension(bundlePath) ?? string.Empty;
+		var fileExtension = global::System.IO.Path.GetExtension(bundlePath) ?? string.Empty;
 
 		var resourcePathname = NSBundle.MainBundle.GetUrlForResource(global::System.IO.Path.Combine(directoryName, fileName), fileExtension.Substring(1));
+
 		using var data = NSData.FromUrl(resourcePathname);
+
 		var bytes = data.ToArray();
+
 		return ImageData.FromBytes(bytes);
 	}
 
@@ -95,7 +108,7 @@ partial class SvgImageSource
 #endif
 		Task<ImageData> DownloadSvgAsync(CancellationToken ct)
 	{
-		if (ct.IsCancellationRequested)
+		if (AbsoluteUri is null || ct.IsCancellationRequested)
 		{
 #if __IOS__
 			return ImageData.Empty;
@@ -107,7 +120,7 @@ partial class SvgImageSource
 		using var url = new NSUrl(AbsoluteUri.AbsoluteUri);
 #if __IOS__
 		using var request = NSUrlRequest.FromUrl(url);
-		NSUrlSessionDataTask task;
+		NSUrlSessionDataTask? task;
 		var awaitable = DefaultSession.CreateDataTaskAsync(request, out task);
 		ct.Register(OnCancel);
 		try
@@ -115,13 +128,13 @@ partial class SvgImageSource
 			task.Resume(); // We need to call this manually https://bugzilla.xamarin.com/show_bug.cgi?id=28425#c3
 			var result = await awaitable;
 			task = null;
-			var response = result.Response as NSHttpUrlResponse;
 
 			if (ct.IsCancellationRequested)
 			{
 				return ImageData.Empty;
 			}
-			else if (!IsSuccessful(response.StatusCode))
+
+			if (result.Response is NSHttpUrlResponse response && !IsSuccessful(response.StatusCode))
 			{
 				if (this.Log().IsEnabled(LogLevel.Error))
 				{

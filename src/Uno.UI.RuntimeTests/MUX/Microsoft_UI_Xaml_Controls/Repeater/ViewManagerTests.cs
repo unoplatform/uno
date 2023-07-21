@@ -40,6 +40,7 @@ using Private.Infrastructure;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class ViewManagerTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -257,9 +258,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		}
 
 		[TestMethod]
-#if __WASM__ || __ANDROID__ || __SKIA__ || __MACOS__
 		[Ignore("UNO: Test does not pass yet with Uno https://github.com/unoplatform/uno/issues/4529")]
-#endif
 		public void CanChangeFocusAfterUniqueIdReset()
 		{
 			var data = new WinRTCollection(Enumerable.Range(0, 2).Select(i => string.Format("Item #{0}", i)));

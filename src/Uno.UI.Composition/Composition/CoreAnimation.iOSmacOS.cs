@@ -160,7 +160,9 @@ namespace Windows.UI.Composition
 #if NET6_0_OR_GREATER
 					 = CAKeyFrameAnimation.AnimationDiscrete;
 #else
+#pragma warning disable CS0618
 					 = CAKeyFrameAnimation.AnimationDescrete;
+#pragma warning restore CS0618
 #endif
 
 				animation = discreteAnim;

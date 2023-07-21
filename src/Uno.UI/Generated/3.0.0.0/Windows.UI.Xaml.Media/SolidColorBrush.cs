@@ -2,6 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
+	[global::Windows.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Color")]
 	#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif

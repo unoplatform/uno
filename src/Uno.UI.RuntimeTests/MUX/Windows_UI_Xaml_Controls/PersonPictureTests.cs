@@ -23,7 +23,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-using PersonPicture = Windows.UI.Xaml.Controls.PersonPicture;
+using PersonPicture = Microsoft.UI.Xaml.Controls.PersonPicture;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -176,6 +176,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await global::Private.Infrastructure.TestServices.WindowHelper.WaitForIdle();
 		}
 
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		[TestMethod]
 		public async Task VerifyVSMStatesForPhotosAndInitials()
 		{

@@ -40,15 +40,15 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		public FrameworkElement() : this(DefaultHtmlTag, false)
+		protected FrameworkElement() : this(DefaultHtmlTag, false)
 		{
 		}
 
-		public FrameworkElement(string htmlTag) : this(htmlTag, false)
+		protected FrameworkElement(string htmlTag) : this(htmlTag, false)
 		{
 		}
 
-		public FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
+		protected FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
 		{
 			Initialize();
 

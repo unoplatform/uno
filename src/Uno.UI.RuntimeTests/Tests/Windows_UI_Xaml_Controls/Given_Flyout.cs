@@ -21,6 +21,9 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Uno.UI.Toolkit.Extensions;
 
+using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
+using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
+
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]

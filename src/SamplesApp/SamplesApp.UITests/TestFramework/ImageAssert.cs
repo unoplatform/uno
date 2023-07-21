@@ -14,6 +14,7 @@ using NUnit.Framework;
 using SamplesApp.UITests._Utils;
 using Uno.UITest;
 using static System.Math;
+using SkiaSharp;
 
 namespace SamplesApp.UITests.TestFramework
 {
@@ -81,7 +82,7 @@ namespace SamplesApp.UITests.TestFramework
 		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, ScreenshotInfo actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
 
-		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, Bitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
+		public static void AreAlmostEqual(ScreenshotInfo expected, Rectangle expectedRect, PlatformBitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, null, actual, actualRect, expectedToActualScale, tolerance, line);
 
 		private static void AreEqualImpl(
@@ -104,7 +105,7 @@ namespace SamplesApp.UITests.TestFramework
 			ScreenshotInfo expected,
 			Rectangle expectedRect,
 			ScreenshotInfo? actual,
-			Bitmap actualBitmap,
+			PlatformBitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
 			PixelTolerance tolerance,
@@ -133,7 +134,7 @@ namespace SamplesApp.UITests.TestFramework
 			ScreenshotInfo expected,
 			Rectangle expectedRect,
 			ScreenshotInfo? actual,
-			Bitmap actualBitmap,
+			PlatformBitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
 			PixelTolerance tolerance,
@@ -151,13 +152,13 @@ namespace SamplesApp.UITests.TestFramework
 			if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
 			{
 				var effectiveExpectedBitmapSize = new Size(
-					(int)(expectedBitmap.Size.Width * expectedToActualScale),
-					(int)(expectedBitmap.Size.Height * expectedToActualScale));
-				Assert.AreEqual(effectiveExpectedBitmapSize, actualBitmap.Size, WithContext("Screenshots don't have the same size"));
+					(int)(expectedBitmap.Width * expectedToActualScale),
+					(int)(expectedBitmap.Height * expectedToActualScale));
+				Assert.AreEqual(effectiveExpectedBitmapSize, new Size(actualBitmap.Width, actualBitmap.Height), WithContext("Screenshots don't have the same size"));
 			}
 
-			expectedRect = Normalize(expectedRect, expectedBitmap.Size);
-			actualRect = Normalize(actualRect, actualBitmap.Size);
+			expectedRect = Normalize(expectedRect, new(expectedBitmap.Width, expectedBitmap.Height));
+			actualRect = Normalize(actualRect, new(actualBitmap.Width, actualBitmap.Height));
 
 			var expectedPixels = ExpectedPixels
 				.At(actualRect.Location)
@@ -174,8 +175,8 @@ namespace SamplesApp.UITests.TestFramework
 				=> new StringBuilder()
 					.AppendLine($"ImageAssert.AreEqual @ line {line}")
 					.AppendLine("pixelTolerance: " + tolerance)
-					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name} {expectedBitmap.Size}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
-					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name} {actualBitmap.Size}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
+					.AppendLine($"expected: {expected?.StepName} ({expected?.File.Name} {expectedBitmap.Width}x{expectedBitmap.Height}){(expectedRect == FirstQuadrant ? null : $" in {expectedRect}")}")
+					.AppendLine($"actual  : {actual?.StepName ?? "--unknown--"} ({actual?.File.Name} {actualBitmap.Width}x{actualBitmap.Height}){(actualRect == FirstQuadrant ? null : $" in {actualRect}")}")
 					.AppendLine("====================");
 
 			string WithContext(string message)
@@ -215,7 +216,7 @@ namespace SamplesApp.UITests.TestFramework
 					ScreenshotInfo expected,
 					Rectangle expectedRect,
 					ScreenshotInfo actual,
-					Bitmap actualBitmap,
+					PlatformBitmap actualBitmap,
 					Rectangle actualRect,
 					double expectedToActualScale,
 					PixelTolerance tolerance,
@@ -277,7 +278,7 @@ namespace SamplesApp.UITests.TestFramework
 
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
-				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
+				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Width}x{bitmap.Height}"));
 			}
 
 			var pixel = bitmap.GetPixel(x, y);
@@ -320,7 +321,7 @@ namespace SamplesApp.UITests.TestFramework
 			var bitmap = screenshot.GetBitmap();
 			if (bitmap.Width <= x || bitmap.Height <= y)
 			{
-				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Size}"));
+				Assert.Fail(WithContext($"Coordinates ({x}, {y}) falls outside of screenshot dimension {bitmap.Width}x{bitmap.Height}"));
 			}
 
 			var pixel = bitmap.GetPixel(x, y);
@@ -328,7 +329,7 @@ namespace SamplesApp.UITests.TestFramework
 			{
 				Assert.Fail(WithContext(builder: builder => builder
 					.AppendLine($"Color at ({x},{y}) is not expected")
-					.AppendLine($"excluded: {ToArgbCode(excludedColor)} {excludedColor.Name}")
+					.AppendLine($"excluded: {ToArgbCode(excludedColor)}")
 					.AppendLine($"actual  : {ToArgbCode(pixel)} {pixel}")
 					.AppendLine($"tolerance: {tolerance}")
 					.AppendLine($"difference: {difference}")

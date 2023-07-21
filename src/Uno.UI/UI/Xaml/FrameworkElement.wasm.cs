@@ -230,12 +230,31 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal override bool IsEnabledOverride() => IsEnabled && base.IsEnabledOverride();
+		#region Name Dependency Property
 
-		/// <summary>
-		/// Identifies the Name dependency property.
-		/// </summary>
-		public static new DependencyProperty NameProperty => UIElement.NameProperty;
+		private void OnNameChanged(string oldValue, string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.SetName(HtmlId, newValue);
+			}
+		}
+
+		[GeneratedDependencyProperty(DefaultValue = "", ChangedCallback = true)]
+		public static DependencyProperty NameProperty { get; } = CreateNameProperty();
+
+		public string Name
+		{
+			get => GetNameValue();
+			set => SetNameValue(value);
+		}
+
+		#endregion
 
 		#region Margin Dependency Property
 		[GeneratedDependencyProperty(
@@ -246,7 +265,7 @@ namespace Windows.UI.Xaml
 		)]
 		public static DependencyProperty MarginProperty { get; } = CreateMarginProperty();
 
-		public virtual Thickness Margin
+		public Thickness Margin
 		{
 			get => GetMarginValue();
 			set => SetMarginValue(value);
@@ -422,7 +441,11 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(MinHeight), MinHeight);
 				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
 				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
-				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+
+				if (this is Control control)
+				{
+					UpdateDOMXamlProperty(nameof(Control.IsEnabled), control.IsEnabled);
+				}
 
 				if (this.TryGetPadding(out var padding))
 				{

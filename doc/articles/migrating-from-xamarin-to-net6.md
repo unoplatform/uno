@@ -1,14 +1,9 @@
 ---
 uid: Uno.Development.MigratingFromXamarinToNet6
 ---
+## How to upgrade from Xamarin to .NET 7
 
-# Migrating Xamarin Projects to .NET 6
-
-As of July 2022, Microsoft has published a stable version of .NET 6 for iOS, Android, macOS and Mac Catalyst. This new target is supported by Uno Platform, alongside Xamarin.
-
-## How to upgrade from Xamarin to .NET 6
-
-There are two ways to migrate an application to .NET 6.
+There are two ways to migrate an application to .NET 7.
 
 ### The fastest path to keep using the UWP APIs
 
@@ -25,11 +20,11 @@ There are two ways to migrate an application to .NET 6.
    4. Optionally [convert your legacy Xamarin heads](updating-to-winui3.md) to use Uno.WinUI instead of Uno.UI
 
 ### Additional considerations
-Since .NET 6 breaks binary compatibility with Xamarin, most of the existing nuget packages that target `monoandroidXX`, `xamarinios10` and `xamarinmac20` (bindings to native SDKs are a good example) will not work properly and will need an updated version that are compatible with `net6.0-ios`, `net6.0-android`, `net6.0-maccatalyst` and `net6.0-macos`.
+Since .NET 7 breaks binary compatibility with Xamarin, most of the existing nuget packages that target `monoandroidXX`, `xamarinios10` and `xamarinmac20` (bindings to native SDKs are a good example) will not work properly and will need an updated version that are compatible with `net7.0-ios`, `net7.0-android`, `net7.0-maccatalyst` and `net7.0-macos`.
 
 ## Xamarin Support Policy
 As defined by [Microsoft support policy](https://dotnet.microsoft.com/en-us/platform/support/policy/xamarin) for Xamarin (as of 2022-08-25):
 
 > _Xamarin support will end on May 1, 2024 for all Xamarin SDKs. Android 13 and Xcode 14 SDKs (iOS and iPadOS 16, macOS 13) will be the final versions Xamarin will target._
 
-Uno Platform is going to be providing support for Xamarin (`monoandroid12`, `monoandroid13`, `xamarinios10` and `xamarinmac20`) by that date as well. Note that later on, apps built with these SDK will not be accepted by both [Apple](https://developer.apple.com/support/xcode/) and [Google](https://developer.android.com/google/play/requirements/target-sdk) stores.
+Uno Platform is going provides support for Xamarin (`monoandroid12`, `monoandroid13`, `xamarinios10` and `xamarinmac20`) by that date as well in the Uno 4.x releases. Uno 5.0 and later does not support Xamarin anymore. Note that later on, apps built with these SDK will not be accepted by both [Apple](https://developer.apple.com/support/xcode/) and [Google](https://developer.android.com/google/play/requirements/target-sdk) stores.

@@ -31,13 +31,13 @@ namespace Windows.UI.Composition
 
 			switch (animation)
 			{
-				case KeyFrameAnimation kfa:
+				case ScalarKeyFrameAnimation kfa:
 					AnimateKeyFrameAnimation(propertyName, kfa);
 					break;
 			}
 		}
 
-		private void AnimateKeyFrameAnimation(string propertyName, KeyFrameAnimation kfa)
+		private void AnimateKeyFrameAnimation(string propertyName, ScalarKeyFrameAnimation kfa)
 		{
 			switch (propertyName)
 			{
@@ -58,8 +58,8 @@ namespace Windows.UI.Composition
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			CALayer layer,
-			KeyFrameAnimation.KeyFrame from,
-			KeyFrameAnimation.KeyFrame to,
+			ScalarKeyFrameAnimation.KeyFrame from,
+			ScalarKeyFrameAnimation.KeyFrame to,
 			string property,
 			Func<float, NSValue> nsValueConversion
 		)

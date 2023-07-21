@@ -2,7 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Linq;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.Media.Playback;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Automation;
@@ -11,18 +15,15 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using DirectUI;
 using Uno.Disposables;
-using System.Diagnostics.CodeAnalysis;
-using System.Globalization;
 using Uno.Extensions;
-using Windows.Foundation.Metadata;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+using Uno.UI.Xaml.Core;
 #endif
-
 
 #if __IOS__
 using UIKit;
@@ -32,394 +33,56 @@ using AppKit;
 using Uno.UI;
 #endif
 
+using _MediaPlayer = Windows.Media.Playback.MediaPlayer; // alias to avoid same name root namespace from ios/macos
+
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class MediaTransportControls
-	{
-		private static class TemplateParts
-		{
-			public const string ControlPanelGrid = nameof(ControlPanelGrid); // Grid
-			public const string TimeElapsedElement = nameof(TimeElapsedElement); // TextBlock
-			public const string TimeRemainingElement = nameof(TimeRemainingElement); // TextBlock
-			public const string ProgressSlider = nameof(ProgressSlider); // Slider
-			public const string PlayPauseButton = nameof(PlayPauseButton); // AppBarButton
-			public const string PlayPauseButtonOnLeft = nameof(PlayPauseButtonOnLeft); // AppBarButton
-			public const string FullWindowButton = nameof(FullWindowButton); // AppBarButton
-			public const string ZoomButton = nameof(ZoomButton); // AppBarButton
-			public const string ErrorTextBlock = nameof(ErrorTextBlock); // TextBlock
-			public const string MediaControlsCommandBar = nameof(MediaControlsCommandBar); // CommandBar
-			public const string VolumeFlyout = nameof(VolumeFlyout); // Flyout
-			public const string HorizontalVolumeSlider = nameof(HorizontalVolumeSlider); // ?
-			public const string VerticalVolumeSlider = nameof(VerticalVolumeSlider); // ?
-			public const string VolumeSlider = nameof(VolumeSlider); // Slider
-			public const string AudioSelectionButton = nameof(AudioSelectionButton); // ?
-			public const string AudioTracksSelectionButton = nameof(AudioTracksSelectionButton); // AppBarButton
-			public const string AvailableAudioTracksMenuFlyout = nameof(AvailableAudioTracksMenuFlyout); // ?
-			public const string AvailableAudioTracksMenuFlyoutTarget = nameof(AvailableAudioTracksMenuFlyoutTarget); // ?
-			public const string CCSelectionButton = nameof(CCSelectionButton); // AppBarButton
-			public const string PlaybackRateButton = nameof(PlaybackRateButton); // AppBarButton
-			public const string VolumeButton = nameof(VolumeButton); // ?
-			public const string AudioMuteButton = nameof(AudioMuteButton); // AppBarButton
-			public const string VolumeMuteButton = nameof(VolumeMuteButton); // AppBarButton
-			public const string BufferingProgressBar = nameof(BufferingProgressBar); // ProgressBar
-			public const string FastForwardButton = nameof(FastForwardButton); // AppBarButton
-			public const string RewindButton = nameof(RewindButton); // AppBarButton
-			public const string StopButton = nameof(StopButton); // AppBarButton
-			public const string CastButton = nameof(CastButton); // AppBarButton
-			public const string SkipForwardButton = nameof(SkipForwardButton); // AppBarButton
-			public const string SkipBackwardButton = nameof(SkipBackwardButton); // AppBarButton
-			public const string NextTrackButton = nameof(NextTrackButton); // AppBarButton
-			public const string PreviousTrackButton = nameof(PreviousTrackButton); // AppBarButton
-			public const string RepeatButton = nameof(RepeatButton); // AppBarToggleButton
-			public const string CompactOverlayButton = nameof(CompactOverlayButton); // AppBarButton
-			public const string PlaybackRateListView = nameof(PlaybackRateListView); // AppBarButton
-			public const string PlaybackRateFlyout = nameof(PlaybackRateFlyout); // AppBarButton
-
-			public const string LeftSeparator = nameof(LeftSeparator); // AppBarSeparator
-			public const string RightSeparator = nameof(RightSeparator); // AppBarSeparator
-
-			// Used by uno only:
-			public const string RootGrid = nameof(RootGrid);
-			public const string ControlPanel_ControlPanelVisibilityStates_Border = nameof(ControlPanel_ControlPanelVisibilityStates_Border);
-			public const string MediaTransportControls_Timeline_Border = nameof(MediaTransportControls_Timeline_Border);
-
-			// MediaControlsCommandBar template children
-			public const string MoreButton = nameof(MoreButton); // Button
-																 // ProgressSlider template children
-			public const string DownloadProgressIndicator = nameof(DownloadProgressIndicator); // ProgressBar
-			public const string HorizontalThumb = nameof(HorizontalThumb); // Thumb
-		}
-
-		private static class UIAKeys
-		{
-			// MediaElement Transport Controls: UI Automation Name / Tooltip text
-			public const string UIA_MEDIA_PLAY = nameof(UIA_MEDIA_PLAY); // "Play"
-			public const string UIA_MEDIA_PAUSE = nameof(UIA_MEDIA_PAUSE); // "Pause"
-			public const string UIA_MEDIA_TIME_ELAPSED = nameof(UIA_MEDIA_TIME_ELAPSED); // "Time elapsed"
-			public const string UIA_MEDIA_TIME_REMAINING = nameof(UIA_MEDIA_TIME_REMAINING); // "Time remaining"
-			public const string UIA_MEDIA_DOWNLOAD_PROGRESS = nameof(UIA_MEDIA_DOWNLOAD_PROGRESS); // "Download Progress"
-			public const string UIA_MEDIA_BUFFERING_PROGRESS = nameof(UIA_MEDIA_BUFFERING_PROGRESS); // "Buffering Progress"
-			public const string UIA_MEDIA_SEEK = nameof(UIA_MEDIA_SEEK); // "Seek"
-			public const string UIA_MEDIA_MUTE = nameof(UIA_MEDIA_MUTE); // "Mute"
-			public const string UIA_MEDIA_UNMUTE = nameof(UIA_MEDIA_UNMUTE); // "Unmute"
-			public const string UIA_MEDIA_VOLUME = nameof(UIA_MEDIA_VOLUME); // "Volume"
-			public const string UIA_MEDIA_ERROR = nameof(UIA_MEDIA_ERROR); // "Error"
-			public const string TEXT_MEDIA_AUDIO_TRACK_UNTITLED = nameof(TEXT_MEDIA_AUDIO_TRACK_UNTITLED); // "untitled"
-			public const string TEXT_MEDIA_AUDIO_TRACK_SELECTED = nameof(TEXT_MEDIA_AUDIO_TRACK_SELECTED); // "(On)" - Appended to name of currently selected audio track
-			public const string TEXT_MEDIA_AUDIO_TRACK_SEPARATOR = nameof(TEXT_MEDIA_AUDIO_TRACK_SEPARATOR); // " - " - Used to separate pieces of metadata in audio track name
-			public const string UIA_MEDIA_FULLSCREEN = nameof(UIA_MEDIA_FULLSCREEN); // "Full Screen"
-			public const string UIA_MEDIA_EXIT_FULLSCREEN = nameof(UIA_MEDIA_EXIT_FULLSCREEN); // "Exit Full Screen"
-			public const string UIA_MEDIA_AUDIO_SELECTION = nameof(UIA_MEDIA_AUDIO_SELECTION); // "Show audio selection menu"
-			public const string UIA_MEDIA_CC_SELECTION = nameof(UIA_MEDIA_CC_SELECTION); // "Show closed caption menu"
-			public const string TEXT_MEDIA_CC_OFF = nameof(TEXT_MEDIA_CC_OFF); // "Off"
-			public const string UIA_MEDIA_PLAYBACKRATE = nameof(UIA_MEDIA_PLAYBACKRATE); // "Show playback rate list"
-			public const string UIA_MEDIA_FASTFORWARD = nameof(UIA_MEDIA_FASTFORWARD); // "Fast forward"
-			public const string UIA_MEDIA_REWIND = nameof(UIA_MEDIA_REWIND); // "Rewind"
-			public const string UIA_MEDIA_STOP = nameof(UIA_MEDIA_STOP); // "Stop"
-			public const string UIA_MEDIA_CAST = nameof(UIA_MEDIA_CAST); // "Cast to Device"
-			public const string UIA_MEDIA_ASPECTRATIO = nameof(UIA_MEDIA_ASPECTRATIO); // "Aspect Ratio"
-			public const string UIA_MEDIA_SKIPBACKWARD = nameof(UIA_MEDIA_SKIPBACKWARD); // "Skip Backward"
-			public const string UIA_MEDIA_SKIPFORWARD = nameof(UIA_MEDIA_SKIPFORWARD); // "Skip Forward"
-			public const string UIA_MEDIA_NEXTRACK = nameof(UIA_MEDIA_NEXTRACK); // "Next Track"
-			public const string UIA_MEDIA_PREVIOUSTRACK = nameof(UIA_MEDIA_PREVIOUSTRACK); // "Previous Track"
-			public const string UIA_MEDIA_FASTFORWARD_2X = nameof(UIA_MEDIA_FASTFORWARD_2X); // "Fast forward in 2X"
-			public const string UIA_MEDIA_FASTFORWARD_4X = nameof(UIA_MEDIA_FASTFORWARD_4X); // "Fast forward in 4X"
-			public const string UIA_MEDIA_FASTFORWARD_8X = nameof(UIA_MEDIA_FASTFORWARD_8X); // "Fast forward in 8X"
-			public const string UIA_MEDIA_FASTFORWARD_16X = nameof(UIA_MEDIA_FASTFORWARD_16X); // "Fast forward in 16X"
-			public const string UIA_MEDIA_REWIND_2X = nameof(UIA_MEDIA_REWIND_2X); // "Rewind in 2X"
-			public const string UIA_MEDIA_REWIND_4X = nameof(UIA_MEDIA_REWIND_4X); // "Rewind in 4X"
-			public const string UIA_MEDIA_REWIND_8X = nameof(UIA_MEDIA_REWIND_8X); // "Rewind in 8X"
-			public const string UIA_MEDIA_REWIND_16X = nameof(UIA_MEDIA_REWIND_16X); // "Rewind in 16X"
-			public const string UIA_MEDIA_REPEAT_NONE = nameof(UIA_MEDIA_REPEAT_NONE); // "Repeat None"
-			public const string UIA_MEDIA_REPEAT_ONE = nameof(UIA_MEDIA_REPEAT_ONE); // "Repeat One"
-			public const string UIA_MEDIA_REPEAT_ALL = nameof(UIA_MEDIA_REPEAT_ALL); // "Repeat All"
-			public const string UIA_MEDIA_MINIVIEW = nameof(UIA_MEDIA_MINIVIEW); // "Enter MiniView"
-			public const string UIA_MEDIA_EXIT_MINIVIEW = nameof(UIA_MEDIA_EXIT_MINIVIEW); // "Exit MiniView"
-			public const string UIA_LESS_BUTTON = nameof(UIA_LESS_BUTTON); // "Less app bar"
-			public const string UIA_AP_APPBAR_BUTTON = nameof(UIA_AP_APPBAR_BUTTON); // "app bar button"
-			public const string UIA_AP_APPBAR_TOGGLEBUTTON = nameof(UIA_AP_APPBAR_TOGGLEBUTTON); // "app bar toggle button"
-			public const string UIA_AP_MEDIAPLAYERELEMENT = nameof(UIA_AP_MEDIAPLAYERELEMENT); // "media player" - Localized control type for the video output of MediaPlayerElement (and MediaElement)
-		}
-
-		private static class VisualState
-		{
-			public class ControlPanelVisibilityStates
-			{
-				public const string ControlPanelFadeIn = nameof(ControlPanelFadeIn);
-				public const string ControlPanelFadeOut = nameof(ControlPanelFadeOut);
-			}
-			public class MediaStates
-			{
-				public const string Normal = nameof(Normal);
-				public const string Buffering = nameof(Buffering);
-				public const string Loading = nameof(Loading);
-				public const string Error = nameof(Error);
-				public const string Disabled = nameof(Disabled);
-			}
-			public class AudioSelectionAvailablityStates
-			{
-				public const string AudioSelectionAvailable = nameof(AudioSelectionAvailable);
-				public const string AudioSelectionUnavailable = nameof(AudioSelectionUnavailable);
-			}
-			public class CCSelectionAvailablityStates
-			{
-				public const string CCSelectionAvailable = nameof(CCSelectionAvailable);
-				public const string CCSelectionUnavailable = nameof(CCSelectionUnavailable);
-			}
-			public class FocusStates
-			{
-				public const string Focused = nameof(Focused);
-				public const string Unfocused = nameof(Unfocused);
-				public const string PointerFocused = nameof(PointerFocused);
-			}
-			public class MediaTransportControlMode
-			{
-				public const string NormalMode = nameof(NormalMode);
-				public const string CompactMode = nameof(CompactMode);
-			}
-			public class PlayPauseStates
-			{
-				public const string PlayState = nameof(PlayState);
-				public const string PauseState = nameof(PauseState);
-			}
-			public class VolumeMuteStates
-			{
-				public const string VolumeState = nameof(VolumeState);
-				public const string MuteState = nameof(MuteState);
-			}
-			public class FullWindowStates
-			{
-				public const string NonFullWindowState = nameof(NonFullWindowState);
-				public const string FullWindowState = nameof(FullWindowState);
-			}
-			public class RepeatStates
-			{
-				public const string RepeatNoneState = nameof(RepeatNoneState);
-				public const string RepeatOneState = nameof(RepeatOneState);
-				public const string RepeatAllState = nameof(RepeatAllState);
-			}
-		}
-	}
-
-	[TemplatePart(Name = "RootGrid", Type = typeof(Grid))]
-	[TemplatePart(Name = "PlayPauseButton", Type = typeof(Button))]
-	[TemplatePart(Name = "PlayPauseButtonOnLeft", Type = typeof(Button))]
-	[TemplatePart(Name = "VolumeMuteButton", Type = typeof(Button))]
-	[TemplatePart(Name = "AudioMuteButton", Type = typeof(Button))]
-	[TemplatePart(Name = "VolumeSlider", Type = typeof(Slider))]
-	[TemplatePart(Name = "FullWindowButton", Type = typeof(Button))]
-	[TemplatePart(Name = "CastButton", Type = typeof(Button))]
-	[TemplatePart(Name = "ZoomButton", Type = typeof(Button))]
-	[TemplatePart(Name = "PlaybackRateButton", Type = typeof(Button))]
-	[TemplatePart(Name = "SkipForwardButton", Type = typeof(Button))]
-	[TemplatePart(Name = "NextTrackButton", Type = typeof(Button))]
-	[TemplatePart(Name = "FastForwardButton", Type = typeof(Button))]
-	[TemplatePart(Name = "RewindButton", Type = typeof(Button))]
-	[TemplatePart(Name = "PreviousTrackButton", Type = typeof(Button))]
-	[TemplatePart(Name = "SkipBackwardButton", Type = typeof(Button))]
-	[TemplatePart(Name = "StopButton", Type = typeof(Button))]
-	[TemplatePart(Name = "AudioTracksSelectionButton", Type = typeof(Button))]
-	[TemplatePart(Name = "CCSelectionButton", Type = typeof(Button))]
-	[TemplatePart(Name = "TimeElapsedElement", Type = typeof(TextBlock))]
-	[TemplatePart(Name = "TimeRemainingElement", Type = typeof(TextBlock))]
-	[TemplatePart(Name = "ProgressSlider", Type = typeof(Slider))]
-	[TemplatePart(Name = "BufferingProgressBar", Type = typeof(ProgressBar))]
-	[TemplatePart(Name = "DownloadProgressIndicator", Type = typeof(ProgressBar))]
-	[TemplatePart(Name = "ControlPanelGrid", Type = typeof(Grid))]
-	[TemplatePart(Name = "ControlPanel_ControlPanelVisibilityStates_Border", Type = typeof(Border))]
-
-
-	[TemplatePart(Name = "RepeatButton", Type = typeof(Button))]
-	[TemplatePart(Name = "VolumeFlyout", Type = typeof(Flyout))]
-	[TemplatePart(Name = "PlaybackRateFlyout", Type = typeof(Flyout))]
-	[TemplatePart(Name = "PlaybackRateListView", Type = typeof(ListView))]
-	[TemplatePart(Name = "CompactOverlayButton", Type = typeof(Button))]
-	[TemplatePart(Name = "MediaTransportControls_Timeline_Border", Type = typeof(Border))]
-	//[TemplatePart(Name = "HorizontalThumb", Type = typeof(Grid))]
-
 	public partial class MediaTransportControls : Control
 	{
-		#region Template Parts
-		//
-		// References to control parts we need to manipulate
-		//
-		private Grid? _rootGrid;
-		private Border? _timelineContainer;
-		private Border? _controlPanelBorder;
-		private Thumb? _sliderThumb;
-
-		// Reference to the control panel grid
-		private Grid? m_tpControlPanelGrid;
-
-		// Reference to the media position slider.
-		private Slider? m_tpMediaPositionSlider;
-
-		// Reference to the horizontal volume slider (audio-only mode audio slider).
-		private Slider? m_tpHorizontalVolumeSlider;
-
-		// Reference to the vertical volume slider (video-mode audio slider).
-		private Slider? m_tpVerticalVolumeSlider;
-
-		// Reference to the Threshold Volume slider (video-mode & audio-mode slider).
-		private Slider? m_tpTHVolumeSlider;
-
-		// Reference to currently active volume slider
-		//private Slider m_tpActiveVolumeSlider;
-
-		// Reference to download progress indicator, which is a part in the MediaSlider template
-		private ProgressBar? m_tpDownloadProgressIndicator;
-
-		// Reference to the buffering indeterminate progress bar
-		private ProgressBar? m_tpBufferingProgressBar;
-
-		// Reference to the PlayPause button used in Blue and Threshold
-		private ButtonBase? m_tpPlayPauseButton;
-
-		// Reference to the PlayPause button used only in Threshold
-		private ButtonBase? m_tpTHLeftSidePlayPauseButton;
-
-		// Reference to the Audio Selection button
-		private Button? m_tpAudioSelectionButton;
-
-		// Reference to the Audio Selection button for Threshold
-		private Button? m_tpTHAudioTrackSelectionButton;
-
-		// Reference to the Available Audiotracks flyout
-		private MenuFlyout? m_tpAvailableAudioTracksMenuFlyout;
-
-		// Reference to the Available Audiotracks flyout target
-		//private FrameworkElement m_tpAvailableAudioTracksMenuFlyoutTarget;
-
-		// Reference to the Close Captioning Selection button
-		private Button? m_tpCCSelectionButton;
-
-		// Reference to the Available Close Captioning tracks flyout
-		//private MenuFlyout m_tpAvailableCCTracksMenuFlyout;
-
-		// Reference to the Play Rate Selection button
-		private Button? m_tpPlaybackRateButton;
-
-		// Reference to the Available Play Rate List flyout
-		//private MenuFlyout m_tpAvailablePlaybackRateMenuFlyout;
-
-		// Reference to the Video volume button
-		private ToggleButton? m_tpVideoVolumeButton;
-
-		// Reference to the Audio-mute button for Blue and Mute button for Video/Audio in Threshold
-		private ButtonBase? m_tpMuteButton;
-
-		// Reference to the Threshold volume button
-		private ButtonBase? m_tpTHVolumeButton;
-
-		// Reference to the Full Window button
-		private ButtonBase? m_tpFullWindowButton;
-
-		// Reference to the Zoom button
-		private ButtonBase? m_tpZoomButton;
-
-		// Reference to currently active volume button
-		//private ToggleButton m_tpActiveVolumeButton;
-
-		// Reference to Time Elapsed / -30 sec seek button or Time Elapsed TextBlock
-		private FrameworkElement? m_tpTimeElapsedElement;
-
-		// Reference to Time Remaining / +30 sec seek button or Time Remaining TextBlock
-		private FrameworkElement? m_tpTimeRemainingElement;
-
-		// Reference to the fast forward button
-		private Button? m_tpFastForwardButton;
-
-		// Reference to the rewind button
-		private Button? m_tpFastRewindButton;
-
-		// Reference to the stop button
-		private Button? m_tpStopButton;
-
-		// Reference to the cast button
-		private Button? m_tpCastButton;
-
-		// Reference to the Skip Forward button
-		private Button? m_tpSkipForwardButton;
-
-		// Reference to the Skip Backward button
-		private Button? m_tpSkipBackwardButton;
-
-		// Reference to the Next Track button
-		private Button? m_tpNextTrackButton;
-
-		// Reference to the Previous Track button
-		private Button? m_tpPreviousTrackButton;
-
-		// Reference to currently Repeat button
-		private ToggleButton? m_tpRepeatButton;
-
-		// Reference to the Mini View button
-		private Button? m_tpCompactOverlayButton;
-
-		// Reference to the PlayBack ListView of rates
-		private ListView? m_tpPlaybackRateListView;
-
-		// Reference to the Left AppBarSeparator
-		private AppBarSeparator? m_tpLeftAppBarSeparator;
-
-		// Reference to the Right AppBarSeparator
-		private AppBarSeparator? m_tpRightAppBarSeparator;
-
-		// Reference to the Image thumbnail preview
-		//private Image m_tpThumbnailImage;
-
-		// Reference to the Time Elapsed preview
-		//private TextBlock m_tpTimeElapsedPreview;
-
-		// Reference to Error TextBlock
-		private TextBlock? m_tpErrorTextBlock;
-
-		// Dispatcher timer responsible for updating clock and position slider
-		//private DispatcherTimer m_tpPositionUpdateTimer;
-
-		// Dispatcher timer responsible for hiding vertical volume host border
-		//private DispatcherTimer m_tpHideVerticalVolumeTimer;
-
-		// Dispatcher timer responsible for hiding UI control panel
-		private DispatcherTimer? m_tpHideControlPanelTimer;
-
-		// Dispatcher timer to detect the pointer move ends.
-		//private DispatcherTimer m_tpPointerMoveEndTimer;
-
-		// Reference to the Visibility Border element.
-		//private Border m_tpControlPanelVisibilityBorder;
-
-		// Reference to the CommandBar Element.
-		private CommandBar? m_tpCommandBar;
-
-		// Reference to the CommandBar Element.
-		private FlyoutBase? m_tpVolumeFlyout;
-
-		// Reference to the VisualStateGroup
-		//private VisualStateGroup m_tpVisibilityStatesGroup;
-
-		private Flyout? m_tpPlaybackRateFlyout;
-
-		#endregion
-
 		private MediaPlayerElement? _mpe;
 		private readonly SerialDisposable _subscriptions = new();
 
+#pragma warning disable CS0649
+		private bool m_transportControlsEnabled = true; // not-implemented
+		private bool m_controlPanelIsVisible;
+		private bool m_shouldDismissControlPanel;
+
+		private bool m_isPointerMove;
+		private bool m_controlPanelHasPointerOver;
+		private bool m_rootHasPointerPressed;
+		private bool m_isFlyoutOpen;
+		private bool m_isInScrubMode;
+		//private bool m_isthruScrubber;
+		private bool m_positionUpdateUIOnly; // If true, update the Position slider value only - do not set underlying ME.Position DP (used to differentiate position update from user vs video playing)
+
+		private bool m_sourceLoaded;
+		private bool m_isPlaying;
+		private bool m_isBuffering;
+		private double m_currentPlaybackRate;
+#pragma warning restore CS0649
+
 		private bool _wasPlaying;
-		private bool _isTemplateApplied;
-		private bool _isShowingControls = true;
-		private bool _isShowingControlVolumeOrPlaybackRate;
+		private bool _isTemplateApplied; // indicates if the template parts have been resolved
 
 		public MediaTransportControls()
 		{
 			DefaultStyleKey = typeof(MediaTransportControls);
 
-			m_tpHideControlPanelTimer = new() { Interval = TimeSpan.FromSeconds(3) };
+			m_tpHideControlPanelTimer = new() { Interval = TimeSpan.FromSeconds(ControlPanelDisplayTimeoutInSecs) };
+			m_tpPointerMoveEndTimer = new()
+			{
+#if HAS_UNO
+				Interval = TimeSpan.FromSeconds(0.250), // throttle frequency at which this get spammed
+#else
+				Interval = TimeSpan.Zero
+#endif
+			};
 		}
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
+			// Detach any existing handlers
 			DeinitializeTransportControls();
 
 			HookupPartsAndHandlers();
@@ -427,12 +90,16 @@ namespace Windows.UI.Xaml.Controls
 
 			if (IsLoaded)
 			{
+				// uno-specific: event subcriptions are extracted out from HookupPartsAndHandlers() to ensure proper disposal
 				BindToControlEvents();
-				BindMediaPlayer();
+				BindMediaPlayer(updateAllVisualAndPropertyStates: false);
 			}
 
-			UpdateAllVisualStates(useTransition: false);
-			UpdateMediaControlAllStates(); // dependency-properties states
+			// Initialize the visual state
+			InitializeVisualState();
+
+			// Update MediaControl States (dependency-properties states)
+			UpdateMediaControlAllStates();
 		}
 
 		private protected override void OnLoaded()
@@ -455,7 +122,7 @@ namespace Windows.UI.Xaml.Controls
 			OnControlsBoundsChanged();
 		}
 
-
+		// template child setup
 		private void HookupPartsAndHandlers()
 		{
 			InitializeTemplateChild(TemplateParts.RootGrid, null, out _rootGrid);
@@ -466,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 			if (InitializeTemplateChild(TemplateParts.ProgressSlider, UIAKeys.UIA_MEDIA_SEEK, out m_tpMediaPositionSlider))
 			{
 				m_tpDownloadProgressIndicator = m_tpMediaPositionSlider.GetTemplateChild<ProgressBar>(TemplateParts.DownloadProgressIndicator);
-				_sliderThumb = m_tpMediaPositionSlider.GetTemplateChild<Thumb>(TemplateParts.HorizontalThumb);
+				_progressSliderThumb = m_tpMediaPositionSlider.GetTemplateChild<Thumb>(TemplateParts.HorizontalThumb);
 			}
 			InitializeTemplateChild(TemplateParts.PlayPauseButton, UIAKeys.UIA_MEDIA_PLAY, out m_tpPlayPauseButton);
 			InitializeTemplateChild(TemplateParts.PlayPauseButtonOnLeft, UIAKeys.UIA_MEDIA_PLAY, out m_tpTHLeftSidePlayPauseButton);
@@ -479,8 +146,11 @@ namespace Windows.UI.Xaml.Controls
 			HookupVolumeAndProgressPartsAndHandlers();
 			MoreControls();
 
+			// uno specifics
 			InitializeTemplateChild(TemplateParts.MediaTransportControls_Timeline_Border, null, out _timelineContainer);
 			InitializeTemplateChild(TemplateParts.ControlPanel_ControlPanelVisibilityStates_Border, null, out _controlPanelBorder);
+			InitializeTemplateChild(TemplateParts.PlaybackRateFlyout, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out _playbackRateFlyout);
+			InitializePlaybackRateListView();
 		}
 		private void HookupVolumeAndProgressPartsAndHandlers()
 		{
@@ -508,21 +178,50 @@ namespace Windows.UI.Xaml.Controls
 			InitializeTemplateChild(TemplateParts.RewindButton, UIAKeys.UIA_MEDIA_REWIND, out m_tpFastRewindButton);
 			InitializeTemplateChild(TemplateParts.StopButton, UIAKeys.UIA_MEDIA_STOP, out m_tpStopButton);
 			InitializeTemplateChild(TemplateParts.CastButton, UIAKeys.UIA_MEDIA_CAST, out m_tpCastButton);
-			InitializeTemplateChild(TemplateParts.PlaybackRateFlyout, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out m_tpPlaybackRateFlyout);
-			InitializePlaybackRateListView();
 		}
-
 		private void MoreControls()
 		{
 			InitializeTemplateChild(TemplateParts.SkipForwardButton, UIAKeys.UIA_MEDIA_SKIPFORWARD, out m_tpSkipForwardButton);
 			InitializeTemplateChild(TemplateParts.SkipBackwardButton, UIAKeys.UIA_MEDIA_SKIPBACKWARD, out m_tpSkipBackwardButton);
 			InitializeTemplateChild(TemplateParts.NextTrackButton, UIAKeys.UIA_MEDIA_NEXTRACK, out m_tpNextTrackButton);
-			InitializeTemplateChild(TemplateParts.PreviousTrackButton, UIAKeys.UIA_MEDIA_NEXTRACK, out m_tpPreviousTrackButton);
+			InitializeTemplateChild(TemplateParts.PreviousTrackButton, UIAKeys.UIA_MEDIA_PREVIOUSTRACK, out m_tpPreviousTrackButton);
 			InitializeTemplateChild(TemplateParts.RepeatButton, UIAKeys.UIA_MEDIA_REPEAT_NONE, out m_tpRepeatButton);
 			InitializeTemplateChild(TemplateParts.CompactOverlayButton, UIAKeys.UIA_MEDIA_MINIVIEW, out m_tpCompactOverlayButton);
 			InitializeTemplateChild(TemplateParts.LeftSeparator, null, out m_tpLeftAppBarSeparator);
 			InitializeTemplateChild(TemplateParts.RightSeparator, null, out m_tpRightAppBarSeparator);
 		}
+		private void InitializePlaybackRateListView()
+		{
+			if (m_tpPlaybackRateButton is AppBarButton)
+			{
+				_playbackRateListView = new ListView();
+				_playbackRateListView.HorizontalAlignment = HorizontalAlignment.Center;
+				_playbackRateListView.VerticalAlignment = VerticalAlignment.Top;
+				_playbackRateListView.Margin = new Thickness(0);
+				_playbackRateListView.Items.AddRange(AvailablePlaybackRateList.Select(x => new ListViewItem { Content = $"{x:0.##}" }));
+
+				_playbackRateFlyout = new Flyout();
+				_playbackRateFlyout.FlyoutPresenterStyle = (Style)Application.Current.Resources["FlyoutStyle"];
+				_playbackRateFlyout.ShouldConstrainToRootBounds = false;
+				_playbackRateFlyout.Content = _playbackRateListView;
+
+				m_tpPlaybackRateButton.Flyout = _playbackRateFlyout;
+			}
+			else
+			{
+				InitializeTemplateChild(TemplateParts.PlaybackRateListView, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out _playbackRateListView);
+			}
+			if (_playbackRateFlyout is { })
+			{
+#if __SKIA__
+				_playbackRateFlyout.Placement = FlyoutPlacementMode.RightEdgeAlignedTop;
+#else
+				_playbackRateFlyout.Placement = FlyoutPlacementMode.Top;
+#endif
+			}
+		}
+
+		// events un/subscription
 		private void BindToControlEvents()
 		{
 			if (!_isTemplateApplied)
@@ -533,25 +232,38 @@ namespace Windows.UI.Xaml.Controls
 			var disposables = new CompositeDisposable();
 			_subscriptions.Disposable = disposables;
 
-			Bind(m_tpHideControlPanelTimer, x => x.Tick += ControlsVisibilityTimerElapsed, x => x.Tick -= ControlsVisibilityTimerElapsed);
+			Bind(m_tpHideControlPanelTimer, x => x.Tick += OnHideControlPanelTimerTick, x => x.Tick -= OnHideControlPanelTimerTick);
+			Bind(m_tpPointerMoveEndTimer, x => x.Tick += OnPointerMoveEndTimerTick, x => x.Tick -= OnPointerMoveEndTimerTick);
 
-			BindTapped(_rootGrid, OnRootGridTapped);
-			Bind(_rootGrid, x => x.PointerMoved += OnRootGridPointerMoved, x => x.PointerMoved -= OnRootGridPointerMoved);
+			Bind(this, x => x.PointerExited += OnRootExited, x => x.PointerExited -= OnRootExited);
+			Bind(this, x => x.PointerPressed += OnRootPressed, x => x.PointerPressed -= OnRootPressed);
+			Bind(this, x => x.PointerReleased += OnRootReleased, x => x.PointerReleased -= OnRootReleased);
+			Bind(this, x => x.PointerCaptureLost += OnRootCaptureLost, x => x.PointerCaptureLost -= OnRootCaptureLost);
+			Bind(this, x => x.PointerMoved += OnRootMoved, x => x.PointerMoved -= OnRootMoved);
+
 			BindLoaded(m_tpCommandBar, OnCommandBarLoaded, invokeHandlerIfAlreadyLoaded: true);
 			BindSizeChanged(m_tpControlPanelGrid, ControlPanelGridSizeChanged);
-			BindTapped(m_tpControlPanelGrid, OnPaneGridTapped);
+			Bind(m_tpControlPanelGrid, x => x.PointerEntered += OnControlPanelEntered, x => x.PointerExited -= OnControlPanelEntered);
+			Bind(m_tpControlPanelGrid, x => x.PointerExited += OnControlPanelExited, x => x.PointerExited -= OnControlPanelExited);
+			Bind(m_tpControlPanelGrid, x => x.PointerCaptureLost += OnControlPanelCaptureLost, x => x.PointerCaptureLost -= OnControlPanelCaptureLost);
+#if !HAS_UNO
+			Bind(m_tpControlPanelGrid, x => x.GotFocus += OnControlPanelGotFocus, x => x.GotFocus -= OnControlPanelGotFocus);
+			Bind(m_tpControlPanelGrid, x => x.LostFocus += OnControlPanelLostFocus, x => x.LostFocus -= OnControlPanelLostFocus);
+#endif
 			BindSizeChanged(_controlPanelBorder, ControlPanelBorderSizeChanged);
-			BindTapped(m_tpMediaPositionSlider, TappedProgressSlider);
-			Bind(_sliderThumb, x => x.DragStarted += ThumbOnDragStarted, x => x.DragStarted -= ThumbOnDragStarted);
-			Bind(_sliderThumb, x => x.DragCompleted += ThumbOnDragCompleted, x => x.DragCompleted -= ThumbOnDragCompleted);
 
+			// Interactive parts of MTC, but outside of MediaControlsCommandBar:
+			Bind(m_tpMediaPositionSlider, x => x.ValueChanged += OnMediaPositionSliderValueChanged, x => x.ValueChanged -= OnMediaPositionSliderValueChanged);
+			Bind(_progressSliderThumb, x => x.DragCompleted += ThumbOnDragCompleted, x => x.DragCompleted -= ThumbOnDragCompleted);
+			Bind(_progressSliderThumb, x => x.DragStarted += ThumbOnDragStarted, x => x.DragStarted -= ThumbOnDragStarted);
 			BindButtonClick(m_tpTHLeftSidePlayPauseButton, PlayPause);
-			BindButtonClick(m_tpMuteButton, ToggleMute);
-			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeChanged, x => x.ValueChanged -= OnVolumeChanged);
-			// MediaControlsCommandBar\PrimaryCommands
-			//BindButtonClick(m_tpCCSelectionButton, null);
-			//BindButtonClick(m_tpTHAudioTrackSelectionButton, null);
-			// - LeftSeparator
+
+			// MediaControlsCommandBar\PrimaryCommands:
+#if !HAS_UNO
+			BindButtonClick(m_tpCCSelectionButton, null);
+			BindButtonClick(m_tpTHAudioTrackSelectionButton, null);
+#endif
+			// --- LeftSeparator ---
 			BindButtonClick(m_tpStopButton, Stop);
 			BindButtonClick(m_tpSkipBackwardButton, SkipBackward);
 			BindButtonClick(m_tpPreviousTrackButton, PreviousTrackButtonTapped);
@@ -560,35 +272,33 @@ namespace Windows.UI.Xaml.Controls
 			BindButtonClick(m_tpFastForwardButton, ForwardButton);
 			BindButtonClick(m_tpNextTrackButton, NextTrackButtonTapped);
 			BindButtonClick(m_tpSkipForwardButton, SkipForward);
-			BindButtonClick(m_tpPlaybackRateButton, ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
-			BindButtonClick(m_tpTHVolumeButton, ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
-
-			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += ResetVolumeOrPlaybackVisibility, x => x.ValueChanged -= ResetVolumeOrPlaybackVisibility);
-			Bind(m_tpTHVolumeSlider, x => x.PointerExited += ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerExited -= ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
-			Bind(m_tpTHVolumeSlider, x => x.PointerEntered += CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerEntered -= CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
-
-			Bind(m_tpPlaybackRateListView, x => x.SelectionChanged += PlaybackRateListView_SelectionChanged, x => x.SelectionChanged -= PlaybackRateListView_SelectionChanged);
-			Bind(m_tpPlaybackRateListView, x => x.PointerExited += ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerExited -= ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
-			Bind(m_tpPlaybackRateListView, x => x.PointerEntered += CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility, x => x.PointerEntered -= CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility);
-
-			// - RightSeparator
+			// --- RightSeparator ---
 			BindButtonClick(m_tpRepeatButton, RepeatButtonTapped);
 			BindButtonClick(m_tpZoomButton, ZoomButtonTapped);
-			//BindButtonClick(m_tpCastButton, null);
+#if !HAS_UNO
+			BindButtonClick(m_tpCastButton, null);
+#endif
 			BindButtonClick(m_tpCompactOverlayButton, UpdateCompactOverlayMode);
 			BindButtonClick(m_tpFullWindowButton, FullWindowButtonTapped);
+
+			// Flyout nested:
+			BindFlyout(m_tpVolumeFlyout, OnFlyoutOpened, OnFlyoutClosed);
+			BindButtonClick(m_tpMuteButton, ToggleMute);
+			Bind(m_tpTHVolumeSlider, x => x.ValueChanged += OnVolumeChanged, x => x.ValueChanged -= OnVolumeChanged);
+			BindFlyout(_playbackRateFlyout, OnFlyoutOpened, OnFlyoutClosed);
+			Bind(_playbackRateListView, x => x.SelectionChanged += PlaybackRateListView_SelectionChanged, x => x.SelectionChanged -= PlaybackRateListView_SelectionChanged);
 
 			// Register on visual state changes to update the layout in extensions
 			foreach (var groups in VisualStateManager.GetVisualStateGroups(this.GetTemplateRoot()))
 			{
 				foreach (var state in groups.States)
 				{
-					if (state.Name is "ControlPanelFadeOut")
+					if (state.Name is VisualState.ControlPanelVisibilityStates.ControlPanelFadeOut)
 					{
 						foreach (var child in state.Storyboard.Children)
 						{
 							// Update the layout on opacity completed
-							if (child.PropertyInfo?.LeafPropertyName == "Opacity")
+							if (child.PropertyInfo?.LeafPropertyName == nameof(UIElement.Opacity))
 							{
 								child.Completed += Storyboard_Completed;
 								disposables.Add(() => child.Completed -= Storyboard_Completed);
@@ -598,14 +308,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			void BindTapped(UIElement? target, TappedEventHandler handler)
-			{
-				if (target is { })
-				{
-					target.Tapped += handler;
-					disposables.Add(() => target.Tapped -= handler);
-				}
-			}
 			void BindLoaded(FrameworkElement? target, RoutedEventHandler handler, bool invokeHandlerIfAlreadyLoaded = false)
 			{
 				if (target is { })
@@ -637,6 +339,19 @@ namespace Windows.UI.Xaml.Controls
 					disposables.Add(() => target.Click -= handler);
 				}
 			}
+			void BindFlyout(FlyoutBase? target, EventHandler<object> openedHandler, EventHandler<object> closedHandler)
+			{
+				if (target is { })
+				{
+					target.Opened += openedHandler;
+					target.Closed += closedHandler;
+					disposables.Add(() =>
+					{
+						target.Opened -= openedHandler;
+						target.Closed -= closedHandler;
+					});
+				}
+			}
 			void Bind<T>(T? target, Action<T> addHandler, Action<T> removeHandler)
 			{
 				if (target is { })
@@ -652,30 +367,156 @@ namespace Windows.UI.Xaml.Controls
 			_mediaPlayerSubscriptions.Disposable = null;
 		}
 
-		private void ControlsVisibilityTimerElapsed(object? sender, object args)
+		/* ShowAndHideAutomatically mechanism: // note: these are based from observation for reference only, and should not be viewed as the truth
+			- while playing & ShowAndHideAutomatically, the MTC will auto-hide after a set time. (see: m_tpHideControlPanelTimer.Interval)
+				^ performing any action will reset this timer. [mobile: ignoring PointerEnter/Exit]
+				^ having any flyout opened will disable this auto-hide.
+			- while MTC is hidden, setting ShowAndHideAutomatically=true will show the MTC immediately.
+			- while playing & MTC is visible, setting ShowAndHideAutomatically=true will begin the timer.
+			- tapping the video will shows the MTC.
+			[desktop-specific]:
+			- if ShowAndHideAutomatically, PointerEnter/Moved in the video will auto-shows the MTC and begin/reset the timer.
+				^ presumably, clicking any button should also reset the timer, but this is already encompassed in the above rule.
+				^ hovering over the button flyouts will also disable auto-hide.
+			- if ShowAndHideAutomatically, while the cursor is on MTC, auto-hide is disabled.
+			[mobile-specific]: // PointerEnter/Exit are obviously not well-supported here
+		 */
+
+		private void OnHideControlPanelTimerTick(object? sender, object args)
 		{
 			m_tpHideControlPanelTimer?.Stop();
 
-			if (ShowAndHideAutomatically && !_isShowingControlVolumeOrPlaybackRate)
+			if (IsInLiveTree)
 			{
-				Hide();
+				HideControlPanel();
 			}
 		}
-
+		private void OnPointerMoveEndTimerTick(object? sender, object args)
+		{
+			m_isPointerMove = false;
+			if (m_tpPointerMoveEndTimer is { })
+			{
+				m_tpPointerMoveEndTimer.Stop();
+			}
+			StartControlPanelHideTimer();
+		}
 		private void ResetControlsVisibilityTimer()
 		{
-			if (ShowAndHideAutomatically && m_tpHideControlPanelTimer is not null)
+			if (m_tpHideControlPanelTimer is { } &&
+				ShowAndHideAutomatically)
 			{
 				m_tpHideControlPanelTimer.Stop();
 				m_tpHideControlPanelTimer.Start();
 			}
 		}
-
-		private void CancelControlsVisibilityTimer()
+		private void StartControlPanelHideTimer()
 		{
-			Show();
-			m_tpHideControlPanelTimer?.Stop();
+			if (m_transportControlsEnabled)
+			{
+				if (m_tpHideControlPanelTimer is { } &&
+					ShouldHideControlPanel())
+				{
+					m_tpHideControlPanelTimer.Start();
+				}
+			}
 		}
+		private void StopControlPanelHideTimer()
+		{
+			if (m_transportControlsEnabled)
+			{
+				if (m_tpHideControlPanelTimer is { })
+				{
+					m_tpHideControlPanelTimer?.Stop();
+				}
+			}
+		}
+		private void ShowControlPanel()
+		{
+			if (m_transportControlsEnabled)
+			{
+				if (!m_controlPanelIsVisible)
+				{
+					m_controlPanelIsVisible = true;
+#if !HAS_UNO
+					if (!m_isVSStateChangeExternal) // Skip if Visual State already happen through external
+					{
+						m_controlPanelVisibilityChanged = TRUE;
+					}
+#endif
+				}
+
+#if !HAS_UNO
+				ShowControlPanelFromMPE();
+
+				// Resume position updates now that CP is visible
+				StartPositionUpdateTimer();
+#endif
+
+				// Immediately start the timer to hide control panel
+				StartControlPanelHideTimer();
+
+				UpdateVisualState();
+
+#if !HAS_UNO
+				m_isVSStateChangeExternal = FALSE;
+#endif
+
+#if HAS_UNO
+				// Adjust layout bounds immediately
+				OnControlsBoundsChanged();
+#endif
+			}
+		}
+		private void HideControlPanel(bool hideImmediately = false)
+		{
+			if (m_transportControlsEnabled)
+			{
+				if (m_tpHideControlPanelTimer is { } && _mpe is { })
+				{
+					if (hideImmediately || ShouldHideControlPanel() /*|| m_isVSStateChangeExternal*/)
+					{
+						// Both CP and Vertical Volume will be hiddden, so stop their hide timers.
+						StopControlPanelHideTimer();
+
+#if !HAS_UNO
+						//IFC(StopVerticalVolumeHideTimer());
+
+						// Stop position updates now that CP is not visible
+						//IFC(StopPositionUpdateTimer());
+
+						// Flag vertical volume to hide so that it won't get displayed
+						// next time the ControlPanel becomes visible
+						//if (m_verticalVolumeIsVisible)
+						//{
+						//	m_verticalVolumeIsVisible = FALSE;
+						//	m_verticalVolumeVisibilityChanged = TRUE;
+						//}
+#endif
+
+						// Flag control panel itself to hide
+						m_controlPanelIsVisible = false;
+#if !HAS_UNO
+						//if (!m_isVSStateChangeExternal) // Skip if Visual State already happen through external
+						//{
+						//	m_controlPanelVisibilityChanged = TRUE;
+						//}
+
+						//HideControlPanelFromMPE();
+#endif
+
+						UpdateVisualState();
+					}
+				}
+
+				m_shouldDismissControlPanel = false;
+#if !HAS_UNO
+				//m_isthruScrubber = false;
+				//m_isVSStateChangeExternal = false;
+#endif
+			}
+		}
+		public void Show() => ShowControlPanel();
+		public void Hide() => HideControlPanel(hideImmediately: true);
 
 		private void OnCommandBarLoaded(object? sender, RoutedEventArgs e)
 		{
@@ -701,7 +542,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (m_tpCastButton is { })
 			{
-#if false // not implemented
+#if !HAS_UNO
 				var deviceSelector = CastingDevice.GetDeviceSelector(
 					CastingPlaybackTypes.Audio |
 					CastingPlaybackTypes.Video |
@@ -714,50 +555,132 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void Storyboard_Completed(object? sender, object e) => OnControlsBoundsChanged();
-
-		public void Show()
+		private void OnRootExited(object sender, PointerRoutedEventArgs e)
 		{
-			_isShowingControls = true;
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			if (m_transportControlsEnabled)
 			{
-				UpdateControlPanelVisibilityStates(useTransition: false);
-			});
+				// If user presses pointer over root then drags it off while holding down
+				// we get neither Released nor CaptureLost on the root. Thus, unset
+				// m_rootHasPointerPressed whenever pointer leaves root.
+				// For consistency, also enforce Pressed is FALSE for vertical volume host.
+				m_rootHasPointerPressed = false;
 
-			// Adjust layout bounds immediately
-			OnControlsBoundsChanged();
+				// If pointer exited the root area, it is no longer over the
+				// vertical volume or the control panel, enforce this here.
+				m_controlPanelHasPointerOver = false;
 
-			if (ShowAndHideAutomatically)
-			{
-				ResetControlsVisibilityTimer();
+				StartControlPanelHideTimer();
 			}
 		}
-		public void Hide()
+		private void OnRootPressed(object sender, PointerRoutedEventArgs e)
 		{
-			_isShowingControls = false;
-
-			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			if (m_transportControlsEnabled)
 			{
-				if (_mediaPlayer is { PlaybackSession.IsPlaying: true })
+				m_rootHasPointerPressed = true;
+				StopControlPanelHideTimer();
+
+				// Any click over media area should bring up control panel.
+				ShowControlPanel();
+			}
+		}
+		private void OnRootReleased(object sender, PointerRoutedEventArgs e)
+		{
+			if (m_transportControlsEnabled)
+			{
+				m_rootHasPointerPressed = false;
+				StartControlPanelHideTimer();
+			}
+		}
+		private void OnRootCaptureLost(object sender, PointerRoutedEventArgs e)
+		{
+			if (m_transportControlsEnabled)
+			{
+				m_rootHasPointerPressed = false;
+				StartControlPanelHideTimer();
+			}
+		}
+		private void OnRootMoved(object sender, PointerRoutedEventArgs e)
+		{
+			if (e.Pointer.PointerDeviceType is PointerDeviceType.Touch)
+			{
+				return;
+			}
+
+			if (m_transportControlsEnabled)
+			{
+				// Check flags to minimize work in this frquently called handler
+				if (
+#if !HAS_UNO
+					!m_isAudioOnly &&
+#endif
+					!m_controlPanelIsVisible &&
+					ShowAndHideAutomatically /* ignore if when auto hide/show is disabled */
+#if !HAS_UNO
+					&& !m_hasError
+#endif
+					)
 				{
-					UpdateControlPanelVisibilityStates(useTransition: false);
+					ShowControlPanel();
 				}
-				if (m_tpPlaybackRateButton is { }
-					&& m_tpPlaybackRateFlyout is { }
-					&& m_tpVolumeFlyout is { })
+
+				if (m_tpPointerMoveEndTimer is { })
 				{
-					if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
-					{
-						playbackRateAppBarButton.Flyout.Hide();
-					}
-					else
-					{
-						m_tpPlaybackRateFlyout.Hide();
-					}
-					m_tpVolumeFlyout.Hide();
+					m_isPointerMove = true;
+					// timer to detect when pointer move ends.
+					m_tpPointerMoveEndTimer.Stop();
+					m_tpPointerMoveEndTimer.Start();
 				}
-			});
+			}
+		}
+
+		private void OnControlPanelEntered(object sender, PointerRoutedEventArgs e)
+		{
+			if (m_transportControlsEnabled)
+			{
+				m_controlPanelHasPointerOver = true;
+				StopControlPanelHideTimer();
+			}
+		}
+		private void OnControlPanelExited(object sender, PointerRoutedEventArgs e)
+		{
+			if (m_transportControlsEnabled)
+			{
+				m_controlPanelHasPointerOver = false;
+				StartControlPanelHideTimer();
+			}
+		}
+		private void OnControlPanelCaptureLost(object sender, PointerRoutedEventArgs e)
+		{
+			if (m_transportControlsEnabled)
+			{
+				//
+				// 1. Update PointerPresed state.
+				//
+				// If capture was lost on control panel, it is safe to say
+				// pointer is not pressed over ME, since only the controls
+				// making up the panel could possibly take capture.
+				//
+				m_rootHasPointerPressed = false;
+
+				//
+				// 2. Update PointerOver state.
+				//
+				// If volume slider is dragged with pointer outside the vertical volume host,
+				// PointerExited event is not fired, however when pointer is released we will
+				// get a CaptureLost event.
+				//
+				var spPointerPointWhenCaptureLost = e.GetCurrentPoint(null);
+				var pointWhenCaptureLost = spPointerPointWhenCaptureLost.Position;
+
+				// Check if control panel grid is still hit
+				m_controlPanelHasPointerOver = HitTestHelper(pointWhenCaptureLost, m_tpControlPanelGrid);
+
+				// Kick off timers as needed based on updated PointerOver state
+				if (!m_controlPanelHasPointerOver)
+				{
+					StartControlPanelHideTimer();
+				}
+			}
 		}
 
 		private void OnControlsBoundsChanged()
@@ -766,55 +689,18 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayer is { } &&
 				XamlRoot?.Content is UIElement root)
 			{
-				var bounds = new Rect(
-					0,
-					0,
-					m_tpControlPanelGrid.ActualWidth,
-					_isShowingControls ? m_tpControlPanelGrid.ActualHeight : 0
-				);
-				var transportBounds = TransformToVisual(root).TransformBounds(bounds);
-
-				_mediaPlayer.SetTransportControlBounds(transportBounds);
-			}
-		}
-		private void OnPaneGridTapped(object sender, TappedRoutedEventArgs e)
-		{
-			if (ShowAndHideAutomatically)
-			{
-				ResetControlsVisibilityTimer();
-			}
-			e.Handled = true;
-		}
-
-		private void OnRootGridTapped(object sender, TappedRoutedEventArgs e)
-		{
-			if (_isShowingControlVolumeOrPlaybackRate)
-			{
-				_isShowingControlVolumeOrPlaybackRate = false;
-				if (ShowAndHideAutomatically)
+				var slot = m_tpControlPanelGrid
+					.TransformToVisual(m_tpControlPanelGrid.Parent as UIElement)
+					.TransformBounds(m_tpControlPanelGrid.LayoutSlotWithMarginsAndAlignments);
+				slot.Height += m_tpControlPanelGrid.Padding.Top
+								+ m_tpControlPanelGrid.Padding.Bottom
+								+ Margin.Top
+								+ Margin.Bottom;
+				if (!m_controlPanelIsVisible)
 				{
-					ResetControlsVisibilityTimer();
+					slot.Height = 0;
 				}
-			}
-			if (e.PointerDeviceType == PointerDeviceType.Touch)
-			{
-				if (_isShowingControls)
-				{
-					m_tpHideControlPanelTimer?.Stop();
-					Hide();
-				}
-				else
-				{
-					Show();
-				}
-			}
-		}
-
-		private void OnRootGridPointerMoved(object sender, PointerRoutedEventArgs e)
-		{
-			if (e.Pointer.PointerDeviceType != PointerDeviceType.Touch)
-			{
-				Show();
+				_mediaPlayer.SetTransportControlBounds(slot);
 			}
 		}
 
@@ -822,7 +708,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			OnControlsBoundsChanged();
 		}
-
 		private static void ControlPanelBorderSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			if (sender is Border border)
@@ -832,6 +717,16 @@ namespace Windows.UI.Xaml.Controls
 					Rect = new Rect(default, args.NewSize)
 				};
 			}
+		}
+		private void Storyboard_Completed(object? sender, object e) => OnControlsBoundsChanged();
+		private void OnFlyoutOpened(object? sender, object e)
+		{
+			m_isFlyoutOpen = true;
+		}
+		private void OnFlyoutClosed(object? sender, object e)
+		{
+			m_isFlyoutOpen = false;
+			ResetControlsVisibilityTimer();
 		}
 
 		private void FullWindowButtonTapped(object sender, RoutedEventArgs e)
@@ -843,7 +738,6 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateFullWindowStates();
 		}
-
 		private void PlaybackRateListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			if (sender is ListView listView)
@@ -852,10 +746,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (listView.SelectedItem is Windows.UI.Xaml.Controls.ListViewItem item)
 					{
-						_isShowingControlVolumeOrPlaybackRate = false;
 						ResetControlsVisibilityTimer();
+
 						if (m_tpPlaybackRateButton is { }
-							&& m_tpPlaybackRateFlyout is { })
+							&& _playbackRateFlyout is { })
 						{
 							if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
 							{
@@ -863,7 +757,7 @@ namespace Windows.UI.Xaml.Controls
 							}
 							else
 							{
-								m_tpPlaybackRateFlyout.Hide();
+								_playbackRateFlyout.Hide();
 							}
 							if (_mpe is not null && _mpe.MediaPlayer is not null)
 							{
@@ -874,32 +768,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
-		private void ResetControlsVisibilityTimerAndVolumeOrPlaybackVisibility(object sender, RoutedEventArgs e)
-		{
-			_isShowingControlVolumeOrPlaybackRate = false;
-			ResetControlsVisibilityTimer();
-		}
-
-		private void ResetVolumeOrPlaybackVisibility(object sender, RangeBaseValueChangedEventArgs e)
-		{
-			_isShowingControlVolumeOrPlaybackRate = false;
-		}
-
-		private void CancelControlsVisibilityTimerAndVolumeOrPlaybackVisibility(object sender, PointerRoutedEventArgs e)
-		{
-			_isShowingControlVolumeOrPlaybackRate = true;
-			CancelControlsVisibilityTimer();
-		}
-
 		private void RepeatButtonTapped(object sender, RoutedEventArgs e)
 		{
-			if (_mpe?.MediaPlayer is null)
+			if (_mpe?.MediaPlayer is null ||
+				!ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.IsLoopingEnabled)))
 			{
 				return;
 			}
 
-			_mpe.MediaPlayer.IsLoopingEnabled = !IsMediaPlayerLoopingEnabled;
+			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
@@ -910,7 +787,6 @@ namespace Windows.UI.Xaml.Controls
 				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
 			}
 		}
-
 		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
 			if (_mediaPlayer is not null)
@@ -933,7 +809,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
 		private void UpdateCompactOverlayMode(object sender, RoutedEventArgs e)
 		{
 			IsCompact = !IsCompact;
@@ -980,7 +855,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateMediaControlState(IsCompactOverlayButtonVisibleProperty);
 			UpdateMediaControlState(IsCompactOverlayEnabledProperty);
 		}
-
 		private void UpdateMediaControlState(DependencyProperty property)
 		{
 			switch (property)
@@ -994,10 +868,10 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				case var _ when property == IsRepeatButtonVisibleProperty:
-					BindVisibility(m_tpRepeatButton, IsImplemented(typeof(Windows.Media.Playback.MediaPlayer), "IsLoopingEnabled") && IsRepeatButtonVisible);
+					BindVisibility(m_tpRepeatButton, IsRepeatButtonVisible && ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.IsLoopingEnabled)));
 					break;
 				case var _ when property == IsRepeatEnabledProperty:
-					BindIsEnabled(m_tpRepeatButton, IsRepeatEnabled);
+					BindIsEnabled(m_tpRepeatButton, IsRepeatEnabled && ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.IsLoopingEnabled)));
 					break;
 				case var _ when property == IsVolumeButtonVisibleProperty:
 					BindVisibility(m_tpTHVolumeButton, IsVolumeButtonVisible);
@@ -1018,10 +892,10 @@ namespace Windows.UI.Xaml.Controls
 					BindIsEnabled(m_tpZoomButton, IsZoomEnabled);
 					break;
 				case var _ when property == IsPlaybackRateButtonVisibleProperty:
-					BindVisibility(m_tpPlaybackRateButton, IsImplemented(typeof(Windows.Media.Playback.MediaPlayer), "PlaybackRate") && IsPlaybackRateButtonVisible);
+					BindVisibility(m_tpPlaybackRateButton, IsPlaybackRateButtonVisible && ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.PlaybackRate)));
 					break;
 				case var _ when property == IsPlaybackRateEnabledProperty:
-					BindIsEnabled(m_tpPlaybackRateButton, IsPlaybackRateEnabled);
+					BindIsEnabled(m_tpPlaybackRateButton, IsPlaybackRateEnabled && ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.PlaybackRate)));
 					break;
 				case var _ when property == IsFastForwardButtonVisibleProperty:
 					BindVisibility(m_tpFastForwardButton, IsFastForwardButtonVisible);
@@ -1082,54 +956,103 @@ namespace Windows.UI.Xaml.Controls
 			}
 			void BindIsEnabled(FrameworkElement? target, bool value)
 			{
-				if (target is { })
+				if (target is Control { } control)
 				{
-					target.IsEnabled = value;
+					control.IsEnabled = value;
 				}
 			}
 		}
 		private void OnShowAndHideAutomaticallyChanged()
 		{
-			if (ShowAndHideAutomatically)
+			if (!m_controlPanelIsVisible && !ShowAndHideAutomatically)
 			{
-				ResetControlsVisibilityTimer();
+				ShowControlPanel();
+				return;
+			}
+
+			if (m_controlPanelIsVisible)
+			{
+				if (_mediaPlayer?.PlaybackSession.IsPlaying == true)
+				{
+					// while playing & MTC is visible, setting ShowAndHideAutomatically=true will begin the timer.
+					ResetControlsVisibilityTimer();
+				}
 			}
 			else
 			{
-				CancelControlsVisibilityTimer();
+				// while MTC is hidden, setting ShowAndHideAutomatically=true will show the MTC immediately.
+				ShowControlPanel();
 			}
 		}
 
-		private bool IsImplemented(Type type, string property)
-		{
-			return ApiInformation.IsPropertyPresent(type.FullName + "", property);
-		}
-
 		// visual states
-		private void UpdateAllVisualStates(bool useTransition = true)
+		private void InitializeVisualState()
+		{
+#if !HAS_UNO
+			if (MTCParent_MediaElement == m_parentType)
+			{
+				IFC(InitializeVisualStateFromME());
+			}
+			else if (MTCParent_MediaPlayerElement == m_parentType)
+			{
+				IFC(InitializeVisualStateFromMPE());
+			}
+
+			IFC(InitializeVolume());
+
+			if (MTCParent_MediaElement == m_parentType)
+			{
+				// Make sure we have the latest playback item
+				IFC(UpdatePlaybackItemReference());
+			}
+
+			IFC(UpdateRepeatButtonUI());
+
+			Update UI
+			IFC(UpdatePlayPauseUI());
+			IFC(UpdateFullWindowUI());
+			IFC(UpdatePositionUI());
+			IFC(UpdateDownloadProgressUI());
+			IFC(UpdateErrorUI());
+
+			if (m_tpMediaPositionSlider)
+			{
+				IFC(m_tpMediaPositionSlider.Cast<Slider>()->get_Minimum(&m_positionSliderMinimum));
+				IFC(m_tpMediaPositionSlider.Cast<Slider>()->get_Maximum(&m_positionSliderMaximum));
+			}
+
+			// We could have switched into or out of audio mode, which changes the controls that are displayed.
+			IFC(UpdateAudioSelectionUI());
+			IFC(UpdateIsMutedUI());
+			IFC(UpdateVolumeUI());
+			IFC(CalculateDropOutLevel());
+#endif
+
+			// ShowControlPanel() calls UpdateVisualState()
+			ShowControlPanel();
+		}
+		internal override void UpdateVisualState(bool useTransitions = true)
 		{
 			// all visual states are listed below: // unused/not-implemented ones are commented out
-			UpdateControlPanelVisibilityStates(useTransition);
-			UpdateMediaStates(useTransition);
-			//UpdateAudioSelectionAvailablityStates(useTransition);
-			//UpdateCCSelectionAvailablityStates(useTransition);
-			//UpdateFocusStates(useTransition);
-			UpdateMediaTransportControlModeStates(useTransition);
-			UpdatePlayPauseStates(useTransition);
-			UpdateVolumeMuteStates(useTransition);
-			UpdateFullWindowStates(useTransition);
-			UpdateRepeatStates(useTransition);
+			UpdateControlPanelVisibilityStates(useTransitions);
+			UpdateMediaStates(useTransitions);
+			//UpdateAudioSelectionAvailablityStates(useTransitions);
+			//UpdateCCSelectionAvailablityStates(useTransitions);
+			//UpdateFocusStates(useTransitions);
+			UpdateMediaTransportControlModeStates(useTransitions);
+			UpdatePlayPauseStates(useTransitions);
+			UpdateVolumeMuteStates(useTransitions);
+			UpdateFullWindowStates(useTransitions);
+			UpdateRepeatStates(useTransitions);
 		}
-
-		private void UpdateControlPanelVisibilityStates(bool useTransition = true)
+		private void UpdateControlPanelVisibilityStates(bool useTransitions = true)
 		{
-			var state = _isShowingControls
+			var state = m_controlPanelIsVisible
 				? VisualState.ControlPanelVisibilityStates.ControlPanelFadeIn
 				: VisualState.ControlPanelVisibilityStates.ControlPanelFadeOut;
-			VisualStateManager.GoToState(this, state, useTransition);
+			VisualStateManager.GoToState(this, state, useTransitions);
 		}
-
-		private void UpdateMediaStates(bool useTransition = true)
+		private void UpdateMediaStates(bool useTransitions = true)
 		{
 			if (_mpe?.MediaPlayer?.PlaybackSession is { } session)
 			{
@@ -1144,51 +1067,44 @@ namespace Windows.UI.Xaml.Controls
 					_ => null,
 				};
 
-				if (m_tpBufferingProgressBar is not null)
-				{
-					// Disable indeterminate state if not buffering to avoid animation costs.
-					m_tpBufferingProgressBar.IsIndeterminate
-						= session.PlaybackState is MediaPlaybackState.Buffering or MediaPlaybackState.Opening;
-				}
-
 				if (state != null)
 				{
-					VisualStateManager.GoToState(this, state, useTransition);
+					VisualStateManager.GoToState(this, state, useTransitions);
 				}
 			}
 		}
-
-		private void UpdateMediaTransportControlModeStates(bool useTransition = true)
+		private void UpdateMediaTransportControlModeStates(bool useTransitions = true)
 		{
 			var state = IsCompact
 				? VisualState.MediaTransportControlMode.CompactMode
 				: VisualState.MediaTransportControlMode.NormalMode;
-			VisualStateManager.GoToState(this, state, useTransition);
+			VisualStateManager.GoToState(this, state, useTransitions);
 
 			var uiaKey = IsCompact
 				? UIAKeys.UIA_MEDIA_EXIT_MINIVIEW
 				: UIAKeys.UIA_MEDIA_MINIVIEW;
 			SetAutomationNameAndTooltip(m_tpCompactOverlayButton, uiaKey);
 		}
-		private void UpdatePlayPauseStates(bool useTransition = true)
+		private void UpdatePlayPauseStates(bool useTransitions = true)
 		{
 			if (_mpe?.MediaPlayer is null)
 			{
 				return;
 			}
 
-			var state = _mpe.MediaPlayer.PlaybackSession.IsPlaying
+			var isPlaying = m_isPlaying || (m_isInScrubMode && _wasPlaying);
+			var state = isPlaying
 				? VisualState.PlayPauseStates.PauseState
 				: VisualState.PlayPauseStates.PlayState;
-			VisualStateManager.GoToState(this, state, useTransition);
+			VisualStateManager.GoToState(this, state, useTransitions);
 
-			var uiaKey = _mpe.MediaPlayer.PlaybackSession.IsPlaying
+			var uiaKey = isPlaying
 				? UIAKeys.UIA_MEDIA_PAUSE
 				: UIAKeys.UIA_MEDIA_PLAY;
 			SetAutomationNameAndTooltip(m_tpPlayPauseButton, uiaKey);
 			SetAutomationNameAndTooltip(m_tpTHLeftSidePlayPauseButton, uiaKey);
 		}
-		private void UpdateVolumeMuteStates(bool isExplicitMuteToggle = false, bool useTransition = true)
+		private void UpdateVolumeMuteStates(bool isExplicitMuteToggle = false, bool useTransitions = true)
 		{
 			if (_mediaPlayer is null)
 			{
@@ -1207,22 +1123,21 @@ namespace Windows.UI.Xaml.Controls
 			var state = isMuted
 				? VisualState.VolumeMuteStates.MuteState
 				: VisualState.VolumeMuteStates.VolumeState;
-			VisualStateManager.GoToState(this, state, useTransition);
+			VisualStateManager.GoToState(this, state, useTransitions);
 
 			var uiaKey = isMuted
 				? UIAKeys.UIA_MEDIA_UNMUTE
 				: UIAKeys.UIA_MEDIA_MUTE;
 			SetAutomationNameAndTooltip(m_tpMuteButton, uiaKey);
 		}
-
-		private void UpdateFullWindowStates(bool useTransition = true)
+		private void UpdateFullWindowStates(bool useTransitions = true)
 		{
 			if (_mpe is not null)
 			{
 				var state = _mpe.IsFullWindow
 					? VisualState.FullWindowStates.FullWindowState
 					: VisualState.FullWindowStates.NonFullWindowState;
-				VisualStateManager.GoToState(this, state, useTransition);
+				VisualStateManager.GoToState(this, state, useTransitions);
 
 				var uiaKey = _mpe.IsFullWindow
 					? UIAKeys.UIA_MEDIA_EXIT_FULLSCREEN
@@ -1230,30 +1145,28 @@ namespace Windows.UI.Xaml.Controls
 				SetAutomationNameAndTooltip(m_tpFullWindowButton, uiaKey);
 			}
 		}
-
-		private bool IsMediaPlayerLoopingEnabled =>
-			ApiInformation.IsPropertyPresent(typeof(Windows.Media.Playback.MediaPlayer).FullName!, nameof(Windows.Media.Playback.MediaPlayer.IsLoopingEnabled))
-					&& (_mpe?.MediaPlayer.IsLoopingEnabled ?? false);
-
-		private void UpdateRepeatStates(bool useTransition = true)
+		private void UpdateRepeatStates(bool useTransitions = true)
 		{
-			if (_mpe?.MediaPlayer is null)
+			if (_mpe?.MediaPlayer is null ||
+				!ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.IsLoopingEnabled)))
 			{
 				return;
 			}
 
-			var state = IsMediaPlayerLoopingEnabled
+			var state = _mpe.MediaPlayer.IsLoopingEnabled
 				? VisualState.RepeatStates.RepeatAllState
 				: VisualState.RepeatStates.RepeatNoneState;
-			VisualStateManager.GoToState(this, state, useTransition);
+			VisualStateManager.GoToState(this, state, useTransitions);
 
-			var uiaKey = IsMediaPlayerLoopingEnabled
+			var uiaKey = _mpe.MediaPlayer.IsLoopingEnabled
 				? UIAKeys.UIA_MEDIA_REPEAT_ALL
 				: UIAKeys.UIA_MEDIA_REPEAT_NONE;
 			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
 		}
+	}
 
-		// helper methods
+	partial class MediaTransportControls // helper methods
+	{
 		private bool InitializeTemplateChild<T>(
 			string childName,
 			string? uiaKey,
@@ -1267,43 +1180,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return child != null;
 		}
-
-		private void InitializePlaybackRateListView()
-		{
-
-			if (m_tpPlaybackRateButton is AppBarButton playbackRateAppBarButton)
-			{
-				m_tpPlaybackRateListView = new ListView();
-				m_tpPlaybackRateListView.VerticalAlignment = VerticalAlignment.Top;
-				m_tpPlaybackRateListView.HorizontalAlignment = HorizontalAlignment.Center;
-				m_tpPlaybackRateListView.Margin = new Thickness(0);
-				m_tpPlaybackRateListView.Items.AddRange(new List<ListViewItem>() {
-													new() { Content = "0.25" },
-													new() { Content = "0.5" },
-													new() { Content = "1" },
-													new() { Content = "1.5" },
-													new() { Content = "2" }});
-				m_tpPlaybackRateFlyout = new Flyout();
-				m_tpPlaybackRateFlyout.FlyoutPresenterStyle = (Style)Application.Current.Resources["FlyoutStyle"];
-				m_tpPlaybackRateFlyout.ShouldConstrainToRootBounds = false;
-				m_tpPlaybackRateFlyout.Content = m_tpPlaybackRateListView;
-
-				playbackRateAppBarButton.Flyout = m_tpPlaybackRateFlyout;
-			}
-			else
-			{
-				InitializeTemplateChild(TemplateParts.PlaybackRateListView, UIAKeys.UIA_MEDIA_PLAYBACKRATE, out m_tpPlaybackRateListView);
-			}
-			if (m_tpPlaybackRateFlyout is { })
-			{
-#if __SKIA__
-				m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.RightEdgeAlignedTop;
-#else
-				m_tpPlaybackRateFlyout.Placement = FlyoutPlacementMode.Top;
-#endif
-			}
-		}
-
 		private void SetAutomationNameAndTooltip(DependencyObject? target, string uiaKey)
 		{
 			if (target is { })
@@ -1312,6 +1188,66 @@ namespace Windows.UI.Xaml.Controls
 				AutomationProperties.SetName(target, value);
 				ToolTipService.SetToolTip(target, value);
 			}
+		}
+
+		/// <summary>
+		/// Helper to check if conditions are met to hide control panel.
+		/// </summary>
+		private bool ShouldHideControlPanel()
+		{
+			var isAutoShowHide = ShowAndHideAutomatically;
+			var result =
+				m_controlPanelIsVisible &&
+#if !HAS_UNO
+				!m_isAudioOnly &&
+				!m_hasError &&
+#endif
+				(m_shouldDismissControlPanel || !m_controlPanelHasPointerOver) &&
+				!m_rootHasPointerPressed &&
+#if !HAS_UNO
+				// Do not need to check this on the Xbox only if commandbar should exist in the template.
+				(!m_controlsHaveKeyOrProgFocus || (XboxUtility::IsOnXbox() && m_tpCommandBar.Get())) &&
+
+				!m_verticalVolumeHasKeyOrProgFocus &&
+#endif
+				ShouldHideControlPanelWhilePlaying() &&
+				!m_isFlyoutOpen &&
+				!m_isPointerMove &&
+
+				// Hide MTC only if auto hide/Show is enabled
+				isAutoShowHide;
+
+			return result;
+		}
+
+		/// <summary>
+		/// Helper to check if conditions are met to hide control panel while playing.
+		/// It should stay if we aren't playing video.
+		/// </summary>
+		private bool ShouldHideControlPanelWhilePlaying()
+		{
+			return (m_isPlaying && !m_isBuffering)
+				|| (m_shouldDismissControlPanel);
+		}
+
+		/// <summary>
+		/// Helper to hit test pElement against point.
+		/// </summary>
+		private bool HitTestHelper(Point point, UIElement? pElement)
+		{
+			if (pElement is { })
+			{
+				var spElements = VisualTreeHelper.FindElementsInHostCoordinates(point, pElement, includeAllElements: m_tpCommandBar is { } ? false : true);
+				foreach (var spElement in spElements)
+				{
+					if (pElement == spElement)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 	}
 }

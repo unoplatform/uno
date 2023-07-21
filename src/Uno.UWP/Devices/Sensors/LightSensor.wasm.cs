@@ -1,41 +1,31 @@
 ﻿#nullable enable
 
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Uno;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Devices.Sensors.LightSensor.NativeMethods;
-#endif
 
 namespace Windows.Devices.Sensors
 {
 	public partial class LightSensor
 	{
-		private const string JsType = "Windows.Devices.Sensors.LightSensor";
-
 		private static LightSensor? TryCreateInstance()
 		{
-			var command = $"{JsType}.initialize()";
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-			if (bool.Parse(initialized) == true)
-			{
-				return new LightSensor();
-			}
-			return null;
+			return NativeMethods.Initialize() ? new() : null;
 		}
 
 		private void StartReading()
 		{
-			var command = $"{JsType}.startReading()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StartReading();
 		}
 
 		private void StopReading()
 		{
-			var command = $"{JsType}.stopReading()";
-			Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+			NativeMethods.StopReading();
 		}
 
+		[JSExport]
 		public static int DispatchReading(float lux)
 		{
 			var reading = new LightSensorReading(lux, DateTimeOffset.UtcNow);

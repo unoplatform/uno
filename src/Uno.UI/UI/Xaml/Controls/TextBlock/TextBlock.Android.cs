@@ -30,6 +30,8 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Uno.Collections;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
@@ -234,9 +236,12 @@ namespace Windows.UI.Xaml.Controls
 				.Value;
 
 			// The size is incorrect at this point, we update it later in `UpdateLayout`.
-			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels())
-				: null;
+			var shader = Foreground switch
+			{
+				GradientBrush gb => gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				RadialGradientBrush rgb => rgb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				_ => null,
+			};
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
@@ -440,6 +445,10 @@ namespace Windows.UI.Xaml.Controls
 			if (Foreground is GradientBrush gb)
 			{
 				layout.Layout.Paint.SetShader(gb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
+			}
+			else if (Foreground is RadialGradientBrush rgb)
+			{
+				layout.Layout.Paint.SetShader(rgb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
 			}
 
 			if (_textFormatted is UnoSpannableString textFormatted)

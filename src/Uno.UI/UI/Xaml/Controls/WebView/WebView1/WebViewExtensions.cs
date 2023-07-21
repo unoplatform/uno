@@ -1,6 +1,5 @@
 ﻿using Microsoft.Web.WebView2.Core;
 using Windows.Web;
-using WebErrorStatus = Uno.UI.Web.WebErrorStatus;
 
 namespace Windows.UI.Xaml.Controls;
 

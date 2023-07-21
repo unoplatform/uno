@@ -7,6 +7,8 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
@@ -94,6 +96,15 @@ namespace Windows.UI.Xaml.Shapes
 							("border-width", borderWidth),
 							("border-image-slice", "1"));
 						break;
+					case RadialGradientBrush radialGradientBrush:
+						var radialBorder = radialGradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+						element.SetStyle(
+							("border-style", "solid"),
+							("border-color", ""),
+							("border-image", radialBorder),
+							("border-width", borderWidth),
+							("border-image-slice", "1"));
+						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
 						element.SetStyle(
@@ -161,6 +172,10 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 				case GradientBrush gradientBrush:
 					WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, gradientBrush.ToCssString(element.RenderSize));
+					RecalculateBrushOnSizeChanged(element, true);
+					break;
+				case RadialGradientBrush radialGradientBrush:
+					WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, radialGradientBrush.ToCssString(element.RenderSize));
 					RecalculateBrushOnSizeChanged(element, true);
 					break;
 				case XamlCompositionBrushBase unsupportedCompositionBrush:
