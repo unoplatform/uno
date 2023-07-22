@@ -189,10 +189,10 @@ namespace Windows.UI.Xaml.Controls
 			// otherwise use the more local value
 			var (localValue, localPrecedence) = this.GetValueUnderPrecedence(IsEnabledProperty, DependencyPropertyValuePrecedences.Coercion);
 
-			if (localPrecedence == precedence)
+			if (localPrecedence >= precedence) // > means weaker precedence
 			{
 				// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
-				// reading soon-to-be-outdated values
+				// using the old weaker value when a new stronger value is being set
 				localValue = baseValue;
 			}
 
