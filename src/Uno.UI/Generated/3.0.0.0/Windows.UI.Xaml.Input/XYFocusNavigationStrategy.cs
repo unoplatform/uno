@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum XYFocusNavigationStrategy 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Auto
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.NavigationDirectionDistance
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.RectilinearDistance
 	}
-	#endif
+#endif
 }

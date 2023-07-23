@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Calls
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class PhoneLineDialResult 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus DialCallStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCallOperationStatus PhoneLineDialResult.DialCallStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCallOperationStatus%20PhoneLineDialResult.DialCallStatus");
+				throw new global::System.NotImplementedException("The member PhoneCallOperationStatus PhoneLineDialResult.DialCallStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallOperationStatus%20PhoneLineDialResult.DialCallStatus");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Calls.PhoneCall DialedCall
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PhoneCall PhoneLineDialResult.DialedCall is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PhoneCall%20PhoneLineDialResult.DialedCall");
+				throw new global::System.NotImplementedException("The member PhoneCall PhoneLineDialResult.DialedCall is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCall%20PhoneLineDialResult.DialedCall");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineDialResult.DialCallStatus.get
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineDialResult.DialedCall.get
 	}

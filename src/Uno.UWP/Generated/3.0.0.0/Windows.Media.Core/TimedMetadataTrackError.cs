@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class TimedMetadataTrackError 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.TimedMetadataTrackErrorCode ErrorCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimedMetadataTrackErrorCode TimedMetadataTrackError.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimedMetadataTrackErrorCode%20TimedMetadataTrackError.ErrorCode");
+				throw new global::System.NotImplementedException("The member TimedMetadataTrackErrorCode TimedMetadataTrackError.ErrorCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackErrorCode%20TimedMetadataTrackError.ErrorCode");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Exception ExtendedError
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception TimedMetadataTrackError.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20TimedMetadataTrackError.ExtendedError");
+				throw new global::System.NotImplementedException("The member Exception TimedMetadataTrackError.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20TimedMetadataTrackError.ExtendedError");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.ErrorCode.get
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrackError.ExtendedError.get
 	}

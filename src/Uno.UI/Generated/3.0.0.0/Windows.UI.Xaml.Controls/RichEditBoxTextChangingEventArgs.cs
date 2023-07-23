@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RichEditBoxTextChangingEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsContentChanging
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RichEditBoxTextChangingEventArgs.IsContentChanging is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RichEditBoxTextChangingEventArgs.IsContentChanging");
+				throw new global::System.NotImplementedException("The member bool RichEditBoxTextChangingEventArgs.IsContentChanging is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditBoxTextChangingEventArgs.IsContentChanging");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBoxTextChangingEventArgs.IsContentChanging.get
 	}
 }

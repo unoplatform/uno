@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum CornerRadiusFilterKind 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterKind.None
@@ -13,5 +13,5 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterKind.TopLeftValue
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterKind.BottomRightValue
 	}
-	#endif
+#endif
 }

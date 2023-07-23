@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Power
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum BatteryStatus 
 	{
 		// Skipping already declared field Windows.System.Power.BatteryStatus.NotPresent
@@ -10,5 +10,5 @@ namespace Windows.System.Power
 		// Skipping already declared field Windows.System.Power.BatteryStatus.Idle
 		// Skipping already declared field Windows.System.Power.BatteryStatus.Charging
 	}
-	#endif
+#endif
 }

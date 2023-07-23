@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RenderingDeviceReplacedEventArgs : global::Windows.UI.Composition.CompositionObject
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.CompositionGraphicsDevice GraphicsDevice
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CompositionGraphicsDevice RenderingDeviceReplacedEventArgs.GraphicsDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CompositionGraphicsDevice%20RenderingDeviceReplacedEventArgs.GraphicsDevice");
+				throw new global::System.NotImplementedException("The member CompositionGraphicsDevice RenderingDeviceReplacedEventArgs.GraphicsDevice is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionGraphicsDevice%20RenderingDeviceReplacedEventArgs.GraphicsDevice");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Composition.RenderingDeviceReplacedEventArgs.GraphicsDevice.get
 	}
 }

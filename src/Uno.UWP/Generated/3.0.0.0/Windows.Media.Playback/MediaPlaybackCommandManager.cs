@@ -2,135 +2,135 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MediaPlaybackCommandManager 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManager.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MediaPlaybackCommandManager.IsEnabled");
+				throw new global::System.NotImplementedException("The member bool MediaPlaybackCommandManager.IsEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackCommandManager.IsEnabled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "bool MediaPlaybackCommandManager.IsEnabled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior AutoRepeatModeBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.AutoRepeatModeBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.AutoRepeatModeBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.AutoRepeatModeBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.AutoRepeatModeBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior FastForwardBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.FastForwardBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.FastForwardBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.FastForwardBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.FastForwardBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlayer MediaPlayer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlayer MediaPlaybackCommandManager.MediaPlayer is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlayer%20MediaPlaybackCommandManager.MediaPlayer");
+				throw new global::System.NotImplementedException("The member MediaPlayer MediaPlaybackCommandManager.MediaPlayer is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlayer%20MediaPlaybackCommandManager.MediaPlayer");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior NextBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.NextBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.NextBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.NextBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.NextBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior PauseBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PauseBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PauseBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PauseBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PauseBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior PlayBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PlayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PlayBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PlayBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PlayBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior PositionBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PositionBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PositionBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PositionBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PositionBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior PreviousBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PreviousBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PreviousBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.PreviousBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.PreviousBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior RateBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.RateBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.RateBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.RateBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.RateBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior RewindBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.RewindBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.RewindBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.RewindBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.RewindBehavior");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackCommandManagerCommandBehavior ShuffleBehavior
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.ShuffleBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.ShuffleBehavior");
+				throw new global::System.NotImplementedException("The member MediaPlaybackCommandManagerCommandBehavior MediaPlaybackCommandManager.ShuffleBehavior is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackCommandManagerCommandBehavior%20MediaPlaybackCommandManager.ShuffleBehavior");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.IsEnabled.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.IsEnabled.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.MediaPlayer.get
@@ -164,7 +164,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.PositionReceived.remove
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateReceived.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackCommandManager.RateReceived.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs> AutoRepeatModeReceived
 		{
@@ -179,8 +179,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerAutoRepeatModeReceivedEventArgs> MediaPlaybackCommandManager.AutoRepeatModeReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerFastForwardReceivedEventArgs> FastForwardReceived
 		{
@@ -195,8 +195,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerFastForwardReceivedEventArgs> MediaPlaybackCommandManager.FastForwardReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerNextReceivedEventArgs> NextReceived
 		{
@@ -211,8 +211,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerNextReceivedEventArgs> MediaPlaybackCommandManager.NextReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerPauseReceivedEventArgs> PauseReceived
 		{
@@ -227,8 +227,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerPauseReceivedEventArgs> MediaPlaybackCommandManager.PauseReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerPlayReceivedEventArgs> PlayReceived
 		{
@@ -243,8 +243,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerPlayReceivedEventArgs> MediaPlaybackCommandManager.PlayReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerPositionReceivedEventArgs> PositionReceived
 		{
@@ -259,8 +259,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerPositionReceivedEventArgs> MediaPlaybackCommandManager.PositionReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerPreviousReceivedEventArgs> PreviousReceived
 		{
@@ -275,8 +275,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerPreviousReceivedEventArgs> MediaPlaybackCommandManager.PreviousReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerRateReceivedEventArgs> RateReceived
 		{
@@ -291,8 +291,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerRateReceivedEventArgs> MediaPlaybackCommandManager.RateReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerRewindReceivedEventArgs> RewindReceived
 		{
@@ -307,8 +307,8 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerRewindReceivedEventArgs> MediaPlaybackCommandManager.RewindReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackCommandManager, global::Windows.Media.Playback.MediaPlaybackCommandManagerShuffleReceivedEventArgs> ShuffleReceived
 		{
@@ -323,6 +323,6 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackCommandManager", "event TypedEventHandler<MediaPlaybackCommandManager, MediaPlaybackCommandManagerShuffleReceivedEventArgs> MediaPlaybackCommandManager.ShuffleReceived");
 			}
 		}
-		#endif
+#endif
 	}
 }

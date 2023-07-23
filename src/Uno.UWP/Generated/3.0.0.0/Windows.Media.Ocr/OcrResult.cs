@@ -2,41 +2,41 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Ocr
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class OcrResult 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Ocr.OcrLine> Lines
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<OcrLine> OcrResult.Lines is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3COcrLine%3E%20OcrResult.Lines");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<OcrLine> OcrResult.Lines is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3COcrLine%3E%20OcrResult.Lines");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Text
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string OcrResult.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20OcrResult.Text");
+				throw new global::System.NotImplementedException("The member string OcrResult.Text is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20OcrResult.Text");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double? TextAngle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double? OcrResult.TextAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%3F%20OcrResult.TextAngle");
+				throw new global::System.NotImplementedException("The member double? OcrResult.TextAngle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%3F%20OcrResult.TextAngle");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.Lines.get
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.TextAngle.get
 		// Forced skipping of method Windows.Media.Ocr.OcrResult.Text.get

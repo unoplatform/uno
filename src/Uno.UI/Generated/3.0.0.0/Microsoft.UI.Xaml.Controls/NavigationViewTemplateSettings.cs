@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class NavigationViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property BackButtonVisibility
@@ -16,7 +16,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SmallerPaneToggleButtonWidth
 		// Skipping already declared property TopPadding
 		// Skipping already declared property TopPaneVisibility
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double OpenPaneLength
 		{
@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return (double)this.GetValue(OpenPaneLengthProperty);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property BackButtonVisibilityProperty
 		// Skipping already declared property LeftPaneVisibilityProperty
 		// Skipping already declared property OverflowButtonVisibilityProperty
@@ -35,14 +35,14 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property SmallerPaneToggleButtonWidthProperty
 		// Skipping already declared property TopPaddingProperty
 		// Skipping already declared property TopPaneVisibilityProperty
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty OpenPaneLengthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(OpenPaneLength), typeof(double), 
 			typeof(global::Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-		#endif
+#endif
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.NavigationViewTemplateSettings()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.TopPadding.get

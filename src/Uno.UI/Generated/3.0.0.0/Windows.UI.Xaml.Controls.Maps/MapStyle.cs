@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum MapStyle 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.None
@@ -14,5 +14,5 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Aerial3DWithRoads
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Custom
 	}
-	#endif
+#endif
 }

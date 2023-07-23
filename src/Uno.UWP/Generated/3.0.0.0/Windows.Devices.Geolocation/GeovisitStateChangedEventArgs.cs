@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class GeovisitStateChangedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Geolocation.Geovisit Visit
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Geovisit GeovisitStateChangedEventArgs.Visit is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Geovisit%20GeovisitStateChangedEventArgs.Visit");
+				throw new global::System.NotImplementedException("The member Geovisit GeovisitStateChangedEventArgs.Visit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Geovisit%20GeovisitStateChangedEventArgs.Visit");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitStateChangedEventArgs.Visit.get
 	}
 }

@@ -2,11 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum StorageDeleteOption 
 	{
 		// Skipping already declared field Windows.Storage.StorageDeleteOption.Default
 		// Skipping already declared field Windows.Storage.StorageDeleteOption.PermanentDelete
 	}
-	#endif
+#endif
 }

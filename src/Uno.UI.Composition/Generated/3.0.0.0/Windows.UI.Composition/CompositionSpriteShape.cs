@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CompositionSpriteShape : global::Windows.UI.Composition.CompositionShape
 	{
 		// Skipping already declared property StrokeThickness

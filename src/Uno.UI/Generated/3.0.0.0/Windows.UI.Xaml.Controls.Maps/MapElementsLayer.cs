@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MapElementsLayer : global::Windows.UI.Xaml.Controls.Maps.MapLayer
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement> MapElements
 		{
@@ -20,22 +20,22 @@ namespace Windows.UI.Xaml.Controls.Maps
 				this.SetValue(MapElementsProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MapElementsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MapElements), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement>), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement>)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public MapElementsLayer() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElementsLayer", "MapElementsLayer.MapElementsLayer()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapElementsLayer()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapElements.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapElements.set
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapContextRequested.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapContextRequested.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapElementsProperty.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerContextRequestedEventArgs> MapContextRequested
 		{
@@ -63,8 +63,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElementsLayer", "event TypedEventHandler<MapElementsLayer, MapElementsLayerContextRequestedEventArgs> MapElementsLayer.MapContextRequested");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerClickEventArgs> MapElementClick
 		{
@@ -79,8 +79,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElementsLayer", "event TypedEventHandler<MapElementsLayer, MapElementsLayerClickEventArgs> MapElementsLayer.MapElementClick");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerPointerEnteredEventArgs> MapElementPointerEntered
 		{
@@ -95,8 +95,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElementsLayer", "event TypedEventHandler<MapElementsLayer, MapElementsLayerPointerEnteredEventArgs> MapElementsLayer.MapElementPointerEntered");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerPointerExitedEventArgs> MapElementPointerExited
 		{
@@ -111,6 +111,6 @@ namespace Windows.UI.Xaml.Controls.Maps
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElementsLayer", "event TypedEventHandler<MapElementsLayer, MapElementsLayerPointerExitedEventArgs> MapElementsLayer.MapElementPointerExited");
 			}
 		}
-		#endif
+#endif
 	}
 }

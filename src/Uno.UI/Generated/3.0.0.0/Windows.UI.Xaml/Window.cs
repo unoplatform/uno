@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class Window 
 	{
 		// Skipping already declared property Content
@@ -12,26 +12,26 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property CoreWindow
 		// Skipping already declared property Dispatcher
 		// Skipping already declared property Visible
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Composition.Compositor Compositor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Compositor Window.Compositor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Compositor%20Window.Compositor");
+				throw new global::System.NotImplementedException("The member Compositor Window.Compositor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compositor%20Window.Compositor");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.UIContext UIContext
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIContext Window.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIContext%20Window.UIContext");
+				throw new global::System.NotImplementedException("The member UIContext Window.UIContext is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIContext%20Window.UIContext");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property Current
 		// Forced skipping of method Windows.UI.Xaml.Window.Bounds.get
 		// Forced skipping of method Windows.UI.Xaml.Window.Visible.get

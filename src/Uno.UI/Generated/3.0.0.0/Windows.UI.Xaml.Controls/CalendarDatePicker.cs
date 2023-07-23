@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CalendarDatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property PlaceholderText
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.CalendarIdentifierProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.IsOutOfScopeEnabledProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.IsGroupLabelVisibleProperty.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventHandler CalendarViewDayItemChanging
 		{
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.CalendarDatePicker", "event CalendarViewDayItemChangingEventHandler CalendarDatePicker.CalendarViewDayItemChanging");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarDatePicker.Closed
 		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarDatePicker.DateChanged
 		// Skipping already declared event Windows.UI.Xaml.Controls.CalendarDatePicker.Opened

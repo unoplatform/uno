@@ -2,36 +2,36 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CompositionCommitBatch : global::Windows.UI.Composition.CompositionObject
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsActive
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionCommitBatch.IsActive");
+				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsActive is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCommitBatch.IsActive");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsEnded
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsEnded is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CompositionCommitBatch.IsEnded");
+				throw new global::System.NotImplementedException("The member bool CompositionCommitBatch.IsEnded is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCommitBatch.IsEnded");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.IsActive.get
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.IsEnded.get
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.Completed.add
 		// Forced skipping of method Windows.UI.Composition.CompositionCommitBatch.Completed.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Composition.CompositionBatchCompletedEventArgs> Completed
 		{
@@ -46,6 +46,6 @@ namespace Windows.UI.Composition
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionCommitBatch", "event TypedEventHandler<object, CompositionBatchCompletedEventArgs> CompositionCommitBatch.Completed");
 			}
 		}
-		#endif
+#endif
 	}
 }

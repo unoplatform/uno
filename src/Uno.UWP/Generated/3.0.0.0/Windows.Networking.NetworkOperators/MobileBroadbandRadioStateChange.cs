@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MobileBroadbandRadioStateChange 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DeviceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MobileBroadbandRadioStateChange.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20MobileBroadbandRadioStateChange.DeviceId");
+				throw new global::System.NotImplementedException("The member string MobileBroadbandRadioStateChange.DeviceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MobileBroadbandRadioStateChange.DeviceId");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.MobileBroadbandRadioState RadioState
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MobileBroadbandRadioState MobileBroadbandRadioStateChange.RadioState is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MobileBroadbandRadioState%20MobileBroadbandRadioStateChange.RadioState");
+				throw new global::System.NotImplementedException("The member MobileBroadbandRadioState MobileBroadbandRadioStateChange.RadioState is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandRadioState%20MobileBroadbandRadioStateChange.RadioState");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChange.DeviceId.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandRadioStateChange.RadioState.get
 	}

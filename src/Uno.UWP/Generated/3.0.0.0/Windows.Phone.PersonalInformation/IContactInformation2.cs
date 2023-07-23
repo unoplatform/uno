@@ -2,18 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.PersonalInformation
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface IContactInformation2 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::System.DateTimeOffset DisplayPictureDate
 		{
 			get;
 			set;
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Phone.PersonalInformation.IContactInformation2.DisplayPictureDate.get
 		// Forced skipping of method Windows.Phone.PersonalInformation.IContactInformation2.DisplayPictureDate.set
 	}

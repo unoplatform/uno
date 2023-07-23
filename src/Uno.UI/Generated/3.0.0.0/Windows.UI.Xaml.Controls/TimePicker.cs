@@ -3,12 +3,12 @@
 namespace Windows.UI.Xaml.Controls
 {
 	[global::Windows.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Header")]
-	#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 	[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-	#endif
+#endif
 	public  partial class TimePicker : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::System.TimeSpan Time
 		{
@@ -21,8 +21,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(TimeProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  int MinuteIncrement
 		{
@@ -35,8 +35,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(MinuteIncrementProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.DataTemplate HeaderTemplate
 		{
@@ -49,8 +49,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(HeaderTemplateProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  object Header
 		{
@@ -63,9 +63,9 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(HeaderProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property ClockIdentifier
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
@@ -78,8 +78,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(LightDismissOverlayModeProperty, value);
 			}
 		}
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  global::System.TimeSpan? SelectedTime
 		{
@@ -92,56 +92,56 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(SelectedTimeProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property ClockIdentifierProperty
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Header), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(MinuteIncrement), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(Time), typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedTimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(SelectedTime), typeof(global::System.TimeSpan?), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan?)));
-		#endif
+#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TimePicker.TimePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.TimePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.Header.get
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.ClockIdentifierProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.MinuteIncrementProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePicker.TimeProperty.get
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  event global::System.EventHandler<global::Windows.UI.Xaml.Controls.TimePickerValueChangedEventArgs> TimeChanged
 		{
@@ -184,8 +184,8 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePicker", "event EventHandler<TimePickerValueChangedEventArgs> TimePicker.TimeChanged");
 			}
 		}
-		#endif
-		#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TimePicker, global::Windows.UI.Xaml.Controls.TimePickerSelectedValueChangedEventArgs> SelectedTimeChanged
 		{
@@ -200,6 +200,6 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePicker", "event TypedEventHandler<TimePicker, TimePickerSelectedValueChangedEventArgs> TimePicker.SelectedTimeChanged");
 			}
 		}
-		#endif
+#endif
 	}
 }

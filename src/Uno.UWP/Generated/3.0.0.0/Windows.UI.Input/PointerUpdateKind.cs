@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum PointerUpdateKind 
 	{
 		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.Other
@@ -17,5 +17,5 @@ namespace Windows.UI.Input
 		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.XButton2Pressed
 		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.XButton2Released
 	}
-	#endif
+#endif
 }

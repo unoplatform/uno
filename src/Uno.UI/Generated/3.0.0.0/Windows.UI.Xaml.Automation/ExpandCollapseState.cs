@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ExpandCollapseState 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.Collapsed
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml.Automation
 		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.PartiallyExpanded
 		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.LeafNode
 	}
-	#endif
+#endif
 }

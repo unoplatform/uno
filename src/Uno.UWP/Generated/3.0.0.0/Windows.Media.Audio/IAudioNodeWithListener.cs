@@ -2,18 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Audio
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface IAudioNodeWithListener : global::System.IDisposable,global::Windows.Media.Audio.IAudioNode
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Media.Audio.AudioNodeListener Listener
 		{
 			get;
 			set;
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Audio.IAudioNodeWithListener.Listener.set
 		// Forced skipping of method Windows.Media.Audio.IAudioNodeWithListener.Listener.get
 	}

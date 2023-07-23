@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum MapAnimationKind 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Default
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Linear
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Bow
 	}
-	#endif
+#endif
 }

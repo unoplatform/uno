@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CashDrawerStatusUpdatedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.PointOfService.CashDrawerStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CashDrawerStatus CashDrawerStatusUpdatedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CashDrawerStatus%20CashDrawerStatusUpdatedEventArgs.Status");
+				throw new global::System.NotImplementedException("The member CashDrawerStatus CashDrawerStatusUpdatedEventArgs.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CashDrawerStatus%20CashDrawerStatusUpdatedEventArgs.Status");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerStatusUpdatedEventArgs.Status.get
 	}
 }

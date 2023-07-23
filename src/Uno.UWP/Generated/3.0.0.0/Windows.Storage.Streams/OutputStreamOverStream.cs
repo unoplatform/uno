@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class OutputStreamOverStream : global::Windows.Storage.Streams.IOutputStream,global::System.IDisposable
 	{
 		// Skipping already declared method Windows.Storage.Streams.OutputStreamOverStream.WriteAsync(Windows.Storage.Streams.IBuffer)

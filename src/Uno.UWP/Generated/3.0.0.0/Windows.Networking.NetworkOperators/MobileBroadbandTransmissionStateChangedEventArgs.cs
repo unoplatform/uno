@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MobileBroadbandTransmissionStateChangedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsTransmitting
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MobileBroadbandTransmissionStateChangedEventArgs.IsTransmitting is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MobileBroadbandTransmissionStateChangedEventArgs.IsTransmitting");
+				throw new global::System.NotImplementedException("The member bool MobileBroadbandTransmissionStateChangedEventArgs.IsTransmitting is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MobileBroadbandTransmissionStateChangedEventArgs.IsTransmitting");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandTransmissionStateChangedEventArgs.IsTransmitting.get
 	}
 }

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum AutomationControlType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationControlType.Button
@@ -47,5 +47,5 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationControlType.SemanticZoom
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationControlType.AppBar
 	}
-	#endif
+#endif
 }

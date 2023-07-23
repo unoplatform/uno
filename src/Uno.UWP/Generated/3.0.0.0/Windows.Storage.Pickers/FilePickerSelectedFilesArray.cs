@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Pickers
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class FilePickerSelectedFilesArray : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>,global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageFile>
 	{
 		// Skipping already declared property Size

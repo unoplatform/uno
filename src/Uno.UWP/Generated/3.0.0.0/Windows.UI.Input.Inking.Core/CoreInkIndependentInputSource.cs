@@ -2,35 +2,35 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CoreInkIndependentInputSource 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Input.Inking.InkPresenter InkPresenter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member InkPresenter CoreInkIndependentInputSource.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=InkPresenter%20CoreInkIndependentInputSource.InkPresenter");
+				throw new global::System.NotImplementedException("The member InkPresenter CoreInkIndependentInputSource.InkPresenter is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InkPresenter%20CoreInkIndependentInputSource.InkPresenter");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Core.CoreCursor PointerCursor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreInkIndependentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreCursor%20CoreInkIndependentInputSource.PointerCursor");
+				throw new global::System.NotImplementedException("The member CoreCursor CoreInkIndependentInputSource.PointerCursor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreCursor%20CoreInkIndependentInputSource.PointerCursor");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "CoreCursor CoreInkIndependentInputSource.PointerCursor");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.add
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerEntering.remove
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerHovering.add
@@ -48,14 +48,14 @@ namespace Windows.UI.Input.Inking.Core
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.InkPresenter.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.get
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource.PointerCursor.set
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource Create( global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
-			throw new global::System.NotImplementedException("The member CoreInkIndependentInputSource CoreInkIndependentInputSource.Create(InkPresenter inkPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreInkIndependentInputSource%20CoreInkIndependentInputSource.Create%28InkPresenter%20inkPresenter%29");
+			throw new global::System.NotImplementedException("The member CoreInkIndependentInputSource CoreInkIndependentInputSource.Create(InkPresenter inkPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInkIndependentInputSource%20CoreInkIndependentInputSource.Create%28InkPresenter%20inkPresenter%29");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerEntering
 		{
@@ -70,8 +70,8 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerEntering");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerExiting
 		{
@@ -86,8 +86,8 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerExiting");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerHovering
 		{
@@ -102,8 +102,8 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerHovering");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerLost
 		{
@@ -118,8 +118,8 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerLost");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerMoving
 		{
@@ -134,8 +134,8 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerMoving");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerPressing
 		{
@@ -150,8 +150,8 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerPressing");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerReleasing
 		{
@@ -166,6 +166,6 @@ namespace Windows.UI.Input.Inking.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource", "event TypedEventHandler<CoreInkIndependentInputSource, PointerEventArgs> CoreInkIndependentInputSource.PointerReleasing");
 			}
 		}
-		#endif
+#endif
 	}
 }

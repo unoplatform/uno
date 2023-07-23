@@ -3,9 +3,9 @@
 namespace Windows.Foundation.Metadata
 {
 	[global::System.AttributeUsageAttribute(global::System.AttributeTargets.Struct | global::System.AttributeTargets.Class, Inherited = true, AllowMultiple = false)]
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CreateFromStringAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.CreateFromStringAttribute.CreateFromStringAttribute()

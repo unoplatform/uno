@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Store
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class StoreSubscriptionInfo 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint BillingPeriod
 		{
@@ -16,8 +16,8 @@ namespace Windows.Services.Store
 				throw new global::System.NotImplementedException("The member uint StoreSubscriptionInfo.BillingPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreSubscriptionInfo.BillingPeriod");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Services.Store.StoreDurationUnit BillingPeriodUnit
 		{
@@ -26,8 +26,8 @@ namespace Windows.Services.Store
 				throw new global::System.NotImplementedException("The member StoreDurationUnit StoreSubscriptionInfo.BillingPeriodUnit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreDurationUnit%20StoreSubscriptionInfo.BillingPeriodUnit");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool HasTrialPeriod
 		{
@@ -36,8 +36,8 @@ namespace Windows.Services.Store
 				throw new global::System.NotImplementedException("The member bool StoreSubscriptionInfo.HasTrialPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20StoreSubscriptionInfo.HasTrialPeriod");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint TrialPeriod
 		{
@@ -46,8 +46,8 @@ namespace Windows.Services.Store
 				throw new global::System.NotImplementedException("The member uint StoreSubscriptionInfo.TrialPeriod is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20StoreSubscriptionInfo.TrialPeriod");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Services.Store.StoreDurationUnit TrialPeriodUnit
 		{
@@ -56,7 +56,7 @@ namespace Windows.Services.Store
 				throw new global::System.NotImplementedException("The member StoreDurationUnit StoreSubscriptionInfo.TrialPeriodUnit is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StoreDurationUnit%20StoreSubscriptionInfo.TrialPeriodUnit");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.BillingPeriod.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.BillingPeriodUnit.get
 		// Forced skipping of method Windows.Services.Store.StoreSubscriptionInfo.HasTrialPeriod.get

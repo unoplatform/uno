@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface IStorageFile : global::Windows.Storage.IStorageItem,global::Windows.Storage.Streams.IRandomAccessStreamReference,global::Windows.Storage.Streams.IInputStreamReference
 	{
 		// Skipping already declared property ContentType

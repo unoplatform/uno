@@ -2,51 +2,51 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.LockScreen
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class LockScreenInfo 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IRandomAccessStream AlarmIcon
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.AlarmIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20LockScreenInfo.AlarmIcon");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.AlarmIcon is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20LockScreenInfo.AlarmIcon");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.LockScreen.LockScreenBadge> Badges
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<LockScreenBadge> LockScreenInfo.Badges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CLockScreenBadge%3E%20LockScreenInfo.Badges");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<LockScreenBadge> LockScreenInfo.Badges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CLockScreenBadge%3E%20LockScreenInfo.Badges");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<string> DetailText
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<string> LockScreenInfo.DetailText is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3Cstring%3E%20LockScreenInfo.DetailText");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<string> LockScreenInfo.DetailText is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20LockScreenInfo.DetailText");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Streams.IRandomAccessStream LockScreenImage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.LockScreenImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IRandomAccessStream%20LockScreenInfo.LockScreenImage");
+				throw new global::System.NotImplementedException("The member IRandomAccessStream LockScreenInfo.LockScreenImage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20LockScreenInfo.LockScreenImage");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImageChanged.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImageChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.LockScreenImage.get
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.LockScreen
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIconChanged.add
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIconChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIcon.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> AlarmIconChanged
 		{
@@ -74,8 +74,8 @@ namespace Windows.ApplicationModel.LockScreen
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockScreenInfo", "event TypedEventHandler<LockScreenInfo, object> LockScreenInfo.AlarmIconChanged");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> BadgesChanged
 		{
@@ -90,8 +90,8 @@ namespace Windows.ApplicationModel.LockScreen
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockScreenInfo", "event TypedEventHandler<LockScreenInfo, object> LockScreenInfo.BadgesChanged");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> DetailTextChanged
 		{
@@ -106,8 +106,8 @@ namespace Windows.ApplicationModel.LockScreen
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockScreenInfo", "event TypedEventHandler<LockScreenInfo, object> LockScreenInfo.DetailTextChanged");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> LockScreenImageChanged
 		{
@@ -122,6 +122,6 @@ namespace Windows.ApplicationModel.LockScreen
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockScreenInfo", "event TypedEventHandler<LockScreenInfo, object> LockScreenInfo.LockScreenImageChanged");
 			}
 		}
-		#endif
+#endif
 	}
 }

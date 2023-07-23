@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum CoreProcessEventsOption 
 	{
 		// Skipping already declared field Windows.UI.Core.CoreProcessEventsOption.ProcessOneAndAllPending
@@ -10,5 +10,5 @@ namespace Windows.UI.Core
 		// Skipping already declared field Windows.UI.Core.CoreProcessEventsOption.ProcessUntilQuit
 		// Skipping already declared field Windows.UI.Core.CoreProcessEventsOption.ProcessAllIfPresent
 	}
-	#endif
+#endif
 }

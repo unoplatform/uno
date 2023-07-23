@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class EdgeGesture 
 	{
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.add
@@ -13,14 +13,14 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Completed.remove
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Canceled.add
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Canceled.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Input.EdgeGesture GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member EdgeGesture EdgeGesture.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=EdgeGesture%20EdgeGesture.GetForCurrentView%28%29");
+			throw new global::System.NotImplementedException("The member EdgeGesture EdgeGesture.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EdgeGesture%20EdgeGesture.GetForCurrentView%28%29");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Canceled
 		{
@@ -35,8 +35,8 @@ namespace Windows.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Canceled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Completed
 		{
@@ -51,8 +51,8 @@ namespace Windows.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Completed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Starting
 		{
@@ -67,6 +67,6 @@ namespace Windows.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.EdgeGesture", "event TypedEventHandler<EdgeGesture, EdgeGestureEventArgs> EdgeGesture.Starting");
 			}
 		}
-		#endif
+#endif
 	}
 }

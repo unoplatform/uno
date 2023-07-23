@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum SimpleOrientation 
 	{
 		// Skipping already declared field Windows.Devices.Sensors.SimpleOrientation.NotRotated
@@ -12,5 +12,5 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared field Windows.Devices.Sensors.SimpleOrientation.Faceup
 		// Skipping already declared field Windows.Devices.Sensors.SimpleOrientation.Facedown
 	}
-	#endif
+#endif
 }

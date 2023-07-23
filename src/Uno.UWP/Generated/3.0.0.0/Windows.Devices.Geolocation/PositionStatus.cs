@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum PositionStatus 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.PositionStatus.Ready
@@ -12,5 +12,5 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared field Windows.Devices.Geolocation.PositionStatus.NotInitialized
 		// Skipping already declared field Windows.Devices.Geolocation.PositionStatus.NotAvailable
 	}
-	#endif
+#endif
 }

@@ -2,51 +2,51 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public static partial class KnownRemoteSystemCapabilities 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string AppService
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.AppService is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.AppService");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.AppService is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.AppService");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string LaunchUri
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.LaunchUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.LaunchUri");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.LaunchUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.LaunchUri");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string RemoteSession
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.RemoteSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.RemoteSession");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.RemoteSession is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.RemoteSession");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string SpatialEntity
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.SpatialEntity is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownRemoteSystemCapabilities.SpatialEntity");
+				throw new global::System.NotImplementedException("The member string KnownRemoteSystemCapabilities.SpatialEntity is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownRemoteSystemCapabilities.SpatialEntity");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.AppService.get
 		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.LaunchUri.get
 		// Forced skipping of method Windows.System.RemoteSystems.KnownRemoteSystemCapabilities.RemoteSession.get

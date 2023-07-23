@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Metadata
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum FeatureStage 
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.FeatureStage.AlwaysDisabled
@@ -10,5 +10,5 @@ namespace Windows.Foundation.Metadata
 		// Skipping already declared field Windows.Foundation.Metadata.FeatureStage.EnabledByDefault
 		// Skipping already declared field Windows.Foundation.Metadata.FeatureStage.AlwaysEnabled
 	}
-	#endif
+#endif
 }

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum CoreWindowActivationMode 
 	{
 		// Skipping already declared field Windows.UI.Core.CoreWindowActivationMode.None
@@ -10,5 +10,5 @@ namespace Windows.UI.Core
 		// Skipping already declared field Windows.UI.Core.CoreWindowActivationMode.ActivatedNotForeground
 		// Skipping already declared field Windows.UI.Core.CoreWindowActivationMode.ActivatedInForeground
 	}
-	#endif
+#endif
 }

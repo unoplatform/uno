@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ScrollEventType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.SmallDecrement
@@ -15,5 +15,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.Last
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.EndScroll
 	}
-	#endif
+#endif
 }

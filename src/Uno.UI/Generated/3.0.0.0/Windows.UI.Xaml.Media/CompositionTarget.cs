@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if false || false || IS_UNIT_TESTS || false || false || false || __MACOS__
+#if false || false || IS_UNIT_TESTS || false || false || false || __MACOS__
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__MACOS__")]
-	#endif
+#endif
 	public  partial class CompositionTarget 
 	{
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositionTarget.Rendered.add
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositionTarget.Rendering.remove
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.add
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositionTarget.SurfaceContentsLost.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.UI.Xaml.Media.RenderedEventArgs> Rendered
 		{
@@ -28,8 +28,8 @@ namespace Windows.UI.Xaml.Media
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<RenderedEventArgs> CompositionTarget.Rendered");
 			}
 		}
-		#endif
-		#if false || false || IS_UNIT_TESTS || false || false || false || __MACOS__
+#endif
+#if false || false || IS_UNIT_TESTS || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__MACOS__")]
 		public static event global::System.EventHandler<object> Rendering
 		{
@@ -44,8 +44,8 @@ namespace Windows.UI.Xaml.Media
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.Rendering");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> SurfaceContentsLost
 		{
@@ -60,6 +60,6 @@ namespace Windows.UI.Xaml.Media
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CompositionTarget", "event EventHandler<object> CompositionTarget.SurfaceContentsLost");
 			}
 		}
-		#endif
+#endif
 	}
 }

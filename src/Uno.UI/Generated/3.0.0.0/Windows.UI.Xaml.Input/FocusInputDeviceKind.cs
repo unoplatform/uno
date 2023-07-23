@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum FocusInputDeviceKind 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.None
@@ -12,5 +12,5 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Keyboard
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.GameController
 	}
-	#endif
+#endif
 }

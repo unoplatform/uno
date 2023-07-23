@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class NavigationViewItemPresenter : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property Icon

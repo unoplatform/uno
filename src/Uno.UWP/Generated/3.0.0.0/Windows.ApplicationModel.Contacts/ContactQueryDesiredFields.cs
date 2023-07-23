@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Contacts
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ContactQueryDesiredFields : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactQueryDesiredFields.None
@@ -10,5 +10,5 @@ namespace Windows.ApplicationModel.Contacts
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactQueryDesiredFields.EmailAddress
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactQueryDesiredFields.PostalAddress
 	}
-	#endif
+#endif
 }

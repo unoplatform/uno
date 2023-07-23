@@ -2,41 +2,41 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class SystemMemoryUsageReport 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong AvailableSizeInBytes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.AvailableSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemMemoryUsageReport.AvailableSizeInBytes");
+				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.AvailableSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemMemoryUsageReport.AvailableSizeInBytes");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong CommittedSizeInBytes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.CommittedSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemMemoryUsageReport.CommittedSizeInBytes");
+				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.CommittedSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemMemoryUsageReport.CommittedSizeInBytes");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong TotalPhysicalSizeInBytes
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.TotalPhysicalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20SystemMemoryUsageReport.TotalPhysicalSizeInBytes");
+				throw new global::System.NotImplementedException("The member ulong SystemMemoryUsageReport.TotalPhysicalSizeInBytes is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20SystemMemoryUsageReport.TotalPhysicalSizeInBytes");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.TotalPhysicalSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.AvailableSizeInBytes.get
 		// Forced skipping of method Windows.System.Diagnostics.SystemMemoryUsageReport.CommittedSizeInBytes.get

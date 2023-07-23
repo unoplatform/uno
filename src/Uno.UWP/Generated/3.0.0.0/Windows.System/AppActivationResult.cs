@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class AppActivationResult 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.AppResourceGroupInfo AppResourceGroupInfo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member AppResourceGroupInfo AppActivationResult.AppResourceGroupInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=AppResourceGroupInfo%20AppActivationResult.AppResourceGroupInfo");
+				throw new global::System.NotImplementedException("The member AppResourceGroupInfo AppActivationResult.AppResourceGroupInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupInfo%20AppActivationResult.AppResourceGroupInfo");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Exception ExtendedError
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Exception AppActivationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Exception%20AppActivationResult.ExtendedError");
+				throw new global::System.NotImplementedException("The member Exception AppActivationResult.ExtendedError is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20AppActivationResult.ExtendedError");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.AppActivationResult.ExtendedError.get
 		// Forced skipping of method Windows.System.AppActivationResult.AppResourceGroupInfo.get
 	}

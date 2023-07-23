@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Gaming.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum GamepadButtons : uint
 	{
 		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.None
@@ -25,5 +25,5 @@ namespace Windows.Gaming.Input
 		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle3
 		// Skipping already declared field Windows.Gaming.Input.GamepadButtons.Paddle4
 	}
-	#endif
+#endif
 }

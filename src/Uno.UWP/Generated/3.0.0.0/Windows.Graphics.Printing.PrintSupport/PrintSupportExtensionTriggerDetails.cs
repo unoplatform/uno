@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.PrintSupport
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class PrintSupportExtensionTriggerDetails 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession Session
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintSupportExtensionSession PrintSupportExtensionTriggerDetails.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintSupportExtensionSession%20PrintSupportExtensionTriggerDetails.Session");
+				throw new global::System.NotImplementedException("The member PrintSupportExtensionSession PrintSupportExtensionTriggerDetails.Session is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintSupportExtensionSession%20PrintSupportExtensionTriggerDetails.Session");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionTriggerDetails.Session.get
 	}
 }

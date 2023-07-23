@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum GattCommunicationStatus 
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.Success
@@ -10,5 +10,5 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.ProtocolError
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.AccessDenied
 	}
-	#endif
+#endif
 }

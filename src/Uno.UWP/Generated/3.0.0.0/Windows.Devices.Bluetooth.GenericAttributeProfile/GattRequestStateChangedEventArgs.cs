@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class GattRequestStateChangedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Bluetooth.BluetoothError Error
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member BluetoothError GattRequestStateChangedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=BluetoothError%20GattRequestStateChangedEventArgs.Error");
+				throw new global::System.NotImplementedException("The member BluetoothError GattRequestStateChangedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BluetoothError%20GattRequestStateChangedEventArgs.Error");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestState State
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member GattRequestState GattRequestStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=GattRequestState%20GattRequestStateChangedEventArgs.State");
+				throw new global::System.NotImplementedException("The member GattRequestState GattRequestStateChangedEventArgs.State is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GattRequestState%20GattRequestStateChangedEventArgs.State");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs.State.get
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattRequestStateChangedEventArgs.Error.get
 	}

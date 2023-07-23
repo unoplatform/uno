@@ -2,45 +2,45 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CharacterReceivedEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint KeyCode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CharacterReceivedEventArgs.KeyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CharacterReceivedEventArgs.KeyCode");
+				throw new global::System.NotImplementedException("The member uint CharacterReceivedEventArgs.KeyCode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CharacterReceivedEventArgs.KeyCode");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Core.CorePhysicalKeyStatus KeyStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus CharacterReceivedEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CorePhysicalKeyStatus%20CharacterReceivedEventArgs.KeyStatus");
+				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus CharacterReceivedEventArgs.KeyStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CorePhysicalKeyStatus%20CharacterReceivedEventArgs.KeyStatus");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Handled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CharacterReceivedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CharacterReceivedEventArgs.Handled");
+				throw new global::System.NotImplementedException("The member bool CharacterReceivedEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CharacterReceivedEventArgs.Handled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CharacterReceivedEventArgs", "bool CharacterReceivedEventArgs.Handled");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyCode.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.KeyStatus.get
 		// Forced skipping of method Windows.UI.Core.CharacterReceivedEventArgs.Handled.get

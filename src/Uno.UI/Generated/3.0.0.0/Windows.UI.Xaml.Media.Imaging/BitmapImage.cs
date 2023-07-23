@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class BitmapImage : global::Windows.UI.Xaml.Media.Imaging.BitmapSource
 	{
 		// Skipping already declared property UriSource
@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Skipping already declared property DecodePixelHeight
 		// Skipping already declared property CreateOptions
 		// Skipping already declared property DecodePixelType
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AutoPlay
 		{
@@ -25,8 +25,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				this.SetValue(AutoPlayProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsAnimatedBitmap
 		{
@@ -35,8 +35,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return (bool)this.GetValue(IsAnimatedBitmapProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsPlaying
 		{
@@ -45,36 +45,36 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return (bool)this.GetValue(IsPlayingProperty);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property CreateOptionsProperty
 		// Skipping already declared property DecodePixelHeightProperty
 		// Skipping already declared property DecodePixelWidthProperty
 		// Skipping already declared property UriSourceProperty
 		// Skipping already declared property DecodePixelTypeProperty
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(AutoPlay), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsAnimatedBitmapProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsAnimatedBitmap), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPlayingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(IsPlaying), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
+#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage()
@@ -99,20 +99,20 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.IsPlaying.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.AutoPlay.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.AutoPlay.set
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Play()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.BitmapImage", "void BitmapImage.Play()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.BitmapImage", "void BitmapImage.Stop()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.IsAnimatedBitmapProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.IsPlayingProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.BitmapImage.AutoPlayProperty.get

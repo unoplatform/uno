@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum TextAlignment 
 	{
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Center
@@ -13,5 +13,5 @@ namespace Windows.UI.Xaml
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Justify
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.DetectFromContent
 	}
-	#endif
+#endif
 }

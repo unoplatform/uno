@@ -2,36 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
-	public partial interface ICorePointerInputSource 
+#endif
+	public  partial interface ICorePointerInputSource 
 	{
-		#if false || false || false || false || false || false || false
-		bool HasCapture
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		global::Windows.UI.Core.CoreCursor PointerCursor
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		global::Windows.Foundation.Point PointerPosition
-		{
-			get;
-		}
-		#endif
-		#if false || false || false || false || false || false || false
-		void ReleasePointerCapture();
-		#endif
-		#if false || false || false || false || false || false || false
-		void SetPointerCapture();
-		#endif
+		// Skipping already declared property HasCapture
+		// Skipping already declared property PointerCursor
+		// Skipping already declared property PointerPosition
+		// Skipping already declared method Windows.UI.Core.ICorePointerInputSource.ReleasePointerCapture()
+		// Skipping already declared method Windows.UI.Core.ICorePointerInputSource.SetPointerCapture()
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.HasCapture.get
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerPosition.get
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerCursor.get
@@ -50,26 +30,12 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerReleased.remove
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerWheelChanged.add
 		// Forced skipping of method Windows.UI.Core.ICorePointerInputSource.PointerWheelChanged.remove
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerCaptureLost;
-		#endif
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerEntered;
-		#endif
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerExited;
-		#endif
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerMoved;
-		#endif
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerPressed;
-		#endif
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerReleased;
-		#endif
-		#if false || false || false || false || false || false || false
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.PointerEventArgs> PointerWheelChanged;
-		#endif
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerCaptureLost
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerEntered
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerExited
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerMoved
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerPressed
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerReleased
+		// Skipping already declared event Windows.UI.Core.ICorePointerInputSource.PointerWheelChanged
 	}
 }

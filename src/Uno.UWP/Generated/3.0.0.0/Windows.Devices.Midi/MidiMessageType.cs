@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum MidiMessageType 
 	{
 		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.None
@@ -26,5 +26,5 @@ namespace Windows.Devices.Midi
 		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.ActiveSensing
 		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.SystemReset
 	}
-	#endif
+#endif
 }

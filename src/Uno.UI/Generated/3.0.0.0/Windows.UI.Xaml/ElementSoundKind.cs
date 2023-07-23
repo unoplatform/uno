@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ElementSoundKind 
 	{
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Focus
@@ -13,5 +13,5 @@ namespace Windows.UI.Xaml
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.MoveNext
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.GoBack
 	}
-	#endif
+#endif
 }

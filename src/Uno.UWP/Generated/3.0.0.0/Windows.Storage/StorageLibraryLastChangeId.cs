@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class StorageLibraryLastChangeId 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static ulong Unknown
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong StorageLibraryLastChangeId.Unknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20StorageLibraryLastChangeId.Unknown");
+				throw new global::System.NotImplementedException("The member ulong StorageLibraryLastChangeId.Unknown is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20StorageLibraryLastChangeId.Unknown");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Storage.StorageLibraryLastChangeId.Unknown.get
 	}
 }

@@ -2,42 +2,42 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class EffectiveViewportChangedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double BringIntoViewDistanceX
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
+				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceX");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double BringIntoViewDistanceY
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
+				throw new global::System.NotImplementedException("The member double EffectiveViewportChangedEventArgs.BringIntoViewDistanceY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20EffectiveViewportChangedEventArgs.BringIntoViewDistanceY");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property EffectiveViewport
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect MaxViewport
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect EffectiveViewportChangedEventArgs.MaxViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20EffectiveViewportChangedEventArgs.MaxViewport");
+				throw new global::System.NotImplementedException("The member Rect EffectiveViewportChangedEventArgs.MaxViewport is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20EffectiveViewportChangedEventArgs.MaxViewport");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.EffectiveViewportChangedEventArgs.EffectiveViewport.get
 		// Forced skipping of method Windows.UI.Xaml.EffectiveViewportChangedEventArgs.MaxViewport.get
 		// Forced skipping of method Windows.UI.Xaml.EffectiveViewportChangedEventArgs.BringIntoViewDistanceX.get

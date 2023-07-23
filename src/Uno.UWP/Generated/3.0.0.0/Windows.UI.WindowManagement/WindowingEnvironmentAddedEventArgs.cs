@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.WindowManagement
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class WindowingEnvironmentAddedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.WindowManagement.WindowingEnvironment WindowingEnvironment
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member WindowingEnvironment WindowingEnvironmentAddedEventArgs.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=WindowingEnvironment%20WindowingEnvironmentAddedEventArgs.WindowingEnvironment");
+				throw new global::System.NotImplementedException("The member WindowingEnvironment WindowingEnvironmentAddedEventArgs.WindowingEnvironment is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WindowingEnvironment%20WindowingEnvironmentAddedEventArgs.WindowingEnvironment");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.WindowManagement.WindowingEnvironmentAddedEventArgs.WindowingEnvironment.get
 	}
 }

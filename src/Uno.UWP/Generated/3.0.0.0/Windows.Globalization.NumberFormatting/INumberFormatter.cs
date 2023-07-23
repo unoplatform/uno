@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface INumberFormatter 
 	{
 		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberFormatter.Format(long)

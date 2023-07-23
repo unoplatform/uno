@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ScrollAmount 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.ScrollAmount.LargeDecrement
@@ -11,5 +11,5 @@ namespace Windows.UI.Xaml.Automation
 		// Skipping already declared field Windows.UI.Xaml.Automation.ScrollAmount.LargeIncrement
 		// Skipping already declared field Windows.UI.Xaml.Automation.ScrollAmount.SmallIncrement
 	}
-	#endif
+#endif
 }

@@ -2,35 +2,35 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Devices
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ExposurePriorityVideoControl 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Enabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ExposurePriorityVideoControl.Enabled");
+				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Enabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ExposurePriorityVideoControl.Enabled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ExposurePriorityVideoControl", "bool ExposurePriorityVideoControl.Enabled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Supported
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ExposurePriorityVideoControl.Supported");
+				throw new global::System.NotImplementedException("The member bool ExposurePriorityVideoControl.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ExposurePriorityVideoControl.Supported");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Supported.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.get
 		// Forced skipping of method Windows.Media.Devices.ExposurePriorityVideoControl.Enabled.set

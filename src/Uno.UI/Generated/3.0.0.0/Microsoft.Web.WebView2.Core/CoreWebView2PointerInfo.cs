@@ -2,403 +2,403 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CoreWebView2PointerInfo 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint TouchPressure
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.TouchPressure");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchPressure");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchPressure");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint TouchOrientation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.TouchOrientation");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchOrientation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchOrientation");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchOrientation");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint TouchMask
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.TouchMask");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchMask");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchMask");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint TouchFlags
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.TouchFlags");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.TouchFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.TouchFlags");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.TouchFlags");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect TouchContactRaw
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.TouchContactRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreWebView2PointerInfo.TouchContactRaw");
+				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.TouchContactRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.TouchContactRaw");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.TouchContactRaw");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect TouchContact
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.TouchContact is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreWebView2PointerInfo.TouchContact");
+				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.TouchContact is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.TouchContact");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.TouchContact");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Time
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.Time is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.Time");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.Time is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.Time");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.Time");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PointerKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PointerKind");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PointerKind");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PointerKind");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PointerId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PointerId");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PointerId");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PointerId");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PointerFlags
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PointerFlags");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PointerFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PointerFlags");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PointerFlags");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect PointerDeviceRect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.PointerDeviceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreWebView2PointerInfo.PointerDeviceRect");
+				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.PointerDeviceRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.PointerDeviceRect");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.PointerDeviceRect");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point PixelLocationRaw
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.PixelLocationRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CoreWebView2PointerInfo.PixelLocationRaw");
+				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.PixelLocationRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.PixelLocationRaw");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.PixelLocationRaw");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point PixelLocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.PixelLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CoreWebView2PointerInfo.PixelLocation");
+				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.PixelLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.PixelLocation");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.PixelLocation");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong PerformanceCount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong CoreWebView2PointerInfo.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20CoreWebView2PointerInfo.PerformanceCount");
+				throw new global::System.NotImplementedException("The member ulong CoreWebView2PointerInfo.PerformanceCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20CoreWebView2PointerInfo.PerformanceCount");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "ulong CoreWebView2PointerInfo.PerformanceCount");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int PenTiltY
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.PenTiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CoreWebView2PointerInfo.PenTiltY");
+				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.PenTiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.PenTiltY");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.PenTiltY");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int PenTiltX
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.PenTiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CoreWebView2PointerInfo.PenTiltX");
+				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.PenTiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.PenTiltX");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.PenTiltX");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PenRotation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenRotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PenRotation");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenRotation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenRotation");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenRotation");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PenPressure
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PenPressure");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenPressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenPressure");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenPressure");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PenMask
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PenMask");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenMask is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenMask");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenMask");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint PenFlags
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.PenFlags");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.PenFlags is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.PenFlags");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.PenFlags");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint KeyStates
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.KeyStates is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.KeyStates");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.KeyStates is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.KeyStates");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.KeyStates");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int InputData
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.InputData is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CoreWebView2PointerInfo.InputData");
+				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.InputData is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.InputData");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.InputData");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint HistoryCount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.HistoryCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.HistoryCount");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.HistoryCount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.HistoryCount");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.HistoryCount");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point HimetricLocationRaw
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.HimetricLocationRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CoreWebView2PointerInfo.HimetricLocationRaw");
+				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.HimetricLocationRaw is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.HimetricLocationRaw");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.HimetricLocationRaw");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point HimetricLocation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.HimetricLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20CoreWebView2PointerInfo.HimetricLocation");
+				throw new global::System.NotImplementedException("The member Point CoreWebView2PointerInfo.HimetricLocation is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CoreWebView2PointerInfo.HimetricLocation");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Point CoreWebView2PointerInfo.HimetricLocation");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint FrameId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20CoreWebView2PointerInfo.FrameId");
+				throw new global::System.NotImplementedException("The member uint CoreWebView2PointerInfo.FrameId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20CoreWebView2PointerInfo.FrameId");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "uint CoreWebView2PointerInfo.FrameId");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect DisplayRect
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.DisplayRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreWebView2PointerInfo.DisplayRect");
+				throw new global::System.NotImplementedException("The member Rect CoreWebView2PointerInfo.DisplayRect is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2PointerInfo.DisplayRect");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "Rect CoreWebView2PointerInfo.DisplayRect");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int ButtonChangeKind
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.ButtonChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20CoreWebView2PointerInfo.ButtonChangeKind");
+				throw new global::System.NotImplementedException("The member int CoreWebView2PointerInfo.ButtonChangeKind is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2PointerInfo.ButtonChangeKind");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo", "int CoreWebView2PointerInfo.ButtonChangeKind");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.PointerKind.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.PointerKind.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PointerInfo.PointerId.get

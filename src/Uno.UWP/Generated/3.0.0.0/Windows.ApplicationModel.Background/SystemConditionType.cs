@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum SystemConditionType 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemConditionType.Invalid
@@ -15,5 +15,5 @@ namespace Windows.ApplicationModel.Background
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemConditionType.FreeNetworkAvailable
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemConditionType.BackgroundWorkCostNotHigh
 	}
-	#endif
+#endif
 }

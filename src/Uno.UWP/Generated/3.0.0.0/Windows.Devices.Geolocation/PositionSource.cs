@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum PositionSource 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Cellular
@@ -13,5 +13,5 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Default
 		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Obfuscated
 	}
-	#endif
+#endif
 }

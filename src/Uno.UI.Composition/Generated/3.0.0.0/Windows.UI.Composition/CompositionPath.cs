@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CompositionPath : global::Windows.Graphics.IGeometrySource2D
 	{
 		// Skipping already declared method Windows.UI.Composition.CompositionPath.CompositionPath(Windows.Graphics.IGeometrySource2D)

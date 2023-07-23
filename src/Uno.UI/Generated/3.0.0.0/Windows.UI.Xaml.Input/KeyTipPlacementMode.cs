@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum KeyTipPlacementMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Auto
@@ -13,5 +13,5 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Center
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Hidden
 	}
-	#endif
+#endif
 }

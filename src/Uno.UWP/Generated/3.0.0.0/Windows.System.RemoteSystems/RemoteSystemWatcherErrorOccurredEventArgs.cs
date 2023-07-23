@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RemoteSystemWatcherErrorOccurredEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.RemoteSystems.RemoteSystemWatcherError Error
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemWatcherError RemoteSystemWatcherErrorOccurredEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemWatcherError%20RemoteSystemWatcherErrorOccurredEventArgs.Error");
+				throw new global::System.NotImplementedException("The member RemoteSystemWatcherError RemoteSystemWatcherErrorOccurredEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemWatcherError%20RemoteSystemWatcherErrorOccurredEventArgs.Error");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemWatcherErrorOccurredEventArgs.Error.get
 	}
 }

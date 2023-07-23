@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Diagnostics.DevicePortal
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class DevicePortalConnectionClosedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedReason Reason
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DevicePortalConnectionClosedReason DevicePortalConnectionClosedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DevicePortalConnectionClosedReason%20DevicePortalConnectionClosedEventArgs.Reason");
+				throw new global::System.NotImplementedException("The member DevicePortalConnectionClosedReason DevicePortalConnectionClosedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePortalConnectionClosedReason%20DevicePortalConnectionClosedEventArgs.Reason");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnectionClosedEventArgs.Reason.get
 	}
 }

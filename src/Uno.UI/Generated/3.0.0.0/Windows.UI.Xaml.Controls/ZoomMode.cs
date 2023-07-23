@@ -2,11 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ZoomMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ZoomMode.Disabled
 		// Skipping already declared field Windows.UI.Xaml.Controls.ZoomMode.Enabled
 	}
-	#endif
+#endif
 }

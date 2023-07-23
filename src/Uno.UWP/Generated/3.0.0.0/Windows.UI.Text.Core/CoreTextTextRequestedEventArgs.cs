@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Text.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CoreTextTextRequestedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Text.Core.CoreTextTextRequest Request
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreTextTextRequest CoreTextTextRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreTextTextRequest%20CoreTextTextRequestedEventArgs.Request");
+				throw new global::System.NotImplementedException("The member CoreTextTextRequest CoreTextTextRequestedEventArgs.Request is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextTextRequest%20CoreTextTextRequestedEventArgs.Request");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextTextRequestedEventArgs.Request.get
 	}
 }

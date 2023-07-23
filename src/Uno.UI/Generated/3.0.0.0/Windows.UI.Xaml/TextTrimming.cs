@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum TextTrimming 
 	{
 		// Skipping already declared field Windows.UI.Xaml.TextTrimming.None
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml
 		// Skipping already declared field Windows.UI.Xaml.TextTrimming.WordEllipsis
 		// Skipping already declared field Windows.UI.Xaml.TextTrimming.Clip
 	}
-	#endif
+#endif
 }

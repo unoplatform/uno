@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ListViewSelectionMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ListViewSelectionMode.None
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared field Windows.UI.Xaml.Controls.ListViewSelectionMode.Multiple
 		// Skipping already declared field Windows.UI.Xaml.Controls.ListViewSelectionMode.Extended
 	}
-	#endif
+#endif
 }

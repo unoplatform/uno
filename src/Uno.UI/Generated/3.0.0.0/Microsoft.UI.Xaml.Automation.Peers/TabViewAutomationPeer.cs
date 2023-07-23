@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class TabViewAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.TabViewAutomationPeer.TabViewAutomationPeer(Microsoft.UI.Xaml.Controls.TabView)

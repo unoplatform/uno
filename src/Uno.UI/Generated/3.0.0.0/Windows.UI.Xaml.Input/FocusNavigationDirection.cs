@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum FocusNavigationDirection 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Next
@@ -13,5 +13,5 @@ namespace Windows.UI.Xaml.Input
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Right
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.None
 	}
-	#endif
+#endif
 }

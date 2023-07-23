@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum LaunchUriStatus 
 	{
 		// Skipping already declared field Windows.System.LaunchUriStatus.Success
@@ -10,5 +10,5 @@ namespace Windows.System
 		// Skipping already declared field Windows.System.LaunchUriStatus.ProtocolUnavailable
 		// Skipping already declared field Windows.System.LaunchUriStatus.Unknown
 	}
-	#endif
+#endif
 }

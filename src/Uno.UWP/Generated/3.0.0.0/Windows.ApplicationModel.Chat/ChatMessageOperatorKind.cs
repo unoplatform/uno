@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ChatMessageOperatorKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Unspecified
@@ -10,5 +10,5 @@ namespace Windows.ApplicationModel.Chat
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Mms
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Rcs
 	}
-	#endif
+#endif
 }

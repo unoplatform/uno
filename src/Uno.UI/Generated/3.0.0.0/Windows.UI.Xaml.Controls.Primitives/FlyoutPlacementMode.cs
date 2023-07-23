@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum FlyoutPlacementMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Top
@@ -20,5 +20,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.RightEdgeAlignedBottom
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Auto
 	}
-	#endif
+#endif
 }

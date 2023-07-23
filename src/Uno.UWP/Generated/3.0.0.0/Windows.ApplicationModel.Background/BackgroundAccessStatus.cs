@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum BackgroundAccessStatus 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.Unspecified
@@ -14,5 +14,5 @@ namespace Windows.ApplicationModel.Background
 		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.DeniedBySystemPolicy
 		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.DeniedByUser
 	}
-	#endif
+#endif
 }

@@ -2,18 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing.Workflow
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class PrintWorkflowObjectModelSourceFileContent 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public PrintWorkflowObjectModelSourceFileContent( global::Windows.Storage.Streams.IInputStream xpsStream) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent", "PrintWorkflowObjectModelSourceFileContent.PrintWorkflowObjectModelSourceFileContent(IInputStream xpsStream)");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelSourceFileContent.PrintWorkflowObjectModelSourceFileContent(Windows.Storage.Streams.IInputStream)
 	}
 }

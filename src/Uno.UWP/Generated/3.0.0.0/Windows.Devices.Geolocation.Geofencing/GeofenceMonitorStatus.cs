@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum GeofenceMonitorStatus 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.Ready
@@ -12,5 +12,5 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.NotInitialized
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.NotAvailable
 	}
-	#endif
+#endif
 }

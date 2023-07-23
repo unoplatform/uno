@@ -2,14 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CoreAcceleratorKeys : global::Windows.UI.Core.ICoreAcceleratorKeys
 	{
 		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.AcceleratorKeyActivated.add
 		// Forced skipping of method Windows.UI.Core.CoreAcceleratorKeys.AcceleratorKeyActivated.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreDispatcher, global::Windows.UI.Core.AcceleratorKeyEventArgs> AcceleratorKeyActivated
 		{
@@ -24,7 +24,7 @@ namespace Windows.UI.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreAcceleratorKeys", "event TypedEventHandler<CoreDispatcher, AcceleratorKeyEventArgs> CoreAcceleratorKeys.AcceleratorKeyActivated");
 			}
 		}
-		#endif
+#endif
 		// Processing: Windows.UI.Core.ICoreAcceleratorKeys
 	}
 }

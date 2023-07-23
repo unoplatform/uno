@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ElasticEase : global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
 		// Skipping already declared property Springiness

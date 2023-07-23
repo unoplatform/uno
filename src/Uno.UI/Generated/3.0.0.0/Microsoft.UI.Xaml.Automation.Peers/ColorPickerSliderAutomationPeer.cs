@@ -2,18 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ColorPickerSliderAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.SliderAutomationPeer
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public ColorPickerSliderAutomationPeer( global::Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer", "ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(ColorPickerSlider owner)");
 		}
-		#endif
+#endif
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider)
 	}
 }

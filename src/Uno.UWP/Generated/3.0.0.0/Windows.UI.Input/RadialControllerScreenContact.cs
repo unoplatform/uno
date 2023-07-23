@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RadialControllerScreenContact 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect Bounds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect RadialControllerScreenContact.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20RadialControllerScreenContact.Bounds");
+				throw new global::System.NotImplementedException("The member Rect RadialControllerScreenContact.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20RadialControllerScreenContact.Bounds");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point RadialControllerScreenContact.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20RadialControllerScreenContact.Position");
+				throw new global::System.NotImplementedException("The member Point RadialControllerScreenContact.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20RadialControllerScreenContact.Position");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.Bounds.get
 		// Forced skipping of method Windows.UI.Input.RadialControllerScreenContact.Position.get
 	}

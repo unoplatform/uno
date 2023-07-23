@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum AppBarClosedDisplayMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.AppBarClosedDisplayMode.Compact
 		// Skipping already declared field Windows.UI.Xaml.Controls.AppBarClosedDisplayMode.Minimal
 		// Skipping already declared field Windows.UI.Xaml.Controls.AppBarClosedDisplayMode.Hidden
 	}
-	#endif
+#endif
 }

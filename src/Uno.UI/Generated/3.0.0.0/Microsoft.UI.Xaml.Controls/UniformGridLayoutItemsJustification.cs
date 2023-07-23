@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum UniformGridLayoutItemsJustification 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification.Start
@@ -12,5 +12,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification.SpaceBetween
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification.SpaceEvenly
 	}
-	#endif
+#endif
 }

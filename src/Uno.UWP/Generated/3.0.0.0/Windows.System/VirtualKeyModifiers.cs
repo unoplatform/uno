@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum VirtualKeyModifiers : uint
 	{
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.None
@@ -11,5 +11,5 @@ namespace Windows.System
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.Shift
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.Windows
 	}
-	#endif
+#endif
 }

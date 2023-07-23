@@ -3,12 +3,12 @@
 namespace Windows.UI.Xaml.Media
 {
 	[global::Windows.UI.Xaml.Markup.ContentPropertyAttribute(Name = "ProjectionMatrix")]
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class Matrix3DProjection : global::Windows.UI.Xaml.Media.Projection
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
 		{
@@ -21,22 +21,22 @@ namespace Windows.UI.Xaml.Media
 				this.SetValue(ProjectionMatrixProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ProjectionMatrix), typeof(global::Windows.UI.Xaml.Media.Media3D.Matrix3D), 
 			typeof(global::Windows.UI.Xaml.Media.Matrix3DProjection), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Matrix3D)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Matrix3DProjection() : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Matrix3DProjection", "Matrix3DProjection.Matrix3DProjection()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Matrix3DProjection.Matrix3DProjection()
 		// Forced skipping of method Windows.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Matrix3DProjection.ProjectionMatrix.set

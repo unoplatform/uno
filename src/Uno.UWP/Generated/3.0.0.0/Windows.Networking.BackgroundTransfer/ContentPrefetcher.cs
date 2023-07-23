@@ -2,45 +2,45 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.BackgroundTransfer
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public static partial class ContentPrefetcher 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Uri IndirectContentUri
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Uri ContentPrefetcher.IndirectContentUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Uri%20ContentPrefetcher.IndirectContentUri");
+				throw new global::System.NotImplementedException("The member Uri ContentPrefetcher.IndirectContentUri is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20ContentPrefetcher.IndirectContentUri");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.ContentPrefetcher", "Uri ContentPrefetcher.IndirectContentUri");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.Collections.Generic.IList<global::System.Uri> ContentUris
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IList<Uri> ContentPrefetcher.ContentUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IList%3CUri%3E%20ContentPrefetcher.ContentUris");
+				throw new global::System.NotImplementedException("The member IList<Uri> ContentPrefetcher.ContentUris is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20ContentPrefetcher.ContentUris");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::System.DateTimeOffset? LastSuccessfulPrefetchTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? ContentPrefetcher.LastSuccessfulPrefetchTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DateTimeOffset%3F%20ContentPrefetcher.LastSuccessfulPrefetchTime");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? ContentPrefetcher.LastSuccessfulPrefetchTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DateTimeOffset%3F%20ContentPrefetcher.LastSuccessfulPrefetchTime");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.LastSuccessfulPrefetchTime.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.ContentUris.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.ContentPrefetcher.IndirectContentUri.set

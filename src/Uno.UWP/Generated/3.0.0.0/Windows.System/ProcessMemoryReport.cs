@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ProcessMemoryReport 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong PrivateWorkingSetUsage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryReport.PrivateWorkingSetUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ProcessMemoryReport.PrivateWorkingSetUsage");
+				throw new global::System.NotImplementedException("The member ulong ProcessMemoryReport.PrivateWorkingSetUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryReport.PrivateWorkingSetUsage");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong TotalWorkingSetUsage
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong ProcessMemoryReport.TotalWorkingSetUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ProcessMemoryReport.TotalWorkingSetUsage");
+				throw new global::System.NotImplementedException("The member ulong ProcessMemoryReport.TotalWorkingSetUsage is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ProcessMemoryReport.TotalWorkingSetUsage");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.ProcessMemoryReport.PrivateWorkingSetUsage.get
 		// Forced skipping of method Windows.System.ProcessMemoryReport.TotalWorkingSetUsage.get
 	}

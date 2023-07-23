@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Radios
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum RadioKind 
 	{
 		// Skipping already declared field Windows.Devices.Radios.RadioKind.Other
@@ -11,5 +11,5 @@ namespace Windows.Devices.Radios
 		// Skipping already declared field Windows.Devices.Radios.RadioKind.Bluetooth
 		// Skipping already declared field Windows.Devices.Radios.RadioKind.FM
 	}
-	#endif
+#endif
 }

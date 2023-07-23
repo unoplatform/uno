@@ -2,53 +2,53 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class GyrometerDataThreshold 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double ZAxisInDegreesPerSecond
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.ZAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20GyrometerDataThreshold.ZAxisInDegreesPerSecond");
+				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.ZAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GyrometerDataThreshold.ZAxisInDegreesPerSecond");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "double GyrometerDataThreshold.ZAxisInDegreesPerSecond");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double YAxisInDegreesPerSecond
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.YAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20GyrometerDataThreshold.YAxisInDegreesPerSecond");
+				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.YAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GyrometerDataThreshold.YAxisInDegreesPerSecond");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "double GyrometerDataThreshold.YAxisInDegreesPerSecond");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double XAxisInDegreesPerSecond
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.XAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20GyrometerDataThreshold.XAxisInDegreesPerSecond");
+				throw new global::System.NotImplementedException("The member double GyrometerDataThreshold.XAxisInDegreesPerSecond is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20GyrometerDataThreshold.XAxisInDegreesPerSecond");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.GyrometerDataThreshold", "double GyrometerDataThreshold.XAxisInDegreesPerSecond");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.XAxisInDegreesPerSecond.get
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.XAxisInDegreesPerSecond.set
 		// Forced skipping of method Windows.Devices.Sensors.GyrometerDataThreshold.YAxisInDegreesPerSecond.get

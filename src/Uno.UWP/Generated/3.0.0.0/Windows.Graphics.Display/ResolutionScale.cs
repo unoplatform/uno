@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Display
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ResolutionScale 
 	{
 		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Invalid
@@ -23,5 +23,5 @@ namespace Windows.Graphics.Display
 		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale450Percent
 		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale500Percent
 	}
-	#endif
+#endif
 }

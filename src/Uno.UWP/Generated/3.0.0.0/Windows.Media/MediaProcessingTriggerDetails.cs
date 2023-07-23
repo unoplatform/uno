@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MediaProcessingTriggerDetails 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.ValueSet Arguments
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet MediaProcessingTriggerDetails.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20MediaProcessingTriggerDetails.Arguments");
+				throw new global::System.NotImplementedException("The member ValueSet MediaProcessingTriggerDetails.Arguments is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20MediaProcessingTriggerDetails.Arguments");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.MediaProcessingTriggerDetails.Arguments.get
 	}
 }

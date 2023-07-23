@@ -3,30 +3,30 @@
 namespace Windows.Media.Protection.PlayReady
 {
 	// This type is deprecated. Consider not implementing it.
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface INDLicenseFetchDescriptor 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		byte[] ContentID
 		{
 			get;
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Media.Protection.PlayReady.NDContentIDType ContentIDType
 		{
 			get;
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Media.Protection.PlayReady.INDCustomData LicenseFetchChallengeCustomData
 		{
 			get;
 			set;
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor.ContentIDType.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor.ContentID.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor.LicenseFetchChallengeCustomData.get

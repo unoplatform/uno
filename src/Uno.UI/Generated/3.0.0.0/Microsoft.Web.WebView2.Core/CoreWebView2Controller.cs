@@ -2,147 +2,147 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CoreWebView2Controller 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double ZoomFactor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CoreWebView2Controller.ZoomFactor");
+				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.ZoomFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Controller.ZoomFactor");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "double CoreWebView2Controller.ZoomFactor");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWebView2ControllerWindowReference%20CoreWebView2Controller.ParentWindow");
+				throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerWindowReference%20CoreWebView2Controller.ParentWindow");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2ControllerWindowReference CoreWebView2Controller.ParentWindow");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsVisible
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreWebView2Controller.IsVisible");
+				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.IsVisible is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.IsVisible");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.IsVisible");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Rect Bounds
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Rect CoreWebView2Controller.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Rect%20CoreWebView2Controller.Bounds");
+				throw new global::System.NotImplementedException("The member Rect CoreWebView2Controller.Bounds is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20CoreWebView2Controller.Bounds");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Rect CoreWebView2Controller.Bounds");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Microsoft.Web.WebView2.Core.CoreWebView2 CoreWebView2
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2 CoreWebView2Controller.CoreWebView2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWebView2%20CoreWebView2Controller.CoreWebView2");
+				throw new global::System.NotImplementedException("The member CoreWebView2 CoreWebView2Controller.CoreWebView2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2%20CoreWebView2Controller.CoreWebView2");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Color DefaultBackgroundColor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Color CoreWebView2Controller.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Color%20CoreWebView2Controller.DefaultBackgroundColor");
+				throw new global::System.NotImplementedException("The member Color CoreWebView2Controller.DefaultBackgroundColor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Color%20CoreWebView2Controller.DefaultBackgroundColor");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "Color CoreWebView2Controller.DefaultBackgroundColor");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ShouldDetectMonitorScaleChanges
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
+				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.ShouldDetectMonitorScaleChanges");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double RasterizationScale
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20CoreWebView2Controller.RasterizationScale");
+				throw new global::System.NotImplementedException("The member double CoreWebView2Controller.RasterizationScale is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20CoreWebView2Controller.RasterizationScale");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "double CoreWebView2Controller.RasterizationScale");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Microsoft.Web.WebView2.Core.CoreWebView2BoundsMode BoundsMode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWebView2BoundsMode%20CoreWebView2Controller.BoundsMode");
+				throw new global::System.NotImplementedException("The member CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2BoundsMode%20CoreWebView2Controller.BoundsMode");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "CoreWebView2BoundsMode CoreWebView2Controller.BoundsMode");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AllowExternalDrop
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.AllowExternalDrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreWebView2Controller.AllowExternalDrop");
+				throw new global::System.NotImplementedException("The member bool CoreWebView2Controller.AllowExternalDrop is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2Controller.AllowExternalDrop");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "bool CoreWebView2Controller.AllowExternalDrop");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.get
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.DefaultBackgroundColor.set
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.RasterizationScale.get
@@ -174,35 +174,35 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.LostFocus.remove
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.add
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void SetBoundsAndZoomFactor( global::Windows.Foundation.Rect Bounds,  double ZoomFactor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.SetBoundsAndZoomFactor(Rect Bounds, double ZoomFactor)");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void MoveFocus( global::Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusReason reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason reason)");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void NotifyParentWindowPositionChanged()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.NotifyParentWindowPositionChanged()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.Close()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, object> RasterizationScaleChanged
 		{
@@ -217,8 +217,8 @@ namespace Microsoft.Web.WebView2.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.RasterizationScaleChanged");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, global::Microsoft.Web.WebView2.Core.CoreWebView2AcceleratorKeyPressedEventArgs> AcceleratorKeyPressed
 		{
@@ -233,8 +233,8 @@ namespace Microsoft.Web.WebView2.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, CoreWebView2AcceleratorKeyPressedEventArgs> CoreWebView2Controller.AcceleratorKeyPressed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, object> GotFocus
 		{
@@ -249,8 +249,8 @@ namespace Microsoft.Web.WebView2.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.GotFocus");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, object> LostFocus
 		{
@@ -265,8 +265,8 @@ namespace Microsoft.Web.WebView2.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.LostFocus");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, global::Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusRequestedEventArgs> MoveFocusRequested
 		{
@@ -281,8 +281,8 @@ namespace Microsoft.Web.WebView2.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, CoreWebView2MoveFocusRequestedEventArgs> CoreWebView2Controller.MoveFocusRequested");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller, object> ZoomFactorChanged
 		{
@@ -297,6 +297,6 @@ namespace Microsoft.Web.WebView2.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "event TypedEventHandler<CoreWebView2Controller, object> CoreWebView2Controller.ZoomFactorChanged");
 			}
 		}
-		#endif
+#endif
 	}
 }

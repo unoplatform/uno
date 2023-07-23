@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum SnapPointsType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.SnapPointsType.None
@@ -11,5 +11,5 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared field Windows.UI.Xaml.Controls.SnapPointsType.OptionalSingle
 		// Skipping already declared field Windows.UI.Xaml.Controls.SnapPointsType.MandatorySingle
 	}
-	#endif
+#endif
 }

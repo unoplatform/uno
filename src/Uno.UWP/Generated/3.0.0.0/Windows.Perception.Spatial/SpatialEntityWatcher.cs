@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Perception.Spatial
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class SpatialEntityWatcher 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Perception.Spatial.SpatialEntityWatcherStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpatialEntityWatcherStatus SpatialEntityWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpatialEntityWatcherStatus%20SpatialEntityWatcher.Status");
+				throw new global::System.NotImplementedException("The member SpatialEntityWatcherStatus SpatialEntityWatcher.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialEntityWatcherStatus%20SpatialEntityWatcher.Status");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Status.get
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Added.add
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Added.remove
@@ -26,21 +26,21 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.Removed.remove
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.EnumerationCompleted.add
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityWatcher.EnumerationCompleted.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "void SpatialEntityWatcher.Start()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "void SpatialEntityWatcher.Stop()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialEntityWatcher, global::Windows.Perception.Spatial.SpatialEntityAddedEventArgs> Added
 		{
@@ -55,8 +55,8 @@ namespace Windows.Perception.Spatial
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "event TypedEventHandler<SpatialEntityWatcher, SpatialEntityAddedEventArgs> SpatialEntityWatcher.Added");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialEntityWatcher, object> EnumerationCompleted
 		{
@@ -71,8 +71,8 @@ namespace Windows.Perception.Spatial
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "event TypedEventHandler<SpatialEntityWatcher, object> SpatialEntityWatcher.EnumerationCompleted");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialEntityWatcher, global::Windows.Perception.Spatial.SpatialEntityRemovedEventArgs> Removed
 		{
@@ -87,8 +87,8 @@ namespace Windows.Perception.Spatial
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "event TypedEventHandler<SpatialEntityWatcher, SpatialEntityRemovedEventArgs> SpatialEntityWatcher.Removed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialEntityWatcher, global::Windows.Perception.Spatial.SpatialEntityUpdatedEventArgs> Updated
 		{
@@ -103,6 +103,6 @@ namespace Windows.Perception.Spatial
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.SpatialEntityWatcher", "event TypedEventHandler<SpatialEntityWatcher, SpatialEntityUpdatedEventArgs> SpatialEntityWatcher.Updated");
 			}
 		}
-		#endif
+#endif
 	}
 }

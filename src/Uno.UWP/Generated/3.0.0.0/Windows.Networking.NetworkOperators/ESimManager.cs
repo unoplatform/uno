@@ -2,32 +2,32 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public static partial class ESimManager 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.NetworkOperators.ESimServiceInfo ServiceInfo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimServiceInfo ESimManager.ServiceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimServiceInfo%20ESimManager.ServiceInfo");
+				throw new global::System.NotImplementedException("The member ESimServiceInfo ESimManager.ServiceInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimServiceInfo%20ESimManager.ServiceInfo");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfo.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Networking.NetworkOperators.ESimWatcher TryCreateESimWatcher()
 		{
-			throw new global::System.NotImplementedException("The member ESimWatcher ESimManager.TryCreateESimWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimWatcher%20ESimManager.TryCreateESimWatcher%28%29");
+			throw new global::System.NotImplementedException("The member ESimWatcher ESimManager.TryCreateESimWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimWatcher%20ESimManager.TryCreateESimWatcher%28%29");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfoChanged.add
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimManager.ServiceInfoChanged.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<object> ServiceInfoChanged
 		{
@@ -42,6 +42,6 @@ namespace Windows.Networking.NetworkOperators
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.ESimManager", "event EventHandler<object> ESimManager.ServiceInfoChanged");
 			}
 		}
-		#endif
+#endif
 	}
 }

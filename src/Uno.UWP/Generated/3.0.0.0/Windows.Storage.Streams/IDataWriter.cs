@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface IDataWriter 
 	{
 		// Skipping already declared property ByteOrder
@@ -36,8 +36,8 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.StoreAsync()
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.FlushAsync()
 		// Skipping already declared method Windows.Storage.Streams.IDataWriter.DetachBuffer()
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Streams.IOutputStream DetachStream();
-		#endif
+#endif
 	}
 }

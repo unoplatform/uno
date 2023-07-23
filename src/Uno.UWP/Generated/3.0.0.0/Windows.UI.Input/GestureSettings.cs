@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum GestureSettings : uint
 	{
 		// Skipping already declared field Windows.UI.Input.GestureSettings.None
@@ -24,5 +24,5 @@ namespace Windows.UI.Input
 		// Skipping already declared field Windows.UI.Input.GestureSettings.CrossSlide
 		// Skipping already declared field Windows.UI.Input.GestureSettings.ManipulationMultipleFingerPanning
 	}
-	#endif
+#endif
 }

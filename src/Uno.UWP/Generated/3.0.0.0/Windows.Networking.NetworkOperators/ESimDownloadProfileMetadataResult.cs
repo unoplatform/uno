@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ESimDownloadProfileMetadataResult 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.ESimProfileMetadata ProfileMetadata
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDownloadProfileMetadataResult.ProfileMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimProfileMetadata%20ESimDownloadProfileMetadataResult.ProfileMetadata");
+				throw new global::System.NotImplementedException("The member ESimProfileMetadata ESimDownloadProfileMetadataResult.ProfileMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimProfileMetadata%20ESimDownloadProfileMetadataResult.ProfileMetadata");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Networking.NetworkOperators.ESimOperationResult Result
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDownloadProfileMetadataResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ESimOperationResult%20ESimDownloadProfileMetadataResult.Result");
+				throw new global::System.NotImplementedException("The member ESimOperationResult ESimDownloadProfileMetadataResult.Result is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimOperationResult%20ESimDownloadProfileMetadataResult.Result");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.Result.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult.ProfileMetadata.get
 	}

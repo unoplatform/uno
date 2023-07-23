@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Chat
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ChatStoreChangedEventKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatStoreChangedEventKind.NotificationsMissed
@@ -14,5 +14,5 @@ namespace Windows.ApplicationModel.Chat
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatStoreChangedEventKind.ConversationDeleted
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatStoreChangedEventKind.ConversationTransportDeleted
 	}
-	#endif
+#endif
 }

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer.DragDrop
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum DragDropModifiers : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.None
@@ -13,5 +13,5 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.MiddleButton
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DragDrop.DragDropModifiers.RightButton
 	}
-	#endif
+#endif
 }

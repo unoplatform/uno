@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RemoteSystemRemovedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string RemoteSystemId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string RemoteSystemRemovedEventArgs.RemoteSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20RemoteSystemRemovedEventArgs.RemoteSystemId");
+				throw new global::System.NotImplementedException("The member string RemoteSystemRemovedEventArgs.RemoteSystemId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RemoteSystemRemovedEventArgs.RemoteSystemId");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemRemovedEventArgs.RemoteSystemId.get
 	}
 }

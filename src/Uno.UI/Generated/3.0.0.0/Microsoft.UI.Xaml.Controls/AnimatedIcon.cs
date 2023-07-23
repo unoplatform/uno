@@ -3,9 +3,9 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 	[global::Windows.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Source")]
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class AnimatedIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{
 		// Skipping already declared property Source

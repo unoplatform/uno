@@ -3,28 +3,28 @@
 namespace Windows.Devices.Perception
 {
 	// This type is deprecated. Consider not implementing it.
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class PerceptionColorFrameArrivedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan RelativeTime
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan PerceptionColorFrameArrivedEventArgs.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20PerceptionColorFrameArrivedEventArgs.RelativeTime");
+				throw new global::System.NotImplementedException("The member TimeSpan PerceptionColorFrameArrivedEventArgs.RelativeTime is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20PerceptionColorFrameArrivedEventArgs.RelativeTime");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.RelativeTime.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Perception.PerceptionColorFrame TryOpenFrame()
 		{
-			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PerceptionColorFrame%20PerceptionColorFrameArrivedEventArgs.TryOpenFrame%28%29");
+			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionColorFrame%20PerceptionColorFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}
-		#endif
+#endif
 	}
 }

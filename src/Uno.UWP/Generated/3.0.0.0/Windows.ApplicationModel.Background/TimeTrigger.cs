@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Background
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class TimeTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
 		// Skipping already declared property FreshnessTime

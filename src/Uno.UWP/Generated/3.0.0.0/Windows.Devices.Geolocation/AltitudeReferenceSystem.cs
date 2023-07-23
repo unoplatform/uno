@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum AltitudeReferenceSystem 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.AltitudeReferenceSystem.Unspecified
@@ -11,5 +11,5 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared field Windows.Devices.Geolocation.AltitudeReferenceSystem.Geoid
 		// Skipping already declared field Windows.Devices.Geolocation.AltitudeReferenceSystem.Surface
 	}
-	#endif
+#endif
 }

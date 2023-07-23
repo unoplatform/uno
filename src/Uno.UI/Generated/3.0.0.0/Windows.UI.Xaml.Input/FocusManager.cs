@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class FocusManager 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.GetFocusedElement(Windows.UI.Xaml.XamlRoot)

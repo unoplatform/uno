@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.Notification.Management
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class EmailFolderInfo 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string DisplayName
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string EmailFolderInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20EmailFolderInfo.DisplayName");
+				throw new global::System.NotImplementedException("The member string EmailFolderInfo.DisplayName is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20EmailFolderInfo.DisplayName");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsNotificationEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool EmailFolderInfo.IsNotificationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20EmailFolderInfo.IsNotificationEnabled");
+				throw new global::System.NotImplementedException("The member bool EmailFolderInfo.IsNotificationEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20EmailFolderInfo.IsNotificationEnabled");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Phone.Notification.Management.EmailFolderInfo.DisplayName.get
 		// Forced skipping of method Windows.Phone.Notification.Management.EmailFolderInfo.IsNotificationEnabled.get
 	}

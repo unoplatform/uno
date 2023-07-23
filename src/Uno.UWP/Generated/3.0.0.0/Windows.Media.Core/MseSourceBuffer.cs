@@ -2,87 +2,87 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MseSourceBuffer 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan TimestampOffset
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.TimestampOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MseSourceBuffer.TimestampOffset");
+				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.TimestampOffset is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MseSourceBuffer.TimestampOffset");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.TimestampOffset");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.MseAppendMode Mode
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MseAppendMode MseSourceBuffer.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MseAppendMode%20MseSourceBuffer.Mode");
+				throw new global::System.NotImplementedException("The member MseAppendMode MseSourceBuffer.Mode is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseAppendMode%20MseSourceBuffer.Mode");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "MseAppendMode MseSourceBuffer.Mode");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan AppendWindowStart
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.AppendWindowStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20MseSourceBuffer.AppendWindowStart");
+				throw new global::System.NotImplementedException("The member TimeSpan MseSourceBuffer.AppendWindowStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20MseSourceBuffer.AppendWindowStart");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan MseSourceBuffer.AppendWindowStart");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan? AppendWindowEnd
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan? MseSourceBuffer.AppendWindowEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%3F%20MseSourceBuffer.AppendWindowEnd");
+				throw new global::System.NotImplementedException("The member TimeSpan? MseSourceBuffer.AppendWindowEnd is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%3F%20MseSourceBuffer.AppendWindowEnd");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "TimeSpan? MseSourceBuffer.AppendWindowEnd");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.MseTimeRange> Buffered
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<MseTimeRange> MseSourceBuffer.Buffered is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMseTimeRange%3E%20MseSourceBuffer.Buffered");
+				throw new global::System.NotImplementedException("The member IReadOnlyList<MseTimeRange> MseSourceBuffer.Buffered is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMseTimeRange%3E%20MseSourceBuffer.Buffered");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsUpdating
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool MseSourceBuffer.IsUpdating is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20MseSourceBuffer.IsUpdating");
+				throw new global::System.NotImplementedException("The member bool MseSourceBuffer.IsUpdating is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MseSourceBuffer.IsUpdating");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateStarting.add
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.UpdateStarting.remove
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.Updated.add
@@ -103,42 +103,42 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowStart.set
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.get
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.set
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void AppendBuffer( global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.AppendBuffer(IBuffer buffer)");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void AppendStream( global::Windows.Storage.Streams.IInputStream stream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.AppendStream(IInputStream stream)");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void AppendStream( global::Windows.Storage.Streams.IInputStream stream,  ulong maxSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.AppendStream(IInputStream stream, ulong maxSize)");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Abort()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.Abort()");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void Remove( global::System.TimeSpan start,  global::System.TimeSpan? end)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.Remove(TimeSpan start, TimeSpan? end)");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> Aborted
 		{
@@ -153,8 +153,8 @@ namespace Windows.Media.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "event TypedEventHandler<MseSourceBuffer, object> MseSourceBuffer.Aborted");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> ErrorOccurred
 		{
@@ -169,8 +169,8 @@ namespace Windows.Media.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "event TypedEventHandler<MseSourceBuffer, object> MseSourceBuffer.ErrorOccurred");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> UpdateEnded
 		{
@@ -185,8 +185,8 @@ namespace Windows.Media.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "event TypedEventHandler<MseSourceBuffer, object> MseSourceBuffer.UpdateEnded");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> UpdateStarting
 		{
@@ -201,8 +201,8 @@ namespace Windows.Media.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "event TypedEventHandler<MseSourceBuffer, object> MseSourceBuffer.UpdateStarting");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MseSourceBuffer, object> Updated
 		{
@@ -217,6 +217,6 @@ namespace Windows.Media.Core
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "event TypedEventHandler<MseSourceBuffer, object> MseSourceBuffer.Updated");
 			}
 		}
-		#endif
+#endif
 	}
 }

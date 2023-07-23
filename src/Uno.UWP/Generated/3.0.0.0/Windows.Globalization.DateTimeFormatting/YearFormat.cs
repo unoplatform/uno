@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.DateTimeFormatting
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum YearFormat 
 	{
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.YearFormat.None
@@ -10,5 +10,5 @@ namespace Windows.Globalization.DateTimeFormatting
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.YearFormat.Abbreviated
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.YearFormat.Full
 	}
-	#endif
+#endif
 }

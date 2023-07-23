@@ -2,16 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ItemsControl : global::Windows.UI.Xaml.Controls.Control,global::Windows.UI.Xaml.Controls.IItemContainerMapping
 	{
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemsPanel
 		// Skipping already declared property ItemTemplateSelector
 		// Skipping already declared property ItemTemplate
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
 		{
@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(ItemContainerTransitionsProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property ItemContainerStyleSelector
 		// Skipping already declared property ItemContainerStyle
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.GroupStyleSelector GroupStyleSelector
 		{
@@ -40,42 +40,42 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(GroupStyleSelectorProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property DisplayMemberPath
 		// Skipping already declared property GroupStyle
 		// Skipping already declared property IsGrouping
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.Controls.ItemContainerGenerator ItemContainerGenerator
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ItemContainerGenerator ItemsControl.ItemContainerGenerator is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ItemContainerGenerator%20ItemsControl.ItemContainerGenerator");
+				throw new global::System.NotImplementedException("The member ItemContainerGenerator ItemsControl.ItemContainerGenerator is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ItemContainerGenerator%20ItemsControl.ItemContainerGenerator");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property Items
 		// Skipping already declared property ItemsPanelRoot
 		// Skipping already declared property DisplayMemberPathProperty
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty GroupStyleSelectorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(GroupStyleSelector), typeof(global::Windows.UI.Xaml.Controls.GroupStyleSelector), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsControl), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.GroupStyleSelector)));
-		#endif
+#endif
 		// Skipping already declared property IsGroupingProperty
 		// Skipping already declared property ItemContainerStyleProperty
 		// Skipping already declared property ItemContainerStyleSelectorProperty
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ItemContainerTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.ItemsControl), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
-		#endif
+#endif
 		// Skipping already declared property ItemTemplateProperty
 		// Skipping already declared property ItemTemplateSelectorProperty
 		// Skipping already declared property ItemsPanelProperty
@@ -105,13 +105,13 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.GroupStyleSelector.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.IsGrouping.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemsPanelRoot.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer( global::Windows.UI.Xaml.DependencyObject itemContainer)
 		{
-			throw new global::System.NotImplementedException("The member DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DependencyObject%20ItemsControl.GroupHeaderContainerFromItemContainer%28DependencyObject%20itemContainer%29");
+			throw new global::System.NotImplementedException("The member DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DependencyObject%20ItemsControl.GroupHeaderContainerFromItemContainer%28DependencyObject%20itemContainer%29");
 		}
-		#endif
+#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.IsItemItsOwnContainerOverride(object)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.GetContainerForItemOverride()
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ClearContainerForItemOverride(Windows.UI.Xaml.DependencyObject, object)
@@ -121,13 +121,13 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.OnItemContainerStyleSelectorChanged(Windows.UI.Xaml.Controls.StyleSelector, Windows.UI.Xaml.Controls.StyleSelector)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.OnItemTemplateChanged(Windows.UI.Xaml.DataTemplate, Windows.UI.Xaml.DataTemplate)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.OnItemTemplateSelectorChanged(Windows.UI.Xaml.Controls.DataTemplateSelector, Windows.UI.Xaml.Controls.DataTemplateSelector)
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		protected virtual void OnGroupStyleSelectorChanged( global::Windows.UI.Xaml.Controls.GroupStyleSelector oldGroupStyleSelector,  global::Windows.UI.Xaml.Controls.GroupStyleSelector newGroupStyleSelector)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ItemsControl", "void ItemsControl.OnGroupStyleSelectorChanged(GroupStyleSelector oldGroupStyleSelector, GroupStyleSelector newGroupStyleSelector)");
 		}
-		#endif
+#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ItemFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.ContainerFromItem(object)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsControl.IndexFromContainer(Windows.UI.Xaml.DependencyObject)

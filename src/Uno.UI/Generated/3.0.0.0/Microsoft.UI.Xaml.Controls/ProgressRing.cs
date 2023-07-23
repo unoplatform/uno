@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ProgressRing : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property Value
@@ -12,16 +12,16 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property Maximum
 		// Skipping already declared property IsIndeterminate
 		// Skipping already declared property IsActive
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings TemplateSettings
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ProgressRingTemplateSettings ProgressRing.TemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ProgressRingTemplateSettings%20ProgressRing.TemplateSettings");
+				throw new global::System.NotImplementedException("The member ProgressRingTemplateSettings ProgressRing.TemplateSettings is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProgressRingTemplateSettings%20ProgressRing.TemplateSettings");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property IsActiveProperty
 		// Skipping already declared property IsIndeterminateProperty
 		// Skipping already declared property MaximumProperty

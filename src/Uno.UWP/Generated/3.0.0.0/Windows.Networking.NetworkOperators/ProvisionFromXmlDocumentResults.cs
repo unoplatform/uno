@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.NetworkOperators
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ProvisionFromXmlDocumentResults 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool AllElementsProvisioned
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ProvisionFromXmlDocumentResults.AllElementsProvisioned is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20ProvisionFromXmlDocumentResults.AllElementsProvisioned");
+				throw new global::System.NotImplementedException("The member bool ProvisionFromXmlDocumentResults.AllElementsProvisioned is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ProvisionFromXmlDocumentResults.AllElementsProvisioned");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string ProvisionResultsXml
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ProvisionFromXmlDocumentResults.ProvisionResultsXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ProvisionFromXmlDocumentResults.ProvisionResultsXml");
+				throw new global::System.NotImplementedException("The member string ProvisionFromXmlDocumentResults.ProvisionResultsXml is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ProvisionFromXmlDocumentResults.ProvisionResultsXml");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.AllElementsProvisioned.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.ProvisionFromXmlDocumentResults.ProvisionResultsXml.get
 	}

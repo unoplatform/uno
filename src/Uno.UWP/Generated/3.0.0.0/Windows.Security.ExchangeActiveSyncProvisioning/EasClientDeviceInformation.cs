@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Security.ExchangeActiveSyncProvisioning
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class EasClientDeviceInformation 
 	{
 		// Skipping already declared property FriendlyName

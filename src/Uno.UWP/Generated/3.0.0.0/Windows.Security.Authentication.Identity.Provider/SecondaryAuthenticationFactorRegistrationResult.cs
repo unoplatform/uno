@@ -3,31 +3,31 @@
 namespace Windows.Security.Authentication.Identity.Provider
 {
 	// This type is deprecated. Consider not implementing it.
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class SecondaryAuthenticationFactorRegistrationResult 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration Registration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorRegistration SecondaryAuthenticationFactorRegistrationResult.Registration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryAuthenticationFactorRegistration%20SecondaryAuthenticationFactorRegistrationResult.Registration");
+				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorRegistration SecondaryAuthenticationFactorRegistrationResult.Registration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorRegistration%20SecondaryAuthenticationFactorRegistrationResult.Registration");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationStatus Status
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorRegistrationStatus SecondaryAuthenticationFactorRegistrationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SecondaryAuthenticationFactorRegistrationStatus%20SecondaryAuthenticationFactorRegistrationResult.Status");
+				throw new global::System.NotImplementedException("The member SecondaryAuthenticationFactorRegistrationStatus SecondaryAuthenticationFactorRegistrationResult.Status is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SecondaryAuthenticationFactorRegistrationStatus%20SecondaryAuthenticationFactorRegistrationResult.Status");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Status.get
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationResult.Registration.get
 	}

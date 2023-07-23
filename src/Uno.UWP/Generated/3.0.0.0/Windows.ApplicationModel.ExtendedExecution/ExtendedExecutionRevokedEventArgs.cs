@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.ExtendedExecution
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ExtendedExecutionRevokedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedReason Reason
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ExtendedExecutionRevokedReason ExtendedExecutionRevokedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ExtendedExecutionRevokedReason%20ExtendedExecutionRevokedEventArgs.Reason");
+				throw new global::System.NotImplementedException("The member ExtendedExecutionRevokedReason ExtendedExecutionRevokedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExtendedExecutionRevokedReason%20ExtendedExecutionRevokedEventArgs.Reason");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs.Reason.get
 	}
 }

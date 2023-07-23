@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum GattCharacteristicProperties : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties.None
@@ -17,5 +17,5 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties.ReliableWrites
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristicProperties.WritableAuxiliaries
 	}
-	#endif
+#endif
 }

@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>,global::System.Collections.Generic.IList<object>,global::System.Collections.Generic.IEnumerable<object>
 	{
 		// Skipping already declared property Size

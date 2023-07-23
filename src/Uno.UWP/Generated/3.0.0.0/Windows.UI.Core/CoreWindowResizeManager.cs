@@ -2,40 +2,40 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CoreWindowResizeManager 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool ShouldWaitForLayoutCompletion
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool CoreWindowResizeManager.ShouldWaitForLayoutCompletion is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20CoreWindowResizeManager.ShouldWaitForLayoutCompletion");
+				throw new global::System.NotImplementedException("The member bool CoreWindowResizeManager.ShouldWaitForLayoutCompletion is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWindowResizeManager.ShouldWaitForLayoutCompletion");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "bool CoreWindowResizeManager.ShouldWaitForLayoutCompletion");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  void NotifyLayoutCompleted()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindowResizeManager", "void CoreWindowResizeManager.NotifyLayoutCompleted()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.set
 		// Forced skipping of method Windows.UI.Core.CoreWindowResizeManager.ShouldWaitForLayoutCompletion.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Core.CoreWindowResizeManager GetForCurrentView()
 		{
-			throw new global::System.NotImplementedException("The member CoreWindowResizeManager CoreWindowResizeManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CoreWindowResizeManager%20CoreWindowResizeManager.GetForCurrentView%28%29");
+			throw new global::System.NotImplementedException("The member CoreWindowResizeManager CoreWindowResizeManager.GetForCurrentView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWindowResizeManager%20CoreWindowResizeManager.GetForCurrentView%28%29");
 		}
-		#endif
+#endif
 	}
 }

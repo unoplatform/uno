@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum RefreshVisualizerState 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshVisualizerState.Idle
@@ -11,5 +11,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshVisualizerState.Pending
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshVisualizerState.Refreshing
 	}
-	#endif
+#endif
 }

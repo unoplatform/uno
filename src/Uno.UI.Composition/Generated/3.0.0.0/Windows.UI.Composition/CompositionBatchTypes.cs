@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum CompositionBatchTypes : uint
 	{
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.None
@@ -11,5 +11,5 @@ namespace Windows.UI.Composition
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.InfiniteAnimation
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.AllAnimations
 	}
-	#endif
+#endif
 }

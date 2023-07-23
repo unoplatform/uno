@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum DayOfWeek 
 	{
 		// Skipping already declared field Windows.Globalization.DayOfWeek.Sunday
@@ -13,5 +13,5 @@ namespace Windows.Globalization
 		// Skipping already declared field Windows.Globalization.DayOfWeek.Friday
 		// Skipping already declared field Windows.Globalization.DayOfWeek.Saturday
 	}
-	#endif
+#endif
 }

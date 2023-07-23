@@ -3,31 +3,31 @@
 namespace Windows.Networking.Connectivity
 {
 	// This type is deprecated. Consider not implementing it.
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class DataUsage 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong BytesReceived
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DataUsage.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20DataUsage.BytesReceived");
+				throw new global::System.NotImplementedException("The member ulong DataUsage.BytesReceived is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20DataUsage.BytesReceived");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  ulong BytesSent
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ulong DataUsage.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20DataUsage.BytesSent");
+				throw new global::System.NotImplementedException("The member ulong DataUsage.BytesSent is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20DataUsage.BytesSent");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.BytesSent.get
 		// Forced skipping of method Windows.Networking.Connectivity.DataUsage.BytesReceived.get
 	}

@@ -2,51 +2,51 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Devices.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class FrameFocusCapabilities 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Max
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FrameFocusCapabilities.Max");
+				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Max is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FrameFocusCapabilities.Max");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Min
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FrameFocusCapabilities.Min");
+				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Min is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FrameFocusCapabilities.Min");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  uint Step
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20FrameFocusCapabilities.Step");
+				throw new global::System.NotImplementedException("The member uint FrameFocusCapabilities.Step is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20FrameFocusCapabilities.Step");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Supported
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool FrameFocusCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20FrameFocusCapabilities.Supported");
+				throw new global::System.NotImplementedException("The member bool FrameFocusCapabilities.Supported is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FrameFocusCapabilities.Supported");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Supported.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Min.get
 		// Forced skipping of method Windows.Media.Devices.Core.FrameFocusCapabilities.Max.get

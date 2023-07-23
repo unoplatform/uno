@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Maps
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum MapLocationFinderStatus 
 	{
 		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.Success
@@ -13,5 +13,5 @@ namespace Windows.Services.Maps
 		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.NetworkFailure
 		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.NotSupported
 	}
-	#endif
+#endif
 }

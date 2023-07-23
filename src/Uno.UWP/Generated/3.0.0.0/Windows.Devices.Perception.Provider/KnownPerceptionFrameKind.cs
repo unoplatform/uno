@@ -3,41 +3,41 @@
 namespace Windows.Devices.Perception.Provider
 {
 	// This type is deprecated. Consider not implementing it.
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public static partial class KnownPerceptionFrameKind 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string Color
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameKind.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameKind.Color");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameKind.Color is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameKind.Color");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string Depth
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameKind.Depth is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameKind.Depth");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameKind.Depth is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameKind.Depth");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string Infrared
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameKind.Infrared is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20KnownPerceptionFrameKind.Infrared");
+				throw new global::System.NotImplementedException("The member string KnownPerceptionFrameKind.Infrared is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20KnownPerceptionFrameKind.Infrared");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Color.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Depth.get
 		// Forced skipping of method Windows.Devices.Perception.Provider.KnownPerceptionFrameKind.Infrared.get

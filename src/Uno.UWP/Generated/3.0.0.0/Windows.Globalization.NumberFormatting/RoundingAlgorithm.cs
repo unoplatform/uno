@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization.NumberFormatting
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum RoundingAlgorithm 
 	{
 		// Skipping already declared field Windows.Globalization.NumberFormatting.RoundingAlgorithm.None
@@ -17,5 +17,5 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared field Windows.Globalization.NumberFormatting.RoundingAlgorithm.RoundHalfToEven
 		// Skipping already declared field Windows.Globalization.NumberFormatting.RoundingAlgorithm.RoundHalfToOdd
 	}
-	#endif
+#endif
 }

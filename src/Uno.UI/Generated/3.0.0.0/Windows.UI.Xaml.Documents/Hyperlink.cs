@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Documents
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class Hyperlink : global::Windows.UI.Xaml.Documents.Span
 	{
 		// Skipping already declared property NavigateUri
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property XYFocusRight
 		// Skipping already declared property XYFocusLeft
 		// Skipping already declared property XYFocusDown
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
 		{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Documents
 				this.SetValue(ElementSoundModeProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property XYFocusUpNavigationStrategy
 		// Skipping already declared property XYFocusRightNavigationStrategy
 		// Skipping already declared property XYFocusLeftNavigationStrategy
@@ -36,14 +36,14 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property IsTabStop
 		// Skipping already declared property NavigateUriProperty
 		// Skipping already declared property UnderlineStyleProperty
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 
 			typeof(global::Windows.UI.Xaml.Documents.Hyperlink), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
-		#endif
+#endif
 		// Skipping already declared property XYFocusDownProperty
 		// Skipping already declared property XYFocusLeftProperty
 		// Skipping already declared property XYFocusRightProperty

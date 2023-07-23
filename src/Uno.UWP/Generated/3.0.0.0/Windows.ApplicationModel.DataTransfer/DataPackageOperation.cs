@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum DataPackageOperation : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.None
@@ -10,5 +10,5 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Link
 	}
-	#endif
+#endif
 }

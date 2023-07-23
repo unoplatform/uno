@@ -2,83 +2,83 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Graphics.Printing
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class PrintTask 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.PrintTaskOptions Options
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member PrintTaskOptions PrintTask.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=PrintTaskOptions%20PrintTask.Options");
+				throw new global::System.NotImplementedException("The member PrintTaskOptions PrintTask.Options is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTaskOptions%20PrintTask.Options");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DataPackagePropertySet PrintTask.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=DataPackagePropertySet%20PrintTask.Properties");
+				throw new global::System.NotImplementedException("The member DataPackagePropertySet PrintTask.Properties is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataPackagePropertySet%20PrintTask.Properties");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Graphics.Printing.IPrintDocumentSource Source
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member IPrintDocumentSource PrintTask.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IPrintDocumentSource%20PrintTask.Source");
+				throw new global::System.NotImplementedException("The member IPrintDocumentSource PrintTask.Source is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IPrintDocumentSource%20PrintTask.Source");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsPreviewEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.IsPreviewEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintTask.IsPreviewEnabled");
+				throw new global::System.NotImplementedException("The member bool PrintTask.IsPreviewEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.IsPreviewEnabled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "bool PrintTask.IsPreviewEnabled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsPrinterTargetEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.IsPrinterTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintTask.IsPrinterTargetEnabled");
+				throw new global::System.NotImplementedException("The member bool PrintTask.IsPrinterTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.IsPrinterTargetEnabled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "bool PrintTask.IsPrinterTargetEnabled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Is3DManufacturingTargetEnabled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PrintTask.Is3DManufacturingTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PrintTask.Is3DManufacturingTargetEnabled");
+				throw new global::System.NotImplementedException("The member bool PrintTask.Is3DManufacturingTargetEnabled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintTask.Is3DManufacturingTargetEnabled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "bool PrintTask.Is3DManufacturingTargetEnabled");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Properties.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Source.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Options.get
@@ -96,7 +96,7 @@ namespace Windows.Graphics.Printing
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.Is3DManufacturingTargetEnabled.get
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.set
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskCompletedEventArgs> Completed
 		{
@@ -111,8 +111,8 @@ namespace Windows.Graphics.Printing
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, PrintTaskCompletedEventArgs> PrintTask.Completed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Previewing
 		{
@@ -127,8 +127,8 @@ namespace Windows.Graphics.Printing
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, object> PrintTask.Previewing");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskProgressingEventArgs> Progressing
 		{
@@ -143,8 +143,8 @@ namespace Windows.Graphics.Printing
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, PrintTaskProgressingEventArgs> PrintTask.Progressing");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Submitting
 		{
@@ -159,6 +159,6 @@ namespace Windows.Graphics.Printing
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTask", "event TypedEventHandler<PrintTask, object> PrintTask.Submitting");
 			}
 		}
-		#endif
+#endif
 	}
 }

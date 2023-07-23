@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum DeviceWatcherStatus 
 	{
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Created
@@ -12,5 +12,5 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Stopped
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Aborted
 	}
-	#endif
+#endif
 }

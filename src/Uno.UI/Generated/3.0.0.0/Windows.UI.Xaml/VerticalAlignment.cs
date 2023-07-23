@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum VerticalAlignment 
 	{
 		// Skipping already declared field Windows.UI.Xaml.VerticalAlignment.Top
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml
 		// Skipping already declared field Windows.UI.Xaml.VerticalAlignment.Bottom
 		// Skipping already declared field Windows.UI.Xaml.VerticalAlignment.Stretch
 	}
-	#endif
+#endif
 }

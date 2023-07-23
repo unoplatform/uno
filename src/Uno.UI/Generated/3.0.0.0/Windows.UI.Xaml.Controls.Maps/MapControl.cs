@@ -3,9 +3,9 @@
 namespace Windows.UI.Xaml.Controls.Maps
 {
 	[global::Windows.UI.Xaml.Markup.ContentPropertyAttribute(Name = "Children")]
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MapControl : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property ZoomLevel
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property MapProjection
 		// Skipping already declared property Layers
 		// Skipping already declared property Region
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CanTiltDown
 		{
@@ -56,8 +56,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 				return (bool)this.GetValue(CanTiltDownProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CanTiltUp
 		{
@@ -66,8 +66,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 				return (bool)this.GetValue(CanTiltUpProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CanZoomIn
 		{
@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 				return (bool)this.GetValue(CanZoomInProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool CanZoomOut
 		{
@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 				return (bool)this.GetValue(CanZoomOutProperty);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property CenterProperty
 		// Skipping already declared property ZoomLevelProperty
 		// Skipping already declared property ChildrenProperty
@@ -123,38 +123,38 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property ViewPaddingProperty
 		// Skipping already declared property LayersProperty
 		// Skipping already declared property RegionProperty
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CanTiltUpProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanTiltUp), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CanZoomInProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanZoomIn), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CanZoomOutProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanZoomOut), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty CanTiltDownProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(CanTiltDown), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
-		#endif
+#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapControl.Center.get

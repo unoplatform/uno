@@ -2,16 +2,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.PointOfService
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CashDrawerEventSource 
 	{
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerClosed.add
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerClosed.remove
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerOpened.add
 		// Forced skipping of method Windows.Devices.PointOfService.CashDrawerEventSource.DrawerOpened.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.CashDrawerEventSource, global::Windows.Devices.PointOfService.CashDrawerClosedEventArgs> DrawerClosed
 		{
@@ -26,8 +26,8 @@ namespace Windows.Devices.PointOfService
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.CashDrawerEventSource", "event TypedEventHandler<CashDrawerEventSource, CashDrawerClosedEventArgs> CashDrawerEventSource.DrawerClosed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.CashDrawerEventSource, global::Windows.Devices.PointOfService.CashDrawerOpenedEventArgs> DrawerOpened
 		{
@@ -42,6 +42,6 @@ namespace Windows.Devices.PointOfService
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.CashDrawerEventSource", "event TypedEventHandler<CashDrawerEventSource, CashDrawerOpenedEventArgs> CashDrawerEventSource.DrawerOpened");
 			}
 		}
-		#endif
+#endif
 	}
 }

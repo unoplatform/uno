@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Foundation.Collections
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface IObservableMap<K, V> : global::System.Collections.Generic.IDictionary<K, V>
 	{
 		// Forced skipping of method Windows.Foundation.Collections.IObservableMap<K, V>.MapChanged.add

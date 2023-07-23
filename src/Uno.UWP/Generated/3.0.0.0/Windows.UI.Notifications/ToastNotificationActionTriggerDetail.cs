@@ -2,31 +2,31 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ToastNotificationActionTriggerDetail 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Argument
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ToastNotificationActionTriggerDetail.Argument is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ToastNotificationActionTriggerDetail.Argument");
+				throw new global::System.NotImplementedException("The member string ToastNotificationActionTriggerDetail.Argument is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ToastNotificationActionTriggerDetail.Argument");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Collections.ValueSet UserInput
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ValueSet ToastNotificationActionTriggerDetail.UserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ValueSet%20ToastNotificationActionTriggerDetail.UserInput");
+				throw new global::System.NotImplementedException("The member ValueSet ToastNotificationActionTriggerDetail.UserInput is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ValueSet%20ToastNotificationActionTriggerDetail.UserInput");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Notifications.ToastNotificationActionTriggerDetail.Argument.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotificationActionTriggerDetail.UserInput.get
 	}

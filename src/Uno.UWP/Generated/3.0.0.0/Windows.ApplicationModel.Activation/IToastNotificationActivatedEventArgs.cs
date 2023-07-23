@@ -2,18 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface IToastNotificationActivatedEventArgs : global::Windows.ApplicationModel.Activation.IActivatedEventArgs
 	{
 		// Skipping already declared property Argument
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Foundation.Collections.ValueSet UserInput
 		{
 			get;
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Activation.IToastNotificationActivatedEventArgs.Argument.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.IToastNotificationActivatedEventArgs.UserInput.get
 	}

@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.RemoteSystems
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RemoteSystemSessionDisconnectedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.RemoteSystems.RemoteSystemSessionDisconnectedReason Reason
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RemoteSystemSessionDisconnectedReason RemoteSystemSessionDisconnectedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RemoteSystemSessionDisconnectedReason%20RemoteSystemSessionDisconnectedEventArgs.Reason");
+				throw new global::System.NotImplementedException("The member RemoteSystemSessionDisconnectedReason RemoteSystemSessionDisconnectedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemSessionDisconnectedReason%20RemoteSystemSessionDisconnectedEventArgs.Reason");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionDisconnectedEventArgs.Reason.get
 	}
 }

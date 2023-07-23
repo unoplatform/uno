@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum DeviceAccessStatus 
 	{
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceAccessStatus.Unspecified
@@ -10,5 +10,5 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceAccessStatus.DeniedByUser
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceAccessStatus.DeniedBySystem
 	}
-	#endif
+#endif
 }

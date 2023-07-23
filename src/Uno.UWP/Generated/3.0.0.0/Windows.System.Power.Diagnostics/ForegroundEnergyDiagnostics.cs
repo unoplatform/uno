@@ -3,35 +3,35 @@
 namespace Windows.System.Power.Diagnostics
 {
 	// This type is deprecated. Consider not implementing it.
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public static partial class ForegroundEnergyDiagnostics 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static double DeviceSpecificConversionFactor
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor");
+				throw new global::System.NotImplementedException("The member double ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics.DeviceSpecificConversionFactor.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static ulong ComputeTotalEnergyUsage()
 		{
-			throw new global::System.NotImplementedException("The member ulong ForegroundEnergyDiagnostics.ComputeTotalEnergyUsage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ulong%20ForegroundEnergyDiagnostics.ComputeTotalEnergyUsage%28%29");
+			throw new global::System.NotImplementedException("The member ulong ForegroundEnergyDiagnostics.ComputeTotalEnergyUsage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20ForegroundEnergyDiagnostics.ComputeTotalEnergyUsage%28%29");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static void ResetTotalEnergyUsage()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Power.Diagnostics.ForegroundEnergyDiagnostics", "void ForegroundEnergyDiagnostics.ResetTotalEnergyUsage()");
 		}
-		#endif
+#endif
 	}
 }

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum CreationCollisionOption 
 	{
 		// Skipping already declared field Windows.Storage.CreationCollisionOption.GenerateUniqueName
@@ -10,5 +10,5 @@ namespace Windows.Storage
 		// Skipping already declared field Windows.Storage.CreationCollisionOption.FailIfExists
 		// Skipping already declared field Windows.Storage.CreationCollisionOption.OpenIfExists
 	}
-	#endif
+#endif
 }

@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Core
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class MediaSourceOpenOperationCompletedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Core.MediaSourceError Error
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member MediaSourceError MediaSourceOpenOperationCompletedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaSourceError%20MediaSourceOpenOperationCompletedEventArgs.Error");
+				throw new global::System.NotImplementedException("The member MediaSourceError MediaSourceOpenOperationCompletedEventArgs.Error is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSourceError%20MediaSourceOpenOperationCompletedEventArgs.Error");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs.Error.get
 	}
 }

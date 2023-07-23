@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ToastDismissedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Notifications.ToastDismissalReason Reason
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ToastDismissalReason ToastDismissedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ToastDismissalReason%20ToastDismissedEventArgs.Reason");
+				throw new global::System.NotImplementedException("The member ToastDismissalReason ToastDismissedEventArgs.Reason is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ToastDismissalReason%20ToastDismissedEventArgs.Reason");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Notifications.ToastDismissedEventArgs.Reason.get
 	}
 }

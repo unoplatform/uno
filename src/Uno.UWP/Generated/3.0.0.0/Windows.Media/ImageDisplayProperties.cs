@@ -2,39 +2,39 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ImageDisplayProperties 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Title
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageDisplayProperties.Title");
+				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageDisplayProperties.Title");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ImageDisplayProperties", "string ImageDisplayProperties.Title");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Subtitle
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20ImageDisplayProperties.Subtitle");
+				throw new global::System.NotImplementedException("The member string ImageDisplayProperties.Subtitle is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20ImageDisplayProperties.Subtitle");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ImageDisplayProperties", "string ImageDisplayProperties.Subtitle");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.get
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Title.set
 		// Forced skipping of method Windows.Media.ImageDisplayProperties.Subtitle.get

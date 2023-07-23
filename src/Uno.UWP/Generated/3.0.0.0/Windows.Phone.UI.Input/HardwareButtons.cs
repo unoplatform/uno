@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Phone.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public static partial class HardwareButtons 
 	{
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.BackPressed.add
@@ -15,7 +15,7 @@ namespace Windows.Phone.UI.Input
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.CameraPressed.remove
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.CameraReleased.add
 		// Forced skipping of method Windows.Phone.UI.Input.HardwareButtons.CameraReleased.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.BackPressedEventArgs> BackPressed
 		{
@@ -30,8 +30,8 @@ namespace Windows.Phone.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.UI.Input.HardwareButtons", "event EventHandler<BackPressedEventArgs> HardwareButtons.BackPressed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.CameraEventArgs> CameraHalfPressed
 		{
@@ -46,8 +46,8 @@ namespace Windows.Phone.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.UI.Input.HardwareButtons", "event EventHandler<CameraEventArgs> HardwareButtons.CameraHalfPressed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.CameraEventArgs> CameraPressed
 		{
@@ -62,8 +62,8 @@ namespace Windows.Phone.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.UI.Input.HardwareButtons", "event EventHandler<CameraEventArgs> HardwareButtons.CameraPressed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static event global::System.EventHandler<global::Windows.Phone.UI.Input.CameraEventArgs> CameraReleased
 		{
@@ -78,6 +78,6 @@ namespace Windows.Phone.UI.Input
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.UI.Input.HardwareButtons", "event EventHandler<CameraEventArgs> HardwareButtons.CameraReleased");
 			}
 		}
-		#endif
+#endif
 	}
 }

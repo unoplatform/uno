@@ -2,48 +2,48 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class LaunchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IPrelaunchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs2,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
 		// Skipping already declared property Kind
 		// Skipping already declared property PreviousExecutionState
 		// Skipping already declared property SplashScreen
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.System.User User
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member User LaunchActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=User%20LaunchActivatedEventArgs.User");
+				throw new global::System.NotImplementedException("The member User LaunchActivatedEventArgs.User is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=User%20LaunchActivatedEventArgs.User");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property CurrentlyShownApplicationViewId
 		// Skipping already declared property Arguments
 		// Skipping already declared property TileId
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.ApplicationModel.Activation.TileActivatedInfo TileActivatedInfo
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TileActivatedInfo LaunchActivatedEventArgs.TileActivatedInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TileActivatedInfo%20LaunchActivatedEventArgs.TileActivatedInfo");
+				throw new global::System.NotImplementedException("The member TileActivatedInfo LaunchActivatedEventArgs.TileActivatedInfo is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TileActivatedInfo%20LaunchActivatedEventArgs.TileActivatedInfo");
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property PrelaunchActivated
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.ViewManagement.ActivationViewSwitcher ViewSwitcher
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ActivationViewSwitcher LaunchActivatedEventArgs.ViewSwitcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ActivationViewSwitcher%20LaunchActivatedEventArgs.ViewSwitcher");
+				throw new global::System.NotImplementedException("The member ActivationViewSwitcher LaunchActivatedEventArgs.ViewSwitcher is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationViewSwitcher%20LaunchActivatedEventArgs.ViewSwitcher");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.Arguments.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.TileId.get
 		// Forced skipping of method Windows.ApplicationModel.Activation.LaunchActivatedEventArgs.Kind.get

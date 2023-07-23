@@ -2,38 +2,38 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Globalization
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CurrencyAmount 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Amount
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyAmount.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyAmount.Amount");
+				throw new global::System.NotImplementedException("The member string CurrencyAmount.Amount is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CurrencyAmount.Amount");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Currency
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CurrencyAmount.Currency");
+				throw new global::System.NotImplementedException("The member string CurrencyAmount.Currency is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CurrencyAmount.Currency");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public CurrencyAmount( string amount,  string currency) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.CurrencyAmount", "CurrencyAmount.CurrencyAmount(string amount, string currency)");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.CurrencyAmount(string, string)
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.Amount.get
 		// Forced skipping of method Windows.Globalization.CurrencyAmount.Currency.get

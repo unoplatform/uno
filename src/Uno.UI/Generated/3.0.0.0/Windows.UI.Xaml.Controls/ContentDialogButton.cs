@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ContentDialogButton 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogButton.None
@@ -10,5 +10,5 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogButton.Secondary
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogButton.Close
 	}
-	#endif
+#endif
 }

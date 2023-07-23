@@ -2,25 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class TextControlCopyingToClipboardEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Handled
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool TextControlCopyingToClipboardEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20TextControlCopyingToClipboardEventArgs.Handled");
+				throw new global::System.NotImplementedException("The member bool TextControlCopyingToClipboardEventArgs.Handled is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20TextControlCopyingToClipboardEventArgs.Handled");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs", "bool TextControlCopyingToClipboardEventArgs.Handled");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.Handled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs.Handled.set
 	}

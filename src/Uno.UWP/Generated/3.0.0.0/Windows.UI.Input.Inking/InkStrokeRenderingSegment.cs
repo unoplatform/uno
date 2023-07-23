@@ -2,81 +2,81 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input.Inking
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class InkStrokeRenderingSegment 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point BezierControlPoint1
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkStrokeRenderingSegment.BezierControlPoint1");
+				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint1 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkStrokeRenderingSegment.BezierControlPoint1");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point BezierControlPoint2
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkStrokeRenderingSegment.BezierControlPoint2");
+				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.BezierControlPoint2 is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkStrokeRenderingSegment.BezierControlPoint2");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Foundation.Point Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Point%20InkStrokeRenderingSegment.Position");
+				throw new global::System.NotImplementedException("The member Point InkStrokeRenderingSegment.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20InkStrokeRenderingSegment.Position");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float Pressure
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.Pressure");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Pressure is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.Pressure");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float TiltX
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.TiltX");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltX is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.TiltX");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float TiltY
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.TiltY");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.TiltY is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.TiltY");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  float Twist
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=float%20InkStrokeRenderingSegment.Twist");
+				throw new global::System.NotImplementedException("The member float InkStrokeRenderingSegment.Twist is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20InkStrokeRenderingSegment.Twist");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.Position.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.BezierControlPoint1.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkStrokeRenderingSegment.BezierControlPoint2.get

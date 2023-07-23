@@ -2,60 +2,60 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Lights.Effects
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class LampArrayCustomEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan UpdateInterval
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayCustomEffect.UpdateInterval");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.UpdateInterval is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayCustomEffect.UpdateInterval");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "TimeSpan LampArrayCustomEffect.UpdateInterval");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.TimeSpan Duration
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=TimeSpan%20LampArrayCustomEffect.Duration");
+				throw new global::System.NotImplementedException("The member TimeSpan LampArrayCustomEffect.Duration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimeSpan%20LampArrayCustomEffect.Duration");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "TimeSpan LampArrayCustomEffect.Duration");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int ZIndex
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int LampArrayCustomEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20LampArrayCustomEffect.ZIndex");
+				throw new global::System.NotImplementedException("The member int LampArrayCustomEffect.ZIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20LampArrayCustomEffect.ZIndex");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "int LampArrayCustomEffect.ZIndex");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public LampArrayCustomEffect( global::Windows.Devices.Lights.LampArray lampArray,  int[] lampIndexes) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "LampArrayCustomEffect.LampArrayCustomEffect(LampArray lampArray, int[] lampIndexes)");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.LampArrayCustomEffect(Windows.Devices.Lights.LampArray, int[])
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Duration.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.Duration.set
@@ -65,7 +65,7 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.UpdateRequested.remove
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.ZIndex.get
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.ZIndex.set
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayCustomEffect, global::Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs> UpdateRequested
 		{
@@ -80,7 +80,7 @@ namespace Windows.Devices.Lights.Effects
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayCustomEffect", "event TypedEventHandler<LampArrayCustomEffect, LampArrayUpdateRequestedEventArgs> LampArrayCustomEffect.UpdateRequested");
 			}
 		}
-		#endif
+#endif
 		// Processing: Windows.Devices.Lights.Effects.ILampArrayEffect
 	}
 }

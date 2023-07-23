@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial interface ICoreDropOperationTarget 
 	{
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget.EnterAsync(Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragInfo, Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragUIOverride)

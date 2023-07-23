@@ -2,21 +2,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Import
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class PhotoImportSelectionChangedEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IsSelectionEmpty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool PhotoImportSelectionChangedEventArgs.IsSelectionEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20PhotoImportSelectionChangedEventArgs.IsSelectionEmpty");
+				throw new global::System.NotImplementedException("The member bool PhotoImportSelectionChangedEventArgs.IsSelectionEmpty is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PhotoImportSelectionChangedEventArgs.IsSelectionEmpty");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Import.PhotoImportSelectionChangedEventArgs.IsSelectionEmpty.get
 	}
 }

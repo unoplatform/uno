@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.ViewManagement
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum UIColorType 
 	{
 		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Background
@@ -16,5 +16,5 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.AccentLight3
 		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Complement
 	}
-	#endif
+#endif
 }

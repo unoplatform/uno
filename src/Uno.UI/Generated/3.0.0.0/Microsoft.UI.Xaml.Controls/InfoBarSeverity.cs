@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum InfoBarSeverity 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.InfoBarSeverity.Informational
@@ -10,5 +10,5 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.InfoBarSeverity.Warning
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.InfoBarSeverity.Error
 	}
-	#endif
+#endif
 }

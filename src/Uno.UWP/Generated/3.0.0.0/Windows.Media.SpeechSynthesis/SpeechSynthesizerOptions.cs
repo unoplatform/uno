@@ -2,109 +2,109 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.SpeechSynthesis
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class SpeechSynthesizerOptions 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IncludeWordBoundaryMetadata
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
+				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeWordBoundaryMetadata");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool IncludeSentenceBoundaryMetadata
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
+				throw new global::System.NotImplementedException("The member bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "bool SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double SpeakingRate
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.SpeakingRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SpeechSynthesizerOptions.SpeakingRate");
+				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.SpeakingRate is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.SpeakingRate");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.SpeakingRate");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double AudioVolume
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SpeechSynthesizerOptions.AudioVolume");
+				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioVolume is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioVolume");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioVolume");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  double AudioPitch
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioPitch is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=double%20SpeechSynthesizerOptions.AudioPitch");
+				throw new global::System.NotImplementedException("The member double SpeechSynthesizerOptions.AudioPitch is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20SpeechSynthesizerOptions.AudioPitch");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "double SpeechSynthesizerOptions.AudioPitch");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.SpeechSynthesis.SpeechPunctuationSilence PunctuationSilence
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechPunctuationSilence%20SpeechSynthesizerOptions.PunctuationSilence");
+				throw new global::System.NotImplementedException("The member SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechPunctuationSilence%20SpeechSynthesizerOptions.PunctuationSilence");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechPunctuationSilence SpeechSynthesizerOptions.PunctuationSilence");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.SpeechSynthesis.SpeechAppendedSilence AppendedSilence
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=SpeechAppendedSilence%20SpeechSynthesizerOptions.AppendedSilence");
+				throw new global::System.NotImplementedException("The member SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpeechAppendedSilence%20SpeechSynthesizerOptions.AppendedSilence");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions", "SpeechAppendedSilence SpeechSynthesizerOptions.AppendedSilence");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeWordBoundaryMetadata.get
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeWordBoundaryMetadata.set
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions.IncludeSentenceBoundaryMetadata.get

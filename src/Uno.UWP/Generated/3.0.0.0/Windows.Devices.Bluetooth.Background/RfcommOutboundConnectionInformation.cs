@@ -2,25 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth.Background
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RfcommOutboundConnectionInformation 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId RemoteServiceId
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=RfcommServiceId%20RfcommOutboundConnectionInformation.RemoteServiceId");
+				throw new global::System.NotImplementedException("The member RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RfcommServiceId%20RfcommOutboundConnectionInformation.RemoteServiceId");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation", "RfcommServiceId RfcommOutboundConnectionInformation.RemoteServiceId");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation.RemoteServiceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.RfcommOutboundConnectionInformation.RemoteServiceId.set
 	}

@@ -2,41 +2,41 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Perception.People
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class HeadPose 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector3 ForwardDirection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 HeadPose.ForwardDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20HeadPose.ForwardDirection");
+				throw new global::System.NotImplementedException("The member Vector3 HeadPose.ForwardDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20HeadPose.ForwardDirection");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector3 Position
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 HeadPose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20HeadPose.Position");
+				throw new global::System.NotImplementedException("The member Vector3 HeadPose.Position is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20HeadPose.Position");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::System.Numerics.Vector3 UpDirection
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 HeadPose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=Vector3%20HeadPose.UpDirection");
+				throw new global::System.NotImplementedException("The member Vector3 HeadPose.UpDirection is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%20HeadPose.UpDirection");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Perception.People.HeadPose.Position.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.ForwardDirection.get
 		// Forced skipping of method Windows.Perception.People.HeadPose.UpDirection.get

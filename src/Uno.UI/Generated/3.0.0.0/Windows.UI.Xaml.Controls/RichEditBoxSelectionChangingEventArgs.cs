@@ -2,45 +2,45 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class RichEditBoxSelectionChangingEventArgs 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  bool Cancel
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool RichEditBoxSelectionChangingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=bool%20RichEditBoxSelectionChangingEventArgs.Cancel");
+				throw new global::System.NotImplementedException("The member bool RichEditBoxSelectionChangingEventArgs.Cancel is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichEditBoxSelectionChangingEventArgs.Cancel");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs", "bool RichEditBoxSelectionChangingEventArgs.Cancel");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int SelectionLength
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditBoxSelectionChangingEventArgs.SelectionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20RichEditBoxSelectionChangingEventArgs.SelectionLength");
+				throw new global::System.NotImplementedException("The member int RichEditBoxSelectionChangingEventArgs.SelectionLength is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditBoxSelectionChangingEventArgs.SelectionLength");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  int SelectionStart
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member int RichEditBoxSelectionChangingEventArgs.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=int%20RichEditBoxSelectionChangingEventArgs.SelectionStart");
+				throw new global::System.NotImplementedException("The member int RichEditBoxSelectionChangingEventArgs.SelectionStart is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20RichEditBoxSelectionChangingEventArgs.SelectionStart");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionStart.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.SelectionLength.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichEditBoxSelectionChangingEventArgs.Cancel.get

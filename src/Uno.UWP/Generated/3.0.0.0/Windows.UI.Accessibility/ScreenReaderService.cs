@@ -2,33 +2,33 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Accessibility
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class ScreenReaderService 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs CurrentScreenReaderPosition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScreenReaderPositionChangedEventArgs ScreenReaderService.CurrentScreenReaderPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=ScreenReaderPositionChangedEventArgs%20ScreenReaderService.CurrentScreenReaderPosition");
+				throw new global::System.NotImplementedException("The member ScreenReaderPositionChangedEventArgs ScreenReaderService.CurrentScreenReaderPosition is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ScreenReaderPositionChangedEventArgs%20ScreenReaderService.CurrentScreenReaderPosition");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public ScreenReaderService() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "ScreenReaderService.ScreenReaderService()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderService()
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.CurrentScreenReaderPosition.get
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.add
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.remove
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Accessibility.ScreenReaderService, global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs> ScreenReaderPositionChanged
 		{
@@ -43,6 +43,6 @@ namespace Windows.UI.Accessibility
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Accessibility.ScreenReaderService", "event TypedEventHandler<ScreenReaderService, ScreenReaderPositionChangedEventArgs> ScreenReaderService.ScreenReaderPositionChanged");
 			}
 		}
-		#endif
+#endif
 	}
 }

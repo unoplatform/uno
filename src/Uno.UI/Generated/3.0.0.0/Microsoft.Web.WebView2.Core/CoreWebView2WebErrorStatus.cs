@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.Web.WebView2.Core
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum CoreWebView2WebErrorStatus 
 	{
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.Unknown
@@ -25,5 +25,5 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ValidAuthenticationCredentialsRequired
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.ValidProxyAuthenticationRequired
 	}
-	#endif
+#endif
 }

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum AutomationLandmarkType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.None
@@ -12,5 +12,5 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Navigation
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Search
 	}
-	#endif
+#endif
 }

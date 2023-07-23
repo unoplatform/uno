@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Geolocation.Geofencing
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum MonitoredGeofenceStates : uint
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.None
@@ -10,5 +10,5 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.Exited
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.Removed
 	}
-	#endif
+#endif
 }

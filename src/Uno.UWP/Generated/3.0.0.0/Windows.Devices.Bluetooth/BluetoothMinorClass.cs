@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Bluetooth
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum BluetoothMinorClass 
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.Uncategorized
@@ -77,5 +77,5 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthGenericHealthManager
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.HealthPersonalMobilityDevice
 	}
-	#endif
+#endif
 }

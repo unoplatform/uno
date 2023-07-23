@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class TimelineCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Animation.Timeline>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Animation.Timeline>
 	{
 		// Skipping already declared property Size

@@ -2,11 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum GeneratorDirection 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GeneratorDirection.Forward
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GeneratorDirection.Backward
 	}
-	#endif
+#endif
 }

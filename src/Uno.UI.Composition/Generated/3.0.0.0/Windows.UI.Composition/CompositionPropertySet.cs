@@ -2,9 +2,9 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CompositionPropertySet : global::Windows.UI.Composition.CompositionObject
 	{
 		// Skipping already declared method Windows.UI.Composition.CompositionPropertySet.InsertColor(string, Windows.UI.Color)

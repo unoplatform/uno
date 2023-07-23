@@ -2,55 +2,55 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Provider
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
+#endif
 	public  partial class CachedFileUpdaterUI 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  string Title
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string CachedFileUpdaterUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=string%20CachedFileUpdaterUI.Title");
+				throw new global::System.NotImplementedException("The member string CachedFileUpdaterUI.Title is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CachedFileUpdaterUI.Title");
 			}
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "string CachedFileUpdaterUI.Title");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Provider.UIStatus UIStatus
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member UIStatus CachedFileUpdaterUI.UIStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=UIStatus%20CachedFileUpdaterUI.UIStatus");
+				throw new global::System.NotImplementedException("The member UIStatus CachedFileUpdaterUI.UIStatus is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIStatus%20CachedFileUpdaterUI.UIStatus");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Provider.CachedFileTarget UpdateTarget
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterUI.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=CachedFileTarget%20CachedFileUpdaterUI.UpdateTarget");
+				throw new global::System.NotImplementedException("The member CachedFileTarget CachedFileUpdaterUI.UpdateTarget is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CachedFileTarget%20CachedFileUpdaterUI.UpdateTarget");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Provider.FileUpdateRequest UpdateRequest
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member FileUpdateRequest CachedFileUpdaterUI.UpdateRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileUpdateRequest%20CachedFileUpdaterUI.UpdateRequest");
+				throw new global::System.NotImplementedException("The member FileUpdateRequest CachedFileUpdaterUI.UpdateRequest is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequest%20CachedFileUpdaterUI.UpdateRequest");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.get
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.Title.set
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateTarget.get
@@ -60,14 +60,14 @@ namespace Windows.Storage.Provider
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIRequested.remove
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UIStatus.get
 		// Forced skipping of method Windows.Storage.Provider.CachedFileUpdaterUI.UpdateRequest.get
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
-			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=FileUpdateRequestDeferral%20CachedFileUpdaterUI.GetDeferral%28%29");
+			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral CachedFileUpdaterUI.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequestDeferral%20CachedFileUpdaterUI.GetDeferral%28%29");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Provider.CachedFileUpdaterUI, global::Windows.Storage.Provider.FileUpdateRequestedEventArgs> FileUpdateRequested
 		{
@@ -82,8 +82,8 @@ namespace Windows.Storage.Provider
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event TypedEventHandler<CachedFileUpdaterUI, FileUpdateRequestedEventArgs> CachedFileUpdaterUI.FileUpdateRequested");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Provider.CachedFileUpdaterUI, object> UIRequested
 		{
@@ -98,6 +98,6 @@ namespace Windows.Storage.Provider
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.CachedFileUpdaterUI", "event TypedEventHandler<CachedFileUpdaterUI, object> CachedFileUpdaterUI.UIRequested");
 			}
 		}
-		#endif
+#endif
 	}
 }

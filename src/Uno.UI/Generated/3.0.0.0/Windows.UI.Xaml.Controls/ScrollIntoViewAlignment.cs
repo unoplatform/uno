@@ -2,11 +2,11 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if false || false || false || false || false || false || false
+#if false || false || false || false || false || false || false
 	public   enum ScrollIntoViewAlignment 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollIntoViewAlignment.Default
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollIntoViewAlignment.Leading
 	}
-	#endif
+#endif
 }
