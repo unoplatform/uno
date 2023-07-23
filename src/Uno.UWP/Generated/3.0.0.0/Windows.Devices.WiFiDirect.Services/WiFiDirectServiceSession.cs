@@ -5,11 +5,11 @@ namespace Windows.Devices.WiFiDirect.Services
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WiFiDirectServiceSession : global::System.IDisposable
+	public partial class WiFiDirectServiceSession : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint AdvertisementId
+		public uint AdvertisementId
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionErrorStatus ErrorStatus
+		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionErrorStatus ErrorStatus
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ServiceAddress
+		public string ServiceAddress
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ServiceName
+		public string ServiceName
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SessionAddress
+		public string SessionAddress
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint SessionId
+		public uint SessionId
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionStatus Status
+		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSessionStatus Status
 		{
 			get
 			{
@@ -86,7 +86,7 @@ namespace Windows.Devices.WiFiDirect.Services
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionAddress.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair> GetConnectionEndpointPairs()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<EndpointPair> WiFiDirectServiceSession.GetConnectionEndpointPairs() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEndpointPair%3E%20WiFiDirectServiceSession.GetConnectionEndpointPairs%28%29");
 		}
@@ -95,14 +95,14 @@ namespace Windows.Devices.WiFiDirect.Services
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction AddStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener value)
+		public global::Windows.Foundation.IAsyncAction AddStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddStreamSocketListenerAsync(StreamSocketListener value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WiFiDirectServiceSession.AddStreamSocketListenerAsync%28StreamSocketListener%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction AddDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket value)
+		public global::Windows.Foundation.IAsyncAction AddDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddDatagramSocketAsync(DatagramSocket value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WiFiDirectServiceSession.AddDatagramSocketAsync%28DatagramSocket%20value%29");
 		}
@@ -111,14 +111,14 @@ namespace Windows.Devices.WiFiDirect.Services
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.RemotePortAdded.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession", "void WiFiDirectServiceSession.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs> RemotePortAdded
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceRemotePortAddedEventArgs> RemotePortAdded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -134,7 +134,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, object> SessionStatusChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession, object> SessionStatusChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

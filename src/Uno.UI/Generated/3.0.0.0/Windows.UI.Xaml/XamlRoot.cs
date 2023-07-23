@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class XamlRoot 
+	public partial class XamlRoot 
 	{
 		// Skipping already declared property Content
 		// Skipping already declared property IsHostVisible

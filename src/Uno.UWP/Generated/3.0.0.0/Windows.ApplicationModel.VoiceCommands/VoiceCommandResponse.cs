@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VoiceCommandResponse 
+	public partial class VoiceCommandResponse 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage RepeatMessage
+		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage RepeatMessage
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage Message
+		public global::Windows.ApplicationModel.VoiceCommands.VoiceCommandUserMessage Message
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AppLaunchArgument
+		public string AppLaunchArgument
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> VoiceCommandContentTiles
+		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.VoiceCommands.VoiceCommandContentTile> VoiceCommandContentTiles
 		{
 			get
 			{

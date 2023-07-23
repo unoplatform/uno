@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public   enum TickPlacement 
+	public enum TickPlacement 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.TickPlacement.TopLeft

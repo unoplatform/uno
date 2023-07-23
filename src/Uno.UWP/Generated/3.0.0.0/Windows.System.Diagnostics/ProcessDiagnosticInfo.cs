@@ -5,11 +5,11 @@ namespace Windows.System.Diagnostics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ProcessDiagnosticInfo 
+	public partial class ProcessDiagnosticInfo 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.Diagnostics.ProcessCpuUsage CpuUsage
+		public global::Windows.System.Diagnostics.ProcessCpuUsage CpuUsage
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.Diagnostics.ProcessDiskUsage DiskUsage
+		public global::Windows.System.Diagnostics.ProcessDiskUsage DiskUsage
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ExecutableFileName
+		public string ExecutableFileName
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.Diagnostics.ProcessMemoryUsage MemoryUsage
+		public global::Windows.System.Diagnostics.ProcessMemoryUsage MemoryUsage
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.Diagnostics.ProcessDiagnosticInfo Parent
+		public global::Windows.System.Diagnostics.ProcessDiagnosticInfo Parent
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ProcessId
+		public uint ProcessId
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset ProcessStartTime
+		public global::System.DateTimeOffset ProcessStartTime
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.System.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPackaged
+		public bool IsPackaged
 		{
 			get
 			{
@@ -96,7 +96,7 @@ namespace Windows.System.Diagnostics
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.CpuUsage.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
+		public global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo> GetAppDiagnosticInfos()
 		{
 			throw new global::System.NotImplementedException("The member IList<AppDiagnosticInfo> ProcessDiagnosticInfo.GetAppDiagnosticInfos() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppDiagnosticInfo%3E%20ProcessDiagnosticInfo.GetAppDiagnosticInfos%28%29");
 		}

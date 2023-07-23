@@ -6,11 +6,11 @@ namespace Windows.ApplicationModel.Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeviceManufacturerNotificationTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
+	public partial class DeviceManufacturerNotificationTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool OneShot
+		public bool OneShot
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string TriggerQualifier
+		public string TriggerQualifier
 		{
 			get
 			{

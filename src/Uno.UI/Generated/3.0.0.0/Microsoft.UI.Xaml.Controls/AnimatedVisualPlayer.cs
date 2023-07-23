@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AnimatedVisualPlayer : global::Windows.UI.Xaml.FrameworkElement
+	public partial class AnimatedVisualPlayer : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property Stretch
 		// Skipping already declared property Source
@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property AutoPlay
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Diagnostics
+		public object Diagnostics
 		{
 			get
 			{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsPlaying
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionObject ProgressObject
+		public global::Windows.UI.Composition.CompositionObject ProgressObject
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization AnimationOptimization
+		public global::Microsoft.UI.Xaml.Controls.PlayerAnimationOptimization AnimationOptimization
 		{
 			get
 			{

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LosingFocusEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class LosingFocusEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property NewFocusedElement
 		// Skipping already declared property Handled

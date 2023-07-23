@@ -6,11 +6,11 @@ namespace Windows.Devices.AllJoyn
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AllJoynSession 
+	public partial class AllJoynSession 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int Id
+		public int Id
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int Status
+		public int Status
 		{
 			get
 			{
@@ -32,7 +32,7 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynSession.Status.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<int> RemoveMemberAsync( string uniqueName)
+		public global::Windows.Foundation.IAsyncOperation<int> RemoveMemberAsync( string uniqueName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynSession.RemoveMemberAsync(string uniqueName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cint%3E%20AllJoynSession.RemoveMemberAsync%28string%20uniqueName%29");
 		}
@@ -59,7 +59,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs> Lost
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionLostEventArgs> Lost
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -75,7 +75,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs> MemberAdded
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionMemberAddedEventArgs> MemberAdded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -91,7 +91,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs> MemberRemoved
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.AllJoyn.AllJoynSession, global::Windows.Devices.AllJoyn.AllJoynSessionMemberRemovedEventArgs> MemberRemoved
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MapInputEventArgs : global::Windows.UI.Xaml.DependencyObject
+	public partial class MapInputEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Location
 		// Skipping already declared property Position

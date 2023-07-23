@@ -5,7 +5,7 @@ namespace Windows.Web.Http
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HttpMethod : global::Windows.Foundation.IStringable
+	public partial class HttpMethod : global::Windows.Foundation.IStringable
 	{
 		// Skipping already declared property Method
 		// Skipping already declared property Delete

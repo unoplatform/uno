@@ -5,11 +5,11 @@ namespace Windows.Media.Protection
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ComponentLoadFailedEventArgs 
+	public partial class ComponentLoadFailedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Protection.MediaProtectionServiceCompletion Completion
+		public global::Windows.Media.Protection.MediaProtectionServiceCompletion Completion
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Protection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Protection.RevocationAndRenewalInformation Information
+		public global::Windows.Media.Protection.RevocationAndRenewalInformation Information
 		{
 			get
 			{

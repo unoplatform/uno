@@ -5,11 +5,11 @@ namespace Windows.Networking.Vpn
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VpnCredential : global::Windows.Networking.Vpn.IVpnCredential
+	public partial class VpnCredential : global::Windows.Networking.Vpn.IVpnCredential
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AdditionalPin
+		public string AdditionalPin
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Cryptography.Certificates.Certificate CertificateCredential
+		public global::Windows.Security.Cryptography.Certificates.Certificate CertificateCredential
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential OldPasswordCredential
+		public global::Windows.Security.Credentials.PasswordCredential OldPasswordCredential
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential PasskeyCredential
+		public global::Windows.Security.Credentials.PasswordCredential PasskeyCredential
 		{
 			get
 			{

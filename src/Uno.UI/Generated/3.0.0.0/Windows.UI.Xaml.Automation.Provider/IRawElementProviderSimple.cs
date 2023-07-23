@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class IRawElementProviderSimple : global::Windows.UI.Xaml.DependencyObject
+	public partial class IRawElementProviderSimple : global::Windows.UI.Xaml.DependencyObject
 	{
 	}
 }

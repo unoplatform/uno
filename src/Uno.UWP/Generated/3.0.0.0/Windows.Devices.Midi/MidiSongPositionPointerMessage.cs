@@ -5,7 +5,7 @@ namespace Windows.Devices.Midi
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MidiSongPositionPointerMessage : global::Windows.Devices.Midi.IMidiMessage
+	public partial class MidiSongPositionPointerMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
 		// Skipping already declared property RawData
 		// Skipping already declared property Timestamp

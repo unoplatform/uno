@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppBarButton : global::Windows.UI.Xaml.Controls.Button,global::Windows.UI.Xaml.Controls.ICommandBarElement,global::Windows.UI.Xaml.Controls.ICommandBarElement2
+	public partial class AppBarButton : global::Windows.UI.Xaml.Controls.Button,global::Windows.UI.Xaml.Controls.ICommandBarElement,global::Windows.UI.Xaml.Controls.ICommandBarElement2
 	{
 		// Skipping already declared property Label
 		// Skipping already declared property Icon

@@ -5,14 +5,14 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContentPresenter : global::Windows.UI.Xaml.FrameworkElement
+	public partial class ContentPresenter : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property Foreground
 		// Skipping already declared property FontWeight
 		// Skipping already declared property FontStyle
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStretch FontStretch
+		public global::Windows.UI.Text.FontStretch FontStretch
 		{
 			get
 			{
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Content
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int CharacterSpacing
+		public int CharacterSpacing
 		{
 			get
 			{
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.TextLineBounds TextLineBounds
+		public global::Windows.UI.Xaml.TextLineBounds TextLineBounds
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
+		public global::Windows.UI.Xaml.OpticalMarginAlignment OpticalMarginAlignment
 		{
 			get
 			{
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTextScaleFactorEnabled
+		public bool IsTextScaleFactorEnabled
 		{
 			get
 			{
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property MaxLines
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.LineStackingStrategy LineStackingStrategy
+		public global::Windows.UI.Xaml.LineStackingStrategy LineStackingStrategy
 		{
 			get
 			{
@@ -106,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double LineHeight
+		public double LineHeight
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.BrushTransition BackgroundTransition
+		public global::Windows.UI.Xaml.BrushTransition BackgroundTransition
 		{
 			get
 			{

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class XamlUICommand : global::Windows.UI.Xaml.DependencyObject,global::System.Windows.Input.ICommand
+	public partial class XamlUICommand : global::Windows.UI.Xaml.DependencyObject,global::System.Windows.Input.ICommand
 	{
 		// Skipping already declared property Label
 		// Skipping already declared property IconSource

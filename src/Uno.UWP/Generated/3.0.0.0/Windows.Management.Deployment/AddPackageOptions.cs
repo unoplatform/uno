@@ -5,11 +5,11 @@ namespace Windows.Management.Deployment
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AddPackageOptions 
+	public partial class AddPackageOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Management.Deployment.PackageVolume TargetVolume
+		public global::Windows.Management.Deployment.PackageVolume TargetVolume
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Management.Deployment.StubPackageOption StubPackageOption
+		public global::Windows.Management.Deployment.StubPackageOption StubPackageOption
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool StageInPlace
+		public bool StageInPlace
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool RetainFilesOnFailure
+		public bool RetainFilesOnFailure
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool RequiredContentGroupOnly
+		public bool RequiredContentGroupOnly
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool InstallAllResources
+		public bool InstallAllResources
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ForceUpdateFromAnyVersion
+		public bool ForceUpdateFromAnyVersion
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ForceTargetAppShutdown
+		public bool ForceTargetAppShutdown
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ForceAppShutdown
+		public bool ForceAppShutdown
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri ExternalLocationUri
+		public global::System.Uri ExternalLocationUri
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool DeveloperMode
+		public bool DeveloperMode
 		{
 			get
 			{
@@ -163,7 +163,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool DeferRegistrationWhenPackagesAreInUse
+		public bool DeferRegistrationWhenPackagesAreInUse
 		{
 			get
 			{
@@ -177,7 +177,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AllowUnsigned
+		public bool AllowUnsigned
 		{
 			get
 			{
@@ -191,7 +191,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> DependencyPackageUris
+		public global::System.Collections.Generic.IList<global::System.Uri> DependencyPackageUris
 		{
 			get
 			{
@@ -201,7 +201,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> OptionalPackageFamilyNames
+		public global::System.Collections.Generic.IList<string> OptionalPackageFamilyNames
 		{
 			get
 			{
@@ -211,7 +211,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> OptionalPackageUris
+		public global::System.Collections.Generic.IList<global::System.Uri> OptionalPackageUris
 		{
 			get
 			{
@@ -221,7 +221,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> RelatedPackageUris
+		public global::System.Collections.Generic.IList<global::System.Uri> RelatedPackageUris
 		{
 			get
 			{

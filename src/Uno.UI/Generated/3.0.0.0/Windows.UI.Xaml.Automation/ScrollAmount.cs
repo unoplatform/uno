@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Automation
 {
 #if false || false || false || false || false || false || false
-	public   enum ScrollAmount 
+	public enum ScrollAmount 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.ScrollAmount.LargeDecrement
 		// Skipping already declared field Windows.UI.Xaml.Automation.ScrollAmount.SmallDecrement

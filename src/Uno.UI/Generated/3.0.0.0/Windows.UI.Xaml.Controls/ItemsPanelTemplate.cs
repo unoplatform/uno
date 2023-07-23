@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemsPanelTemplate : global::Windows.UI.Xaml.FrameworkTemplate
+	public partial class ItemsPanelTemplate : global::Windows.UI.Xaml.FrameworkTemplate
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPanelTemplate.ItemsPanelTemplate()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPanelTemplate.ItemsPanelTemplate()

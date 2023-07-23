@@ -5,32 +5,32 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct RacingWheelReading 
+	public partial struct RacingWheelReading 
 	{
 		// Forced skipping of method Windows.Gaming.Input.RacingWheelReading.RacingWheelReading()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong Timestamp;
+		public ulong Timestamp;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::Windows.Gaming.Input.RacingWheelButtons Buttons;
+		public global::Windows.Gaming.Input.RacingWheelButtons Buttons;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int PatternShifterGear;
+		public int PatternShifterGear;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Wheel;
+		public double Wheel;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Throttle;
+		public double Throttle;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Brake;
+		public double Brake;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Clutch;
+		public double Clutch;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Handbrake;
+		public double Handbrake;
 #endif
 	}
 }

@@ -5,11 +5,11 @@ namespace Windows.Devices.Usb
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UsbEndpointDescriptor 
+	public partial class UsbEndpointDescriptor 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbBulkInEndpointDescriptor AsBulkInEndpointDescriptor
+		public global::Windows.Devices.Usb.UsbBulkInEndpointDescriptor AsBulkInEndpointDescriptor
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbBulkOutEndpointDescriptor AsBulkOutEndpointDescriptor
+		public global::Windows.Devices.Usb.UsbBulkOutEndpointDescriptor AsBulkOutEndpointDescriptor
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbInterruptInEndpointDescriptor AsInterruptInEndpointDescriptor
+		public global::Windows.Devices.Usb.UsbInterruptInEndpointDescriptor AsInterruptInEndpointDescriptor
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor AsInterruptOutEndpointDescriptor
+		public global::Windows.Devices.Usb.UsbInterruptOutEndpointDescriptor AsInterruptOutEndpointDescriptor
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbTransferDirection Direction
+		public global::Windows.Devices.Usb.UsbTransferDirection Direction
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte EndpointNumber
+		public byte EndpointNumber
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbEndpointType EndpointType
+		public global::Windows.Devices.Usb.UsbEndpointType EndpointType
 		{
 			get
 			{

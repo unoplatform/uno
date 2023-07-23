@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.AppService
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppServiceRequestReceivedEventArgs 
+	public partial class AppServiceRequestReceivedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.AppService.AppServiceRequest Request
+		public global::Windows.ApplicationModel.AppService.AppServiceRequest Request
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.AppService
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceRequestReceivedEventArgs.Request.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.AppService.AppServiceDeferral GetDeferral()
+		public global::Windows.ApplicationModel.AppService.AppServiceDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member AppServiceDeferral AppServiceRequestReceivedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppServiceDeferral%20AppServiceRequestReceivedEventArgs.GetDeferral%28%29");
 		}

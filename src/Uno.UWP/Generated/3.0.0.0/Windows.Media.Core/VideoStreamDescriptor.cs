@@ -5,11 +5,11 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VideoStreamDescriptor : global::Windows.Media.Core.IMediaStreamDescriptor,global::Windows.Media.Core.IMediaStreamDescriptor2
+	public partial class VideoStreamDescriptor : global::Windows.Media.Core.IMediaStreamDescriptor,global::Windows.Media.Core.IMediaStreamDescriptor2
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
+		public string Name
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Language
+		public string Language
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSelected
+		public bool IsSelected
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Label
+		public string Label
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.VideoEncodingProperties EncodingProperties
+		public global::Windows.Media.MediaProperties.VideoEncodingProperties EncodingProperties
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.VideoStreamDescriptor.Label.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.VideoStreamDescriptor Copy()
+		public global::Windows.Media.Core.VideoStreamDescriptor Copy()
 		{
 			throw new global::System.NotImplementedException("The member VideoStreamDescriptor VideoStreamDescriptor.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoStreamDescriptor%20VideoStreamDescriptor.Copy%28%29");
 		}

@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FlyoutShowOptions 
+	public partial class FlyoutShowOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Primitives.FlyoutShowMode ShowMode
+		public global::Windows.UI.Xaml.Controls.Primitives.FlyoutShowMode ShowMode
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared property Placement
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect? ExclusionRect
+		public global::Windows.Foundation.Rect? ExclusionRect
 		{
 			get
 			{

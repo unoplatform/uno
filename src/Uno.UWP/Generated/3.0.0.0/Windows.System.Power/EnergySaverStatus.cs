@@ -3,7 +3,7 @@
 namespace Windows.System.Power
 {
 #if false || false || false || false || false || false || false
-	public   enum EnergySaverStatus 
+	public enum EnergySaverStatus 
 	{
 		// Skipping already declared field Windows.System.Power.EnergySaverStatus.Disabled
 		// Skipping already declared field Windows.System.Power.EnergySaverStatus.Off

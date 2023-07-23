@@ -5,11 +5,11 @@ namespace Windows.Graphics.Holographic
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HolographicCamera 
+	public partial class HolographicCamera 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double ViewportScaleFactor
+		public double ViewportScaleFactor
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Id
+		public uint Id
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsStereo
+		public bool IsStereo
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Size RenderTargetSize
+		public global::Windows.Foundation.Size RenderTargetSize
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicDisplay Display
+		public global::Windows.Graphics.Holographic.HolographicDisplay Display
 		{
 			get
 			{
@@ -63,7 +63,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicCameraViewportParameters LeftViewportParameters
+		public global::Windows.Graphics.Holographic.HolographicCameraViewportParameters LeftViewportParameters
 		{
 			get
 			{
@@ -73,7 +73,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicCameraViewportParameters RightViewportParameters
+		public global::Windows.Graphics.Holographic.HolographicCameraViewportParameters RightViewportParameters
 		{
 			get
 			{
@@ -83,7 +83,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPrimaryLayerEnabled
+		public bool IsPrimaryLayerEnabled
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxQuadLayerCount
+		public uint MaxQuadLayerCount
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Graphics.Holographic.HolographicQuadLayer> QuadLayers
+		public global::System.Collections.Generic.IList<global::Windows.Graphics.Holographic.HolographicQuadLayer> QuadLayers
 		{
 			get
 			{
@@ -117,7 +117,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanOverrideViewport
+		public bool CanOverrideViewport
 		{
 			get
 			{
@@ -127,7 +127,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsHardwareContentProtectionEnabled
+		public bool IsHardwareContentProtectionEnabled
 		{
 			get
 			{
@@ -141,7 +141,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsHardwareContentProtectionSupported
+		public bool IsHardwareContentProtectionSupported
 		{
 			get
 			{
@@ -151,7 +151,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicViewConfiguration ViewConfiguration
+		public global::Windows.Graphics.Holographic.HolographicViewConfiguration ViewConfiguration
 		{
 			get
 			{
@@ -166,14 +166,14 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicCamera.Id.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetNearPlaneDistance( double value)
+		public void SetNearPlaneDistance( double value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "void HolographicCamera.SetNearPlaneDistance(double value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetFarPlaneDistance( double value)
+		public void SetFarPlaneDistance( double value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicCamera", "void HolographicCamera.SetFarPlaneDistance(double value)");
 		}

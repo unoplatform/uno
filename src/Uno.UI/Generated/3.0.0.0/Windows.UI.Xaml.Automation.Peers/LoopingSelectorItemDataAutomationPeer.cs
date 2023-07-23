@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LoopingSelectorItemDataAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.AutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
+	public partial class LoopingSelectorItemDataAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.AutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IVirtualizedItemProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Realize()
+		public void Realize()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.LoopingSelectorItemDataAutomationPeer", "void LoopingSelectorItemDataAutomationPeer.Realize()");
 		}

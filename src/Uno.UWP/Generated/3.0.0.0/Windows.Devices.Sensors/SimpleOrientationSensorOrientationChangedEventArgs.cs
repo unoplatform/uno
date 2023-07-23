@@ -5,7 +5,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SimpleOrientationSensorOrientationChangedEventArgs 
+	public partial class SimpleOrientationSensorOrientationChangedEventArgs 
 	{
 		// Skipping already declared property Orientation
 		// Skipping already declared property Timestamp

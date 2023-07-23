@@ -5,11 +5,11 @@ namespace Windows.Devices.Sms
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SmsFilterRules 
+	public partial class SmsFilterRules 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Sms.SmsFilterActionType ActionType
+		public global::Windows.Devices.Sms.SmsFilterActionType ActionType
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Sms.SmsFilterRule> Rules
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Sms.SmsFilterRule> Rules
 		{
 			get
 			{

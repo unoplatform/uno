@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum KeyTipPlacementMode 
+	public enum KeyTipPlacementMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Auto
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyTipPlacementMode.Bottom

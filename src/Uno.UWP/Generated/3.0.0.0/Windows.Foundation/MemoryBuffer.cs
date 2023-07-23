@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MemoryBuffer : global::Windows.Foundation.IMemoryBuffer,global::System.IDisposable
+	public partial class MemoryBuffer : global::Windows.Foundation.IMemoryBuffer,global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,14 +17,14 @@ namespace Windows.Foundation
 		// Forced skipping of method Windows.Foundation.MemoryBuffer.MemoryBuffer(uint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IMemoryBufferReference CreateReference()
+		public global::Windows.Foundation.IMemoryBufferReference CreateReference()
 		{
 			throw new global::System.NotImplementedException("The member IMemoryBufferReference MemoryBuffer.CreateReference() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IMemoryBufferReference%20MemoryBuffer.CreateReference%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.MemoryBuffer", "void MemoryBuffer.Dispose()");
 		}

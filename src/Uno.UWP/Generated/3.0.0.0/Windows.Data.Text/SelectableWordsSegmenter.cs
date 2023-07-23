@@ -5,11 +5,11 @@ namespace Windows.Data.Text
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SelectableWordsSegmenter 
+	public partial class SelectableWordsSegmenter 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ResolvedLanguage
+		public string ResolvedLanguage
 		{
 			get
 			{
@@ -28,21 +28,21 @@ namespace Windows.Data.Text
 		// Forced skipping of method Windows.Data.Text.SelectableWordsSegmenter.ResolvedLanguage.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Text.SelectableWordSegment GetTokenAt( string text,  uint startIndex)
+		public global::Windows.Data.Text.SelectableWordSegment GetTokenAt( string text,  uint startIndex)
 		{
 			throw new global::System.NotImplementedException("The member SelectableWordSegment SelectableWordsSegmenter.GetTokenAt(string text, uint startIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SelectableWordSegment%20SelectableWordsSegmenter.GetTokenAt%28string%20text%2C%20uint%20startIndex%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.SelectableWordSegment> GetTokens( string text)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Text.SelectableWordSegment> GetTokens( string text)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<SelectableWordSegment> SelectableWordsSegmenter.GetTokens(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CSelectableWordSegment%3E%20SelectableWordsSegmenter.GetTokens%28string%20text%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Tokenize( string text,  uint startIndex,  global::Windows.Data.Text.SelectableWordSegmentsTokenizingHandler handler)
+		public void Tokenize( string text,  uint startIndex,  global::Windows.Data.Text.SelectableWordSegmentsTokenizingHandler handler)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.SelectableWordsSegmenter", "void SelectableWordsSegmenter.Tokenize(string text, uint startIndex, SelectableWordSegmentsTokenizingHandler handler)");
 		}

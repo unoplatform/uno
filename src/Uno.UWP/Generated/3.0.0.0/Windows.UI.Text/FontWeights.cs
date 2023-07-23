@@ -5,7 +5,7 @@ namespace Windows.UI.Text
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FontWeights 
+	public partial class FontWeights 
 	{
 		// Skipping already declared property Black
 		// Skipping already declared property Bold

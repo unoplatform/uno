@@ -3,7 +3,7 @@
 namespace Windows.Devices.HumanInterfaceDevice
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum HidReportType 
+	public enum HidReportType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Input = 0,

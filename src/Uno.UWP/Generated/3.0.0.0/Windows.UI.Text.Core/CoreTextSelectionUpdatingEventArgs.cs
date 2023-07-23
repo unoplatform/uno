@@ -5,11 +5,11 @@ namespace Windows.UI.Text.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreTextSelectionUpdatingEventArgs 
+	public partial class CoreTextSelectionUpdatingEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.Core.CoreTextSelectionUpdatingResult Result
+		public global::Windows.UI.Text.Core.CoreTextSelectionUpdatingResult Result
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsCanceled
+		public bool IsCanceled
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.Core.CoreTextRange Selection
+		public global::Windows.UI.Text.Core.CoreTextRange Selection
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs.IsCanceled.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Deferral GetDeferral()
+		public global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral CoreTextSelectionUpdatingEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20CoreTextSelectionUpdatingEventArgs.GetDeferral%28%29");
 		}

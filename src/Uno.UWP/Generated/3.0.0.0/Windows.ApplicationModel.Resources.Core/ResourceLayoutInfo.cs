@@ -5,23 +5,23 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct ResourceLayoutInfo 
+	public partial struct ResourceLayoutInfo 
 	{
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceLayoutInfo.ResourceLayoutInfo()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint MajorVersion;
+		public uint MajorVersion;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint MinorVersion;
+		public uint MinorVersion;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint ResourceSubtreeCount;
+		public uint ResourceSubtreeCount;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint NamedResourceCount;
+		public uint NamedResourceCount;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int Checksum;
+		public int Checksum;
 #endif
 	}
 }

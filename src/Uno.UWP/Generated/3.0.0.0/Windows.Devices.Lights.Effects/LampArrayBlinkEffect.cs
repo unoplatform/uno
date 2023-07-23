@@ -5,11 +5,11 @@ namespace Windows.Devices.Lights.Effects
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LampArrayBlinkEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
+	public partial class LampArrayBlinkEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan SustainDuration
+		public global::System.TimeSpan SustainDuration
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan StartDelay
+		public global::System.TimeSpan StartDelay
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Lights.Effects.LampArrayRepetitionMode RepetitionMode
+		public global::Windows.Devices.Lights.Effects.LampArrayRepetitionMode RepetitionMode
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan RepetitionDelay
+		public global::System.TimeSpan RepetitionDelay
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int Occurrences
+		public int Occurrences
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan DecayDuration
+		public global::System.TimeSpan DecayDuration
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color Color
+		public global::Windows.UI.Color Color
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan AttackDuration
+		public global::System.TimeSpan AttackDuration
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int ZIndex
+		public int ZIndex
 		{
 			get
 			{

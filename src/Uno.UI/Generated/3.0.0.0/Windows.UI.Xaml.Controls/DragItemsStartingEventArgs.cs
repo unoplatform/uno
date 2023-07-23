@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DragItemsStartingEventArgs 
+	public partial class DragItemsStartingEventArgs 
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Data

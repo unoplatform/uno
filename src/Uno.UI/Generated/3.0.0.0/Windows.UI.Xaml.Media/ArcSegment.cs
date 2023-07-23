@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ArcSegment : global::Windows.UI.Xaml.Media.PathSegment
+	public partial class ArcSegment : global::Windows.UI.Xaml.Media.PathSegment
 	{
 		// Skipping already declared property SweepDirection
 		// Skipping already declared property Size

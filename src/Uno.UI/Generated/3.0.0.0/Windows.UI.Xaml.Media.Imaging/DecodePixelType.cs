@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Media.Imaging
 {
 #if false || false || false || false || false || false || false
-	public   enum DecodePixelType 
+	public enum DecodePixelType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.DecodePixelType.Physical
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.DecodePixelType.Logical

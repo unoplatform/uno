@@ -5,14 +5,14 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ColorAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
+	public partial class ColorAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
 	{
 		// Skipping already declared property To
 		// Skipping already declared property From
 		// Skipping already declared property EnableDependentAnimation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
+		public global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
 		{
 			get
 			{

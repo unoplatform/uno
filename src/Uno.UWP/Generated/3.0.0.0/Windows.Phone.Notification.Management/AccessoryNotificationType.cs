@@ -4,7 +4,7 @@ namespace Windows.Phone.Notification.Management
 {
 	[global::System.FlagsAttribute]
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum AccessoryNotificationType : uint
+	public enum AccessoryNotificationType : uint
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		None = 0,

@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum FocusNavigationDirection 
+	public enum FocusNavigationDirection 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Next
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusNavigationDirection.Previous

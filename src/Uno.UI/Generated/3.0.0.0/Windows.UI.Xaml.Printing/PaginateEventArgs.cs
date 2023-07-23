@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Printing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PaginateEventArgs 
+	public partial class PaginateEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int CurrentPreviewPageNumber
+		public int CurrentPreviewPageNumber
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.PrintTaskOptions PrintTaskOptions
+		public global::Windows.Graphics.Printing.PrintTaskOptions PrintTaskOptions
 		{
 			get
 			{

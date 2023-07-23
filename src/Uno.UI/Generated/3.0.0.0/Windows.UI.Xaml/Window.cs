@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Window 
+	public partial class Window 
 	{
 		// Skipping already declared property Content
 		// Skipping already declared property Bounds
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property Visible
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Compositor Compositor
+		public global::Windows.UI.Composition.Compositor Compositor
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.UIContext UIContext
+		public global::Windows.UI.UIContext UIContext
 		{
 			get
 			{

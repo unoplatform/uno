@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
 #if false || false || false || false || false || false || false
-	public   enum PatternInterface 
+	public enum PatternInterface 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Invoke
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.PatternInterface.Selection

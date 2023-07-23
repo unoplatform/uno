@@ -3,7 +3,7 @@
 namespace Windows.Media.Miracast
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum MiracastReceiverListeningStatus 
+	public enum MiracastReceiverListeningStatus 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		NotListening = 0,

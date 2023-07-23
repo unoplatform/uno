@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum ColorSpectrumShape 
+	public enum ColorSpectrumShape 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ColorSpectrumShape.Box
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ColorSpectrumShape.Ring

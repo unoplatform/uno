@@ -3,7 +3,7 @@
 namespace Windows.Media.Devices
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum CameraStreamState 
+	public enum CameraStreamState 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		NotStreaming = 0,

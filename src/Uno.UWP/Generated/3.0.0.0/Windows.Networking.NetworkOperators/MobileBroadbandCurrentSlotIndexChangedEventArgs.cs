@@ -5,11 +5,11 @@ namespace Windows.Networking.NetworkOperators
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MobileBroadbandCurrentSlotIndexChangedEventArgs 
+	public partial class MobileBroadbandCurrentSlotIndexChangedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int CurrentSlotIndex
+		public int CurrentSlotIndex
 		{
 			get
 			{

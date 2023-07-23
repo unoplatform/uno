@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VirtualizingLayout : global::Microsoft.UI.Xaml.Controls.Layout
+	public partial class VirtualizingLayout : global::Microsoft.UI.Xaml.Controls.Layout
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.VirtualizingLayout.VirtualizingLayout()

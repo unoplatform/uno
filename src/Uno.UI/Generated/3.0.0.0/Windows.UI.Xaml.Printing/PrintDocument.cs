@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Printing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintDocument : global::Windows.UI.Xaml.DependencyObject
+	public partial class PrintDocument : global::Windows.UI.Xaml.DependencyObject
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.IPrintDocumentSource DocumentSource
+		public global::Windows.Graphics.Printing.IPrintDocumentSource DocumentSource
 		{
 			get
 			{
@@ -42,35 +42,35 @@ namespace Windows.UI.Xaml.Printing
 		// Forced skipping of method Windows.UI.Xaml.Printing.PrintDocument.AddPages.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void AddPage( global::Windows.UI.Xaml.UIElement pageVisual)
+		public void AddPage( global::Windows.UI.Xaml.UIElement pageVisual)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "void PrintDocument.AddPage(UIElement pageVisual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void AddPagesComplete()
+		public void AddPagesComplete()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "void PrintDocument.AddPagesComplete()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetPreviewPageCount( int count,  global::Windows.UI.Xaml.Printing.PreviewPageCountType type)
+		public void SetPreviewPageCount( int count,  global::Windows.UI.Xaml.Printing.PreviewPageCountType type)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "void PrintDocument.SetPreviewPageCount(int count, PreviewPageCountType type)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetPreviewPage( int pageNumber,  global::Windows.UI.Xaml.UIElement pageVisual)
+		public void SetPreviewPage( int pageNumber,  global::Windows.UI.Xaml.UIElement pageVisual)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "void PrintDocument.SetPreviewPage(int pageNumber, UIElement pageVisual)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void InvalidatePreview()
+		public void InvalidatePreview()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Printing.PrintDocument", "void PrintDocument.InvalidatePreview()");
 		}
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Printing
 		// Forced skipping of method Windows.UI.Xaml.Printing.PrintDocument.DocumentSourceProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.Printing.AddPagesEventHandler AddPages
+		public event global::Windows.UI.Xaml.Printing.AddPagesEventHandler AddPages
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.Printing.GetPreviewPageEventHandler GetPreviewPage
+		public event global::Windows.UI.Xaml.Printing.GetPreviewPageEventHandler GetPreviewPage
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.Printing.PaginateEventHandler Paginate
+		public event global::Windows.UI.Xaml.Printing.PaginateEventHandler Paginate
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

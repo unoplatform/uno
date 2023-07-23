@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionColorGradientStop : global::Windows.UI.Composition.CompositionObject
+	public partial class CompositionColorGradientStop : global::Windows.UI.Composition.CompositionObject
 	{
 		// Skipping already declared property Offset
 		// Skipping already declared property Color

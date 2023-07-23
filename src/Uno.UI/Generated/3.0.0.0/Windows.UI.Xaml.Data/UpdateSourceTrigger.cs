@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Data
 {
 #if false || false || false || false || false || false || false
-	public   enum UpdateSourceTrigger 
+	public enum UpdateSourceTrigger 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Data.UpdateSourceTrigger.Default
 		// Skipping already declared field Windows.UI.Xaml.Data.UpdateSourceTrigger.PropertyChanged

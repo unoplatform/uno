@@ -5,11 +5,11 @@ namespace Windows.Devices.Bluetooth.Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GattServiceProviderConnection 
+	public partial class GattServiceProviderConnection 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService Service
+		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattLocalService Service
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string TriggerId
+		public string TriggerId
 		{
 			get
 			{
@@ -41,7 +41,7 @@ namespace Windows.Devices.Bluetooth.Background
 		// Forced skipping of method Windows.Devices.Bluetooth.Background.GattServiceProviderConnection.Service.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Background.GattServiceProviderConnection", "void GattServiceProviderConnection.Start()");
 		}

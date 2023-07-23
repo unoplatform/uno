@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Display
 {
 #if false || false || false || false || false || false || false
-	public   enum DisplayOrientations : uint
+	public enum DisplayOrientations : uint
 	{
 		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.None
 		// Skipping already declared field Windows.Graphics.Display.DisplayOrientations.Landscape

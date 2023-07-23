@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum AutomationLiveSetting 
+	public enum AutomationLiveSetting 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Off = 0,

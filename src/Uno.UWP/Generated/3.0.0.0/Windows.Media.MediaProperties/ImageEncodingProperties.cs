@@ -5,11 +5,11 @@ namespace Windows.Media.MediaProperties
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ImageEncodingProperties : global::Windows.Media.MediaProperties.IMediaEncodingProperties
+	public partial class ImageEncodingProperties : global::Windows.Media.MediaProperties.IMediaEncodingProperties
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Width
+		public uint Width
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Height
+		public uint Height
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Subtype
+		public string Subtype
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.MediaPropertySet Properties
+		public global::Windows.Media.MediaProperties.MediaPropertySet Properties
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Type
+		public string Type
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.ImageEncodingProperties.Subtype.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.ImageEncodingProperties Copy()
+		public global::Windows.Media.MediaProperties.ImageEncodingProperties Copy()
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.Copy() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.Copy%28%29");
 		}

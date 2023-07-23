@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Contacts
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContactEmail 
+	public partial class ContactEmail 
 	{
 		// Skipping already declared property Kind
 		// Skipping already declared property Description

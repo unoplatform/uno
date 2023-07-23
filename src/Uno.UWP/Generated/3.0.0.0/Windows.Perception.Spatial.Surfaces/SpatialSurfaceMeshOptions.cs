@@ -5,11 +5,11 @@ namespace Windows.Perception.Spatial.Surfaces
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialSurfaceMeshOptions 
+	public partial class SpatialSurfaceMeshOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DirectX.DirectXPixelFormat VertexPositionFormat
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat VertexPositionFormat
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DirectX.DirectXPixelFormat VertexNormalFormat
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat VertexNormalFormat
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DirectX.DirectXPixelFormat TriangleIndexFormat
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat TriangleIndexFormat
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IncludeVertexNormals
+		public bool IncludeVertexNormals
 		{
 			get
 			{

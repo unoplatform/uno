@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContentDialog : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class ContentDialog : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property TitleTemplate
 		// Skipping already declared property Title

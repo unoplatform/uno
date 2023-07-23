@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionLinearGradientBrush : global::Windows.UI.Composition.CompositionGradientBrush
+	public partial class CompositionLinearGradientBrush : global::Windows.UI.Composition.CompositionGradientBrush
 	{
 		// Skipping already declared property StartPoint
 		// Skipping already declared property EndPoint

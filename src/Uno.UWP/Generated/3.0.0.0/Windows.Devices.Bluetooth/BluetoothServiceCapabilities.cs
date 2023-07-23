@@ -3,7 +3,7 @@
 namespace Windows.Devices.Bluetooth
 {
 #if false || false || false || false || false || false || false
-	public   enum BluetoothServiceCapabilities : uint
+	public enum BluetoothServiceCapabilities : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.None
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothServiceCapabilities.LimitedDiscoverableMode

@@ -5,7 +5,7 @@ namespace Windows.UI.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ICoreInputSourceBase 
+	public partial interface ICoreInputSourceBase 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Core.CoreDispatcher Dispatcher
@@ -26,7 +26,7 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.ICoreInputSourceBase.InputEnabled.add
 		// Forced skipping of method Windows.UI.Core.ICoreInputSourceBase.InputEnabled.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		 event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.InputEnabledEventArgs> InputEnabled;
+		event global::Windows.Foundation.TypedEventHandler<object, global::Windows.UI.Core.InputEnabledEventArgs> InputEnabled;
 #endif
 	}
 }

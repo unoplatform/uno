@@ -5,7 +5,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreWindowEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
+	public partial class CoreWindowEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
 		// Skipping already declared property Handled
 		// Forced skipping of method Windows.UI.Core.CoreWindowEventArgs.Handled.get

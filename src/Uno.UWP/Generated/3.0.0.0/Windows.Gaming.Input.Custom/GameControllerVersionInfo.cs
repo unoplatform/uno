@@ -5,20 +5,20 @@ namespace Windows.Gaming.Input.Custom
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct GameControllerVersionInfo 
+	public partial struct GameControllerVersionInfo 
 	{
 		// Forced skipping of method Windows.Gaming.Input.Custom.GameControllerVersionInfo.GameControllerVersionInfo()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ushort Major;
+		public ushort Major;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ushort Minor;
+		public ushort Minor;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ushort Build;
+		public ushort Build;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ushort Revision;
+		public ushort Revision;
 #endif
 	}
 }

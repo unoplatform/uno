@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Navigation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigatingCancelEventArgs 
+	public partial class NavigatingCancelEventArgs 
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property NavigationMode

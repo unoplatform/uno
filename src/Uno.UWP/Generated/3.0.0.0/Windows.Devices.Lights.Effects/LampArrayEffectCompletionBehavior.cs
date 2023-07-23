@@ -3,7 +3,7 @@
 namespace Windows.Devices.Lights.Effects
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum LampArrayEffectCompletionBehavior 
+	public enum LampArrayEffectCompletionBehavior 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		ClearState = 0,

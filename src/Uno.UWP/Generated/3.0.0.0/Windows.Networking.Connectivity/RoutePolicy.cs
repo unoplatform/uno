@@ -5,11 +5,11 @@ namespace Windows.Networking.Connectivity
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RoutePolicy 
+	public partial class RoutePolicy 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Connectivity.ConnectionProfile ConnectionProfile
+		public global::Windows.Networking.Connectivity.ConnectionProfile ConnectionProfile
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.HostName HostName
+		public global::Windows.Networking.HostName HostName
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.DomainNameType HostNameType
+		public global::Windows.Networking.DomainNameType HostNameType
 		{
 			get
 			{

@@ -5,11 +5,11 @@ namespace Windows.Networking.Sockets
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SocketActivityInformation 
+	public partial class SocketActivityInformation 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Sockets.SocketActivityContext Context
+		public global::Windows.Networking.Sockets.SocketActivityContext Context
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Sockets.DatagramSocket DatagramSocket
+		public global::Windows.Networking.Sockets.DatagramSocket DatagramSocket
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
+		public string Id
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Sockets.SocketActivityKind SocketKind
+		public global::Windows.Networking.Sockets.SocketActivityKind SocketKind
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Sockets.StreamSocket StreamSocket
+		public global::Windows.Networking.Sockets.StreamSocket StreamSocket
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Sockets.StreamSocketListener StreamSocketListener
+		public global::Windows.Networking.Sockets.StreamSocketListener StreamSocketListener
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid TaskId
+		public global::System.Guid TaskId
 		{
 			get
 			{

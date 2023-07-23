@@ -5,11 +5,11 @@ namespace Windows.Networking.PushNotifications
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PushNotificationChannel 
+	public partial class PushNotificationChannel 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset ExpirationTime
+		public global::System.DateTimeOffset ExpirationTime
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Uri
+		public string Uri
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.Networking.PushNotifications
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.ExpirationTime.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Close()
+		public void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannel", "void PushNotificationChannel.Close()");
 		}
@@ -40,7 +40,7 @@ namespace Windows.Networking.PushNotifications
 		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannel.PushNotificationReceived.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.PushNotifications.PushNotificationChannel, global::Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs> PushNotificationReceived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.PushNotifications.PushNotificationChannel, global::Windows.Networking.PushNotifications.PushNotificationReceivedEventArgs> PushNotificationReceived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

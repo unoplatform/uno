@@ -5,11 +5,11 @@ namespace Windows.Security.Credentials
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class KeyCredentialRetrievalResult 
+	public partial class KeyCredentialRetrievalResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.KeyCredential Credential
+		public global::Windows.Security.Credentials.KeyCredential Credential
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.KeyCredentialStatus Status
+		public global::Windows.Security.Credentials.KeyCredentialStatus Status
 		{
 			get
 			{

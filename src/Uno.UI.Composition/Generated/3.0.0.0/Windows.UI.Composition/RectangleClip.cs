@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RectangleClip : global::Windows.UI.Composition.CompositionClip
+	public partial class RectangleClip : global::Windows.UI.Composition.CompositionClip
 	{
 		// Skipping already declared property TopRightRadius
 		// Skipping already declared property TopLeftRadius

@@ -3,7 +3,7 @@
 namespace Windows.UI.Text
 {
 #if false || false || false || false || false || false || false
-	public   enum FontStyle 
+	public enum FontStyle 
 	{
 		// Skipping already declared field Windows.UI.Text.FontStyle.Normal
 		// Skipping already declared field Windows.UI.Text.FontStyle.Oblique

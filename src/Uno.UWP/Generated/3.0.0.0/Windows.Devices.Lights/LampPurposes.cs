@@ -4,7 +4,7 @@ namespace Windows.Devices.Lights
 {
 	[global::System.FlagsAttribute]
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum LampPurposes : uint
+	public enum LampPurposes : uint
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Undefined = 0,

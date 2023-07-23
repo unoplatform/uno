@@ -5,11 +5,11 @@ namespace Windows.Media.Capture.Frames
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaFrameReference : global::System.IDisposable
+	public partial class MediaFrameReference : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.BufferMediaFrame BufferMediaFrame
+		public global::Windows.Media.Capture.Frames.BufferMediaFrame BufferMediaFrame
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
+		public global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Duration
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.MediaFrameFormat Format
+		public global::Windows.Media.Capture.Frames.MediaFrameFormat Format
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
+		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.MediaFrameSourceKind SourceKind
+		public global::Windows.Media.Capture.Frames.MediaFrameSourceKind SourceKind
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? SystemRelativeTime
+		public global::System.TimeSpan? SystemRelativeTime
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.VideoMediaFrame VideoMediaFrame
+		public global::Windows.Media.Capture.Frames.VideoMediaFrame VideoMediaFrame
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.AudioMediaFrame AudioMediaFrame
+		public global::Windows.Media.Capture.Frames.AudioMediaFrame AudioMediaFrame
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameReference.CoordinateSystem.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.Frames.MediaFrameReference", "void MediaFrameReference.Dispose()");
 		}

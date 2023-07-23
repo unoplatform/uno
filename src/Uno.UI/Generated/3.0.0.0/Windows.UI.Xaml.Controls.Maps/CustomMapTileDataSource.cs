@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CustomMapTileDataSource : global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource
+	public partial class CustomMapTileDataSource : global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.CustomMapTileDataSource.BitmapRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.CustomMapTileDataSource, global::Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs> BitmapRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.CustomMapTileDataSource, global::Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestedEventArgs> BitmapRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

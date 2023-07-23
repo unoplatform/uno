@@ -5,11 +5,11 @@ namespace Windows.Devices.Printers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class IppAttributeValue 
+	public partial class IppAttributeValue 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Printers.IppAttributeValueKind Kind
+		public global::Windows.Devices.Printers.IppAttributeValueKind Kind
 		{
 			get
 			{
@@ -20,126 +20,126 @@ namespace Windows.Devices.Printers
 		// Forced skipping of method Windows.Devices.Printers.IppAttributeValue.Kind.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<int> GetIntegerArray()
+		public global::System.Collections.Generic.IList<int> GetIntegerArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<int> IppAttributeValue.GetIntegerArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cint%3E%20IppAttributeValue.GetIntegerArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<bool> GetBooleanArray()
+		public global::System.Collections.Generic.IList<bool> GetBooleanArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<bool> IppAttributeValue.GetBooleanArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cbool%3E%20IppAttributeValue.GetBooleanArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<int> GetEnumArray()
+		public global::System.Collections.Generic.IList<int> GetEnumArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<int> IppAttributeValue.GetEnumArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cint%3E%20IppAttributeValue.GetEnumArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IBuffer> GetOctetStringArray()
+		public global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IBuffer> GetOctetStringArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<IBuffer> IppAttributeValue.GetOctetStringArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIBuffer%3E%20IppAttributeValue.GetOctetStringArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.DateTimeOffset> GetDateTimeArray()
+		public global::System.Collections.Generic.IList<global::System.DateTimeOffset> GetDateTimeArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<DateTimeOffset> IppAttributeValue.GetDateTimeArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CDateTimeOffset%3E%20IppAttributeValue.GetDateTimeArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppResolution> GetResolutionArray()
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppResolution> GetResolutionArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<IppResolution> IppAttributeValue.GetResolutionArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIppResolution%3E%20IppAttributeValue.GetResolutionArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppIntegerRange> GetRangeOfIntegerArray()
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppIntegerRange> GetRangeOfIntegerArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<IppIntegerRange> IppAttributeValue.GetRangeOfIntegerArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIppIntegerRange%3E%20IppAttributeValue.GetRangeOfIntegerArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Devices.Printers.IppAttributeValue>> GetCollectionArray()
+		public global::System.Collections.Generic.IList<global::System.Collections.Generic.IReadOnlyDictionary<string, global::Windows.Devices.Printers.IppAttributeValue>> GetCollectionArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<IReadOnlyDictionary<string, IppAttributeValue>> IppAttributeValue.GetCollectionArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIReadOnlyDictionary%3Cstring%2C%20IppAttributeValue%3E%3E%20IppAttributeValue.GetCollectionArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppTextWithLanguage> GetTextWithLanguageArray()
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppTextWithLanguage> GetTextWithLanguageArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<IppTextWithLanguage> IppAttributeValue.GetTextWithLanguageArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIppTextWithLanguage%3E%20IppAttributeValue.GetTextWithLanguageArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppTextWithLanguage> GetNameWithLanguageArray()
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Printers.IppTextWithLanguage> GetNameWithLanguageArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<IppTextWithLanguage> IppAttributeValue.GetNameWithLanguageArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CIppTextWithLanguage%3E%20IppAttributeValue.GetNameWithLanguageArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetTextWithoutLanguageArray()
+		public global::System.Collections.Generic.IList<string> GetTextWithoutLanguageArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetTextWithoutLanguageArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetTextWithoutLanguageArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetNameWithoutLanguageArray()
+		public global::System.Collections.Generic.IList<string> GetNameWithoutLanguageArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetNameWithoutLanguageArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetNameWithoutLanguageArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetKeywordArray()
+		public global::System.Collections.Generic.IList<string> GetKeywordArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetKeywordArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetKeywordArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> GetUriArray()
+		public global::System.Collections.Generic.IList<global::System.Uri> GetUriArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<Uri> IppAttributeValue.GetUriArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUri%3E%20IppAttributeValue.GetUriArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetUriSchemaArray()
+		public global::System.Collections.Generic.IList<string> GetUriSchemaArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetUriSchemaArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetUriSchemaArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetCharsetArray()
+		public global::System.Collections.Generic.IList<string> GetCharsetArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetCharsetArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetCharsetArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetNaturalLanguageArray()
+		public global::System.Collections.Generic.IList<string> GetNaturalLanguageArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetNaturalLanguageArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetNaturalLanguageArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> GetMimeMediaTypeArray()
+		public global::System.Collections.Generic.IList<string> GetMimeMediaTypeArray()
 		{
 			throw new global::System.NotImplementedException("The member IList<string> IppAttributeValue.GetMimeMediaTypeArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20IppAttributeValue.GetMimeMediaTypeArray%28%29");
 		}

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Border : global::Windows.UI.Xaml.FrameworkElement
+	public partial class Border : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property Padding
 		// Skipping already declared property CornerRadius
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.BrushTransition BackgroundTransition
+		public global::Windows.UI.Xaml.BrushTransition BackgroundTransition
 		{
 			get
 			{

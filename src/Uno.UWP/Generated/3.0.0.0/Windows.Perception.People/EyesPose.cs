@@ -5,11 +5,11 @@ namespace Windows.Perception.People
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class EyesPose 
+	public partial class EyesPose 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.Spatial.SpatialRay? Gaze
+		public global::Windows.Perception.Spatial.SpatialRay? Gaze
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsCalibrationValid
+		public bool IsCalibrationValid
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.PerceptionTimestamp UpdateTimestamp
+		public global::Windows.Perception.PerceptionTimestamp UpdateTimestamp
 		{
 			get
 			{

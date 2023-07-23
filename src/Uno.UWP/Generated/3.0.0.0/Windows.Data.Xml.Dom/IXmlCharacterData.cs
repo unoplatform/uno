@@ -5,7 +5,7 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IXmlCharacterData : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSelector,global::Windows.Data.Xml.Dom.IXmlNodeSerializer
+	public partial interface IXmlCharacterData : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSelector,global::Windows.Data.Xml.Dom.IXmlNodeSerializer
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property Length

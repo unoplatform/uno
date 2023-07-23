@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionSpriteShape : global::Windows.UI.Composition.CompositionShape
+	public partial class CompositionSpriteShape : global::Windows.UI.Composition.CompositionShape
 	{
 		// Skipping already declared property StrokeThickness
 		// Skipping already declared property StrokeStartCap

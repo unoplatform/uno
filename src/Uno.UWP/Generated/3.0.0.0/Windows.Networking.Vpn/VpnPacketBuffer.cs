@@ -5,11 +5,11 @@ namespace Windows.Networking.Vpn
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VpnPacketBuffer 
+	public partial class VpnPacketBuffer 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint TransportAffinity
+		public uint TransportAffinity
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
+		public global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.Buffer Buffer
+		public global::Windows.Storage.Streams.Buffer Buffer
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Vpn.VpnAppId AppId
+		public global::Windows.Networking.Vpn.VpnAppId AppId
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object TransportContext
+		public object TransportContext
 		{
 			get
 			{

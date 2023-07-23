@@ -5,11 +5,11 @@ namespace Windows.Data.Pdf
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PdfDocument 
+	public partial class PdfDocument 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPasswordProtected
+		public bool IsPasswordProtected
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Data.Pdf
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint PageCount
+		public uint PageCount
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Data.Pdf
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Pdf.PdfPage GetPage( uint pageIndex)
+		public global::Windows.Data.Pdf.PdfPage GetPage( uint pageIndex)
 		{
 			throw new global::System.NotImplementedException("The member PdfPage PdfDocument.GetPage(uint pageIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PdfPage%20PdfDocument.GetPage%28uint%20pageIndex%29");
 		}

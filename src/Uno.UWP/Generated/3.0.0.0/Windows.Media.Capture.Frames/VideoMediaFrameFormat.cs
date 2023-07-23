@@ -5,11 +5,11 @@ namespace Windows.Media.Capture.Frames
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VideoMediaFrameFormat 
+	public partial class VideoMediaFrameFormat 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.DepthMediaFrameFormat DepthFormat
+		public global::Windows.Media.Capture.Frames.DepthMediaFrameFormat DepthFormat
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Height
+		public uint Height
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Capture.Frames.MediaFrameFormat MediaFrameFormat
+		public global::Windows.Media.Capture.Frames.MediaFrameFormat MediaFrameFormat
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Width
+		public uint Width
 		{
 			get
 			{

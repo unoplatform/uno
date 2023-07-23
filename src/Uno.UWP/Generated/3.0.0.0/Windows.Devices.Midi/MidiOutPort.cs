@@ -5,11 +5,11 @@ namespace Windows.Devices.Midi
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MidiOutPort : global::Windows.Devices.Midi.IMidiOutPort,global::System.IDisposable
+	public partial class MidiOutPort : global::Windows.Devices.Midi.IMidiOutPort,global::System.IDisposable
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -19,14 +19,14 @@ namespace Windows.Devices.Midi
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage)
+		public void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendMessage(IMidiMessage midiMessage)");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void SendBuffer( global::Windows.Storage.Streams.IBuffer midiData)
+		public void SendBuffer( global::Windows.Storage.Streams.IBuffer midiData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendBuffer(IBuffer midiData)");
 		}
@@ -34,7 +34,7 @@ namespace Windows.Devices.Midi
 		// Forced skipping of method Windows.Devices.Midi.MidiOutPort.DeviceId.get
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.Dispose()");
 		}

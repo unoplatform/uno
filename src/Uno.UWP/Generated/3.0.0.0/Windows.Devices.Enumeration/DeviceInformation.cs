@@ -5,11 +5,11 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeviceInformation 
+	public partial class DeviceInformation 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Enumeration.EnclosureLocation EnclosureLocation
+		public global::Windows.Devices.Enumeration.EnclosureLocation EnclosureLocation
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared property Properties
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Enumeration.DeviceInformationKind Kind
+		public global::Windows.Devices.Enumeration.DeviceInformationKind Kind
 		{
 			get
 			{
@@ -34,7 +34,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Enumeration.DeviceInformationPairing Pairing
+		public global::Windows.Devices.Enumeration.DeviceInformationPairing Pairing
 		{
 			get
 			{
@@ -50,21 +50,21 @@ namespace Windows.Devices.Enumeration
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Update( global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
+		public void Update( global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "void DeviceInformation.Update(DeviceInformationUpdate updateInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetThumbnailAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetThumbnailAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceThumbnail> DeviceInformation.GetThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceThumbnail%3E%20DeviceInformation.GetThumbnailAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetGlyphThumbnailAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceThumbnail> GetGlyphThumbnailAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceThumbnail> DeviceInformation.GetGlyphThumbnailAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceThumbnail%3E%20DeviceInformation.GetGlyphThumbnailAsync%28%29");
 		}

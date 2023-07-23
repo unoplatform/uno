@@ -5,11 +5,11 @@ namespace Windows.UI.Notifications
 #if __ANDROID__ || false || false || false || false || false || false
 	[global::Uno.NotImplemented("__ANDROID__")]
 #endif
-	public  partial class BadgeNotification 
+	public partial class BadgeNotification 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? ExpirationTime
+		public global::System.DateTimeOffset? ExpirationTime
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__")]
-		public  global::Windows.Data.Xml.Dom.XmlDocument Content
+		public global::Windows.Data.Xml.Dom.XmlDocument Content
 		{
 			get
 			{

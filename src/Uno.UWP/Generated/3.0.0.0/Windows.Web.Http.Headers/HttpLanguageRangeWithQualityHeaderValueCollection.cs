@@ -5,11 +5,11 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HttpLanguageRangeWithQualityHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue>,global::Windows.Foundation.IStringable
+	public partial class HttpLanguageRangeWithQualityHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue>,global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{
@@ -19,14 +19,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ParseAdd( string input)
+		public void ParseAdd( string input)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValueCollection", "void HttpLanguageRangeWithQualityHeaderValueCollection.ParseAdd(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TryParseAdd( string input)
+		public bool TryParseAdd( string input)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpLanguageRangeWithQualityHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageRangeWithQualityHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}

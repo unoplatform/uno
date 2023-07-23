@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BindableAttribute : global::System.Attribute
+	public partial class BindableAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.UI.Xaml.Data.BindableAttribute.BindableAttribute()
 		// Forced skipping of method Windows.UI.Xaml.Data.BindableAttribute.BindableAttribute()

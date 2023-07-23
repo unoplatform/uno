@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ICustomPropertyProvider 
+	public partial interface ICustomPropertyProvider 
 	{
 		// Skipping already declared property Type
 		// Skipping already declared method Windows.UI.Xaml.Data.ICustomPropertyProvider.GetCustomProperty(string)

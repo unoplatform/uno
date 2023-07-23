@@ -5,11 +5,11 @@ namespace Windows.Devices.Sensors
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Altimeter 
+	public partial class Altimeter 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ReportInterval
+		public uint ReportInterval
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MinimumReportInterval
+		public uint MinimumReportInterval
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ReportLatency
+		public uint ReportLatency
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxBatchSize
+		public uint MaxBatchSize
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Sensors.AltimeterReading GetCurrentReading()
+		public global::Windows.Devices.Sensors.AltimeterReading GetCurrentReading()
 		{
 			throw new global::System.NotImplementedException("The member AltimeterReading Altimeter.GetCurrentReading() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AltimeterReading%20Altimeter.GetCurrentReading%28%29");
 		}
@@ -90,7 +90,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Altimeter, global::Windows.Devices.Sensors.AltimeterReadingChangedEventArgs> ReadingChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Altimeter, global::Windows.Devices.Sensors.AltimeterReadingChangedEventArgs> ReadingChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

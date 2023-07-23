@@ -3,7 +3,7 @@
 namespace Windows.UI.Input.Inking.Analysis
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum InkAnalysisStrokeKind 
+	public enum InkAnalysisStrokeKind 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Auto = 0,

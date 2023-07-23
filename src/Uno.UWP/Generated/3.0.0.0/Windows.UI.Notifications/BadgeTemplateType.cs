@@ -3,7 +3,7 @@
 namespace Windows.UI.Notifications
 {
 #if __ANDROID__ || false || false || false || false || false || false
-	public   enum BadgeTemplateType 
+	public enum BadgeTemplateType 
 	{
 #if __ANDROID__ || false || false || false || false || false || false
 		BadgeGlyph = 0,

@@ -3,7 +3,7 @@
 namespace Windows.Networking.Vpn
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum VpnChannelActivityEventType 
+	public enum VpnChannelActivityEventType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Idle = 0,

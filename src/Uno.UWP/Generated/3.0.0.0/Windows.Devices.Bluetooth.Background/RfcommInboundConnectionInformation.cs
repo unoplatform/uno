@@ -5,11 +5,11 @@ namespace Windows.Devices.Bluetooth.Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RfcommInboundConnectionInformation 
+	public partial class RfcommInboundConnectionInformation 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.BluetoothServiceCapabilities ServiceCapabilities
+		public global::Windows.Devices.Bluetooth.BluetoothServiceCapabilities ServiceCapabilities
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer SdpRecord
+		public global::Windows.Storage.Streams.IBuffer SdpRecord
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Bluetooth.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId LocalServiceId
+		public global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId LocalServiceId
 		{
 			get
 			{

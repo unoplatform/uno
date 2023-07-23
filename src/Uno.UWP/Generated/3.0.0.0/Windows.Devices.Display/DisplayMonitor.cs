@@ -5,11 +5,11 @@ namespace Windows.Devices.Display
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DisplayMonitor 
+	public partial class DisplayMonitor 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point BluePrimary
+		public global::Windows.Foundation.Point BluePrimary
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.DisplayMonitorConnectionKind ConnectionKind
+		public global::Windows.Devices.Display.DisplayMonitorConnectionKind ConnectionKind
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayAdapterDeviceId
+		public string DisplayAdapterDeviceId
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DisplayAdapterId DisplayAdapterId
+		public global::Windows.Graphics.DisplayAdapterId DisplayAdapterId
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint DisplayAdapterTargetId
+		public uint DisplayAdapterTargetId
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayName
+		public string DisplayName
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point GreenPrimary
+		public global::Windows.Foundation.Point GreenPrimary
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float MaxAverageFullFrameLuminanceInNits
+		public float MaxAverageFullFrameLuminanceInNits
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float MaxLuminanceInNits
+		public float MaxLuminanceInNits
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float MinLuminanceInNits
+		public float MinLuminanceInNits
 		{
 			get
 			{
@@ -119,7 +119,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.SizeInt32 NativeResolutionInRawPixels
+		public global::Windows.Graphics.SizeInt32 NativeResolutionInRawPixels
 		{
 			get
 			{
@@ -129,7 +129,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.DisplayMonitorPhysicalConnectorKind PhysicalConnector
+		public global::Windows.Devices.Display.DisplayMonitorPhysicalConnectorKind PhysicalConnector
 		{
 			get
 			{
@@ -139,7 +139,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Size? PhysicalSizeInInches
+		public global::Windows.Foundation.Size? PhysicalSizeInInches
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float RawDpiX
+		public float RawDpiX
 		{
 			get
 			{
@@ -159,7 +159,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float RawDpiY
+		public float RawDpiY
 		{
 			get
 			{
@@ -169,7 +169,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point RedPrimary
+		public global::Windows.Foundation.Point RedPrimary
 		{
 			get
 			{
@@ -179,7 +179,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.DisplayMonitorUsageKind UsageKind
+		public global::Windows.Devices.Display.DisplayMonitorUsageKind UsageKind
 		{
 			get
 			{
@@ -189,7 +189,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point WhitePoint
+		public global::Windows.Foundation.Point WhitePoint
 		{
 			get
 			{
@@ -199,7 +199,7 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDolbyVisionSupportedInHdrMode
+		public bool IsDolbyVisionSupportedInHdrMode
 		{
 			get
 			{
@@ -228,7 +228,7 @@ namespace Windows.Devices.Display
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MaxAverageFullFrameLuminanceInNits.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte[] GetDescriptor( global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
+		public byte[] GetDescriptor( global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
 		{
 			throw new global::System.NotImplementedException("The member byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20DisplayMonitor.GetDescriptor%28DisplayMonitorDescriptorKind%20descriptorKind%29");
 		}

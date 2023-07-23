@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SelectorItem : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class SelectorItem : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property IsSelected
 		// Skipping already declared property IsSelectedProperty

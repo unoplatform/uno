@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VisualTreeHelper 
+	public partial class VisualTreeHelper 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopupsForXamlRoot(Windows.UI.Xaml.XamlRoot)
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window)

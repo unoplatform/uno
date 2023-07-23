@@ -5,11 +5,11 @@ namespace Windows.Devices.Radios
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-	public  partial class Radio 
+	public partial class Radio 
 	{
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Radios.RadioKind Kind
+		public global::Windows.Devices.Radios.RadioKind Kind
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Radios
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
+		public string Name
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Radios
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Radios.RadioState State
+		public global::Windows.Devices.Radios.RadioState State
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Devices.Radios
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.RadioAccessStatus> SetStateAsync( global::Windows.Devices.Radios.RadioState value)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Radios.RadioAccessStatus> SetStateAsync( global::Windows.Devices.Radios.RadioState value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RadioAccessStatus> Radio.SetStateAsync(RadioState value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRadioAccessStatus%3E%20Radio.SetStateAsync%28RadioState%20value%29");
 		}
@@ -79,7 +79,7 @@ namespace Windows.Devices.Radios
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Radios.Radio, object> StateChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Radios.Radio, object> StateChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

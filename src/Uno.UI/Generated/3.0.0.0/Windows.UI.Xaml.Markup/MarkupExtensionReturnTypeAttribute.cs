@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Markup
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MarkupExtensionReturnTypeAttribute : global::System.Attribute
+	public partial class MarkupExtensionReturnTypeAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.UI.Xaml.Markup.MarkupExtensionReturnTypeAttribute.MarkupExtensionReturnTypeAttribute()
 		// Forced skipping of method Windows.UI.Xaml.Markup.MarkupExtensionReturnTypeAttribute.MarkupExtensionReturnTypeAttribute()

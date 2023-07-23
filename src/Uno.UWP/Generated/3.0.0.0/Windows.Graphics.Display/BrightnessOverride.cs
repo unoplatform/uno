@@ -5,13 +5,13 @@ namespace Windows.Graphics.Display
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BrightnessOverride 
+	public partial class BrightnessOverride 
 	{
 		// Skipping already declared property BrightnessLevel
 		// Skipping already declared property IsOverrideActive
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSupported
+		public bool IsSupported
 		{
 			get
 			{
@@ -24,35 +24,35 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverride.BrightnessLevel.get
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetBrightnessLevel( double brightnessLevel,  global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
+		public void SetBrightnessLevel( double brightnessLevel,  global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.SetBrightnessLevel(double brightnessLevel, DisplayBrightnessOverrideOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetBrightnessScenario( global::Windows.Graphics.Display.DisplayBrightnessScenario scenario,  global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
+		public void SetBrightnessScenario( global::Windows.Graphics.Display.DisplayBrightnessScenario scenario,  global::Windows.Graphics.Display.DisplayBrightnessOverrideOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.SetBrightnessScenario(DisplayBrightnessScenario scenario, DisplayBrightnessOverrideOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double GetLevelForScenario( global::Windows.Graphics.Display.DisplayBrightnessScenario scenario)
+		public double GetLevelForScenario( global::Windows.Graphics.Display.DisplayBrightnessScenario scenario)
 		{
 			throw new global::System.NotImplementedException("The member double BrightnessOverride.GetLevelForScenario(DisplayBrightnessScenario scenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20BrightnessOverride.GetLevelForScenario%28DisplayBrightnessScenario%20scenario%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void StartOverride()
+		public void StartOverride()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.StartOverride()");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void StopOverride()
+		public void StopOverride()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Display.BrightnessOverride", "void BrightnessOverride.StopOverride()");
 		}
@@ -80,7 +80,7 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> BrightnessLevelChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> BrightnessLevelChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -96,7 +96,7 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> IsOverrideActiveChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> IsOverrideActiveChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -112,7 +112,7 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> IsSupportedChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.BrightnessOverride, object> IsSupportedChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

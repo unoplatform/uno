@@ -5,7 +5,7 @@ namespace Windows.Media.SpeechRecognition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpeechRecognizerUIOptions 
+	public partial class SpeechRecognizerUIOptions 
 	{
 		// Skipping already declared property ShowConfirmation
 		// Skipping already declared property IsReadBackEnabled

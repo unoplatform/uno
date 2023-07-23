@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ProgressRing : global::Windows.UI.Xaml.Controls.Control
+	public partial class ProgressRing : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property Value
 		// Skipping already declared property Minimum
@@ -14,7 +14,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property IsActive
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings TemplateSettings
+		public global::Microsoft.UI.Xaml.Controls.ProgressRingTemplateSettings TemplateSettings
 		{
 			get
 			{

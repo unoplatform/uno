@@ -5,7 +5,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IHttpContent : global::System.IDisposable
+	public partial interface IHttpContent : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Web.Http.Headers.HttpContentHeaderCollection Headers

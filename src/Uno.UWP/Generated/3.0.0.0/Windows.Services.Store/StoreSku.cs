@@ -5,11 +5,11 @@ namespace Windows.Services.Store
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StoreSku 
+	public partial class StoreSku 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Store.StoreAvailability> Availabilities
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Store.StoreAvailability> Availabilities
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> BundledSkus
+		public global::System.Collections.Generic.IReadOnlyList<string> BundledSkus
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Store.StoreCollectionData CollectionData
+		public global::Windows.Services.Store.StoreCollectionData CollectionData
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CustomDeveloperData
+		public string CustomDeveloperData
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Description
+		public string Description
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ExtendedJsonData
+		public string ExtendedJsonData
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Store.StoreImage> Images
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Store.StoreImage> Images
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsInUserCollection
+		public bool IsInUserCollection
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSubscription
+		public bool IsSubscription
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTrial
+		public bool IsTrial
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Language
+		public string Language
 		{
 			get
 			{
@@ -119,7 +119,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Store.StorePrice Price
+		public global::Windows.Services.Store.StorePrice Price
 		{
 			get
 			{
@@ -129,7 +129,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string StoreId
+		public string StoreId
 		{
 			get
 			{
@@ -139,7 +139,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Store.StoreSubscriptionInfo SubscriptionInfo
+		public global::Windows.Services.Store.StoreSubscriptionInfo SubscriptionInfo
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Title
+		public string Title
 		{
 			get
 			{
@@ -159,7 +159,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Store.StoreVideo> Videos
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Store.StoreVideo> Videos
 		{
 			get
 			{
@@ -183,21 +183,21 @@ namespace Windows.Services.Store
 		// Forced skipping of method Windows.Services.Store.StoreSku.CollectionData.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> GetIsInstalledAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> GetIsInstalledAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StoreSku.GetIsInstalledAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StoreSku.GetIsInstalledAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreSku.RequestPurchaseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreSku.RequestPurchaseAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync( global::Windows.Services.Store.StorePurchaseProperties storePurchaseProperties)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync( global::Windows.Services.Store.StorePurchaseProperties storePurchaseProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreSku.RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreSku.RequestPurchaseAsync%28StorePurchaseProperties%20storePurchaseProperties%29");
 		}

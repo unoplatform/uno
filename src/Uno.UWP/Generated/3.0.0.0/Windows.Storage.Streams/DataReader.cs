@@ -5,12 +5,12 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DataReader : global::Windows.Storage.Streams.IDataReader,global::System.IDisposable
+	public partial class DataReader : global::Windows.Storage.Streams.IDataReader,global::System.IDisposable
 	{
 		// Skipping already declared property UnicodeEncoding
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
+		public global::Windows.Storage.Streams.InputStreamOptions InputStreamOptions
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.DataReader.ReadTimeSpan()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count)
+		public global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count)
 		{
 			throw new global::System.NotImplementedException("The member DataReaderLoadOperation DataReader.LoadAsync(uint count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DataReaderLoadOperation%20DataReader.LoadAsync%28uint%20count%29");
 		}
@@ -65,7 +65,7 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.DataReader.DetachBuffer()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IInputStream DetachStream()
+		public global::Windows.Storage.Streams.IInputStream DetachStream()
 		{
 			throw new global::System.NotImplementedException("The member IInputStream DataReader.DetachStream() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20DataReader.DetachStream%28%29");
 		}

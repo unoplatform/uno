@@ -5,7 +5,7 @@ namespace Windows.Services.Store
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct StoreContract 
+	public partial struct StoreContract 
 	{
 		// Forced skipping of method Windows.Services.Store.StoreContract.StoreContract()
 	}

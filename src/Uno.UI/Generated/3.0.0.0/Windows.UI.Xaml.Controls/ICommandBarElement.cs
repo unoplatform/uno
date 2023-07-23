@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ICommandBarElement 
+	public partial interface ICommandBarElement 
 	{
 		// Skipping already declared property IsCompact
 		// Forced skipping of method Windows.UI.Xaml.Controls.ICommandBarElement.IsCompact.get

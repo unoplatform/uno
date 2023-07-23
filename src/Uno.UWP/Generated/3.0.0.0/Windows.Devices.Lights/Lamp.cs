@@ -5,11 +5,11 @@ namespace Windows.Devices.Lights
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Lamp : global::System.IDisposable
+	public partial class Lamp : global::System.IDisposable
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEnabled
+		public bool IsEnabled
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color Color
+		public global::Windows.UI.Color Color
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Lights
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float BrightnessLevel
+		public float BrightnessLevel
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsColorSettable
+		public bool IsColorSettable
 		{
 			get
 			{
@@ -81,7 +81,7 @@ namespace Windows.Devices.Lights
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.remove
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Lamp", "void Lamp.Dispose()");
 		}
@@ -103,7 +103,7 @@ namespace Windows.Devices.Lights
 		// Skipping already declared method Windows.Devices.Lights.Lamp.GetDefaultAsync()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Lamp, global::Windows.Devices.Lights.LampAvailabilityChangedEventArgs> AvailabilityChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Lamp, global::Windows.Devices.Lights.LampAvailabilityChangedEventArgs> AvailabilityChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

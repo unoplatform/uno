@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface INumberRounder 
+	public partial interface INumberRounder 
 	{
 		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberRounder.RoundInt32(int)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberRounder.RoundUInt32(uint)

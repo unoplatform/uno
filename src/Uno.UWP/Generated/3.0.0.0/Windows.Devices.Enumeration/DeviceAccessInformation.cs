@@ -5,7 +5,7 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeviceAccessInformation 
+	public partial class DeviceAccessInformation 
 	{
 		// Skipping already declared property CurrentStatus
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.add
@@ -34,7 +34,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.DeviceAccessInformation, global::Windows.Devices.Enumeration.DeviceAccessChangedEventArgs> AccessChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Enumeration.DeviceAccessInformation, global::Windows.Devices.Enumeration.DeviceAccessChangedEventArgs> AccessChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

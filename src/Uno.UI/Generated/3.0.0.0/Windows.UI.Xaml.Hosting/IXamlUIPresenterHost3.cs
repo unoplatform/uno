@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Hosting
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IXamlUIPresenterHost3 
+	public partial interface IXamlUIPresenterHost3 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		object ResolveDictionaryResource( global::Windows.UI.Xaml.ResourceDictionary dictionary,  object dictionaryKey,  object suggestedValue);

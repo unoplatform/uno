@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemsControl : global::Windows.UI.Xaml.Controls.Control,global::Windows.UI.Xaml.Controls.IItemContainerMapping
+	public partial class ItemsControl : global::Windows.UI.Xaml.Controls.Control,global::Windows.UI.Xaml.Controls.IItemContainerMapping
 	{
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemsPanel
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property ItemTemplate
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
+		public global::Windows.UI.Xaml.Media.Animation.TransitionCollection ItemContainerTransitions
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property ItemContainerStyle
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.GroupStyleSelector GroupStyleSelector
+		public global::Windows.UI.Xaml.Controls.GroupStyleSelector GroupStyleSelector
 		{
 			get
 			{
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property IsGrouping
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.ItemContainerGenerator ItemContainerGenerator
+		public global::Windows.UI.Xaml.Controls.ItemContainerGenerator ItemContainerGenerator
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsControl.ItemsPanelRoot.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer( global::Windows.UI.Xaml.DependencyObject itemContainer)
+		public global::Windows.UI.Xaml.DependencyObject GroupHeaderContainerFromItemContainer( global::Windows.UI.Xaml.DependencyObject itemContainer)
 		{
 			throw new global::System.NotImplementedException("The member DependencyObject ItemsControl.GroupHeaderContainerFromItemContainer(DependencyObject itemContainer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DependencyObject%20ItemsControl.GroupHeaderContainerFromItemContainer%28DependencyObject%20itemContainer%29");
 		}

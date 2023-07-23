@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RoutedEvent 
+	public partial class RoutedEvent 
 	{
 	}
 }

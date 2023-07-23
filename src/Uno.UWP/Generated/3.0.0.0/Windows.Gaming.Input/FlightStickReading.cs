@@ -5,29 +5,29 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct FlightStickReading 
+	public partial struct FlightStickReading 
 	{
 		// Forced skipping of method Windows.Gaming.Input.FlightStickReading.FlightStickReading()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong Timestamp;
+		public ulong Timestamp;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::Windows.Gaming.Input.FlightStickButtons Buttons;
+		public global::Windows.Gaming.Input.FlightStickButtons Buttons;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::Windows.Gaming.Input.GameControllerSwitchPosition HatSwitch;
+		public global::Windows.Gaming.Input.GameControllerSwitchPosition HatSwitch;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Roll;
+		public double Roll;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Pitch;
+		public double Pitch;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Yaw;
+		public double Yaw;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double Throttle;
+		public double Throttle;
 #endif
 	}
 }

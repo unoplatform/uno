@@ -3,7 +3,7 @@
 namespace Microsoft.Web.WebView2.Core
 {
 #if false || false || false || false || false || false || false
-	public   enum CoreWebView2WebErrorStatus 
+	public enum CoreWebView2WebErrorStatus 
 	{
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.Unknown
 		// Skipping already declared field Microsoft.Web.WebView2.Core.CoreWebView2WebErrorStatus.CertificateCommonNameIsIncorrect

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ICommandBarElement2 
+	public partial interface ICommandBarElement2 
 	{
 		// Skipping already declared property DynamicOverflowOrder
 		// Skipping already declared property IsInOverflow

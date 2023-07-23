@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum DeviceAccountSyncScheduleKind 
+	public enum DeviceAccountSyncScheduleKind 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Manual = 0,

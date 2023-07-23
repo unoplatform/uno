@@ -5,11 +5,11 @@ namespace Windows.Devices.PointOfService
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LineDisplayStoredBitmap 
+	public partial class LineDisplayStoredBitmap 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string EscapeSequence
+		public string EscapeSequence
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayStoredBitmap.EscapeSequence.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> TryDeleteAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> TryDeleteAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayStoredBitmap.TryDeleteAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20LineDisplayStoredBitmap.TryDeleteAsync%28%29");
 		}

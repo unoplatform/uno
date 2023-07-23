@@ -5,11 +5,11 @@ namespace Windows.UI.WindowManagement
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppWindowTitleBar 
+	public partial class AppWindowTitleBar 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? InactiveForegroundColor
+		public global::Windows.UI.Color? InactiveForegroundColor
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? InactiveBackgroundColor
+		public global::Windows.UI.Color? InactiveBackgroundColor
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ForegroundColor
+		public global::Windows.UI.Color? ForegroundColor
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ExtendsContentIntoTitleBar
+		public bool ExtendsContentIntoTitleBar
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonPressedForegroundColor
+		public global::Windows.UI.Color? ButtonPressedForegroundColor
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonPressedBackgroundColor
+		public global::Windows.UI.Color? ButtonPressedBackgroundColor
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonInactiveForegroundColor
+		public global::Windows.UI.Color? ButtonInactiveForegroundColor
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonInactiveBackgroundColor
+		public global::Windows.UI.Color? ButtonInactiveBackgroundColor
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonHoverForegroundColor
+		public global::Windows.UI.Color? ButtonHoverForegroundColor
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonHoverBackgroundColor
+		public global::Windows.UI.Color? ButtonHoverBackgroundColor
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonForegroundColor
+		public global::Windows.UI.Color? ButtonForegroundColor
 		{
 			get
 			{
@@ -163,7 +163,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ButtonBackgroundColor
+		public global::Windows.UI.Color? ButtonBackgroundColor
 		{
 			get
 			{
@@ -177,7 +177,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? BackgroundColor
+		public global::Windows.UI.Color? BackgroundColor
 		{
 			get
 			{
@@ -191,7 +191,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsVisible
+		public bool IsVisible
 		{
 			get
 			{
@@ -201,14 +201,14 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility GetPreferredVisibility()
+		public global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility GetPreferredVisibility()
 		{
 			throw new global::System.NotImplementedException("The member AppWindowTitleBarVisibility AppWindowTitleBar.GetPreferredVisibility() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppWindowTitleBarVisibility%20AppWindowTitleBar.GetPreferredVisibility%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetPreferredVisibility( global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility visibilityMode)
+		public void SetPreferredVisibility( global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility visibilityMode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindowTitleBar", "void AppWindowTitleBar.SetPreferredVisibility(AppWindowTitleBarVisibility visibilityMode)");
 		}
@@ -242,7 +242,7 @@ namespace Windows.UI.WindowManagement
 		// Forced skipping of method Windows.UI.WindowManagement.AppWindowTitleBar.IsVisible.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.AppWindowTitleBarOcclusion> GetTitleBarOcclusions()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.AppWindowTitleBarOcclusion> GetTitleBarOcclusions()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AppWindowTitleBarOcclusion> AppWindowTitleBar.GetTitleBarOcclusions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAppWindowTitleBarOcclusion%3E%20AppWindowTitleBar.GetTitleBarOcclusions%28%29");
 		}

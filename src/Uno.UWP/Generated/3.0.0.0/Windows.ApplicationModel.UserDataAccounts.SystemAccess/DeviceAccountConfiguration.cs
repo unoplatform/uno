@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeviceAccountConfiguration 
+	public partial class DeviceAccountConfiguration 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string EmailAddress
+		public string EmailAddress
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Domain
+		public string Domain
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceAccountTypeId
+		public string DeviceAccountTypeId
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string OutgoingServerAddress
+		public string OutgoingServerAddress
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ContactsSyncEnabled
+		public bool ContactsSyncEnabled
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CalendarSyncEnabled
+		public bool CalendarSyncEnabled
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AccountName
+		public string AccountName
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string IncomingServerUsername
+		public string IncomingServerUsername
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IncomingServerRequiresSsl
+		public bool IncomingServerRequiresSsl
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int IncomingServerPort
+		public int IncomingServerPort
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string IncomingServerAddress
+		public string IncomingServerAddress
 		{
 			get
 			{
@@ -163,7 +163,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool EmailSyncEnabled
+		public bool EmailSyncEnabled
 		{
 			get
 			{
@@ -177,7 +177,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountServerType ServerType
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountServerType ServerType
 		{
 			get
 			{
@@ -191,7 +191,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string OutgoingServerUsername
+		public string OutgoingServerUsername
 		{
 			get
 			{
@@ -205,7 +205,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool OutgoingServerRequiresSsl
+		public bool OutgoingServerRequiresSsl
 		{
 			get
 			{
@@ -219,7 +219,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int OutgoingServerPort
+		public int OutgoingServerPort
 		{
 			get
 			{
@@ -233,7 +233,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountIconId AccountIconId
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountIconId AccountIconId
 		{
 			get
 			{
@@ -247,7 +247,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri CalDavServerUrl
+		public global::System.Uri CalDavServerUrl
 		{
 			get
 			{
@@ -261,7 +261,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CalDavRequiresSsl
+		public bool CalDavRequiresSsl
 		{
 			get
 			{
@@ -275,7 +275,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AutoSelectAuthenticationCertificate
+		public bool AutoSelectAuthenticationCertificate
 		{
 			get
 			{
@@ -289,7 +289,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountAuthenticationType AuthenticationType
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountAuthenticationType AuthenticationType
 		{
 			get
 			{
@@ -303,7 +303,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AuthenticationCertificateId
+		public string AuthenticationCertificateId
 		{
 			get
 			{
@@ -317,7 +317,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOutgoingServerAuthenticationEnabled
+		public bool IsOutgoingServerAuthenticationEnabled
 		{
 			get
 			{
@@ -331,7 +331,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsClientAuthenticationCertificateRequired
+		public bool IsClientAuthenticationCertificateRequired
 		{
 			get
 			{
@@ -345,7 +345,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential IncomingServerCredential
+		public global::Windows.Security.Credentials.PasswordCredential IncomingServerCredential
 		{
 			get
 			{
@@ -359,7 +359,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOutgoingServerAuthenticationRequired
+		public bool IsOutgoingServerAuthenticationRequired
 		{
 			get
 			{
@@ -373,7 +373,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CardDavSyncScheduleKind
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CardDavSyncScheduleKind
 		{
 			get
 			{
@@ -387,7 +387,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AlwaysDownloadFullMessage
+		public bool AlwaysDownloadFullMessage
 		{
 			get
 			{
@@ -401,7 +401,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri CardDavServerUrl
+		public global::System.Uri CardDavServerUrl
 		{
 			get
 			{
@@ -415,7 +415,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CardDavRequiresSsl
+		public bool CardDavRequiresSsl
 		{
 			get
 			{
@@ -429,7 +429,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CalDavSyncScheduleKind
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind CalDavSyncScheduleKind
 		{
 			get
 			{
@@ -443,7 +443,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string IncomingServerCertificateHash
+		public string IncomingServerCertificateHash
 		{
 			get
 			{
@@ -457,7 +457,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool WasOutgoingServerCertificateHashConfirmed
+		public bool WasOutgoingServerCertificateHashConfirmed
 		{
 			get
 			{
@@ -471,7 +471,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool WasModifiedByUser
+		public bool WasModifiedByUser
 		{
 			get
 			{
@@ -485,7 +485,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind SyncScheduleKind
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountSyncScheduleKind SyncScheduleKind
 		{
 			get
 			{
@@ -499,7 +499,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SsoAccountId
+		public string SsoAccountId
 		{
 			get
 			{
@@ -513,7 +513,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool WasIncomingServerCertificateHashConfirmed
+		public bool WasIncomingServerCertificateHashConfirmed
 		{
 			get
 			{
@@ -527,7 +527,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string OAuthRefreshToken
+		public string OAuthRefreshToken
 		{
 			get
 			{
@@ -541,7 +541,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsExternallyManaged
+		public bool IsExternallyManaged
 		{
 			get
 			{
@@ -555,7 +555,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountMailAgeFilter MailAgeFilter
+		public global::Windows.ApplicationModel.UserDataAccounts.SystemAccess.DeviceAccountMailAgeFilter MailAgeFilter
 		{
 			get
 			{
@@ -569,7 +569,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSyncScheduleManagedBySystem
+		public bool IsSyncScheduleManagedBySystem
 		{
 			get
 			{
@@ -583,7 +583,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string OutgoingServerCertificateHash
+		public string OutgoingServerCertificateHash
 		{
 			get
 			{
@@ -597,7 +597,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential OutgoingServerCredential
+		public global::Windows.Security.Credentials.PasswordCredential OutgoingServerCredential
 		{
 			get
 			{
@@ -611,7 +611,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool DoesPolicyAllowMailSync
+		public bool DoesPolicyAllowMailSync
 		{
 			get
 			{
@@ -621,7 +621,7 @@ namespace Windows.ApplicationModel.UserDataAccounts.SystemAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSsoAuthenticationSupported
+		public bool IsSsoAuthenticationSupported
 		{
 			get
 			{

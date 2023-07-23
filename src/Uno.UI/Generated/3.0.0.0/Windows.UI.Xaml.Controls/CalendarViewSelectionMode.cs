@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum CalendarViewSelectionMode 
+	public enum CalendarViewSelectionMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewSelectionMode.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewSelectionMode.Single

@@ -5,11 +5,11 @@ namespace Windows.Media.Editing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaOverlayLayer 
+	public partial class MediaOverlayLayer 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Effects.IVideoCompositorDefinition CustomCompositorDefinition
+		public global::Windows.Media.Effects.IVideoCompositorDefinition CustomCompositorDefinition
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Editing.MediaOverlay> Overlays
+		public global::System.Collections.Generic.IList<global::Windows.Media.Editing.MediaOverlay> Overlays
 		{
 			get
 			{
@@ -45,7 +45,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaOverlayLayer.MediaOverlayLayer()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Editing.MediaOverlayLayer Clone()
+		public global::Windows.Media.Editing.MediaOverlayLayer Clone()
 		{
 			throw new global::System.NotImplementedException("The member MediaOverlayLayer MediaOverlayLayer.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaOverlayLayer%20MediaOverlayLayer.Clone%28%29");
 		}

@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 #if false || false || false || false || false || false || false
-	public   enum ShareUITheme 
+	public enum ShareUITheme 
 	{
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.ShareUITheme.Default
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.ShareUITheme.Light

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AdaptiveTrigger : global::Windows.UI.Xaml.StateTriggerBase
+	public partial class AdaptiveTrigger : global::Windows.UI.Xaml.StateTriggerBase
 	{
 		// Skipping already declared property MinWindowWidth
 		// Skipping already declared property MinWindowHeight

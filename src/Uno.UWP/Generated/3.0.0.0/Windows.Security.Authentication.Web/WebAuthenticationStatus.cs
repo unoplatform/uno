@@ -3,7 +3,7 @@
 namespace Windows.Security.Authentication.Web
 {
 #if false || false || false || false || false || false || false
-	public   enum WebAuthenticationStatus 
+	public enum WebAuthenticationStatus 
 	{
 		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationStatus.Success
 		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationStatus.UserCancel

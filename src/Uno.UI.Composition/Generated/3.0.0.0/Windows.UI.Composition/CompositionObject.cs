@@ -5,13 +5,13 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionObject : global::System.IDisposable,global::Windows.UI.Composition.IAnimationObject
+	public partial class CompositionObject : global::System.IDisposable,global::Windows.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Compositor
 		// Skipping already declared property Dispatcher
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionPropertySet Properties
+		public global::Windows.UI.Composition.CompositionPropertySet Properties
 		{
 			get
 			{
@@ -21,7 +21,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.ImplicitAnimationCollection ImplicitAnimations
+		public global::Windows.UI.Composition.ImplicitAnimationCollection ImplicitAnimations
 		{
 			get
 			{
@@ -36,7 +36,7 @@ namespace Windows.UI.Composition
 		// Skipping already declared property Comment
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.DispatcherQueue DispatcherQueue
+		public global::Windows.System.DispatcherQueue DispatcherQueue
 		{
 			get
 			{
@@ -55,14 +55,14 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionObject.ImplicitAnimations.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void StartAnimationGroup( global::Windows.UI.Composition.ICompositionAnimationBase value)
+		public void StartAnimationGroup( global::Windows.UI.Composition.ICompositionAnimationBase value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StartAnimationGroup(ICompositionAnimationBase value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void StopAnimationGroup( global::Windows.UI.Composition.ICompositionAnimationBase value)
+		public void StopAnimationGroup( global::Windows.UI.Composition.ICompositionAnimationBase value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.StopAnimationGroup(ICompositionAnimationBase value)");
 		}
@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionObject.DispatcherQueue.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.AnimationController TryGetAnimationController( string propertyName)
+		public global::Windows.UI.Composition.AnimationController TryGetAnimationController( string propertyName)
 		{
 			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AnimationController%20CompositionObject.TryGetAnimationController%28string%20propertyName%29");
 		}
@@ -78,7 +78,7 @@ namespace Windows.UI.Composition
 		// Skipping already declared method Windows.UI.Composition.CompositionObject.Dispose()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
+		public void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}

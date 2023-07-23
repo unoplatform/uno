@@ -5,11 +5,11 @@ namespace Windows.Graphics.Display
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DisplayEnhancementOverrideCapabilities 
+	public partial class DisplayEnhancementOverrideCapabilities 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsBrightnessControlSupported
+		public bool IsBrightnessControlSupported
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsBrightnessNitsControlSupported
+		public bool IsBrightnessNitsControlSupported
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.DisplayEnhancementOverrideCapabilities.IsBrightnessNitsControlSupported.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.NitRange> GetSupportedNitRanges()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Display.NitRange> GetSupportedNitRanges()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<NitRange> DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CNitRange%3E%20DisplayEnhancementOverrideCapabilities.GetSupportedNitRanges%28%29");
 		}

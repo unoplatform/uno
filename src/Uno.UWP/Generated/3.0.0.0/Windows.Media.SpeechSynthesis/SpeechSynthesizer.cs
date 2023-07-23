@@ -5,11 +5,11 @@ namespace Windows.Media.SpeechSynthesis
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpeechSynthesizer : global::System.IDisposable
+	public partial class SpeechSynthesizer : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechSynthesis.VoiceInformation Voice
+		public global::Windows.Media.SpeechSynthesis.VoiceInformation Voice
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions Options
+		public global::Windows.Media.SpeechSynthesis.SpeechSynthesizerOptions Options
 		{
 			get
 			{
@@ -61,14 +61,14 @@ namespace Windows.Media.SpeechSynthesis
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.SpeechSynthesizer()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeTextToStreamAsync( string text)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeTextToStreamAsync( string text)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechSynthesisStream> SpeechSynthesizer.SynthesizeTextToStreamAsync(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpeechSynthesisStream%3E%20SpeechSynthesizer.SynthesizeTextToStreamAsync%28string%20text%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeSsmlToStreamAsync( string Ssml)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechSynthesis.SpeechSynthesisStream> SynthesizeSsmlToStreamAsync( string Ssml)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechSynthesisStream> SpeechSynthesizer.SynthesizeSsmlToStreamAsync(string Ssml) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpeechSynthesisStream%3E%20SpeechSynthesizer.SynthesizeSsmlToStreamAsync%28string%20Ssml%29");
 		}
@@ -77,7 +77,7 @@ namespace Windows.Media.SpeechSynthesis
 		// Forced skipping of method Windows.Media.SpeechSynthesis.SpeechSynthesizer.Voice.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechSynthesis.SpeechSynthesizer", "void SpeechSynthesizer.Dispose()");
 		}

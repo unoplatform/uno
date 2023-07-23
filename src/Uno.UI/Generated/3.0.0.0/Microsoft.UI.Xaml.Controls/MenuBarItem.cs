@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MenuBarItem : global::Windows.UI.Xaml.Controls.Control
+	public partial class MenuBarItem : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property Title
 		// Skipping already declared property Items

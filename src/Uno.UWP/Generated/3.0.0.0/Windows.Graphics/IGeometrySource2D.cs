@@ -5,7 +5,7 @@ namespace Windows.Graphics
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IGeometrySource2D 
+	public partial interface IGeometrySource2D 
 	{
 	}
 }

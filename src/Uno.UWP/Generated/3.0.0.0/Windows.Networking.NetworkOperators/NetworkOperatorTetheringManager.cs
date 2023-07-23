@@ -5,11 +5,11 @@ namespace Windows.Networking.NetworkOperators
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NetworkOperatorTetheringManager 
+	public partial class NetworkOperatorTetheringManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ClientCount
+		public uint ClientCount
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxClientCount
+		public uint MaxClientCount
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.NetworkOperators.TetheringOperationalState TetheringOperationalState
+		public global::Windows.Networking.NetworkOperators.TetheringOperationalState TetheringOperationalState
 		{
 			get
 			{
@@ -42,35 +42,35 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager.TetheringOperationalState.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration GetCurrentAccessPointConfiguration()
+		public global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration GetCurrentAccessPointConfiguration()
 		{
 			throw new global::System.NotImplementedException("The member NetworkOperatorTetheringAccessPointConfiguration NetworkOperatorTetheringManager.GetCurrentAccessPointConfiguration() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkOperatorTetheringAccessPointConfiguration%20NetworkOperatorTetheringManager.GetCurrentAccessPointConfiguration%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ConfigureAccessPointAsync( global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration configuration)
+		public global::Windows.Foundation.IAsyncAction ConfigureAccessPointAsync( global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration configuration)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction NetworkOperatorTetheringManager.ConfigureAccessPointAsync(NetworkOperatorTetheringAccessPointConfiguration configuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20NetworkOperatorTetheringManager.ConfigureAccessPointAsync%28NetworkOperatorTetheringAccessPointConfiguration%20configuration%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult> StartTetheringAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult> StartTetheringAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<NetworkOperatorTetheringOperationResult> NetworkOperatorTetheringManager.StartTetheringAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CNetworkOperatorTetheringOperationResult%3E%20NetworkOperatorTetheringManager.StartTetheringAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult> StopTetheringAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringOperationResult> StopTetheringAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<NetworkOperatorTetheringOperationResult> NetworkOperatorTetheringManager.StopTetheringAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CNetworkOperatorTetheringOperationResult%3E%20NetworkOperatorTetheringManager.StopTetheringAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient> GetTetheringClients()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringClient> GetTetheringClients()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<NetworkOperatorTetheringClient> NetworkOperatorTetheringManager.GetTetheringClients() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CNetworkOperatorTetheringClient%3E%20NetworkOperatorTetheringManager.GetTetheringClients%28%29");
 		}

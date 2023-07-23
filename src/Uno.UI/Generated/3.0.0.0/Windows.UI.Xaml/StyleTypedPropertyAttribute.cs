@@ -5,15 +5,15 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StyleTypedPropertyAttribute : global::System.Attribute
+	public partial class StyleTypedPropertyAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.UI.Xaml.StyleTypedPropertyAttribute.StyleTypedPropertyAttribute()
 		// Forced skipping of method Windows.UI.Xaml.StyleTypedPropertyAttribute.StyleTypedPropertyAttribute()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  string Property;
+		public string Property;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Type StyleTargetType;
+		public global::System.Type StyleTargetType;
 #endif
 	}
 }

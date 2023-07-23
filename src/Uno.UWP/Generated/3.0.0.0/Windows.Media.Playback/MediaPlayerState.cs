@@ -4,7 +4,7 @@ namespace Windows.Media.Playback
 {
 	// This type is deprecated. Consider not implementing it.
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-	public   enum MediaPlayerState 
+	public enum MediaPlayerState 
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		Closed = 0,

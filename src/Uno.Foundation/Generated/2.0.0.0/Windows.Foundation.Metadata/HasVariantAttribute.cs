@@ -5,7 +5,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HasVariantAttribute : global::System.Attribute
+	public partial class HasVariantAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.HasVariantAttribute.HasVariantAttribute()
 		// Forced skipping of method Windows.Foundation.Metadata.HasVariantAttribute.HasVariantAttribute()

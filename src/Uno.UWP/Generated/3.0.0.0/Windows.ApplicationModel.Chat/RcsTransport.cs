@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Chat
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RcsTransport 
+	public partial class RcsTransport 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Chat.RcsTransportConfiguration Configuration
+		public global::Windows.ApplicationModel.Chat.RcsTransportConfiguration Configuration
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyDictionary<string, object> ExtendedProperties
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> ExtendedProperties
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsActive
+		public bool IsActive
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string TransportFriendlyName
+		public string TransportFriendlyName
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string TransportId
+		public string TransportId
 		{
 			get
 			{
@@ -64,14 +64,14 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.Configuration.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsStoreAndForwardEnabled( global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
+		public bool IsStoreAndForwardEnabled( global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
 		{
 			throw new global::System.NotImplementedException("The member bool RcsTransport.IsStoreAndForwardEnabled(RcsServiceKind serviceKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RcsTransport.IsStoreAndForwardEnabled%28RcsServiceKind%20serviceKind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsServiceKindSupported( global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
+		public bool IsServiceKindSupported( global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
 		{
 			throw new global::System.NotImplementedException("The member bool RcsTransport.IsServiceKindSupported(RcsServiceKind serviceKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RcsTransport.IsServiceKindSupported%28RcsServiceKind%20serviceKind%29");
 		}
@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.ServiceKindSupportedChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.RcsTransport, global::Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs> ServiceKindSupportedChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.RcsTransport, global::Windows.ApplicationModel.Chat.RcsServiceKindSupportedChangedEventArgs> ServiceKindSupportedChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Scenes
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SceneMeshRendererComponent : global::Windows.UI.Composition.Scenes.SceneRendererComponent
+	public partial class SceneMeshRendererComponent : global::Windows.UI.Composition.Scenes.SceneRendererComponent
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneMesh Mesh
+		public global::Windows.UI.Composition.Scenes.SceneMesh Mesh
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneMaterial Material
+		public global::Windows.UI.Composition.Scenes.SceneMaterial Material
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap UVMappings
+		public global::Windows.UI.Composition.Scenes.SceneMeshMaterialAttributeMap UVMappings
 		{
 			get
 			{

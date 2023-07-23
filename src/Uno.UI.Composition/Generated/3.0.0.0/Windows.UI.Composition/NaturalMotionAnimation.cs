@@ -5,11 +5,11 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NaturalMotionAnimation : global::Windows.UI.Composition.CompositionAnimation
+	public partial class NaturalMotionAnimation : global::Windows.UI.Composition.CompositionAnimation
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.AnimationStopBehavior StopBehavior
+		public global::Windows.UI.Composition.AnimationStopBehavior StopBehavior
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan DelayTime
+		public global::System.TimeSpan DelayTime
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.AnimationDelayBehavior DelayBehavior
+		public global::Windows.UI.Composition.AnimationDelayBehavior DelayBehavior
 		{
 			get
 			{

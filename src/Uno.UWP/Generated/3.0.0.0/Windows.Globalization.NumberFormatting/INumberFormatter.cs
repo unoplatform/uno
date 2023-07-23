@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface INumberFormatter 
+	public partial interface INumberFormatter 
 	{
 		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberFormatter.Format(long)
 		// Skipping already declared method Windows.Globalization.NumberFormatting.INumberFormatter.Format(ulong)

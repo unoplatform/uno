@@ -3,7 +3,7 @@
 namespace Windows.Devices.Geolocation
 {
 #if false || false || false || false || false || false || false
-	public   enum PositionAccuracy 
+	public enum PositionAccuracy 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.PositionAccuracy.Default
 		// Skipping already declared field Windows.Devices.Geolocation.PositionAccuracy.High

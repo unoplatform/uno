@@ -5,12 +5,12 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemsStackPanel : global::Windows.UI.Xaml.Controls.Panel
+	public partial class ItemsStackPanel : global::Windows.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property Orientation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
+		public global::Windows.UI.Xaml.Controls.ItemsUpdatingScrollMode ItemsUpdatingScrollMode
 		{
 			get
 			{
@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property GroupHeaderPlacement
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double CacheLength
+		public double CacheLength
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int FirstCacheIndex
+		public int FirstCacheIndex
 		{
 			get
 			{
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  int FirstVisibleIndex
+		public int FirstVisibleIndex
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int LastCacheIndex
+		public int LastCacheIndex
 		{
 			get
 			{
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  int LastVisibleIndex
+		public int LastVisibleIndex
 		{
 			get
 			{
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
+		public global::Windows.UI.Xaml.Controls.PanelScrollingDirection ScrollingDirection
 		{
 			get
 			{

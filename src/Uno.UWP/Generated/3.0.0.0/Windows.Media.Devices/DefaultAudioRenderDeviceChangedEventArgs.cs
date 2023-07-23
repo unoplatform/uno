@@ -5,11 +5,11 @@ namespace Windows.Media.Devices
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DefaultAudioRenderDeviceChangedEventArgs : global::Windows.Media.Devices.IDefaultAudioDeviceChangedEventArgs
+	public partial class DefaultAudioRenderDeviceChangedEventArgs : global::Windows.Media.Devices.IDefaultAudioDeviceChangedEventArgs
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
+		public string Id
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Devices.AudioDeviceRole Role
+		public global::Windows.Media.Devices.AudioDeviceRole Role
 		{
 			get
 			{

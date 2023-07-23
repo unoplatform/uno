@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RefreshInteractionRatioChangedEventArgs 
+	public partial class RefreshInteractionRatioChangedEventArgs 
 	{
 		// Skipping already declared property InteractionRatio
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.RefreshInteractionRatioChangedEventArgs.InteractionRatio.get

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class KeyboardAccelerator : global::Windows.UI.Xaml.DependencyObject
+	public partial class KeyboardAccelerator : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property ScopeOwner
 		// Skipping already declared property Modifiers
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		// Forced skipping of method Windows.UI.Xaml.Input.KeyboardAccelerator.ScopeOwnerProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Input.KeyboardAccelerator, global::Windows.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs> Invoked
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Input.KeyboardAccelerator, global::Windows.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs> Invoked
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

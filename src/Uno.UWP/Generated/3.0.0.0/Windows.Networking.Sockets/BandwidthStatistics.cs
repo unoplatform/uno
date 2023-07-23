@@ -5,26 +5,26 @@ namespace Windows.Networking.Sockets
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct BandwidthStatistics 
+	public partial struct BandwidthStatistics 
 	{
 		// Forced skipping of method Windows.Networking.Sockets.BandwidthStatistics.BandwidthStatistics()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong OutboundBitsPerSecond;
+		public ulong OutboundBitsPerSecond;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong InboundBitsPerSecond;
+		public ulong InboundBitsPerSecond;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong OutboundBitsPerSecondInstability;
+		public ulong OutboundBitsPerSecondInstability;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong InboundBitsPerSecondInstability;
+		public ulong InboundBitsPerSecondInstability;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool OutboundBandwidthPeaked;
+		public bool OutboundBandwidthPeaked;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool InboundBandwidthPeaked;
+		public bool InboundBandwidthPeaked;
 #endif
 	}
 }

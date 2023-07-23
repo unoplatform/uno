@@ -5,11 +5,11 @@ namespace Windows.Graphics.Printing.PrintSupport
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintSupportSettingsActivatedEventArgs : global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
+	public partial class PrintSupportSettingsActivatedEventArgs : global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Activation.ActivationKind Kind
+		public global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
+		public global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
+		public global::Windows.ApplicationModel.Activation.SplashScreen SplashScreen
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.User User
+		public global::Windows.System.User User
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.PrintSupport.PrintSupportSettingsUISession Session
+		public global::Windows.Graphics.Printing.PrintSupport.PrintSupportSettingsUISession Session
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		// Forced skipping of method Windows.Graphics.Printing.PrintSupport.PrintSupportSettingsActivatedEventArgs.Session.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Deferral GetDeferral()
+		public global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral PrintSupportSettingsActivatedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20PrintSupportSettingsActivatedEventArgs.GetDeferral%28%29");
 		}

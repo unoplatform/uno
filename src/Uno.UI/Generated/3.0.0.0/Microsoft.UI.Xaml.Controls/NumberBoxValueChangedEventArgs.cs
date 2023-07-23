@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NumberBoxValueChangedEventArgs 
+	public partial class NumberBoxValueChangedEventArgs 
 	{
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue

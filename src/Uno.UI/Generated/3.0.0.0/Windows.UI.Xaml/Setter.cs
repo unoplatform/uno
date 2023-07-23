@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Setter : global::Windows.UI.Xaml.SetterBase
+	public partial class Setter : global::Windows.UI.Xaml.SetterBase
 	{
 		// Skipping already declared property Value
 		// Skipping already declared property Property

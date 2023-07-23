@@ -3,7 +3,7 @@
 namespace Windows.Devices.Geolocation
 {
 #if false || false || false || false || false || false || false
-	public   enum PositionSource 
+	public enum PositionSource 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Cellular
 		// Skipping already declared field Windows.Devices.Geolocation.PositionSource.Satellite

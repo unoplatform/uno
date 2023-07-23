@@ -5,11 +5,11 @@ namespace Windows.Storage.Pickers.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PickerClosingOperation 
+	public partial class PickerClosingOperation 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset Deadline
+		public global::System.DateTimeOffset Deadline
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Storage.Pickers.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Pickers.Provider.PickerClosingDeferral GetDeferral()
+		public global::Windows.Storage.Pickers.Provider.PickerClosingDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member PickerClosingDeferral PickerClosingOperation.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PickerClosingDeferral%20PickerClosingOperation.GetDeferral%28%29");
 		}

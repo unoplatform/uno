@@ -5,11 +5,11 @@ namespace Windows.Media.Miracast
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MiracastReceiverConnection : global::System.IDisposable
+	public partial class MiracastReceiverConnection : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastReceiverCursorImageChannel CursorImageChannel
+		public global::Windows.Media.Miracast.MiracastReceiverCursorImageChannel CursorImageChannel
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastReceiverInputDevices InputDevices
+		public global::Windows.Media.Miracast.MiracastReceiverInputDevices InputDevices
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastReceiverStreamControl StreamControl
+		public global::Windows.Media.Miracast.MiracastReceiverStreamControl StreamControl
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastTransmitter Transmitter
+		public global::Windows.Media.Miracast.MiracastTransmitter Transmitter
 		{
 			get
 			{
@@ -49,42 +49,42 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Disconnect( global::Windows.Media.Miracast.MiracastReceiverDisconnectReason reason)
+		public void Disconnect( global::Windows.Media.Miracast.MiracastReceiverDisconnectReason reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverConnection", "void MiracastReceiverConnection.Disconnect(MiracastReceiverDisconnectReason reason)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Disconnect( global::Windows.Media.Miracast.MiracastReceiverDisconnectReason reason,  string message)
+		public void Disconnect( global::Windows.Media.Miracast.MiracastReceiverDisconnectReason reason,  string message)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverConnection", "void MiracastReceiverConnection.Disconnect(MiracastReceiverDisconnectReason reason, string message)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Pause()
+		public void Pause()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverConnection", "void MiracastReceiverConnection.Pause()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction PauseAsync()
+		public global::Windows.Foundation.IAsyncAction PauseAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.PauseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MiracastReceiverConnection.PauseAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Resume()
+		public void Resume()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverConnection", "void MiracastReceiverConnection.Resume()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ResumeAsync()
+		public global::Windows.Foundation.IAsyncAction ResumeAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MiracastReceiverConnection.ResumeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MiracastReceiverConnection.ResumeAsync%28%29");
 		}
@@ -95,7 +95,7 @@ namespace Windows.Media.Miracast
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverConnection.StreamControl.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiverConnection", "void MiracastReceiverConnection.Dispose()");
 		}

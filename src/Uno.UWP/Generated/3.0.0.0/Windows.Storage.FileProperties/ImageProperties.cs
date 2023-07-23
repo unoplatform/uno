@@ -5,11 +5,11 @@ namespace Windows.Storage.FileProperties
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ImageProperties : global::Windows.Storage.FileProperties.IStorageItemExtraProperties
+	public partial class ImageProperties : global::Windows.Storage.FileProperties.IStorageItemExtraProperties
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Title
+		public string Title
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Rating
+		public uint Rating
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset DateTaken
+		public global::System.DateTimeOffset DateTaken
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CameraModel
+		public string CameraModel
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CameraManufacturer
+		public string CameraManufacturer
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Height
+		public uint Height
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> Keywords
+		public global::System.Collections.Generic.IList<string> Keywords
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double? Latitude
+		public double? Latitude
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double? Longitude
+		public double? Longitude
 		{
 			get
 			{
@@ -119,7 +119,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.FileProperties.PhotoOrientation Orientation
+		public global::Windows.Storage.FileProperties.PhotoOrientation Orientation
 		{
 			get
 			{
@@ -129,7 +129,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> PeopleNames
+		public global::System.Collections.Generic.IReadOnlyList<string> PeopleNames
 		{
 			get
 			{
@@ -139,7 +139,7 @@ namespace Windows.Storage.FileProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Width
+		public uint Width
 		{
 			get
 			{
@@ -166,21 +166,21 @@ namespace Windows.Storage.FileProperties
 		// Forced skipping of method Windows.Storage.FileProperties.ImageProperties.PeopleNames.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync( global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IDictionary<string, object>> RetrievePropertiesAsync( global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IDictionary<string, object>> ImageProperties.RetrievePropertiesAsync(IEnumerable<string> propertiesToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIDictionary%3Cstring%2C%20object%3E%3E%20ImageProperties.RetrievePropertiesAsync%28IEnumerable%3Cstring%3E%20propertiesToRetrieve%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
+		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>> propertiesToSave)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ImageProperties.SavePropertiesAsync(IEnumerable<KeyValuePair<string, object>> propertiesToSave) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ImageProperties.SavePropertiesAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20object%3E%3E%20propertiesToSave%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
+		public global::Windows.Foundation.IAsyncAction SavePropertiesAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ImageProperties.SavePropertiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ImageProperties.SavePropertiesAsync%28%29");
 		}

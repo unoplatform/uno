@@ -5,11 +5,11 @@ namespace Windows.System
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppUriHandlerRegistration 
+	public partial class AppUriHandlerRegistration 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
+		public string Name
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.User User
+		public global::Windows.System.User User
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string PackageFamilyName
+		public string PackageFamilyName
 		{
 			get
 			{
@@ -41,28 +41,28 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.AppUriHandlerRegistration.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost>> GetAppAddedHostsAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost>> GetAppAddedHostsAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppUriHandlerHost>> AppUriHandlerRegistration.GetAppAddedHostsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppUriHandlerHost%3E%3E%20AppUriHandlerRegistration.GetAppAddedHostsAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SetAppAddedHostsAsync( global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
+		public global::Windows.Foundation.IAsyncAction SetAppAddedHostsAsync( global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction AppUriHandlerRegistration.SetAppAddedHostsAsync(IEnumerable<AppUriHandlerHost> hosts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppUriHandlerRegistration.SetAppAddedHostsAsync%28IEnumerable%3CAppUriHandlerHost%3E%20hosts%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost> GetAllHosts()
+		public global::System.Collections.Generic.IList<global::Windows.System.AppUriHandlerHost> GetAllHosts()
 		{
 			throw new global::System.NotImplementedException("The member IList<AppUriHandlerHost> AppUriHandlerRegistration.GetAllHosts() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppUriHandlerHost%3E%20AppUriHandlerRegistration.GetAllHosts%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void UpdateHosts( global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
+		public void UpdateHosts( global::System.Collections.Generic.IEnumerable<global::Windows.System.AppUriHandlerHost> hosts)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.AppUriHandlerRegistration", "void AppUriHandlerRegistration.UpdateHosts(IEnumerable<AppUriHandlerHost> hosts)");
 		}

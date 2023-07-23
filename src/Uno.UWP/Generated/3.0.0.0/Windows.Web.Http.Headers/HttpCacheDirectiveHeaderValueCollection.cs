@@ -5,11 +5,11 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HttpCacheDirectiveHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::Windows.Foundation.IStringable
+	public partial class HttpCacheDirectiveHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? SharedMaxAge
+		public global::System.TimeSpan? SharedMaxAge
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? MinFresh
+		public global::System.TimeSpan? MinFresh
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? MaxStale
+		public global::System.TimeSpan? MaxStale
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? MaxAge
+		public global::System.TimeSpan? MaxAge
 		{
 			get
 			{
@@ -83,14 +83,14 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection.SharedMaxAge.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ParseAdd( string input)
+		public void ParseAdd( string input)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection", "void HttpCacheDirectiveHeaderValueCollection.ParseAdd(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TryParseAdd( string input)
+		public bool TryParseAdd( string input)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpCacheDirectiveHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCacheDirectiveHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}

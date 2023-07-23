@@ -5,11 +5,11 @@ namespace Windows.Security.Cryptography.Certificates
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Certificate 
+	public partial class Certificate 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FriendlyName
+		public string FriendlyName
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> EnhancedKeyUsages
+		public global::System.Collections.Generic.IReadOnlyList<string> EnhancedKeyUsages
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool HasPrivateKey
+		public bool HasPrivateKey
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsStronglyProtected
+		public bool IsStronglyProtected
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Issuer
+		public string Issuer
 		{
 			get
 			{
@@ -63,7 +63,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte[] SerialNumber
+		public byte[] SerialNumber
 		{
 			get
 			{
@@ -73,7 +73,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Subject
+		public string Subject
 		{
 			get
 			{
@@ -83,7 +83,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset ValidFrom
+		public global::System.DateTimeOffset ValidFrom
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset ValidTo
+		public global::System.DateTimeOffset ValidTo
 		{
 			get
 			{
@@ -103,7 +103,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSecurityDeviceBound
+		public bool IsSecurityDeviceBound
 		{
 			get
 			{
@@ -113,7 +113,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string KeyAlgorithmName
+		public string KeyAlgorithmName
 		{
 			get
 			{
@@ -123,7 +123,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Cryptography.Certificates.CertificateKeyUsages KeyUsages
+		public global::Windows.Security.Cryptography.Certificates.CertificateKeyUsages KeyUsages
 		{
 			get
 			{
@@ -133,7 +133,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SignatureAlgorithmName
+		public string SignatureAlgorithmName
 		{
 			get
 			{
@@ -143,7 +143,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SignatureHashAlgorithmName
+		public string SignatureHashAlgorithmName
 		{
 			get
 			{
@@ -153,7 +153,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo SubjectAlternativeName
+		public global::Windows.Security.Cryptography.Certificates.SubjectAlternativeNameInfo SubjectAlternativeName
 		{
 			get
 			{
@@ -163,7 +163,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPerUser
+		public bool IsPerUser
 		{
 			get
 			{
@@ -173,7 +173,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string KeyStorageProviderName
+		public string KeyStorageProviderName
 		{
 			get
 			{
@@ -183,7 +183,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string StoreName
+		public string StoreName
 		{
 			get
 			{
@@ -201,14 +201,14 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.Certificate(Windows.Storage.Streams.IBuffer)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCertificateChain%3E%20Certificate.BuildChainAsync%28IEnumerable%3CCertificate%3E%20certificates%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates,  global::Windows.Security.Cryptography.Certificates.ChainBuildingParameters parameters)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates,  global::Windows.Security.Cryptography.Certificates.ChainBuildingParameters parameters)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates, ChainBuildingParameters parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCertificateChain%3E%20Certificate.BuildChainAsync%28IEnumerable%3CCertificate%3E%20certificates%2C%20ChainBuildingParameters%20parameters%29");
 		}
@@ -216,21 +216,21 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.SerialNumber.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte[] GetHashValue()
+		public byte[] GetHashValue()
 		{
 			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20Certificate.GetHashValue%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte[] GetHashValue( string hashAlgorithmName)
+		public byte[] GetHashValue( string hashAlgorithmName)
 		{
 			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue(string hashAlgorithmName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20Certificate.GetHashValue%28string%20hashAlgorithmName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer GetCertificateBlob()
+		public global::Windows.Storage.Streams.IBuffer GetCertificateBlob()
 		{
 			throw new global::System.NotImplementedException("The member IBuffer Certificate.GetCertificateBlob() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20Certificate.GetCertificateBlob%28%29");
 		}

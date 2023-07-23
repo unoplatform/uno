@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialNavigationCanceledEventArgs 
+	public partial class SpatialNavigationCanceledEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind InteractionSourceKind
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind InteractionSourceKind
 		{
 			get
 			{

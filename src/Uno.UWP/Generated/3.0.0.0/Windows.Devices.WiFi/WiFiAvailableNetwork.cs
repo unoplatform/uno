@@ -5,11 +5,11 @@ namespace Windows.Devices.WiFi
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WiFiAvailableNetwork 
+	public partial class WiFiAvailableNetwork 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan BeaconInterval
+		public global::System.TimeSpan BeaconInterval
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Bssid
+		public string Bssid
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int ChannelCenterFrequencyInKilohertz
+		public int ChannelCenterFrequencyInKilohertz
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsWiFiDirect
+		public bool IsWiFiDirect
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFi.WiFiNetworkKind NetworkKind
+		public global::Windows.Devices.WiFi.WiFiNetworkKind NetworkKind
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double NetworkRssiInDecibelMilliwatts
+		public double NetworkRssiInDecibelMilliwatts
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFi.WiFiPhyKind PhyKind
+		public global::Windows.Devices.WiFi.WiFiPhyKind PhyKind
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Connectivity.NetworkSecuritySettings SecuritySettings
+		public global::Windows.Networking.Connectivity.NetworkSecuritySettings SecuritySettings
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte SignalBars
+		public byte SignalBars
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Ssid
+		public string Ssid
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Uptime
+		public global::System.TimeSpan Uptime
 		{
 			get
 			{

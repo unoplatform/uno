@@ -5,11 +5,11 @@ namespace Windows.Devices.WiFi
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WiFiConnectionResult 
+	public partial class WiFiConnectionResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFi.WiFiConnectionStatus ConnectionStatus
+		public global::Windows.Devices.WiFi.WiFiConnectionStatus ConnectionStatus
 		{
 			get
 			{

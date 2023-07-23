@@ -3,7 +3,7 @@
 namespace Windows.Security.Authentication.Identity.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum MicrosoftAccountMultiFactorSessionAuthenticationStatus 
+	public enum MicrosoftAccountMultiFactorSessionAuthenticationStatus 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Authenticated = 0,

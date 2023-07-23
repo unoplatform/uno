@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MenuFlyoutPresenterTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class MenuFlyoutPresenterTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property FlyoutContentMinWidth
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings.FlyoutContentMinWidth.get

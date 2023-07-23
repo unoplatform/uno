@@ -5,11 +5,11 @@ namespace Windows.Security.Credentials
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WebAccount : global::Windows.Security.Credentials.IWebAccount
+	public partial class WebAccount : global::Windows.Security.Credentials.IWebAccount
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.WebAccountState State
+		public global::Windows.Security.Credentials.WebAccountState State
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string UserName
+		public string UserName
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.WebAccountProvider WebAccountProvider
+		public global::Windows.Security.Credentials.WebAccountProvider WebAccountProvider
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
+		public string Id
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyDictionary<string, string> Properties
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, string> Properties
 		{
 			get
 			{
@@ -72,21 +72,21 @@ namespace Windows.Security.Credentials
 		// Forced skipping of method Windows.Security.Credentials.WebAccount.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetPictureAsync( global::Windows.Security.Credentials.WebAccountPictureSize desizedSize)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetPictureAsync( global::Windows.Security.Credentials.WebAccountPictureSize desizedSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> WebAccount.GetPictureAsync(WebAccountPictureSize desizedSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20WebAccount.GetPictureAsync%28WebAccountPictureSize%20desizedSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SignOutAsync()
+		public global::Windows.Foundation.IAsyncAction SignOutAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccount.SignOutAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SignOutAsync( string clientId)
+		public global::Windows.Foundation.IAsyncAction SignOutAsync( string clientId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebAccount.SignOutAsync(string clientId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebAccount.SignOutAsync%28string%20clientId%29");
 		}

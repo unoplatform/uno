@@ -5,7 +5,7 @@ namespace Windows.UI.Input.Preview.Injection
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class InjectedInputMouseInfo 
+	public partial class InjectedInputMouseInfo 
 	{
 		// Skipping already declared property TimeOffsetInMilliseconds
 		// Skipping already declared property MouseOptions

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationViewItemPresenter : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class NavigationViewItemPresenter : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property Icon
 		// Skipping already declared property IconProperty

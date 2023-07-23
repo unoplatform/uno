@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TreeViewItem : global::Windows.UI.Xaml.Controls.ListViewItem
+	public partial class TreeViewItem : global::Windows.UI.Xaml.Controls.ListViewItem
 	{
 		// Skipping already declared property IsExpanded
 		// Skipping already declared property GlyphSize

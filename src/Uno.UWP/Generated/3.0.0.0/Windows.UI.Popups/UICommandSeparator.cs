@@ -5,7 +5,7 @@ namespace Windows.UI.Popups
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UICommandSeparator : global::Windows.UI.Popups.IUICommand
+	public partial class UICommandSeparator : global::Windows.UI.Popups.IUICommand
 	{
 		// Skipping already declared property Label
 		// Skipping already declared property Invoked

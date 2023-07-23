@@ -5,11 +5,11 @@ namespace Windows.UI.ViewManagement
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ApplicationView 
+	public partial class ApplicationView 
 	{
 #if false || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public  string Title
+		public string Title
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsScreenCaptureEnabled
+		public bool IsScreenCaptureEnabled
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AdjacentToLeftDisplayEdge
+		public bool AdjacentToLeftDisplayEdge
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AdjacentToRightDisplayEdge
+		public bool AdjacentToRightDisplayEdge
 		{
 			get
 			{
@@ -58,7 +58,7 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property Id
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  bool IsFullScreen
+		public bool IsFullScreen
 		{
 			get
 			{
@@ -68,7 +68,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOnLockScreen
+		public bool IsOnLockScreen
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property Orientation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool SuppressSystemOverlays
+		public bool SuppressSystemOverlays
 		{
 			get
 			{
@@ -95,7 +95,7 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property DesiredBoundsMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.ViewManagement.FullScreenSystemOverlayMode FullScreenSystemOverlayMode
+		public global::Windows.UI.ViewManagement.FullScreenSystemOverlayMode FullScreenSystemOverlayMode
 		{
 			get
 			{
@@ -112,7 +112,7 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property ViewMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string PersistedStateId
+		public string PersistedStateId
 		{
 			get
 			{
@@ -126,7 +126,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.WindowManagement.WindowingEnvironment WindowingEnvironment
+		public global::Windows.UI.WindowManagement.WindowingEnvironment WindowingEnvironment
 		{
 			get
 			{
@@ -136,7 +136,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.UIContext UIContext
+		public global::Windows.UI.UIContext UIContext
 		{
 			get
 			{
@@ -208,35 +208,35 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.IsFullScreenMode.get
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public  bool TryEnterFullScreenMode()
+		public bool TryEnterFullScreenMode()
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryEnterFullScreenMode() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryEnterFullScreenMode%28%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public  void ExitFullScreenMode()
+		public void ExitFullScreenMode()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ExitFullScreenMode()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ShowStandardSystemOverlays()
+		public void ShowStandardSystemOverlays()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ShowStandardSystemOverlays()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  bool TryResizeView( global::Windows.Foundation.Size value)
+		public bool TryResizeView( global::Windows.Foundation.Size value)
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryResizeView(Size value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryResizeView%28Size%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  void SetPreferredMinSize( global::Windows.Foundation.Size minSize)
+		public void SetPreferredMinSize( global::Windows.Foundation.Size minSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.SetPreferredMinSize(Size minSize)");
 		}
@@ -247,7 +247,7 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared method Windows.UI.ViewManagement.ApplicationView.TryEnterViewModeAsync(Windows.UI.ViewManagement.ApplicationViewMode, Windows.UI.ViewManagement.ViewModePreferences)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryConsolidateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ApplicationView.TryConsolidateAsync%28%29");
 		}
@@ -257,7 +257,7 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WindowingEnvironment.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayRegion> ApplicationView.GetDisplayRegions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayRegion%3E%20ApplicationView.GetDisplayRegions%28%29");
 		}

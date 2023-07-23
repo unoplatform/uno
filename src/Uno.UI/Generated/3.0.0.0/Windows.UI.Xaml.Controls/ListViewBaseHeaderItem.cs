@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ListViewBaseHeaderItem : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class ListViewBaseHeaderItem : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 	}
 }

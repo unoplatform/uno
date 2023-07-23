@@ -5,7 +5,7 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Buffer : global::Windows.Storage.Streams.IBuffer
+	public partial class Buffer : global::Windows.Storage.Streams.IBuffer
 	{
 		// Skipping already declared property Length
 		// Skipping already declared property Capacity

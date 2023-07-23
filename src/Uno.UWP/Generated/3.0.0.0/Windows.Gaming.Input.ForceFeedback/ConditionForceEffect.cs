@@ -5,11 +5,11 @@ namespace Windows.Gaming.Input.ForceFeedback
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ConditionForceEffect : global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
+	public partial class ConditionForceEffect : global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind Kind
+		public global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind Kind
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Gain
+		public double Gain
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectState State
+		public global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackEffectState State
 		{
 			get
 			{
@@ -54,14 +54,14 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.State.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Stop()
+		public void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.Stop()");
 		}
@@ -69,7 +69,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ConditionForceEffect.Kind.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetParameters( global::System.Numerics.Vector3 direction,  float positiveCoefficient,  float negativeCoefficient,  float maxPositiveMagnitude,  float maxNegativeMagnitude,  float deadZone,  float bias)
+		public void SetParameters( global::System.Numerics.Vector3 direction,  float positiveCoefficient,  float negativeCoefficient,  float maxPositiveMagnitude,  float maxNegativeMagnitude,  float deadZone,  float bias)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "void ConditionForceEffect.SetParameters(Vector3 direction, float positiveCoefficient, float negativeCoefficient, float maxPositiveMagnitude, float maxNegativeMagnitude, float deadZone, float bias)");
 		}

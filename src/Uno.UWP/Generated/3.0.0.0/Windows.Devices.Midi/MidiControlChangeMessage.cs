@@ -5,7 +5,7 @@ namespace Windows.Devices.Midi
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MidiControlChangeMessage : global::Windows.Devices.Midi.IMidiMessage
+	public partial class MidiControlChangeMessage : global::Windows.Devices.Midi.IMidiMessage
 	{
 		// Skipping already declared property Channel
 		// Skipping already declared property ControlValue

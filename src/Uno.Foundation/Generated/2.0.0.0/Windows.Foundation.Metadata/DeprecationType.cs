@@ -3,7 +3,7 @@
 namespace Windows.Foundation.Metadata
 {
 #if false || false || false || false || false || false || false
-	public   enum DeprecationType 
+	public enum DeprecationType 
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.DeprecationType.Deprecate
 		// Skipping already declared field Windows.Foundation.Metadata.DeprecationType.Remove

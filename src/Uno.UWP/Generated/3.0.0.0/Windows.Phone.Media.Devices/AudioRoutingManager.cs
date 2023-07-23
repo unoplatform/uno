@@ -5,11 +5,11 @@ namespace Windows.Phone.Media.Devices
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AudioRoutingManager 
+	public partial class AudioRoutingManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Phone.Media.Devices.AvailableAudioRoutingEndpoints AvailableAudioEndpoints
+		public global::Windows.Phone.Media.Devices.AvailableAudioRoutingEndpoints AvailableAudioEndpoints
 		{
 			get
 			{
@@ -19,14 +19,14 @@ namespace Windows.Phone.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Phone.Media.Devices.AudioRoutingEndpoint GetAudioEndpoint()
+		public global::Windows.Phone.Media.Devices.AudioRoutingEndpoint GetAudioEndpoint()
 		{
 			throw new global::System.NotImplementedException("The member AudioRoutingEndpoint AudioRoutingManager.GetAudioEndpoint() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioRoutingEndpoint%20AudioRoutingManager.GetAudioEndpoint%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetAudioEndpoint( global::Windows.Phone.Media.Devices.AudioRoutingEndpoint endpoint)
+		public void SetAudioEndpoint( global::Windows.Phone.Media.Devices.AudioRoutingEndpoint endpoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Media.Devices.AudioRoutingManager", "void AudioRoutingManager.SetAudioEndpoint(AudioRoutingEndpoint endpoint)");
 		}
@@ -43,7 +43,7 @@ namespace Windows.Phone.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Phone.Media.Devices.AudioRoutingManager, object> AudioEndpointChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Phone.Media.Devices.AudioRoutingManager, object> AudioEndpointChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum InputScopeNameValue 
+	public enum InputScopeNameValue 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Default
 		// Skipping already declared field Windows.UI.Xaml.Input.InputScopeNameValue.Url

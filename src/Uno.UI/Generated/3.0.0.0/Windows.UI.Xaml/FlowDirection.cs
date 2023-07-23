@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum FlowDirection 
+	public enum FlowDirection 
 	{
 		// Skipping already declared field Windows.UI.Xaml.FlowDirection.LeftToRight
 		// Skipping already declared field Windows.UI.Xaml.FlowDirection.RightToLeft

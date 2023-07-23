@@ -5,11 +5,11 @@ namespace Windows.Devices.Usb
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UsbBulkOutEndpointDescriptor 
+	public partial class UsbBulkOutEndpointDescriptor 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte EndpointNumber
+		public byte EndpointNumber
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxPacketSize
+		public uint MaxPacketSize
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbBulkOutPipe Pipe
+		public global::Windows.Devices.Usb.UsbBulkOutPipe Pipe
 		{
 			get
 			{

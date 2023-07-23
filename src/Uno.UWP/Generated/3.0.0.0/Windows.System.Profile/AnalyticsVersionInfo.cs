@@ -5,13 +5,13 @@ namespace Windows.System.Profile
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AnalyticsVersionInfo 
+	public partial class AnalyticsVersionInfo 
 	{
 		// Skipping already declared property DeviceFamily
 		// Skipping already declared property DeviceFamilyVersion
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ProductName
+		public string ProductName
 		{
 			get
 			{

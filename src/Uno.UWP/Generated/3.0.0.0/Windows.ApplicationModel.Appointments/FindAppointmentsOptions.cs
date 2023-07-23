@@ -5,13 +5,13 @@ namespace Windows.ApplicationModel.Appointments
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FindAppointmentsOptions 
+	public partial class FindAppointmentsOptions 
 	{
 		// Skipping already declared property MaxCount
 		// Skipping already declared property IncludeHidden
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> CalendarIds
+		public global::System.Collections.Generic.IList<string> CalendarIds
 		{
 			get
 			{

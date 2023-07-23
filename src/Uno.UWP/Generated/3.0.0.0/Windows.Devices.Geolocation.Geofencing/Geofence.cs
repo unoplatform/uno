@@ -5,7 +5,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Geofence 
+	public partial class Geofence 
 	{
 		// Skipping already declared property Duration
 		// Skipping already declared property DwellTime

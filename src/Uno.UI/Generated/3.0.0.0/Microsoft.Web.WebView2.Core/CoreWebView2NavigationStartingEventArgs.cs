@@ -5,7 +5,7 @@ namespace Microsoft.Web.WebView2.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreWebView2NavigationStartingEventArgs 
+	public partial class CoreWebView2NavigationStartingEventArgs 
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property IsRedirected
@@ -13,7 +13,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property NavigationId
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders RequestHeaders
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders RequestHeaders
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared property Uri
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AdditionalAllowedFrameAncestors
+		public string AdditionalAllowedFrameAncestors
 		{
 			get
 			{

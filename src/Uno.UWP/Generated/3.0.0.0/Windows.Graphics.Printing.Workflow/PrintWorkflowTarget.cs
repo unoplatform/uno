@@ -5,11 +5,11 @@ namespace Windows.Graphics.Printing.Workflow
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintWorkflowTarget 
+	public partial class PrintWorkflowTarget 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget TargetAsStream
+		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowStreamTarget TargetAsStream
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage TargetAsXpsObjectModelPackage
+		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowObjectModelTargetPackage TargetAsXpsObjectModelPackage
 		{
 			get
 			{

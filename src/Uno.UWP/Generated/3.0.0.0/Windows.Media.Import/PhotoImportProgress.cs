@@ -5,23 +5,23 @@ namespace Windows.Media.Import
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct PhotoImportProgress 
+	public partial struct PhotoImportProgress 
 	{
 		// Forced skipping of method Windows.Media.Import.PhotoImportProgress.PhotoImportProgress()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint ItemsImported;
+		public uint ItemsImported;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint TotalItemsToImport;
+		public uint TotalItemsToImport;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong BytesImported;
+		public ulong BytesImported;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong TotalBytesToImport;
+		public ulong TotalBytesToImport;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double ImportProgress;
+		public double ImportProgress;
 #endif
 	}
 }

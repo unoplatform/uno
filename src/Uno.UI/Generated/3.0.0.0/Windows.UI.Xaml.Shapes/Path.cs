@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Shapes
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Path 
+	public partial class Path 
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property DataProperty

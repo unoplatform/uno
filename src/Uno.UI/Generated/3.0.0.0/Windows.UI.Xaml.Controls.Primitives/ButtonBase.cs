@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ButtonBase : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class ButtonBase : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property CommandParameter
 		// Skipping already declared property Command

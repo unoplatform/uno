@@ -5,11 +5,11 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SetVersionRequest 
+	public partial class SetVersionRequest 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint CurrentVersion
+		public uint CurrentVersion
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint DesiredVersion
+		public uint DesiredVersion
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.SetVersionRequest.DesiredVersion.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.SetVersionDeferral GetDeferral()
+		public global::Windows.Storage.SetVersionDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member SetVersionDeferral SetVersionRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SetVersionDeferral%20SetVersionRequest.GetDeferral%28%29");
 		}

@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.ConversationalAgent
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum ConversationalAgentState 
+	public enum ConversationalAgentState 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Inactive = 0,

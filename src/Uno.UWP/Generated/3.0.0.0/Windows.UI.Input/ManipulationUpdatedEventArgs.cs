@@ -5,7 +5,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ManipulationUpdatedEventArgs 
+	public partial class ManipulationUpdatedEventArgs 
 	{
 		// Skipping already declared property Cumulative
 		// Skipping already declared property Delta

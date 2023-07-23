@@ -3,7 +3,7 @@
 namespace Windows.UI.StartScreen
 {
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum JumpListSystemGroupKind 
+	public enum JumpListSystemGroupKind 
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		None = 0,

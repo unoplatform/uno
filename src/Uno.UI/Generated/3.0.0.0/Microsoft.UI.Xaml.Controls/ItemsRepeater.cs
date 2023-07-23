@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemsRepeater : global::Windows.UI.Xaml.FrameworkElement
+	public partial class ItemsRepeater : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property VerticalCacheLength
 		// Skipping already declared property Layout

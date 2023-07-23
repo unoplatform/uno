@@ -5,11 +5,11 @@ namespace Windows.UI.ApplicationSettings
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WebAccountCommand 
+	public partial class WebAccountCommand 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.ApplicationSettings.SupportedWebAccountActions Actions
+		public global::Windows.UI.ApplicationSettings.SupportedWebAccountActions Actions
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler Invoked
+		public global::Windows.UI.ApplicationSettings.WebAccountCommandInvokedHandler Invoked
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.WebAccount WebAccount
+		public global::Windows.Security.Credentials.WebAccount WebAccount
 		{
 			get
 			{

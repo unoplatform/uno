@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ToggleSplitButton : global::Microsoft.UI.Xaml.Controls.SplitButton
+	public partial class ToggleSplitButton : global::Microsoft.UI.Xaml.Controls.SplitButton
 	{
 		// Skipping already declared property IsChecked
 		// Skipping already declared property IsCheckedProperty

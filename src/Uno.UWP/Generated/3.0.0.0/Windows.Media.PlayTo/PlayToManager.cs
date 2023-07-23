@@ -6,11 +6,11 @@ namespace Windows.Media.PlayTo
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PlayToManager 
+	public partial class PlayToManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool DefaultSourceSelection
+		public bool DefaultSourceSelection
 		{
 			get
 			{
@@ -44,7 +44,7 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToManager, global::Windows.Media.PlayTo.PlayToSourceRequestedEventArgs> SourceRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToManager, global::Windows.Media.PlayTo.PlayToSourceRequestedEventArgs> SourceRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -60,7 +60,7 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToManager, global::Windows.Media.PlayTo.PlayToSourceSelectedEventArgs> SourceSelected
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToManager, global::Windows.Media.PlayTo.PlayToSourceSelectedEventArgs> SourceSelected
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

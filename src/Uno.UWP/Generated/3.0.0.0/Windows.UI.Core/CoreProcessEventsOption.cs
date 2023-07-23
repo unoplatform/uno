@@ -3,7 +3,7 @@
 namespace Windows.UI.Core
 {
 #if false || false || false || false || false || false || false
-	public   enum CoreProcessEventsOption 
+	public enum CoreProcessEventsOption 
 	{
 		// Skipping already declared field Windows.UI.Core.CoreProcessEventsOption.ProcessOneAndAllPending
 		// Skipping already declared field Windows.UI.Core.CoreProcessEventsOption.ProcessOneIfPresent

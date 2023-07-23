@@ -5,7 +5,7 @@ namespace Windows.Storage.Pickers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FileExtensionVector : global::System.Collections.Generic.IList<string>,global::System.Collections.Generic.IEnumerable<string>
+	public partial class FileExtensionVector : global::System.Collections.Generic.IList<string>,global::System.Collections.Generic.IEnumerable<string>
 	{
 		// Skipping already declared property Size
 		// Forced skipping of method Windows.Storage.Pickers.FileExtensionVector.GetAt(uint)

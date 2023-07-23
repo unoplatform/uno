@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Contacts
 {
 #if false || false || false || false || false || false || false
-	public   enum ContactQueryDesiredFields : uint
+	public enum ContactQueryDesiredFields : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactQueryDesiredFields.None
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactQueryDesiredFields.PhoneNumber

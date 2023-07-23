@@ -3,7 +3,7 @@
 namespace Windows.Storage.Pickers
 {
 #if false || false || false || false || false || false || false
-	public   enum PickerViewMode 
+	public enum PickerViewMode 
 	{
 		// Skipping already declared field Windows.Storage.Pickers.PickerViewMode.List
 		// Skipping already declared field Windows.Storage.Pickers.PickerViewMode.Thumbnail

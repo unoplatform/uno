@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class NavigationViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property BackButtonVisibility
 		// Skipping already declared property LeftPaneVisibility
@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Skipping already declared property TopPaneVisibility
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double OpenPaneLength
+		public double OpenPaneLength
 		{
 			get
 			{

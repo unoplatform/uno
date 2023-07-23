@@ -5,7 +5,7 @@ namespace Windows.Security.Authentication.Web.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WebAccountMonitor 
+	public partial class WebAccountMonitor 
 	{
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.add
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.remove
@@ -17,7 +17,7 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.AccountPictureUpdated.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, object> DefaultSignInAccountChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, object> DefaultSignInAccountChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -33,7 +33,7 @@ namespace Windows.Security.Authentication.Web.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> Removed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> Removed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -49,7 +49,7 @@ namespace Windows.Security.Authentication.Web.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> Updated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> Updated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -65,7 +65,7 @@ namespace Windows.Security.Authentication.Web.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> AccountPictureUpdated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> AccountPictureUpdated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

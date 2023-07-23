@@ -5,11 +5,11 @@ namespace Windows.Devices.SmartCards
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SmartCardPinPolicy 
+	public partial class SmartCardPinPolicy 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption UppercaseLetters
+		public global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption UppercaseLetters
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.SmartCards
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption SpecialCharacters
+		public global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption SpecialCharacters
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.SmartCards
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MinLength
+		public uint MinLength
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.SmartCards
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxLength
+		public uint MaxLength
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Devices.SmartCards
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption LowercaseLetters
+		public global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption LowercaseLetters
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.SmartCards
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption Digits
+		public global::Windows.Devices.SmartCards.SmartCardPinCharacterPolicyOption Digits
 		{
 			get
 			{

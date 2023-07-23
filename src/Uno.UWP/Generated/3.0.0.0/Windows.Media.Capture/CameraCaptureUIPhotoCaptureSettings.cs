@@ -5,7 +5,7 @@ namespace Windows.Media.Capture
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CameraCaptureUIPhotoCaptureSettings 
+	public partial class CameraCaptureUIPhotoCaptureSettings 
 	{
 		// Skipping already declared property MaxResolution
 		// Skipping already declared property Format

@@ -5,11 +5,11 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StorageLibrary 
+	public partial class StorageLibrary 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Storage.StorageFolder> Folders
+		public global::Windows.Foundation.Collections.IObservableVector<global::Windows.Storage.StorageFolder> Folders
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.StorageFolder SaveFolder
+		public global::Windows.Storage.StorageFolder SaveFolder
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
+		public global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
 		{
 			get
 			{
@@ -39,14 +39,14 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> RequestAddFolderAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> RequestAddFolderAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageLibrary.RequestAddFolderAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20StorageLibrary.RequestAddFolderAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> RequestRemoveFolderAsync( global::Windows.Storage.StorageFolder folder)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemoveFolderAsync( global::Windows.Storage.StorageFolder folder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageLibrary.RequestRemoveFolderAsync(StorageFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StorageLibrary.RequestRemoveFolderAsync%28StorageFolder%20folder%29");
 		}
@@ -58,7 +58,7 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.StorageLibrary.ChangeTracker.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> AreFolderSuggestionsAvailableAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> AreFolderSuggestionsAvailableAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageLibrary.AreFolderSuggestionsAvailableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StorageLibrary.AreFolderSuggestionsAvailableAsync%28%29");
 		}
@@ -79,7 +79,7 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.StorageLibrary, object> DefinitionChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.StorageLibrary, object> DefinitionChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

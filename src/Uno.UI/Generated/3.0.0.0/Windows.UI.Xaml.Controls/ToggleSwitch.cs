@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ToggleSwitch : global::Windows.UI.Xaml.Controls.Control
+	public partial class ToggleSwitch : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property OnContentTemplate
 		// Skipping already declared property OnContent

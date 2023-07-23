@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VariableSizedWrapGrid : global::Windows.UI.Xaml.Controls.Panel
+	public partial class VariableSizedWrapGrid : global::Windows.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property VerticalChildrenAlignment
 		// Skipping already declared property Orientation

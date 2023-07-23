@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DragDeltaEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class DragDeltaEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property HorizontalChange
 		// Skipping already declared property VerticalChange

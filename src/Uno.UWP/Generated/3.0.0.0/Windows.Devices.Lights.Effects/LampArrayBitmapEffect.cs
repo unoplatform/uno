@@ -5,11 +5,11 @@ namespace Windows.Devices.Lights.Effects
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LampArrayBitmapEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
+	public partial class LampArrayBitmapEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan UpdateInterval
+		public global::System.TimeSpan UpdateInterval
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan StartDelay
+		public global::System.TimeSpan StartDelay
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Duration
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Size SuggestedBitmapSize
+		public global::Windows.Foundation.Size SuggestedBitmapSize
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int ZIndex
+		public int ZIndex
 		{
 			get
 			{
@@ -94,7 +94,7 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayBitmapEffect.ZIndex.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayBitmapEffect, global::Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs> BitmapRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayBitmapEffect, global::Windows.Devices.Lights.Effects.LampArrayBitmapRequestedEventArgs> BitmapRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

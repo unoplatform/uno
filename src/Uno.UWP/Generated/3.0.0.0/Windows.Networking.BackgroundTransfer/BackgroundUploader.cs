@@ -5,11 +5,11 @@ namespace Windows.Networking.BackgroundTransfer
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BackgroundUploader : global::Windows.Networking.BackgroundTransfer.IBackgroundTransferBase
+	public partial class BackgroundUploader : global::Windows.Networking.BackgroundTransfer.IBackgroundTransferBase
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential ServerCredential
+		public global::Windows.Security.Credentials.PasswordCredential ServerCredential
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential ProxyCredential
+		public global::Windows.Security.Credentials.PasswordCredential ProxyCredential
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Method
+		public string Method
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Group
+		public string Group
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferCostPolicy CostPolicy
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferCostPolicy CostPolicy
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.TileNotification FailureTileNotification
+		public global::Windows.UI.Notifications.TileNotification FailureTileNotification
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup TransferGroup
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup TransferGroup
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.ToastNotification SuccessToastNotification
+		public global::Windows.UI.Notifications.ToastNotification SuccessToastNotification
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.TileNotification SuccessTileNotification
+		public global::Windows.UI.Notifications.TileNotification SuccessTileNotification
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.ToastNotification FailureToastNotification
+		public global::Windows.UI.Notifications.ToastNotification FailureToastNotification
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup CompletionGroup
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup CompletionGroup
 		{
 			get
 			{
@@ -175,42 +175,42 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundUploader.BackgroundUploader()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.UploadOperation CreateUpload( global::System.Uri uri,  global::Windows.Storage.IStorageFile sourceFile)
+		public global::Windows.Networking.BackgroundTransfer.UploadOperation CreateUpload( global::System.Uri uri,  global::Windows.Storage.IStorageFile sourceFile)
 		{
 			throw new global::System.NotImplementedException("The member UploadOperation BackgroundUploader.CreateUpload(Uri uri, IStorageFile sourceFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UploadOperation%20BackgroundUploader.CreateUpload%28Uri%20uri%2C%20IStorageFile%20sourceFile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadFromStreamAsync( global::System.Uri uri,  global::Windows.Storage.Streams.IInputStream sourceStream)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadFromStreamAsync( global::System.Uri uri,  global::Windows.Storage.Streams.IInputStream sourceStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadFromStreamAsync(Uri uri, IInputStream sourceStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadFromStreamAsync%28Uri%20uri%2C%20IInputStream%20sourceStream%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadAsync%28Uri%20uri%2C%20IEnumerable%3CBackgroundTransferContentPart%3E%20parts%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts,  string subType)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts,  string subType)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadAsync%28Uri%20uri%2C%20IEnumerable%3CBackgroundTransferContentPart%3E%20parts%2C%20string%20subType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts,  string subType,  string boundary)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UploadOperation> CreateUploadAsync( global::System.Uri uri,  global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart> parts,  string subType,  string boundary)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UploadOperation> BackgroundUploader.CreateUploadAsync(Uri uri, IEnumerable<BackgroundTransferContentPart> parts, string subType, string boundary) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUploadOperation%3E%20BackgroundUploader.CreateUploadAsync%28Uri%20uri%2C%20IEnumerable%3CBackgroundTransferContentPart%3E%20parts%2C%20string%20subType%2C%20string%20boundary%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetRequestHeader( string headerName,  string headerValue)
+		public void SetRequestHeader( string headerName,  string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundUploader", "void BackgroundUploader.SetRequestHeader(string headerName, string headerValue)");
 		}

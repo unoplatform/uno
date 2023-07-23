@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Contacts
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContactPhone 
+	public partial class ContactPhone 
 	{
 		// Skipping already declared property Number
 		// Skipping already declared property Kind

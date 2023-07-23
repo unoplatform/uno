@@ -5,11 +5,11 @@ namespace Windows.Graphics.Printing.OptionDetails
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintCustomToggleOptionDetails : global::Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails,global::Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails
+	public partial class PrintCustomToggleOptionDetails : global::Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails,global::Windows.Graphics.Printing.OptionDetails.IPrintCustomOptionDetails
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayName
+		public string DisplayName
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string WarningText
+		public string WarningText
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Description
+		public string Description
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionStates State
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ErrorText
+		public string ErrorText
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string OptionId
+		public string OptionId
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.OptionDetails.PrintOptionType OptionType
+		public global::Windows.Graphics.Printing.OptionDetails.PrintOptionType OptionType
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Value
+		public object Value
 		{
 			get
 			{
@@ -116,7 +116,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintCustomToggleOptionDetails.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TrySetValue( object value)
+		public bool TrySetValue( object value)
 		{
 			throw new global::System.NotImplementedException("The member bool PrintCustomToggleOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintCustomToggleOptionDetails.TrySetValue%28object%20value%29");
 		}

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ListViewItem 
+	public partial class ListViewItem 
 	{
 		// Skipping already declared property TemplateSettings
 		// Skipping already declared method Windows.UI.Xaml.Controls.ListViewItem.ListViewItem()

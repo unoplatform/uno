@@ -5,7 +5,7 @@ namespace Windows.Devices.Bluetooth
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BluetoothClassOfDevice 
+	public partial class BluetoothClassOfDevice 
 	{
 		// Skipping already declared property MajorClass
 		// Skipping already declared property MinorClass

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ICollectionViewGroup 
+	public partial interface ICollectionViewGroup 
 	{
 		// Skipping already declared property Group
 		// Skipping already declared property GroupItems

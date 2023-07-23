@@ -5,7 +5,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VisibilityChangedEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
+	public partial class VisibilityChangedEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Visible

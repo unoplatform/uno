@@ -5,11 +5,11 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || __SKIA__ || false || false
 	[global::Uno.NotImplemented("__SKIA__")]
 #endif
-	public  partial class HingeAngleSensor 
+	public partial class HingeAngleSensor 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double ReportThresholdInDegrees
+		public double ReportThresholdInDegrees
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double MinReportThresholdInDegrees
+		public double MinReportThresholdInDegrees
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleReading> GetCurrentReadingAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleReading> GetCurrentReadingAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleReading> HingeAngleSensor.GetCurrentReadingAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHingeAngleReading%3E%20HingeAngleSensor.GetCurrentReadingAsync%28%29");
 		}
@@ -84,7 +84,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.HingeAngleSensor, global::Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs> ReadingChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.HingeAngleSensor, global::Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs> ReadingChanged
 		{
 			[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

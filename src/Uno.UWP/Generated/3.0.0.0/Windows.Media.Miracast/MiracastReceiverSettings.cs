@@ -5,11 +5,11 @@ namespace Windows.Media.Miracast
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MiracastReceiverSettings 
+	public partial class MiracastReceiverSettings 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool RequireAuthorizationFromKnownTransmitters
+		public bool RequireAuthorizationFromKnownTransmitters
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ModelNumber
+		public string ModelNumber
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ModelName
+		public string ModelName
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FriendlyName
+		public string FriendlyName
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastReceiverAuthorizationMethod AuthorizationMethod
+		public global::Windows.Media.Miracast.MiracastReceiverAuthorizationMethod AuthorizationMethod
 		{
 			get
 			{

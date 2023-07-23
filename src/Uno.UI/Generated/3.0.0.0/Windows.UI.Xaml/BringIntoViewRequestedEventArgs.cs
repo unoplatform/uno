@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BringIntoViewRequestedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class BringIntoViewRequestedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared property TargetRect

@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Background
 {
 #if false || false || false || false || false || false || false
-	public   enum SystemConditionType 
+	public enum SystemConditionType 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemConditionType.Invalid
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemConditionType.UserPresent

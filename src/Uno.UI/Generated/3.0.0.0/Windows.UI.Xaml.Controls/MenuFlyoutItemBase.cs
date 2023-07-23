@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MenuFlyoutItemBase : global::Windows.UI.Xaml.Controls.Control
+	public partial class MenuFlyoutItemBase : global::Windows.UI.Xaml.Controls.Control
 	{
 	}
 }

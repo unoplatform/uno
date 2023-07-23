@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationViewSelectionChangedEventArgs 
+	public partial class NavigationViewSelectionChangedEventArgs 
 	{
 		// Skipping already declared property IsSettingsSelected
 		// Skipping already declared property SelectedItem

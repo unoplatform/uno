@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CollectionViewSource : global::Windows.UI.Xaml.DependencyObject
+	public partial class CollectionViewSource : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Source
 		// Skipping already declared property ItemsPath

@@ -5,11 +5,11 @@ namespace Windows.Security.Cryptography.Certificates
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ChainValidationParameters 
+	public partial class ChainValidationParameters 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.HostName ServerDnsName
+		public global::Windows.Networking.HostName ServerDnsName
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Cryptography.Certificates.CertificateChainPolicy CertificateChainPolicy
+		public global::Windows.Security.Cryptography.Certificates.CertificateChainPolicy CertificateChainPolicy
 		{
 			get
 			{

@@ -5,11 +5,11 @@ namespace Windows.Security.Authentication.Web.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WebProviderTokenResponse 
+	public partial class WebProviderTokenResponse 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authentication.Web.Core.WebTokenResponse ClientResponse
+		public global::Windows.Security.Authentication.Web.Core.WebTokenResponse ClientResponse
 		{
 			get
 			{

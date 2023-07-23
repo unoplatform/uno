@@ -5,11 +5,11 @@ namespace Windows.Media.SpeechRecognition
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-	public  partial class SpeechRecognizer : global::System.IDisposable
+	public partial class SpeechRecognizer : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint> Constraints
+		public global::System.Collections.Generic.IList<global::Windows.Media.SpeechRecognition.ISpeechRecognitionConstraint> Constraints
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.Language CurrentLanguage
+		public global::Windows.Globalization.Language CurrentLanguage
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts Timeouts
+		public global::Windows.Media.SpeechRecognition.SpeechRecognizerTimeouts Timeouts
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions UIOptions
+		public global::Windows.Media.SpeechRecognition.SpeechRecognizerUIOptions UIOptions
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession ContinuousRecognitionSession
+		public global::Windows.Media.SpeechRecognition.SpeechContinuousRecognitionSession ContinuousRecognitionSession
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechRecognition.SpeechRecognizerState State
+		public global::Windows.Media.SpeechRecognition.SpeechRecognizerState State
 		{
 			get
 			{
@@ -119,21 +119,21 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.UIOptions.get
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionCompilationResult> CompileConstraintsAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionCompilationResult> CompileConstraintsAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechRecognitionCompilationResult> SpeechRecognizer.CompileConstraintsAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpeechRecognitionCompilationResult%3E%20SpeechRecognizer.CompileConstraintsAsync%28%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechRecognitionResult> SpeechRecognizer.RecognizeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpeechRecognitionResult%3E%20SpeechRecognizer.RecognizeAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeWithUIAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.SpeechRecognition.SpeechRecognitionResult> RecognizeWithUIAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SpeechRecognitionResult> SpeechRecognizer.RecognizeWithUIAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSpeechRecognitionResult%3E%20SpeechRecognizer.RecognizeWithUIAsync%28%29");
 		}
@@ -144,7 +144,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.StateChanged.remove
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognizer", "void SpeechRecognizer.Dispose()");
 		}
@@ -153,7 +153,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.State.get
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction StopRecognitionAsync()
+		public global::Windows.Foundation.IAsyncAction StopRecognitionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpeechRecognizer.StopRecognitionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpeechRecognizer.StopRecognitionAsync%28%29");
 		}
@@ -172,7 +172,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognizer.SupportedGrammarLanguages.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs> RecognitionQualityDegrading
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionQualityDegradingEventArgs> RecognitionQualityDegrading
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -188,7 +188,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs> StateChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognizerStateChangedEventArgs> StateChanged
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -204,7 +204,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionHypothesisGeneratedEventArgs> HypothesisGenerated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.SpeechRecognition.SpeechRecognizer, global::Windows.Media.SpeechRecognition.SpeechRecognitionHypothesisGeneratedEventArgs> HypothesisGenerated
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

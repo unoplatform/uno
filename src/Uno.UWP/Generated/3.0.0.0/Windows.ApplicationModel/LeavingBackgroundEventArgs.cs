@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LeavingBackgroundEventArgs : global::Windows.ApplicationModel.ILeavingBackgroundEventArgs
+	public partial class LeavingBackgroundEventArgs : global::Windows.ApplicationModel.ILeavingBackgroundEventArgs
 	{
 		// Skipping already declared method Windows.ApplicationModel.LeavingBackgroundEventArgs.GetDeferral()
 		// Processing: Windows.ApplicationModel.ILeavingBackgroundEventArgs

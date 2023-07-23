@@ -5,11 +5,11 @@ namespace Windows.Management
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MdmSession 
+	public partial class MdmSession 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Management.MdmAlert> Alerts
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Management.MdmAlert> Alerts
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Exception ExtendedError
+		public global::System.Exception ExtendedError
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
+		public string Id
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Management.MdmSessionState State
+		public global::Windows.Management.MdmSessionState State
 		{
 			get
 			{
@@ -53,28 +53,28 @@ namespace Windows.Management
 		// Forced skipping of method Windows.Management.MdmSession.State.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction AttachAsync()
+		public global::Windows.Foundation.IAsyncAction AttachAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.AttachAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MdmSession.AttachAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Delete()
+		public void Delete()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmSession", "void MdmSession.Delete()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction StartAsync()
+		public global::Windows.Foundation.IAsyncAction StartAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MdmSession.StartAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction StartAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Management.MdmAlert> alerts)
+		public global::Windows.Foundation.IAsyncAction StartAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Management.MdmAlert> alerts)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MdmSession.StartAsync(IEnumerable<MdmAlert> alerts) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MdmSession.StartAsync%28IEnumerable%3CMdmAlert%3E%20alerts%29");
 		}

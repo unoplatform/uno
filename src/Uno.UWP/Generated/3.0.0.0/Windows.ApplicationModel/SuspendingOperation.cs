@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SuspendingOperation : global::Windows.ApplicationModel.ISuspendingOperation
+	public partial class SuspendingOperation : global::Windows.ApplicationModel.ISuspendingOperation
 	{
 		// Skipping already declared property Deadline
 		// Skipping already declared method Windows.ApplicationModel.SuspendingOperation.GetDeferral()

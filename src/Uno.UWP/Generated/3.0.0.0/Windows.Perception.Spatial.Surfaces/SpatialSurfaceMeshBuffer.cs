@@ -5,11 +5,11 @@ namespace Windows.Perception.Spatial.Surfaces
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialSurfaceMeshBuffer 
+	public partial class SpatialSurfaceMeshBuffer 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer Data
+		public global::Windows.Storage.Streams.IBuffer Data
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ElementCount
+		public uint ElementCount
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DirectX.DirectXPixelFormat Format
+		public global::Windows.Graphics.DirectX.DirectXPixelFormat Format
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Stride
+		public uint Stride
 		{
 			get
 			{

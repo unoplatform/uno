@@ -5,18 +5,18 @@ namespace Windows.Networking.NetworkOperators
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UssdSession 
+	public partial class UssdSession 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.UssdReply> SendMessageAndGetReplyAsync( global::Windows.Networking.NetworkOperators.UssdMessage message)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.UssdReply> SendMessageAndGetReplyAsync( global::Windows.Networking.NetworkOperators.UssdMessage message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UssdReply> UssdSession.SendMessageAndGetReplyAsync(UssdMessage message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUssdReply%3E%20UssdSession.SendMessageAndGetReplyAsync%28UssdMessage%20message%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Close()
+		public void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.UssdSession", "void UssdSession.Close()");
 		}

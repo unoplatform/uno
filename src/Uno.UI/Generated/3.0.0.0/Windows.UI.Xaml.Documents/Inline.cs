@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Inline : global::Windows.UI.Xaml.Documents.TextElement
+	public partial class Inline : global::Windows.UI.Xaml.Documents.TextElement
 	{
 		// Skipping already declared method Windows.UI.Xaml.Documents.Inline.Inline()
 		// Forced skipping of method Windows.UI.Xaml.Documents.Inline.Inline()

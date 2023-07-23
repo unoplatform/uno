@@ -6,11 +6,11 @@ namespace Windows.UI.Xaml.Media
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Matrix3DProjection : global::Windows.UI.Xaml.Media.Projection
+	public partial class Matrix3DProjection : global::Windows.UI.Xaml.Media.Projection
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
+		public global::Windows.UI.Xaml.Media.Media3D.Matrix3D ProjectionMatrix
 		{
 			get
 			{

@@ -5,12 +5,12 @@ namespace Windows.Web.Http
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HttpRequestMessage : global::System.IDisposable,global::Windows.Foundation.IStringable
+	public partial class HttpRequestMessage : global::System.IDisposable,global::Windows.Foundation.IStringable
 	{
 		// Skipping already declared property RequestUri
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.HttpMethod Method
+		public global::Windows.Web.Http.HttpMethod Method
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.IHttpContent Content
+		public global::Windows.Web.Http.IHttpContent Content
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Web.Http
 		// Skipping already declared property Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IDictionary<string, object> Properties
+		public global::System.Collections.Generic.IDictionary<string, object> Properties
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.HttpTransportInformation TransportInformation
+		public global::Windows.Web.Http.HttpTransportInformation TransportInformation
 		{
 			get
 			{
@@ -72,7 +72,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpRequestMessage.TransportInformation.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpRequestMessage", "void HttpRequestMessage.Dispose()");
 		}

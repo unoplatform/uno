@@ -5,7 +5,7 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class EdgeGesture 
+	public partial class EdgeGesture 
 	{
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.add
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.remove
@@ -22,7 +22,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Canceled
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Canceled
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -38,7 +38,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Completed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Completed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -54,7 +54,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Starting
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.EdgeGesture, global::Windows.UI.Input.EdgeGestureEventArgs> Starting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

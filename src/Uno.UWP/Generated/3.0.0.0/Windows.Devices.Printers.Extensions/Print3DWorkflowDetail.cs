@@ -3,7 +3,7 @@
 namespace Windows.Devices.Printers.Extensions
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum Print3DWorkflowDetail 
+	public enum Print3DWorkflowDetail 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Unknown = 0,

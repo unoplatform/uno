@@ -6,11 +6,11 @@ namespace Windows.Devices.Perception
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PerceptionColorFrameReader : global::System.IDisposable
+	public partial class PerceptionColorFrameReader : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPaused
+		public bool IsPaused
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Windows.Devices.Perception
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Perception.PerceptionColorFrameSource Source
+		public global::Windows.Devices.Perception.PerceptionColorFrameSource Source
 		{
 			get
 			{
@@ -39,21 +39,21 @@ namespace Windows.Devices.Perception
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameReader.IsPaused.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Perception.PerceptionColorFrame TryReadLatestFrame()
+		public global::Windows.Devices.Perception.PerceptionColorFrame TryReadLatestFrame()
 		{
 			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameReader.TryReadLatestFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionColorFrame%20PerceptionColorFrameReader.TryReadLatestFrame%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.PerceptionColorFrameReader", "void PerceptionColorFrameReader.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameReader, global::Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs> FrameArrived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Perception.PerceptionColorFrameReader, global::Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs> FrameArrived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

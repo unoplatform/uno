@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IPropertyValue 
+	public partial interface IPropertyValue 
 	{
 		// Skipping already declared property IsNumericScalar
 		// Skipping already declared property Type

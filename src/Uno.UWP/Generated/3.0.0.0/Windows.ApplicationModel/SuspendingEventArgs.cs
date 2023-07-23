@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SuspendingEventArgs : global::Windows.ApplicationModel.ISuspendingEventArgs
+	public partial class SuspendingEventArgs : global::Windows.ApplicationModel.ISuspendingEventArgs
 	{
 		// Skipping already declared property SuspendingOperation
 		// Forced skipping of method Windows.ApplicationModel.SuspendingEventArgs.SuspendingOperation.get

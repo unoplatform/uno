@@ -5,11 +5,11 @@ namespace Windows.Security.Cryptography.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class KeyDerivationParameters 
+	public partial class KeyDerivationParameters 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer KdfGenericBinary
+		public global::Windows.Storage.Streams.IBuffer KdfGenericBinary
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Security.Cryptography.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint IterationCount
+		public uint IterationCount
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Security.Cryptography.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm Capi1KdfTargetAlgorithm
+		public global::Windows.Security.Cryptography.Core.Capi1KdfTargetAlgorithm Capi1KdfTargetAlgorithm
 		{
 			get
 			{

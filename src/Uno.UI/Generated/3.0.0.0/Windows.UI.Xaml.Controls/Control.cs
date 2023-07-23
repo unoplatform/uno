@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Control : global::Windows.UI.Xaml.FrameworkElement
+	public partial class Control : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property Padding
 		// Skipping already declared property IsTabStop
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontStyle
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.FontStretch FontStretch
+		public global::Windows.UI.Text.FontStretch FontStretch
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property TabIndex
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int CharacterSpacing
+		public int CharacterSpacing
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FocusState
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTextScaleFactorEnabled
+		public bool IsTextScaleFactorEnabled
 		{
 			get
 			{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property XYFocusDown
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.RequiresPointer RequiresPointer
+		public global::Windows.UI.Xaml.Controls.RequiresPointer RequiresPointer
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property IsFocusEngaged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
+		public global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
 		{
 			get
 			{
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri DefaultStyleResourceUri
+		public global::System.Uri DefaultStyleResourceUri
 		{
 			get
 			{

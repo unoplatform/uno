@@ -3,7 +3,7 @@
 namespace Windows.Networking.BackgroundTransfer
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum BackgroundTransferStatus 
+	public enum BackgroundTransferStatus 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Idle = 0,

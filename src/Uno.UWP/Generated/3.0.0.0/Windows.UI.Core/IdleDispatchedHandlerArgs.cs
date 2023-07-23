@@ -5,7 +5,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class IdleDispatchedHandlerArgs 
+	public partial class IdleDispatchedHandlerArgs 
 	{
 		// Skipping already declared property IsDispatcherIdle
 		// Forced skipping of method Windows.UI.Core.IdleDispatchedHandlerArgs.IsDispatcherIdle.get

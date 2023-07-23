@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IToggleProvider 
+	public partial interface IToggleProvider 
 	{
 		// Skipping already declared property ToggleState
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IToggleProvider.ToggleState.get

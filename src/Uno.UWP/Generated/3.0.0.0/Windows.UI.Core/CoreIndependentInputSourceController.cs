@@ -5,11 +5,11 @@ namespace Windows.UI.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreIndependentInputSourceController : global::System.IDisposable
+	public partial class CoreIndependentInputSourceController : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsTransparentForUncontrolledInput
+		public bool IsTransparentForUncontrolledInput
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPalmRejectionEnabled
+		public bool IsPalmRejectionEnabled
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CoreIndependentInputSource Source
+		public global::Windows.UI.Core.CoreIndependentInputSource Source
 		{
 			get
 			{
@@ -52,21 +52,21 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreIndependentInputSourceController.Source.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetControlledInput( global::Windows.UI.Core.CoreInputDeviceTypes inputTypes)
+		public void SetControlledInput( global::Windows.UI.Core.CoreInputDeviceTypes inputTypes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.SetControlledInput(CoreInputDeviceTypes inputTypes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetControlledInput( global::Windows.UI.Core.CoreInputDeviceTypes inputTypes,  global::Windows.UI.Core.CoreIndependentInputFilters required,  global::Windows.UI.Core.CoreIndependentInputFilters excluded)
+		public void SetControlledInput( global::Windows.UI.Core.CoreInputDeviceTypes inputTypes,  global::Windows.UI.Core.CoreIndependentInputFilters required,  global::Windows.UI.Core.CoreIndependentInputFilters excluded)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.SetControlledInput(CoreInputDeviceTypes inputTypes, CoreIndependentInputFilters required, CoreIndependentInputFilters excluded)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreIndependentInputSourceController", "void CoreIndependentInputSourceController.Dispose()");
 		}

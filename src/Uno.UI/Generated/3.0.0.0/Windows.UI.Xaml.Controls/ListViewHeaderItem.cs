@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ListViewHeaderItem 
+	public partial class ListViewHeaderItem 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.ListViewHeaderItem.ListViewHeaderItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewHeaderItem.ListViewHeaderItem()

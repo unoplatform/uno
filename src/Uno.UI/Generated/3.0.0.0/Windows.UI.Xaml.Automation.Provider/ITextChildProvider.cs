@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ITextChildProvider 
+	public partial interface ITextChildProvider 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple TextContainer

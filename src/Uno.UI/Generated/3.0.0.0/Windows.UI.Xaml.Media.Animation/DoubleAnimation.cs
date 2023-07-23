@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DoubleAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
+	public partial class DoubleAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
 	{
 		// Skipping already declared property To
 		// Skipping already declared property From

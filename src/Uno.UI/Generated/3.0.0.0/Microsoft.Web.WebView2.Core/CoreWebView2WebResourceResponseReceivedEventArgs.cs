@@ -5,11 +5,11 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreWebView2WebResourceResponseReceivedEventArgs 
+	public partial class CoreWebView2WebResourceResponseReceivedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest Request
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest Request
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView Response
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponseView Response
 		{
 			get
 			{

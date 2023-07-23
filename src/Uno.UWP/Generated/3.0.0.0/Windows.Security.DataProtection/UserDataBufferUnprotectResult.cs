@@ -5,11 +5,11 @@ namespace Windows.Security.DataProtection
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UserDataBufferUnprotectResult 
+	public partial class UserDataBufferUnprotectResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.DataProtection.UserDataBufferUnprotectStatus Status
+		public global::Windows.Security.DataProtection.UserDataBufferUnprotectStatus Status
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.DataProtection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer UnprotectedBuffer
+		public global::Windows.Storage.Streams.IBuffer UnprotectedBuffer
 		{
 			get
 			{

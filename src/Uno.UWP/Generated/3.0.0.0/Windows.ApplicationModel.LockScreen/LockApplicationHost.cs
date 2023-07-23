@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.LockScreen
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LockApplicationHost 
+	public partial class LockApplicationHost 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RequestUnlock()
+		public void RequestUnlock()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.LockScreen.LockApplicationHost", "void LockApplicationHost.RequestUnlock()");
 		}
@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockApplicationHost, global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs> Unlocking
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockApplicationHost, global::Windows.ApplicationModel.LockScreen.LockScreenUnlockingEventArgs> Unlocking
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

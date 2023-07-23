@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AutoSuggestBox : global::Windows.UI.Xaml.Controls.ItemsControl
+	public partial class AutoSuggestBox : global::Windows.UI.Xaml.Controls.ItemsControl
 	{
 		// Skipping already declared property UpdateTextOnSelect
 		// Skipping already declared property TextMemberPath
@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property QueryIcon
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
+		public global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
 		{
 			get
 			{

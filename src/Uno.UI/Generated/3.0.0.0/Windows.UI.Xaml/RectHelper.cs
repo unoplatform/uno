@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RectHelper 
+	public partial class RectHelper 
 	{
 		// Skipping already declared property Empty
 		// Forced skipping of method Windows.UI.Xaml.RectHelper.Empty.get

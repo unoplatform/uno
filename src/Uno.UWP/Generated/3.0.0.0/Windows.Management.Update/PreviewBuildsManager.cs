@@ -5,11 +5,11 @@ namespace Windows.Management.Update
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PreviewBuildsManager 
+	public partial class PreviewBuildsManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ArePreviewBuildsAllowed
+		public bool ArePreviewBuildsAllowed
 		{
 			get
 			{
@@ -25,14 +25,14 @@ namespace Windows.Management.Update
 		// Forced skipping of method Windows.Management.Update.PreviewBuildsManager.ArePreviewBuildsAllowed.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Management.Update.PreviewBuildsState GetCurrentState()
+		public global::Windows.Management.Update.PreviewBuildsState GetCurrentState()
 		{
 			throw new global::System.NotImplementedException("The member PreviewBuildsState PreviewBuildsManager.GetCurrentState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PreviewBuildsState%20PreviewBuildsManager.GetCurrentState%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PreviewBuildsManager.SyncAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PreviewBuildsManager.SyncAsync%28%29");
 		}

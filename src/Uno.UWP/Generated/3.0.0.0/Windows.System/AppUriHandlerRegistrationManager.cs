@@ -5,11 +5,11 @@ namespace Windows.System
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppUriHandlerRegistrationManager 
+	public partial class AppUriHandlerRegistrationManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.User User
+		public global::Windows.System.User User
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string PackageFamilyName
+		public string PackageFamilyName
 		{
 			get
 			{
@@ -30,7 +30,7 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.AppUriHandlerRegistrationManager.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.AppUriHandlerRegistration TryGetRegistration( string name)
+		public global::Windows.System.AppUriHandlerRegistration TryGetRegistration( string name)
 		{
 			throw new global::System.NotImplementedException("The member AppUriHandlerRegistration AppUriHandlerRegistrationManager.TryGetRegistration(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppUriHandlerRegistration%20AppUriHandlerRegistrationManager.TryGetRegistration%28string%20name%29");
 		}

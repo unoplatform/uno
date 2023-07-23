@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IAsyncInfo 
+	public partial interface IAsyncInfo 
 	{
 		// Skipping already declared property ErrorCode
 		// Skipping already declared property Id

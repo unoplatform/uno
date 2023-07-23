@@ -5,11 +5,11 @@ namespace Windows.Media.Editing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaClip 
+	public partial class MediaClip 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint SelectedEmbeddedAudioTrackIndex
+		public uint SelectedEmbeddedAudioTrackIndex
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan TrimTimeFromEnd
+		public global::System.TimeSpan TrimTimeFromEnd
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Volume
+		public double Volume
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan TrimTimeFromStart
+		public global::System.TimeSpan TrimTimeFromStart
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Editing.EmbeddedAudioTrack> EmbeddedAudioTracks
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Editing.EmbeddedAudioTrack> EmbeddedAudioTracks
 		{
 			get
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan EndTimeInComposition
+		public global::System.TimeSpan EndTimeInComposition
 		{
 			get
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan OriginalDuration
+		public global::System.TimeSpan OriginalDuration
 		{
 			get
 			{
@@ -95,7 +95,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan StartTimeInComposition
+		public global::System.TimeSpan StartTimeInComposition
 		{
 			get
 			{
@@ -105,7 +105,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan TrimmedDuration
+		public global::System.TimeSpan TrimmedDuration
 		{
 			get
 			{
@@ -115,7 +115,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IDictionary<string, string> UserData
+		public global::System.Collections.Generic.IDictionary<string, string> UserData
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Effects.IVideoEffectDefinition> VideoEffectDefinitions
+		public global::System.Collections.Generic.IList<global::Windows.Media.Effects.IVideoEffectDefinition> VideoEffectDefinitions
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
+		public global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
 		{
 			get
 			{
@@ -152,7 +152,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaClip.UserData.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Editing.MediaClip Clone()
+		public global::Windows.Media.Editing.MediaClip Clone()
 		{
 			throw new global::System.NotImplementedException("The member MediaClip MediaClip.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaClip%20MediaClip.Clone%28%29");
 		}
@@ -166,7 +166,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaClip.Volume.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.VideoEncodingProperties GetVideoEncodingProperties()
+		public global::Windows.Media.MediaProperties.VideoEncodingProperties GetVideoEncodingProperties()
 		{
 			throw new global::System.NotImplementedException("The member VideoEncodingProperties MediaClip.GetVideoEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20MediaClip.GetVideoEncodingProperties%28%29");
 		}

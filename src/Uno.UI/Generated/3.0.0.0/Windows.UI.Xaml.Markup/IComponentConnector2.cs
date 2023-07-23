@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Markup
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IComponentConnector2 
+	public partial interface IComponentConnector2 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Xaml.Markup.IComponentConnector GetBindingConnector( int connectionId,  object target);

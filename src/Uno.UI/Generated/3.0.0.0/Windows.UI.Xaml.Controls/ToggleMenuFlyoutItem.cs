@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ToggleMenuFlyoutItem : global::Windows.UI.Xaml.Controls.MenuFlyoutItem
+	public partial class ToggleMenuFlyoutItem : global::Windows.UI.Xaml.Controls.MenuFlyoutItem
 	{
 		// Skipping already declared property IsChecked
 		// Skipping already declared property IsCheckedProperty

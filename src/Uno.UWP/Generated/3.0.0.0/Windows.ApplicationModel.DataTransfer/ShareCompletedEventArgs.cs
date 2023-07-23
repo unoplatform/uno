@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ShareCompletedEventArgs 
+	public partial class ShareCompletedEventArgs 
 	{
 		// Skipping already declared property ShareTarget
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.ShareCompletedEventArgs.ShareTarget.get

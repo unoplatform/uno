@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TreeView : global::Windows.UI.Xaml.Controls.Control
+	public partial class TreeView : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property SelectionMode
 		// Skipping already declared property RootNodes

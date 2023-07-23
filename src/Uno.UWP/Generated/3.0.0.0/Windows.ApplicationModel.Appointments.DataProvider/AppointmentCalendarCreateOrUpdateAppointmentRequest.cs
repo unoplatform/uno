@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppointmentCalendarCreateOrUpdateAppointmentRequest 
+	public partial class AppointmentCalendarCreateOrUpdateAppointmentRequest 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Appointments.Appointment Appointment
+		public global::Windows.ApplicationModel.Appointments.Appointment Appointment
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AppointmentCalendarLocalId
+		public string AppointmentCalendarLocalId
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> ChangedProperties
+		public global::System.Collections.Generic.IReadOnlyList<string> ChangedProperties
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool NotifyInvitees
+		public bool NotifyInvitees
 		{
 			get
 			{
@@ -53,14 +53,14 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentCalendarCreateOrUpdateAppointmentRequest.ChangedProperties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Appointments.Appointment createdOrUpdatedAppointment)
+		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Appointments.Appointment createdOrUpdatedAppointment)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportCompletedAsync(Appointment createdOrUpdatedAppointment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportCompletedAsync%28Appointment%20createdOrUpdatedAppointment%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ReportFailedAsync()
+		public global::Windows.Foundation.IAsyncAction ReportFailedAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportFailedAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppointmentCalendarCreateOrUpdateAppointmentRequest.ReportFailedAsync%28%29");
 		}

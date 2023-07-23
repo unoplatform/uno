@@ -5,7 +5,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct BasicGeoposition 
+	public partial struct BasicGeoposition 
 	{
 		// Forced skipping of method Windows.Devices.Geolocation.BasicGeoposition.BasicGeoposition()
 		// Skipping already declared field Windows.Devices.Geolocation.BasicGeoposition.Latitude

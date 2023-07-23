@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RevealBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
+	public partial class RevealBrush : global::Windows.UI.Xaml.Media.XamlCompositionBrushBase
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.ApplicationTheme TargetTheme
+		public global::Windows.UI.Xaml.ApplicationTheme TargetTheme
 		{
 			get
 			{
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Media
 		// Skipping already declared property Color
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AlwaysUseFallback
+		public bool AlwaysUseFallback
 		{
 			get
 			{

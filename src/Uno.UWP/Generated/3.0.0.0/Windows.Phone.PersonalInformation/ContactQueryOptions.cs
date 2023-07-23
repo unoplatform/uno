@@ -5,11 +5,11 @@ namespace Windows.Phone.PersonalInformation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContactQueryOptions 
+	public partial class ContactQueryOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Phone.PersonalInformation.ContactQueryResultOrdering OrderBy
+		public global::Windows.Phone.PersonalInformation.ContactQueryResultOrdering OrderBy
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<string> DesiredFields
+		public global::System.Collections.Generic.IList<string> DesiredFields
 		{
 			get
 			{

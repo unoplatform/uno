@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ElementFactoryGetArgs 
+	public partial class ElementFactoryGetArgs 
 	{
 		// Skipping already declared property Parent
 		// Skipping already declared property Data

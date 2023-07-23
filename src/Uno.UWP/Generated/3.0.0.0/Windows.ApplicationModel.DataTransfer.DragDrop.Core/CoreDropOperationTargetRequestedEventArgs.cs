@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreDropOperationTargetRequestedEventArgs 
+	public partial class CoreDropOperationTargetRequestedEventArgs 
 	{
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDropOperationTargetRequestedEventArgs.SetTarget(Windows.ApplicationModel.DataTransfer.DragDrop.Core.ICoreDropOperationTarget)
 	}

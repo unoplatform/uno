@@ -5,11 +5,11 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppCapability 
+	public partial class AppCapability 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CapabilityName
+		public string CapabilityName
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.User User
+		public global::Windows.System.User User
 		{
 			get
 			{
@@ -31,14 +31,14 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 		// Forced skipping of method Windows.Security.Authorization.AppCapabilityAccess.AppCapability.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus> RequestAccessAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus> RequestAccessAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppCapabilityAccessStatus> AppCapability.RequestAccessAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppCapabilityAccessStatus%3E%20AppCapability.RequestAccessAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus CheckAccess()
+		public global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessStatus CheckAccess()
 		{
 			throw new global::System.NotImplementedException("The member AppCapabilityAccessStatus AppCapability.CheckAccess() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppCapabilityAccessStatus%20AppCapability.CheckAccess%28%29");
 		}
@@ -75,7 +75,7 @@ namespace Windows.Security.Authorization.AppCapabilityAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapability, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs> AccessChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authorization.AppCapabilityAccess.AppCapability, global::Windows.Security.Authorization.AppCapabilityAccess.AppCapabilityAccessChangedEventArgs> AccessChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

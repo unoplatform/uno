@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Interactions
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VisualInteractionSource : global::Windows.UI.Composition.CompositionObject,global::Windows.UI.Composition.Interactions.ICompositionInteractionSource
+	public partial class VisualInteractionSource : global::Windows.UI.Composition.CompositionObject,global::Windows.UI.Composition.Interactions.ICompositionInteractionSource
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode ScaleSourceMode
+		public global::Windows.UI.Composition.Interactions.InteractionSourceMode ScaleSourceMode
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode ScaleChainingMode
+		public global::Windows.UI.Composition.Interactions.InteractionChainingMode ScaleChainingMode
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode PositionYSourceMode
+		public global::Windows.UI.Composition.Interactions.InteractionSourceMode PositionYSourceMode
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode PositionYChainingMode
+		public global::Windows.UI.Composition.Interactions.InteractionChainingMode PositionYChainingMode
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionSourceMode PositionXSourceMode
+		public global::Windows.UI.Composition.Interactions.InteractionSourceMode PositionXSourceMode
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionChainingMode PositionXChainingMode
+		public global::Windows.UI.Composition.Interactions.InteractionChainingMode PositionXChainingMode
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode ManipulationRedirectionMode
+		public global::Windows.UI.Composition.Interactions.VisualInteractionSourceRedirectionMode ManipulationRedirectionMode
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPositionYRailsEnabled
+		public bool IsPositionYRailsEnabled
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPositionXRailsEnabled
+		public bool IsPositionXRailsEnabled
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Visual Source
+		public global::Windows.UI.Composition.Visual Source
 		{
 			get
 			{
@@ -145,7 +145,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 DeltaPosition
+		public global::System.Numerics.Vector3 DeltaPosition
 		{
 			get
 			{
@@ -155,7 +155,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float DeltaScale
+		public float DeltaScale
 		{
 			get
 			{
@@ -165,7 +165,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 Position
+		public global::System.Numerics.Vector3 Position
 		{
 			get
 			{
@@ -175,7 +175,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 PositionVelocity
+		public global::System.Numerics.Vector3 PositionVelocity
 		{
 			get
 			{
@@ -185,7 +185,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Scale
+		public float Scale
 		{
 			get
 			{
@@ -195,7 +195,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float ScaleVelocity
+		public float ScaleVelocity
 		{
 			get
 			{
@@ -205,7 +205,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.InteractionSourceConfiguration PointerWheelConfig
+		public global::Windows.UI.Composition.Interactions.InteractionSourceConfiguration PointerWheelConfig
 		{
 			get
 			{
@@ -234,7 +234,7 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.Source.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void TryRedirectForManipulation( global::Windows.UI.Input.PointerPoint pointerPoint)
+		public void TryRedirectForManipulation( global::Windows.UI.Input.PointerPoint pointerPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.TryRedirectForManipulation(PointerPoint pointerPoint)");
 		}
@@ -247,35 +247,35 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.VisualInteractionSource.ScaleVelocity.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureCenterPointXModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureCenterPointXModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureCenterPointXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureCenterPointYModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureCenterPointYModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureCenterPointYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureDeltaPositionXModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureDeltaPositionXModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionXModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureDeltaPositionYModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureDeltaPositionYModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaPositionYModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureDeltaScaleModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureDeltaScaleModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.VisualInteractionSource", "void VisualInteractionSource.ConfigureDeltaScaleModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}

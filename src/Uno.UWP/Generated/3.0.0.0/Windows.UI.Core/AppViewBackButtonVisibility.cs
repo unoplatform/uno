@@ -3,7 +3,7 @@
 namespace Windows.UI.Core
 {
 #if false || false || false || false || false || false || false
-	public   enum AppViewBackButtonVisibility 
+	public enum AppViewBackButtonVisibility 
 	{
 		// Skipping already declared field Windows.UI.Core.AppViewBackButtonVisibility.Visible
 		// Skipping already declared field Windows.UI.Core.AppViewBackButtonVisibility.Collapsed

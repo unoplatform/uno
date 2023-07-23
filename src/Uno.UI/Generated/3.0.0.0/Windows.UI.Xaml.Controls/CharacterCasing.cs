@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum CharacterCasing 
+	public enum CharacterCasing 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.CharacterCasing.Normal
 		// Skipping already declared field Windows.UI.Xaml.Controls.CharacterCasing.Lower

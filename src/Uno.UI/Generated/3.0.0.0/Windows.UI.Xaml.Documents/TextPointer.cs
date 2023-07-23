@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Documents
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TextPointer 
+	public partial class TextPointer 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Documents.LogicalDirection LogicalDirection
+		public global::Windows.UI.Xaml.Documents.LogicalDirection LogicalDirection
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int Offset
+		public int Offset
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.DependencyObject Parent
+		public global::Windows.UI.Xaml.DependencyObject Parent
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FrameworkElement VisualParent
+		public global::Windows.UI.Xaml.FrameworkElement VisualParent
 		{
 			get
 			{
@@ -53,14 +53,14 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextPointer.Offset.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect GetCharacterRect( global::Windows.UI.Xaml.Documents.LogicalDirection direction)
+		public global::Windows.Foundation.Rect GetCharacterRect( global::Windows.UI.Xaml.Documents.LogicalDirection direction)
 		{
 			throw new global::System.NotImplementedException("The member Rect TextPointer.GetCharacterRect(LogicalDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20TextPointer.GetCharacterRect%28LogicalDirection%20direction%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Documents.TextPointer GetPositionAtOffset( int offset,  global::Windows.UI.Xaml.Documents.LogicalDirection direction)
+		public global::Windows.UI.Xaml.Documents.TextPointer GetPositionAtOffset( int offset,  global::Windows.UI.Xaml.Documents.LogicalDirection direction)
 		{
 			throw new global::System.NotImplementedException("The member TextPointer TextPointer.GetPositionAtOffset(int offset, LogicalDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20TextPointer.GetPositionAtOffset%28int%20offset%2C%20LogicalDirection%20direction%29");
 		}

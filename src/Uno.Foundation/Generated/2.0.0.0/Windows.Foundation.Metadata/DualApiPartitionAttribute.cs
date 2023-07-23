@@ -6,7 +6,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DualApiPartitionAttribute : global::System.Attribute
+	public partial class DualApiPartitionAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.DualApiPartitionAttribute.DualApiPartitionAttribute()
 		// Forced skipping of method Windows.Foundation.Metadata.DualApiPartitionAttribute.DualApiPartitionAttribute()

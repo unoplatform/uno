@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.LockScreen
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LockScreenInfo 
+	public partial class LockScreenInfo 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStream AlarmIcon
+		public global::Windows.Storage.Streams.IRandomAccessStream AlarmIcon
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.LockScreen.LockScreenBadge> Badges
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.LockScreen.LockScreenBadge> Badges
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> DetailText
+		public global::System.Collections.Generic.IReadOnlyList<string> DetailText
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStream LockScreenImage
+		public global::Windows.Storage.Streams.IRandomAccessStream LockScreenImage
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.LockScreen
 		// Forced skipping of method Windows.ApplicationModel.LockScreen.LockScreenInfo.AlarmIcon.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> AlarmIconChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> AlarmIconChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> BadgesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> BadgesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> DetailTextChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> DetailTextChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -109,7 +109,7 @@ namespace Windows.ApplicationModel.LockScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> LockScreenImageChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.LockScreen.LockScreenInfo, object> LockScreenImageChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

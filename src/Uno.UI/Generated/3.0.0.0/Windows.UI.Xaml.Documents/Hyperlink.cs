@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Hyperlink : global::Windows.UI.Xaml.Documents.Span
+	public partial class Hyperlink : global::Windows.UI.Xaml.Documents.Span
 	{
 		// Skipping already declared property NavigateUri
 		// Skipping already declared property UnderlineStyle
@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property XYFocusDown
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
+		public global::Windows.UI.Xaml.ElementSoundMode ElementSoundMode
 		{
 			get
 			{

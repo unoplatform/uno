@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BindingExpression : global::Windows.UI.Xaml.Data.BindingExpressionBase
+	public partial class BindingExpression : global::Windows.UI.Xaml.Data.BindingExpressionBase
 	{
 		// Skipping already declared property DataItem
 		// Skipping already declared property ParentBinding

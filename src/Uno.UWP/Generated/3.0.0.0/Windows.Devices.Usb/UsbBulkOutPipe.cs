@@ -5,11 +5,11 @@ namespace Windows.Devices.Usb
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UsbBulkOutPipe 
+	public partial class UsbBulkOutPipe 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbWriteOptions WriteOptions
+		public global::Windows.Devices.Usb.UsbWriteOptions WriteOptions
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbBulkOutEndpointDescriptor EndpointDescriptor
+		public global::Windows.Devices.Usb.UsbBulkOutEndpointDescriptor EndpointDescriptor
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IOutputStream OutputStream
+		public global::Windows.Storage.Streams.IOutputStream OutputStream
 		{
 			get
 			{
@@ -44,7 +44,7 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbBulkOutPipe.EndpointDescriptor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ClearStallAsync()
+		public global::Windows.Foundation.IAsyncAction ClearStallAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction UsbBulkOutPipe.ClearStallAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UsbBulkOutPipe.ClearStallAsync%28%29");
 		}

@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RefreshStateChangedEventArgs 
+	public partial class RefreshStateChangedEventArgs 
 	{
 		// Skipping already declared property NewState
 		// Skipping already declared property OldState

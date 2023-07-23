@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
 #if false || false || false || false || false || false || false
-	public   enum AutomationLandmarkType 
+	public enum AutomationLandmarkType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.None
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationLandmarkType.Custom

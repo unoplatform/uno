@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CurrentChangingEventArgs 
+	public partial class CurrentChangingEventArgs 
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property IsCancelable

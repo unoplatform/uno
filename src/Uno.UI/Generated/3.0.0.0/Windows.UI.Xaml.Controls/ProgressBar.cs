@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ProgressBar 
+	public partial class ProgressBar 
 	{
 		// Skipping already declared property ShowPaused
 		// Skipping already declared property ShowError

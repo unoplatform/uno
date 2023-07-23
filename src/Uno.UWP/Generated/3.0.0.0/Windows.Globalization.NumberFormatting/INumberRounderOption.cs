@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface INumberRounderOption 
+	public partial interface INumberRounderOption 
 	{
 		// Skipping already declared property NumberRounder
 		// Forced skipping of method Windows.Globalization.NumberFormatting.INumberRounderOption.NumberRounder.get

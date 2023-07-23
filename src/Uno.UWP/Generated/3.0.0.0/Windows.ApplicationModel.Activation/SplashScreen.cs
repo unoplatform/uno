@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Activation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SplashScreen 
+	public partial class SplashScreen 
 	{
 		// Skipping already declared property ImageLocation
 		// Forced skipping of method Windows.ApplicationModel.Activation.SplashScreen.ImageLocation.get

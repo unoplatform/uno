@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GattCharacteristicNotificationTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
+	public partial class GattCharacteristicNotificationTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic Characteristic
+		public global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic Characteristic
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode EventTriggeringMode
+		public global::Windows.Devices.Bluetooth.Background.BluetoothEventTriggeringMode EventTriggeringMode
 		{
 			get
 			{

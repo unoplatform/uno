@@ -5,7 +5,7 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SystemButtonEventController : global::Windows.UI.Input.AttachableInputObject
+	public partial class SystemButtonEventController : global::Windows.UI.Input.AttachableInputObject
 	{
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionButtonPressed.add
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionButtonPressed.remove
@@ -24,7 +24,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionButtonEventArgs> SystemFunctionButtonPressed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionButtonEventArgs> SystemFunctionButtonPressed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -40,7 +40,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionButtonEventArgs> SystemFunctionButtonReleased
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionButtonEventArgs> SystemFunctionButtonReleased
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -56,7 +56,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionLockChangedEventArgs> SystemFunctionLockChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionLockChangedEventArgs> SystemFunctionLockChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -72,7 +72,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs> SystemFunctionLockIndicatorChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.SystemButtonEventController, global::Windows.UI.Input.SystemFunctionLockIndicatorChangedEventArgs> SystemFunctionLockIndicatorChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

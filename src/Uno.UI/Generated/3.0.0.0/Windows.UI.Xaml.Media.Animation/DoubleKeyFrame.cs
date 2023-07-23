@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DoubleKeyFrame : global::Windows.UI.Xaml.DependencyObject
+	public partial class DoubleKeyFrame : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Value
 		// Skipping already declared property KeyTime

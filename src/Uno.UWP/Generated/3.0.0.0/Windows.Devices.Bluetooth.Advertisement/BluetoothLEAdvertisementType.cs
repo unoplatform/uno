@@ -3,7 +3,7 @@
 namespace Windows.Devices.Bluetooth.Advertisement
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum BluetoothLEAdvertisementType 
+	public enum BluetoothLEAdvertisementType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		ConnectableUndirected = 0,

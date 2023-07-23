@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VirtualizingLayoutContext : global::Microsoft.UI.Xaml.Controls.LayoutContext
+	public partial class VirtualizingLayoutContext : global::Microsoft.UI.Xaml.Controls.LayoutContext
 	{
 		// Skipping already declared property LayoutOrigin
 		// Skipping already declared property ItemCount

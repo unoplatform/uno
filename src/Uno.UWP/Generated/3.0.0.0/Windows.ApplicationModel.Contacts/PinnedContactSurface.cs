@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Contacts
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum PinnedContactSurface 
+	public enum PinnedContactSurface 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		StartMenu = 0,

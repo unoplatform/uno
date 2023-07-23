@@ -5,11 +5,11 @@ namespace Windows.Storage.Search
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StorageLibraryChangeTrackerTriggerDetails 
+	public partial class StorageLibraryChangeTrackerTriggerDetails 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
+		public global::Windows.Storage.StorageLibraryChangeTracker ChangeTracker
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.StorageFolder Folder
+		public global::Windows.Storage.StorageFolder Folder
 		{
 			get
 			{

@@ -5,39 +5,39 @@ namespace Windows.ApplicationModel.UserActivities
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UserActivityChannel 
+	public partial class UserActivityChannel 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserActivities.UserActivity> GetOrCreateUserActivityAsync( string activityId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserActivities.UserActivity> GetOrCreateUserActivityAsync( string activityId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserActivity> UserActivityChannel.GetOrCreateUserActivityAsync(string activityId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserActivity%3E%20UserActivityChannel.GetOrCreateUserActivityAsync%28string%20activityId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction DeleteActivityAsync( string activityId)
+		public global::Windows.Foundation.IAsyncAction DeleteActivityAsync( string activityId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction UserActivityChannel.DeleteActivityAsync(string activityId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserActivityChannel.DeleteActivityAsync%28string%20activityId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction DeleteAllActivitiesAsync()
+		public global::Windows.Foundation.IAsyncAction DeleteAllActivitiesAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction UserActivityChannel.DeleteAllActivitiesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20UserActivityChannel.DeleteAllActivitiesAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem>> GetRecentUserActivitiesAsync( int maxUniqueActivities)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem>> GetRecentUserActivitiesAsync( int maxUniqueActivities)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<UserActivitySessionHistoryItem>> UserActivityChannel.GetRecentUserActivitiesAsync(int maxUniqueActivities) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CUserActivitySessionHistoryItem%3E%3E%20UserActivityChannel.GetRecentUserActivitiesAsync%28int%20maxUniqueActivities%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem>> GetSessionHistoryItemsForUserActivityAsync( string activityId,  global::System.DateTimeOffset startTime)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivitySessionHistoryItem>> GetSessionHistoryItemsForUserActivityAsync( string activityId,  global::System.DateTimeOffset startTime)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<UserActivitySessionHistoryItem>> UserActivityChannel.GetSessionHistoryItemsForUserActivityAsync(string activityId, DateTimeOffset startTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CUserActivitySessionHistoryItem%3E%3E%20UserActivityChannel.GetSessionHistoryItemsForUserActivityAsync%28string%20activityId%2C%20DateTimeOffset%20startTime%29");
 		}

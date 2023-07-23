@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum ScrollBarVisibility 
+	public enum ScrollBarVisibility 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollBarVisibility.Disabled
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollBarVisibility.Auto

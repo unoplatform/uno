@@ -5,11 +5,11 @@ namespace Windows.UI.ApplicationSettings
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SettingsCommand : global::Windows.UI.Popups.IUICommand
+	public partial class SettingsCommand : global::Windows.UI.Popups.IUICommand
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Label
+		public string Label
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Popups.UICommandInvokedHandler Invoked
+		public global::Windows.UI.Popups.UICommandInvokedHandler Invoked
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object Id
+		public object Id
 		{
 			get
 			{

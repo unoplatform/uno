@@ -3,7 +3,7 @@
 namespace Windows.System
 {
 #if false || false || false || false || false || false || false
-	public   enum AppMemoryUsageLevel 
+	public enum AppMemoryUsageLevel 
 	{
 		// Skipping already declared field Windows.System.AppMemoryUsageLevel.Low
 		// Skipping already declared field Windows.System.AppMemoryUsageLevel.Medium

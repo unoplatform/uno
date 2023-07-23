@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct XamlContract 
+	public partial struct XamlContract 
 	{
 		// Forced skipping of method Microsoft.UI.Xaml.XamlContract.XamlContract()
 	}

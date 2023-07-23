@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ScalarKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
+	public partial class ScalarKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
 	{
 		// Skipping already declared method Windows.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float)
 		// Skipping already declared method Windows.UI.Composition.ScalarKeyFrameAnimation.InsertKeyFrame(float, float, Windows.UI.Composition.CompositionEasingFunction)

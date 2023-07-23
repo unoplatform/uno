@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemsSourceView : global::System.Collections.Specialized.INotifyCollectionChanged
+	public partial class ItemsSourceView : global::System.Collections.Specialized.INotifyCollectionChanged
 	{
 		// Skipping already declared property Count
 		// Skipping already declared property HasKeyIndexMapping

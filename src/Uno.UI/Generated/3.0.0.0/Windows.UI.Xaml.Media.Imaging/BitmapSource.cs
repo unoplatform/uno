@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BitmapSource : global::Windows.UI.Xaml.Media.ImageSource
+	public partial class BitmapSource : global::Windows.UI.Xaml.Media.ImageSource
 	{
 		// Skipping already declared property PixelHeight
 		// Skipping already declared property PixelWidth

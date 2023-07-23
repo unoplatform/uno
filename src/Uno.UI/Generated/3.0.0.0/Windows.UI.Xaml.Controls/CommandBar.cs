@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CommandBar 
+	public partial class CommandBar 
 	{
 		// Skipping already declared property PrimaryCommands
 		// Skipping already declared property SecondaryCommands

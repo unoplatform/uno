@@ -3,7 +3,7 @@
 namespace Windows.UI.Composition
 {
 #if false || false || false || false || false || false || false
-	public   enum CompositionBatchTypes : uint
+	public enum CompositionBatchTypes : uint
 	{
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.None
 		// Skipping already declared field Windows.UI.Composition.CompositionBatchTypes.Animation

@@ -3,7 +3,7 @@
 namespace Windows.UI.Core
 {
 #if false || false || false || false || false || false || false
-	public   enum CoreVirtualKeyStates : uint
+	public enum CoreVirtualKeyStates : uint
 	{
 		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.None
 		// Skipping already declared field Windows.UI.Core.CoreVirtualKeyStates.Down

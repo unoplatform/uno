@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SuppressNavigationTransitionInfo : global::Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo
+	public partial class SuppressNavigationTransitionInfo : global::Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo
 	{
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.SuppressNavigationTransitionInfo()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.SuppressNavigationTransitionInfo.SuppressNavigationTransitionInfo()

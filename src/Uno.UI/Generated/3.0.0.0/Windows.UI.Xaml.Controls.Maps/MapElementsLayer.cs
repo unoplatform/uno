@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Controls.Maps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MapElementsLayer : global::Windows.UI.Xaml.Controls.Maps.MapLayer
+	public partial class MapElementsLayer : global::Windows.UI.Xaml.Controls.Maps.MapLayer
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement> MapElements
+		public global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement> MapElements
 		{
 			get
 			{
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElementsLayer.MapElementsProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerContextRequestedEventArgs> MapContextRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerContextRequestedEventArgs> MapContextRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerClickEventArgs> MapElementClick
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerClickEventArgs> MapElementClick
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerPointerEnteredEventArgs> MapElementPointerEntered
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerPointerEnteredEventArgs> MapElementPointerEntered
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerPointerExitedEventArgs> MapElementPointerExited
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer, global::Windows.UI.Xaml.Controls.Maps.MapElementsLayerPointerExitedEventArgs> MapElementPointerExited
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

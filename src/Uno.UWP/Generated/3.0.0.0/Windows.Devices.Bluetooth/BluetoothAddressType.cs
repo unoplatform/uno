@@ -3,7 +3,7 @@
 namespace Windows.Devices.Bluetooth
 {
 #if false || false || false || false || false || false || false
-	public   enum BluetoothAddressType 
+	public enum BluetoothAddressType 
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothAddressType.Public
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothAddressType.Random

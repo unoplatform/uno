@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ColumnMajorUniformToLargestGridLayout : global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayout
+	public partial class ColumnMajorUniformToLargestGridLayout : global::Microsoft.UI.Xaml.Controls.NonVirtualizingLayout
 	{
 		// Skipping already declared property RowSpacing
 		// Skipping already declared property MaxColumns

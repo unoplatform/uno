@@ -5,11 +5,11 @@ namespace Windows.Services.Store
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StoreAvailability 
+	public partial class StoreAvailability 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset EndDate
+		public global::System.DateTimeOffset EndDate
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ExtendedJsonData
+		public string ExtendedJsonData
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Store.StorePrice Price
+		public global::Windows.Services.Store.StorePrice Price
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Services.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string StoreId
+		public string StoreId
 		{
 			get
 			{
@@ -53,14 +53,14 @@ namespace Windows.Services.Store
 		// Forced skipping of method Windows.Services.Store.StoreAvailability.ExtendedJsonData.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreAvailability.RequestPurchaseAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreAvailability.RequestPurchaseAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync( global::Windows.Services.Store.StorePurchaseProperties storePurchaseProperties)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StorePurchaseResult> RequestPurchaseAsync( global::Windows.Services.Store.StorePurchaseProperties storePurchaseProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorePurchaseResult> StoreAvailability.RequestPurchaseAsync(StorePurchaseProperties storePurchaseProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorePurchaseResult%3E%20StoreAvailability.RequestPurchaseAsync%28StorePurchaseProperties%20storePurchaseProperties%29");
 		}

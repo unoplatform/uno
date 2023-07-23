@@ -3,7 +3,7 @@
 namespace Windows.Security.Cryptography.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum CryptographicPrivateKeyBlobType 
+	public enum CryptographicPrivateKeyBlobType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Pkcs8RawPrivateKeyInfo = 0,

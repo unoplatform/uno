@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SwipeItemInvokedEventArgs 
+	public partial class SwipeItemInvokedEventArgs 
 	{
 		// Skipping already declared property SwipeControl
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.SwipeItemInvokedEventArgs.SwipeControl.get

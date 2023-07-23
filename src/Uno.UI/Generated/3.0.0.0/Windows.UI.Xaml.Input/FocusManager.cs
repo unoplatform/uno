@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FocusManager 
+	public partial class FocusManager 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Input.FocusManager.GetFocusedElement(Windows.UI.Xaml.XamlRoot)
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManager.GotFocus.add

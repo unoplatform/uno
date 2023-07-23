@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Brush : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Composition.IAnimationObject
+	public partial class Brush : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Transform
 		// Skipping already declared property RelativeTransform
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
+		public void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Brush", "void Brush.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}

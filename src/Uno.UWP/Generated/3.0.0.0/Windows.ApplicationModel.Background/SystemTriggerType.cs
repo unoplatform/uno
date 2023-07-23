@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Background
 {
 #if false || false || false || false || false || false || false
-	public   enum SystemTriggerType 
+	public enum SystemTriggerType 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.Invalid
 		// Skipping already declared field Windows.ApplicationModel.Background.SystemTriggerType.SmsReceived

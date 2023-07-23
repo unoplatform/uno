@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum ElementSoundMode 
+	public enum ElementSoundMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundMode.Default
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundMode.FocusOnly

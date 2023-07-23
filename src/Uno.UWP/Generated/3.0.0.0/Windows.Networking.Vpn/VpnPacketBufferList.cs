@@ -5,11 +5,11 @@ namespace Windows.Networking.Vpn
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VpnPacketBufferList : global::System.Collections.Generic.IEnumerable<global::Windows.Networking.Vpn.VpnPacketBuffer>
+	public partial class VpnPacketBufferList : global::System.Collections.Generic.IEnumerable<global::Windows.Networking.Vpn.VpnPacketBuffer>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
+		public global::Windows.Networking.Vpn.VpnPacketBufferStatus Status
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{
@@ -33,35 +33,35 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Append( global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
+		public void Append( global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.Append(VpnPacketBuffer nextVpnPacketBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void AddAtBegin( global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
+		public void AddAtBegin( global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.AddAtBegin(VpnPacketBuffer nextVpnPacketBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtEnd()
+		public global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtEnd()
 		{
 			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtEnd() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBuffer%20VpnPacketBufferList.RemoveAtEnd%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtBegin()
+		public global::Windows.Networking.Vpn.VpnPacketBuffer RemoveAtBegin()
 		{
 			throw new global::System.NotImplementedException("The member VpnPacketBuffer VpnPacketBufferList.RemoveAtBegin() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VpnPacketBuffer%20VpnPacketBufferList.RemoveAtBegin%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Clear()
+		public void Clear()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.Clear()");
 		}

@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum LineStackingStrategy 
+	public enum LineStackingStrategy 
 	{
 		// Skipping already declared field Windows.UI.Xaml.LineStackingStrategy.MaxHeight
 		// Skipping already declared field Windows.UI.Xaml.LineStackingStrategy.BlockLineHeight

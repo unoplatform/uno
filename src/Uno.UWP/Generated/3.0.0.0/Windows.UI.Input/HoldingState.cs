@@ -3,7 +3,7 @@
 namespace Windows.UI.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum HoldingState 
+	public enum HoldingState 
 	{
 		// Skipping already declared field Windows.UI.Input.HoldingState.Started
 		// Skipping already declared field Windows.UI.Input.HoldingState.Completed

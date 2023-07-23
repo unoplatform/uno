@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum FocusInputDeviceKind 
+	public enum FocusInputDeviceKind 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.None
 		// Skipping already declared field Windows.UI.Xaml.Input.FocusInputDeviceKind.Mouse

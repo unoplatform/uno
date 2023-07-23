@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.ExtendedExecution
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ExtendedExecutionSession : global::System.IDisposable
+	public partial class ExtendedExecutionSession : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionReason Reason
+		public global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionReason Reason
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint PercentProgress
+		public uint PercentProgress
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.ExtendedExecution
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Description
+		public string Description
 		{
 			get
 			{
@@ -67,21 +67,21 @@ namespace Windows.ApplicationModel.ExtendedExecution
 		// Forced skipping of method Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession.Revoked.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionResult> RequestExtensionAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionResult> RequestExtensionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ExtendedExecutionResult> ExtendedExecutionSession.RequestExtensionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CExtendedExecutionResult%3E%20ExtendedExecutionSession.RequestExtensionAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionSession", "void ExtendedExecutionSession.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<object, global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs> Revoked
+		public event global::Windows.Foundation.TypedEventHandler<object, global::Windows.ApplicationModel.ExtendedExecution.ExtendedExecutionRevokedEventArgs> Revoked
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AutomationPeer : global::Windows.UI.Xaml.DependencyObject
+	public partial class AutomationPeer : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property EventsSource
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.AutomationPeer()
@@ -15,14 +15,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.GetPattern(Windows.UI.Xaml.Automation.Peers.PatternInterface)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RaiseAutomationEvent( global::Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId)
+		public void RaiseAutomationEvent( global::Windows.UI.Xaml.Automation.Peers.AutomationEvents eventId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseAutomationEvent(AutomationEvents eventId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RaisePropertyChangedEvent( global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty,  object oldValue,  object newValue)
+		public void RaisePropertyChangedEvent( global::Windows.UI.Xaml.Automation.AutomationProperty automationProperty,  object oldValue,  object newValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaisePropertyChangedEvent(AutomationProperty automationProperty, object oldValue, object newValue)");
 		}
@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.SetParent(Windows.UI.Xaml.Automation.Peers.AutomationPeer)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RaiseTextEditTextChangedEvent( global::Windows.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType,  global::System.Collections.Generic.IReadOnlyList<string> changedData)
+		public void RaiseTextEditTextChangedEvent( global::Windows.UI.Xaml.Automation.AutomationTextEditChangeType automationTextEditChangeType,  global::System.Collections.Generic.IReadOnlyList<string> changedData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseTextEditTextChangedEvent(AutomationTextEditChangeType automationTextEditChangeType, IReadOnlyList<string> changedData)");
 		}
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.GetLevel()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RaiseStructureChangedEvent( global::Windows.UI.Xaml.Automation.Peers.AutomationStructureChangeType structureChangeType,  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer child)
+		public void RaiseStructureChangedEvent( global::Windows.UI.Xaml.Automation.Peers.AutomationStructureChangeType structureChangeType,  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer child)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseStructureChangedEvent(AutomationStructureChangeType structureChangeType, AutomationPeer child)");
 		}
@@ -86,14 +86,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.GetFullDescription()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int GetCulture()
+		public int GetCulture()
 		{
 			throw new global::System.NotImplementedException("The member int AutomationPeer.GetCulture() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20AutomationPeer.GetCulture%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RaiseNotificationEvent( global::Windows.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind,  global::Windows.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing,  string displayString,  string activityId)
+		public void RaiseNotificationEvent( global::Windows.UI.Xaml.Automation.Peers.AutomationNotificationKind notificationKind,  global::Windows.UI.Xaml.Automation.Peers.AutomationNotificationProcessing notificationProcessing,  string displayString,  string activityId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "void AutomationPeer.RaiseNotificationEvent(AutomationNotificationKind notificationKind, AutomationNotificationProcessing notificationProcessing, string displayString, string activityId)");
 		}
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeer.IsDialog()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected  global::Windows.UI.Xaml.Automation.Peers.AutomationPeer PeerFromProvider( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple provider)
+		protected global::Windows.UI.Xaml.Automation.Peers.AutomationPeer PeerFromProvider( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple provider)
 		{
 			throw new global::System.NotImplementedException("The member AutomationPeer AutomationPeer.PeerFromProvider(IRawElementProviderSimple provider) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutomationPeer%20AutomationPeer.PeerFromProvider%28IRawElementProviderSimple%20provider%29");
 		}

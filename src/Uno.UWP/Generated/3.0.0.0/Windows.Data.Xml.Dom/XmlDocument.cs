@@ -5,13 +5,13 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class XmlDocument : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSerializer,global::Windows.Data.Xml.Dom.IXmlNodeSelector
+	public partial class XmlDocument : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSerializer,global::Windows.Data.Xml.Dom.IXmlNodeSelector
 	{
 		// Skipping already declared property Doctype
 		// Skipping already declared property DocumentElement
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DocumentUri
+		public string DocumentUri
 		{
 			get
 			{
@@ -81,14 +81,14 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.SelectNodes(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
+		public global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlDocument.SelectSingleNodeNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IXmlNode%20XmlDocument.SelectSingleNodeNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
+		public global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList XmlDocument.SelectNodesNS(string xpath, object namespaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=XmlNodeList%20XmlDocument.SelectNodesNS%28string%20xpath%2C%20object%20namespaces%29");
 		}
@@ -99,7 +99,7 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.LoadXml(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void LoadXml( string xml,  global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
+		public void LoadXml( string xml,  global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXml(string xml, XmlLoadSettings loadSettings)");
 		}
@@ -107,14 +107,14 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDocument.SaveToFileAsync(Windows.Storage.IStorageFile)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void LoadXmlFromBuffer( global::Windows.Storage.Streams.IBuffer buffer)
+		public void LoadXmlFromBuffer( global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXmlFromBuffer(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void LoadXmlFromBuffer( global::Windows.Storage.Streams.IBuffer buffer,  global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
+		public void LoadXmlFromBuffer( global::Windows.Storage.Streams.IBuffer buffer,  global::Windows.Data.Xml.Dom.XmlLoadSettings loadSettings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.XmlDocument", "void XmlDocument.LoadXmlFromBuffer(IBuffer buffer, XmlLoadSettings loadSettings)");
 		}

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ObjectKeyFrameCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Animation.ObjectKeyFrame>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Animation.ObjectKeyFrame>
+	public partial class ObjectKeyFrameCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Animation.ObjectKeyFrame>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Animation.ObjectKeyFrame>
 	{
 		// Skipping already declared property Size
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.ObjectKeyFrameCollection.ObjectKeyFrameCollection()

@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UserDataTaskRecurrenceProperties 
+	public partial class UserDataTaskRecurrenceProperties 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataTasks.UserDataTaskWeekOfMonth? WeekOfMonth
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskWeekOfMonth? WeekOfMonth
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? Until
+		public global::System.DateTimeOffset? Until
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceUnit Unit
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskRecurrenceUnit Unit
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int? Occurrences
+		public int? Occurrences
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int? Month
+		public int? Month
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int Interval
+		public int Interval
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataTasks.UserDataTaskDaysOfWeek? DaysOfWeek
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskDaysOfWeek? DaysOfWeek
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int? Day
+		public int? Day
 		{
 			get
 			{

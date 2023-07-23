@@ -5,11 +5,11 @@ namespace Windows.Graphics.Capture
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Direct3D11CaptureFramePool : global::System.IDisposable
+	public partial class Direct3D11CaptureFramePool : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.DispatcherQueue DispatcherQueue
+		public global::Windows.System.DispatcherQueue DispatcherQueue
 		{
 			get
 			{
@@ -19,14 +19,14 @@ namespace Windows.Graphics.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Recreate( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  int numberOfBuffers,  global::Windows.Graphics.SizeInt32 size)
+		public void Recreate( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  int numberOfBuffers,  global::Windows.Graphics.SizeInt32 size)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFramePool", "void Direct3D11CaptureFramePool.Recreate(IDirect3DDevice device, DirectXPixelFormat pixelFormat, int numberOfBuffers, SizeInt32 size)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Capture.Direct3D11CaptureFrame TryGetNextFrame()
+		public global::Windows.Graphics.Capture.Direct3D11CaptureFrame TryGetNextFrame()
 		{
 			throw new global::System.NotImplementedException("The member Direct3D11CaptureFrame Direct3D11CaptureFramePool.TryGetNextFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Direct3D11CaptureFrame%20Direct3D11CaptureFramePool.TryGetNextFrame%28%29");
 		}
@@ -35,7 +35,7 @@ namespace Windows.Graphics.Capture
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.FrameArrived.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Capture.GraphicsCaptureSession CreateCaptureSession( global::Windows.Graphics.Capture.GraphicsCaptureItem item)
+		public global::Windows.Graphics.Capture.GraphicsCaptureSession CreateCaptureSession( global::Windows.Graphics.Capture.GraphicsCaptureItem item)
 		{
 			throw new global::System.NotImplementedException("The member GraphicsCaptureSession Direct3D11CaptureFramePool.CreateCaptureSession(GraphicsCaptureItem item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GraphicsCaptureSession%20Direct3D11CaptureFramePool.CreateCaptureSession%28GraphicsCaptureItem%20item%29");
 		}
@@ -43,7 +43,7 @@ namespace Windows.Graphics.Capture
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFramePool.DispatcherQueue.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFramePool", "void Direct3D11CaptureFramePool.Dispose()");
 		}
@@ -64,7 +64,7 @@ namespace Windows.Graphics.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Capture.Direct3D11CaptureFramePool, object> FrameArrived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Capture.Direct3D11CaptureFramePool, object> FrameArrived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

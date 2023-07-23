@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ColumnDefinition : global::Windows.UI.Xaml.DependencyObject
+	public partial class ColumnDefinition : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Width
 		// Skipping already declared property MinWidth

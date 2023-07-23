@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Display
 {
 #if false || false || false || false || false || false || false
-	public   enum DisplayBrightnessOverrideOptions : uint
+	public enum DisplayBrightnessOverrideOptions : uint
 	{
 		// Skipping already declared field Windows.Graphics.Display.DisplayBrightnessOverrideOptions.None
 		// Skipping already declared field Windows.Graphics.Display.DisplayBrightnessOverrideOptions.UseDimmedPolicyWhenBatteryIsLow

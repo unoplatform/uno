@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum ColorSpectrumComponents 
+	public enum ColorSpectrumComponents 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ColorSpectrumComponents.HueValue
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ColorSpectrumComponents.ValueHue

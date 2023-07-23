@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationViewItem : global::Windows.UI.Xaml.Controls.NavigationViewItemBase
+	public partial class NavigationViewItem : global::Windows.UI.Xaml.Controls.NavigationViewItemBase
 	{
 		// Skipping already declared property Icon
 		// Skipping already declared property CompactPaneLength

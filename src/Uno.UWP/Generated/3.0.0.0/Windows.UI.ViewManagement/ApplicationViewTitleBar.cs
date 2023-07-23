@@ -5,7 +5,7 @@ namespace Windows.UI.ViewManagement
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ApplicationViewTitleBar 
+	public partial class ApplicationViewTitleBar 
 	{
 		// Skipping already declared property InactiveForegroundColor
 		// Skipping already declared property InactiveBackgroundColor

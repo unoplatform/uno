@@ -5,11 +5,11 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RfcommServiceId 
+	public partial class RfcommServiceId 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid Uuid
+		public global::System.Guid Uuid
 		{
 			get
 			{
@@ -80,14 +80,14 @@ namespace Windows.Devices.Bluetooth.Rfcomm
 		// Forced skipping of method Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId.Uuid.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint AsShortId()
+		public uint AsShortId()
 		{
 			throw new global::System.NotImplementedException("The member uint RfcommServiceId.AsShortId() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20RfcommServiceId.AsShortId%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AsString()
+		public string AsString()
 		{
 			throw new global::System.NotImplementedException("The member string RfcommServiceId.AsString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20RfcommServiceId.AsString%28%29");
 		}

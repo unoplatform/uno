@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Media.Animation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ConnectedAnimationService 
+	public partial class ConnectedAnimationService 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionEasingFunction DefaultEasingFunction
+		public global::Windows.UI.Composition.CompositionEasingFunction DefaultEasingFunction
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan DefaultDuration
+		public global::System.TimeSpan DefaultDuration
 		{
 			get
 			{
@@ -41,14 +41,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimationService.DefaultEasingFunction.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareToAnimate( string key,  global::Windows.UI.Xaml.UIElement source)
+		public global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareToAnimate( string key,  global::Windows.UI.Xaml.UIElement source)
 		{
 			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.PrepareToAnimate(string key, UIElement source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimation%20ConnectedAnimationService.PrepareToAnimate%28string%20key%2C%20UIElement%20source%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation GetAnimation( string key)
+		public global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation GetAnimation( string key)
 		{
 			throw new global::System.NotImplementedException("The member ConnectedAnimation ConnectedAnimationService.GetAnimation(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimation%20ConnectedAnimationService.GetAnimation%28string%20key%29");
 		}

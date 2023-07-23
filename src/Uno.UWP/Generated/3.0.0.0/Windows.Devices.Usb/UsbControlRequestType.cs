@@ -5,11 +5,11 @@ namespace Windows.Devices.Usb
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UsbControlRequestType 
+	public partial class UsbControlRequestType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbControlRecipient Recipient
+		public global::Windows.Devices.Usb.UsbControlRecipient Recipient
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbTransferDirection Direction
+		public global::Windows.Devices.Usb.UsbTransferDirection Direction
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Usb.UsbControlTransferType ControlTransferType
+		public global::Windows.Devices.Usb.UsbControlTransferType ControlTransferType
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  byte AsByte
+		public byte AsByte
 		{
 			get
 			{

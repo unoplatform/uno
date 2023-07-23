@@ -5,20 +5,20 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct CrossSlideThresholds 
+	public partial struct CrossSlideThresholds 
 	{
 		// Forced skipping of method Windows.UI.Input.CrossSlideThresholds.CrossSlideThresholds()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  float SelectionStart;
+		public float SelectionStart;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  float SpeedBumpStart;
+		public float SpeedBumpStart;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  float SpeedBumpEnd;
+		public float SpeedBumpEnd;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  float RearrangeStart;
+		public float RearrangeStart;
 #endif
 	}
 }

@@ -5,7 +5,7 @@ namespace Windows.UI.Input.Preview.Injection
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct InjectedInputRectangle 
+	public partial struct InjectedInputRectangle 
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputRectangle.InjectedInputRectangle()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputRectangle.Left

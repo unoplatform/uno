@@ -3,7 +3,7 @@
 namespace Windows.Storage
 {
 #if false || false || false || false || false || false || false
-	public   enum CreationCollisionOption 
+	public enum CreationCollisionOption 
 	{
 		// Skipping already declared field Windows.Storage.CreationCollisionOption.GenerateUniqueName
 		// Skipping already declared field Windows.Storage.CreationCollisionOption.ReplaceExisting

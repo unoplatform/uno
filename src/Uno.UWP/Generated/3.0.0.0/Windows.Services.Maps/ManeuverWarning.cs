@@ -5,11 +5,11 @@ namespace Windows.Services.Maps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ManeuverWarning 
+	public partial class ManeuverWarning 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Maps.ManeuverWarningKind Kind
+		public global::Windows.Services.Maps.ManeuverWarningKind Kind
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Maps.ManeuverWarningSeverity Severity
+		public global::Windows.Services.Maps.ManeuverWarningSeverity Severity
 		{
 			get
 			{

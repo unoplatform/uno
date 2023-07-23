@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum ScrollIntoViewAlignment 
+	public enum ScrollIntoViewAlignment 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollIntoViewAlignment.Default
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollIntoViewAlignment.Leading

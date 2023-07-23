@@ -5,11 +5,11 @@ namespace Windows.Storage.AccessCache
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemRemovedEventArgs 
+	public partial class ItemRemovedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.AccessCache.AccessListEntry RemovedEntry
+		public global::Windows.Storage.AccessCache.AccessListEntry RemovedEntry
 		{
 			get
 			{

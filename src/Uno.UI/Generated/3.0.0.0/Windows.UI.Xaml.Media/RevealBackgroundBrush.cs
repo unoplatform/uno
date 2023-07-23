@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RevealBackgroundBrush : global::Windows.UI.Xaml.Media.RevealBrush
+	public partial class RevealBackgroundBrush : global::Windows.UI.Xaml.Media.RevealBrush
 	{
 		// Skipping already declared method Windows.UI.Xaml.Media.RevealBackgroundBrush.RevealBackgroundBrush()
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBackgroundBrush.RevealBackgroundBrush()

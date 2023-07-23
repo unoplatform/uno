@@ -5,7 +5,7 @@ namespace Windows.Foundation.Diagnostics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ILoggingChannel : global::System.IDisposable
+	public partial interface ILoggingChannel : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		bool Enabled
@@ -43,7 +43,7 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.LoggingEnabled.add
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.LoggingEnabled.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Foundation.Diagnostics.ILoggingChannel, object> LoggingEnabled;
+		event global::Windows.Foundation.TypedEventHandler<global::Windows.Foundation.Diagnostics.ILoggingChannel, object> LoggingEnabled;
 #endif
 	}
 }

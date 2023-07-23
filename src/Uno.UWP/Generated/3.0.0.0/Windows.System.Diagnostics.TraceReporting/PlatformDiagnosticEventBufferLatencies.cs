@@ -4,7 +4,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 {
 	[global::System.FlagsAttribute]
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum PlatformDiagnosticEventBufferLatencies : uint
+	public enum PlatformDiagnosticEventBufferLatencies : uint
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Normal = 1,

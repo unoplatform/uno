@@ -3,7 +3,7 @@
 namespace Windows.Media.Playback
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum MediaPlayerAudioDeviceType 
+	public enum MediaPlayerAudioDeviceType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Console = 0,

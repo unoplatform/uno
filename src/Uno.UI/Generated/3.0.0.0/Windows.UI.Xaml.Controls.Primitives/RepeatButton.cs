@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RepeatButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
+	public partial class RepeatButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
 	{
 		// Skipping already declared property Interval
 		// Skipping already declared property Delay

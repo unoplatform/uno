@@ -5,11 +5,11 @@ namespace Windows.Graphics.Printing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintTask 
+	public partial class PrintTask 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.PrintTaskOptions Options
+		public global::Windows.Graphics.Printing.PrintTaskOptions Options
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
+		public global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.IPrintDocumentSource Source
+		public global::Windows.Graphics.Printing.IPrintDocumentSource Source
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPreviewEnabled
+		public bool IsPreviewEnabled
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPrinterTargetEnabled
+		public bool IsPrinterTargetEnabled
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Is3DManufacturingTargetEnabled
+		public bool Is3DManufacturingTargetEnabled
 		{
 			get
 			{
@@ -98,7 +98,7 @@ namespace Windows.Graphics.Printing
 		// Forced skipping of method Windows.Graphics.Printing.PrintTask.IsPreviewEnabled.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskCompletedEventArgs> Completed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskCompletedEventArgs> Completed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -114,7 +114,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Previewing
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Previewing
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -130,7 +130,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskProgressingEventArgs> Progressing
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, global::Windows.Graphics.Printing.PrintTaskProgressingEventArgs> Progressing
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -146,7 +146,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Submitting
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintTask, object> Submitting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

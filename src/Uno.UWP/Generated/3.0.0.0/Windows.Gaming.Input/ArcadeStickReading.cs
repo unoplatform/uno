@@ -5,14 +5,14 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct ArcadeStickReading 
+	public partial struct ArcadeStickReading 
 	{
 		// Forced skipping of method Windows.Gaming.Input.ArcadeStickReading.ArcadeStickReading()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong Timestamp;
+		public ulong Timestamp;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::Windows.Gaming.Input.ArcadeStickButtons Buttons;
+		public global::Windows.Gaming.Input.ArcadeStickButtons Buttons;
 #endif
 	}
 }

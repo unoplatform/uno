@@ -3,7 +3,7 @@
 namespace Windows.UI.Popups
 {
 #if false || false || false || false || false || false || false
-	public   enum Placement 
+	public enum Placement 
 	{
 		// Skipping already declared field Windows.UI.Popups.Placement.Default
 		// Skipping already declared field Windows.UI.Popups.Placement.Above

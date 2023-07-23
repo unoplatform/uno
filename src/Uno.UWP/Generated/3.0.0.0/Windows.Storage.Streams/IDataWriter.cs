@@ -5,7 +5,7 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IDataWriter 
+	public partial interface IDataWriter 
 	{
 		// Skipping already declared property ByteOrder
 		// Skipping already declared property UnicodeEncoding

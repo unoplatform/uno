@@ -3,7 +3,7 @@
 namespace Windows.System
 {
 #if false || false || false || false || false || false || false
-	public   enum LaunchQuerySupportType 
+	public enum LaunchQuerySupportType 
 	{
 		// Skipping already declared field Windows.System.LaunchQuerySupportType.Uri
 		// Skipping already declared field Windows.System.LaunchQuerySupportType.UriForResults

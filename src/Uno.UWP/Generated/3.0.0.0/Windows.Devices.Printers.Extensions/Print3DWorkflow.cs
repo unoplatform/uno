@@ -5,11 +5,11 @@ namespace Windows.Devices.Printers.Extensions
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Print3DWorkflow 
+	public partial class Print3DWorkflow 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPrintReady
+		public bool IsPrintReady
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Printers.Extensions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceID
+		public string DeviceID
 		{
 			get
 			{
@@ -34,7 +34,7 @@ namespace Windows.Devices.Printers.Extensions
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.DeviceID.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  object GetPrintModelPackage()
+		public object GetPrintModelPackage()
 		{
 			throw new global::System.NotImplementedException("The member object Print3DWorkflow.GetPrintModelPackage() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20Print3DWorkflow.GetPrintModelPackage%28%29");
 		}
@@ -47,7 +47,7 @@ namespace Windows.Devices.Printers.Extensions
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflow.PrinterChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Printers.Extensions.Print3DWorkflow, global::Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs> PrintRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Printers.Extensions.Print3DWorkflow, global::Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs> PrintRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -63,7 +63,7 @@ namespace Windows.Devices.Printers.Extensions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Printers.Extensions.Print3DWorkflow, global::Windows.Devices.Printers.Extensions.Print3DWorkflowPrinterChangedEventArgs> PrinterChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Printers.Extensions.Print3DWorkflow, global::Windows.Devices.Printers.Extensions.Print3DWorkflowPrinterChangedEventArgs> PrinterChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

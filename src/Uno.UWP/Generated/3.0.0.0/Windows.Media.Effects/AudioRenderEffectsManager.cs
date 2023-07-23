@@ -5,11 +5,11 @@ namespace Windows.Media.Effects
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AudioRenderEffectsManager 
+	public partial class AudioRenderEffectsManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string EffectsProviderSettingsLabel
+		public string EffectsProviderSettingsLabel
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamWithContentType EffectsProviderThumbnail
+		public global::Windows.Storage.Streams.IRandomAccessStreamWithContentType EffectsProviderThumbnail
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.AudioRenderEffectsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Effects.AudioEffect> GetAudioRenderEffects()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Effects.AudioEffect> GetAudioRenderEffects()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<AudioEffect> AudioRenderEffectsManager.GetAudioRenderEffects() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CAudioEffect%3E%20AudioRenderEffectsManager.GetAudioRenderEffects%28%29");
 		}
@@ -40,14 +40,14 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.AudioRenderEffectsManager.EffectsProviderSettingsLabel.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ShowSettingsUI()
+		public void ShowSettingsUI()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioRenderEffectsManager", "void AudioRenderEffectsManager.ShowSettingsUI()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Effects.AudioRenderEffectsManager, object> AudioRenderEffectsChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Effects.AudioRenderEffectsManager, object> AudioRenderEffectsChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

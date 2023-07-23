@@ -5,11 +5,11 @@ namespace Windows.Devices.Sms
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SmsDevice2 
+	public partial class SmsDevice2 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string SmscAddress
+		public string SmscAddress
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AccountPhoneNumber
+		public string AccountPhoneNumber
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Sms.CellularClass CellularClass
+		public global::Windows.Devices.Sms.CellularClass CellularClass
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Sms.SmsDeviceStatus DeviceStatus
+		public global::Windows.Devices.Sms.SmsDeviceStatus DeviceStatus
 		{
 			get
 			{
@@ -63,7 +63,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ParentDeviceId
+		public string ParentDeviceId
 		{
 			get
 			{
@@ -80,14 +80,14 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsDevice2.DeviceStatus.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Sms.SmsEncodedLength CalculateLength( global::Windows.Devices.Sms.ISmsMessageBase message)
+		public global::Windows.Devices.Sms.SmsEncodedLength CalculateLength( global::Windows.Devices.Sms.ISmsMessageBase message)
 		{
 			throw new global::System.NotImplementedException("The member SmsEncodedLength SmsDevice2.CalculateLength(ISmsMessageBase message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsEncodedLength%20SmsDevice2.CalculateLength%28ISmsMessageBase%20message%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.SmsSendMessageResult> SendMessageAndGetResultAsync( global::Windows.Devices.Sms.ISmsMessageBase message)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sms.SmsSendMessageResult> SendMessageAndGetResultAsync( global::Windows.Devices.Sms.ISmsMessageBase message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmsSendMessageResult> SmsDevice2.SendMessageAndGetResultAsync(ISmsMessageBase message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmsSendMessageResult%3E%20SmsDevice2.SendMessageAndGetResultAsync%28ISmsMessageBase%20message%29");
 		}
@@ -124,7 +124,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sms.SmsDevice2, object> DeviceStatusChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sms.SmsDevice2, object> DeviceStatusChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

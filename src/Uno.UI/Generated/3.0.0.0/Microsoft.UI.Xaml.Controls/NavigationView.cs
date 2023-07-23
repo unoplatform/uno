@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationView : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class NavigationView : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property PaneToggleButtonStyle

@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Holographic
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum HolographicViewConfigurationKind 
+	public enum HolographicViewConfigurationKind 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Display = 0,

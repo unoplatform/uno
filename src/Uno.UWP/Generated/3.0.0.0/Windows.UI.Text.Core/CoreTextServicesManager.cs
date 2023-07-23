@@ -5,11 +5,11 @@ namespace Windows.UI.Text.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreTextServicesManager 
+	public partial class CoreTextServicesManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.Language InputLanguage
+		public global::Windows.Globalization.Language InputLanguage
 		{
 			get
 			{
@@ -22,7 +22,7 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextServicesManager.InputLanguageChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.Core.CoreTextEditContext CreateEditContext()
+		public global::Windows.UI.Text.Core.CoreTextEditContext CreateEditContext()
 		{
 			throw new global::System.NotImplementedException("The member CoreTextEditContext CoreTextServicesManager.CreateEditContext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreTextEditContext%20CoreTextServicesManager.CreateEditContext%28%29");
 		}
@@ -36,7 +36,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextServicesManager, object> InputLanguageChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextServicesManager, object> InputLanguageChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

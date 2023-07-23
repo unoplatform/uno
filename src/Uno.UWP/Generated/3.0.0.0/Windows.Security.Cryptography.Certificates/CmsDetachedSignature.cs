@@ -5,11 +5,11 @@ namespace Windows.Security.Cryptography.Certificates
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CmsDetachedSignature 
+	public partial class CmsDetachedSignature 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> Certificates
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> Certificates
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> Signers
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> Signers
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.CmsDetachedSignature.Signers.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.SignatureValidationResult> VerifySignatureAsync( global::Windows.Storage.Streams.IInputStream data)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.SignatureValidationResult> VerifySignatureAsync( global::Windows.Storage.Streams.IInputStream data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SignatureValidationResult> CmsDetachedSignature.VerifySignatureAsync(IInputStream data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSignatureValidationResult%3E%20CmsDetachedSignature.VerifySignatureAsync%28IInputStream%20data%29");
 		}

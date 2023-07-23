@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialInteractionSource 
+	public partial class SpatialInteractionSource 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Id
+		public uint Id
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind Kind
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind Kind
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialInteractionController Controller
+		public global::Windows.UI.Input.Spatial.SpatialInteractionController Controller
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsGraspSupported
+		public bool IsGraspSupported
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsMenuSupported
+		public bool IsMenuSupported
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPointingSupported
+		public bool IsPointingSupported
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialInteractionSourceHandedness Handedness
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceHandedness Handedness
 		{
 			get
 			{
@@ -85,7 +85,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSource.Controller.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialInteractionSourceState TryGetStateAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState TryGetStateAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
 			throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteractionSource.TryGetStateAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceState%20SpatialInteractionSource.TryGetStateAtTimestamp%28PerceptionTimestamp%20timestamp%29");
 		}
@@ -93,14 +93,14 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSource.Handedness.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.People.HandMeshObserver TryCreateHandMeshObserver()
+		public global::Windows.Perception.People.HandMeshObserver TryCreateHandMeshObserver()
 		{
 			throw new global::System.NotImplementedException("The member HandMeshObserver SpatialInteractionSource.TryCreateHandMeshObserver() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HandMeshObserver%20SpatialInteractionSource.TryCreateHandMeshObserver%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.People.HandMeshObserver> TryCreateHandMeshObserverAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.People.HandMeshObserver> TryCreateHandMeshObserverAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HandMeshObserver> SpatialInteractionSource.TryCreateHandMeshObserverAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHandMeshObserver%3E%20SpatialInteractionSource.TryCreateHandMeshObserverAsync%28%29");
 		}

@@ -5,7 +5,7 @@ namespace Windows.UI.Input.Preview.Injection
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct InjectedInputPoint 
+	public partial struct InjectedInputPoint 
 	{
 		// Forced skipping of method Windows.UI.Input.Preview.Injection.InjectedInputPoint.InjectedInputPoint()
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputPoint.PositionX

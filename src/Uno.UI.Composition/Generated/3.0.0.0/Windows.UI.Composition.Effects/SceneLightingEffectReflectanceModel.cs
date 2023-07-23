@@ -3,7 +3,7 @@
 namespace Windows.UI.Composition.Effects
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum SceneLightingEffectReflectanceModel 
+	public enum SceneLightingEffectReflectanceModel 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		BlinnPhong = 0,

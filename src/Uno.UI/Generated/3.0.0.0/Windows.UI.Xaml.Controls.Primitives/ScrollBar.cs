@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ScrollBar : global::Windows.UI.Xaml.Controls.Primitives.RangeBase
+	public partial class ScrollBar : global::Windows.UI.Xaml.Controls.Primitives.RangeBase
 	{
 		// Skipping already declared property ViewportSize
 		// Skipping already declared property Orientation

@@ -5,14 +5,14 @@ namespace Windows.UI.Xaml.Markup
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct XmlnsDefinition 
+	public partial struct XmlnsDefinition 
 	{
 		// Forced skipping of method Windows.UI.Xaml.Markup.XmlnsDefinition.XmlnsDefinition()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  string XmlNamespace;
+		public string XmlNamespace;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  string Namespace;
+		public string Namespace;
 #endif
 	}
 }

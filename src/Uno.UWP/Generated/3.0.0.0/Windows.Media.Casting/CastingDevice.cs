@@ -5,11 +5,11 @@ namespace Windows.Media.Casting
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CastingDevice 
+	public partial class CastingDevice 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FriendlyName
+		public string FriendlyName
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamWithContentType Icon
+		public global::Windows.Storage.Streams.IRandomAccessStreamWithContentType Icon
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
+		public string Id
 		{
 			get
 			{
@@ -42,14 +42,14 @@ namespace Windows.Media.Casting
 		// Forced skipping of method Windows.Media.Casting.CastingDevice.Icon.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingPlaybackTypes> GetSupportedCastingPlaybackTypesAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingPlaybackTypes> GetSupportedCastingPlaybackTypesAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingPlaybackTypes> CastingDevice.GetSupportedCastingPlaybackTypesAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCastingPlaybackTypes%3E%20CastingDevice.GetSupportedCastingPlaybackTypesAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Casting.CastingConnection CreateCastingConnection()
+		public global::Windows.Media.Casting.CastingConnection CreateCastingConnection()
 		{
 			throw new global::System.NotImplementedException("The member CastingConnection CastingDevice.CreateCastingConnection() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingConnection%20CastingDevice.CreateCastingConnection%28%29");
 		}

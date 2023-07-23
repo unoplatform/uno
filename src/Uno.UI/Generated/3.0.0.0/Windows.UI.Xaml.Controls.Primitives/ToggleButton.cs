@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ToggleButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
+	public partial class ToggleButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
 	{
 		// Skipping already declared property IsThreeState
 		// Skipping already declared property IsChecked

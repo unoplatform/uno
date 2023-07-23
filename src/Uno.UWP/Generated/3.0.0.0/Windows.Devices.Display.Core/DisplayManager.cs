@@ -5,67 +5,67 @@ namespace Windows.Devices.Display.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DisplayManager : global::System.IDisposable
+	public partial class DisplayManager : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayTarget> GetCurrentTargets()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayTarget> GetCurrentTargets()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayTarget> DisplayManager.GetCurrentTargets() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayTarget%3E%20DisplayManager.GetCurrentTargets%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayAdapter> GetCurrentAdapters()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayAdapter> GetCurrentAdapters()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayAdapter> DisplayManager.GetCurrentAdapters() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayAdapter%3E%20DisplayManager.GetCurrentAdapters%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayManagerResult TryAcquireTarget( global::Windows.Devices.Display.Core.DisplayTarget target)
+		public global::Windows.Devices.Display.Core.DisplayManagerResult TryAcquireTarget( global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
 			throw new global::System.NotImplementedException("The member DisplayManagerResult DisplayManager.TryAcquireTarget(DisplayTarget target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManagerResult%20DisplayManager.TryAcquireTarget%28DisplayTarget%20target%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ReleaseTarget( global::Windows.Devices.Display.Core.DisplayTarget target)
+		public void ReleaseTarget( global::Windows.Devices.Display.Core.DisplayTarget target)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.ReleaseTarget(DisplayTarget target)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryReadCurrentStateForAllTargets()
+		public global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryReadCurrentStateForAllTargets()
 		{
 			throw new global::System.NotImplementedException("The member DisplayManagerResultWithState DisplayManager.TryReadCurrentStateForAllTargets() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManagerResultWithState%20DisplayManager.TryReadCurrentStateForAllTargets%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryAcquireTargetsAndReadCurrentState( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Display.Core.DisplayTarget> targets)
+		public global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryAcquireTargetsAndReadCurrentState( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Display.Core.DisplayTarget> targets)
 		{
 			throw new global::System.NotImplementedException("The member DisplayManagerResultWithState DisplayManager.TryAcquireTargetsAndReadCurrentState(IEnumerable<DisplayTarget> targets) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManagerResultWithState%20DisplayManager.TryAcquireTargetsAndReadCurrentState%28IEnumerable%3CDisplayTarget%3E%20targets%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryAcquireTargetsAndCreateEmptyState( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Display.Core.DisplayTarget> targets)
+		public global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryAcquireTargetsAndCreateEmptyState( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Display.Core.DisplayTarget> targets)
 		{
 			throw new global::System.NotImplementedException("The member DisplayManagerResultWithState DisplayManager.TryAcquireTargetsAndCreateEmptyState(IEnumerable<DisplayTarget> targets) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManagerResultWithState%20DisplayManager.TryAcquireTargetsAndCreateEmptyState%28IEnumerable%3CDisplayTarget%3E%20targets%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryAcquireTargetsAndCreateSubstate( global::Windows.Devices.Display.Core.DisplayState existingState,  global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Display.Core.DisplayTarget> targets)
+		public global::Windows.Devices.Display.Core.DisplayManagerResultWithState TryAcquireTargetsAndCreateSubstate( global::Windows.Devices.Display.Core.DisplayState existingState,  global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Display.Core.DisplayTarget> targets)
 		{
 			throw new global::System.NotImplementedException("The member DisplayManagerResultWithState DisplayManager.TryAcquireTargetsAndCreateSubstate(DisplayState existingState, IEnumerable<DisplayTarget> targets) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayManagerResultWithState%20DisplayManager.TryAcquireTargetsAndCreateSubstate%28DisplayState%20existingState%2C%20IEnumerable%3CDisplayTarget%3E%20targets%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayDevice CreateDisplayDevice( global::Windows.Devices.Display.Core.DisplayAdapter adapter)
+		public global::Windows.Devices.Display.Core.DisplayDevice CreateDisplayDevice( global::Windows.Devices.Display.Core.DisplayAdapter adapter)
 		{
 			throw new global::System.NotImplementedException("The member DisplayDevice DisplayManager.CreateDisplayDevice(DisplayAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayDevice%20DisplayManager.CreateDisplayDevice%28DisplayAdapter%20adapter%29");
 		}
@@ -80,21 +80,21 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayManager.PathsFailedOrInvalidated.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Stop()
+		public void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayManager", "void DisplayManager.Dispose()");
 		}
@@ -108,7 +108,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerChangedEventArgs> Changed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerChangedEventArgs> Changed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -124,7 +124,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs> Disabled
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerDisabledEventArgs> Disabled
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -140,7 +140,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs> Enabled
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerEnabledEventArgs> Enabled
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -156,7 +156,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs> PathsFailedOrInvalidated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Display.Core.DisplayManager, global::Windows.Devices.Display.Core.DisplayManagerPathsFailedOrInvalidatedEventArgs> PathsFailedOrInvalidated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

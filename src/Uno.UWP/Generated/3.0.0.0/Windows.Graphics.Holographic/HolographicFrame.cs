@@ -5,11 +5,11 @@ namespace Windows.Graphics.Holographic
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HolographicFrame 
+	public partial class HolographicFrame 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> AddedCameras
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> AddedCameras
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFramePrediction CurrentPrediction
+		public global::Windows.Graphics.Holographic.HolographicFramePrediction CurrentPrediction
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Duration
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> RemovedCameras
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Graphics.Holographic.HolographicCamera> RemovedCameras
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFrameId Id
+		public global::Windows.Graphics.Holographic.HolographicFrameId Id
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicCameraRenderingParameters GetRenderingParameters( global::Windows.Graphics.Holographic.HolographicCameraPose cameraPose)
+		public global::Windows.Graphics.Holographic.HolographicCameraRenderingParameters GetRenderingParameters( global::Windows.Graphics.Holographic.HolographicCameraPose cameraPose)
 		{
 			throw new global::System.NotImplementedException("The member HolographicCameraRenderingParameters HolographicFrame.GetRenderingParameters(HolographicCameraPose cameraPose) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicCameraRenderingParameters%20HolographicFrame.GetRenderingParameters%28HolographicCameraPose%20cameraPose%29");
 		}
@@ -70,35 +70,35 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.CurrentPrediction.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void UpdateCurrentPrediction()
+		public void UpdateCurrentPrediction()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicFrame", "void HolographicFrame.UpdateCurrentPrediction()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFramePresentResult PresentUsingCurrentPrediction()
+		public global::Windows.Graphics.Holographic.HolographicFramePresentResult PresentUsingCurrentPrediction()
 		{
 			throw new global::System.NotImplementedException("The member HolographicFramePresentResult HolographicFrame.PresentUsingCurrentPrediction() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFramePresentResult%20HolographicFrame.PresentUsingCurrentPrediction%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFramePresentResult PresentUsingCurrentPrediction( global::Windows.Graphics.Holographic.HolographicFramePresentWaitBehavior waitBehavior)
+		public global::Windows.Graphics.Holographic.HolographicFramePresentResult PresentUsingCurrentPrediction( global::Windows.Graphics.Holographic.HolographicFramePresentWaitBehavior waitBehavior)
 		{
 			throw new global::System.NotImplementedException("The member HolographicFramePresentResult HolographicFrame.PresentUsingCurrentPrediction(HolographicFramePresentWaitBehavior waitBehavior) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFramePresentResult%20HolographicFrame.PresentUsingCurrentPrediction%28HolographicFramePresentWaitBehavior%20waitBehavior%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void WaitForFrameToFinish()
+		public void WaitForFrameToFinish()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicFrame", "void HolographicFrame.WaitForFrameToFinish()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters GetQuadLayerUpdateParameters( global::Windows.Graphics.Holographic.HolographicQuadLayer layer)
+		public global::Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters GetQuadLayerUpdateParameters( global::Windows.Graphics.Holographic.HolographicQuadLayer layer)
 		{
 			throw new global::System.NotImplementedException("The member HolographicQuadLayerUpdateParameters HolographicFrame.GetQuadLayerUpdateParameters(HolographicQuadLayer layer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicQuadLayerUpdateParameters%20HolographicFrame.GetQuadLayerUpdateParameters%28HolographicQuadLayer%20layer%29");
 		}

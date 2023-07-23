@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TranslateTransform : global::Windows.UI.Xaml.Media.Transform
+	public partial class TranslateTransform : global::Windows.UI.Xaml.Media.Transform
 	{
 		// Skipping already declared property Y
 		// Skipping already declared property X

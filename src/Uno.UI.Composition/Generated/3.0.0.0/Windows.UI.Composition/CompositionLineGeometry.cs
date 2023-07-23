@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionLineGeometry : global::Windows.UI.Composition.CompositionGeometry
+	public partial class CompositionLineGeometry : global::Windows.UI.Composition.CompositionGeometry
 	{
 		// Skipping already declared property Start
 		// Skipping already declared property End

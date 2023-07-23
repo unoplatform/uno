@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ExceptionRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class ExceptionRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property ErrorMessage
 		// Forced skipping of method Windows.UI.Xaml.ExceptionRoutedEventArgs.ErrorMessage.get

@@ -5,11 +5,11 @@ namespace Windows.Perception.People
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HandMeshObserver 
+	public partial class HandMeshObserver 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int ModelId
+		public int ModelId
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.People.HandPose NeutralPose
+		public global::Windows.Perception.People.HandPose NeutralPose
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int NeutralPoseVersion
+		public int NeutralPoseVersion
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialInteractionSource Source
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSource Source
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint TriangleIndexCount
+		public uint TriangleIndexCount
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Perception.People
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint VertexCount
+		public uint VertexCount
 		{
 			get
 			{
@@ -72,14 +72,14 @@ namespace Windows.Perception.People
 		// Forced skipping of method Windows.Perception.People.HandMeshObserver.VertexCount.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void GetTriangleIndices( ushort[] indices)
+		public void GetTriangleIndices( ushort[] indices)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshObserver", "void HandMeshObserver.GetTriangleIndices(ushort[] indices)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.People.HandMeshVertexState GetVertexStateForPose( global::Windows.Perception.People.HandPose handPose)
+		public global::Windows.Perception.People.HandMeshVertexState GetVertexStateForPose( global::Windows.Perception.People.HandPose handPose)
 		{
 			throw new global::System.NotImplementedException("The member HandMeshVertexState HandMeshObserver.GetVertexStateForPose(HandPose handPose) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HandMeshVertexState%20HandMeshObserver.GetVertexStateForPose%28HandPose%20handPose%29");
 		}

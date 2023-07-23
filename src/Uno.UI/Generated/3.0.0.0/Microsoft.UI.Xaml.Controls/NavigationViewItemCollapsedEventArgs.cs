@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationViewItemCollapsedEventArgs 
+	public partial class NavigationViewItemCollapsedEventArgs 
 	{
 		// Skipping already declared property CollapsedItem
 		// Skipping already declared property CollapsedItemContainer

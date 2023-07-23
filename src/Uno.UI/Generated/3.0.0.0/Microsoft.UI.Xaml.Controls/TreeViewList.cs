@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TreeViewList : global::Windows.UI.Xaml.Controls.ListView
+	public partial class TreeViewList : global::Windows.UI.Xaml.Controls.ListView
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList()
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.TreeViewList.TreeViewList()

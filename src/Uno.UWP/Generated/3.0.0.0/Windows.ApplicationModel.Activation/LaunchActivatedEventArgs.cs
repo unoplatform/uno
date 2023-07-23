@@ -5,14 +5,14 @@ namespace Windows.ApplicationModel.Activation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LaunchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IPrelaunchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs2,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
+	public partial class LaunchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IPrelaunchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.ILaunchActivatedEventArgs2,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
 		// Skipping already declared property Kind
 		// Skipping already declared property PreviousExecutionState
 		// Skipping already declared property SplashScreen
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.User User
+		public global::Windows.System.User User
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.Activation
 		// Skipping already declared property TileId
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Activation.TileActivatedInfo TileActivatedInfo
+		public global::Windows.ApplicationModel.Activation.TileActivatedInfo TileActivatedInfo
 		{
 			get
 			{
@@ -36,7 +36,7 @@ namespace Windows.ApplicationModel.Activation
 		// Skipping already declared property PrelaunchActivated
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.ViewManagement.ActivationViewSwitcher ViewSwitcher
+		public global::Windows.UI.ViewManagement.ActivationViewSwitcher ViewSwitcher
 		{
 			get
 			{

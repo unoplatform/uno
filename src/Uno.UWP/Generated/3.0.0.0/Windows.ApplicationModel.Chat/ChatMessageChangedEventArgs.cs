@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Chat
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ChatMessageChangedEventArgs 
+	public partial class ChatMessageChangedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Chat.ChatMessageChangedDeferral GetDeferral()
+		public global::Windows.ApplicationModel.Chat.ChatMessageChangedDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member ChatMessageChangedDeferral ChatMessageChangedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChatMessageChangedDeferral%20ChatMessageChangedEventArgs.GetDeferral%28%29");
 		}

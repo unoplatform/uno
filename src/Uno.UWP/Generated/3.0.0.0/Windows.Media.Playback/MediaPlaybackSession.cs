@@ -5,11 +5,11 @@ namespace Windows.Media.Playback
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaPlaybackSession 
+	public partial class MediaPlaybackSession 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.StereoscopicVideoPackingMode StereoscopicVideoPackingMode
+		public global::Windows.Media.MediaProperties.StereoscopicVideoPackingMode StereoscopicVideoPackingMode
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared property PlaybackRate
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect NormalizedSourceRect
+		public global::Windows.Foundation.Rect NormalizedSourceRect
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared property BufferingProgress
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanPause
+		public bool CanPause
 		{
 			get
 			{
@@ -50,7 +50,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CanSeek
+		public bool CanSeek
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double DownloadProgress
+		public double DownloadProgress
 		{
 			get
 			{
@@ -70,7 +70,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsProtected
+		public bool IsProtected
 		{
 			get
 			{
@@ -82,7 +82,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared property NaturalDuration
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint NaturalVideoHeight
+		public uint NaturalVideoHeight
 		{
 			get
 			{
@@ -92,7 +92,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint NaturalVideoWidth
+		public uint NaturalVideoWidth
 		{
 			get
 			{
@@ -103,7 +103,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared property PlaybackState
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsMirroring
+		public bool IsMirroring
 		{
 			get
 			{
@@ -117,7 +117,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackSphericalVideoProjection SphericalVideoProjection
+		public global::Windows.Media.Playback.MediaPlaybackSphericalVideoProjection SphericalVideoProjection
 		{
 			get
 			{
@@ -127,7 +127,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.MediaRotation PlaybackRotation
+		public global::Windows.Media.MediaProperties.MediaRotation PlaybackRotation
 		{
 			get
 			{
@@ -190,28 +190,28 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.IsMirroring.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetBufferedRanges()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetBufferedRanges()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaTimeRange> MediaPlaybackSession.GetBufferedRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaTimeRange%3E%20MediaPlaybackSession.GetBufferedRanges%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetPlayedRanges()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetPlayedRanges()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaTimeRange> MediaPlaybackSession.GetPlayedRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaTimeRange%3E%20MediaPlaybackSession.GetPlayedRanges%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetSeekableRanges()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaTimeRange> GetSeekableRanges()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<MediaTimeRange> MediaPlaybackSession.GetSeekableRanges() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CMediaTimeRange%3E%20MediaPlaybackSession.GetSeekableRanges%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSupportedPlaybackRateRange( double rate1,  double rate2)
+		public bool IsSupportedPlaybackRateRange( double rate1,  double rate2)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.IsSupportedPlaybackRateRange(double rate1, double rate2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.IsSupportedPlaybackRateRange%28double%20rate1%2C%20double%20rate2%29");
 		}
@@ -220,14 +220,14 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackSession.PlaybackRotation.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackSessionOutputDegradationPolicyState GetOutputDegradationPolicyState()
+		public global::Windows.Media.Playback.MediaPlaybackSessionOutputDegradationPolicyState GetOutputDegradationPolicyState()
 		{
 			throw new global::System.NotImplementedException("The member MediaPlaybackSessionOutputDegradationPolicyState MediaPlaybackSession.GetOutputDegradationPolicyState() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackSessionOutputDegradationPolicyState%20MediaPlaybackSession.GetOutputDegradationPolicyState%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferingEnded
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferingEnded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -244,7 +244,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared event Windows.Media.Playback.MediaPlaybackSession.BufferingProgressChanged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferingStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferingStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -260,7 +260,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> DownloadProgressChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> DownloadProgressChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -277,7 +277,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared event Windows.Media.Playback.MediaPlaybackSession.NaturalDurationChanged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> NaturalVideoSizeChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> NaturalVideoSizeChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -296,7 +296,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared event Windows.Media.Playback.MediaPlaybackSession.PositionChanged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> SeekCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> SeekCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -312,7 +312,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferedRangesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> BufferedRangesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -328,7 +328,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> PlayedRangesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> PlayedRangesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -344,7 +344,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> SeekableRangesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> SeekableRangesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -360,7 +360,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> SupportedPlaybackRatesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackSession, object> SupportedPlaybackRatesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

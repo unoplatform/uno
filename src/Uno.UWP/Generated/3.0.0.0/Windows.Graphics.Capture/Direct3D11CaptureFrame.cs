@@ -5,11 +5,11 @@ namespace Windows.Graphics.Capture
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Direct3D11CaptureFrame : global::System.IDisposable
+	public partial class Direct3D11CaptureFrame : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.SizeInt32 ContentSize
+		public global::Windows.Graphics.SizeInt32 ContentSize
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Surface
+		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Surface
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Graphics.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan SystemRelativeTime
+		public global::System.TimeSpan SystemRelativeTime
 		{
 			get
 			{
@@ -42,7 +42,7 @@ namespace Windows.Graphics.Capture
 		// Forced skipping of method Windows.Graphics.Capture.Direct3D11CaptureFrame.ContentSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Capture.Direct3D11CaptureFrame", "void Direct3D11CaptureFrame.Dispose()");
 		}

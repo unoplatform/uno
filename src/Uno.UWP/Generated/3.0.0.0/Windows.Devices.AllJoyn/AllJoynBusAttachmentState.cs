@@ -4,7 +4,7 @@ namespace Windows.Devices.AllJoyn
 {
 	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum AllJoynBusAttachmentState 
+	public enum AllJoynBusAttachmentState 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Disconnected = 0,

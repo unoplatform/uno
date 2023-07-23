@@ -3,7 +3,7 @@
 namespace Windows.Security.Authentication.Web
 {
 #if false || false || false || false || false || false || false
-	public   enum WebAuthenticationOptions : uint
+	public enum WebAuthenticationOptions : uint
 	{
 		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.None
 		// Skipping already declared field Windows.Security.Authentication.Web.WebAuthenticationOptions.SilentMode

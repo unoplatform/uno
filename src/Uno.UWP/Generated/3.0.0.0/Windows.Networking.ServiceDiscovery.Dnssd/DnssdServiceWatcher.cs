@@ -5,11 +5,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DnssdServiceWatcher 
+	public partial class DnssdServiceWatcher 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcherStatus Status
+		public global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcherStatus Status
 		{
 			get
 			{
@@ -26,21 +26,21 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher.Status.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher", "void DnssdServiceWatcher.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Stop()
+		public void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher", "void DnssdServiceWatcher.Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance> Added
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance> Added
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -56,7 +56,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, object> EnumerationCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, object> EnumerationCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -72,7 +72,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, object> Stopped
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceWatcher, object> Stopped
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

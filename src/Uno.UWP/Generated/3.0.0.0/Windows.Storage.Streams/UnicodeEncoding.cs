@@ -3,7 +3,7 @@
 namespace Windows.Storage.Streams
 {
 #if false || false || false || false || false || false || false
-	public   enum UnicodeEncoding 
+	public enum UnicodeEncoding 
 	{
 		// Skipping already declared field Windows.Storage.Streams.UnicodeEncoding.Utf8
 		// Skipping already declared field Windows.Storage.Streams.UnicodeEncoding.Utf16LE

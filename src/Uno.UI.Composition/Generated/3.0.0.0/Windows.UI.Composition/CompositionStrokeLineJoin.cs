@@ -3,7 +3,7 @@
 namespace Windows.UI.Composition
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum CompositionStrokeLineJoin 
+	public enum CompositionStrokeLineJoin 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Miter = 0,

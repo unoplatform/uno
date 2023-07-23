@@ -3,7 +3,7 @@
 namespace Windows.UI.Core
 {
 #if false || false || false || false || false || false || false
-	public   enum CoreCursorType 
+	public enum CoreCursorType 
 	{
 		// Skipping already declared field Windows.UI.Core.CoreCursorType.Arrow
 		// Skipping already declared field Windows.UI.Core.CoreCursorType.Cross

@@ -5,11 +5,11 @@ namespace Windows.Devices.Lights.Effects
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LampArrayCustomEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
+	public partial class LampArrayCustomEffect : global::Windows.Devices.Lights.Effects.ILampArrayEffect
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan UpdateInterval
+		public global::System.TimeSpan UpdateInterval
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Duration
+		public global::System.TimeSpan Duration
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int ZIndex
+		public int ZIndex
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayCustomEffect.ZIndex.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayCustomEffect, global::Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs> UpdateRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Lights.Effects.LampArrayCustomEffect, global::Windows.Devices.Lights.Effects.LampArrayUpdateRequestedEventArgs> UpdateRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

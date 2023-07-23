@@ -3,7 +3,7 @@
 namespace Windows.Foundation.Metadata
 {
 #if false || false || false || false || false || false || false
-	public   enum ThreadingModel 
+	public enum ThreadingModel 
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.ThreadingModel.STA
 		// Skipping already declared field Windows.Foundation.Metadata.ThreadingModel.MTA

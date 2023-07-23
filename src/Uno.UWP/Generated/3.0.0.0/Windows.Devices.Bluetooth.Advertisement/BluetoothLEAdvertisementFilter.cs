@@ -5,11 +5,11 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BluetoothLEAdvertisementFilter 
+	public partial class BluetoothLEAdvertisementFilter 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement Advertisement
+		public global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement Advertisement
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern> BytePatterns
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern> BytePatterns
 		{
 			get
 			{

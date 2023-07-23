@@ -5,11 +5,11 @@ namespace Windows.System
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppResourceGroupInfo 
+	public partial class AppResourceGroupInfo 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid InstanceId
+		public global::System.Guid InstanceId
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsShared
+		public bool IsShared
 		{
 			get
 			{
@@ -31,49 +31,49 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.AppResourceGroupInfo.IsShared.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupBackgroundTaskReport> GetBackgroundTaskReports()
+		public global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupBackgroundTaskReport> GetBackgroundTaskReports()
 		{
 			throw new global::System.NotImplementedException("The member IList<AppResourceGroupBackgroundTaskReport> AppResourceGroupInfo.GetBackgroundTaskReports() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppResourceGroupBackgroundTaskReport%3E%20AppResourceGroupInfo.GetBackgroundTaskReports%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.AppResourceGroupMemoryReport GetMemoryReport()
+		public global::Windows.System.AppResourceGroupMemoryReport GetMemoryReport()
 		{
 			throw new global::System.NotImplementedException("The member AppResourceGroupMemoryReport AppResourceGroupInfo.GetMemoryReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupMemoryReport%20AppResourceGroupInfo.GetMemoryReport%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetProcessDiagnosticInfos()
+		public global::System.Collections.Generic.IList<global::Windows.System.Diagnostics.ProcessDiagnosticInfo> GetProcessDiagnosticInfos()
 		{
 			throw new global::System.NotImplementedException("The member IList<ProcessDiagnosticInfo> AppResourceGroupInfo.GetProcessDiagnosticInfos() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CProcessDiagnosticInfo%3E%20AppResourceGroupInfo.GetProcessDiagnosticInfos%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.AppResourceGroupStateReport GetStateReport()
+		public global::Windows.System.AppResourceGroupStateReport GetStateReport()
 		{
 			throw new global::System.NotImplementedException("The member AppResourceGroupStateReport AppResourceGroupInfo.GetStateReport() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupStateReport%20AppResourceGroupInfo.GetStateReport%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartSuspendAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartSuspendAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppExecutionStateChangeResult> AppResourceGroupInfo.StartSuspendAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppExecutionStateChangeResult%3E%20AppResourceGroupInfo.StartSuspendAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartResumeAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartResumeAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppExecutionStateChangeResult> AppResourceGroupInfo.StartResumeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppExecutionStateChangeResult%3E%20AppResourceGroupInfo.StartResumeAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartTerminateAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppExecutionStateChangeResult> StartTerminateAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppExecutionStateChangeResult> AppResourceGroupInfo.StartTerminateAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppExecutionStateChangeResult%3E%20AppResourceGroupInfo.StartTerminateAsync%28%29");
 		}

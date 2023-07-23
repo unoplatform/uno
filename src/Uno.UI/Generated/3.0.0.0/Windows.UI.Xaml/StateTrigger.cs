@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StateTrigger : global::Windows.UI.Xaml.StateTriggerBase
+	public partial class StateTrigger : global::Windows.UI.Xaml.StateTriggerBase
 	{
 		// Skipping already declared property IsActive
 		// Skipping already declared property IsActiveProperty

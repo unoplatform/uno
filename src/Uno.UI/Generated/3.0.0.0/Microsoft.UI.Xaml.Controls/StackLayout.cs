@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StackLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
+	public partial class StackLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
 	{
 		// Skipping already declared property Spacing
 		// Skipping already declared property Orientation

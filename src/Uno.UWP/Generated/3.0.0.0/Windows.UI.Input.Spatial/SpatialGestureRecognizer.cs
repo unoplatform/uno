@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialGestureRecognizer 
+	public partial class SpatialGestureRecognizer 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialGestureSettings GestureSettings
+		public global::Windows.UI.Input.Spatial.SpatialGestureSettings GestureSettings
 		{
 			get
 			{
@@ -55,21 +55,21 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void CaptureInteraction( global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
+		public void CaptureInteraction( global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CaptureInteraction(SpatialInteraction interaction)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void CancelPendingGestures()
+		public void CancelPendingGestures()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CancelPendingGestures()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TrySetGestureSettings( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
+		public bool TrySetGestureSettings( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
 			throw new global::System.NotImplementedException("The member bool SpatialGestureRecognizer.TrySetGestureSettings(SpatialGestureSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialGestureRecognizer.TrySetGestureSettings%28SpatialGestureSettings%20settings%29");
 		}
@@ -77,7 +77,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.GestureSettings.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs> HoldCanceled
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCanceledEventArgs> HoldCanceled
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -93,7 +93,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCompletedEventArgs> HoldCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldCompletedEventArgs> HoldCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -109,7 +109,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs> HoldStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialHoldStartedEventArgs> HoldStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -125,7 +125,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs> ManipulationCanceled
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationCanceledEventArgs> ManipulationCanceled
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -141,7 +141,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs> ManipulationCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationCompletedEventArgs> ManipulationCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -157,7 +157,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationStartedEventArgs> ManipulationStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationStartedEventArgs> ManipulationStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -173,7 +173,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationUpdatedEventArgs> ManipulationUpdated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialManipulationUpdatedEventArgs> ManipulationUpdated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -189,7 +189,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationCanceledEventArgs> NavigationCanceled
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationCanceledEventArgs> NavigationCanceled
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -205,7 +205,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationCompletedEventArgs> NavigationCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationCompletedEventArgs> NavigationCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -221,7 +221,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs> NavigationStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationStartedEventArgs> NavigationStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -237,7 +237,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs> NavigationUpdated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialNavigationUpdatedEventArgs> NavigationUpdated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -253,7 +253,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialRecognitionEndedEventArgs> RecognitionEnded
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialRecognitionEndedEventArgs> RecognitionEnded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -269,7 +269,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs> RecognitionStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialRecognitionStartedEventArgs> RecognitionStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -285,7 +285,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialTappedEventArgs> Tapped
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Spatial.SpatialGestureRecognizer, global::Windows.UI.Input.Spatial.SpatialTappedEventArgs> Tapped
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

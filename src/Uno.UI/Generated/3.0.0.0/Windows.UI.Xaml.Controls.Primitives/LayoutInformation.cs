@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LayoutInformation 
+	public partial class LayoutInformation 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(Windows.UI.Xaml.UIElement)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

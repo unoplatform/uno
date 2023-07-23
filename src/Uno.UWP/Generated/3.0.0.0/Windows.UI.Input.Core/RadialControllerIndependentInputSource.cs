@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RadialControllerIndependentInputSource 
+	public partial class RadialControllerIndependentInputSource 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.RadialController Controller
+		public global::Windows.UI.Input.RadialController Controller
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
+		public global::Windows.UI.Core.CoreDispatcher Dispatcher
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.DispatcherQueue DispatcherQueue
+		public global::Windows.System.DispatcherQueue DispatcherQueue
 		{
 			get
 			{

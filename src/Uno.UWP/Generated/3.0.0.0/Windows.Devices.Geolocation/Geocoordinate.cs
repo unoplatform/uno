@@ -5,7 +5,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Geocoordinate 
+	public partial class Geocoordinate 
 	{
 		// Skipping already declared property Accuracy
 		// Skipping already declared property Altitude
@@ -21,7 +21,7 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property PositionSourceTimestamp
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsRemoteSource
+		public bool IsRemoteSource
 		{
 			get
 			{

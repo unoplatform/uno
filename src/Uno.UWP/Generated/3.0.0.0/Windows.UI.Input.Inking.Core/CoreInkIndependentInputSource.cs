@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Inking.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreInkIndependentInputSource 
+	public partial class CoreInkIndependentInputSource 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Inking.InkPresenter InkPresenter
+		public global::Windows.UI.Input.Inking.InkPresenter InkPresenter
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CoreCursor PointerCursor
+		public global::Windows.UI.Core.CoreCursor PointerCursor
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerEntering
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerEntering
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -73,7 +73,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerExiting
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerExiting
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -89,7 +89,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerHovering
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerHovering
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -105,7 +105,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerLost
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerLost
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -121,7 +121,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerMoving
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerMoving
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -137,7 +137,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerPressing
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerPressing
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -153,7 +153,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerReleasing
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.Inking.Core.CoreInkIndependentInputSource, global::Windows.UI.Core.PointerEventArgs> PointerReleasing
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,11 +5,11 @@ namespace Windows.Media.Audio
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialAudioDeviceConfiguration 
+	public partial class SpatialAudioDeviceConfiguration 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ActiveSpatialAudioFormat
+		public string ActiveSpatialAudioFormat
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DefaultSpatialAudioFormat
+		public string DefaultSpatialAudioFormat
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSpatialAudioSupported
+		public bool IsSpatialAudioSupported
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.IsSpatialAudioSupported.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSpatialAudioFormatSupported( string subtype)
+		public bool IsSpatialAudioFormatSupported( string subtype)
 		{
 			throw new global::System.NotImplementedException("The member bool SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialAudioDeviceConfiguration.IsSpatialAudioFormatSupported%28string%20subtype%29");
 		}
@@ -60,7 +60,7 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.SpatialAudioDeviceConfiguration.DefaultSpatialAudioFormat.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.SetDefaultSpatialAudioFormatResult> SetDefaultSpatialAudioFormatAsync( string subtype)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.SetDefaultSpatialAudioFormatResult> SetDefaultSpatialAudioFormatAsync( string subtype)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SetDefaultSpatialAudioFormatResult> SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSetDefaultSpatialAudioFormatResult%3E%20SpatialAudioDeviceConfiguration.SetDefaultSpatialAudioFormatAsync%28string%20subtype%29");
 		}
@@ -76,7 +76,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.SpatialAudioDeviceConfiguration, object> ConfigurationChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.SpatialAudioDeviceConfiguration, object> ConfigurationChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Resources.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ResourceCandidate 
+	public partial class ResourceCandidate 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDefault
+		public bool IsDefault
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsMatch
+		public bool IsMatch
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsMatchAsDefault
+		public bool IsMatchAsDefault
 		{
 			get
 			{
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Skipping already declared property ValueAsString
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Resources.Core.ResourceCandidateKind Kind
+		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidateKind Kind
 		{
 			get
 			{
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceCandidate.ValueAsString.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetValueAsFileAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetValueAsFileAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> ResourceCandidate.GetValueAsFileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20ResourceCandidate.GetValueAsFileAsync%28%29");
 		}
@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Skipping already declared method Windows.ApplicationModel.Resources.Core.ResourceCandidate.GetQualifierValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetValueAsStreamAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetValueAsStreamAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> ResourceCandidate.GetValueAsStreamAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20ResourceCandidate.GetValueAsStreamAsync%28%29");
 		}

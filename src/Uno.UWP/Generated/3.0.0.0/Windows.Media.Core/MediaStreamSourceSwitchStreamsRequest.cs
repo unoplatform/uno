@@ -5,11 +5,11 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaStreamSourceSwitchStreamsRequest 
+	public partial class MediaStreamSourceSwitchStreamsRequest 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.IMediaStreamDescriptor NewStreamDescriptor
+		public global::Windows.Media.Core.IMediaStreamDescriptor NewStreamDescriptor
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.IMediaStreamDescriptor OldStreamDescriptor
+		public global::Windows.Media.Core.IMediaStreamDescriptor OldStreamDescriptor
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSwitchStreamsRequest.NewStreamDescriptor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
+		public global::Windows.Media.Core.MediaStreamSourceSwitchStreamsRequestDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member MediaStreamSourceSwitchStreamsRequestDeferral MediaStreamSourceSwitchStreamsRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSwitchStreamsRequestDeferral%20MediaStreamSourceSwitchStreamsRequest.GetDeferral%28%29");
 		}

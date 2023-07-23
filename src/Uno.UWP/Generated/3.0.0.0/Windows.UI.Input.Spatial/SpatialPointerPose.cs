@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialPointerPose 
+	public partial class SpatialPointerPose 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.People.HeadPose Head
+		public global::Windows.Perception.People.HeadPose Head
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.PerceptionTimestamp Timestamp
+		public global::Windows.Perception.PerceptionTimestamp Timestamp
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.People.EyesPose Eyes
+		public global::Windows.Perception.People.EyesPose Eyes
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsHeadCapturedBySystem
+		public bool IsHeadCapturedBySystem
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Head.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose TryGetInteractionSourcePose( global::Windows.UI.Input.Spatial.SpatialInteractionSource source)
+		public global::Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose TryGetInteractionSourcePose( global::Windows.UI.Input.Spatial.SpatialInteractionSource source)
 		{
 			throw new global::System.NotImplementedException("The member SpatialPointerInteractionSourcePose SpatialPointerPose.TryGetInteractionSourcePose(SpatialInteractionSource source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerInteractionSourcePose%20SpatialPointerPose.TryGetInteractionSourcePose%28SpatialInteractionSource%20source%29");
 		}

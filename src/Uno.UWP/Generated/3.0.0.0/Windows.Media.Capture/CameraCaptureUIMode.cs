@@ -3,7 +3,7 @@
 namespace Windows.Media.Capture
 {
 #if false || false || false || false || false || false || false
-	public   enum CameraCaptureUIMode 
+	public enum CameraCaptureUIMode 
 	{
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIMode.PhotoOrVideo
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIMode.Photo

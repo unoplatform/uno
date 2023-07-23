@@ -5,11 +5,11 @@ namespace Windows.Media.Miracast
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MiracastReceiverCursorImageChannel 
+	public partial class MiracastReceiverCursorImageChannel 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamWithContentType ImageStream
+		public global::Windows.Storage.Streams.IRandomAccessStreamWithContentType ImageStream
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEnabled
+		public bool IsEnabled
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.SizeInt32 MaxImageSize
+		public global::Windows.Graphics.SizeInt32 MaxImageSize
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.PointInt32 Position
+		public global::Windows.Graphics.PointInt32 Position
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Media.Miracast
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverCursorImageChannel.PositionChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverCursorImageChannel, object> ImageStreamChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverCursorImageChannel, object> ImageStreamChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -73,7 +73,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverCursorImageChannel, object> PositionChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Miracast.MiracastReceiverCursorImageChannel, object> PositionChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,11 +5,11 @@ namespace Windows.Devices.Geolocation.Geofencing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GeofenceMonitor 
+	public partial class GeofenceMonitor 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.Geolocation.Geofencing.Geofence> Geofences
+		public global::System.Collections.Generic.IList<global::Windows.Devices.Geolocation.Geofencing.Geofence> Geofences
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Geolocation.Geoposition LastKnownGeoposition
+		public global::Windows.Devices.Geolocation.Geoposition LastKnownGeoposition
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus Status
+		public global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus Status
 		{
 			get
 			{
@@ -54,7 +54,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.GeofenceStateChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport> ReadReports()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geofencing.GeofenceStateChangeReport> ReadReports()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<GeofenceStateChangeReport> GeofenceMonitor.ReadReports() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGeofenceStateChangeReport%3E%20GeofenceMonitor.ReadReports%28%29");
 		}
@@ -64,7 +64,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 		// Forced skipping of method Windows.Devices.Geolocation.Geofencing.GeofenceMonitor.Current.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> GeofenceStateChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> GeofenceStateChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -80,7 +80,7 @@ namespace Windows.Devices.Geolocation.Geofencing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> StatusChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Geolocation.Geofencing.GeofenceMonitor, object> StatusChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

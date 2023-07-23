@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CalendarDatePickerDateChangedEventArgs 
+	public partial class CalendarDatePickerDateChangedEventArgs 
 	{
 		// Skipping already declared property NewDate
 		// Skipping already declared property OldDate

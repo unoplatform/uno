@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.UserActivities
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UserActivitySessionHistoryItem 
+	public partial class UserActivitySessionHistoryItem 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? EndTime
+		public global::System.DateTimeOffset? EndTime
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserActivities
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset StartTime
+		public global::System.DateTimeOffset StartTime
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.UserActivities
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserActivities.UserActivity UserActivity
+		public global::Windows.ApplicationModel.UserActivities.UserActivity UserActivity
 		{
 			get
 			{

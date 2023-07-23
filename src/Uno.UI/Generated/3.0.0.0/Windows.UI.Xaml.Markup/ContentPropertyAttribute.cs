@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Markup
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContentPropertyAttribute : global::System.Attribute
+	public partial class ContentPropertyAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.UI.Xaml.Markup.ContentPropertyAttribute.ContentPropertyAttribute()
 		// Forced skipping of method Windows.UI.Xaml.Markup.ContentPropertyAttribute.ContentPropertyAttribute()

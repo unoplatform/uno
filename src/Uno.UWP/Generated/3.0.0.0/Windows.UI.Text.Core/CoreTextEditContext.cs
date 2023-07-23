@@ -5,11 +5,11 @@ namespace Windows.UI.Text.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreTextEditContext 
+	public partial class CoreTextEditContext 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
+		public string Name
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsReadOnly
+		public bool IsReadOnly
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.Core.CoreTextInputScope InputScope
+		public global::Windows.UI.Text.Core.CoreTextInputScope InputScope
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Text.Core.CoreTextInputPaneDisplayPolicy InputPaneDisplayPolicy
+		public global::Windows.UI.Text.Core.CoreTextInputPaneDisplayPolicy InputPaneDisplayPolicy
 		{
 			get
 			{
@@ -91,35 +91,35 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.FocusRemoved.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void NotifyFocusEnter()
+		public void NotifyFocusEnter()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyFocusEnter()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void NotifyFocusLeave()
+		public void NotifyFocusLeave()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyFocusLeave()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void NotifyTextChanged( global::Windows.UI.Text.Core.CoreTextRange modifiedRange,  int newLength,  global::Windows.UI.Text.Core.CoreTextRange newSelection)
+		public void NotifyTextChanged( global::Windows.UI.Text.Core.CoreTextRange modifiedRange,  int newLength,  global::Windows.UI.Text.Core.CoreTextRange newSelection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyTextChanged(CoreTextRange modifiedRange, int newLength, CoreTextRange newSelection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void NotifySelectionChanged( global::Windows.UI.Text.Core.CoreTextRange selection)
+		public void NotifySelectionChanged( global::Windows.UI.Text.Core.CoreTextRange selection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifySelectionChanged(CoreTextRange selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void NotifyLayoutChanged()
+		public void NotifyLayoutChanged()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyLayoutChanged()");
 		}
@@ -128,7 +128,7 @@ namespace Windows.UI.Text.Core
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextEditContext.NotifyFocusLeaveCompleted.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs> CompositionCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionCompletedEventArgs> CompositionCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -144,7 +144,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionStartedEventArgs> CompositionStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextCompositionStartedEventArgs> CompositionStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -160,7 +160,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, object> FocusRemoved
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, object> FocusRemoved
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -176,7 +176,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs> FormatUpdating
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextFormatUpdatingEventArgs> FormatUpdating
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -192,7 +192,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextLayoutRequestedEventArgs> LayoutRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextLayoutRequestedEventArgs> LayoutRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -208,7 +208,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs> SelectionRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextSelectionRequestedEventArgs> SelectionRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -224,7 +224,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs> SelectionUpdating
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextSelectionUpdatingEventArgs> SelectionUpdating
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -240,7 +240,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextTextRequestedEventArgs> TextRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextTextRequestedEventArgs> TextRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -256,7 +256,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs> TextUpdating
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, global::Windows.UI.Text.Core.CoreTextTextUpdatingEventArgs> TextUpdating
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -272,7 +272,7 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, object> NotifyFocusLeaveCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Text.Core.CoreTextEditContext, object> NotifyFocusLeaveCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

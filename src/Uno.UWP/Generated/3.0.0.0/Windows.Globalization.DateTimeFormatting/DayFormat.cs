@@ -3,7 +3,7 @@
 namespace Windows.Globalization.DateTimeFormatting
 {
 #if false || false || false || false || false || false || false
-	public   enum DayFormat 
+	public enum DayFormat 
 	{
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.DayFormat.None
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.DayFormat.Default

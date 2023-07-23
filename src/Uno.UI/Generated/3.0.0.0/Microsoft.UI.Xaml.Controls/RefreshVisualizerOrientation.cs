@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum RefreshVisualizerOrientation 
+	public enum RefreshVisualizerOrientation 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshVisualizerOrientation.Auto
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshVisualizerOrientation.Normal

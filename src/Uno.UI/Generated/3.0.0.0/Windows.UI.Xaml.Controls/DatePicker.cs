@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DatePicker : global::Windows.UI.Xaml.Controls.Control
+	public partial class DatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property YearVisible
 		// Skipping already declared property YearFormat

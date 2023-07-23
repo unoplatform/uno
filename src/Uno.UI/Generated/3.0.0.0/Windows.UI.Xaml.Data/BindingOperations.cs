@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BindingOperations 
+	public partial class BindingOperations 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Data.BindingOperations.SetBinding(Windows.UI.Xaml.DependencyObject, Windows.UI.Xaml.DependencyProperty, Windows.UI.Xaml.Data.BindingBase)
 	}

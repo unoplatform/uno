@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum PivotSlideInAnimationGroup 
+	public enum PivotSlideInAnimationGroup 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Default = 0,

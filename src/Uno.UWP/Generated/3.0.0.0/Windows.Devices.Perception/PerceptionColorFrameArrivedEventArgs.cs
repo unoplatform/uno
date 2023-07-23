@@ -6,11 +6,11 @@ namespace Windows.Devices.Perception
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PerceptionColorFrameArrivedEventArgs 
+	public partial class PerceptionColorFrameArrivedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan RelativeTime
+		public global::System.TimeSpan RelativeTime
 		{
 			get
 			{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Perception
 		// Forced skipping of method Windows.Devices.Perception.PerceptionColorFrameArrivedEventArgs.RelativeTime.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Perception.PerceptionColorFrame TryOpenFrame()
+		public global::Windows.Devices.Perception.PerceptionColorFrame TryOpenFrame()
 		{
 			throw new global::System.NotImplementedException("The member PerceptionColorFrame PerceptionColorFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionColorFrame%20PerceptionColorFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}

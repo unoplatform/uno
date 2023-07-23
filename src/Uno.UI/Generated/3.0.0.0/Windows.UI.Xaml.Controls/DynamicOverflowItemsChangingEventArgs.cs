@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DynamicOverflowItemsChangingEventArgs 
+	public partial class DynamicOverflowItemsChangingEventArgs 
 	{
 		// Skipping already declared property Action
 		// Skipping already declared method Windows.UI.Xaml.Controls.DynamicOverflowItemsChangingEventArgs.DynamicOverflowItemsChangingEventArgs()

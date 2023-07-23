@@ -5,11 +5,11 @@ namespace Windows.Media.SpeechSynthesis
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpeechSynthesizerOptions 
+	public partial class SpeechSynthesizerOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IncludeWordBoundaryMetadata
+		public bool IncludeWordBoundaryMetadata
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IncludeSentenceBoundaryMetadata
+		public bool IncludeSentenceBoundaryMetadata
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double SpeakingRate
+		public double SpeakingRate
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double AudioVolume
+		public double AudioVolume
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double AudioPitch
+		public double AudioPitch
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechSynthesis.SpeechPunctuationSilence PunctuationSilence
+		public global::Windows.Media.SpeechSynthesis.SpeechPunctuationSilence PunctuationSilence
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Media.SpeechSynthesis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.SpeechSynthesis.SpeechAppendedSilence AppendedSilence
+		public global::Windows.Media.SpeechSynthesis.SpeechAppendedSilence AppendedSilence
 		{
 			get
 			{

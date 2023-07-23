@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SymbolIcon : global::Windows.UI.Xaml.Controls.IconElement
+	public partial class SymbolIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{
 		// Skipping already declared property Symbol
 		// Skipping already declared property SymbolProperty

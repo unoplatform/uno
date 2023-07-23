@@ -6,18 +6,18 @@ namespace Windows.Security.Authentication.Identity.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SecondaryAuthenticationFactorRegistration 
+	public partial class SecondaryAuthenticationFactorRegistration 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction FinishRegisteringDeviceAsync( global::Windows.Storage.Streams.IBuffer deviceConfigurationData)
+		public global::Windows.Foundation.IAsyncAction FinishRegisteringDeviceAsync( global::Windows.Storage.Streams.IBuffer deviceConfigurationData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.FinishRegisteringDeviceAsync(IBuffer deviceConfigurationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.FinishRegisteringDeviceAsync%28IBuffer%20deviceConfigurationData%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction AbortRegisteringDeviceAsync( string errorLogMessage)
+		public global::Windows.Foundation.IAsyncAction AbortRegisteringDeviceAsync( string errorLogMessage)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync(string errorLogMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorRegistration.AbortRegisteringDeviceAsync%28string%20errorLogMessage%29");
 		}

@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.VoiceCommands
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VoiceCommandDefinition 
+	public partial class VoiceCommandDefinition 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Language
+		public string Language
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Name
+		public string Name
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.VoiceCommands
 		// Forced skipping of method Windows.ApplicationModel.VoiceCommands.VoiceCommandDefinition.Name.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SetPhraseListAsync( string phraseListName,  global::System.Collections.Generic.IEnumerable<string> phraseList)
+		public global::Windows.Foundation.IAsyncAction SetPhraseListAsync( string phraseListName,  global::System.Collections.Generic.IEnumerable<string> phraseList)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction VoiceCommandDefinition.SetPhraseListAsync(string phraseListName, IEnumerable<string> phraseList) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VoiceCommandDefinition.SetPhraseListAsync%28string%20phraseListName%2C%20IEnumerable%3Cstring%3E%20phraseList%29");
 		}

@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionClip : global::Windows.UI.Composition.CompositionObject
+	public partial class CompositionClip : global::Windows.UI.Composition.CompositionObject
 	{
 		// Skipping already declared property TransformMatrix
 		// Skipping already declared property Scale

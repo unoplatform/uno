@@ -5,11 +5,11 @@ namespace Windows.Devices.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PenDockListener 
+	public partial class PenDockListener 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSupported()
+		public bool IsSupported()
 		{
 			throw new global::System.NotImplementedException("The member bool PenDockListener.IsSupported() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PenDockListener.IsSupported%28%29");
 		}
@@ -29,7 +29,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, global::Windows.Devices.Input.PenDockedEventArgs> Docked
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, global::Windows.Devices.Input.PenDockedEventArgs> Docked
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -45,7 +45,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, object> IsSupportedChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, object> IsSupportedChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -61,7 +61,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, global::Windows.Devices.Input.PenUndockedEventArgs> Undocked
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.PenDockListener, global::Windows.Devices.Input.PenUndockedEventArgs> Undocked
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

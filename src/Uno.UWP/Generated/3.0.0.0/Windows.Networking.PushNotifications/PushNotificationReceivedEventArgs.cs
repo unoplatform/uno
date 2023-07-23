@@ -5,11 +5,11 @@ namespace Windows.Networking.PushNotifications
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PushNotificationReceivedEventArgs 
+	public partial class PushNotificationReceivedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Cancel
+		public bool Cancel
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.BadgeNotification BadgeNotification
+		public global::Windows.UI.Notifications.BadgeNotification BadgeNotification
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.PushNotifications.PushNotificationType NotificationType
+		public global::Windows.Networking.PushNotifications.PushNotificationType NotificationType
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.PushNotifications.RawNotification RawNotification
+		public global::Windows.Networking.PushNotifications.RawNotification RawNotification
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.TileNotification TileNotification
+		public global::Windows.UI.Notifications.TileNotification TileNotification
 		{
 			get
 			{
@@ -63,7 +63,7 @@ namespace Windows.Networking.PushNotifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.ToastNotification ToastNotification
+		public global::Windows.UI.Notifications.ToastNotification ToastNotification
 		{
 			get
 			{

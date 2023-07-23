@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionPropertySet : global::Windows.UI.Composition.CompositionObject
+	public partial class CompositionPropertySet : global::Windows.UI.Composition.CompositionObject
 	{
 		// Skipping already declared method Windows.UI.Composition.CompositionPropertySet.InsertColor(string, Windows.UI.Color)
 		// Skipping already declared method Windows.UI.Composition.CompositionPropertySet.InsertMatrix3x2(string, System.Numerics.Matrix3x2)

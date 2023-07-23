@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionGradientBrush : global::Windows.UI.Composition.CompositionBrush
+	public partial class CompositionGradientBrush : global::Windows.UI.Composition.CompositionBrush
 	{
 		// Skipping already declared property TransformMatrix
 		// Skipping already declared property Scale
@@ -14,7 +14,7 @@ namespace Windows.UI.Composition
 		// Skipping already declared property Offset
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionColorSpace InterpolationSpace
+		public global::Windows.UI.Composition.CompositionColorSpace InterpolationSpace
 		{
 			get
 			{
@@ -30,7 +30,7 @@ namespace Windows.UI.Composition
 		// Skipping already declared property CenterPoint
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 AnchorPoint
+		public global::System.Numerics.Vector2 AnchorPoint
 		{
 			get
 			{

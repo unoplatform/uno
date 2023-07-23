@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Controls.Maps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LocalMapTileDataSource : global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource
+	public partial class LocalMapTileDataSource : global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string UriFormatString
+		public string UriFormatString
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource.UriRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource, global::Windows.UI.Xaml.Controls.Maps.MapTileUriRequestedEventArgs> UriRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.Maps.LocalMapTileDataSource, global::Windows.UI.Xaml.Controls.Maps.MapTileUriRequestedEventArgs> UriRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

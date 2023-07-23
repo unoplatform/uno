@@ -3,7 +3,7 @@
 namespace Windows.Devices.Radios
 {
 #if false || false || false || false || false || false || false
-	public   enum RadioAccessStatus 
+	public enum RadioAccessStatus 
 	{
 		// Skipping already declared field Windows.Devices.Radios.RadioAccessStatus.Unspecified
 		// Skipping already declared field Windows.Devices.Radios.RadioAccessStatus.Allowed

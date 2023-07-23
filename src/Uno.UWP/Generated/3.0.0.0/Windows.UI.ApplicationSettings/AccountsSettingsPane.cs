@@ -5,7 +5,7 @@ namespace Windows.UI.ApplicationSettings
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AccountsSettingsPane 
+	public partial class AccountsSettingsPane 
 	{
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.add
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPane.AccountCommandsRequested.remove
@@ -53,7 +53,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ApplicationSettings.AccountsSettingsPane, global::Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs> AccountCommandsRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ApplicationSettings.AccountsSettingsPane, global::Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs> AccountCommandsRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ScrollPatternIdentifiers 
+	public partial class ScrollPatternIdentifiers 
 	{
 		// Skipping already declared property HorizontalScrollPercentProperty
 		// Skipping already declared property HorizontalViewSizeProperty

@@ -6,11 +6,11 @@ namespace Windows.System.Preview
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TwoPanelHingedDevicePosturePreview 
+	public partial class TwoPanelHingedDevicePosturePreview 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading> GetCurrentPostureAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReading> GetCurrentPostureAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<TwoPanelHingedDevicePosturePreviewReading> TwoPanelHingedDevicePosturePreview.GetCurrentPostureAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CTwoPanelHingedDevicePosturePreviewReading%3E%20TwoPanelHingedDevicePosturePreview.GetCurrentPostureAsync%28%29");
 		}
@@ -26,7 +26,7 @@ namespace Windows.System.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreview, global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs> PostureChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.Preview.TwoPanelHingedDevicePosturePreview, global::Windows.System.Preview.TwoPanelHingedDevicePosturePreviewReadingChangedEventArgs> PostureChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

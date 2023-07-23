@@ -4,7 +4,7 @@ namespace Windows.UI.Input.Preview.Injection
 {
 	[global::System.FlagsAttribute]
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum InjectedInputPenButtons : uint
+	public enum InjectedInputPenButtons : uint
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		None = 0,

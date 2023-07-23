@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum NavigationViewSelectionFollowsFocus 
+	public enum NavigationViewSelectionFollowsFocus 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus.Disabled
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.NavigationViewSelectionFollowsFocus.Enabled

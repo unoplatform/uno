@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Media.Imaging
 {
 #if false || false || false || false || false || false || false
-	public   enum SvgImageSourceLoadStatus 
+	public enum SvgImageSourceLoadStatus 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.SvgImageSourceLoadStatus.Success
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.SvgImageSourceLoadStatus.NetworkError

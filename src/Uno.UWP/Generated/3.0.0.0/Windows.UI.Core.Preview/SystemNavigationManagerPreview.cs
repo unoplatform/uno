@@ -5,7 +5,7 @@ namespace Windows.UI.Core.Preview
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SystemNavigationManagerPreview 
+	public partial class SystemNavigationManagerPreview 
 	{
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.add
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.remove
@@ -18,7 +18,7 @@ namespace Windows.UI.Core.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  event global::System.EventHandler<global::Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs> CloseRequested
+		public event global::System.EventHandler<global::Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs> CloseRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 			add

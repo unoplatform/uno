@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public   enum GroupHeaderPlacement 
+	public enum GroupHeaderPlacement 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement.Top
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GroupHeaderPlacement.Left

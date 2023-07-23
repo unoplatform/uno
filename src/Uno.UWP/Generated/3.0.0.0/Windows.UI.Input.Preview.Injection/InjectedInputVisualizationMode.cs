@@ -3,7 +3,7 @@
 namespace Windows.UI.Input.Preview.Injection
 {
 #if false || false || false || false || false || false || false
-	public   enum InjectedInputVisualizationMode 
+	public enum InjectedInputVisualizationMode 
 	{
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode.None
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputVisualizationMode.Default

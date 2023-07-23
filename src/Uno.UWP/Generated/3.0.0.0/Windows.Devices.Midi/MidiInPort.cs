@@ -5,11 +5,11 @@ namespace Windows.Devices.Midi
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MidiInPort : global::System.IDisposable
+	public partial class MidiInPort : global::System.IDisposable
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -22,7 +22,7 @@ namespace Windows.Devices.Midi
 		// Forced skipping of method Windows.Devices.Midi.MidiInPort.DeviceId.get
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiInPort", "void MidiInPort.Dispose()");
 		}
@@ -43,7 +43,7 @@ namespace Windows.Devices.Midi
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Midi.MidiInPort, global::Windows.Devices.Midi.MidiMessageReceivedEventArgs> MessageReceived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Midi.MidiInPort, global::Windows.Devices.Midi.MidiMessageReceivedEventArgs> MessageReceived
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 			add

@@ -5,11 +5,11 @@ namespace Windows.Devices.Display.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DisplayTarget 
+	public partial class DisplayTarget 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayAdapter Adapter
+		public global::Windows.Devices.Display.Core.DisplayAdapter Adapter
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint AdapterRelativeId
+		public uint AdapterRelativeId
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceInterfacePath
+		public string DeviceInterfacePath
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsConnected
+		public bool IsConnected
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsStale
+		public bool IsStale
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsVirtualModeEnabled
+		public bool IsVirtualModeEnabled
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsVirtualTopologyEnabled
+		public bool IsVirtualTopologyEnabled
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.Core.DisplayTargetPersistence MonitorPersistence
+		public global::Windows.Devices.Display.Core.DisplayTargetPersistence MonitorPersistence
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
+		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, object> Properties
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string StableMonitorId
+		public string StableMonitorId
 		{
 			get
 			{
@@ -109,7 +109,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.DisplayMonitorUsageKind UsageKind
+		public global::Windows.Devices.Display.DisplayMonitorUsageKind UsageKind
 		{
 			get
 			{
@@ -128,7 +128,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.StableMonitorId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Display.DisplayMonitor TryGetMonitor()
+		public global::Windows.Devices.Display.DisplayMonitor TryGetMonitor()
 		{
 			throw new global::System.NotImplementedException("The member DisplayMonitor DisplayTarget.TryGetMonitor() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayMonitor%20DisplayTarget.TryGetMonitor%28%29");
 		}
@@ -137,14 +137,14 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsStale.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsSame( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
+		public bool IsSame( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
 			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsSame(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayTarget.IsSame%28DisplayTarget%20otherTarget%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEqual( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
+		public bool IsEqual( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
 			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsEqual(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayTarget.IsEqual%28DisplayTarget%20otherTarget%29");
 		}

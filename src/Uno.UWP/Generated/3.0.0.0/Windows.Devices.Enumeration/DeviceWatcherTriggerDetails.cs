@@ -5,11 +5,11 @@ namespace Windows.Devices.Enumeration
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeviceWatcherTriggerDetails 
+	public partial class DeviceWatcherTriggerDetails 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.DeviceWatcherEvent> DeviceWatcherEvents
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.DeviceWatcherEvent> DeviceWatcherEvents
 		{
 			get
 			{

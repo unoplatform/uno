@@ -5,7 +5,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GyrometerReading 
+	public partial class GyrometerReading 
 	{
 		// Skipping already declared property AngularVelocityX
 		// Skipping already declared property AngularVelocityY
@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared property Timestamp
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? PerformanceCount
+		public global::System.TimeSpan? PerformanceCount
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
+		public global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
 		{
 			get
 			{

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HyperlinkButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
+	public partial class HyperlinkButton : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
 	{
 		// Skipping already declared property NavigateUri
 		// Skipping already declared property NavigateUriProperty

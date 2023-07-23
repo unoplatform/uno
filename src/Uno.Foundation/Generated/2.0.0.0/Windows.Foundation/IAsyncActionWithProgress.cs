@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IAsyncActionWithProgress<TProgress> : global::Windows.Foundation.IAsyncInfo
+	public partial interface IAsyncActionWithProgress<TProgress> : global::Windows.Foundation.IAsyncInfo
 	{
 		// Skipping already declared property Progress
 		// Skipping already declared property Completed

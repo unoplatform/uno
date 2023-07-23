@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TemplateVisualStateAttribute : global::System.Attribute
+	public partial class TemplateVisualStateAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.UI.Xaml.TemplateVisualStateAttribute.TemplateVisualStateAttribute()
 		// Forced skipping of method Windows.UI.Xaml.TemplateVisualStateAttribute.TemplateVisualStateAttribute()

@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Appointments
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Appointment 
+	public partial class Appointment 
 	{
 		// Skipping already declared property Location
 		// Skipping already declared property AllDay
@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property Details
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Appointments.AppointmentBusyStatus BusyStatus
+		public global::Windows.ApplicationModel.Appointments.AppointmentBusyStatus BusyStatus
 		{
 			get
 			{
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Appointments.AppointmentRecurrence Recurrence
+		public global::Windows.ApplicationModel.Appointments.AppointmentRecurrence Recurrence
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property Subject
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri Uri
+		public global::System.Uri Uri
 		{
 			get
 			{
@@ -58,7 +58,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property StartTime
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Appointments.AppointmentSensitivity Sensitivity
+		public global::Windows.ApplicationModel.Appointments.AppointmentSensitivity Sensitivity
 		{
 			get
 			{
@@ -73,7 +73,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property Reminder
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Appointments.AppointmentInvitee> Invitees
+		public global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Appointments.AppointmentInvitee> Invitees
 		{
 			get
 			{
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AllowNewTimeProposal
+		public bool AllowNewTimeProposal
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Appointments.AppointmentParticipantResponse UserResponse
+		public global::Windows.ApplicationModel.Appointments.AppointmentParticipantResponse UserResponse
 		{
 			get
 			{
@@ -111,7 +111,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string RoamingId
+		public string RoamingId
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? ReplyTime
+		public global::System.DateTimeOffset? ReplyTime
 		{
 			get
 			{
@@ -139,7 +139,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsResponseRequested
+		public bool IsResponseRequested
 		{
 			get
 			{
@@ -153,7 +153,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOrganizedByUser
+		public bool IsOrganizedByUser
 		{
 			get
 			{
@@ -167,7 +167,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsCanceledMeeting
+		public bool IsCanceledMeeting
 		{
 			get
 			{
@@ -181,7 +181,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string OnlineMeetingLink
+		public string OnlineMeetingLink
 		{
 			get
 			{
@@ -195,7 +195,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool HasInvitees
+		public bool HasInvitees
 		{
 			get
 			{
@@ -207,7 +207,7 @@ namespace Windows.ApplicationModel.Appointments
 		// Skipping already declared property LocalId
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset? OriginalStartTime
+		public global::System.DateTimeOffset? OriginalStartTime
 		{
 			get
 			{
@@ -217,7 +217,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong RemoteChangeNumber
+		public ulong RemoteChangeNumber
 		{
 			get
 			{
@@ -231,7 +231,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Appointments.AppointmentDetailsKind DetailsKind
+		public global::Windows.ApplicationModel.Appointments.AppointmentDetailsKind DetailsKind
 		{
 			get
 			{
@@ -245,7 +245,7 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong ChangeNumber
+		public ulong ChangeNumber
 		{
 			get
 			{

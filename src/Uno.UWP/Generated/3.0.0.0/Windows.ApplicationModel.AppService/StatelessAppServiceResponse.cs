@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.AppService
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StatelessAppServiceResponse 
+	public partial class StatelessAppServiceResponse 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Collections.ValueSet Message
+		public global::Windows.Foundation.Collections.ValueSet Message
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.AppService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.AppService.StatelessAppServiceResponseStatus Status
+		public global::Windows.ApplicationModel.AppService.StatelessAppServiceResponseStatus Status
 		{
 			get
 			{

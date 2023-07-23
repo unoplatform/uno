@@ -3,7 +3,7 @@
 namespace Windows.UI.Composition.Scenes
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum SceneAlphaMode 
+	public enum SceneAlphaMode 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Opaque = 0,

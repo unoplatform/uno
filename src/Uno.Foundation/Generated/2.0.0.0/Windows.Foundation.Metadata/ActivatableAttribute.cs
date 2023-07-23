@@ -5,7 +5,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ActivatableAttribute : global::System.Attribute
+	public partial class ActivatableAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint)
 		// Forced skipping of method Windows.Foundation.Metadata.ActivatableAttribute.ActivatableAttribute(uint)

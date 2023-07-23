@@ -5,11 +5,11 @@ namespace Windows.Graphics.Holographic
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HolographicSpace 
+	public partial class HolographicSpace 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicAdapterId PrimaryAdapterId
+		public global::Windows.Graphics.Holographic.HolographicAdapterId PrimaryAdapterId
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicSpaceUserPresence UserPresence
+		public global::Windows.Graphics.Holographic.HolographicSpaceUserPresence UserPresence
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.PrimaryAdapterId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetDirect3D11Device( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice value)
+		public void SetDirect3D11Device( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicSpace", "void HolographicSpace.SetDirect3D11Device(IDirect3DDevice value)");
 		}
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.CameraRemoved.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFrame CreateNextFrame()
+		public global::Windows.Graphics.Holographic.HolographicFrame CreateNextFrame()
 		{
 			throw new global::System.NotImplementedException("The member HolographicFrame HolographicSpace.CreateNextFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrame%20HolographicSpace.CreateNextFrame%28%29");
 		}
@@ -81,28 +81,28 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.UserPresenceChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void WaitForNextFrameReady()
+		public void WaitForNextFrameReady()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicSpace", "void HolographicSpace.WaitForNextFrameReady()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void WaitForNextFrameReadyWithHeadStart( global::System.TimeSpan requestedHeadStartDuration)
+		public void WaitForNextFrameReadyWithHeadStart( global::System.TimeSpan requestedHeadStartDuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicSpace", "void HolographicSpace.WaitForNextFrameReadyWithHeadStart(TimeSpan requestedHeadStartDuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFramePresentationMonitor CreateFramePresentationMonitor( uint maxQueuedReports)
+		public global::Windows.Graphics.Holographic.HolographicFramePresentationMonitor CreateFramePresentationMonitor( uint maxQueuedReports)
 		{
 			throw new global::System.NotImplementedException("The member HolographicFramePresentationMonitor HolographicSpace.CreateFramePresentationMonitor(uint maxQueuedReports) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFramePresentationMonitor%20HolographicSpace.CreateFramePresentationMonitor%28uint%20maxQueuedReports%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Holographic.HolographicFrameScanoutMonitor CreateFrameScanoutMonitor( uint maxQueuedReports)
+		public global::Windows.Graphics.Holographic.HolographicFrameScanoutMonitor CreateFrameScanoutMonitor( uint maxQueuedReports)
 		{
 			throw new global::System.NotImplementedException("The member HolographicFrameScanoutMonitor HolographicSpace.CreateFrameScanoutMonitor(uint maxQueuedReports) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicFrameScanoutMonitor%20HolographicSpace.CreateFrameScanoutMonitor%28uint%20maxQueuedReports%29");
 		}
@@ -121,7 +121,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, global::Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs> CameraAdded
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, global::Windows.Graphics.Holographic.HolographicSpaceCameraAddedEventArgs> CameraAdded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -137,7 +137,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, global::Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs> CameraRemoved
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, global::Windows.Graphics.Holographic.HolographicSpaceCameraRemovedEventArgs> CameraRemoved
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -153,7 +153,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, object> UserPresenceChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Holographic.HolographicSpace, object> UserPresenceChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

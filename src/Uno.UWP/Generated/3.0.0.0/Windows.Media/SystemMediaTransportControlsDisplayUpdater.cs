@@ -5,11 +5,11 @@ namespace Windows.Media
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SystemMediaTransportControlsDisplayUpdater 
+	public partial class SystemMediaTransportControlsDisplayUpdater 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaPlaybackType Type
+		public global::Windows.Media.MediaPlaybackType Type
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
+		public global::Windows.Storage.Streams.RandomAccessStreamReference Thumbnail
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AppMediaId
+		public string AppMediaId
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.ImageDisplayProperties ImageProperties
+		public global::Windows.Media.ImageDisplayProperties ImageProperties
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MusicDisplayProperties MusicProperties
+		public global::Windows.Media.MusicDisplayProperties MusicProperties
 		{
 			get
 			{
@@ -71,7 +71,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.VideoDisplayProperties VideoProperties
+		public global::Windows.Media.VideoDisplayProperties VideoProperties
 		{
 			get
 			{
@@ -90,21 +90,21 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.SystemMediaTransportControlsDisplayUpdater.ImageProperties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync( global::Windows.Media.MediaPlaybackType type,  global::Windows.Storage.StorageFile source)
+		public global::Windows.Foundation.IAsyncOperation<bool> CopyFromFileAsync( global::Windows.Media.MediaPlaybackType type,  global::Windows.Storage.StorageFile source)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync(MediaPlaybackType type, StorageFile source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SystemMediaTransportControlsDisplayUpdater.CopyFromFileAsync%28MediaPlaybackType%20type%2C%20StorageFile%20source%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ClearAll()
+		public void ClearAll()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "void SystemMediaTransportControlsDisplayUpdater.ClearAll()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Update()
+		public void Update()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControlsDisplayUpdater", "void SystemMediaTransportControlsDisplayUpdater.Update()");
 		}

@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.ExtendedExecution.Foreground
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum ExtendedExecutionForegroundResult 
+	public enum ExtendedExecutionForegroundResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Allowed = 0,

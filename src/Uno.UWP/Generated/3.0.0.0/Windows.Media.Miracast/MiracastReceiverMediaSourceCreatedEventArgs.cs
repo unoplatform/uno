@@ -5,11 +5,11 @@ namespace Windows.Media.Miracast
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MiracastReceiverMediaSourceCreatedEventArgs 
+	public partial class MiracastReceiverMediaSourceCreatedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastReceiverConnection Connection
+		public global::Windows.Media.Miracast.MiracastReceiverConnection Connection
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings CursorImageChannelSettings
+		public global::Windows.Media.Miracast.MiracastReceiverCursorImageChannelSettings CursorImageChannelSettings
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MediaSource MediaSource
+		public global::Windows.Media.Core.MediaSource MediaSource
 		{
 			get
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Miracast
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiverMediaSourceCreatedEventArgs.CursorImageChannelSettings.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Deferral GetDeferral()
+		public global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20MiracastReceiverMediaSourceCreatedEventArgs.GetDeferral%28%29");
 		}

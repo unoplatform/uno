@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public   enum SnapPointsAlignment 
+	public enum SnapPointsAlignment 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment.Near
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment.Center

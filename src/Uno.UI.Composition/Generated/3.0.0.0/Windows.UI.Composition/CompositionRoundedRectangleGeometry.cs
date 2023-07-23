@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionRoundedRectangleGeometry : global::Windows.UI.Composition.CompositionGeometry
+	public partial class CompositionRoundedRectangleGeometry : global::Windows.UI.Composition.CompositionGeometry
 	{
 		// Skipping already declared property Size
 		// Skipping already declared property Offset

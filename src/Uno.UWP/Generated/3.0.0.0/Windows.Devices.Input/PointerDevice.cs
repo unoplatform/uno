@@ -5,11 +5,11 @@ namespace Windows.Devices.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PointerDevice 
+	public partial class PointerDevice 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsIntegrated
+		public bool IsIntegrated
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxContacts
+		public uint MaxContacts
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect PhysicalDeviceRect
+		public global::Windows.Foundation.Rect PhysicalDeviceRect
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.Devices.Input
 		// Skipping already declared property PointerDeviceType
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect ScreenRect
+		public global::Windows.Foundation.Rect ScreenRect
 		{
 			get
 			{
@@ -50,7 +50,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Input.PointerDeviceUsage> SupportedUsages
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Input.PointerDeviceUsage> SupportedUsages
 		{
 			get
 			{
@@ -60,7 +60,7 @@ namespace Windows.Devices.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint MaxPointersWithZDistance
+		public uint MaxPointersWithZDistance
 		{
 			get
 			{

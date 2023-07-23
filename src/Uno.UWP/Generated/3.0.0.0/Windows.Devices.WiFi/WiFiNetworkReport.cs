@@ -5,11 +5,11 @@ namespace Windows.Devices.WiFi
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WiFiNetworkReport 
+	public partial class WiFiNetworkReport 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.WiFi.WiFiAvailableNetwork> AvailableNetworks
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.WiFi.WiFiAvailableNetwork> AvailableNetworks
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset Timestamp
+		public global::System.DateTimeOffset Timestamp
 		{
 			get
 			{

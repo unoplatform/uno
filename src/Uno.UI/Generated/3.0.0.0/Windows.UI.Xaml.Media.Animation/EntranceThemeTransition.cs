@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class EntranceThemeTransition : global::Windows.UI.Xaml.Media.Animation.Transition
+	public partial class EntranceThemeTransition : global::Windows.UI.Xaml.Media.Animation.Transition
 	{
 		// Skipping already declared property IsStaggeringEnabled
 		// Skipping already declared property FromVerticalOffset

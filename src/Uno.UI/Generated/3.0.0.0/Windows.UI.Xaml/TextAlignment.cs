@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum TextAlignment 
+	public enum TextAlignment 
 	{
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Center
 		// Skipping already declared field Windows.UI.Xaml.TextAlignment.Left

@@ -5,11 +5,11 @@ namespace Windows.Media
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VideoFrame : global::Windows.Media.IMediaFrame,global::System.IDisposable
+	public partial class VideoFrame : global::Windows.Media.IMediaFrame,global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? SystemRelativeTime
+		public global::System.TimeSpan? SystemRelativeTime
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? RelativeTime
+		public global::System.TimeSpan? RelativeTime
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDiscontinuous
+		public bool IsDiscontinuous
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? Duration
+		public global::System.TimeSpan? Duration
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Collections.IPropertySet ExtendedProperties
+		public global::Windows.Foundation.Collections.IPropertySet ExtendedProperties
 		{
 			get
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsReadOnly
+		public bool IsReadOnly
 		{
 			get
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Type
+		public string Type
 		{
 			get
 			{
@@ -95,7 +95,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3DSurface
+		public global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface Direct3DSurface
 		{
 			get
 			{
@@ -105,7 +105,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Imaging.SoftwareBitmap SoftwareBitmap
+		public global::Windows.Graphics.Imaging.SoftwareBitmap SoftwareBitmap
 		{
 			get
 			{
@@ -132,7 +132,7 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.VideoFrame.SoftwareBitmap.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction CopyToAsync( global::Windows.Media.VideoFrame frame)
+		public global::Windows.Foundation.IAsyncAction CopyToAsync( global::Windows.Media.VideoFrame frame)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%29");
 		}
@@ -151,14 +151,14 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.VideoFrame.ExtendedProperties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "void VideoFrame.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction CopyToAsync( global::Windows.Media.VideoFrame frame,  global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds,  global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
+		public global::Windows.Foundation.IAsyncAction CopyToAsync( global::Windows.Media.VideoFrame frame,  global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds,  global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame, BitmapBounds? sourceBounds, BitmapBounds? destinationBounds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%2C%20BitmapBounds%3F%20sourceBounds%2C%20BitmapBounds%3F%20destinationBounds%29");
 		}

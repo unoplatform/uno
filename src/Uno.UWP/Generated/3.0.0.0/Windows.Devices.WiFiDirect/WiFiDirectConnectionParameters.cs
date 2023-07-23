@@ -5,11 +5,11 @@ namespace Windows.Devices.WiFiDirect
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WiFiDirectConnectionParameters : global::Windows.Devices.Enumeration.IDevicePairingSettings
+	public partial class WiFiDirectConnectionParameters : global::Windows.Devices.Enumeration.IDevicePairingSettings
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  short GroupOwnerIntent
+		public short GroupOwnerIntent
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFiDirect.WiFiDirectPairingProcedure PreferredPairingProcedure
+		public global::Windows.Devices.WiFiDirect.WiFiDirectPairingProcedure PreferredPairingProcedure
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod> PreferenceOrderedConfigurationMethods
+		public global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod> PreferenceOrderedConfigurationMethods
 		{
 			get
 			{

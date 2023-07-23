@@ -5,11 +5,11 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RadialController 
+	public partial class RadialController 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool UseAutomaticHapticFeedback
+		public bool UseAutomaticHapticFeedback
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double RotationResolutionInDegrees
+		public double RotationResolutionInDegrees
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.RadialControllerMenu Menu
+		public global::Windows.UI.Input.RadialControllerMenu Menu
 		{
 			get
 			{
@@ -86,7 +86,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonClickedEventArgs> ButtonClicked
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonClickedEventArgs> ButtonClicked
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -102,7 +102,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerControlAcquiredEventArgs> ControlAcquired
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerControlAcquiredEventArgs> ControlAcquired
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -118,7 +118,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, object> ControlLost
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, object> ControlLost
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -134,7 +134,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerRotationChangedEventArgs> RotationChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerRotationChangedEventArgs> RotationChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -150,7 +150,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs> ScreenContactContinued
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerScreenContactContinuedEventArgs> ScreenContactContinued
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -166,7 +166,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, object> ScreenContactEnded
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, object> ScreenContactEnded
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -182,7 +182,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerScreenContactStartedEventArgs> ScreenContactStarted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerScreenContactStartedEventArgs> ScreenContactStarted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -198,7 +198,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonHoldingEventArgs> ButtonHolding
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonHoldingEventArgs> ButtonHolding
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -214,7 +214,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonPressedEventArgs> ButtonPressed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonPressedEventArgs> ButtonPressed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -230,7 +230,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonReleasedEventArgs> ButtonReleased
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.RadialController, global::Windows.UI.Input.RadialControllerButtonReleasedEventArgs> ButtonReleased
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

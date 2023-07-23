@@ -3,7 +3,7 @@
 namespace Windows.Devices.Geolocation.Geofencing
 {
 #if false || false || false || false || false || false || false
-	public   enum GeofenceMonitorStatus 
+	public enum GeofenceMonitorStatus 
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.Ready
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceMonitorStatus.Initializing

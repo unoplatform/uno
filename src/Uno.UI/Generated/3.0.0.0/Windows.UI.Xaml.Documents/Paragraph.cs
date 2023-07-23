@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Paragraph : global::Windows.UI.Xaml.Documents.Block
+	public partial class Paragraph : global::Windows.UI.Xaml.Documents.Block
 	{
 		// Skipping already declared property TextIndent
 		// Skipping already declared property Inlines

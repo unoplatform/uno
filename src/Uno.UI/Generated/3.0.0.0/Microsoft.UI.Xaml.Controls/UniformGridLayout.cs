@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UniformGridLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
+	public partial class UniformGridLayout : global::Microsoft.UI.Xaml.Controls.VirtualizingLayout
 	{
 		// Skipping already declared property Orientation
 		// Skipping already declared property MinRowSpacing

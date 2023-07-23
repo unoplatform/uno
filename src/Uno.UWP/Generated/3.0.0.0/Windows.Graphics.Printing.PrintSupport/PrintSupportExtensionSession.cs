@@ -5,11 +5,11 @@ namespace Windows.Graphics.Printing.PrintSupport
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintSupportExtensionSession 
+	public partial class PrintSupportExtensionSession 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Printers.IppPrintDevice Printer
+		public global::Windows.Devices.Printers.IppPrintDevice Printer
 		{
 			get
 			{
@@ -24,14 +24,14 @@ namespace Windows.Graphics.Printing.PrintSupport
 		// Forced skipping of method Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession.PrintDeviceCapabilitiesChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession", "void PrintSupportExtensionSession.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession, global::Windows.Graphics.Printing.PrintSupport.PrintSupportPrintDeviceCapabilitiesChangedEventArgs> PrintDeviceCapabilitiesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession, global::Windows.Graphics.Printing.PrintSupport.PrintSupportPrintDeviceCapabilitiesChangedEventArgs> PrintDeviceCapabilitiesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession, global::Windows.Graphics.Printing.PrintSupport.PrintSupportPrintTicketValidationRequestedEventArgs> PrintTicketValidationRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Printing.PrintSupport.PrintSupportExtensionSession, global::Windows.Graphics.Printing.PrintSupport.PrintSupportPrintTicketValidationRequestedEventArgs> PrintTicketValidationRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

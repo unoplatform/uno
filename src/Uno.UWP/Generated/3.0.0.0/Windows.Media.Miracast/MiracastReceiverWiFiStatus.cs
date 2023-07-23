@@ -3,7 +3,7 @@
 namespace Windows.Media.Miracast
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum MiracastReceiverWiFiStatus 
+	public enum MiracastReceiverWiFiStatus 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		MiracastSupportUndetermined = 0,

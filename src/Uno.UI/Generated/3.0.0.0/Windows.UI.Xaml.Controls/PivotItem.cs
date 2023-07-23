@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PivotItem : global::Windows.UI.Xaml.Controls.ContentControl
+	public partial class PivotItem : global::Windows.UI.Xaml.Controls.ContentControl
 	{
 		// Skipping already declared property Header
 		// Skipping already declared property HeaderProperty

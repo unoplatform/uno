@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if false || false || false || false || false || false || false
-	public   enum ChatMessageKind 
+	public enum ChatMessageKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.Standard
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageKind.FileTransferRequest

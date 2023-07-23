@@ -3,7 +3,7 @@
 namespace Windows.Storage
 {
 #if false || false || false || false || false || false || false
-	public   enum StorageDeleteOption 
+	public enum StorageDeleteOption 
 	{
 		// Skipping already declared field Windows.Storage.StorageDeleteOption.Default
 		// Skipping already declared field Windows.Storage.StorageDeleteOption.PermanentDelete

@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Background
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SystemTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
+	public partial class SystemTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
 		// Skipping already declared property OneShot
 		// Skipping already declared property TriggerType

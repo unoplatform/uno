@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DataProviderDeferral 
+	public partial class DataProviderDeferral 
 	{
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataProviderDeferral.Complete()
 	}

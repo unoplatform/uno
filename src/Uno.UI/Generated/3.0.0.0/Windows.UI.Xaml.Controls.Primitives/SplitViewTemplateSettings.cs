@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SplitViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class SplitViewTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property CompactPaneGridLength
 		// Skipping already declared property NegativeOpenPaneLength

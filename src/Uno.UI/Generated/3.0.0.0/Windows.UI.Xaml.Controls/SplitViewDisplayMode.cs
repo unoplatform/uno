@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum SplitViewDisplayMode 
+	public enum SplitViewDisplayMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.SplitViewDisplayMode.Overlay
 		// Skipping already declared field Windows.UI.Xaml.Controls.SplitViewDisplayMode.Inline

@@ -5,11 +5,11 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ColorKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
+	public partial class ColorKeyFrameAnimation : global::Windows.UI.Composition.KeyFrameAnimation
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionColorSpace InterpolationColorSpace
+		public global::Windows.UI.Composition.CompositionColorSpace InterpolationColorSpace
 		{
 			get
 			{
@@ -25,14 +25,14 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.ColorKeyFrameAnimation.InterpolationColorSpace.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void InsertKeyFrame( float normalizedProgressKey,  global::Windows.UI.Color value)
+		public void InsertKeyFrame( float normalizedProgressKey,  global::Windows.UI.Color value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ColorKeyFrameAnimation", "void ColorKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Color value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void InsertKeyFrame( float normalizedProgressKey,  global::Windows.UI.Color value,  global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
+		public void InsertKeyFrame( float normalizedProgressKey,  global::Windows.UI.Color value,  global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.ColorKeyFrameAnimation", "void ColorKeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Color value, CompositionEasingFunction easingFunction)");
 		}

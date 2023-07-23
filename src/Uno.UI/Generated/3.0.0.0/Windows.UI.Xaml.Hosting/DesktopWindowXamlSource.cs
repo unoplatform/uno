@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Hosting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DesktopWindowXamlSource : global::System.IDisposable
+	public partial class DesktopWindowXamlSource : global::System.IDisposable
 	{
 		// Skipping already declared property Content
 		// Skipping already declared property HasFocus

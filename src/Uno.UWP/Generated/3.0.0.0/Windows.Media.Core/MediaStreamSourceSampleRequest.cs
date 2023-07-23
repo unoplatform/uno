@@ -5,11 +5,11 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaStreamSourceSampleRequest 
+	public partial class MediaStreamSourceSampleRequest 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MediaStreamSample Sample
+		public global::Windows.Media.Core.MediaStreamSample Sample
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.IMediaStreamDescriptor StreamDescriptor
+		public global::Windows.Media.Core.IMediaStreamDescriptor StreamDescriptor
 		{
 			get
 			{
@@ -34,7 +34,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.StreamDescriptor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MediaStreamSourceSampleRequestDeferral GetDeferral()
+		public global::Windows.Media.Core.MediaStreamSourceSampleRequestDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member MediaStreamSourceSampleRequestDeferral MediaStreamSourceSampleRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSourceSampleRequestDeferral%20MediaStreamSourceSampleRequest.GetDeferral%28%29");
 		}
@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSourceSampleRequest.Sample.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ReportSampleProgress( uint progress)
+		public void ReportSampleProgress( uint progress)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceSampleRequest", "void MediaStreamSourceSampleRequest.ReportSampleProgress(uint progress)");
 		}

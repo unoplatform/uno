@@ -3,7 +3,7 @@
 namespace Windows.Devices.PointOfService.Provider
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum BarcodeScannerTriggerState 
+	public enum BarcodeScannerTriggerState 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Released = 0,

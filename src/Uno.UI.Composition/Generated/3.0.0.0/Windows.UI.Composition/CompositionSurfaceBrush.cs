@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionSurfaceBrush : global::Windows.UI.Composition.CompositionBrush
+	public partial class CompositionSurfaceBrush : global::Windows.UI.Composition.CompositionBrush
 	{
 		// Skipping already declared property VerticalAlignmentRatio
 		// Skipping already declared property Surface

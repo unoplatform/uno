@@ -5,11 +5,11 @@ namespace Windows.Networking
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-	public  partial class HostName : global::Windows.Foundation.IStringable
+	public partial class HostName : global::Windows.Foundation.IStringable
 	{
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string CanonicalName
+		public string CanonicalName
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayName
+		public string DisplayName
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Networking
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.Connectivity.IPInformation IPInformation
+		public global::Windows.Networking.Connectivity.IPInformation IPInformation
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Networking
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string RawName
+		public string RawName
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Networking
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.HostNameType Type
+		public global::Windows.Networking.HostNameType Type
 		{
 			get
 			{
@@ -72,7 +72,7 @@ namespace Windows.Networking
 		// Forced skipping of method Windows.Networking.HostName.Type.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEqual( global::Windows.Networking.HostName hostName)
+		public bool IsEqual( global::Windows.Networking.HostName hostName)
 		{
 			throw new global::System.NotImplementedException("The member bool HostName.IsEqual(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HostName.IsEqual%28HostName%20hostName%29");
 		}

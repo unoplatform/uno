@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Thumb : global::Windows.UI.Xaml.Controls.Control
+	public partial class Thumb : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property IsDragging
 		// Skipping already declared property IsDraggingProperty

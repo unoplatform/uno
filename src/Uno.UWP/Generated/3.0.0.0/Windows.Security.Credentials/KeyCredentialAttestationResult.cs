@@ -5,11 +5,11 @@ namespace Windows.Security.Credentials
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class KeyCredentialAttestationResult 
+	public partial class KeyCredentialAttestationResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer AttestationBuffer
+		public global::Windows.Storage.Streams.IBuffer AttestationBuffer
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer CertificateChainBuffer
+		public global::Windows.Storage.Streams.IBuffer CertificateChainBuffer
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.KeyCredentialAttestationStatus Status
+		public global::Windows.Security.Credentials.KeyCredentialAttestationStatus Status
 		{
 			get
 			{

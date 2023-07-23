@@ -5,11 +5,11 @@ namespace Windows.Storage
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 #endif
-	public  partial class ApplicationData : global::System.IDisposable
+	public partial class ApplicationData : global::System.IDisposable
 	{
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.StorageFolder LocalFolder
+		public global::Windows.Storage.StorageFolder LocalFolder
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.ApplicationDataContainer LocalSettings
+		public global::Windows.Storage.ApplicationDataContainer LocalSettings
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.StorageFolder RoamingFolder
+		public global::Windows.Storage.StorageFolder RoamingFolder
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.ApplicationDataContainer RoamingSettings
+		public global::Windows.Storage.ApplicationDataContainer RoamingSettings
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  ulong RoamingStorageQuota
+		public ulong RoamingStorageQuota
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.StorageFolder TemporaryFolder
+		public global::Windows.Storage.StorageFolder TemporaryFolder
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  uint Version
+		public uint Version
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.StorageFolder LocalCacheFolder
+		public global::Windows.Storage.StorageFolder LocalCacheFolder
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Storage
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.StorageFolder SharedLocalFolder
+		public global::Windows.Storage.StorageFolder SharedLocalFolder
 		{
 			get
 			{
@@ -110,21 +110,21 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.Version.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  global::Windows.Storage.ApplicationDataSetVersionHandler handler)
+		public global::Windows.Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  global::Windows.Storage.ApplicationDataSetVersionHandler handler)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.SetVersionAsync%28uint%20desiredVersion%2C%20ApplicationDataSetVersionHandler%20handler%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ClearAsync()
+		public global::Windows.Foundation.IAsyncAction ClearAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.ClearAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ClearAsync( global::Windows.Storage.ApplicationDataLocality locality)
+		public global::Windows.Foundation.IAsyncAction ClearAsync( global::Windows.Storage.ApplicationDataLocality locality)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync(ApplicationDataLocality locality) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.ClearAsync%28ApplicationDataLocality%20locality%29");
 		}
@@ -138,7 +138,7 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.DataChanged.remove
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  void SignalDataChanged()
+		public void SignalDataChanged()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.SignalDataChanged()");
 		}
@@ -147,14 +147,14 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.LocalCacheFolder.get
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Storage.StorageFolder GetPublisherCacheFolder( string folderName)
+		public global::Windows.Storage.StorageFolder GetPublisherCacheFolder( string folderName)
 		{
 			throw new global::System.NotImplementedException("The member StorageFolder ApplicationData.GetPublisherCacheFolder(string folderName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolder%20ApplicationData.GetPublisherCacheFolder%28string%20folderName%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  global::Windows.Foundation.IAsyncAction ClearPublisherCacheFolderAsync( string folderName)
+		public global::Windows.Foundation.IAsyncAction ClearPublisherCacheFolderAsync( string folderName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearPublisherCacheFolderAsync(string folderName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ApplicationData.ClearPublisherCacheFolderAsync%28string%20folderName%29");
 		}
@@ -162,7 +162,7 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.SharedLocalFolder.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.ApplicationData", "void ApplicationData.Dispose()");
 		}
@@ -177,7 +177,7 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.ApplicationData.Current.get
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.ApplicationData, object> DataChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.ApplicationData, object> DataChanged
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 			add

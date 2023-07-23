@@ -3,7 +3,7 @@
 namespace Windows.Media.Protection.PlayReady
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum PlayReadyITADataFormat 
+	public enum PlayReadyITADataFormat 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		SerializedProperties = 0,

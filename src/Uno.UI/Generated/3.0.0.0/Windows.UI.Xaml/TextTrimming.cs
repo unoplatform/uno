@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum TextTrimming 
+	public enum TextTrimming 
 	{
 		// Skipping already declared field Windows.UI.Xaml.TextTrimming.None
 		// Skipping already declared field Windows.UI.Xaml.TextTrimming.CharacterEllipsis

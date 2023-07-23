@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Navigation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PageStackEntry : global::Windows.UI.Xaml.DependencyObject
+	public partial class PageStackEntry : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property NavigationTransitionInfo
 		// Skipping already declared property Parameter

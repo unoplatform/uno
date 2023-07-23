@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Controls.Maps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MapTileBitmapRequest 
+	public partial class MapTileBitmapRequest 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamReference PixelData
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference PixelData
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequest.PixelData.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestDeferral GetDeferral()
+		public global::Windows.UI.Xaml.Controls.Maps.MapTileBitmapRequestDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member MapTileBitmapRequestDeferral MapTileBitmapRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MapTileBitmapRequestDeferral%20MapTileBitmapRequest.GetDeferral%28%29");
 		}

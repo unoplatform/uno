@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class InsetClip : global::Windows.UI.Composition.CompositionClip
+	public partial class InsetClip : global::Windows.UI.Composition.CompositionClip
 	{
 		// Skipping already declared property TopInset
 		// Skipping already declared property RightInset

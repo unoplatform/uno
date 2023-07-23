@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DependencyProperty 
+	public partial class DependencyProperty 
 	{
 		// Skipping already declared property UnsetValue
 		// Skipping already declared method Windows.UI.Xaml.DependencyProperty.GetMetadata(System.Type)

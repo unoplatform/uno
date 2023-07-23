@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ColumnDefinitionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.ColumnDefinition>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.ColumnDefinition>
+	public partial class ColumnDefinitionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.ColumnDefinition>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.ColumnDefinition>
 	{
 		// Skipping already declared property Size
 		// Forced skipping of method Windows.UI.Xaml.Controls.ColumnDefinitionCollection.GetAt(uint)

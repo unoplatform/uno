@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls.Maps
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum MapWatermarkMode 
+	public enum MapWatermarkMode 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Automatic = 0,

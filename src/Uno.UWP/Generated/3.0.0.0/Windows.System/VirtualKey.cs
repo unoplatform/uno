@@ -3,7 +3,7 @@
 namespace Windows.System
 {
 #if false || false || false || false || false || false || false
-	public   enum VirtualKey 
+	public enum VirtualKey 
 	{
 		// Skipping already declared field Windows.System.VirtualKey.None
 		// Skipping already declared field Windows.System.VirtualKey.LeftButton

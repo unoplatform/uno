@@ -5,11 +5,11 @@ namespace Windows.Media.Devices.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CameraIntrinsics 
+	public partial class CameraIntrinsics 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 FocalLength
+		public global::System.Numerics.Vector2 FocalLength
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ImageHeight
+		public uint ImageHeight
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint ImageWidth
+		public uint ImageWidth
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 PrincipalPoint
+		public global::System.Numerics.Vector2 PrincipalPoint
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 RadialDistortion
+		public global::System.Numerics.Vector3 RadialDistortion
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 TangentialDistortion
+		public global::System.Numerics.Vector2 TangentialDistortion
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Matrix4x4 UndistortedProjectionTransform
+		public global::System.Numerics.Matrix4x4 UndistortedProjectionTransform
 		{
 			get
 			{
@@ -93,28 +93,28 @@ namespace Windows.Media.Devices.Core
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.ImageHeight.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point ProjectOntoFrame( global::System.Numerics.Vector3 coordinate)
+		public global::Windows.Foundation.Point ProjectOntoFrame( global::System.Numerics.Vector3 coordinate)
 		{
 			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.ProjectOntoFrame(Vector3 coordinate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CameraIntrinsics.ProjectOntoFrame%28Vector3%20coordinate%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector2 UnprojectAtUnitDepth( global::Windows.Foundation.Point pixelCoordinate)
+		public global::System.Numerics.Vector2 UnprojectAtUnitDepth( global::Windows.Foundation.Point pixelCoordinate)
 		{
 			throw new global::System.NotImplementedException("The member Vector2 CameraIntrinsics.UnprojectAtUnitDepth(Point pixelCoordinate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector2%20CameraIntrinsics.UnprojectAtUnitDepth%28Point%20pixelCoordinate%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ProjectManyOntoFrame( global::System.Numerics.Vector3[] coordinates,  global::Windows.Foundation.Point[] results)
+		public void ProjectManyOntoFrame( global::System.Numerics.Vector3[] coordinates,  global::Windows.Foundation.Point[] results)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.ProjectManyOntoFrame(Vector3[] coordinates, Point[] results)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void UnprojectPixelsAtUnitDepth( global::Windows.Foundation.Point[] pixelCoordinates,  global::System.Numerics.Vector2[] results)
+		public void UnprojectPixelsAtUnitDepth( global::Windows.Foundation.Point[] pixelCoordinates,  global::System.Numerics.Vector2[] results)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.UnprojectPixelsAtUnitDepth(Point[] pixelCoordinates, Vector2[] results)");
 		}
@@ -122,28 +122,28 @@ namespace Windows.Media.Devices.Core
 		// Forced skipping of method Windows.Media.Devices.Core.CameraIntrinsics.UndistortedProjectionTransform.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point DistortPoint( global::Windows.Foundation.Point input)
+		public global::Windows.Foundation.Point DistortPoint( global::Windows.Foundation.Point input)
 		{
 			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.DistortPoint(Point input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CameraIntrinsics.DistortPoint%28Point%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void DistortPoints( global::Windows.Foundation.Point[] inputs,  global::Windows.Foundation.Point[] results)
+		public void DistortPoints( global::Windows.Foundation.Point[] inputs,  global::Windows.Foundation.Point[] results)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.DistortPoints(Point[] inputs, Point[] results)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point UndistortPoint( global::Windows.Foundation.Point input)
+		public global::Windows.Foundation.Point UndistortPoint( global::Windows.Foundation.Point input)
 		{
 			throw new global::System.NotImplementedException("The member Point CameraIntrinsics.UndistortPoint(Point input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Point%20CameraIntrinsics.UndistortPoint%28Point%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void UndistortPoints( global::Windows.Foundation.Point[] inputs,  global::Windows.Foundation.Point[] results)
+		public void UndistortPoints( global::Windows.Foundation.Point[] inputs,  global::Windows.Foundation.Point[] results)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "void CameraIntrinsics.UndistortPoints(Point[] inputs, Point[] results)");
 		}

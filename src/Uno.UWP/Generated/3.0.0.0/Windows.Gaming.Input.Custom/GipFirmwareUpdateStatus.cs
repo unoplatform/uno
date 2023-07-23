@@ -3,7 +3,7 @@
 namespace Windows.Gaming.Input.Custom
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum GipFirmwareUpdateStatus 
+	public enum GipFirmwareUpdateStatus 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Completed = 0,

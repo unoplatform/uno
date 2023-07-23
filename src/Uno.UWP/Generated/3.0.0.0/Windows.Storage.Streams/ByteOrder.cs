@@ -3,7 +3,7 @@
 namespace Windows.Storage.Streams
 {
 #if false || false || false || false || false || false || false
-	public   enum ByteOrder 
+	public enum ByteOrder 
 	{
 		// Skipping already declared field Windows.Storage.Streams.ByteOrder.LittleEndian
 		// Skipping already declared field Windows.Storage.Streams.ByteOrder.BigEndian

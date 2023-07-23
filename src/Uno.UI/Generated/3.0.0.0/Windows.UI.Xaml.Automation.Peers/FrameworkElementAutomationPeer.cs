@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FrameworkElementAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.AutomationPeer
+	public partial class FrameworkElementAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.AutomationPeer
 	{
 		// Skipping already declared property Owner
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer.FrameworkElementAutomationPeer(Windows.UI.Xaml.FrameworkElement)

@@ -3,7 +3,7 @@
 namespace Windows.System.Threading
 {
 #if false || false || false || false || false || false || false
-	public   enum WorkItemOptions : uint
+	public enum WorkItemOptions : uint
 	{
 		// Skipping already declared field Windows.System.Threading.WorkItemOptions.None
 		// Skipping already declared field Windows.System.Threading.WorkItemOptions.TimeSliced

@@ -5,13 +5,13 @@ namespace Windows.ApplicationModel.Chat
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RcsEndUserMessageManager 
+	public partial class RcsEndUserMessageManager 
 	{
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.MessageAvailableChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.MessageAvailableChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.RcsEndUserMessageManager, global::Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableEventArgs> MessageAvailableChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Chat.RcsEndUserMessageManager, global::Windows.ApplicationModel.Chat.RcsEndUserMessageAvailableEventArgs> MessageAvailableChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

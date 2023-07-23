@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Style : global::Windows.UI.Xaml.DependencyObject
+	public partial class Style : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property TargetType
 		// Skipping already declared property BasedOn

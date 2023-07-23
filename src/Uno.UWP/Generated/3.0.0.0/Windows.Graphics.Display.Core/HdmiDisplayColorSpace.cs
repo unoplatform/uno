@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Display.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum HdmiDisplayColorSpace 
+	public enum HdmiDisplayColorSpace 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		RgbLimited = 0,

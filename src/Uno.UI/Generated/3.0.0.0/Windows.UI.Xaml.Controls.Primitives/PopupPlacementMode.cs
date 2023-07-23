@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public   enum PopupPlacementMode 
+	public enum PopupPlacementMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Auto
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PopupPlacementMode.Top

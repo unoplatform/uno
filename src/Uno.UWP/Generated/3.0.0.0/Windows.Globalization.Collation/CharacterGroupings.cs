@@ -5,11 +5,11 @@ namespace Windows.Globalization.Collation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>,global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>
+	public partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>,global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{
@@ -35,7 +35,7 @@ namespace Windows.Globalization.Collation
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Lookup( string text)
+		public string Lookup( string text)
 		{
 			throw new global::System.NotImplementedException("The member string CharacterGroupings.Lookup(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CharacterGroupings.Lookup%28string%20text%29");
 		}

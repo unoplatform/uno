@@ -5,12 +5,12 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class XamlCompositionBrushBase : global::Windows.UI.Xaml.Media.Brush
+	public partial class XamlCompositionBrushBase : global::Windows.UI.Xaml.Media.Brush
 	{
 		// Skipping already declared property FallbackColor
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionBrush CompositionBrush
+		public global::Windows.UI.Composition.CompositionBrush CompositionBrush
 		{
 			get
 			{

@@ -5,7 +5,7 @@ namespace Windows.Services.Maps
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MapLocationFinderResult 
+	public partial class MapLocationFinderResult 
 	{
 		// Skipping already declared property Locations
 		// Skipping already declared property Status

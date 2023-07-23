@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class EmailDataProviderConnection 
+	public partial class EmailDataProviderConnection 
 	{
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.add
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.remove
@@ -39,14 +39,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.ServerSearchReadBatchRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection", "void EmailDataProviderConnection.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxCreateFolderRequestEventArgs> CreateFolderRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxCreateFolderRequestEventArgs> CreateFolderRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDeleteFolderRequestEventArgs> DeleteFolderRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDeleteFolderRequestEventArgs> DeleteFolderRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequestEventArgs> DownloadAttachmentRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadAttachmentRequestEventArgs> DownloadAttachmentRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -94,7 +94,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadMessageRequestEventArgs> DownloadMessageRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxDownloadMessageRequestEventArgs> DownloadMessageRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -110,7 +110,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs> EmptyFolderRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxEmptyFolderRequestEventArgs> EmptyFolderRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -126,7 +126,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs> ForwardMeetingRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxForwardMeetingRequestEventArgs> ForwardMeetingRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -142,7 +142,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequestEventArgs> GetAutoReplySettingsRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxGetAutoReplySettingsRequestEventArgs> GetAutoReplySettingsRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -158,7 +158,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxSyncManagerSyncRequestEventArgs> MailboxSyncRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxSyncManagerSyncRequestEventArgs> MailboxSyncRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -174,7 +174,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequestEventArgs> MoveFolderRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxMoveFolderRequestEventArgs> MoveFolderRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -190,7 +190,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequestEventArgs> ProposeNewTimeForMeetingRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxProposeNewTimeForMeetingRequestEventArgs> ProposeNewTimeForMeetingRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -206,7 +206,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequestEventArgs> ResolveRecipientsRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxResolveRecipientsRequestEventArgs> ResolveRecipientsRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -222,7 +222,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequestEventArgs> ServerSearchReadBatchRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequestEventArgs> ServerSearchReadBatchRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -238,7 +238,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxSetAutoReplySettingsRequestEventArgs> SetAutoReplySettingsRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxSetAutoReplySettingsRequestEventArgs> SetAutoReplySettingsRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -254,7 +254,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequestEventArgs> UpdateMeetingResponseRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxUpdateMeetingResponseRequestEventArgs> UpdateMeetingResponseRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -270,7 +270,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs> ValidateCertificatesRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection, global::Windows.ApplicationModel.Email.DataProvider.EmailMailboxValidateCertificatesRequestEventArgs> ValidateCertificatesRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

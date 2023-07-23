@@ -5,7 +5,7 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ICoreWebView2DispatchAdapter 
+	public partial interface ICoreWebView2DispatchAdapter 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		object WrapNamedObject( string name,  global::Microsoft.Web.WebView2.Core.ICoreWebView2DispatchAdapter adapter);

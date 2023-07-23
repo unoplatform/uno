@@ -3,7 +3,7 @@
 namespace Windows.UI.Input.Preview.Injection
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum InjectedInputShortcut 
+	public enum InjectedInputShortcut 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Back = 0,

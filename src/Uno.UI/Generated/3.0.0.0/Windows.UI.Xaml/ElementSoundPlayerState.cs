@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum ElementSoundPlayerState 
+	public enum ElementSoundPlayerState 
 	{
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundPlayerState.Auto
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundPlayerState.Off

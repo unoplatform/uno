@@ -5,14 +5,14 @@ namespace Windows.Web.Syndication
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct RetrievalProgress 
+	public partial struct RetrievalProgress 
 	{
 		// Forced skipping of method Windows.Web.Syndication.RetrievalProgress.RetrievalProgress()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint BytesRetrieved;
+		public uint BytesRetrieved;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint TotalBytesToRetrieve;
+		public uint TotalBytesToRetrieve;
 #endif
 	}
 }

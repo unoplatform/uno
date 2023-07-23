@@ -3,7 +3,7 @@
 namespace Windows.Foundation.Metadata
 {
 #if false || false || false || false || false || false || false
-	public   enum MarshalingType 
+	public enum MarshalingType 
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.None
 		// Skipping already declared field Windows.Foundation.Metadata.MarshalingType.Agile

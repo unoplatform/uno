@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum StandardUICommandKind 
+	public enum StandardUICommandKind 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.None
 		// Skipping already declared field Windows.UI.Xaml.Input.StandardUICommandKind.Cut

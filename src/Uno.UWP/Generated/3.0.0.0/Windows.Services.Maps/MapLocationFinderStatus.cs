@@ -3,7 +3,7 @@
 namespace Windows.Services.Maps
 {
 #if false || false || false || false || false || false || false
-	public   enum MapLocationFinderStatus 
+	public enum MapLocationFinderStatus 
 	{
 		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.Success
 		// Skipping already declared field Windows.Services.Maps.MapLocationFinderStatus.UnknownError

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HyperlinkClickEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class HyperlinkClickEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 	}
 }

@@ -5,7 +5,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PhoneNumberFormatter 
+	public partial class PhoneNumberFormatter 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,35 +17,35 @@ namespace Windows.Globalization.PhoneNumberFormatting
 		// Forced skipping of method Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormatter.PhoneNumberFormatter()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Format( global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo number)
+		public string Format( global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo number)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.Format(PhoneNumberInfo number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.Format%28PhoneNumberInfo%20number%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Format( global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo number,  global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormat numberFormat)
+		public string Format( global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo number,  global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberFormat numberFormat)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.Format(PhoneNumberInfo number, PhoneNumberFormat numberFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.Format%28PhoneNumberInfo%20number%2C%20PhoneNumberFormat%20numberFormat%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FormatPartialString( string number)
+		public string FormatPartialString( string number)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.FormatPartialString(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.FormatPartialString%28string%20number%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FormatString( string number)
+		public string FormatString( string number)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.FormatString(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.FormatString%28string%20number%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FormatStringWithLeftToRightMarkers( string number)
+		public string FormatStringWithLeftToRightMarkers( string number)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneNumberFormatter.FormatStringWithLeftToRightMarkers(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneNumberFormatter.FormatStringWithLeftToRightMarkers%28string%20number%29");
 		}

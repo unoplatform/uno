@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BitmapIconSource : global::Windows.UI.Xaml.Controls.IconSource
+	public partial class BitmapIconSource : global::Windows.UI.Xaml.Controls.IconSource
 	{
 		// Skipping already declared property UriSource
 		// Skipping already declared property ShowAsMonochrome

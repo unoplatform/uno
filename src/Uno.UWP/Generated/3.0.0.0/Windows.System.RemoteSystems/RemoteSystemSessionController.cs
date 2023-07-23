@@ -5,7 +5,7 @@ namespace Windows.System.RemoteSystems
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RemoteSystemSessionController 
+	public partial class RemoteSystemSessionController 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -27,21 +27,21 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.JoinRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> RemoveParticipantAsync( global::Windows.System.RemoteSystems.RemoteSystemSessionParticipant pParticipant)
+		public global::Windows.Foundation.IAsyncOperation<bool> RemoveParticipantAsync( global::Windows.System.RemoteSystems.RemoteSystemSessionParticipant pParticipant)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystemSessionController.RemoveParticipantAsync(RemoteSystemSessionParticipant pParticipant) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystemSessionController.RemoveParticipantAsync%28RemoteSystemSessionParticipant%20pParticipant%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystemSessionCreationResult> CreateSessionAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystemSessionCreationResult> CreateSessionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystemSessionCreationResult> RemoteSystemSessionController.CreateSessionAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRemoteSystemSessionCreationResult%3E%20RemoteSystemSessionController.CreateSessionAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionController, global::Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs> JoinRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.System.RemoteSystems.RemoteSystemSessionController, global::Windows.System.RemoteSystems.RemoteSystemSessionJoinRequestedEventArgs> JoinRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

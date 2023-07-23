@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Popup : global::Windows.UI.Xaml.FrameworkElement
+	public partial class Popup : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property VerticalOffset
 		// Skipping already declared property IsOpen
@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared property HorizontalOffset
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Animation.TransitionCollection ChildTransitions
+		public global::Windows.UI.Xaml.Media.Animation.TransitionCollection ChildTransitions
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared property LightDismissOverlayMode
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ShouldConstrainToRootBounds
+		public bool ShouldConstrainToRootBounds
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsConstrainedToRootBounds
+		public bool IsConstrainedToRootBounds
 		{
 			get
 			{

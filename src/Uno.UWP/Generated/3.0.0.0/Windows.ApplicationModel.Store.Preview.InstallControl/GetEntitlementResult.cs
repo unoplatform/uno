@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Store.Preview.InstallControl
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GetEntitlementResult 
+	public partial class GetEntitlementResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementStatus Status
+		public global::Windows.ApplicationModel.Store.Preview.InstallControl.GetEntitlementStatus Status
 		{
 			get
 			{

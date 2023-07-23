@@ -3,7 +3,7 @@
 namespace Windows.Devices.Geolocation.Geofencing
 {
 #if false || false || false || false || false || false || false
-	public   enum MonitoredGeofenceStates : uint
+	public enum MonitoredGeofenceStates : uint
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.None
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.MonitoredGeofenceStates.Entered

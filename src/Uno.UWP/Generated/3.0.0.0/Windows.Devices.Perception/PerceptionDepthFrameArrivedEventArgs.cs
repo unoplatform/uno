@@ -6,11 +6,11 @@ namespace Windows.Devices.Perception
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PerceptionDepthFrameArrivedEventArgs 
+	public partial class PerceptionDepthFrameArrivedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan RelativeTime
+		public global::System.TimeSpan RelativeTime
 		{
 			get
 			{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Perception
 		// Forced skipping of method Windows.Devices.Perception.PerceptionDepthFrameArrivedEventArgs.RelativeTime.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Perception.PerceptionDepthFrame TryOpenFrame()
+		public global::Windows.Devices.Perception.PerceptionDepthFrame TryOpenFrame()
 		{
 			throw new global::System.NotImplementedException("The member PerceptionDepthFrame PerceptionDepthFrameArrivedEventArgs.TryOpenFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionDepthFrame%20PerceptionDepthFrameArrivedEventArgs.TryOpenFrame%28%29");
 		}

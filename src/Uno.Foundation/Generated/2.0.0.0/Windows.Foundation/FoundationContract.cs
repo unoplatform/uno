@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct FoundationContract 
+	public partial struct FoundationContract 
 	{
 		// Forced skipping of method Windows.Foundation.FoundationContract.FoundationContract()
 	}

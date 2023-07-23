@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum TextWrapping 
+	public enum TextWrapping 
 	{
 		// Skipping already declared field Windows.UI.Xaml.TextWrapping.NoWrap
 		// Skipping already declared field Windows.UI.Xaml.TextWrapping.Wrap

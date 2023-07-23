@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GradientStop : global::Windows.UI.Xaml.DependencyObject
+	public partial class GradientStop : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Offset
 		// Skipping already declared property Color

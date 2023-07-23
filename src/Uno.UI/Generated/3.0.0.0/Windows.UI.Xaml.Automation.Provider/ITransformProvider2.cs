@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ITransformProvider2 : global::Windows.UI.Xaml.Automation.Provider.ITransformProvider
+	public partial interface ITransformProvider2 : global::Windows.UI.Xaml.Automation.Provider.ITransformProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		bool CanZoom

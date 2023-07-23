@@ -5,14 +5,14 @@ namespace Windows.Foundation.Numerics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct Rational 
+	public partial struct Rational 
 	{
 		// Forced skipping of method Windows.Foundation.Numerics.Rational.Rational()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint Numerator;
+		public uint Numerator;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint Denominator;
+		public uint Denominator;
 #endif
 	}
 }

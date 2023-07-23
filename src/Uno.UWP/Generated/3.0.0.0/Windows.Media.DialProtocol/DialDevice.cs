@@ -5,11 +5,11 @@ namespace Windows.Media.DialProtocol
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DialDevice 
+	public partial class DialDevice 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Id
+		public string Id
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.DialProtocol
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FriendlyName
+		public string FriendlyName
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.DialProtocol
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference Thumbnail
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.Media.DialProtocol
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevice.Id.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.DialProtocol.DialApp GetDialApp( string appName)
+		public global::Windows.Media.DialProtocol.DialApp GetDialApp( string appName)
 		{
 			throw new global::System.NotImplementedException("The member DialApp DialDevice.GetDialApp(string appName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DialApp%20DialDevice.GetDialApp%28string%20appName%29");
 		}

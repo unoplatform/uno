@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum ElementTheme 
+	public enum ElementTheme 
 	{
 		// Skipping already declared field Windows.UI.Xaml.ElementTheme.Default
 		// Skipping already declared field Windows.UI.Xaml.ElementTheme.Light

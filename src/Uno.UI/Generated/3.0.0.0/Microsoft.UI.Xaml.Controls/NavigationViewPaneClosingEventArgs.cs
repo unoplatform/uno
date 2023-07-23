@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class NavigationViewPaneClosingEventArgs 
+	public partial class NavigationViewPaneClosingEventArgs 
 	{
 		// Skipping already declared property Cancel
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewPaneClosingEventArgs.Cancel.get

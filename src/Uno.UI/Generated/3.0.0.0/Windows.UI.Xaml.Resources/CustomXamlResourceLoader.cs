@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Resources
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CustomXamlResourceLoader 
+	public partial class CustomXamlResourceLoader 
 	{
 		// Skipping already declared property Current
 		// Skipping already declared method Windows.UI.Xaml.Resources.CustomXamlResourceLoader.CustomXamlResourceLoader()

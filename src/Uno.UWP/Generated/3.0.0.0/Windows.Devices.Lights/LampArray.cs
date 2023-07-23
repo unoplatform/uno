@@ -5,11 +5,11 @@ namespace Windows.Devices.Lights
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LampArray 
+	public partial class LampArray 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEnabled
+		public bool IsEnabled
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double BrightnessLevel
+		public double BrightnessLevel
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 BoundingBox
+		public global::System.Numerics.Vector3 BoundingBox
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort HardwareProductId
+		public ushort HardwareProductId
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort HardwareVendorId
+		public ushort HardwareVendorId
 		{
 			get
 			{
@@ -77,7 +77,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort HardwareVersion
+		public ushort HardwareVersion
 		{
 			get
 			{
@@ -87,7 +87,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsConnected
+		public bool IsConnected
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Lights.LampArrayKind LampArrayKind
+		public global::Windows.Devices.Lights.LampArrayKind LampArrayKind
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int LampCount
+		public int LampCount
 		{
 			get
 			{
@@ -117,7 +117,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan MinUpdateInterval
+		public global::System.TimeSpan MinUpdateInterval
 		{
 			get
 			{
@@ -127,7 +127,7 @@ namespace Windows.Devices.Lights
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool SupportsVirtualKeys
+		public bool SupportsVirtualKeys
 		{
 			get
 			{
@@ -151,84 +151,84 @@ namespace Windows.Devices.Lights
 		// Forced skipping of method Windows.Devices.Lights.LampArray.SupportsVirtualKeys.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Lights.LampInfo GetLampInfo( int lampIndex)
+		public global::Windows.Devices.Lights.LampInfo GetLampInfo( int lampIndex)
 		{
 			throw new global::System.NotImplementedException("The member LampInfo LampArray.GetLampInfo(int lampIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LampInfo%20LampArray.GetLampInfo%28int%20lampIndex%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int[] GetIndicesForKey( global::Windows.System.VirtualKey key)
+		public int[] GetIndicesForKey( global::Windows.System.VirtualKey key)
 		{
 			throw new global::System.NotImplementedException("The member int[] LampArray.GetIndicesForKey(VirtualKey key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%5B%5D%20LampArray.GetIndicesForKey%28VirtualKey%20key%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int[] GetIndicesForPurposes( global::Windows.Devices.Lights.LampPurposes purposes)
+		public int[] GetIndicesForPurposes( global::Windows.Devices.Lights.LampPurposes purposes)
 		{
 			throw new global::System.NotImplementedException("The member int[] LampArray.GetIndicesForPurposes(LampPurposes purposes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%5B%5D%20LampArray.GetIndicesForPurposes%28LampPurposes%20purposes%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetColor( global::Windows.UI.Color desiredColor)
+		public void SetColor( global::Windows.UI.Color desiredColor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetColor(Color desiredColor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetColorForIndex( int lampIndex,  global::Windows.UI.Color desiredColor)
+		public void SetColorForIndex( int lampIndex,  global::Windows.UI.Color desiredColor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetColorForIndex(int lampIndex, Color desiredColor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetSingleColorForIndices( global::Windows.UI.Color desiredColor,  int[] lampIndexes)
+		public void SetSingleColorForIndices( global::Windows.UI.Color desiredColor,  int[] lampIndexes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetSingleColorForIndices(Color desiredColor, int[] lampIndexes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetColorsForIndices( global::Windows.UI.Color[] desiredColors,  int[] lampIndexes)
+		public void SetColorsForIndices( global::Windows.UI.Color[] desiredColors,  int[] lampIndexes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetColorsForIndices(Color[] desiredColors, int[] lampIndexes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetColorsForKey( global::Windows.UI.Color desiredColor,  global::Windows.System.VirtualKey key)
+		public void SetColorsForKey( global::Windows.UI.Color desiredColor,  global::Windows.System.VirtualKey key)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetColorsForKey(Color desiredColor, VirtualKey key)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetColorsForKeys( global::Windows.UI.Color[] desiredColors,  global::Windows.System.VirtualKey[] keys)
+		public void SetColorsForKeys( global::Windows.UI.Color[] desiredColors,  global::Windows.System.VirtualKey[] keys)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetColorsForKeys(Color[] desiredColors, VirtualKey[] keys)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetColorsForPurposes( global::Windows.UI.Color desiredColor,  global::Windows.Devices.Lights.LampPurposes purposes)
+		public void SetColorsForPurposes( global::Windows.UI.Color desiredColor,  global::Windows.Devices.Lights.LampPurposes purposes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.LampArray", "void LampArray.SetColorsForPurposes(Color desiredColor, LampPurposes purposes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SendMessageAsync( int messageId,  global::Windows.Storage.Streams.IBuffer message)
+		public global::Windows.Foundation.IAsyncAction SendMessageAsync( int messageId,  global::Windows.Storage.Streams.IBuffer message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction LampArray.SendMessageAsync(int messageId, IBuffer message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20LampArray.SendMessageAsync%28int%20messageId%2C%20IBuffer%20message%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> RequestMessageAsync( int messageId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> RequestMessageAsync( int messageId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> LampArray.RequestMessageAsync(int messageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20LampArray.RequestMessageAsync%28int%20messageId%29");
 		}

@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Email
 {
 #if false || false || false || false || false || false || false
-	public   enum EmailMessageBodyKind 
+	public enum EmailMessageBodyKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Email.EmailMessageBodyKind.Html
 		// Skipping already declared field Windows.ApplicationModel.Email.EmailMessageBodyKind.PlainText

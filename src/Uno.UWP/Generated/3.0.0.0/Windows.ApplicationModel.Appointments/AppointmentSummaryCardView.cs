@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Appointments
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum AppointmentSummaryCardView 
+	public enum AppointmentSummaryCardView 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		System = 0,

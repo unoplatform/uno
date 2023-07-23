@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.UserDataTasks
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UserDataTaskListSyncManager 
+	public partial class UserDataTaskListSyncManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncStatus Status
+		public global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncStatus Status
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset LastSuccessfulSyncTime
+		public global::System.DateTimeOffset LastSuccessfulSyncTime
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.DateTimeOffset LastAttemptedSyncTime
+		public global::System.DateTimeOffset LastAttemptedSyncTime
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.Status.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> SyncAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> UserDataTaskListSyncManager.SyncAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20UserDataTaskListSyncManager.SyncAsync%28%29");
 		}
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager.SyncStatusChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager, object> SyncStatusChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskListSyncManager, object> SyncStatusChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

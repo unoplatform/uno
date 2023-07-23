@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ShapeVisual : global::Windows.UI.Composition.ContainerVisual
+	public partial class ShapeVisual : global::Windows.UI.Composition.ContainerVisual
 	{
 		// Skipping already declared property ViewBox
 		// Skipping already declared property Shapes

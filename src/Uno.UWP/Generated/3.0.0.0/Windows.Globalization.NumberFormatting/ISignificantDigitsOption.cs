@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ISignificantDigitsOption 
+	public partial interface ISignificantDigitsOption 
 	{
 		// Skipping already declared property SignificantDigits
 		// Forced skipping of method Windows.Globalization.NumberFormatting.ISignificantDigitsOption.SignificantDigits.get

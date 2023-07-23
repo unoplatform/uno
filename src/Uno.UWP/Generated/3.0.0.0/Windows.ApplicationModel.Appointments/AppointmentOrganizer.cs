@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Appointments
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppointmentOrganizer : global::Windows.ApplicationModel.Appointments.IAppointmentParticipant
+	public partial class AppointmentOrganizer : global::Windows.ApplicationModel.Appointments.IAppointmentParticipant
 	{
 		// Skipping already declared property DisplayName
 		// Skipping already declared property Address

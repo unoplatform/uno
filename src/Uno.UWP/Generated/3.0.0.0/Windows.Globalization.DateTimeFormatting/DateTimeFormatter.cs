@@ -5,7 +5,7 @@ namespace Windows.Globalization.DateTimeFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DateTimeFormatter 
+	public partial class DateTimeFormatter 
 	{
 		// Skipping already declared property NumeralSystem
 		// Skipping already declared property Clock

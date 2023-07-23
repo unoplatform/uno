@@ -5,26 +5,26 @@ namespace Windows.Services.Store
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct StorePackageUpdateStatus 
+	public partial struct StorePackageUpdateStatus 
 	{
 		// Forced skipping of method Windows.Services.Store.StorePackageUpdateStatus.StorePackageUpdateStatus()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  string PackageFamilyName;
+		public string PackageFamilyName;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong PackageDownloadSizeInBytes;
+		public ulong PackageDownloadSizeInBytes;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong PackageBytesDownloaded;
+		public ulong PackageBytesDownloaded;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double PackageDownloadProgress;
+		public double PackageDownloadProgress;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  double TotalDownloadProgress;
+		public double TotalDownloadProgress;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::Windows.Services.Store.StorePackageUpdateState PackageUpdateState;
+		public global::Windows.Services.Store.StorePackageUpdateState PackageUpdateState;
 #endif
 	}
 }

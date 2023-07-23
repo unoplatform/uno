@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DecimalFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
+	public partial class DecimalFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
 		// Skipping already declared property IsDecimalPointAlwaysDisplayed
 		// Skipping already declared property IntegerDigits
@@ -14,7 +14,7 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared property FractionDigits
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string GeographicRegion
+		public string GeographicRegion
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared property Languages
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ResolvedGeographicRegion
+		public string ResolvedGeographicRegion
 		{
 			get
 			{
@@ -63,14 +63,14 @@ namespace Windows.Globalization.NumberFormatting
 		// Forced skipping of method Windows.Globalization.NumberFormatting.DecimalFormatter.ResolvedGeographicRegion.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Format( long value)
+		public string Format( long value)
 		{
 			throw new global::System.NotImplementedException("The member string DecimalFormatter.Format(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DecimalFormatter.Format%28long%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Format( ulong value)
+		public string Format( ulong value)
 		{
 			throw new global::System.NotImplementedException("The member string DecimalFormatter.Format(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DecimalFormatter.Format%28ulong%20value%29");
 		}
@@ -78,14 +78,14 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.Format(double)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FormatInt( long value)
+		public string FormatInt( long value)
 		{
 			throw new global::System.NotImplementedException("The member string DecimalFormatter.FormatInt(long value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DecimalFormatter.FormatInt%28long%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string FormatUInt( ulong value)
+		public string FormatUInt( ulong value)
 		{
 			throw new global::System.NotImplementedException("The member string DecimalFormatter.FormatUInt(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DecimalFormatter.FormatUInt%28ulong%20value%29");
 		}
@@ -93,14 +93,14 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared method Windows.Globalization.NumberFormatting.DecimalFormatter.FormatDouble(double)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  long? ParseInt( string text)
+		public long? ParseInt( string text)
 		{
 			throw new global::System.NotImplementedException("The member long? DecimalFormatter.ParseInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=long%3F%20DecimalFormatter.ParseInt%28string%20text%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong? ParseUInt( string text)
+		public ulong? ParseUInt( string text)
 		{
 			throw new global::System.NotImplementedException("The member ulong? DecimalFormatter.ParseUInt(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%3F%20DecimalFormatter.ParseUInt%28string%20text%29");
 		}

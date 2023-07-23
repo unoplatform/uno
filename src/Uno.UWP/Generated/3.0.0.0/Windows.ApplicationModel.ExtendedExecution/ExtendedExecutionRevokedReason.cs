@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.ExtendedExecution
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum ExtendedExecutionRevokedReason 
+	public enum ExtendedExecutionRevokedReason 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Resumed = 0,

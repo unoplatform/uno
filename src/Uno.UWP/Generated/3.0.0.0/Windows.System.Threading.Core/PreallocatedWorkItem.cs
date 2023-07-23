@@ -5,7 +5,7 @@ namespace Windows.System.Threading.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PreallocatedWorkItem 
+	public partial class PreallocatedWorkItem 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -33,7 +33,7 @@ namespace Windows.System.Threading.Core
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority, Windows.System.Threading.WorkItemOptions)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction RunAsync()
+		public global::Windows.Foundation.IAsyncAction RunAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction PreallocatedWorkItem.RunAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PreallocatedWorkItem.RunAsync%28%29");
 		}

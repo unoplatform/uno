@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Scenes
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SceneSurfaceMaterialInput : global::Windows.UI.Composition.Scenes.SceneMaterialInput
+	public partial class SceneSurfaceMaterialInput : global::Windows.UI.Composition.Scenes.SceneMaterialInput
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneWrappingMode WrappingVMode
+		public global::Windows.UI.Composition.Scenes.SceneWrappingMode WrappingVMode
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneWrappingMode WrappingUMode
+		public global::Windows.UI.Composition.Scenes.SceneWrappingMode WrappingUMode
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.ICompositionSurface Surface
+		public global::Windows.UI.Composition.ICompositionSurface Surface
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionBitmapInterpolationMode BitmapInterpolationMode
+		public global::Windows.UI.Composition.CompositionBitmapInterpolationMode BitmapInterpolationMode
 		{
 			get
 			{

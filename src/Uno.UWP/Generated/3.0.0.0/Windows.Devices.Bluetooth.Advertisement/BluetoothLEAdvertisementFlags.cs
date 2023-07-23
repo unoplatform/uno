@@ -3,7 +3,7 @@
 namespace Windows.Devices.Bluetooth.Advertisement
 {
 #if false || false || false || false || false || false || false
-	public   enum BluetoothLEAdvertisementFlags : uint
+	public enum BluetoothLEAdvertisementFlags : uint
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.None
 		// Skipping already declared field Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFlags.LimitedDiscoverableMode

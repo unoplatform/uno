@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Scenes
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SceneModelTransform : global::Windows.UI.Composition.CompositionTransform
+	public partial class SceneModelTransform : global::Windows.UI.Composition.CompositionTransform
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 Translation
+		public global::System.Numerics.Vector3 Translation
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 Scale
+		public global::System.Numerics.Vector3 Scale
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 RotationAxis
+		public global::System.Numerics.Vector3 RotationAxis
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float RotationAngleInDegrees
+		public float RotationAngleInDegrees
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float RotationAngle
+		public float RotationAngle
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Quaternion Orientation
+		public global::System.Numerics.Quaternion Orientation
 		{
 			get
 			{

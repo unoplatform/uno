@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ISelectionInfo 
+	public partial interface ISelectionInfo 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Data.ISelectionInfo.SelectRange(Windows.UI.Xaml.Data.ItemIndexRange)
 		// Skipping already declared method Windows.UI.Xaml.Data.ISelectionInfo.DeselectRange(Windows.UI.Xaml.Data.ItemIndexRange)

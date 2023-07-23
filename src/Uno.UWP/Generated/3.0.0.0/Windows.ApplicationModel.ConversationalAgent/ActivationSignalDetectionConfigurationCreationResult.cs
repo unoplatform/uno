@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.ConversationalAgent
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ActivationSignalDetectionConfigurationCreationResult 
+	public partial class ActivationSignalDetectionConfigurationCreationResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration Configuration
+		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration Configuration
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.ConversationalAgent
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationStatus Status
+		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationCreationStatus Status
 		{
 			get
 			{

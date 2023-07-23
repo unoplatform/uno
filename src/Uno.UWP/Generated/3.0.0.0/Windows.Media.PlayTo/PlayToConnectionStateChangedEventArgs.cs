@@ -6,11 +6,11 @@ namespace Windows.Media.PlayTo
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PlayToConnectionStateChangedEventArgs 
+	public partial class PlayToConnectionStateChangedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.PlayTo.PlayToConnectionState CurrentState
+		public global::Windows.Media.PlayTo.PlayToConnectionState CurrentState
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.PlayTo.PlayToConnectionState PreviousState
+		public global::Windows.Media.PlayTo.PlayToConnectionState PreviousState
 		{
 			get
 			{

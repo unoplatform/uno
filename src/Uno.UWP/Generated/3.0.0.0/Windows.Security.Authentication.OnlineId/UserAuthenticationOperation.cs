@@ -5,11 +5,11 @@ namespace Windows.Security.Authentication.OnlineId
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UserAuthenticationOperation : global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.OnlineId.UserIdentity>,global::Windows.Foundation.IAsyncInfo
+	public partial class UserAuthenticationOperation : global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.OnlineId.UserIdentity>,global::Windows.Foundation.IAsyncInfo
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Exception ErrorCode
+		public global::System.Exception ErrorCode
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.OnlineId
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Id
+		public uint Id
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Security.Authentication.OnlineId
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.AsyncStatus Status
+		public global::Windows.Foundation.AsyncStatus Status
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.OnlineId
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.AsyncOperationCompletedHandler<global::Windows.Security.Authentication.OnlineId.UserIdentity> Completed
+		public global::Windows.Foundation.AsyncOperationCompletedHandler<global::Windows.Security.Authentication.OnlineId.UserIdentity> Completed
 		{
 			get
 			{
@@ -55,7 +55,7 @@ namespace Windows.Security.Authentication.OnlineId
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.Completed.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authentication.OnlineId.UserIdentity GetResults()
+		public global::Windows.Security.Authentication.OnlineId.UserIdentity GetResults()
 		{
 			throw new global::System.NotImplementedException("The member UserIdentity UserAuthenticationOperation.GetResults() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserIdentity%20UserAuthenticationOperation.GetResults%28%29");
 		}
@@ -65,14 +65,14 @@ namespace Windows.Security.Authentication.OnlineId
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.UserAuthenticationOperation.ErrorCode.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Cancel()
+		public void Cancel()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "void UserAuthenticationOperation.Cancel()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Close()
+		public void Close()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.UserAuthenticationOperation", "void UserAuthenticationOperation.Close()");
 		}

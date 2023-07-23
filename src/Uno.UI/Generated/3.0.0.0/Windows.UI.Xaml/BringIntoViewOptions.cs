@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BringIntoViewOptions 
+	public partial class BringIntoViewOptions 
 	{
 		// Skipping already declared property TargetRect
 		// Skipping already declared property AnimationDesired

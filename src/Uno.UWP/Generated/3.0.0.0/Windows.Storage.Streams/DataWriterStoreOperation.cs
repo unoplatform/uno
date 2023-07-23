@@ -5,7 +5,7 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DataWriterStoreOperation : global::Windows.Foundation.IAsyncOperation<uint>,global::Windows.Foundation.IAsyncInfo
+	public partial class DataWriterStoreOperation : global::Windows.Foundation.IAsyncOperation<uint>,global::Windows.Foundation.IAsyncInfo
 	{
 		// Skipping already declared property ErrorCode
 		// Skipping already declared property Id

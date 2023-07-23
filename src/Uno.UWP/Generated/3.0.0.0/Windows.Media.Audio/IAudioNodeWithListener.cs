@@ -5,7 +5,7 @@ namespace Windows.Media.Audio
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IAudioNodeWithListener : global::System.IDisposable,global::Windows.Media.Audio.IAudioNode
+	public partial interface IAudioNodeWithListener : global::System.IDisposable,global::Windows.Media.Audio.IAudioNode
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Media.Audio.AudioNodeListener Listener

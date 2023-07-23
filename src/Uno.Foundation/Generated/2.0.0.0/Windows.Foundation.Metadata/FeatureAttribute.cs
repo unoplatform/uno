@@ -5,7 +5,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FeatureAttribute : global::System.Attribute
+	public partial class FeatureAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.FeatureAttribute.FeatureAttribute(Windows.Foundation.Metadata.FeatureStage, bool)
 		// Forced skipping of method Windows.Foundation.Metadata.FeatureAttribute.FeatureAttribute(Windows.Foundation.Metadata.FeatureStage, bool)

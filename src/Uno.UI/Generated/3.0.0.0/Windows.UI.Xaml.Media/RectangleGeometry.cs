@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RectangleGeometry : global::Windows.UI.Xaml.Media.Geometry
+	public partial class RectangleGeometry : global::Windows.UI.Xaml.Media.Geometry
 	{
 		// Skipping already declared property Rect
 		// Skipping already declared property RectProperty

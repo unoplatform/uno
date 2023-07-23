@@ -3,7 +3,7 @@
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum GattClientCharacteristicConfigurationDescriptorValue 
+	public enum GattClientCharacteristicConfigurationDescriptorValue 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		None = 0,

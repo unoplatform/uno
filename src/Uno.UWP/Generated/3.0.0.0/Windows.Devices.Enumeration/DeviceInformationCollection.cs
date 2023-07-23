@@ -5,7 +5,7 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeviceInformationCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.DeviceInformation>,global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceInformation>
+	public partial class DeviceInformationCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Enumeration.DeviceInformation>,global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Enumeration.DeviceInformation>
 	{
 		// Skipping already declared property Size
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformationCollection.GetAt(uint)

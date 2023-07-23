@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AnimatedIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
+	public partial class AnimatedIconSource : global::Microsoft.UI.Xaml.Controls.IconSource
 	{
 		// Skipping already declared property Source
 		// Skipping already declared property MirroredWhenRightToLeft

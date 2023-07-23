@@ -5,11 +5,11 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RadialControllerConfiguration 
+	public partial class RadialControllerConfiguration 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsMenuSuppressed
+		public bool IsMenuSuppressed
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.RadialController ActiveControllerWhenMenuIsSuppressed
+		public global::Windows.UI.Input.RadialController ActiveControllerWhenMenuIsSuppressed
 		{
 			get
 			{
@@ -65,21 +65,21 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetDefaultMenuItems( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.RadialControllerSystemMenuItemKind> buttons)
+		public void SetDefaultMenuItems( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.RadialControllerSystemMenuItemKind> buttons)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "void RadialControllerConfiguration.SetDefaultMenuItems(IEnumerable<RadialControllerSystemMenuItemKind> buttons)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ResetToDefaultMenuItems()
+		public void ResetToDefaultMenuItems()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerConfiguration", "void RadialControllerConfiguration.ResetToDefaultMenuItems()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TrySelectDefaultMenuItem( global::Windows.UI.Input.RadialControllerSystemMenuItemKind type)
+		public bool TrySelectDefaultMenuItem( global::Windows.UI.Input.RadialControllerSystemMenuItemKind type)
 		{
 			throw new global::System.NotImplementedException("The member bool RadialControllerConfiguration.TrySelectDefaultMenuItem(RadialControllerSystemMenuItemKind type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RadialControllerConfiguration.TrySelectDefaultMenuItem%28RadialControllerSystemMenuItemKind%20type%29");
 		}

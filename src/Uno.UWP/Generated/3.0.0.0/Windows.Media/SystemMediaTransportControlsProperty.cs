@@ -3,7 +3,7 @@
 namespace Windows.Media
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum SystemMediaTransportControlsProperty 
+	public enum SystemMediaTransportControlsProperty 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		SoundLevel = 0,

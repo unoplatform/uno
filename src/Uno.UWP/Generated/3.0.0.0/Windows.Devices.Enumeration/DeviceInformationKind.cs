@@ -3,7 +3,7 @@
 namespace Windows.Devices.Enumeration
 {
 #if false || false || false || false || false || false || false
-	public   enum DeviceInformationKind 
+	public enum DeviceInformationKind 
 	{
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.Unknown
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceInformationKind.DeviceInterface

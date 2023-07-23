@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionViewBox : global::Windows.UI.Composition.CompositionObject
+	public partial class CompositionViewBox : global::Windows.UI.Composition.CompositionObject
 	{
 		// Skipping already declared property VerticalAlignmentRatio
 		// Skipping already declared property Stretch

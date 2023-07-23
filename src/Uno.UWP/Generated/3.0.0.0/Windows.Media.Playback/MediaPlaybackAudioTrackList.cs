@@ -5,11 +5,11 @@ namespace Windows.Media.Playback
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaPlaybackAudioTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.AudioTrack>,global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioTrack>,global::Windows.Media.Core.ISingleSelectMediaTrackList
+	public partial class MediaPlaybackAudioTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.AudioTrack>,global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioTrack>,global::Windows.Media.Core.ISingleSelectMediaTrackList
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int SelectedIndex
+		public int SelectedIndex
 		{
 			get
 			{
@@ -42,7 +42,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackAudioTrackList.SelectedIndex.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.ISingleSelectMediaTrackList, object> SelectedIndexChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.ISingleSelectMediaTrackList, object> SelectedIndexChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,11 +5,11 @@ namespace Windows.Management.Deployment
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AutoUpdateSettingsOptions 
+	public partial class AutoUpdateSettingsOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.PackageVersion Version
+		public global::Windows.ApplicationModel.PackageVersion Version
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool UpdateBlocksActivation
+		public bool UpdateBlocksActivation
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ShowPrompt
+		public bool ShowPrompt
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool OnLaunch
+		public bool OnLaunch
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsAutoRepairEnabled
+		public bool IsAutoRepairEnabled
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint HoursBetweenUpdateChecks
+		public uint HoursBetweenUpdateChecks
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ForceUpdateFromAnyVersion
+		public bool ForceUpdateFromAnyVersion
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AutomaticBackgroundTask
+		public bool AutomaticBackgroundTask
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Uri AppInstallerUri
+		public global::System.Uri AppInstallerUri
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> DependencyPackageUris
+		public global::System.Collections.Generic.IList<global::System.Uri> DependencyPackageUris
 		{
 			get
 			{
@@ -145,7 +145,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> OptionalPackageUris
+		public global::System.Collections.Generic.IList<global::System.Uri> OptionalPackageUris
 		{
 			get
 			{
@@ -155,7 +155,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> RepairUris
+		public global::System.Collections.Generic.IList<global::System.Uri> RepairUris
 		{
 			get
 			{
@@ -165,7 +165,7 @@ namespace Windows.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::System.Uri> UpdateUris
+		public global::System.Collections.Generic.IList<global::System.Uri> UpdateUris
 		{
 			get
 			{

@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.TriggerAction>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.TriggerAction>
+	public partial class TriggerActionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.TriggerAction>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.TriggerAction>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{

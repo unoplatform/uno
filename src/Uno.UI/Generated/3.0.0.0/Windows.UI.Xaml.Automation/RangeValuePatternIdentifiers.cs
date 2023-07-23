@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RangeValuePatternIdentifiers 
+	public partial class RangeValuePatternIdentifiers 
 	{
 		// Skipping already declared property IsReadOnlyProperty
 		// Skipping already declared property LargeChangeProperty

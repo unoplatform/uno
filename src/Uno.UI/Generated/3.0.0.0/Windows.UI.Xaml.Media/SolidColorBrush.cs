@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SolidColorBrush : global::Windows.UI.Xaml.Media.Brush
+	public partial class SolidColorBrush : global::Windows.UI.Xaml.Media.Brush
 	{
 		// Skipping already declared property Color
 		// Skipping already declared property ColorProperty

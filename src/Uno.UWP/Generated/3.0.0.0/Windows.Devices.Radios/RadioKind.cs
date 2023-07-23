@@ -3,7 +3,7 @@
 namespace Windows.Devices.Radios
 {
 #if false || false || false || false || false || false || false
-	public   enum RadioKind 
+	public enum RadioKind 
 	{
 		// Skipping already declared field Windows.Devices.Radios.RadioKind.Other
 		// Skipping already declared field Windows.Devices.Radios.RadioKind.WiFi

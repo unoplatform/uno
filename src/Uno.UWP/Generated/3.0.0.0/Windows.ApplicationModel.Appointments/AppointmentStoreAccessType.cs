@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Appointments
 {
 #if false || false || false || false || false || false || false
-	public   enum AppointmentStoreAccessType 
+	public enum AppointmentStoreAccessType 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Appointments.AppointmentStoreAccessType.AppCalendarsReadWrite
 		// Skipping already declared field Windows.ApplicationModel.Appointments.AppointmentStoreAccessType.AllCalendarsReadOnly

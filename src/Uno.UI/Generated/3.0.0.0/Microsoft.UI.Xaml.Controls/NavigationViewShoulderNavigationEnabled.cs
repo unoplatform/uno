@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum NavigationViewShoulderNavigationEnabled 
+	public enum NavigationViewShoulderNavigationEnabled 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.WhenSelectionFollowsFocus
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.NavigationViewShoulderNavigationEnabled.Always

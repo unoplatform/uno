@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Button : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
+	public partial class Button : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
 	{
 		// Skipping already declared property Flyout
 		// Skipping already declared property FlyoutProperty

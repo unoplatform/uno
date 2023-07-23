@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if false || false || false || false || false || false || false
-	public   enum ChatMessageStatus 
+	public enum ChatMessageStatus 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageStatus.Draft
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageStatus.Sending

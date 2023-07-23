@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DragCompletedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class DragCompletedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property Canceled
 		// Skipping already declared property HorizontalChange

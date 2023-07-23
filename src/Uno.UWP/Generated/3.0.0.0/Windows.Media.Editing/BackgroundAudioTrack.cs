@@ -5,11 +5,11 @@ namespace Windows.Media.Editing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BackgroundAudioTrack 
+	public partial class BackgroundAudioTrack 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Volume
+		public double Volume
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan TrimTimeFromStart
+		public global::System.TimeSpan TrimTimeFromStart
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan TrimTimeFromEnd
+		public global::System.TimeSpan TrimTimeFromEnd
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan Delay
+		public global::System.TimeSpan Delay
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
+		public global::System.Collections.Generic.IList<global::Windows.Media.Effects.IAudioEffectDefinition> AudioEffectDefinitions
 		{
 			get
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan OriginalDuration
+		public global::System.TimeSpan OriginalDuration
 		{
 			get
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan TrimmedDuration
+		public global::System.TimeSpan TrimmedDuration
 		{
 			get
 			{
@@ -95,7 +95,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IDictionary<string, string> UserData
+		public global::System.Collections.Generic.IDictionary<string, string> UserData
 		{
 			get
 			{
@@ -116,14 +116,14 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.BackgroundAudioTrack.Volume.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Editing.BackgroundAudioTrack Clone()
+		public global::Windows.Media.Editing.BackgroundAudioTrack Clone()
 		{
 			throw new global::System.NotImplementedException("The member BackgroundAudioTrack BackgroundAudioTrack.Clone() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundAudioTrack%20BackgroundAudioTrack.Clone%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.AudioEncodingProperties GetAudioEncodingProperties()
+		public global::Windows.Media.MediaProperties.AudioEncodingProperties GetAudioEncodingProperties()
 		{
 			throw new global::System.NotImplementedException("The member AudioEncodingProperties BackgroundAudioTrack.GetAudioEncodingProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioEncodingProperties%20BackgroundAudioTrack.GetAudioEncodingProperties%28%29");
 		}

@@ -5,12 +5,12 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TabViewItemTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class TabViewItemTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property IconElement
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Media.Geometry TabGeometry
+		public global::Windows.UI.Xaml.Media.Geometry TabGeometry
 		{
 			get
 			{

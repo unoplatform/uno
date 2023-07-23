@@ -3,7 +3,7 @@
 namespace Windows.Storage.Provider
 {
 #if false || false || false || false || false || false || false
-	public   enum FileUpdateStatus 
+	public enum FileUpdateStatus 
 	{
 		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Incomplete
 		// Skipping already declared field Windows.Storage.Provider.FileUpdateStatus.Complete

@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Interactions
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class InteractionTracker : global::Windows.UI.Composition.CompositionObject
+	public partial class InteractionTracker : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float? ScaleInertiaDecayRate
+		public float? ScaleInertiaDecayRate
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3? PositionInertiaDecayRate
+		public global::System.Numerics.Vector3? PositionInertiaDecayRate
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float MinScale
+		public float MinScale
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 MinPosition
+		public global::System.Numerics.Vector3 MinPosition
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float MaxScale
+		public float MaxScale
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 MaxPosition
+		public global::System.Numerics.Vector3 MaxPosition
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection InteractionSources
+		public global::Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection InteractionSources
 		{
 			get
 			{
@@ -103,7 +103,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsPositionRoundingSuggested
+		public bool IsPositionRoundingSuggested
 		{
 			get
 			{
@@ -113,7 +113,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 NaturalRestingPosition
+		public global::System.Numerics.Vector3 NaturalRestingPosition
 		{
 			get
 			{
@@ -123,7 +123,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float NaturalRestingScale
+		public float NaturalRestingScale
 		{
 			get
 			{
@@ -133,7 +133,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Interactions.IInteractionTrackerOwner Owner
+		public global::Windows.UI.Composition.Interactions.IInteractionTrackerOwner Owner
 		{
 			get
 			{
@@ -143,7 +143,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 Position
+		public global::System.Numerics.Vector3 Position
 		{
 			get
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 PositionVelocityInPixelsPerSecond
+		public global::System.Numerics.Vector3 PositionVelocityInPixelsPerSecond
 		{
 			get
 			{
@@ -163,7 +163,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float Scale
+		public float Scale
 		{
 			get
 			{
@@ -173,7 +173,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float ScaleVelocityInPercentPerSecond
+		public float ScaleVelocityInPercentPerSecond
 		{
 			get
 			{
@@ -183,7 +183,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsInertiaFromImpulse
+		public bool IsInertiaFromImpulse
 		{
 			get
 			{
@@ -214,119 +214,119 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.ScaleVelocityInPercentPerSecond.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void AdjustPositionXIfGreaterThanThreshold( float adjustment,  float positionThreshold)
+		public void AdjustPositionXIfGreaterThanThreshold( float adjustment,  float positionThreshold)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.AdjustPositionXIfGreaterThanThreshold(float adjustment, float positionThreshold)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void AdjustPositionYIfGreaterThanThreshold( float adjustment,  float positionThreshold)
+		public void AdjustPositionYIfGreaterThanThreshold( float adjustment,  float positionThreshold)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.AdjustPositionYIfGreaterThanThreshold(float adjustment, float positionThreshold)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigurePositionXInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier> modifiers)
+		public void ConfigurePositionXInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier> modifiers)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigurePositionXInertiaModifiers(IEnumerable<InteractionTrackerInertiaModifier> modifiers)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigurePositionYInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier> modifiers)
+		public void ConfigurePositionYInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier> modifiers)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigurePositionYInertiaModifiers(IEnumerable<InteractionTrackerInertiaModifier> modifiers)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureScaleInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier> modifiers)
+		public void ConfigureScaleInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier> modifiers)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigureScaleInertiaModifiers(IEnumerable<InteractionTrackerInertiaModifier> modifiers)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePosition( global::System.Numerics.Vector3 value)
+		public int TryUpdatePosition( global::System.Numerics.Vector3 value)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePositionBy( global::System.Numerics.Vector3 amount)
+		public int TryUpdatePositionBy( global::System.Numerics.Vector3 amount)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePositionWithAnimation( global::Windows.UI.Composition.CompositionAnimation animation)
+		public int TryUpdatePositionWithAnimation( global::Windows.UI.Composition.CompositionAnimation animation)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionWithAnimation(CompositionAnimation animation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionWithAnimation%28CompositionAnimation%20animation%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePositionWithAdditionalVelocity( global::System.Numerics.Vector3 velocityInPixelsPerSecond)
+		public int TryUpdatePositionWithAdditionalVelocity( global::System.Numerics.Vector3 velocityInPixelsPerSecond)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionWithAdditionalVelocity(Vector3 velocityInPixelsPerSecond) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionWithAdditionalVelocity%28Vector3%20velocityInPixelsPerSecond%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdateScale( float value,  global::System.Numerics.Vector3 centerPoint)
+		public int TryUpdateScale( float value,  global::System.Numerics.Vector3 centerPoint)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScale(float value, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScale%28float%20value%2C%20Vector3%20centerPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdateScaleWithAnimation( global::Windows.UI.Composition.CompositionAnimation animation,  global::System.Numerics.Vector3 centerPoint)
+		public int TryUpdateScaleWithAnimation( global::Windows.UI.Composition.CompositionAnimation animation,  global::System.Numerics.Vector3 centerPoint)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAnimation(CompositionAnimation animation, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAnimation%28CompositionAnimation%20animation%2C%20Vector3%20centerPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdateScaleWithAdditionalVelocity( float velocityInPercentPerSecond,  global::System.Numerics.Vector3 centerPoint)
+		public int TryUpdateScaleWithAdditionalVelocity( float velocityInPercentPerSecond,  global::System.Numerics.Vector3 centerPoint)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdateScaleWithAdditionalVelocity(float velocityInPercentPerSecond, Vector3 centerPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdateScaleWithAdditionalVelocity%28float%20velocityInPercentPerSecond%2C%20Vector3%20centerPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureCenterPointXInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureCenterPointXInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigureCenterPointXInertiaModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureCenterPointYInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
+		public void ConfigureCenterPointYInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.CompositionConditionalValue> conditionalValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigureCenterPointYInertiaModifiers(IEnumerable<CompositionConditionalValue> conditionalValues)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void ConfigureVector2PositionInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier> modifiers)
+		public void ConfigureVector2PositionInertiaModifiers( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Composition.Interactions.InteractionTrackerVector2InertiaModifier> modifiers)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.ConfigureVector2PositionInertiaModifiers(IEnumerable<InteractionTrackerVector2InertiaModifier> modifiers)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePosition( global::System.Numerics.Vector3 value,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option)
+		public int TryUpdatePosition( global::System.Numerics.Vector3 value,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePositionBy( global::System.Numerics.Vector3 amount,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option)
+		public int TryUpdatePositionBy( global::System.Numerics.Vector3 amount,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePositionBy(Vector3 amount, InteractionTrackerClampingOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePositionBy%28Vector3%20amount%2C%20InteractionTrackerClampingOption%20option%29");
 		}
@@ -334,7 +334,7 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsInertiaFromImpulse.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TryUpdatePosition( global::System.Numerics.Vector3 value,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option,  global::Windows.UI.Composition.Interactions.InteractionTrackerPositionUpdateOption posUpdateOption)
+		public int TryUpdatePosition( global::System.Numerics.Vector3 value,  global::Windows.UI.Composition.Interactions.InteractionTrackerClampingOption option,  global::Windows.UI.Composition.Interactions.InteractionTrackerPositionUpdateOption posUpdateOption)
 		{
 			throw new global::System.NotImplementedException("The member int InteractionTracker.TryUpdatePosition(Vector3 value, InteractionTrackerClampingOption option, InteractionTrackerPositionUpdateOption posUpdateOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20InteractionTracker.TryUpdatePosition%28Vector3%20value%2C%20InteractionTrackerClampingOption%20option%2C%20InteractionTrackerPositionUpdateOption%20posUpdateOption%29");
 		}

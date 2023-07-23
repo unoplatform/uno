@@ -5,11 +5,11 @@ namespace Windows.Networking.BackgroundTransfer
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BackgroundDownloader : global::Windows.Networking.BackgroundTransfer.IBackgroundTransferBase
+	public partial class BackgroundDownloader : global::Windows.Networking.BackgroundTransfer.IBackgroundTransferBase
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.ToastNotification FailureToastNotification
+		public global::Windows.UI.Notifications.ToastNotification FailureToastNotification
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.TileNotification SuccessTileNotification
+		public global::Windows.UI.Notifications.TileNotification SuccessTileNotification
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.ToastNotification SuccessToastNotification
+		public global::Windows.UI.Notifications.ToastNotification SuccessToastNotification
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup TransferGroup
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup TransferGroup
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Notifications.TileNotification FailureTileNotification
+		public global::Windows.UI.Notifications.TileNotification FailureTileNotification
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup CompletionGroup
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup CompletionGroup
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferCostPolicy CostPolicy
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferCostPolicy CostPolicy
 		{
 			get
 			{
@@ -103,7 +103,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Group
+		public string Group
 		{
 			get
 			{
@@ -117,7 +117,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Method
+		public string Method
 		{
 			get
 			{
@@ -131,7 +131,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential ProxyCredential
+		public global::Windows.Security.Credentials.PasswordCredential ProxyCredential
 		{
 			get
 			{
@@ -145,7 +145,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Credentials.PasswordCredential ServerCredential
+		public global::Windows.Security.Credentials.PasswordCredential ServerCredential
 		{
 			get
 			{
@@ -175,28 +175,28 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.BackgroundDownloader()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile)
+		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile)
 		{
 			throw new global::System.NotImplementedException("The member DownloadOperation BackgroundDownloader.CreateDownload(Uri uri, IStorageFile resultFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DownloadOperation%20BackgroundDownloader.CreateDownload%28Uri%20uri%2C%20IStorageFile%20resultFile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile,  global::Windows.Storage.IStorageFile requestBodyFile)
+		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile,  global::Windows.Storage.IStorageFile requestBodyFile)
 		{
 			throw new global::System.NotImplementedException("The member DownloadOperation BackgroundDownloader.CreateDownload(Uri uri, IStorageFile resultFile, IStorageFile requestBodyFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DownloadOperation%20BackgroundDownloader.CreateDownload%28Uri%20uri%2C%20IStorageFile%20resultFile%2C%20IStorageFile%20requestBodyFile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.DownloadOperation> CreateDownloadAsync( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile,  global::Windows.Storage.Streams.IInputStream requestBodyStream)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.DownloadOperation> CreateDownloadAsync( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile,  global::Windows.Storage.Streams.IInputStream requestBodyStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DownloadOperation> BackgroundDownloader.CreateDownloadAsync(Uri uri, IStorageFile resultFile, IInputStream requestBodyStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDownloadOperation%3E%20BackgroundDownloader.CreateDownloadAsync%28Uri%20uri%2C%20IStorageFile%20resultFile%2C%20IInputStream%20requestBodyStream%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetRequestHeader( string headerName,  string headerValue)
+		public void SetRequestHeader( string headerName,  string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundDownloader", "void BackgroundDownloader.SetRequestHeader(string headerName, string headerValue)");
 		}

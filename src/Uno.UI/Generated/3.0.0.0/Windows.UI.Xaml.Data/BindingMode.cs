@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Data
 {
 #if false || false || false || false || false || false || false
-	public   enum BindingMode 
+	public enum BindingMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Data.BindingMode.OneWay
 		// Skipping already declared field Windows.UI.Xaml.Data.BindingMode.OneTime

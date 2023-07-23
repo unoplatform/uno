@@ -5,23 +5,23 @@ namespace Windows.Networking.BackgroundTransfer
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct BackgroundDownloadProgress 
+	public partial struct BackgroundDownloadProgress 
 	{
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloadProgress.BackgroundDownloadProgress()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong BytesReceived;
+		public ulong BytesReceived;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong TotalBytesToReceive;
+		public ulong TotalBytesToReceive;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::Windows.Networking.BackgroundTransfer.BackgroundTransferStatus Status;
+		public global::Windows.Networking.BackgroundTransfer.BackgroundTransferStatus Status;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool HasResponseChanged;
+		public bool HasResponseChanged;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  bool HasRestarted;
+		public bool HasRestarted;
 #endif
 	}
 }

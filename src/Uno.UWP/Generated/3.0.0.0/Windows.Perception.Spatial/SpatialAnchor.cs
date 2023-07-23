@@ -5,11 +5,11 @@ namespace Windows.Perception.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialAnchor 
+	public partial class SpatialAnchor 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
+		public global::Windows.Perception.Spatial.SpatialCoordinateSystem CoordinateSystem
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.Spatial.SpatialCoordinateSystem RawCoordinateSystem
+		public global::Windows.Perception.Spatial.SpatialCoordinateSystem RawCoordinateSystem
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool RemovedByUser
+		public bool RemovedByUser
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialAnchor, global::Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs> RawCoordinateSystemAdjusted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.SpatialAnchor, global::Windows.Perception.Spatial.SpatialAnchorRawCoordinateSystemAdjustedEventArgs> RawCoordinateSystemAdjusted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

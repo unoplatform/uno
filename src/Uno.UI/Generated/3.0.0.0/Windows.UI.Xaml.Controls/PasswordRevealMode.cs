@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum PasswordRevealMode 
+	public enum PasswordRevealMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.PasswordRevealMode.Peek
 		// Skipping already declared field Windows.UI.Xaml.Controls.PasswordRevealMode.Hidden

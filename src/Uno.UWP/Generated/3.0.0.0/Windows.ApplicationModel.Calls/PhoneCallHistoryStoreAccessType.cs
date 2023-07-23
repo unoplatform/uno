@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Calls
 {
 #if false || false || false || false || false || false || false
-	public   enum PhoneCallHistoryStoreAccessType 
+	public enum PhoneCallHistoryStoreAccessType 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType.AppEntriesReadWrite
 		// Skipping already declared field Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType.AllEntriesLimitedReadWrite

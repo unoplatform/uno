@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Background
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IBackgroundTaskRegistration 
+	public partial interface IBackgroundTaskRegistration 
 	{
 		// Skipping already declared property Name
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -24,10 +24,10 @@ namespace Windows.ApplicationModel.Background
 		void Unregister( bool cancelTask);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		 event global::Windows.ApplicationModel.Background.BackgroundTaskCompletedEventHandler Completed;
+		event global::Windows.ApplicationModel.Background.BackgroundTaskCompletedEventHandler Completed;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		 event global::Windows.ApplicationModel.Background.BackgroundTaskProgressEventHandler Progress;
+		event global::Windows.ApplicationModel.Background.BackgroundTaskProgressEventHandler Progress;
 #endif
 	}
 }

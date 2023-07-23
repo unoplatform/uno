@@ -5,11 +5,11 @@ namespace Windows.Graphics.Imaging
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BitmapEncoder 
+	public partial class BitmapEncoder 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsThumbnailGenerated
+		public bool IsThumbnailGenerated
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint GeneratedThumbnailWidth
+		public uint GeneratedThumbnailWidth
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint GeneratedThumbnailHeight
+		public uint GeneratedThumbnailHeight
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Imaging.BitmapProperties BitmapContainerProperties
+		public global::Windows.Graphics.Imaging.BitmapProperties BitmapContainerProperties
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Imaging.BitmapProperties BitmapProperties
+		public global::Windows.Graphics.Imaging.BitmapProperties BitmapProperties
 		{
 			get
 			{
@@ -71,7 +71,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Imaging.BitmapTransform BitmapTransform
+		public global::Windows.Graphics.Imaging.BitmapTransform BitmapTransform
 		{
 			get
 			{
@@ -81,7 +81,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Imaging.BitmapCodecInformation EncoderInformation
+		public global::Windows.Graphics.Imaging.BitmapCodecInformation EncoderInformation
 		{
 			get
 			{
@@ -108,35 +108,35 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.BitmapEncoder.BitmapTransform.get
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  void SetPixelData( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode,  uint width,  uint height,  double dpiX,  double dpiY,  byte[] pixels)
+		public void SetPixelData( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode,  uint width,  uint height,  double dpiX,  double dpiY,  byte[] pixels)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetPixelData(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, uint width, uint height, double dpiX, double dpiY, byte[] pixels)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction GoToNextFrameAsync()
+		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction GoToNextFrameAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> encodingOptions)
+		public global::Windows.Foundation.IAsyncAction GoToNextFrameAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>> encodingOptions)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.GoToNextFrameAsync(IEnumerable<KeyValuePair<string, BitmapTypedValue>> encodingOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.GoToNextFrameAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20BitmapTypedValue%3E%3E%20encodingOptions%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.Foundation.IAsyncAction FlushAsync()
+		public global::Windows.Foundation.IAsyncAction FlushAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BitmapEncoder.FlushAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BitmapEncoder.FlushAsync%28%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  void SetSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		public void SetSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapEncoder", "void BitmapEncoder.SetSoftwareBitmap(SoftwareBitmap bitmap)");
 		}

@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum UniformGridLayoutItemsStretch 
+	public enum UniformGridLayoutItemsStretch 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsStretch.None
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsStretch.Fill

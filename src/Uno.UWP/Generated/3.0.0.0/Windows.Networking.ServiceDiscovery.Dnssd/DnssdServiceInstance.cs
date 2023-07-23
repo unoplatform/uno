@@ -5,11 +5,11 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DnssdServiceInstance : global::Windows.Foundation.IStringable
+	public partial class DnssdServiceInstance : global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort Weight
+		public ushort Weight
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort Priority
+		public ushort Priority
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort Port
+		public ushort Port
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.HostName HostName
+		public global::Windows.Networking.HostName HostName
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DnssdServiceInstanceName
+		public string DnssdServiceInstanceName
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IDictionary<string, string> TextAttributes
+		public global::System.Collections.Generic.IDictionary<string, string> TextAttributes
 		{
 			get
 			{
@@ -108,28 +108,28 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 		// Forced skipping of method Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance.TextAttributes.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener socket)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener socket)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterStreamSocketListenerAsync%28StreamSocketListener%20socket%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener socket,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener socket,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterStreamSocketListenerAsync(StreamSocketListener socket, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterStreamSocketListenerAsync%28StreamSocketListener%20socket%2C%20NetworkAdapter%20adapter%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket socket)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket socket)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterDatagramSocketAsync%28DatagramSocket%20socket%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket socket,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdRegistrationResult> RegisterDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket socket,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DnssdRegistrationResult> DnssdServiceInstance.RegisterDatagramSocketAsync(DatagramSocket socket, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDnssdRegistrationResult%3E%20DnssdServiceInstance.RegisterDatagramSocketAsync%28DatagramSocket%20socket%2C%20NetworkAdapter%20adapter%29");
 		}

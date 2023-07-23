@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MenuFlyoutItem : global::Windows.UI.Xaml.Controls.MenuFlyoutItemBase
+	public partial class MenuFlyoutItem : global::Windows.UI.Xaml.Controls.MenuFlyoutItemBase
 	{
 		// Skipping already declared property Text
 		// Skipping already declared property CommandParameter

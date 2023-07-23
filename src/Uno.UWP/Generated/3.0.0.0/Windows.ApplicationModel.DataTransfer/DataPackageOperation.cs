@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.DataTransfer
 {
 #if false || false || false || false || false || false || false
-	public   enum DataPackageOperation : uint
+	public enum DataPackageOperation : uint
 	{
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.None
 		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy

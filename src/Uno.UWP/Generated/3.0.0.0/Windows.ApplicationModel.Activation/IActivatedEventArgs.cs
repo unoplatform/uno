@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Activation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IActivatedEventArgs 
+	public partial interface IActivatedEventArgs 
 	{
 		// Skipping already declared property Kind
 		// Skipping already declared property PreviousExecutionState

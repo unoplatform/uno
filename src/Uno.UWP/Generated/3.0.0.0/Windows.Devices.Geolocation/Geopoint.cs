@@ -5,12 +5,12 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Geopoint : global::Windows.Devices.Geolocation.IGeoshape
+	public partial class Geopoint : global::Windows.Devices.Geolocation.IGeoshape
 	{
 		// Skipping already declared property Position
 #if false || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
+		public global::Windows.Devices.Geolocation.AltitudeReferenceSystem AltitudeReferenceSystem
 		{
 			get
 			{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared property GeoshapeType
 #if false || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint SpatialReferenceId
+		public uint SpatialReferenceId
 		{
 			get
 			{

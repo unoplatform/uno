@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Markup
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IXamlType 
+	public partial interface IXamlType 
 	{
 		// Skipping already declared property BaseType
 		// Skipping already declared property ContentProperty

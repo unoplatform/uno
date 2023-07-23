@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AccessKeyDisplayRequestedEventArgs 
+	public partial class AccessKeyDisplayRequestedEventArgs 
 	{
 		// Skipping already declared property PressedKeys
 		// Skipping already declared method Windows.UI.Xaml.Input.AccessKeyDisplayRequestedEventArgs.AccessKeyDisplayRequestedEventArgs()

@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum Visibility 
+	public enum Visibility 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Visibility.Visible
 		// Skipping already declared field Windows.UI.Xaml.Visibility.Collapsed

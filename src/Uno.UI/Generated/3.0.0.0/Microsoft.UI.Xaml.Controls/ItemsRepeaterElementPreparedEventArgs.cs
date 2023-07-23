@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ItemsRepeaterElementPreparedEventArgs 
+	public partial class ItemsRepeaterElementPreparedEventArgs 
 	{
 		// Skipping already declared property Element
 		// Skipping already declared property Index

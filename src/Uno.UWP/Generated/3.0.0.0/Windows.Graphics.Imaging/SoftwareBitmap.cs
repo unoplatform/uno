@@ -5,11 +5,11 @@ namespace Windows.Graphics.Imaging
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 #endif
-	public  partial class SoftwareBitmap : global::System.IDisposable
+	public partial class SoftwareBitmap : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double DpiY
+		public double DpiY
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double DpiX
+		public double DpiX
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.Graphics.Imaging.BitmapAlphaMode BitmapAlphaMode
+		public global::Windows.Graphics.Imaging.BitmapAlphaMode BitmapAlphaMode
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.Graphics.Imaging.BitmapPixelFormat BitmapPixelFormat
+		public global::Windows.Graphics.Imaging.BitmapPixelFormat BitmapPixelFormat
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  bool IsReadOnly
+		public bool IsReadOnly
 		{
 			get
 			{
@@ -67,7 +67,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  int PixelHeight
+		public int PixelHeight
 		{
 			get
 			{
@@ -77,7 +77,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  int PixelWidth
+		public int PixelWidth
 		{
 			get
 			{
@@ -112,42 +112,42 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.DpiY.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer( global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
+		public global::Windows.Graphics.Imaging.BitmapBuffer LockBuffer( global::Windows.Graphics.Imaging.BitmapBufferAccessMode mode)
 		{
 			throw new global::System.NotImplementedException("The member BitmapBuffer SoftwareBitmap.LockBuffer(BitmapBufferAccessMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapBuffer%20SoftwareBitmap.LockBuffer%28BitmapBufferAccessMode%20mode%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  void CopyTo( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		public void CopyTo( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyTo(SoftwareBitmap bitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void CopyFromBuffer( global::Windows.Storage.Streams.IBuffer buffer)
+		public void CopyFromBuffer( global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyFromBuffer(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void CopyToBuffer( global::Windows.Storage.Streams.IBuffer buffer)
+		public void CopyToBuffer( global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.CopyToBuffer(IBuffer buffer)");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
+		public global::Windows.Graphics.Imaging.SoftwareBitmap GetReadOnlyView()
 		{
 			throw new global::System.NotImplementedException("The member SoftwareBitmap SoftwareBitmap.GetReadOnlyView() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SoftwareBitmap%20SoftwareBitmap.GetReadOnlyView%28%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "void SoftwareBitmap.Dispose()");
 		}

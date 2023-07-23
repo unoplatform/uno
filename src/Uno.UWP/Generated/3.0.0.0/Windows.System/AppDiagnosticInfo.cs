@@ -5,11 +5,11 @@ namespace Windows.System
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AppDiagnosticInfo 
+	public partial class AppDiagnosticInfo 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.AppInfo AppInfo
+		public global::Windows.ApplicationModel.AppInfo AppInfo
 		{
 			get
 			{
@@ -20,21 +20,21 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.AppDiagnosticInfo.AppInfo.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupInfo> GetResourceGroups()
+		public global::System.Collections.Generic.IList<global::Windows.System.AppResourceGroupInfo> GetResourceGroups()
 		{
 			throw new global::System.NotImplementedException("The member IList<AppResourceGroupInfo> AppDiagnosticInfo.GetResourceGroups() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAppResourceGroupInfo%3E%20AppDiagnosticInfo.GetResourceGroups%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.AppResourceGroupInfoWatcher CreateResourceGroupWatcher()
+		public global::Windows.System.AppResourceGroupInfoWatcher CreateResourceGroupWatcher()
 		{
 			throw new global::System.NotImplementedException("The member AppResourceGroupInfoWatcher AppDiagnosticInfo.CreateResourceGroupWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppResourceGroupInfoWatcher%20AppDiagnosticInfo.CreateResourceGroupWatcher%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppActivationResult> LaunchAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.System.AppActivationResult> LaunchAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppActivationResult> AppDiagnosticInfo.LaunchAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppActivationResult%3E%20AppDiagnosticInfo.LaunchAsync%28%29");
 		}

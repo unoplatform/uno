@@ -5,11 +5,11 @@ namespace Windows.Devices.SmartCards
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SmartCardProvisioning 
+	public partial class SmartCardProvisioning 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SmartCards.SmartCard SmartCard
+		public global::Windows.Devices.SmartCards.SmartCard SmartCard
 		{
 			get
 			{
@@ -20,42 +20,42 @@ namespace Windows.Devices.SmartCards
 		// Forced skipping of method Windows.Devices.SmartCards.SmartCardProvisioning.SmartCard.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::System.Guid> GetIdAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::System.Guid> GetIdAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Guid> SmartCardProvisioning.GetIdAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGuid%3E%20SmartCardProvisioning.GetIdAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<string> GetNameAsync()
+		public global::Windows.Foundation.IAsyncOperation<string> GetNameAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> SmartCardProvisioning.GetNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20SmartCardProvisioning.GetNameAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardChallengeContext> GetChallengeContextAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardChallengeContext> GetChallengeContextAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardChallengeContext> SmartCardProvisioning.GetChallengeContextAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardChallengeContext%3E%20SmartCardProvisioning.GetChallengeContextAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> RequestPinChangeAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestPinChangeAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardProvisioning.RequestPinChangeAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardProvisioning.RequestPinChangeAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> RequestPinResetAsync( global::Windows.Devices.SmartCards.SmartCardPinResetHandler handler)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestPinResetAsync( global::Windows.Devices.SmartCards.SmartCardPinResetHandler handler)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SmartCardProvisioning.RequestPinResetAsync(SmartCardPinResetHandler handler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SmartCardProvisioning.RequestPinResetAsync%28SmartCardPinResetHandler%20handler%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<string> GetAuthorityKeyContainerNameAsync()
+		public global::Windows.Foundation.IAsyncOperation<string> GetAuthorityKeyContainerNameAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> SmartCardProvisioning.GetAuthorityKeyContainerNameAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20SmartCardProvisioning.GetAuthorityKeyContainerNameAsync%28%29");
 		}

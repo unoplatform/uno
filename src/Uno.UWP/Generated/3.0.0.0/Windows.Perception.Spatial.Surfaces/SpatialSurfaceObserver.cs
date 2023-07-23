@@ -5,7 +5,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialSurfaceObserver 
+	public partial class SpatialSurfaceObserver 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,21 +17,21 @@ namespace Windows.Perception.Spatial.Surfaces
 		// Forced skipping of method Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver.SpatialSurfaceObserver()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo> GetObservedSurfaces()
+		public global::System.Collections.Generic.IReadOnlyDictionary<global::System.Guid, global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceInfo> GetObservedSurfaces()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyDictionary<Guid, SpatialSurfaceInfo> SpatialSurfaceObserver.GetObservedSurfaces() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyDictionary%3CGuid%2C%20SpatialSurfaceInfo%3E%20SpatialSurfaceObserver.GetObservedSurfaces%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetBoundingVolume( global::Windows.Perception.Spatial.SpatialBoundingVolume bounds)
+		public void SetBoundingVolume( global::Windows.Perception.Spatial.SpatialBoundingVolume bounds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "void SpatialSurfaceObserver.SetBoundingVolume(SpatialBoundingVolume bounds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetBoundingVolumes( global::System.Collections.Generic.IEnumerable<global::Windows.Perception.Spatial.SpatialBoundingVolume> bounds)
+		public void SetBoundingVolumes( global::System.Collections.Generic.IEnumerable<global::Windows.Perception.Spatial.SpatialBoundingVolume> bounds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "void SpatialSurfaceObserver.SetBoundingVolumes(IEnumerable<SpatialBoundingVolume> bounds)");
 		}
@@ -54,7 +54,7 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver, object> ObservedSurfacesChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver, object> ObservedSurfacesChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

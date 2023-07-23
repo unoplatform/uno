@@ -5,11 +5,11 @@ namespace Windows.UI.ViewManagement
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
-	public  partial class StatusBar 
+	public partial class StatusBar 
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? ForegroundColor
+		public global::Windows.UI.Color? ForegroundColor
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double BackgroundOpacity
+		public double BackgroundOpacity
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Color? BackgroundColor
+		public global::Windows.UI.Color? BackgroundColor
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect OccludedRect
+		public global::Windows.Foundation.Rect OccludedRect
 		{
 			get
 			{
@@ -61,7 +61,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.ViewManagement.StatusBarProgressIndicator ProgressIndicator
+		public global::Windows.UI.ViewManagement.StatusBarProgressIndicator ProgressIndicator
 		{
 			get
 			{
@@ -71,14 +71,14 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ShowAsync()
+		public global::Windows.Foundation.IAsyncAction ShowAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.ShowAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StatusBar.ShowAsync%28%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction HideAsync()
+		public global::Windows.Foundation.IAsyncAction HideAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StatusBar.HideAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StatusBar.HideAsync%28%29");
 		}
@@ -104,7 +104,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.StatusBar, object> Hiding
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.StatusBar, object> Hiding
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -120,7 +120,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.StatusBar, object> Showing
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.StatusBar, object> Showing
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

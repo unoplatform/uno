@@ -5,14 +5,14 @@ namespace Windows.Graphics.DirectX.Direct3D11
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct Direct3DMultisampleDescription 
+	public partial struct Direct3DMultisampleDescription 
 	{
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription.Direct3DMultisampleDescription()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int Count;
+		public int Count;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int Quality;
+		public int Quality;
 #endif
 	}
 }

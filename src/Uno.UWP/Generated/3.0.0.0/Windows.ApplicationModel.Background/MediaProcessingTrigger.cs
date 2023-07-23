@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Background
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaProcessingTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
+	public partial class MediaProcessingTrigger : global::Windows.ApplicationModel.Background.IBackgroundTrigger
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,14 +17,14 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.MediaProcessingTrigger.MediaProcessingTrigger()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.MediaProcessingTriggerResult> RequestAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.MediaProcessingTriggerResult> RequestAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaProcessingTriggerResult> MediaProcessingTrigger.RequestAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaProcessingTriggerResult%3E%20MediaProcessingTrigger.RequestAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.MediaProcessingTriggerResult> RequestAsync( global::Windows.Foundation.Collections.ValueSet arguments)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.MediaProcessingTriggerResult> RequestAsync( global::Windows.Foundation.Collections.ValueSet arguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaProcessingTriggerResult> MediaProcessingTrigger.RequestAsync(ValueSet arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaProcessingTriggerResult%3E%20MediaProcessingTrigger.RequestAsync%28ValueSet%20arguments%29");
 		}

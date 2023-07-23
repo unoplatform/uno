@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SvgImageSourceFailedEventArgs 
+	public partial class SvgImageSourceFailedEventArgs 
 	{
 		// Skipping already declared property Status
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SvgImageSourceFailedEventArgs.Status.get

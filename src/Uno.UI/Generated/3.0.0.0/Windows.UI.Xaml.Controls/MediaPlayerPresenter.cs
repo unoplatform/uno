@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaPlayerPresenter 
+	public partial class MediaPlayerPresenter 
 	{
 		// Skipping already declared property Stretch
 		// Skipping already declared property MediaPlayer

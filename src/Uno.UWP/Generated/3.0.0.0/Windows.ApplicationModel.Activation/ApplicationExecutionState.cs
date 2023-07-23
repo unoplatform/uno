@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Activation
 {
 #if false || false || false || false || false || false || false
-	public   enum ApplicationExecutionState 
+	public enum ApplicationExecutionState 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Activation.ApplicationExecutionState.NotRunning
 		// Skipping already declared field Windows.ApplicationModel.Activation.ApplicationExecutionState.Running

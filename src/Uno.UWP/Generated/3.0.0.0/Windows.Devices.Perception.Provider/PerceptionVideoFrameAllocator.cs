@@ -6,7 +6,7 @@ namespace Windows.Devices.Perception.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PerceptionVideoFrameAllocator : global::System.IDisposable
+	public partial class PerceptionVideoFrameAllocator : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -18,21 +18,21 @@ namespace Windows.Devices.Perception.Provider
 		// Forced skipping of method Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator.PerceptionVideoFrameAllocator(uint, Windows.Graphics.Imaging.BitmapPixelFormat, Windows.Foundation.Size, Windows.Graphics.Imaging.BitmapAlphaMode)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Perception.Provider.PerceptionFrame AllocateFrame()
+		public global::Windows.Devices.Perception.Provider.PerceptionFrame AllocateFrame()
 		{
 			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.AllocateFrame() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrame%20PerceptionVideoFrameAllocator.AllocateFrame%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame( global::Windows.Media.VideoFrame frame)
+		public global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame( global::Windows.Media.VideoFrame frame)
 		{
 			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.CopyFromVideoFrame(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrame%20PerceptionVideoFrameAllocator.CopyFromVideoFrame%28VideoFrame%20frame%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "void PerceptionVideoFrameAllocator.Dispose()");
 		}

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TimePickerAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
+	public partial class TimePickerAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer
 	{
 		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.TimePickerAutomationPeer(Windows.UI.Xaml.Controls.TimePicker)
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.TimePickerAutomationPeer.TimePickerAutomationPeer(Windows.UI.Xaml.Controls.TimePicker)

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DragStartingEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
+	public partial class DragStartingEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Data

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LoopingSelector : global::Windows.UI.Xaml.Controls.Control
+	public partial class LoopingSelector : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property ShouldLoop
 		// Skipping already declared property SelectedItem

@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Scenes
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ScenePbrMaterial : global::Windows.UI.Composition.Scenes.SceneMaterial
+	public partial class ScenePbrMaterial : global::Windows.UI.Composition.Scenes.SceneMaterial
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float OcclusionStrength
+		public float OcclusionStrength
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneMaterialInput OcclusionInput
+		public global::Windows.UI.Composition.Scenes.SceneMaterialInput OcclusionInput
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float NormalScale
+		public float NormalScale
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneMaterialInput NormalInput
+		public global::Windows.UI.Composition.Scenes.SceneMaterialInput NormalInput
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDoubleSided
+		public bool IsDoubleSided
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneMaterialInput EmissiveInput
+		public global::Windows.UI.Composition.Scenes.SceneMaterialInput EmissiveInput
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Numerics.Vector3 EmissiveFactor
+		public global::System.Numerics.Vector3 EmissiveFactor
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.Scenes.SceneAlphaMode AlphaMode
+		public global::Windows.UI.Composition.Scenes.SceneAlphaMode AlphaMode
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.UI.Composition.Scenes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  float AlphaCutoff
+		public float AlphaCutoff
 		{
 			get
 			{

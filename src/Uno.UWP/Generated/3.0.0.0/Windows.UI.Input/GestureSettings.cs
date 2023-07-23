@@ -3,7 +3,7 @@
 namespace Windows.UI.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum GestureSettings : uint
+	public enum GestureSettings : uint
 	{
 		// Skipping already declared field Windows.UI.Input.GestureSettings.None
 		// Skipping already declared field Windows.UI.Input.GestureSettings.Tap

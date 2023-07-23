@@ -5,7 +5,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VersionAttribute : global::System.Attribute
+	public partial class VersionAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint)
 		// Forced skipping of method Windows.Foundation.Metadata.VersionAttribute.VersionAttribute(uint)

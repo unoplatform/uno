@@ -3,7 +3,7 @@
 namespace Windows.Storage
 {
 #if false || false || false || false || false || false || false
-	public   enum FileAccessMode 
+	public enum FileAccessMode 
 	{
 		// Skipping already declared field Windows.Storage.FileAccessMode.Read
 		// Skipping already declared field Windows.Storage.FileAccessMode.ReadWrite

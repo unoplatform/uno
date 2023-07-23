@@ -5,7 +5,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HoldingEventArgs 
+	public partial class HoldingEventArgs 
 	{
 		// Skipping already declared property HoldingState
 		// Skipping already declared property PointerDeviceType

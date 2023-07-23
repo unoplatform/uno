@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class LoopingSelectorPanel : global::Windows.UI.Xaml.Controls.Canvas,global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
+	public partial class LoopingSelectorPanel : global::Windows.UI.Xaml.Controls.Canvas,global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 	{
 		// Skipping already declared property AreHorizontalSnapPointsRegular
 		// Skipping already declared property AreVerticalSnapPointsRegular

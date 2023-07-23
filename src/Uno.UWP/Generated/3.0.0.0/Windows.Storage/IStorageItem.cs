@@ -5,7 +5,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IStorageItem 
+	public partial interface IStorageItem 
 	{
 		// Skipping already declared property Attributes
 		// Skipping already declared property DateCreated

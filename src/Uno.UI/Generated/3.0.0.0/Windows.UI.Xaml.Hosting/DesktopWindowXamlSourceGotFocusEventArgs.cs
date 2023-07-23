@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Hosting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DesktopWindowXamlSourceGotFocusEventArgs 
+	public partial class DesktopWindowXamlSourceGotFocusEventArgs 
 	{
 		// Skipping already declared property Request
 		// Forced skipping of method Windows.UI.Xaml.Hosting.DesktopWindowXamlSourceGotFocusEventArgs.Request.get

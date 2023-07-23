@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IAsyncAction : global::Windows.Foundation.IAsyncInfo
+	public partial interface IAsyncAction : global::Windows.Foundation.IAsyncInfo
 	{
 		// Skipping already declared property Completed
 		// Forced skipping of method Windows.Foundation.IAsyncAction.Completed.set

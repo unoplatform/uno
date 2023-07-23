@@ -3,7 +3,7 @@
 namespace Windows.System
 {
 #if false || false || false || false || false || false || false
-	public   enum DispatcherQueuePriority 
+	public enum DispatcherQueuePriority 
 	{
 		// Skipping already declared field Windows.System.DispatcherQueuePriority.Low
 		// Skipping already declared field Windows.System.DispatcherQueuePriority.Normal

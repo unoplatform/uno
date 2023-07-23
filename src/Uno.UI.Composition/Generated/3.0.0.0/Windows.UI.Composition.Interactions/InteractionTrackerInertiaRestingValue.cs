@@ -5,11 +5,11 @@ namespace Windows.UI.Composition.Interactions
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class InteractionTrackerInertiaRestingValue : global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier
+	public partial class InteractionTrackerInertiaRestingValue : global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.ExpressionAnimation RestingValue
+		public global::Windows.UI.Composition.ExpressionAnimation RestingValue
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Composition.Interactions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.ExpressionAnimation Condition
+		public global::Windows.UI.Composition.ExpressionAnimation Condition
 		{
 			get
 			{

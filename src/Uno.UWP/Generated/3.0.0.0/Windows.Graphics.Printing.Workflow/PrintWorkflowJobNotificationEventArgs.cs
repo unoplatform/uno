@@ -5,11 +5,11 @@ namespace Windows.Graphics.Printing.Workflow
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PrintWorkflowJobNotificationEventArgs 
+	public partial class PrintWorkflowJobNotificationEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration Configuration
+		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration Configuration
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Graphics.Printing.Workflow
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Printing.Workflow.PrintWorkflowPrinterJob PrinterJob
+		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowPrinterJob PrinterJob
 		{
 			get
 			{
@@ -31,7 +31,7 @@ namespace Windows.Graphics.Printing.Workflow
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowJobNotificationEventArgs.PrinterJob.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Deferral GetDeferral()
+		public global::Windows.Foundation.Deferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member Deferral PrintWorkflowJobNotificationEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Deferral%20PrintWorkflowJobNotificationEventArgs.GetDeferral%28%29");
 		}

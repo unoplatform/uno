@@ -5,11 +5,11 @@ namespace Windows.Security.Authentication.Identity.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MicrosoftAccountMultiFactorGetSessionsResult 
+	public partial class MicrosoftAccountMultiFactorGetSessionsResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorServiceResponse ServiceResponse
+		public global::Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorServiceResponse ServiceResponse
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Security.Authentication.Identity.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo> Sessions
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Authentication.Identity.Core.MicrosoftAccountMultiFactorSessionInfo> Sessions
 		{
 			get
 			{

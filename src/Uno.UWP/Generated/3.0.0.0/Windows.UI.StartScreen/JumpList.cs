@@ -5,11 +5,11 @@ namespace Windows.UI.StartScreen
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class JumpList 
+	public partial class JumpList 
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.StartScreen.JumpListSystemGroupKind SystemGroupKind
+		public global::Windows.UI.StartScreen.JumpListSystemGroupKind SystemGroupKind
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.StartScreen
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.StartScreen.JumpListItem> Items
+		public global::System.Collections.Generic.IList<global::Windows.UI.StartScreen.JumpListItem> Items
 		{
 			get
 			{
@@ -36,7 +36,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.JumpList.SystemGroupKind.set
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SaveAsync()
+		public global::Windows.Foundation.IAsyncAction SaveAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction JumpList.SaveAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20JumpList.SaveAsync%28%29");
 		}

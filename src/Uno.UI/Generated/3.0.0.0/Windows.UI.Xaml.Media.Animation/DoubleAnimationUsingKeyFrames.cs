@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DoubleAnimationUsingKeyFrames : global::Windows.UI.Xaml.Media.Animation.Timeline
+	public partial class DoubleAnimationUsingKeyFrames : global::Windows.UI.Xaml.Media.Animation.Timeline
 	{
 		// Skipping already declared property EnableDependentAnimation
 		// Skipping already declared property KeyFrames

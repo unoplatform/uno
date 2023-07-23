@@ -3,7 +3,7 @@
 namespace Windows.Networking.Connectivity
 {
 #if false || false || false || false || false || false || false
-	public   enum NetworkCostType 
+	public enum NetworkCostType 
 	{
 		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Unknown
 		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Unrestricted

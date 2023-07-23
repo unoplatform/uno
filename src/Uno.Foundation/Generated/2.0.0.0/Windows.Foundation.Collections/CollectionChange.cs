@@ -3,7 +3,7 @@
 namespace Windows.Foundation.Collections
 {
 #if false || false || false || false || false || false || false
-	public   enum CollectionChange 
+	public enum CollectionChange 
 	{
 		// Skipping already declared field Windows.Foundation.Collections.CollectionChange.Reset
 		// Skipping already declared field Windows.Foundation.Collections.CollectionChange.ItemInserted

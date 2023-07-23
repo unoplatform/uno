@@ -5,7 +5,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GuidAttribute : global::System.Attribute
+	public partial class GuidAttribute : global::System.Attribute
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.GuidAttribute.GuidAttribute(uint, ushort, ushort, byte, byte, byte, byte, byte, byte, byte, byte)
 		// Forced skipping of method Windows.Foundation.Metadata.GuidAttribute.GuidAttribute(uint, ushort, ushort, byte, byte, byte, byte, byte, byte, byte, byte)

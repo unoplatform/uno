@@ -5,11 +5,11 @@ namespace Windows.Storage.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FileUpdateRequest 
+	public partial class FileUpdateRequest 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Provider.FileUpdateStatus Status
+		public global::Windows.Storage.Provider.FileUpdateStatus Status
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Storage.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ContentId
+		public string ContentId
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.Storage.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.StorageFile File
+		public global::Windows.Storage.StorageFile File
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.Storage.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string UserInputNeededMessage
+		public string UserInputNeededMessage
 		{
 			get
 			{
@@ -61,14 +61,14 @@ namespace Windows.Storage.Provider
 		// Forced skipping of method Windows.Storage.Provider.FileUpdateRequest.Status.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
+		public global::Windows.Storage.Provider.FileUpdateRequestDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member FileUpdateRequestDeferral FileUpdateRequest.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileUpdateRequestDeferral%20FileUpdateRequest.GetDeferral%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void UpdateLocalFile( global::Windows.Storage.IStorageFile value)
+		public void UpdateLocalFile( global::Windows.Storage.IStorageFile value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Provider.FileUpdateRequest", "void FileUpdateRequest.UpdateLocalFile(IStorageFile value)");
 		}

@@ -5,7 +5,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SignificantDigitsNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
+	public partial class SignificantDigitsNumberRounder : global::Windows.Globalization.NumberFormatting.INumberRounder
 	{
 		// Skipping already declared property SignificantDigits
 		// Skipping already declared property RoundingAlgorithm

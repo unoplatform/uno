@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Shapes
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Line 
+	public partial class Line 
 	{
 		// Skipping already declared property Y2
 		// Skipping already declared property Y1

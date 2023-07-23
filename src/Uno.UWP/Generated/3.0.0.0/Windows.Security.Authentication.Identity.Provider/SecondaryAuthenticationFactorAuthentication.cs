@@ -6,11 +6,11 @@ namespace Windows.Security.Authentication.Identity.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SecondaryAuthenticationFactorAuthentication 
+	public partial class SecondaryAuthenticationFactorAuthentication 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer DeviceConfigurationData
+		public global::Windows.Storage.Streams.IBuffer DeviceConfigurationData
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer DeviceNonce
+		public global::Windows.Storage.Streams.IBuffer DeviceNonce
 		{
 			get
 			{
@@ -30,7 +30,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer ServiceAuthenticationHmac
+		public global::Windows.Storage.Streams.IBuffer ServiceAuthenticationHmac
 		{
 			get
 			{
@@ -40,7 +40,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer SessionNonce
+		public global::Windows.Storage.Streams.IBuffer SessionNonce
 		{
 			get
 			{
@@ -54,14 +54,14 @@ namespace Windows.Security.Authentication.Identity.Provider
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorAuthentication.DeviceConfigurationData.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorFinishAuthenticationStatus> FinishAuthenticationAsync( global::Windows.Storage.Streams.IBuffer deviceHmac,  global::Windows.Storage.Streams.IBuffer sessionHmac)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorFinishAuthenticationStatus> FinishAuthenticationAsync( global::Windows.Storage.Streams.IBuffer deviceHmac,  global::Windows.Storage.Streams.IBuffer sessionHmac)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SecondaryAuthenticationFactorFinishAuthenticationStatus> SecondaryAuthenticationFactorAuthentication.FinishAuthenticationAsync(IBuffer deviceHmac, IBuffer sessionHmac) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSecondaryAuthenticationFactorFinishAuthenticationStatus%3E%20SecondaryAuthenticationFactorAuthentication.FinishAuthenticationAsync%28IBuffer%20deviceHmac%2C%20IBuffer%20sessionHmac%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction AbortAuthenticationAsync( string errorLogMessage)
+		public global::Windows.Foundation.IAsyncAction AbortAuthenticationAsync( string errorLogMessage)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorAuthentication.AbortAuthenticationAsync(string errorLogMessage) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorAuthentication.AbortAuthenticationAsync%28string%20errorLogMessage%29");
 		}

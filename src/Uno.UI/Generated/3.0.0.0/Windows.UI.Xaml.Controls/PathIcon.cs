@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PathIcon : global::Windows.UI.Xaml.Controls.IconElement
+	public partial class PathIcon : global::Windows.UI.Xaml.Controls.IconElement
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property DataProperty

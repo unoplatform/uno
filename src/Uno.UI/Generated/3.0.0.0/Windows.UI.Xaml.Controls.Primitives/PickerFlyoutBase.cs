@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PickerFlyoutBase : global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase
+	public partial class PickerFlyoutBase : global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase
 	{
 		// Skipping already declared property TitleProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.PickerFlyoutBase.PickerFlyoutBase()

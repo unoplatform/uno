@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TimePickerValueChangedEventArgs 
+	public partial class TimePickerValueChangedEventArgs 
 	{
 		// Skipping already declared property NewTime
 		// Skipping already declared property OldTime

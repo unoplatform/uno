@@ -5,7 +5,7 @@ namespace Windows.Security.Authentication.Web.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IWebAccountProviderTokenOperation : global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
+	public partial interface IWebAccountProviderTokenOperation : global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::System.DateTimeOffset CacheExpirationTime

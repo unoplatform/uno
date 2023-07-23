@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Span : global::Windows.UI.Xaml.Documents.Inline
+	public partial class Span : global::Windows.UI.Xaml.Documents.Inline
 	{
 		// Skipping already declared property Inlines
 		// Skipping already declared method Windows.UI.Xaml.Documents.Span.Span()

@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Capture
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum GraphicsCaptureAccessKind 
+	public enum GraphicsCaptureAccessKind 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Borderless = 0,

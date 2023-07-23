@@ -5,14 +5,14 @@ namespace Windows.Graphics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct SizeInt32 
+	public partial struct SizeInt32 
 	{
 		// Forced skipping of method Windows.Graphics.SizeInt32.SizeInt32()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int Width;
+		public int Width;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int Height;
+		public int Height;
 #endif
 	}
 }

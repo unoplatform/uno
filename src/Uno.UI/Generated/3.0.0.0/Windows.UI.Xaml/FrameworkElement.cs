@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class FrameworkElement 
+	public partial class FrameworkElement 
 	{
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  double Width
+		public double Width
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  global::Windows.UI.Xaml.VerticalAlignment VerticalAlignment
+		public global::Windows.UI.Xaml.VerticalAlignment VerticalAlignment
 		{
 			get
 			{
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property Name
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  double MinWidth
+		public double MinWidth
 		{
 			get
 			{
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  double MinHeight
+		public double MinHeight
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  double MaxWidth
+		public double MaxWidth
 		{
 			get
 			{
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  double MaxHeight
+		public double MaxHeight
 		{
 			get
 			{
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public  global::Windows.UI.Xaml.Thickness Margin
+		public global::Windows.UI.Xaml.Thickness Margin
 		{
 			get
 			{
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Language
+		public string Language
 		{
 			get
 			{
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalAlignment
+		public global::Windows.UI.Xaml.HorizontalAlignment HorizontalAlignment
 		{
 			get
 			{
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public  double Height
+		public double Height
 		{
 			get
 			{
@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.FlowDirection FlowDirection
+		public global::Windows.UI.Xaml.FlowDirection FlowDirection
 		{
 			get
 			{
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property Parent
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.TriggerCollection Triggers
+		public global::Windows.UI.Xaml.TriggerCollection Triggers
 		{
 			get
 			{
@@ -437,7 +437,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared event Windows.UI.Xaml.FrameworkElement.Loaded
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public  event global::Windows.UI.Xaml.SizeChangedEventHandler SizeChanged
+		public event global::Windows.UI.Xaml.SizeChangedEventHandler SizeChanged
 		{
 			[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
 			add

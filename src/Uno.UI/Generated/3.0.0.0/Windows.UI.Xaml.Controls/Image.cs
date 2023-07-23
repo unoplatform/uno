@@ -5,13 +5,13 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Image 
+	public partial class Image 
 	{
 		// Skipping already declared property Stretch
 		// Skipping already declared property Source
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Thickness NineGrid
+		public global::Windows.UI.Xaml.Thickness NineGrid
 		{
 			get
 			{
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.PlayTo.PlayToSource PlayToSource
+		public global::Windows.Media.PlayTo.PlayToSource PlayToSource
 		{
 			get
 			{
@@ -66,14 +66,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Image.ImageOpened.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Casting.CastingSource GetAsCastingSource()
+		public global::Windows.Media.Casting.CastingSource GetAsCastingSource()
 		{
 			throw new global::System.NotImplementedException("The member CastingSource Image.GetAsCastingSource() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CastingSource%20Image.GetAsCastingSource%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Composition.CompositionBrush GetAlphaMask()
+		public global::Windows.UI.Composition.CompositionBrush GetAlphaMask()
 		{
 			throw new global::System.NotImplementedException("The member CompositionBrush Image.GetAlphaMask() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBrush%20Image.GetAlphaMask%28%29");
 		}

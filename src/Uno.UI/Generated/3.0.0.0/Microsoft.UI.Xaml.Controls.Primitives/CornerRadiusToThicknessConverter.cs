@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CornerRadiusToThicknessConverter : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.IValueConverter
+	public partial class CornerRadiusToThicknessConverter : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.IValueConverter
 	{
 		// Skipping already declared property Multiplier
 		// Skipping already declared property ConversionKind

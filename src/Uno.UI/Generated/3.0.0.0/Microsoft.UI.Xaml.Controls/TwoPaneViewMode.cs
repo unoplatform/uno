@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum TwoPaneViewMode 
+	public enum TwoPaneViewMode 
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TwoPaneViewMode.SinglePane
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TwoPaneViewMode.Wide

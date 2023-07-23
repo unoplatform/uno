@@ -5,11 +5,11 @@ namespace Windows.Web.UI.Interop
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WebViewControlProcessOptions 
+	public partial class WebViewControlProcessOptions 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.UI.Interop.WebViewControlProcessCapabilityState PrivateNetworkClientServerCapability
+		public global::Windows.Web.UI.Interop.WebViewControlProcessCapabilityState PrivateNetworkClientServerCapability
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Web.UI.Interop
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string EnterpriseId
+		public string EnterpriseId
 		{
 			get
 			{

@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VirtualizingPanel : global::Windows.UI.Xaml.Controls.Panel
+	public partial class VirtualizingPanel : global::Windows.UI.Xaml.Controls.Panel
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Controls.ItemContainerGenerator ItemContainerGenerator
+		public global::Windows.UI.Xaml.Controls.ItemContainerGenerator ItemContainerGenerator
 		{
 			get
 			{
@@ -20,21 +20,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingPanel.ItemContainerGenerator.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected  void AddInternalChild( global::Windows.UI.Xaml.UIElement child)
+		protected void AddInternalChild( global::Windows.UI.Xaml.UIElement child)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.AddInternalChild(UIElement child)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected  void InsertInternalChild( int index,  global::Windows.UI.Xaml.UIElement child)
+		protected void InsertInternalChild( int index,  global::Windows.UI.Xaml.UIElement child)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.InsertInternalChild(int index, UIElement child)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected  void RemoveInternalChildRange( int index,  int range)
+		protected void RemoveInternalChildRange( int index,  int range)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingPanel", "void VirtualizingPanel.RemoveInternalChildRange(int index, int range)");
 		}

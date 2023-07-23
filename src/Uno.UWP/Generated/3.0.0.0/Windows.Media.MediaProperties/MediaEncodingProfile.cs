@@ -5,11 +5,11 @@ namespace Windows.Media.MediaProperties
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaEncodingProfile 
+	public partial class MediaEncodingProfile 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.VideoEncodingProperties Video
+		public global::Windows.Media.MediaProperties.VideoEncodingProperties Video
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.ContainerEncodingProperties Container
+		public global::Windows.Media.MediaProperties.ContainerEncodingProperties Container
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.MediaProperties.AudioEncodingProperties Audio
+		public global::Windows.Media.MediaProperties.AudioEncodingProperties Audio
 		{
 			get
 			{
@@ -65,42 +65,42 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingProfile.Container.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetAudioTracks( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioStreamDescriptor> value)
+		public void SetAudioTracks( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.AudioStreamDescriptor> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "void MediaEncodingProfile.SetAudioTracks(IEnumerable<AudioStreamDescriptor> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Core.AudioStreamDescriptor> GetAudioTracks()
+		public global::System.Collections.Generic.IList<global::Windows.Media.Core.AudioStreamDescriptor> GetAudioTracks()
 		{
 			throw new global::System.NotImplementedException("The member IList<AudioStreamDescriptor> MediaEncodingProfile.GetAudioTracks() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CAudioStreamDescriptor%3E%20MediaEncodingProfile.GetAudioTracks%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetVideoTracks( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.VideoStreamDescriptor> value)
+		public void SetVideoTracks( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.VideoStreamDescriptor> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "void MediaEncodingProfile.SetVideoTracks(IEnumerable<VideoStreamDescriptor> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Core.VideoStreamDescriptor> GetVideoTracks()
+		public global::System.Collections.Generic.IList<global::Windows.Media.Core.VideoStreamDescriptor> GetVideoTracks()
 		{
 			throw new global::System.NotImplementedException("The member IList<VideoStreamDescriptor> MediaEncodingProfile.GetVideoTracks() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CVideoStreamDescriptor%3E%20MediaEncodingProfile.GetVideoTracks%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetTimedMetadataTracks( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataStreamDescriptor> value)
+		public void SetTimedMetadataTracks( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataStreamDescriptor> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.MediaEncodingProfile", "void MediaEncodingProfile.SetTimedMetadataTracks(IEnumerable<TimedMetadataStreamDescriptor> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.Media.Core.TimedMetadataStreamDescriptor> GetTimedMetadataTracks()
+		public global::System.Collections.Generic.IList<global::Windows.Media.Core.TimedMetadataStreamDescriptor> GetTimedMetadataTracks()
 		{
 			throw new global::System.NotImplementedException("The member IList<TimedMetadataStreamDescriptor> MediaEncodingProfile.GetTimedMetadataTracks() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CTimedMetadataStreamDescriptor%3E%20MediaEncodingProfile.GetTimedMetadataTracks%28%29");
 		}

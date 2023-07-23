@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public   enum ApplicationTheme 
+	public enum ApplicationTheme 
 	{
 		// Skipping already declared field Windows.UI.Xaml.ApplicationTheme.Light
 		// Skipping already declared field Windows.UI.Xaml.ApplicationTheme.Dark

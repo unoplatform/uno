@@ -3,7 +3,7 @@
 namespace Windows.Media.Capture
 {
 #if false || false || false || false || false || false || false
-	public   enum CameraCaptureUIMaxPhotoResolution 
+	public enum CameraCaptureUIMaxPhotoResolution 
 	{
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.HighestAvailable
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIMaxPhotoResolution.VerySmallQvga

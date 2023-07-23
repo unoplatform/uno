@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Media
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BrushCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Brush>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Brush>
+	public partial class BrushCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Brush>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Brush>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{

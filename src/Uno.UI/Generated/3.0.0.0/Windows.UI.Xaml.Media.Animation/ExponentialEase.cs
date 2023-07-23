@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ExponentialEase : global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase
+	public partial class ExponentialEase : global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase
 	{
 		// Skipping already declared property Exponent
 		// Skipping already declared property ExponentProperty

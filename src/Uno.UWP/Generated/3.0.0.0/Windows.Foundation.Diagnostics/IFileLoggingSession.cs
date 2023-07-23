@@ -5,7 +5,7 @@ namespace Windows.Foundation.Diagnostics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IFileLoggingSession : global::System.IDisposable
+	public partial interface IFileLoggingSession : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		string Name
@@ -29,7 +29,7 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.IFileLoggingSession.LogFileGenerated.add
 		// Forced skipping of method Windows.Foundation.Diagnostics.IFileLoggingSession.LogFileGenerated.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		 event global::Windows.Foundation.TypedEventHandler<global::Windows.Foundation.Diagnostics.IFileLoggingSession, global::Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs> LogFileGenerated;
+		event global::Windows.Foundation.TypedEventHandler<global::Windows.Foundation.Diagnostics.IFileLoggingSession, global::Windows.Foundation.Diagnostics.LogFileGeneratedEventArgs> LogFileGenerated;
 #endif
 	}
 }

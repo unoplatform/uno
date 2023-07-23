@@ -5,11 +5,11 @@ namespace Windows.UI.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TouchHitTestingEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
+	public partial class TouchHitTestingEventArgs : global::Windows.UI.Core.ICoreWindowEventArgs
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool Handled
+		public bool Handled
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CoreProximityEvaluation ProximityEvaluation
+		public global::Windows.UI.Core.CoreProximityEvaluation ProximityEvaluation
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Rect BoundingBox
+		public global::Windows.Foundation.Rect BoundingBox
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.UI.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Point Point
+		public global::Windows.Foundation.Point Point
 		{
 			get
 			{
@@ -61,14 +61,14 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.TouchHitTestingEventArgs.BoundingBox.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Rect controlBoundingBox)
+		public global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Rect controlBoundingBox)
 		{
 			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Rect controlBoundingBox) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreProximityEvaluation%20TouchHitTestingEventArgs.EvaluateProximity%28Rect%20controlBoundingBox%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Point[] controlVertices)
+		public global::Windows.UI.Core.CoreProximityEvaluation EvaluateProximity( global::Windows.Foundation.Point[] controlVertices)
 		{
 			throw new global::System.NotImplementedException("The member CoreProximityEvaluation TouchHitTestingEventArgs.EvaluateProximity(Point[] controlVertices) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreProximityEvaluation%20TouchHitTestingEventArgs.EvaluateProximity%28Point%5B%5D%20controlVertices%29");
 		}

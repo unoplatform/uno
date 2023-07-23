@@ -5,11 +5,11 @@ namespace Windows.Devices.WiFiDirect.Services
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WiFiDirectServiceAutoAcceptSessionConnectedEventArgs 
+	public partial class WiFiDirectServiceAutoAcceptSessionConnectedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession Session
+		public global::Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession Session
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IBuffer SessionInfo
+		public global::Windows.Storage.Streams.IBuffer SessionInfo
 		{
 			get
 			{

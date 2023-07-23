@@ -5,11 +5,11 @@ namespace Windows.Media.Audio
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialAudioFormatConfiguration 
+	public partial class SpatialAudioFormatConfiguration 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Audio.MixedRealitySpatialAudioFormatPolicy MixedRealityExclusiveModePolicy
+		public global::Windows.Media.Audio.MixedRealitySpatialAudioFormatPolicy MixedRealityExclusiveModePolicy
 		{
 			get
 			{
@@ -23,14 +23,14 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ReportLicenseChangedAsync( string subtype)
+		public global::Windows.Foundation.IAsyncAction ReportLicenseChangedAsync( string subtype)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpatialAudioFormatConfiguration.ReportLicenseChangedAsync(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpatialAudioFormatConfiguration.ReportLicenseChangedAsync%28string%20subtype%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ReportConfigurationChangedAsync( string subtype)
+		public global::Windows.Foundation.IAsyncAction ReportConfigurationChangedAsync( string subtype)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpatialAudioFormatConfiguration.ReportConfigurationChangedAsync(string subtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpatialAudioFormatConfiguration.ReportConfigurationChangedAsync%28string%20subtype%29");
 		}

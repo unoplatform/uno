@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TreeViewItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+	public partial class TreeViewItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ListViewItemAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
+		public global::Windows.UI.Xaml.Automation.ExpandCollapseState ExpandCollapseState
 		{
 			get
 			{
@@ -28,14 +28,14 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer.ExpandCollapseState.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Collapse()
+		public void Collapse()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer", "void TreeViewItemAutomationPeer.Collapse()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Expand()
+		public void Expand()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer", "void TreeViewItemAutomationPeer.Expand()");
 		}

@@ -5,11 +5,11 @@ namespace Windows.Networking.NetworkOperators
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MobileBroadbandDeviceService 
+	public partial class MobileBroadbandDeviceService 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid DeviceServiceId
+		public global::System.Guid DeviceServiceId
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<uint> SupportedCommands
+		public global::System.Collections.Generic.IReadOnlyList<uint> SupportedCommands
 		{
 			get
 			{
@@ -31,14 +31,14 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandDeviceService.SupportedCommands.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataSession OpenDataSession()
+		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceDataSession OpenDataSession()
 		{
 			throw new global::System.NotImplementedException("The member MobileBroadbandDeviceServiceDataSession MobileBroadbandDeviceService.OpenDataSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandDeviceServiceDataSession%20MobileBroadbandDeviceService.OpenDataSession%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession OpenCommandSession()
+		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceServiceCommandSession OpenCommandSession()
 		{
 			throw new global::System.NotImplementedException("The member MobileBroadbandDeviceServiceCommandSession MobileBroadbandDeviceService.OpenCommandSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandDeviceServiceCommandSession%20MobileBroadbandDeviceService.OpenCommandSession%28%29");
 		}

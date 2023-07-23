@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContentControl : global::Windows.UI.Xaml.Controls.Control
+	public partial class ContentControl : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property ContentTransitions
 		// Skipping already declared property ContentTemplateSelector

@@ -5,11 +5,11 @@ namespace Windows.Media.Audio
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AudioPlaybackConnection : global::System.IDisposable
+	public partial class AudioPlaybackConnection : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Audio.AudioPlaybackConnectionState State
+		public global::Windows.Media.Audio.AudioPlaybackConnectionState State
 		{
 			get
 			{
@@ -29,14 +29,14 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioPlaybackConnection", "void AudioPlaybackConnection.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction StartAsync()
+		public global::Windows.Foundation.IAsyncAction StartAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction AudioPlaybackConnection.StartAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AudioPlaybackConnection.StartAsync%28%29");
 		}
@@ -45,14 +45,14 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.State.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Audio.AudioPlaybackConnectionOpenResult Open()
+		public global::Windows.Media.Audio.AudioPlaybackConnectionOpenResult Open()
 		{
 			throw new global::System.NotImplementedException("The member AudioPlaybackConnectionOpenResult AudioPlaybackConnection.Open() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioPlaybackConnectionOpenResult%20AudioPlaybackConnection.Open%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.AudioPlaybackConnectionOpenResult> OpenAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Audio.AudioPlaybackConnectionOpenResult> OpenAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AudioPlaybackConnectionOpenResult> AudioPlaybackConnection.OpenAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAudioPlaybackConnectionOpenResult%3E%20AudioPlaybackConnection.OpenAsync%28%29");
 		}
@@ -61,7 +61,7 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioPlaybackConnection.StateChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioPlaybackConnection", "void AudioPlaybackConnection.Dispose()");
 		}
@@ -82,7 +82,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioPlaybackConnection, object> StateChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Audio.AudioPlaybackConnection, object> StateChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

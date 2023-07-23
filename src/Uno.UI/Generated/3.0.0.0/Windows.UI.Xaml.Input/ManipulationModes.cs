@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public   enum ManipulationModes : uint
+	public enum ManipulationModes : uint
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.None
 		// Skipping already declared field Windows.UI.Xaml.Input.ManipulationModes.TranslateX

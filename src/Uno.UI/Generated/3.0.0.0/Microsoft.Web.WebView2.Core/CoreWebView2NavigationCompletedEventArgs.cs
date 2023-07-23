@@ -5,7 +5,7 @@ namespace Microsoft.Web.WebView2.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreWebView2NavigationCompletedEventArgs 
+	public partial class CoreWebView2NavigationCompletedEventArgs 
 	{
 		// Skipping already declared property IsSuccess
 		// Skipping already declared property NavigationId

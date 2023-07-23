@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IRangeValueProvider 
+	public partial interface IRangeValueProvider 
 	{
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property LargeChange

@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Contacts
 {
 #if false || false || false || false || false || false || false
-	public   enum ContactEmailKind 
+	public enum ContactEmailKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactEmailKind.Personal
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactEmailKind.Work

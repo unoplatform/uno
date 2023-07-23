@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Activation
 {
 #if false || false || false || false || false || false || false
-	public   enum ActivationKind 
+	public enum ActivationKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Launch
 		// Skipping already declared field Windows.ApplicationModel.Activation.ActivationKind.Search

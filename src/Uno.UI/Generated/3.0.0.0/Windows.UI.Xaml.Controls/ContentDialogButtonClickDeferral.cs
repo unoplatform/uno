@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContentDialogButtonClickDeferral 
+	public partial class ContentDialogButtonClickDeferral 
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.ContentDialogButtonClickDeferral.Complete()
 	}

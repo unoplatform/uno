@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Italic : global::Windows.UI.Xaml.Documents.Span
+	public partial class Italic : global::Windows.UI.Xaml.Documents.Span
 	{
 		// Skipping already declared method Windows.UI.Xaml.Documents.Italic.Italic()
 		// Forced skipping of method Windows.UI.Xaml.Documents.Italic.Italic()

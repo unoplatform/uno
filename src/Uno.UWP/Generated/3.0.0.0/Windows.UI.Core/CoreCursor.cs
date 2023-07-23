@@ -5,7 +5,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreCursor 
+	public partial class CoreCursor 
 	{
 		// Skipping already declared property Id
 		// Skipping already declared property Type

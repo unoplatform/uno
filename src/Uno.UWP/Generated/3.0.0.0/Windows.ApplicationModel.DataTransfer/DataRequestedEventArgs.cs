@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DataRequestedEventArgs 
+	public partial class DataRequestedEventArgs 
 	{
 		// Skipping already declared property Request
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataRequestedEventArgs.Request.get

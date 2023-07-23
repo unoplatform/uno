@@ -3,7 +3,7 @@
 namespace Windows.Web
 {
 #if false || false || false || false || false || false || false
-	public   enum WebErrorStatus 
+	public enum WebErrorStatus 
 	{
 		// Skipping already declared field Windows.Web.WebErrorStatus.Unknown
 		// Skipping already declared field Windows.Web.WebErrorStatus.CertificateCommonNameIsIncorrect

@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.SetterBase>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.SetterBase>
+	public partial class SetterBaseCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.SetterBase>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.SetterBase>
 	{
 		// Skipping already declared property Size
 		// Skipping already declared property IsSealed

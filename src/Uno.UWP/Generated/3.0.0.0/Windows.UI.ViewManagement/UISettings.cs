@@ -5,7 +5,7 @@ namespace Windows.UI.ViewManagement
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class UISettings 
+	public partial class UISettings 
 	{
 		// Skipping already declared property AnimationsEnabled
 		// Skipping already declared property CaretBlinkRate
@@ -58,7 +58,7 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabledChanged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs> AutoHideScrollBarsChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsAutoHideScrollBarsChangedEventArgs> AutoHideScrollBarsChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -74,7 +74,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs> AnimationsEnabledChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs> AnimationsEnabledChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -90,7 +90,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsMessageDurationChangedEventArgs> MessageDurationChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsMessageDurationChangedEventArgs> MessageDurationChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

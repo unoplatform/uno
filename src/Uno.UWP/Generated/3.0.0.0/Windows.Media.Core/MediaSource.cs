@@ -5,11 +5,11 @@ namespace Windows.Media.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MediaSource : global::System.IDisposable,global::Windows.Media.Playback.IMediaPlaybackSource
+	public partial class MediaSource : global::System.IDisposable,global::Windows.Media.Playback.IMediaPlaybackSource
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Collections.ValueSet CustomProperties
+		public global::Windows.Foundation.Collections.ValueSet CustomProperties
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? Duration
+		public global::System.TimeSpan? Duration
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Core.TimedMetadataTrack> ExternalTimedMetadataTracks
+		public global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Core.TimedMetadataTrack> ExternalTimedMetadataTracks
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Core.TimedTextSource> ExternalTimedTextSources
+		public global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Core.TimedTextSource> ExternalTimedTextSources
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsOpen
+		public bool IsOpen
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MediaSourceState State
+		public global::Windows.Media.Core.MediaSourceState State
 		{
 			get
 			{
@@ -69,7 +69,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource AdaptiveMediaSource
+		public global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource AdaptiveMediaSource
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MediaStreamSource MediaStreamSource
+		public global::Windows.Media.Core.MediaStreamSource MediaStreamSource
 		{
 			get
 			{
@@ -89,7 +89,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Core.MseStreamSource MseStreamSource
+		public global::Windows.Media.Core.MseStreamSource MseStreamSource
 		{
 			get
 			{
@@ -100,7 +100,7 @@ namespace Windows.Media.Core
 		// Skipping already declared property Uri
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.BackgroundTransfer.DownloadOperation DownloadOperation
+		public global::Windows.Networking.BackgroundTransfer.DownloadOperation DownloadOperation
 		{
 			get
 			{
@@ -117,7 +117,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.ExternalTimedMetadataTracks.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Dispose()");
 		}
@@ -127,7 +127,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.State.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Reset()
+		public void Reset()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSource", "void MediaSource.Reset()");
 		}
@@ -138,7 +138,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.Uri.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction OpenAsync()
+		public global::Windows.Foundation.IAsyncAction OpenAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MediaSource.OpenAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaSource.OpenAsync%28%29");
 		}
@@ -217,7 +217,7 @@ namespace Windows.Media.Core
 		// Skipping already declared method Windows.Media.Core.MediaSource.CreateFromUri(System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs> OpenOperationCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceOpenOperationCompletedEventArgs> OpenOperationCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -233,7 +233,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceStateChangedEventArgs> StateChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Core.MediaSource, global::Windows.Media.Core.MediaSourceStateChangedEventArgs> StateChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

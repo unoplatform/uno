@@ -5,7 +5,7 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IRandomAccessStreamReference 
+	public partial interface IRandomAccessStreamReference 
 	{
 		// Skipping already declared method Windows.Storage.Streams.IRandomAccessStreamReference.OpenReadAsync()
 	}

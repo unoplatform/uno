@@ -5,7 +5,7 @@ namespace Windows.Perception.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SpatialEntityStore 
+	public partial class SpatialEntityStore 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -19,21 +19,21 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SaveAsync( global::Windows.Perception.Spatial.SpatialEntity entity)
+		public global::Windows.Foundation.IAsyncAction SaveAsync( global::Windows.Perception.Spatial.SpatialEntity entity)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpatialEntityStore.SaveAsync(SpatialEntity entity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpatialEntityStore.SaveAsync%28SpatialEntity%20entity%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction RemoveAsync( global::Windows.Perception.Spatial.SpatialEntity entity)
+		public global::Windows.Foundation.IAsyncAction RemoveAsync( global::Windows.Perception.Spatial.SpatialEntity entity)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpatialEntityStore.RemoveAsync(SpatialEntity entity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpatialEntityStore.RemoveAsync%28SpatialEntity%20entity%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Perception.Spatial.SpatialEntityWatcher CreateEntityWatcher()
+		public global::Windows.Perception.Spatial.SpatialEntityWatcher CreateEntityWatcher()
 		{
 			throw new global::System.NotImplementedException("The member SpatialEntityWatcher SpatialEntityStore.CreateEntityWatcher() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialEntityWatcher%20SpatialEntityStore.CreateEntityWatcher%28%29");
 		}

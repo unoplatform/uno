@@ -5,7 +5,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Deferral : global::System.IDisposable
+	public partial class Deferral : global::System.IDisposable
 	{
 		// Skipping already declared method Windows.Foundation.Deferral.Deferral(Windows.Foundation.DeferralCompletedHandler)
 		// Forced skipping of method Windows.Foundation.Deferral.Deferral(Windows.Foundation.DeferralCompletedHandler)

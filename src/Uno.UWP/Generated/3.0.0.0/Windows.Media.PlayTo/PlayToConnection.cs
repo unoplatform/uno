@@ -6,11 +6,11 @@ namespace Windows.Media.PlayTo
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PlayToConnection 
+	public partial class PlayToConnection 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.PlayTo.PlayToConnectionState State
+		public global::Windows.Media.PlayTo.PlayToConnectionState State
 		{
 			get
 			{
@@ -27,7 +27,7 @@ namespace Windows.Media.PlayTo
 		// Forced skipping of method Windows.Media.PlayTo.PlayToConnection.Error.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionErrorEventArgs> Error
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionErrorEventArgs> Error
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -43,7 +43,7 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs> StateChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionStateChangedEventArgs> StateChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -59,7 +59,7 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs> Transferred
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.PlayTo.PlayToConnection, global::Windows.Media.PlayTo.PlayToConnectionTransferredEventArgs> Transferred
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

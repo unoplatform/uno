@@ -5,11 +5,11 @@ namespace Windows.Devices.PointOfService
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ClaimedBarcodeScanner : global::System.IDisposable
+	public partial class ClaimedBarcodeScanner : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDisabledOnDataReceived
+		public bool IsDisabledOnDataReceived
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDecodeDataEnabled
+		public bool IsDecodeDataEnabled
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DeviceId
+		public string DeviceId
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsEnabled
+		public bool IsEnabled
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsVideoPreviewShownOnEnable
+		public bool IsVideoPreviewShownOnEnable
 		{
 			get
 			{
@@ -77,49 +77,49 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.IsDecodeDataEnabled.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction EnableAsync()
+		public global::Windows.Foundation.IAsyncAction EnableAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.EnableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.EnableAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction DisableAsync()
+		public global::Windows.Foundation.IAsyncAction DisableAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.DisableAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.DisableAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void RetainDevice()
+		public void RetainDevice()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.RetainDevice()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SetActiveSymbologiesAsync( global::System.Collections.Generic.IEnumerable<uint> symbologies)
+		public global::Windows.Foundation.IAsyncAction SetActiveSymbologiesAsync( global::System.Collections.Generic.IEnumerable<uint> symbologies)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.SetActiveSymbologiesAsync(IEnumerable<uint> symbologies) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.SetActiveSymbologiesAsync%28IEnumerable%3Cuint%3E%20symbologies%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ResetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
+		public global::Windows.Foundation.IAsyncAction ResetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.ResetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.ResetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction UpdateStatisticsAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> statistics)
+		public global::Windows.Foundation.IAsyncAction UpdateStatisticsAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> statistics)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.UpdateStatisticsAsync(IEnumerable<KeyValuePair<string, string>> statistics) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.UpdateStatisticsAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20statistics%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction SetActiveProfileAsync( string profile)
+		public global::Windows.Foundation.IAsyncAction SetActiveProfileAsync( string profile)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.SetActiveProfileAsync(string profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.SetActiveProfileAsync%28string%20profile%29");
 		}
@@ -138,42 +138,42 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.ErrorOccurred.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction StartSoftwareTriggerAsync()
+		public global::Windows.Foundation.IAsyncAction StartSoftwareTriggerAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.StartSoftwareTriggerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.StartSoftwareTriggerAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction StopSoftwareTriggerAsync()
+		public global::Windows.Foundation.IAsyncAction StopSoftwareTriggerAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.StopSoftwareTriggerAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ClaimedBarcodeScanner.StopSoftwareTriggerAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes> GetSymbologyAttributesAsync( uint barcodeSymbology)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes> GetSymbologyAttributesAsync( uint barcodeSymbology)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BarcodeSymbologyAttributes> ClaimedBarcodeScanner.GetSymbologyAttributesAsync(uint barcodeSymbology) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBarcodeSymbologyAttributes%3E%20ClaimedBarcodeScanner.GetSymbologyAttributesAsync%28uint%20barcodeSymbology%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> SetSymbologyAttributesAsync( uint barcodeSymbology,  global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes attributes)
+		public global::Windows.Foundation.IAsyncOperation<bool> SetSymbologyAttributesAsync( uint barcodeSymbology,  global::Windows.Devices.PointOfService.BarcodeSymbologyAttributes attributes)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedBarcodeScanner.SetSymbologyAttributesAsync(uint barcodeSymbology, BarcodeSymbologyAttributes attributes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ClaimedBarcodeScanner.SetSymbologyAttributesAsync%28uint%20barcodeSymbology%2C%20BarcodeSymbologyAttributes%20attributes%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<bool> ShowVideoPreviewAsync()
+		public global::Windows.Foundation.IAsyncOperation<bool> ShowVideoPreviewAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedBarcodeScanner.ShowVideoPreviewAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ClaimedBarcodeScanner.ShowVideoPreviewAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void HideVideoPreview()
+		public void HideVideoPreview()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.HideVideoPreview()");
 		}
@@ -184,14 +184,14 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.Closed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerDataReceivedEventArgs> DataReceived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerDataReceivedEventArgs> DataReceived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -207,7 +207,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs> ErrorOccurred
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerErrorOccurredEventArgs> ErrorOccurred
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -223,7 +223,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs> ImagePreviewReceived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerImagePreviewReceivedEventArgs> ImagePreviewReceived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -239,7 +239,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner> ReleaseDeviceRequested
+		public event global::System.EventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner> ReleaseDeviceRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -255,7 +255,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner> TriggerPressed
+		public event global::System.EventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner> TriggerPressed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -271,7 +271,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::System.EventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner> TriggerReleased
+		public event global::System.EventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner> TriggerReleased
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -287,7 +287,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.ClaimedBarcodeScannerClosedEventArgs> Closed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.ClaimedBarcodeScannerClosedEventArgs> Closed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

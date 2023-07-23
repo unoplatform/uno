@@ -5,7 +5,7 @@ namespace Windows.Web.Http
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HttpCookie : global::Windows.Foundation.IStringable
+	public partial class HttpCookie : global::Windows.Foundation.IStringable
 	{
 		// Skipping already declared property Value
 		// Skipping already declared property Secure

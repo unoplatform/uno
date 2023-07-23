@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CalendarDatePicker : global::Windows.UI.Xaml.Controls.Control
+	public partial class CalendarDatePicker : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property PlaceholderText
 		// Skipping already declared property MinDate
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.CalendarDatePicker.IsGroupLabelVisibleProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventHandler CalendarViewDayItemChanging
+		public event global::Windows.UI.Xaml.Controls.CalendarViewDayItemChangingEventHandler CalendarViewDayItemChanging
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

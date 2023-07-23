@@ -5,11 +5,11 @@ namespace Windows.UI.ApplicationSettings
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AccountsSettingsPaneCommandsRequestedEventArgs 
+	public partial class AccountsSettingsPaneCommandsRequestedEventArgs 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string HeaderText
+		public string HeaderText
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.SettingsCommand> Commands
+		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.SettingsCommand> Commands
 		{
 			get
 			{
@@ -33,7 +33,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.CredentialCommand> CredentialCommands
+		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.CredentialCommand> CredentialCommands
 		{
 			get
 			{
@@ -43,7 +43,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountCommand> WebAccountCommands
+		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountCommand> WebAccountCommands
 		{
 			get
 			{
@@ -53,7 +53,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountProviderCommand> WebAccountProviderCommands
+		public global::System.Collections.Generic.IList<global::Windows.UI.ApplicationSettings.WebAccountProviderCommand> WebAccountProviderCommands
 		{
 			get
 			{
@@ -63,7 +63,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.User User
+		public global::Windows.System.User User
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.ApplicationSettings
 		// Forced skipping of method Windows.UI.ApplicationSettings.AccountsSettingsPaneCommandsRequestedEventArgs.HeaderText.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral GetDeferral()
+		public global::Windows.UI.ApplicationSettings.AccountsSettingsPaneEventDeferral GetDeferral()
 		{
 			throw new global::System.NotImplementedException("The member AccountsSettingsPaneEventDeferral AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AccountsSettingsPaneEventDeferral%20AccountsSettingsPaneCommandsRequestedEventArgs.GetDeferral%28%29");
 		}

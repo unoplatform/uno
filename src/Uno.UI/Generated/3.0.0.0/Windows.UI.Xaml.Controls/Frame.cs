@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Frame : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.INavigate
+	public partial class Frame : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.INavigate
 	{
 		// Skipping already declared property SourcePageType
 		// Skipping already declared property CacheSize
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.GoBack(Windows.UI.Xaml.Media.Animation.NavigationTransitionInfo)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetNavigationState( string navigationState,  bool suppressNavigate)
+		public void SetNavigationState( string navigationState,  bool suppressNavigate)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Frame", "void Frame.SetNavigationState(string navigationState, bool suppressNavigate)");
 		}
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.IsNavigationStackEnabled.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool NavigateToType( global::System.Type sourcePageType,  object parameter,  global::Windows.UI.Xaml.Navigation.FrameNavigationOptions navigationOptions)
+		public bool NavigateToType( global::System.Type sourcePageType,  object parameter,  global::Windows.UI.Xaml.Navigation.FrameNavigationOptions navigationOptions)
 		{
 			throw new global::System.NotImplementedException("The member bool Frame.NavigateToType(Type sourcePageType, object parameter, FrameNavigationOptions navigationOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Frame.NavigateToType%28Type%20sourcePageType%2C%20object%20parameter%2C%20FrameNavigationOptions%20navigationOptions%29");
 		}

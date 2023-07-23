@@ -5,11 +5,11 @@ namespace Windows.Services.Maps.OfflineMaps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class OfflineMapPackage 
+	public partial class OfflineMapPackage 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DisplayName
+		public string DisplayName
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Services.Maps.OfflineMaps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string EnclosingRegionName
+		public string EnclosingRegionName
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Services.Maps.OfflineMaps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong EstimatedSizeInBytes
+		public ulong EstimatedSizeInBytes
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Services.Maps.OfflineMaps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageStatus Status
+		public global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageStatus Status
 		{
 			get
 			{
@@ -55,7 +55,7 @@ namespace Windows.Services.Maps.OfflineMaps
 		// Forced skipping of method Windows.Services.Maps.OfflineMaps.OfflineMapPackage.StatusChanged.add
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageStartDownloadResult> RequestStartDownloadAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageStartDownloadResult> RequestStartDownloadAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OfflineMapPackageStartDownloadResult> OfflineMapPackage.RequestStartDownloadAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COfflineMapPackageStartDownloadResult%3E%20OfflineMapPackage.RequestStartDownloadAsync%28%29");
 		}
@@ -83,7 +83,7 @@ namespace Windows.Services.Maps.OfflineMaps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackage, object> StatusChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackage, object> StatusChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TreeViewCollapsedEventArgs 
+	public partial class TreeViewCollapsedEventArgs 
 	{
 		// Skipping already declared property Node
 		// Skipping already declared property Item

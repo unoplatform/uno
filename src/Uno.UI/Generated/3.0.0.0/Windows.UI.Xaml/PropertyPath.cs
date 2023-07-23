@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PropertyPath : global::Windows.UI.Xaml.DependencyObject
+	public partial class PropertyPath : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Path
 		// Skipping already declared method Windows.UI.Xaml.PropertyPath.PropertyPath(string)

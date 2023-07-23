@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Media.Imaging
 {
 #if false || false || false || false || false || false || false
-	public   enum BitmapCreateOptions : uint
+	public enum BitmapCreateOptions : uint
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.BitmapCreateOptions.None
 		// Skipping already declared field Windows.UI.Xaml.Media.Imaging.BitmapCreateOptions.IgnoreImageCache

@@ -5,7 +5,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PedometerReadingChangedEventArgs 
+	public partial class PedometerReadingChangedEventArgs 
 	{
 		// Skipping already declared property Reading
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReadingChangedEventArgs.Reading.get

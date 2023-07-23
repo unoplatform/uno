@@ -5,7 +5,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CompositionGeometry : global::Windows.UI.Composition.CompositionObject
+	public partial class CompositionGeometry : global::Windows.UI.Composition.CompositionObject
 	{
 		// Skipping already declared property TrimStart
 		// Skipping already declared property TrimOffset

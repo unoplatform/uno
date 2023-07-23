@@ -5,11 +5,11 @@ namespace Windows.UI.Accessibility
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ScreenReaderService 
+	public partial class ScreenReaderService 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs CurrentScreenReaderPosition
+		public global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs CurrentScreenReaderPosition
 		{
 			get
 			{
@@ -30,7 +30,7 @@ namespace Windows.UI.Accessibility
 		// Forced skipping of method Windows.UI.Accessibility.ScreenReaderService.ScreenReaderPositionChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Accessibility.ScreenReaderService, global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs> ScreenReaderPositionChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Accessibility.ScreenReaderService, global::Windows.UI.Accessibility.ScreenReaderPositionChangedEventArgs> ScreenReaderPositionChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

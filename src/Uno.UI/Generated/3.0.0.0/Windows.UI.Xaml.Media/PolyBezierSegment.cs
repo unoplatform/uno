@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PolyBezierSegment : global::Windows.UI.Xaml.Media.PathSegment
+	public partial class PolyBezierSegment : global::Windows.UI.Xaml.Media.PathSegment
 	{
 		// Skipping already declared property Points
 		// Skipping already declared property PointsProperty

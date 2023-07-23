@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WindowCreatedEventArgs 
+	public partial class WindowCreatedEventArgs 
 	{
 		// Skipping already declared property Window
 		// Forced skipping of method Windows.UI.Xaml.WindowCreatedEventArgs.Window.get

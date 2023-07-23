@@ -5,11 +5,11 @@ namespace Windows.Gaming.Input.Custom
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class XusbGameControllerProvider : global::Windows.Gaming.Input.Custom.IGameControllerProvider
+	public partial class XusbGameControllerProvider : global::Windows.Gaming.Input.Custom.IGameControllerProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Gaming.Input.Custom.GameControllerVersionInfo FirmwareVersionInfo
+		public global::Windows.Gaming.Input.Custom.GameControllerVersionInfo FirmwareVersionInfo
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Gaming.Input.Custom
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort HardwareProductId
+		public ushort HardwareProductId
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.Gaming.Input.Custom
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort HardwareVendorId
+		public ushort HardwareVendorId
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.Gaming.Input.Custom
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Gaming.Input.Custom.GameControllerVersionInfo HardwareVersionInfo
+		public global::Windows.Gaming.Input.Custom.GameControllerVersionInfo HardwareVersionInfo
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input.Custom
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsConnected
+		public bool IsConnected
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.Gaming.Input.Custom
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetVibration( double lowFrequencyMotorSpeed,  double highFrequencyMotorSpeed)
+		public void SetVibration( double lowFrequencyMotorSpeed,  double highFrequencyMotorSpeed)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.XusbGameControllerProvider", "void XusbGameControllerProvider.SetVibration(double lowFrequencyMotorSpeed, double highFrequencyMotorSpeed)");
 		}

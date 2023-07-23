@@ -3,7 +3,7 @@
 namespace Windows.System.Power
 {
 #if false || false || false || false || false || false || false
-	public   enum PowerSupplyStatus 
+	public enum PowerSupplyStatus 
 	{
 		// Skipping already declared field Windows.System.Power.PowerSupplyStatus.NotPresent
 		// Skipping already declared field Windows.System.Power.PowerSupplyStatus.Inadequate

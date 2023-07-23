@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Pointer 
+	public partial class Pointer 
 	{
 		// Skipping already declared property IsInContact
 		// Skipping already declared property IsInRange

@@ -5,7 +5,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IStorageFolder : global::Windows.Storage.IStorageItem
+	public partial interface IStorageFolder : global::Windows.Storage.IStorageItem
 	{
 		// Skipping already declared method Windows.Storage.IStorageFolder.CreateFileAsync(string)
 		// Skipping already declared method Windows.Storage.IStorageFolder.CreateFileAsync(string, Windows.Storage.CreationCollisionOption)

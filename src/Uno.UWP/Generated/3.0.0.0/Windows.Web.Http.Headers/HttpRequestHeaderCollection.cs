@@ -5,13 +5,13 @@ namespace Windows.Web.Http.Headers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class HttpRequestHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>,global::Windows.Foundation.IStringable
+	public partial class HttpRequestHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>,global::Windows.Foundation.IStringable
 	{
 		// Skipping already declared property Size
 		// Skipping already declared property Referer
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
+		public global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue ProxyAuthorization
 		{
 			get
 			{
@@ -28,7 +28,7 @@ namespace Windows.Web.Http.Headers
 		// Skipping already declared property IfModifiedSince
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Networking.HostName Host
+		public global::Windows.Networking.HostName Host
 		{
 			get
 			{
@@ -44,7 +44,7 @@ namespace Windows.Web.Http.Headers
 		// Skipping already declared property Date
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
+		public global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
 		{
 			get
 			{
@@ -58,7 +58,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection Accept
+		public global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValueCollection Accept
 		{
 			get
 			{
@@ -68,7 +68,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection AcceptEncoding
+		public global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValueCollection AcceptEncoding
 		{
 			get
 			{
@@ -78,7 +78,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValueCollection AcceptLanguage
+		public global::Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValueCollection AcceptLanguage
 		{
 			get
 			{
@@ -88,7 +88,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection CacheControl
+		public global::Windows.Web.Http.Headers.HttpCacheDirectiveHeaderValueCollection CacheControl
 		{
 			get
 			{
@@ -98,7 +98,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection Connection
+		public global::Windows.Web.Http.Headers.HttpConnectionOptionHeaderValueCollection Connection
 		{
 			get
 			{
@@ -108,7 +108,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection Cookie
+		public global::Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection Cookie
 		{
 			get
 			{
@@ -118,7 +118,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection Expect
+		public global::Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection Expect
 		{
 			get
 			{
@@ -128,7 +128,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection TransferEncoding
+		public global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection TransferEncoding
 		{
 			get
 			{
@@ -138,7 +138,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection UserAgent
+		public global::Windows.Web.Http.Headers.HttpProductInfoHeaderValueCollection UserAgent
 		{
 			get
 			{
@@ -175,14 +175,14 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.UserAgent.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Append( string name,  string value)
+		public void Append( string name,  string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.Append(string name, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool TryAppendWithoutValidation( string name,  string value)
+		public bool TryAppendWithoutValidation( string name,  string value)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpRequestHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
 		}

@@ -5,26 +5,26 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct CoreWebView2PhysicalKeyStatus 
+	public partial struct CoreWebView2PhysicalKeyStatus 
 	{
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2PhysicalKeyStatus.CoreWebView2PhysicalKeyStatus()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint RepeatCount;
+		public uint RepeatCount;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  uint ScanCode;
+		public uint ScanCode;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int IsExtendedKey;
+		public int IsExtendedKey;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int IsMenuKeyDown;
+		public int IsMenuKeyDown;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int WasKeyDown;
+		public int WasKeyDown;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  int IsKeyReleased;
+		public int IsKeyReleased;
 #endif
 	}
 }

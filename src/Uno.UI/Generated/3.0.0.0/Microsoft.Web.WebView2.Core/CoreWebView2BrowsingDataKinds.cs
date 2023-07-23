@@ -4,7 +4,7 @@ namespace Microsoft.Web.WebView2.Core
 {
 	[global::System.FlagsAttribute]
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum CoreWebView2BrowsingDataKinds : uint
+	public enum CoreWebView2BrowsingDataKinds : uint
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		FileSystems = 1,

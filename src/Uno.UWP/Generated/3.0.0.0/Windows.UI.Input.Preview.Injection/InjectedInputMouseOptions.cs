@@ -3,7 +3,7 @@
 namespace Windows.UI.Input.Preview.Injection
 {
 #if false || false || false || false || false || false || false
-	public   enum InjectedInputMouseOptions : uint
+	public enum InjectedInputMouseOptions : uint
 	{
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputMouseOptions.None
 		// Skipping already declared field Windows.UI.Input.Preview.Injection.InjectedInputMouseOptions.Move

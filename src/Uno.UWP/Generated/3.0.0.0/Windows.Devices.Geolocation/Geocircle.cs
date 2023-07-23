@@ -5,7 +5,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Geocircle : global::Windows.Devices.Geolocation.IGeoshape
+	public partial class Geocircle : global::Windows.Devices.Geolocation.IGeoshape
 	{
 		// Skipping already declared property Center
 		// Skipping already declared property Radius

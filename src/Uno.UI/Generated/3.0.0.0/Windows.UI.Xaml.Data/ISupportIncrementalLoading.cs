@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface ISupportIncrementalLoading 
+	public partial interface ISupportIncrementalLoading 
 	{
 		// Skipping already declared property HasMoreItems
 		// Skipping already declared method Windows.UI.Xaml.Data.ISupportIncrementalLoading.LoadMoreItemsAsync(uint)

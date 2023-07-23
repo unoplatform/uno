@@ -5,11 +5,11 @@ namespace Windows.UI.Input.Preview.Injection
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class InjectedInputPenInfo 
+	public partial class InjectedInputPenInfo 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TiltY
+		public int TiltY
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  int TiltX
+		public int TiltX
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Rotation
+		public double Rotation
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double Pressure
+		public double Pressure
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo PointerInfo
+		public global::Windows.UI.Input.Preview.Injection.InjectedInputPointerInfo PointerInfo
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Preview.Injection.InjectedInputPenParameters PenParameters
+		public global::Windows.UI.Input.Preview.Injection.InjectedInputPenParameters PenParameters
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.UI.Input.Preview.Injection
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.Preview.Injection.InjectedInputPenButtons PenButtons
+		public global::Windows.UI.Input.Preview.Injection.InjectedInputPenButtons PenButtons
 		{
 			get
 			{

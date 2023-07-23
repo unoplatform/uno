@@ -5,13 +5,13 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DatePickerFlyoutItem : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.ICustomPropertyProvider
+	public partial class DatePickerFlyoutItem : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.ICustomPropertyProvider
 	{
 		// Skipping already declared property SecondaryText
 		// Skipping already declared property PrimaryText
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Type Type
+		public global::System.Type Type
 		{
 			get
 			{
@@ -27,21 +27,21 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutItem.SecondaryText.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Data.ICustomProperty GetCustomProperty( string name)
+		public global::Windows.UI.Xaml.Data.ICustomProperty GetCustomProperty( string name)
 		{
 			throw new global::System.NotImplementedException("The member ICustomProperty DatePickerFlyoutItem.GetCustomProperty(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICustomProperty%20DatePickerFlyoutItem.GetCustomProperty%28string%20name%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Xaml.Data.ICustomProperty GetIndexedProperty( string name,  global::System.Type type)
+		public global::Windows.UI.Xaml.Data.ICustomProperty GetIndexedProperty( string name,  global::System.Type type)
 		{
 			throw new global::System.NotImplementedException("The member ICustomProperty DatePickerFlyoutItem.GetIndexedProperty(string name, Type type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ICustomProperty%20DatePickerFlyoutItem.GetIndexedProperty%28string%20name%2C%20Type%20type%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string GetStringRepresentation()
+		public string GetStringRepresentation()
 		{
 			throw new global::System.NotImplementedException("The member string DatePickerFlyoutItem.GetStringRepresentation() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DatePickerFlyoutItem.GetStringRepresentation%28%29");
 		}

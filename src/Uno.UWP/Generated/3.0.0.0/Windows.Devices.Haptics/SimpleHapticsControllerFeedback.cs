@@ -5,7 +5,7 @@ namespace Windows.Devices.Haptics
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SimpleHapticsControllerFeedback 
+	public partial class SimpleHapticsControllerFeedback 
 	{
 		// Skipping already declared property Duration
 		// Skipping already declared property Waveform

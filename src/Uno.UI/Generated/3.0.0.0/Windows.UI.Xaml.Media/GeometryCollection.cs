@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GeometryCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Geometry>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Geometry>
+	public partial class GeometryCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Geometry>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Geometry>
 	{
 		// Skipping already declared property Size
 		// Skipping already declared method Windows.UI.Xaml.Media.GeometryCollection.GeometryCollection()

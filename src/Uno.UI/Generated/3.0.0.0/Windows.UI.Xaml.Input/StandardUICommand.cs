@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StandardUICommand : global::Windows.UI.Xaml.Input.XamlUICommand
+	public partial class StandardUICommand : global::Windows.UI.Xaml.Input.XamlUICommand
 	{
 		// Skipping already declared property Kind
 		// Skipping already declared property KindProperty

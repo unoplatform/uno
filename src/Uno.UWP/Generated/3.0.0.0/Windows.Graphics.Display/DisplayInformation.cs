@@ -5,7 +5,7 @@ namespace Windows.Graphics.Display
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DisplayInformation 
+	public partial class DisplayInformation 
 	{
 		// Skipping already declared property CurrentOrientation
 		// Skipping already declared property LogicalDpi
@@ -34,7 +34,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.StereoEnabledChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> GetColorProfileAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> DisplayInformation.GetColorProfileAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20DisplayInformation.GetColorProfileAsync%28%29");
 		}
@@ -47,7 +47,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.ScreenHeightInRawPixels.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Graphics.Display.AdvancedColorInfo GetAdvancedColorInfo()
+		public global::Windows.Graphics.Display.AdvancedColorInfo GetAdvancedColorInfo()
 		{
 			throw new global::System.NotImplementedException("The member AdvancedColorInfo DisplayInformation.GetAdvancedColorInfo() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AdvancedColorInfo%20DisplayInformation.GetAdvancedColorInfo%28%29");
 		}
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.DisplayInformation.DisplayContentsInvalidated.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> ColorProfileChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> ColorProfileChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -79,7 +79,7 @@ namespace Windows.Graphics.Display
 		// Skipping already declared event Windows.Graphics.Display.DisplayInformation.OrientationChanged
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> StereoEnabledChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> StereoEnabledChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -95,7 +95,7 @@ namespace Windows.Graphics.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> AdvancedColorInfoChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Graphics.Display.DisplayInformation, object> AdvancedColorInfoChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

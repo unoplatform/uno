@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RatingItemFontInfo : global::Microsoft.UI.Xaml.Controls.RatingItemInfo
+	public partial class RatingItemFontInfo : global::Microsoft.UI.Xaml.Controls.RatingItemInfo
 	{
 		// Skipping already declared property UnsetGlyph
 		// Skipping already declared property PointerOverPlaceholderGlyph

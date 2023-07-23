@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if false || false || false || false || false || false || false
-	public   enum ChatMessageOperatorKind 
+	public enum ChatMessageOperatorKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Unspecified
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageOperatorKind.Sms

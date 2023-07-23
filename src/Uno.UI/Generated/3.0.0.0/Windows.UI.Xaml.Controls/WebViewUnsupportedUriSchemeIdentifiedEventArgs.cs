@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class WebViewUnsupportedUriSchemeIdentifiedEventArgs 
+	public partial class WebViewUnsupportedUriSchemeIdentifiedEventArgs 
 	{
 		// Skipping already declared property Handled
 		// Skipping already declared property Uri

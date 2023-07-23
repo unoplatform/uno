@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class RadioButtons : global::Windows.UI.Xaml.Controls.Control
+	public partial class RadioButtons : global::Windows.UI.Xaml.Controls.Control
 	{
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property SelectedIndex

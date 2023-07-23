@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Store.LicenseManagement
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum LicenseRefreshOption 
+	public enum LicenseRefreshOption 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		RunningLicenses = 0,

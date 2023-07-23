@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Canvas : global::Windows.UI.Xaml.Controls.Panel
+	public partial class Canvas : global::Windows.UI.Xaml.Controls.Panel
 	{
 		// Skipping already declared property LeftProperty
 		// Skipping already declared property TopProperty

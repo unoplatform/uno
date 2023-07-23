@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if false || false || false || false || false || false || false
-	public   enum ChatStoreChangedEventKind 
+	public enum ChatStoreChangedEventKind 
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatStoreChangedEventKind.NotificationsMissed
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatStoreChangedEventKind.StoreModified

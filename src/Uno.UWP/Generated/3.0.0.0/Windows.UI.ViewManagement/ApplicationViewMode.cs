@@ -3,7 +3,7 @@
 namespace Windows.UI.ViewManagement
 {
 #if false || false || false || false || false || false || false
-	public   enum ApplicationViewMode 
+	public enum ApplicationViewMode 
 	{
 		// Skipping already declared field Windows.UI.ViewManagement.ApplicationViewMode.Default
 		// Skipping already declared field Windows.UI.ViewManagement.ApplicationViewMode.CompactOverlay

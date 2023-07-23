@@ -5,7 +5,7 @@ namespace Windows.UI.Composition.Interactions
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IInteractionTrackerOwner 
+	public partial interface IInteractionTrackerOwner 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void CustomAnimationStateEntered( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs args);

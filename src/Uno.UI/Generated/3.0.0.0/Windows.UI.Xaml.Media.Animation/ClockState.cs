@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Media.Animation
 {
 #if false || false || false || false || false || false || false
-	public   enum ClockState 
+	public enum ClockState 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Animation.ClockState.Active
 		// Skipping already declared field Windows.UI.Xaml.Media.Animation.ClockState.Filling

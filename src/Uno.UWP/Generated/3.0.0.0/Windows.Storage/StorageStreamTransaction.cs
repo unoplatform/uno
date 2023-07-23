@@ -5,7 +5,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class StorageStreamTransaction : global::System.IDisposable
+	public partial class StorageStreamTransaction : global::System.IDisposable
 	{
 		// Skipping already declared property Stream
 		// Forced skipping of method Windows.Storage.StorageStreamTransaction.Stream.get

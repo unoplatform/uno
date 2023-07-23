@@ -3,7 +3,7 @@
 namespace Windows.Foundation.Diagnostics
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum CausalitySynchronousWork 
+	public enum CausalitySynchronousWork 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		CompletionNotification = 0,

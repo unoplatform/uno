@@ -5,11 +5,11 @@ namespace Windows.Data.Json
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class JsonArray : global::Windows.Data.Json.IJsonValue,global::System.Collections.Generic.IList<global::Windows.Data.Json.IJsonValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Data.Json.IJsonValue>,global::Windows.Foundation.IStringable
+	public partial class JsonArray : global::Windows.Data.Json.IJsonValue,global::System.Collections.Generic.IList<global::Windows.Data.Json.IJsonValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Data.Json.IJsonValue>,global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Json.JsonValueType ValueType
+		public global::Windows.Data.Json.JsonValueType ValueType
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Data.Json
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint Size
+		public uint Size
 		{
 			get
 			{
@@ -37,35 +37,35 @@ namespace Windows.Data.Json
 		// Forced skipping of method Windows.Data.Json.JsonArray.JsonArray()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Json.JsonObject GetObjectAt( uint index)
+		public global::Windows.Data.Json.JsonObject GetObjectAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member JsonObject JsonArray.GetObjectAt(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonObject%20JsonArray.GetObjectAt%28uint%20index%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Json.JsonArray GetArrayAt( uint index)
+		public global::Windows.Data.Json.JsonArray GetArrayAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member JsonArray JsonArray.GetArrayAt(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonArray%20JsonArray.GetArrayAt%28uint%20index%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string GetStringAt( uint index)
+		public string GetStringAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.GetStringAt(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JsonArray.GetStringAt%28uint%20index%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double GetNumberAt( uint index)
+		public double GetNumberAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member double JsonArray.GetNumberAt(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20JsonArray.GetNumberAt%28uint%20index%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool GetBooleanAt( uint index)
+		public bool GetBooleanAt( uint index)
 		{
 			throw new global::System.NotImplementedException("The member bool JsonArray.GetBooleanAt(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonArray.GetBooleanAt%28uint%20index%29");
 		}
@@ -73,42 +73,42 @@ namespace Windows.Data.Json
 		// Forced skipping of method Windows.Data.Json.JsonArray.ValueType.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Stringify()
+		public string Stringify()
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.Stringify() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JsonArray.Stringify%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string GetString()
+		public string GetString()
 		{
 			throw new global::System.NotImplementedException("The member string JsonArray.GetString() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20JsonArray.GetString%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  double GetNumber()
+		public double GetNumber()
 		{
 			throw new global::System.NotImplementedException("The member double JsonArray.GetNumber() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=double%20JsonArray.GetNumber%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool GetBoolean()
+		public bool GetBoolean()
 		{
 			throw new global::System.NotImplementedException("The member bool JsonArray.GetBoolean() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20JsonArray.GetBoolean%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Json.JsonArray GetArray()
+		public global::Windows.Data.Json.JsonArray GetArray()
 		{
 			throw new global::System.NotImplementedException("The member JsonArray JsonArray.GetArray() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonArray%20JsonArray.GetArray%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Data.Json.JsonObject GetObject()
+		public global::Windows.Data.Json.JsonObject GetObject()
 		{
 			throw new global::System.NotImplementedException("The member JsonObject JsonArray.GetObject() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JsonObject%20JsonArray.GetObject%28%29");
 		}

@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum ListViewSelectionMode 
+	public enum ListViewSelectionMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ListViewSelectionMode.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.ListViewSelectionMode.Single

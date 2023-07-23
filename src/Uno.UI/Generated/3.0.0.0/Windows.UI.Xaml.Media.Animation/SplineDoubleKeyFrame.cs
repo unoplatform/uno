@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SplineDoubleKeyFrame : global::Windows.UI.Xaml.Media.Animation.DoubleKeyFrame
+	public partial class SplineDoubleKeyFrame : global::Windows.UI.Xaml.Media.Animation.DoubleKeyFrame
 	{
 		// Skipping already declared property KeySpline
 		// Skipping already declared property KeySplineProperty

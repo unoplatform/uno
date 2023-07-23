@@ -3,7 +3,7 @@
 namespace Windows.Devices.Bluetooth
 {
 #if false || false || false || false || false || false || false
-	public   enum BluetoothMajorClass 
+	public enum BluetoothMajorClass 
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Miscellaneous
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMajorClass.Computer

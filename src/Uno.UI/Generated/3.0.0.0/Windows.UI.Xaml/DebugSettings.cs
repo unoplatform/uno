@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DebugSettings 
+	public partial class DebugSettings 
 	{
 		// Skipping already declared property IsOverdrawHeatMapEnabled
 		// Skipping already declared property IsBindingTracingEnabled
@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property IsTextPerformanceVisualizationEnabled
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool FailFastOnErrors
+		public bool FailFastOnErrors
 		{
 			get
 			{

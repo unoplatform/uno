@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.CustomAttributes
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class MUXPropertyChangedCallbackMethodNameAttribute : global::System.Attribute
+	public partial class MUXPropertyChangedCallbackMethodNameAttribute : global::System.Attribute
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.CustomAttributes
 #endif
 		// Forced skipping of method Microsoft.UI.Xaml.CustomAttributes.MUXPropertyChangedCallbackMethodNameAttribute.MUXPropertyChangedCallbackMethodNameAttribute()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  string value;
+		public string value;
 #endif
 	}
 }

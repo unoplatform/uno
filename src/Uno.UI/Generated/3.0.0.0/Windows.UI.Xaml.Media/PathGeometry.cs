@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PathGeometry : global::Windows.UI.Xaml.Media.Geometry
+	public partial class PathGeometry : global::Windows.UI.Xaml.Media.Geometry
 	{
 		// Skipping already declared property FillRule
 		// Skipping already declared property Figures

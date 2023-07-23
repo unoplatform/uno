@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DataPackagePropertySetView : global::System.Collections.Generic.IReadOnlyDictionary<string, object>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class DataPackagePropertySetView : global::System.Collections.Generic.IReadOnlyDictionary<string, object>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
 	{
 		// Skipping already declared property ApplicationListingUri
 		// Skipping already declared property ApplicationName

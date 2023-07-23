@@ -3,7 +3,7 @@
 namespace Windows.Media.Capture.Frames
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum MediaFrameReaderAcquisitionMode 
+	public enum MediaFrameReaderAcquisitionMode 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Realtime = 0,

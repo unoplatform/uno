@@ -5,11 +5,11 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class InputActivationListener : global::Windows.UI.Input.AttachableInputObject
+	public partial class InputActivationListener : global::Windows.UI.Input.AttachableInputObject
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.UI.Input.InputActivationState State
+		public global::Windows.UI.Input.InputActivationState State
 		{
 			get
 			{
@@ -22,7 +22,7 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.InputActivationListener.InputActivationChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.InputActivationListener, global::Windows.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.InputActivationListener, global::Windows.UI.Input.InputActivationListenerActivationChangedEventArgs> InputActivationChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

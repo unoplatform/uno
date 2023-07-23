@@ -5,11 +5,11 @@ namespace Windows.Media.Import
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PhotoImportSession : global::System.IDisposable
+	public partial class PhotoImportSession : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Import.PhotoImportSubfolderCreationMode SubfolderCreationMode
+		public global::Windows.Media.Import.PhotoImportSubfolderCreationMode SubfolderCreationMode
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.IStorageFolder DestinationFolder
+		public global::Windows.Storage.IStorageFolder DestinationFolder
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DestinationFileNamePrefix
+		public string DestinationFileNamePrefix
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AppendSessionDateToDestinationFolder
+		public bool AppendSessionDateToDestinationFolder
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid SessionId
+		public global::System.Guid SessionId
 		{
 			get
 			{
@@ -75,7 +75,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Import.PhotoImportSource Source
+		public global::Windows.Media.Import.PhotoImportSource Source
 		{
 			get
 			{
@@ -85,7 +85,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Import.PhotoImportSubfolderDateFormat SubfolderDateFormat
+		public global::Windows.Media.Import.PhotoImportSubfolderDateFormat SubfolderDateFormat
 		{
 			get
 			{
@@ -99,7 +99,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool RememberDeselectedItems
+		public bool RememberDeselectedItems
 		{
 			get
 			{
@@ -123,14 +123,14 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportSession.DestinationFileNamePrefix.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportFindItemsResult, uint> FindItemsAsync( global::Windows.Media.Import.PhotoImportContentTypeFilter contentTypeFilter,  global::Windows.Media.Import.PhotoImportItemSelectionMode itemSelectionMode)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportFindItemsResult, uint> FindItemsAsync( global::Windows.Media.Import.PhotoImportContentTypeFilter contentTypeFilter,  global::Windows.Media.Import.PhotoImportItemSelectionMode itemSelectionMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportFindItemsResult, uint> PhotoImportSession.FindItemsAsync(PhotoImportContentTypeFilter contentTypeFilter, PhotoImportItemSelectionMode itemSelectionMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportFindItemsResult%2C%20uint%3E%20PhotoImportSession.FindItemsAsync%28PhotoImportContentTypeFilter%20contentTypeFilter%2C%20PhotoImportItemSelectionMode%20itemSelectionMode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportSession", "void PhotoImportSession.Dispose()");
 		}

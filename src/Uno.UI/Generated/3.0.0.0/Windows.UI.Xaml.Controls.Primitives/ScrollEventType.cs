@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public   enum ScrollEventType 
+	public enum ScrollEventType 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.SmallDecrement
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.ScrollEventType.SmallIncrement

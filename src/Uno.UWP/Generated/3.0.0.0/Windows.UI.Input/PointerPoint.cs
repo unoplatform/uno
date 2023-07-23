@@ -5,7 +5,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PointerPoint 
+	public partial class PointerPoint 
 	{
 		// Skipping already declared property FrameId
 		// Skipping already declared property IsInContact

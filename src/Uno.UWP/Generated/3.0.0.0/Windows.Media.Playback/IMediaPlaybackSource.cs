@@ -5,7 +5,7 @@ namespace Windows.Media.Playback
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IMediaPlaybackSource 
+	public partial interface IMediaPlaybackSource 
 	{
 	}
 }

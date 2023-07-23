@@ -6,11 +6,11 @@ namespace Windows.Security.Authentication.Identity.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SecondaryAuthenticationFactorRegistrationResult 
+	public partial class SecondaryAuthenticationFactorRegistrationResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration Registration
+		public global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistration Registration
 		{
 			get
 			{
@@ -20,7 +20,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationStatus Status
+		public global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorRegistrationStatus Status
 		{
 			get
 			{

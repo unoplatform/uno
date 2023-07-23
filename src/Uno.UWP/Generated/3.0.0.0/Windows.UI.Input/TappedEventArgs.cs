@@ -5,7 +5,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TappedEventArgs 
+	public partial class TappedEventArgs 
 	{
 		// Skipping already declared property PointerDeviceType
 		// Skipping already declared property Position

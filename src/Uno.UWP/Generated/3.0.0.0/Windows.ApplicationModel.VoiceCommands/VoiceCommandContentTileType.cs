@@ -3,7 +3,7 @@
 namespace Windows.ApplicationModel.VoiceCommands
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum VoiceCommandContentTileType 
+	public enum VoiceCommandContentTileType 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		TitleOnly = 0,

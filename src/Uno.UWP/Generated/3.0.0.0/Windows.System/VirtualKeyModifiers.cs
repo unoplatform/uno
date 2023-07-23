@@ -3,7 +3,7 @@
 namespace Windows.System
 {
 #if false || false || false || false || false || false || false
-	public   enum VirtualKeyModifiers : uint
+	public enum VirtualKeyModifiers : uint
 	{
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.None
 		// Skipping already declared field Windows.System.VirtualKeyModifiers.Control

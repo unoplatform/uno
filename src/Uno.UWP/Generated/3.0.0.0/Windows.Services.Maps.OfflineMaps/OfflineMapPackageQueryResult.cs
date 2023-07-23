@@ -5,11 +5,11 @@ namespace Windows.Services.Maps.OfflineMaps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class OfflineMapPackageQueryResult 
+	public partial class OfflineMapPackageQueryResult 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackage> Packages
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackage> Packages
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.Services.Maps.OfflineMaps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryStatus Status
+		public global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryStatus Status
 		{
 			get
 			{

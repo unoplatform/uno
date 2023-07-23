@@ -5,7 +5,7 @@ namespace Windows.Devices.Input.Preview
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GazeDeviceWatcherPreview 
+	public partial class GazeDeviceWatcherPreview 
 	{
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.add
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.remove
@@ -17,21 +17,21 @@ namespace Windows.Devices.Input.Preview
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.EnumerationCompleted.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeDeviceWatcherPreview", "void GazeDeviceWatcherPreview.Start()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Stop()
+		public void Stop()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Input.Preview.GazeDeviceWatcherPreview", "void GazeDeviceWatcherPreview.Stop()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs> Added
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherAddedPreviewEventArgs> Added
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -47,7 +47,7 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, object> EnumerationCompleted
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, object> EnumerationCompleted
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -63,7 +63,7 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherRemovedPreviewEventArgs> Removed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherRemovedPreviewEventArgs> Removed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -79,7 +79,7 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs> Updated
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Input.Preview.GazeDeviceWatcherPreview, global::Windows.Devices.Input.Preview.GazeDeviceWatcherUpdatedPreviewEventArgs> Updated
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

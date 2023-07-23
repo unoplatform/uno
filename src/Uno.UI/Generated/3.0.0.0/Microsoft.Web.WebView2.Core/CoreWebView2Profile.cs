@@ -5,11 +5,11 @@ namespace Microsoft.Web.WebView2.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class CoreWebView2Profile 
+	public partial class CoreWebView2Profile 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Microsoft.Web.WebView2.Core.CoreWebView2PreferredColorScheme PreferredColorScheme
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2PreferredColorScheme PreferredColorScheme
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string DefaultDownloadFolderPath
+		public string DefaultDownloadFolderPath
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsInPrivateModeEnabled
+		public bool IsInPrivateModeEnabled
 		{
 			get
 			{
@@ -47,7 +47,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ProfileName
+		public string ProfileName
 		{
 			get
 			{
@@ -57,7 +57,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string ProfilePath
+		public string ProfilePath
 		{
 			get
 			{
@@ -67,21 +67,21 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds,  global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime)
+		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds,  global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2Profile.ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds dataKinds, DateTimeOffset startTime, DateTimeOffset endTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2Profile.ClearBrowsingDataAsync%28CoreWebView2BrowsingDataKinds%20dataKinds%2C%20DateTimeOffset%20startTime%2C%20DateTimeOffset%20endTime%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync()
+		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2Profile.ClearBrowsingDataAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2Profile.ClearBrowsingDataAsync%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds)
+		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2Profile.ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds dataKinds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2Profile.ClearBrowsingDataAsync%28CoreWebView2BrowsingDataKinds%20dataKinds%29");
 		}

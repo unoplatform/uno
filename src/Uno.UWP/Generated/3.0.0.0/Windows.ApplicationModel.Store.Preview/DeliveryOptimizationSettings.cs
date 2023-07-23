@@ -5,11 +5,11 @@ namespace Windows.ApplicationModel.Store.Preview
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class DeliveryOptimizationSettings 
+	public partial class DeliveryOptimizationSettings 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Store.Preview.DeliveryOptimizationDownloadMode DownloadMode
+		public global::Windows.ApplicationModel.Store.Preview.DeliveryOptimizationDownloadMode DownloadMode
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Store.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.ApplicationModel.Store.Preview.DeliveryOptimizationDownloadModeSource DownloadModeSource
+		public global::Windows.ApplicationModel.Store.Preview.DeliveryOptimizationDownloadModeSource DownloadModeSource
 		{
 			get
 			{

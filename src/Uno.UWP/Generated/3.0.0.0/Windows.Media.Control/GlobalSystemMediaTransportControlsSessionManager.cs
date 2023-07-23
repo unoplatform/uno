@@ -5,18 +5,18 @@ namespace Windows.Media.Control
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class GlobalSystemMediaTransportControlsSessionManager 
+	public partial class GlobalSystemMediaTransportControlsSessionManager 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession GetCurrentSession()
+		public global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession GetCurrentSession()
 		{
 			throw new global::System.NotImplementedException("The member GlobalSystemMediaTransportControlsSession GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalSystemMediaTransportControlsSession%20GlobalSystemMediaTransportControlsSessionManager.GetCurrentSession%28%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession> GetSessions()
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSession> GetSessions()
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<GlobalSystemMediaTransportControlsSession> GlobalSystemMediaTransportControlsSessionManager.GetSessions() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CGlobalSystemMediaTransportControlsSession%3E%20GlobalSystemMediaTransportControlsSessionManager.GetSessions%28%29");
 		}
@@ -34,7 +34,7 @@ namespace Windows.Media.Control
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, global::Windows.Media.Control.CurrentSessionChangedEventArgs> CurrentSessionChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, global::Windows.Media.Control.CurrentSessionChangedEventArgs> CurrentSessionChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -50,7 +50,7 @@ namespace Windows.Media.Control
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, global::Windows.Media.Control.SessionsChangedEventArgs> SessionsChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Control.GlobalSystemMediaTransportControlsSessionManager, global::Windows.Media.Control.SessionsChangedEventArgs> SessionsChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

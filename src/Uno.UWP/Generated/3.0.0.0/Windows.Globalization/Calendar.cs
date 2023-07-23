@@ -5,7 +5,7 @@ namespace Windows.Globalization
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Calendar 
+	public partial class Calendar 
 	{
 		// Skipping already declared property Year
 		// Skipping already declared property Second

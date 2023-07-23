@@ -5,14 +5,14 @@ namespace Windows.Globalization
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class Language 
+	public partial class Language 
 	{
 		// Skipping already declared property DisplayName
 		// Skipping already declared property LanguageTag
 		// Skipping already declared property NativeName
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string Script
+		public string Script
 		{
 			get
 			{
@@ -22,7 +22,7 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Globalization.LanguageLayoutDirection LayoutDirection
+		public global::Windows.Globalization.LanguageLayoutDirection LayoutDirection
 		{
 			get
 			{
@@ -32,7 +32,7 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string AbbreviatedName
+		public string AbbreviatedName
 		{
 			get
 			{
@@ -58,7 +58,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.Language.Script.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags( string singleton)
+		public global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags( string singleton)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<string> Language.GetExtensionSubtags(string singleton) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20Language.GetExtensionSubtags%28string%20singleton%29");
 		}

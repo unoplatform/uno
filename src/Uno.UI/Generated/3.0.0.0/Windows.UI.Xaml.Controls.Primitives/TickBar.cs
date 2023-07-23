@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class TickBar : global::Windows.UI.Xaml.FrameworkElement
+	public partial class TickBar : global::Windows.UI.Xaml.FrameworkElement
 	{
 		// Skipping already declared property Fill
 		// Skipping already declared property FillProperty

@@ -3,7 +3,7 @@
 namespace Windows.Graphics.Display
 {
 #if false || false || false || false || false || false || false
-	public   enum ResolutionScale 
+	public enum ResolutionScale 
 	{
 		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Invalid
 		// Skipping already declared field Windows.Graphics.Display.ResolutionScale.Scale100Percent

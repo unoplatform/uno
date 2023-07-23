@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class AutoSuggestBoxSuggestionChosenEventArgs : global::Windows.UI.Xaml.DependencyObject
+	public partial class AutoSuggestBoxSuggestionChosenEventArgs : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property SelectedItem
 		// Skipping already declared method Windows.UI.Xaml.Controls.AutoSuggestBoxSuggestionChosenEventArgs.AutoSuggestBoxSuggestionChosenEventArgs()

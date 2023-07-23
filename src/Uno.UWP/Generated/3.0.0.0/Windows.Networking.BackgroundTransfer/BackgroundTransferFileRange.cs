@@ -5,14 +5,14 @@ namespace Windows.Networking.BackgroundTransfer
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct BackgroundTransferFileRange 
+	public partial struct BackgroundTransferFileRange 
 	{
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferFileRange.BackgroundTransferFileRange()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong Offset;
+		public ulong Offset;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  ulong Length;
+		public ulong Length;
 #endif
 	}
 }

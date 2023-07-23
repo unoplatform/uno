@@ -5,7 +5,7 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial interface IXmlNodeSelector 
+	public partial interface IXmlNodeSelector 
 	{
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSelector.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSelector.SelectNodes(string)

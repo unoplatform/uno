@@ -5,26 +5,26 @@ namespace Windows.Perception.Spatial
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial struct SpatialBoundingFrustum 
+	public partial struct SpatialBoundingFrustum 
 	{
 		// Forced skipping of method Windows.Perception.Spatial.SpatialBoundingFrustum.SpatialBoundingFrustum()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Numerics.Plane Near;
+		public global::System.Numerics.Plane Near;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Numerics.Plane Far;
+		public global::System.Numerics.Plane Far;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Numerics.Plane Right;
+		public global::System.Numerics.Plane Right;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Numerics.Plane Left;
+		public global::System.Numerics.Plane Left;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Numerics.Plane Top;
+		public global::System.Numerics.Plane Top;
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		public  global::System.Numerics.Plane Bottom;
+		public global::System.Numerics.Plane Bottom;
 #endif
 	}
 }

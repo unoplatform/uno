@@ -5,11 +5,11 @@ namespace Windows.Devices.SerialCommunication
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class SerialDevice : global::System.IDisposable
+	public partial class SerialDevice : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsDataTerminalReadyEnabled
+		public bool IsDataTerminalReadyEnabled
 		{
 			get
 			{
@@ -23,7 +23,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort DataBits
+		public ushort DataBits
 		{
 			get
 			{
@@ -37,7 +37,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SerialCommunication.SerialHandshake Handshake
+		public global::Windows.Devices.SerialCommunication.SerialHandshake Handshake
 		{
 			get
 			{
@@ -51,7 +51,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool BreakSignalState
+		public bool BreakSignalState
 		{
 			get
 			{
@@ -65,7 +65,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint BaudRate
+		public uint BaudRate
 		{
 			get
 			{
@@ -79,7 +79,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan WriteTimeout
+		public global::System.TimeSpan WriteTimeout
 		{
 			get
 			{
@@ -93,7 +93,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SerialCommunication.SerialStopBitCount StopBits
+		public global::Windows.Devices.SerialCommunication.SerialStopBitCount StopBits
 		{
 			get
 			{
@@ -107,7 +107,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan ReadTimeout
+		public global::System.TimeSpan ReadTimeout
 		{
 			get
 			{
@@ -121,7 +121,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Devices.SerialCommunication.SerialParity Parity
+		public global::Windows.Devices.SerialCommunication.SerialParity Parity
 		{
 			get
 			{
@@ -135,7 +135,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsRequestToSendEnabled
+		public bool IsRequestToSendEnabled
 		{
 			get
 			{
@@ -149,7 +149,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint BytesReceived
+		public uint BytesReceived
 		{
 			get
 			{
@@ -159,7 +159,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool CarrierDetectState
+		public bool CarrierDetectState
 		{
 			get
 			{
@@ -169,7 +169,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ClearToSendState
+		public bool ClearToSendState
 		{
 			get
 			{
@@ -179,7 +179,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool DataSetReadyState
+		public bool DataSetReadyState
 		{
 			get
 			{
@@ -189,7 +189,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IInputStream InputStream
+		public global::Windows.Storage.Streams.IInputStream InputStream
 		{
 			get
 			{
@@ -199,7 +199,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Storage.Streams.IOutputStream OutputStream
+		public global::Windows.Storage.Streams.IOutputStream OutputStream
 		{
 			get
 			{
@@ -209,7 +209,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  string PortName
+		public string PortName
 		{
 			get
 			{
@@ -219,7 +219,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort UsbProductId
+		public ushort UsbProductId
 		{
 			get
 			{
@@ -229,7 +229,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ushort UsbVendorId
+		public ushort UsbVendorId
 		{
 			get
 			{
@@ -272,7 +272,7 @@ namespace Windows.Devices.SerialCommunication
 		// Forced skipping of method Windows.Devices.SerialCommunication.SerialDevice.PinChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.SerialCommunication.SerialDevice", "void SerialDevice.Dispose()");
 		}
@@ -307,7 +307,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SerialCommunication.SerialDevice, global::Windows.Devices.SerialCommunication.ErrorReceivedEventArgs> ErrorReceived
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SerialCommunication.SerialDevice, global::Windows.Devices.SerialCommunication.ErrorReceivedEventArgs> ErrorReceived
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -323,7 +323,7 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SerialCommunication.SerialDevice, global::Windows.Devices.SerialCommunication.PinChangedEventArgs> PinChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.SerialCommunication.SerialDevice, global::Windows.Devices.SerialCommunication.PinChangedEventArgs> PinChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

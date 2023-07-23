@@ -3,7 +3,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public   enum LightDismissOverlayMode 
+	public enum LightDismissOverlayMode 
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.LightDismissOverlayMode.Auto
 		// Skipping already declared field Windows.UI.Xaml.Controls.LightDismissOverlayMode.On

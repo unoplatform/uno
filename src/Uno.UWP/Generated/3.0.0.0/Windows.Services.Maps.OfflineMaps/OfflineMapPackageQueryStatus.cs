@@ -3,7 +3,7 @@
 namespace Windows.Services.Maps.OfflineMaps
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum OfflineMapPackageQueryStatus 
+	public enum OfflineMapPackageQueryStatus 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Success = 0,

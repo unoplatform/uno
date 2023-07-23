@@ -3,7 +3,7 @@
 namespace Windows.Web.Http
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public   enum HttpCompletionOption 
+	public enum HttpCompletionOption 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		ResponseContentRead = 0,

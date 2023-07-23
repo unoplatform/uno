@@ -5,7 +5,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class ContactDataProviderConnection 
+	public partial class ContactDataProviderConnection 
 	{
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.SyncRequested.add
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.SyncRequested.remove
@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.ServerSearchReadBatchRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void Start()
+		public void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection", "void ContactDataProviderConnection.Start()");
 		}
@@ -24,7 +24,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection.DeleteContactRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs> ServerSearchReadBatchRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListServerSearchReadBatchRequestEventArgs> ServerSearchReadBatchRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs> SyncRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListSyncManagerSyncRequestEventArgs> SyncRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequestEventArgs> CreateOrUpdateContactRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequestEventArgs> CreateOrUpdateContactRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs> DeleteContactRequested
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.Contacts.DataProvider.ContactDataProviderConnection, global::Windows.ApplicationModel.Contacts.DataProvider.ContactListDeleteContactRequestEventArgs> DeleteContactRequested
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add

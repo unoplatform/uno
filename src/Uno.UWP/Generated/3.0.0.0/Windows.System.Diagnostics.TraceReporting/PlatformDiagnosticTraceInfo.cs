@@ -5,11 +5,11 @@ namespace Windows.System.Diagnostics.TraceReporting
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class PlatformDiagnosticTraceInfo 
+	public partial class PlatformDiagnosticTraceInfo 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsAutoLogger
+		public bool IsAutoLogger
 		{
 			get
 			{
@@ -19,7 +19,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool IsExclusive
+		public bool IsExclusive
 		{
 			get
 			{
@@ -29,7 +29,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  long MaxTraceDurationFileTime
+		public long MaxTraceDurationFileTime
 		{
 			get
 			{
@@ -39,7 +39,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTracePriority Priority
+		public global::Windows.System.Diagnostics.TraceReporting.PlatformDiagnosticTracePriority Priority
 		{
 			get
 			{
@@ -49,7 +49,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  ulong ProfileHash
+		public ulong ProfileHash
 		{
 			get
 			{
@@ -59,7 +59,7 @@ namespace Windows.System.Diagnostics.TraceReporting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Guid ScenarioId
+		public global::System.Guid ScenarioId
 		{
 			get
 			{

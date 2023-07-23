@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class VisualState : global::Windows.UI.Xaml.DependencyObject
+	public partial class VisualState : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Storyboard
 		// Skipping already declared property Name

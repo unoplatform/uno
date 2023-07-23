@@ -5,7 +5,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public  partial class BluetoothLEManufacturerData 
+	public partial class BluetoothLEManufacturerData 
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property CompanyId
