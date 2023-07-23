@@ -719,7 +719,7 @@ namespace Uno.UWPSyncGenerator
 				if (allMethods.HasUndefined)
 				{
 					allMethods.AppendIf(b);
-					var parms = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {TransformType(p.Type)} {SanitizeParameter(p.Name)}"));
+					var parms = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)}{TransformType(p.Type)} {SanitizeParameter(p.Name)}"));
 					var returnTypeName = TransformType(method.ReturnType);
 					var typeAccessibility = GetMethodAccessibility(method);
 					var explicitImplementation = typeAccessibility == "" ? $"global::{ifaceSymbol}." : "";
@@ -995,7 +995,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				var methods = GetAllMatchingMethods(types, method);
 
-				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
+				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)}{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
 				var staticQualifier = method.IsStatic ? "static " : "";
 				var overrideQualifier = method.Name == "ToString" ? "override " : "";
 				var virtualQualifier = method.IsVirtual ? "virtual " : "";
@@ -1279,7 +1279,7 @@ namespace Uno.UWPSyncGenerator
 			=> androidMember?.Name == ".ctor" && androidMember.OriginalDefinition.ContainingType.SpecialType == SpecialType.System_Object;
 
 		private static string GetParameterRefKind(IParameterSymbol p)
-			=> p.RefKind != RefKind.None ? p.RefKind.ToString().ToLowerInvariant() : "";
+			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
 
 		private bool IsNotUWPMapping(INamedTypeSymbol type, IEventSymbol eventMember)
 		{
@@ -1482,21 +1482,21 @@ namespace Uno.UWPSyncGenerator
 								var attachedModifier = getAttached != null ? "Attached" : "";
 								var propertyDisplayType = MapUWPTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
-								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} = ");
+								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
 								b.AppendLineInvariant($"{BaseXamlNamespace}.DependencyProperty.Register{attachedModifier}(");
 
 								if (getAttached == null)
 								{
-									b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}), ");
+									b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}),");
 								}
 								else
 								{
 									//attached properties do not have a corresponding property
-									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}), ");
+									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}),");
 								}
 
-								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
+								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
 								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
 							else
