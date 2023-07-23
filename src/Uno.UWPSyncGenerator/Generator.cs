@@ -892,7 +892,7 @@ namespace Uno.UWPSyncGenerator
 				{
 					allmembers.AppendIf(b);
 
-					var staticQualifier = field.IsStatic ? "static" : "";
+					var staticQualifier = field.IsStatic ? "static " : "";
 
 					if (type.TypeKind == TypeKind.Enum)
 					{
@@ -902,7 +902,7 @@ namespace Uno.UWPSyncGenerator
 					}
 					else
 					{
-						b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(field.Type)} {field.Name};");
+						b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(field.Type)} {field.Name};");
 					}
 
 					using (b.Indent(-b.CurrentLevel))
@@ -932,8 +932,8 @@ namespace Uno.UWPSyncGenerator
 				{
 					allMembers.AppendIf(b);
 
-					var staticQualifier = eventMember.AddMethod.IsStatic ? "static" : "";
-					var declaration = $"{staticQualifier} event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
+					var staticQualifier = eventMember.AddMethod.IsStatic ? "static " : "";
+					var declaration = $"{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
@@ -996,9 +996,9 @@ namespace Uno.UWPSyncGenerator
 				var methods = GetAllMatchingMethods(types, method);
 
 				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
-				var staticQualifier = method.IsStatic ? "static" : "";
-				var overrideQualifier = method.Name == "ToString" ? "override" : "";
-				var virtualQualifier = method.IsVirtual ? "virtual" : "";
+				var staticQualifier = method.IsStatic ? "static " : "";
+				var overrideQualifier = method.Name == "ToString" ? "override " : "";
+				var virtualQualifier = method.IsVirtual ? "virtual " : "";
 				var visiblity = method.DeclaredAccessibility.ToString().ToLowerInvariant();
 
 				if (IsObjectCtor(methods.AndroidSymbol))
@@ -1087,7 +1087,7 @@ namespace Uno.UWPSyncGenerator
 						else
 						{
 							b.AppendLineInvariant($"[global::Uno.NotImplemented({methods.GenerateNotImplementedList()})]");
-							using (b.BlockInvariant($"{visiblity} {staticQualifier}{overrideQualifier}{virtualQualifier} {declaration}"))
+							using (b.BlockInvariant($"{visiblity} {staticQualifier}{overrideQualifier}{virtualQualifier}{declaration}"))
 							{
 								var filteredName = method.Name.TrimStart("Get", StringComparison.Ordinal).TrimStart("Set", StringComparison.Ordinal);
 								var isAttachedPropertyMethod =
@@ -1436,7 +1436,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				var allMembers = GetAllGetNonGeneratedMembers(types, property.Name, q => q?.FirstOrDefault(p => SymbolMatchingHelpers.AreMatching(property, p)));
 
-				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static" : "";
+				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static " : "";
 
 				if (SkipProperty(property))
 				{
@@ -1482,7 +1482,7 @@ namespace Uno.UWPSyncGenerator
 								var attachedModifier = getAttached != null ? "Attached" : "";
 								var propertyDisplayType = MapUWPTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
-								b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} = ");
+								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} = ");
 
 								b.AppendLineInvariant($"{BaseXamlNamespace}.DependencyProperty.Register{attachedModifier}(");
 
@@ -1510,7 +1510,7 @@ namespace Uno.UWPSyncGenerator
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
 						{
-							using (b.BlockInvariant($"public {staticQualifier} {MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -1531,7 +1531,7 @@ namespace Uno.UWPSyncGenerator
 						}
 						else
 						{
-							using (b.BlockInvariant($"public {staticQualifier} {MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
