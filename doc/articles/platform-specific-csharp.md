@@ -44,7 +44,7 @@ The following conditional symbols are predefined for each Uno platform:
 | _Non-Windows_ | `HAS_UNO`      | To learn about symbols available when `HAS_UNO` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
 
 > [!TIP]
-> Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
+> Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible to define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
 
 ### Windows-specific code
 
@@ -59,9 +59,9 @@ Apps generated with the default `unoapp` solution template use **Windows App SDK
 
 ### WebAssembly considerations
 
-The Uno Platform templates use a separate project library to share code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework` and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available in C# code specified directly in the `MyApp.WebAssembly` head.
+The Uno Platform templates use a separate project library to share code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework`, and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available in C# code specified directly in the `MyApp.WebAssembly` head.
 
-In order to execute platform specific code for WebAssembly, a runtime check needs to be included:
+In order to execute platform-specific code for WebAssembly, a runtime check needs to be included:
 
 ```csharp
 if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
