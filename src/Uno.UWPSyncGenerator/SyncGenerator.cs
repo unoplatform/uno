@@ -157,10 +157,10 @@ namespace Uno.UWPSyncGenerator
 				var enumBaseType =
 					type.TypeKind == TypeKind.Enum &&
 					type.EnumUnderlyingType.SpecialType != SpecialType.System_Int32 ?
-						$": {type.EnumUnderlyingType.ToDisplayString()}" :
+						$" : {type.EnumUnderlyingType.ToDisplayString()}" :
 							string.Empty;
 
-				using (b.BlockInvariant($"public {staticQualifier}{partialModifier}{KindToKeyword(kind)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)} {enumBaseType}{BuildInterfaces(type)}"))
+				using (b.BlockInvariant($"public {staticQualifier}{partialModifier}{KindToKeyword(kind)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}{enumBaseType}{BuildInterfaces(type)}"))
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{

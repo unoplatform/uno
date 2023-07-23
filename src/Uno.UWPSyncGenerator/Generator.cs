@@ -850,7 +850,7 @@ namespace Uno.UWPSyncGenerator
 
 			if (ifaces.Any())
 			{
-				return $": {string.Join(",", ifaces)}";
+				return $" : {string.Join(",", ifaces)}";
 			}
 
 			return "";
