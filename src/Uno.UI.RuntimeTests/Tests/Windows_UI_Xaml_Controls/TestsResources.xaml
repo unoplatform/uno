@@ -107,6 +107,23 @@
 					   HorizontalAlignment="Center" />
 		</Border>
 	</DataTemplate>
+	<DataTemplate x:Key="DefaultItemTemplate">
+		<Border Width="152"
+				Background="LightSeaGreen">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock Text="{Binding Name}"
+						   Grid.Row="0"
+						   HorizontalAlignment="Center" />
+				<TextBlock Text="{Binding Value}"
+						   Grid.Row="1"
+						   HorizontalAlignment="Center" />
+			</Grid>
+		</Border>
+	</DataTemplate>	
 	<DataTemplate x:Key="CounterItemTemplate">
 		<local:CounterGrid>
 			<TextBlock Text="{Binding}" />

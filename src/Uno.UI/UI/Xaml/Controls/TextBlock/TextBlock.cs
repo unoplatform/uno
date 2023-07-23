@@ -657,8 +657,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
+				nameof(TextDecorations),
+				typeof(TextDecorations),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
