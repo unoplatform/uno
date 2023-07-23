@@ -159,7 +159,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BackgroundDownloader( global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup completionGroup) 
+		public BackgroundDownloader(global::Windows.Networking.BackgroundTransfer.BackgroundTransferCompletionGroup completionGroup) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundDownloader", "BackgroundDownloader.BackgroundDownloader(BackgroundTransferCompletionGroup completionGroup)");
 		}
@@ -175,28 +175,28 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.BackgroundDownloader()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile)
+		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload(global::System.Uri uri, global::Windows.Storage.IStorageFile resultFile)
 		{
 			throw new global::System.NotImplementedException("The member DownloadOperation BackgroundDownloader.CreateDownload(Uri uri, IStorageFile resultFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DownloadOperation%20BackgroundDownloader.CreateDownload%28Uri%20uri%2C%20IStorageFile%20resultFile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile,  global::Windows.Storage.IStorageFile requestBodyFile)
+		public global::Windows.Networking.BackgroundTransfer.DownloadOperation CreateDownload(global::System.Uri uri, global::Windows.Storage.IStorageFile resultFile, global::Windows.Storage.IStorageFile requestBodyFile)
 		{
 			throw new global::System.NotImplementedException("The member DownloadOperation BackgroundDownloader.CreateDownload(Uri uri, IStorageFile resultFile, IStorageFile requestBodyFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DownloadOperation%20BackgroundDownloader.CreateDownload%28Uri%20uri%2C%20IStorageFile%20resultFile%2C%20IStorageFile%20requestBodyFile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.DownloadOperation> CreateDownloadAsync( global::System.Uri uri,  global::Windows.Storage.IStorageFile resultFile,  global::Windows.Storage.Streams.IInputStream requestBodyStream)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.DownloadOperation> CreateDownloadAsync(global::System.Uri uri, global::Windows.Storage.IStorageFile resultFile, global::Windows.Storage.Streams.IInputStream requestBodyStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DownloadOperation> BackgroundDownloader.CreateDownloadAsync(Uri uri, IStorageFile resultFile, IInputStream requestBodyStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDownloadOperation%3E%20BackgroundDownloader.CreateDownloadAsync%28Uri%20uri%2C%20IStorageFile%20resultFile%2C%20IInputStream%20requestBodyStream%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetRequestHeader( string headerName,  string headerValue)
+		public void SetRequestHeader(string headerName, string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundDownloader", "void BackgroundDownloader.SetRequestHeader(string headerName, string headerValue)");
 		}
@@ -224,14 +224,14 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundDownloader.CompletionGroup.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.DownloadOperation>> GetCurrentDownloadsForTransferGroupAsync( global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup group)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.DownloadOperation>> GetCurrentDownloadsForTransferGroupAsync(global::Windows.Networking.BackgroundTransfer.BackgroundTransferGroup group)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<DownloadOperation>> BackgroundDownloader.GetCurrentDownloadsForTransferGroupAsync(BackgroundTransferGroup group) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CDownloadOperation%3E%3E%20BackgroundDownloader.GetCurrentDownloadsForTransferGroupAsync%28BackgroundTransferGroup%20group%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult> RequestUnconstrainedDownloadsAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.DownloadOperation> operations)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.BackgroundTransfer.UnconstrainedTransferRequestResult> RequestUnconstrainedDownloadsAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Networking.BackgroundTransfer.DownloadOperation> operations)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UnconstrainedTransferRequestResult> BackgroundDownloader.RequestUnconstrainedDownloadsAsync(IEnumerable<DownloadOperation> operations) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUnconstrainedTransferRequestResult%3E%20BackgroundDownloader.RequestUnconstrainedDownloadsAsync%28IEnumerable%3CDownloadOperation%3E%20operations%29");
 		}
@@ -245,7 +245,7 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.DownloadOperation>> GetCurrentDownloadsAsync( string group)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.BackgroundTransfer.DownloadOperation>> GetCurrentDownloadsAsync(string group)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<DownloadOperation>> BackgroundDownloader.GetCurrentDownloadsAsync(string group) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CDownloadOperation%3E%3E%20BackgroundDownloader.GetCurrentDownloadsAsync%28string%20group%29");
 		}

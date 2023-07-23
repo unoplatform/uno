@@ -33,10 +33,10 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsExtensionGlyphShownProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsExtensionGlyphShownProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsExtensionGlyphShown), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarMenuButton), 
+			nameof(IsExtensionGlyphShown), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarMenuButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.InkToolbarMenuButton.MenuKind.get

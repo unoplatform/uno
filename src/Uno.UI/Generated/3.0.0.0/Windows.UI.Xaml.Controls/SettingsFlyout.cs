@@ -75,34 +75,34 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
+			nameof(HeaderBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
+			nameof(HeaderForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IconSource), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
-			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
+			nameof(IconSource), typeof(global::Windows.UI.Xaml.Media.ImageSource),
+			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Title), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
+			nameof(Title), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

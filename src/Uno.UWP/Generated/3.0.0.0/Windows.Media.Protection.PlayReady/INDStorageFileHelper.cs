@@ -9,7 +9,7 @@ namespace Windows.Media.Protection.PlayReady
 	public partial interface INDStorageFileHelper 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::System.Collections.Generic.IList<string> GetFileURLs( global::Windows.Storage.IStorageFile file);
+		global::System.Collections.Generic.IList<string> GetFileURLs(global::Windows.Storage.IStorageFile file);
 #endif
 	}
 }

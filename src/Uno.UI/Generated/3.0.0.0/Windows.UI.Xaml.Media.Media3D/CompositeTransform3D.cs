@@ -177,98 +177,98 @@ namespace Windows.UI.Xaml.Media.Media3D
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(CenterX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(CenterY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(CenterZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(RotationX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(RotationY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(RotationZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ScaleXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ScaleX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(ScaleX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ScaleYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ScaleY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(ScaleY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ScaleZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ScaleZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(ScaleZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TranslateXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TranslateXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TranslateX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(TranslateX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TranslateYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TranslateYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TranslateY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(TranslateY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TranslateZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TranslateZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TranslateZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
+			nameof(TranslateZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

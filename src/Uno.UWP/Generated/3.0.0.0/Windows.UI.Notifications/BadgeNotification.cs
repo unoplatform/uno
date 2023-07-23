@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || false || false || false || false || false || false
 		[global::Uno.NotImplemented("__ANDROID__")]
-		public BadgeNotification( global::Windows.Data.Xml.Dom.XmlDocument content) 
+		public BadgeNotification(global::Windows.Data.Xml.Dom.XmlDocument content) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeNotification", "BadgeNotification.BadgeNotification(XmlDocument content)");
 		}

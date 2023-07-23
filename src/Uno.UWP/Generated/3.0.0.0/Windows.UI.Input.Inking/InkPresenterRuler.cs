@@ -131,7 +131,7 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public InkPresenterRuler( global::Windows.UI.Input.Inking.InkPresenter inkPresenter) 
+		public InkPresenterRuler(global::Windows.UI.Input.Inking.InkPresenter inkPresenter) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenterRuler", "InkPresenterRuler.InkPresenterRuler(InkPresenter inkPresenter)");
 		}

@@ -81,21 +81,21 @@ namespace Windows.Gaming.Input.Custom
 		// Forced skipping of method Windows.Gaming.Input.Custom.HidGameControllerProvider.UsagePage.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void GetFeatureReport( byte reportId,  byte[] reportBuffer)
+		public void GetFeatureReport(byte reportId, byte[] reportBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "void HidGameControllerProvider.GetFeatureReport(byte reportId, byte[] reportBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendFeatureReport( byte reportId,  byte[] reportBuffer)
+		public void SendFeatureReport(byte reportId, byte[] reportBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "void HidGameControllerProvider.SendFeatureReport(byte reportId, byte[] reportBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendOutputReport( byte reportId,  byte[] reportBuffer)
+		public void SendOutputReport(byte reportId, byte[] reportBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.Custom.HidGameControllerProvider", "void HidGameControllerProvider.SendOutputReport(byte reportId, byte[] reportBuffer)");
 		}

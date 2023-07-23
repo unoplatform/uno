@@ -25,21 +25,21 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void OnPlayReadyObjectReceived( byte[] dataBytes)
+		public void OnPlayReadyObjectReceived(byte[] dataBytes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDDownloadEngineNotifier", "void NDDownloadEngineNotifier.OnPlayReadyObjectReceived(byte[] dataBytes)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void OnContentIDReceived( global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
+		public void OnContentIDReceived(global::Windows.Media.Protection.PlayReady.INDLicenseFetchDescriptor licenseFetchDescriptor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDDownloadEngineNotifier", "void NDDownloadEngineNotifier.OnContentIDReceived(INDLicenseFetchDescriptor licenseFetchDescriptor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void OnDataReceived( byte[] dataBytes,  uint bytesReceived)
+		public void OnDataReceived(byte[] dataBytes, uint bytesReceived)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDDownloadEngineNotifier", "void NDDownloadEngineNotifier.OnDataReceived(byte[] dataBytes, uint bytesReceived)");
 		}

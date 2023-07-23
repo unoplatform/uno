@@ -73,10 +73,10 @@ namespace Windows.UI.Core
 		void Close();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Core.CoreVirtualKeyStates GetAsyncKeyState( global::Windows.System.VirtualKey virtualKey);
+		global::Windows.UI.Core.CoreVirtualKeyStates GetAsyncKeyState(global::Windows.System.VirtualKey virtualKey);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Core.CoreVirtualKeyStates GetKeyState( global::Windows.System.VirtualKey virtualKey);
+		global::Windows.UI.Core.CoreVirtualKeyStates GetKeyState(global::Windows.System.VirtualKey virtualKey);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void ReleasePointerCapture();

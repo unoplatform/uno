@@ -8,7 +8,7 @@ namespace Windows.Media
 	public partial interface IMediaExtension 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetProperties( global::Windows.Foundation.Collections.IPropertySet configuration);
+		void SetProperties(global::Windows.Foundation.Collections.IPropertySet configuration);
 #endif
 	}
 }

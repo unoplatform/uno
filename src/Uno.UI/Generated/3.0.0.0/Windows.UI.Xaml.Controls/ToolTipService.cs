@@ -10,10 +10,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PlacementProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"PlacementTarget", typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.ToolTipService), 
+			"PlacementTarget", typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Controls.ToolTipService),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 		// Skipping already declared property ToolTipProperty
@@ -23,14 +23,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ToolTipService.PlacementTargetProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.UIElement GetPlacementTarget( global::Windows.UI.Xaml.DependencyObject element)
+		public static global::Windows.UI.Xaml.UIElement GetPlacementTarget(global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (global::Windows.UI.Xaml.UIElement)element.GetValue(PlacementTargetProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetPlacementTarget( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.UIElement value)
+		public static void SetPlacementTarget(global::Windows.UI.Xaml.DependencyObject element, global::Windows.UI.Xaml.UIElement value)
 		{
 			element.SetValue(PlacementTargetProperty, value);
 		}

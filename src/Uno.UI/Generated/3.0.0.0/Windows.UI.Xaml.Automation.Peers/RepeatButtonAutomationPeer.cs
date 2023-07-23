@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RepeatButtonAutomationPeer( global::Windows.UI.Xaml.Controls.Primitives.RepeatButton owner) : base(owner)
+		public RepeatButtonAutomationPeer(global::Windows.UI.Xaml.Controls.Primitives.RepeatButton owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.RepeatButtonAutomationPeer", "RepeatButtonAutomationPeer.RepeatButtonAutomationPeer(RepeatButton owner)");
 		}

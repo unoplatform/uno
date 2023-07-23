@@ -26,35 +26,35 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateViewport( global::Windows.Foundation.Rect value)
+		public void UpdateViewport(global::Windows.Foundation.Rect value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateViewport(Rect value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateContentProtectionEnabled( bool value)
+		public void UpdateContentProtectionEnabled(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateContentProtectionEnabled(bool value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateExtents( global::System.Numerics.Vector2 value)
+		public void UpdateExtents(global::System.Numerics.Vector2 value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateExtents(Vector2 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateLocationWithStationaryMode( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 position,  global::System.Numerics.Quaternion orientation)
+		public void UpdateLocationWithStationaryMode(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 position, global::System.Numerics.Quaternion orientation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateLocationWithStationaryMode(SpatialCoordinateSystem coordinateSystem, Vector3 position, Quaternion orientation)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateLocationWithDisplayRelativeMode( global::System.Numerics.Vector3 position,  global::System.Numerics.Quaternion orientation)
+		public void UpdateLocationWithDisplayRelativeMode(global::System.Numerics.Vector3 position, global::System.Numerics.Quaternion orientation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayerUpdateParameters", "void HolographicQuadLayerUpdateParameters.UpdateLocationWithDisplayRelativeMode(Vector3 position, Quaternion orientation)");
 		}

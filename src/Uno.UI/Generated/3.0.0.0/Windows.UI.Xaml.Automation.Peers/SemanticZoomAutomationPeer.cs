@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SemanticZoomAutomationPeer( global::Windows.UI.Xaml.Controls.SemanticZoom owner) : base(owner)
+		public SemanticZoomAutomationPeer(global::Windows.UI.Xaml.Controls.SemanticZoom owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.SemanticZoomAutomationPeer", "SemanticZoomAutomationPeer.SemanticZoomAutomationPeer(SemanticZoom owner)");
 		}

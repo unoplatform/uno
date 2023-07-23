@@ -33,7 +33,7 @@ namespace Windows.Media.Protection.PlayReady
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Open( global::System.Uri uri,  byte[] sessionIDBytes);
+		void Open(global::System.Uri uri, byte[] sessionIDBytes);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Pause();
@@ -45,7 +45,7 @@ namespace Windows.Media.Protection.PlayReady
 		void Close();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Seek( global::System.TimeSpan startPosition);
+		void Seek(global::System.TimeSpan startPosition);
 #endif
 		// Forced skipping of method Windows.Media.Protection.PlayReady.INDDownloadEngine.CanSeek.get
 		// Forced skipping of method Windows.Media.Protection.PlayReady.INDDownloadEngine.BufferFullMinThresholdInSamples.get

@@ -97,28 +97,28 @@ namespace Windows.Devices.PointOfService.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportScannedDataAsync( global::Windows.Devices.PointOfService.BarcodeScannerReport report)
+		public global::Windows.Foundation.IAsyncAction ReportScannedDataAsync(global::Windows.Devices.PointOfService.BarcodeScannerReport report)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerProviderConnection.ReportScannedDataAsync(BarcodeScannerReport report) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerProviderConnection.ReportScannedDataAsync%28BarcodeScannerReport%20report%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportTriggerStateAsync( global::Windows.Devices.PointOfService.Provider.BarcodeScannerTriggerState state)
+		public global::Windows.Foundation.IAsyncAction ReportTriggerStateAsync(global::Windows.Devices.PointOfService.Provider.BarcodeScannerTriggerState state)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerProviderConnection.ReportTriggerStateAsync(BarcodeScannerTriggerState state) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerProviderConnection.ReportTriggerStateAsync%28BarcodeScannerTriggerState%20state%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportErrorAsync( global::Windows.Devices.PointOfService.UnifiedPosErrorData errorData)
+		public global::Windows.Foundation.IAsyncAction ReportErrorAsync(global::Windows.Devices.PointOfService.UnifiedPosErrorData errorData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerProviderConnection.ReportErrorAsync(UnifiedPosErrorData errorData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerProviderConnection.ReportErrorAsync%28UnifiedPosErrorData%20errorData%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportErrorAsync( global::Windows.Devices.PointOfService.UnifiedPosErrorData errorData,  bool isRetriable,  global::Windows.Devices.PointOfService.BarcodeScannerReport scanReport)
+		public global::Windows.Foundation.IAsyncAction ReportErrorAsync(global::Windows.Devices.PointOfService.UnifiedPosErrorData errorData, bool isRetriable, global::Windows.Devices.PointOfService.BarcodeScannerReport scanReport)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction BarcodeScannerProviderConnection.ReportErrorAsync(UnifiedPosErrorData errorData, bool isRetriable, BarcodeScannerReport scanReport) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20BarcodeScannerProviderConnection.ReportErrorAsync%28UnifiedPosErrorData%20errorData%2C%20bool%20isRetriable%2C%20BarcodeScannerReport%20scanReport%29");
 		}
@@ -148,14 +148,14 @@ namespace Windows.Devices.PointOfService.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader> CreateFrameReaderAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat preferredFormat)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader> CreateFrameReaderAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat preferredFormat)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BarcodeScannerFrameReader> BarcodeScannerProviderConnection.CreateFrameReaderAsync(BitmapPixelFormat preferredFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBarcodeScannerFrameReader%3E%20BarcodeScannerProviderConnection.CreateFrameReaderAsync%28BitmapPixelFormat%20preferredFormat%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader> CreateFrameReaderAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat preferredFormat,  global::Windows.Graphics.Imaging.BitmapSize preferredSize)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader> CreateFrameReaderAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat preferredFormat, global::Windows.Graphics.Imaging.BitmapSize preferredSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BarcodeScannerFrameReader> BarcodeScannerProviderConnection.CreateFrameReaderAsync(BitmapPixelFormat preferredFormat, BitmapSize preferredSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBarcodeScannerFrameReader%3E%20BarcodeScannerProviderConnection.CreateFrameReaderAsync%28BitmapPixelFormat%20preferredFormat%2C%20BitmapSize%20preferredSize%29");
 		}

@@ -145,21 +145,21 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.SwitchCount.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( int buttonIndex)
+		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(int buttonIndex)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel RawGameController.GetButtonLabel(int buttonIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20RawGameController.GetButtonLabel%28int%20buttonIndex%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ulong GetCurrentReading( bool[] buttonArray,  global::Windows.Gaming.Input.GameControllerSwitchPosition[] switchArray,  double[] axisArray)
+		public ulong GetCurrentReading(bool[] buttonArray, global::Windows.Gaming.Input.GameControllerSwitchPosition[] switchArray, double[] axisArray)
 		{
 			throw new global::System.NotImplementedException("The member ulong RawGameController.GetCurrentReading(bool[] buttonArray, GameControllerSwitchPosition[] switchArray, double[] axisArray) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ulong%20RawGameController.GetCurrentReading%28bool%5B%5D%20buttonArray%2C%20GameControllerSwitchPosition%5B%5D%20switchArray%2C%20double%5B%5D%20axisArray%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerSwitchKind GetSwitchKind( int switchIndex)
+		public global::Windows.Gaming.Input.GameControllerSwitchKind GetSwitchKind(int switchIndex)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerSwitchKind RawGameController.GetSwitchKind(int switchIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerSwitchKind%20RawGameController.GetSwitchKind%28int%20switchIndex%29");
 		}
@@ -190,7 +190,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RawGameController.RawGameControllers.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Gaming.Input.RawGameController FromGameController( global::Windows.Gaming.Input.IGameController gameController)
+		public static global::Windows.Gaming.Input.RawGameController FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member RawGameController RawGameController.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RawGameController%20RawGameController.FromGameController%28IGameController%20gameController%29");
 		}

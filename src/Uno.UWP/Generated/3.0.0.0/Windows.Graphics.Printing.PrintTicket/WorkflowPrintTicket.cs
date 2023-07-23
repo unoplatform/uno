@@ -214,7 +214,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket.PageResolutionFeature.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature( string name,  string xmlNamespace)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature(string name, string xmlNamespace)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketFeature WorkflowPrintTicket.GetFeature(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketFeature%20WorkflowPrintTicket.GetFeature%28string%20name%2C%20string%20xmlNamespace%29");
 		}
@@ -235,28 +235,28 @@ namespace Windows.Graphics.Printing.PrintTicket
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer GetParameterInitializer( string name,  string xmlNamespace)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer GetParameterInitializer(string name, string xmlNamespace)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketParameterInitializer WorkflowPrintTicket.GetParameterInitializer(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketParameterInitializer%20WorkflowPrintTicket.GetParameterInitializer%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer SetParameterInitializerAsInteger( string name,  string xmlNamespace,  int integerValue)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer SetParameterInitializerAsInteger(string name, string xmlNamespace, int integerValue)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketParameterInitializer WorkflowPrintTicket.SetParameterInitializerAsInteger(string name, string xmlNamespace, int integerValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketParameterInitializer%20WorkflowPrintTicket.SetParameterInitializerAsInteger%28string%20name%2C%20string%20xmlNamespace%2C%20int%20integerValue%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer SetParameterInitializerAsString( string name,  string xmlNamespace,  string stringValue)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterInitializer SetParameterInitializerAsString(string name, string xmlNamespace, string stringValue)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketParameterInitializer WorkflowPrintTicket.SetParameterInitializerAsString(string name, string xmlNamespace, string stringValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketParameterInitializer%20WorkflowPrintTicket.SetParameterInitializerAsString%28string%20name%2C%20string%20xmlNamespace%2C%20string%20stringValue%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket MergeAndValidateTicket( global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket deltaShemaTicket)
+		public global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket MergeAndValidateTicket(global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket deltaShemaTicket)
 		{
 			throw new global::System.NotImplementedException("The member WorkflowPrintTicket WorkflowPrintTicket.MergeAndValidateTicket(WorkflowPrintTicket deltaShemaTicket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WorkflowPrintTicket%20WorkflowPrintTicket.MergeAndValidateTicket%28WorkflowPrintTicket%20deltaShemaTicket%29");
 		}

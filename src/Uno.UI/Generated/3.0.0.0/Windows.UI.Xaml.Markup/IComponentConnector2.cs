@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Markup
 	public partial interface IComponentConnector2 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Markup.IComponentConnector GetBindingConnector( int connectionId,  object target);
+		global::Windows.UI.Xaml.Markup.IComponentConnector GetBindingConnector(int connectionId, object target);
 #endif
 	}
 }

@@ -227,21 +227,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetHorizontalOffset( double offset)
+		public void SetHorizontalOffset(double offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "void OrientedVirtualizingPanel.SetHorizontalOffset(double offset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetVerticalOffset( double offset)
+		public void SetVerticalOffset(double offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel", "void OrientedVirtualizingPanel.SetVerticalOffset(double offset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.Rect MakeVisible( global::Windows.UI.Xaml.UIElement visual,  global::Windows.Foundation.Rect rectangle)
+		public global::Windows.Foundation.Rect MakeVisible(global::Windows.UI.Xaml.UIElement visual, global::Windows.Foundation.Rect rectangle)
 		{
 			throw new global::System.NotImplementedException("The member Rect OrientedVirtualizingPanel.MakeVisible(UIElement visual, Rect rectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20OrientedVirtualizingPanel.MakeVisible%28UIElement%20visual%2C%20Rect%20rectangle%29");
 		}
@@ -254,21 +254,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel.VerticalSnapPointsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
+		public global::System.Collections.Generic.IReadOnlyList<float> GetIrregularSnapPoints(global::Windows.UI.Xaml.Controls.Orientation orientation, global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<float> OrientedVirtualizingPanel.GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cfloat%3E%20OrientedVirtualizingPanel.GetIrregularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public float GetRegularSnapPoints( global::Windows.UI.Xaml.Controls.Orientation orientation,  global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
+		public float GetRegularSnapPoints(global::Windows.UI.Xaml.Controls.Orientation orientation, global::Windows.UI.Xaml.Controls.Primitives.SnapPointsAlignment alignment, out float offset)
 		{
 			throw new global::System.NotImplementedException("The member float OrientedVirtualizingPanel.GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=float%20OrientedVirtualizingPanel.GetRegularSnapPoints%28Orientation%20orientation%2C%20SnapPointsAlignment%20alignment%2C%20out%20float%20offset%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second)
+		public void GetInsertionIndexes(global::Windows.Foundation.Point position, out int first, out int second)
 		{
 			throw new global::System.NotImplementedException("The member void OrientedVirtualizingPanel.GetInsertionIndexes(Point position, out int first, out int second) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20OrientedVirtualizingPanel.GetInsertionIndexes%28Point%20position%2C%20out%20int%20first%2C%20out%20int%20second%29");
 		}

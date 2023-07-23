@@ -53,7 +53,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.CurrentFormat.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetFormatAsync( global::Windows.Media.Capture.Frames.MediaFrameFormat format)
+		public global::Windows.Foundation.IAsyncAction SetFormatAsync(global::Windows.Media.Capture.Frames.MediaFrameFormat format)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MediaFrameSource.SetFormatAsync(MediaFrameFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MediaFrameSource.SetFormatAsync%28MediaFrameFormat%20format%29");
 		}
@@ -62,7 +62,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSource.FormatChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Devices.Core.CameraIntrinsics TryGetCameraIntrinsics( global::Windows.Media.Capture.Frames.MediaFrameFormat format)
+		public global::Windows.Media.Devices.Core.CameraIntrinsics TryGetCameraIntrinsics(global::Windows.Media.Capture.Frames.MediaFrameFormat format)
 		{
 			throw new global::System.NotImplementedException("The member CameraIntrinsics MediaFrameSource.TryGetCameraIntrinsics(MediaFrameFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CameraIntrinsics%20MediaFrameSource.TryGetCameraIntrinsics%28MediaFrameFormat%20format%29");
 		}

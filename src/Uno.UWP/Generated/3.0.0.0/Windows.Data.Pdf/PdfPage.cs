@@ -59,14 +59,14 @@ namespace Windows.Data.Pdf
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream outputStream)
+		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream outputStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction PdfPage.RenderToStreamAsync(IRandomAccessStream outputStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PdfPage.RenderToStreamAsync%28IRandomAccessStream%20outputStream%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream outputStream,  global::Windows.Data.Pdf.PdfPageRenderOptions options)
+		public global::Windows.Foundation.IAsyncAction RenderToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream outputStream, global::Windows.Data.Pdf.PdfPageRenderOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction PdfPage.RenderToStreamAsync(IRandomAccessStream outputStream, PdfPageRenderOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20PdfPage.RenderToStreamAsync%28IRandomAccessStream%20outputStream%2C%20PdfPageRenderOptions%20options%29");
 		}

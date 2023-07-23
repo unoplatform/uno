@@ -55,10 +55,10 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AutoReverseProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AutoReverseProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AutoReverse), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
+			nameof(AutoReverse), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property BeginTimeProperty
@@ -67,10 +67,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Skipping already declared property RepeatBehaviorProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SpeedRatioProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SpeedRatioProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SpeedRatio), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline), 
+			nameof(SpeedRatio), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.Timeline),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.Timeline.Timeline()

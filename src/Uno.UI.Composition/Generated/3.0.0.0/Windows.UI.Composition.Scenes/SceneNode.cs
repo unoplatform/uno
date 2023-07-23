@@ -53,14 +53,14 @@ namespace Windows.UI.Composition.Scenes
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneNode.Transform.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType( global::Windows.UI.Composition.Scenes.SceneComponentType value)
+		public global::Windows.UI.Composition.Scenes.SceneComponent FindFirstComponentOfType(global::Windows.UI.Composition.Scenes.SceneComponentType value)
 		{
 			throw new global::System.NotImplementedException("The member SceneComponent SceneNode.FindFirstComponentOfType(SceneComponentType value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneComponent%20SceneNode.FindFirstComponentOfType%28SceneComponentType%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Composition.Scenes.SceneNode Create( global::Windows.UI.Composition.Compositor compositor)
+		public static global::Windows.UI.Composition.Scenes.SceneNode Create(global::Windows.UI.Composition.Compositor compositor)
 		{
 			throw new global::System.NotImplementedException("The member SceneNode SceneNode.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneNode%20SceneNode.Create%28Compositor%20compositor%29");
 		}

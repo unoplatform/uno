@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeySplineProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeySplineProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeySpline), typeof(global::Windows.UI.Xaml.Media.Animation.KeySpline), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame), 
+			nameof(KeySpline), typeof(global::Windows.UI.Xaml.Media.Animation.KeySpline),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeySpline)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.SplineColorKeyFrame.SplineColorKeyFrame()

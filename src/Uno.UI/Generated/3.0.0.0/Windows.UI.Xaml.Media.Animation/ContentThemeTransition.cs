@@ -37,18 +37,18 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ContentThemeTransition), 
+			nameof(HorizontalOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ContentThemeTransition),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(VerticalOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ContentThemeTransition), 
+			nameof(VerticalOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ContentThemeTransition),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -145,82 +145,82 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinTallModeHeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinTallModeHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinTallModeHeight), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(MinTallModeHeight), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinWideModeWidthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinWideModeWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinWideModeWidth), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(MinWideModeWidth), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Mode), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewMode), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(Mode), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewMode),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TwoPaneViewMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Pane1LengthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Pane1LengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Pane1Length), typeof(global::Windows.UI.Xaml.GridLength), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(Pane1Length), typeof(global::Windows.UI.Xaml.GridLength),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.GridLength)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Pane1Property { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Pane1Property { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Pane1), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(Pane1), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Pane2LengthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Pane2LengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Pane2Length), typeof(global::Windows.UI.Xaml.GridLength), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(Pane2Length), typeof(global::Windows.UI.Xaml.GridLength),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.GridLength)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Pane2Property { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Pane2Property { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Pane2), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(Pane2), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PanePriorityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PanePriorityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PanePriority), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewPriority), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(PanePriority), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewPriority),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TwoPaneViewPriority)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TallModeConfigurationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TallModeConfigurationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TallModeConfiguration), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(TallModeConfiguration), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty WideModeConfigurationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty WideModeConfigurationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(WideModeConfiguration), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration), 
-			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView), 
+			nameof(WideModeConfiguration), typeof(global::Windows.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration),
+			typeof(global::Windows.UI.Xaml.Controls.TwoPaneView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TwoPaneView.TwoPaneView()

@@ -13,14 +13,14 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.BackgroundActivated.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync( string launchArguments)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync(string launchArguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartAsync(string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20WebUIApplication.RequestRestartAsync%28string%20launchArguments%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync( global::Windows.System.User user,  string launchArguments)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync(global::Windows.System.User user, string launchArguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> WebUIApplication.RequestRestartForUserAsync(User user, string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20WebUIApplication.RequestRestartForUserAsync%28User%20user%2C%20string%20launchArguments%29");
 		}
@@ -31,7 +31,7 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIApplication.EnteredBackground.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EnablePrelaunch( bool value)
+		public static void EnablePrelaunch(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIApplication", "void WebUIApplication.EnablePrelaunch(bool value)");
 		}

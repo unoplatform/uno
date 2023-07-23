@@ -30,7 +30,7 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction PauseAsync( global::Windows.Media.Devices.MediaCapturePauseBehavior behavior)
+		public global::Windows.Foundation.IAsyncAction PauseAsync(global::Windows.Media.Devices.MediaCapturePauseBehavior behavior)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction LowLagMediaRecording.PauseAsync(MediaCapturePauseBehavior behavior) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20LowLagMediaRecording.PauseAsync%28MediaCapturePauseBehavior%20behavior%29");
 		}
@@ -44,7 +44,7 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.MediaCapturePauseResult> PauseWithResultAsync( global::Windows.Media.Devices.MediaCapturePauseBehavior behavior)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.MediaCapturePauseResult> PauseWithResultAsync(global::Windows.Media.Devices.MediaCapturePauseBehavior behavior)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaCapturePauseResult> LowLagMediaRecording.PauseWithResultAsync(MediaCapturePauseBehavior behavior) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaCapturePauseResult%3E%20LowLagMediaRecording.PauseWithResultAsync%28MediaCapturePauseBehavior%20behavior%29");
 		}

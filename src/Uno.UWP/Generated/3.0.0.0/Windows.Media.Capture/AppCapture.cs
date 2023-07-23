@@ -33,7 +33,7 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.AppCapture.CapturingChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction SetAllowedAsync( bool allowed)
+		public static global::Windows.Foundation.IAsyncAction SetAllowedAsync(bool allowed)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction AppCapture.SetAllowedAsync(bool allowed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20AppCapture.SetAllowedAsync%28bool%20allowed%29");
 		}

@@ -65,7 +65,7 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RegisterAppForUser( global::Windows.System.User user)
+		public void RegisterAppForUser(global::Windows.System.User user)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "void PhoneLineTransportDevice.RegisterAppForUser(User user)");
 		}
@@ -79,7 +79,7 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UnregisterAppForUser( global::Windows.System.User user)
+		public void UnregisterAppForUser(global::Windows.System.User user)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLineTransportDevice", "void PhoneLineTransportDevice.UnregisterAppForUser(User user)");
 		}
@@ -113,7 +113,7 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineTransportDevice.InBandRingingEnabledChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Calls.PhoneLineTransportDevice FromId( string id)
+		public static global::Windows.ApplicationModel.Calls.PhoneLineTransportDevice FromId(string id)
 		{
 			throw new global::System.NotImplementedException("The member PhoneLineTransportDevice PhoneLineTransportDevice.FromId(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineTransportDevice%20PhoneLineTransportDevice.FromId%28string%20id%29");
 		}
@@ -127,7 +127,7 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.ApplicationModel.Calls.PhoneLineTransport transport)
+		public static string GetDeviceSelector(global::Windows.ApplicationModel.Calls.PhoneLineTransport transport)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneLineTransportDevice.GetDeviceSelector(PhoneLineTransport transport) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLineTransportDevice.GetDeviceSelector%28PhoneLineTransport%20transport%29");
 		}

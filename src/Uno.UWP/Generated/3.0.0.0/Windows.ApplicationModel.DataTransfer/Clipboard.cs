@@ -23,14 +23,14 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool DeleteItemFromHistory( global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem item)
+		public static bool DeleteItemFromHistory(global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem item)
 		{
 			throw new global::System.NotImplementedException("The member bool Clipboard.DeleteItemFromHistory(ClipboardHistoryItem item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Clipboard.DeleteItemFromHistory%28ClipboardHistoryItem%20item%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.DataTransfer.SetHistoryItemAsContentStatus SetHistoryItemAsContent( global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem item)
+		public static global::Windows.ApplicationModel.DataTransfer.SetHistoryItemAsContentStatus SetHistoryItemAsContent(global::Windows.ApplicationModel.DataTransfer.ClipboardHistoryItem item)
 		{
 			throw new global::System.NotImplementedException("The member SetHistoryItemAsContentStatus Clipboard.SetHistoryItemAsContent(ClipboardHistoryItem item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SetHistoryItemAsContentStatus%20Clipboard.SetHistoryItemAsContent%28ClipboardHistoryItem%20item%29");
 		}
@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool SetContentWithOptions( global::Windows.ApplicationModel.DataTransfer.DataPackage content,  global::Windows.ApplicationModel.DataTransfer.ClipboardContentOptions options)
+		public static bool SetContentWithOptions(global::Windows.ApplicationModel.DataTransfer.DataPackage content, global::Windows.ApplicationModel.DataTransfer.ClipboardContentOptions options)
 		{
 			throw new global::System.NotImplementedException("The member bool Clipboard.SetContentWithOptions(DataPackage content, ClipboardContentOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Clipboard.SetContentWithOptions%28DataPackage%20content%2C%20ClipboardContentOptions%20options%29");
 		}
@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public static void SetContent( global::Windows.ApplicationModel.DataTransfer.DataPackage content)
+		public static void SetContent(global::Windows.ApplicationModel.DataTransfer.DataPackage content)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.SetContent(DataPackage content)");
 		}

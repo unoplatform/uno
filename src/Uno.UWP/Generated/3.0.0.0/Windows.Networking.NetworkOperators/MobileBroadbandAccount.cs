@@ -93,7 +93,7 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandAccount.AvailableNetworkAccountIds.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.MobileBroadbandAccount CreateFromNetworkAccountId( string networkAccountId)
+		public static global::Windows.Networking.NetworkOperators.MobileBroadbandAccount CreateFromNetworkAccountId(string networkAccountId)
 		{
 			throw new global::System.NotImplementedException("The member MobileBroadbandAccount MobileBroadbandAccount.CreateFromNetworkAccountId(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandAccount%20MobileBroadbandAccount.CreateFromNetworkAccountId%28string%20networkAccountId%29");
 		}

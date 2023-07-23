@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentToken( string paymentMethodId) 
+		public PaymentToken(string paymentMethodId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentToken", "PaymentToken.PaymentToken(string paymentMethodId)");
 		}
@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentToken.PaymentToken(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentToken( string paymentMethodId,  string jsonDetails) 
+		public PaymentToken(string paymentMethodId, string jsonDetails) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentToken", "PaymentToken.PaymentToken(string paymentMethodId, string jsonDetails)");
 		}

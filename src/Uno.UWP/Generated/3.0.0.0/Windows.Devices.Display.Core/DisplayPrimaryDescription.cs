@@ -79,7 +79,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DisplayPrimaryDescription( uint width,  uint height,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace,  bool isStereo,  global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription) 
+		public DisplayPrimaryDescription(uint width, uint height, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace, bool isStereo, global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPrimaryDescription", "DisplayPrimaryDescription.DisplayPrimaryDescription(uint width, uint height, DirectXPixelFormat pixelFormat, DirectXColorSpace colorSpace, bool isStereo, Direct3DMultisampleDescription multisampleDescription)");
 		}
@@ -94,7 +94,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPrimaryDescription.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Display.Core.DisplayPrimaryDescription CreateWithProperties( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> extraProperties,  uint width,  uint height,  global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat,  global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace,  bool isStereo,  global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription)
+		public static global::Windows.Devices.Display.Core.DisplayPrimaryDescription CreateWithProperties(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<global::System.Guid, object>> extraProperties, uint width, uint height, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace, bool isStereo, global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription)
 		{
 			throw new global::System.NotImplementedException("The member DisplayPrimaryDescription DisplayPrimaryDescription.CreateWithProperties(IEnumerable<KeyValuePair<Guid, object>> extraProperties, uint width, uint height, DirectXPixelFormat pixelFormat, DirectXColorSpace colorSpace, bool isStereo, Direct3DMultisampleDescription multisampleDescription) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayPrimaryDescription%20DisplayPrimaryDescription.CreateWithProperties%28IEnumerable%3CKeyValuePair%3CGuid%2C%20object%3E%3E%20extraProperties%2C%20uint%20width%2C%20uint%20height%2C%20DirectXPixelFormat%20pixelFormat%2C%20DirectXColorSpace%20colorSpace%2C%20bool%20isStereo%2C%20Direct3DMultisampleDescription%20multisampleDescription%29");
 		}

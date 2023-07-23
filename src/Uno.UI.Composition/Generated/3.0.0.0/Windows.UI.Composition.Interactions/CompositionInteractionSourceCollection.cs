@@ -20,14 +20,14 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection.Count.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
+		public void Add(global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "void CompositionInteractionSourceCollection.Add(ICompositionInteractionSource value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Remove( global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
+		public void Remove(global::Windows.UI.Composition.Interactions.ICompositionInteractionSource value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.CompositionInteractionSourceCollection", "void CompositionInteractionSourceCollection.Remove(ICompositionInteractionSource value)");
 		}

@@ -8,7 +8,7 @@ namespace Windows.UI.Input.Inking
 	public partial interface IInkPresenterRulerFactory 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Input.Inking.InkPresenterRuler Create( global::Windows.UI.Input.Inking.InkPresenter inkPresenter);
+		global::Windows.UI.Input.Inking.InkPresenterRuler Create(global::Windows.UI.Input.Inking.InkPresenter inkPresenter);
 #endif
 	}
 }

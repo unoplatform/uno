@@ -60,14 +60,14 @@ namespace Windows.Devices.Input.Preview
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription> GetNumericControlDescriptions( ushort usagePage,  ushort usageId)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.HumanInterfaceDevice.HidNumericControlDescription> GetNumericControlDescriptions(ushort usagePage, ushort usageId)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<HidNumericControlDescription> GazeDevicePreview.GetNumericControlDescriptions(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHidNumericControlDescription%3E%20GazeDevicePreview.GetNumericControlDescriptions%28ushort%20usagePage%2C%20ushort%20usageId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription> GetBooleanControlDescriptions( ushort usagePage,  ushort usageId)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.HumanInterfaceDevice.HidBooleanControlDescription> GetBooleanControlDescriptions(ushort usagePage, ushort usageId)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<HidBooleanControlDescription> GazeDevicePreview.GetBooleanControlDescriptions(ushort usagePage, ushort usageId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CHidBooleanControlDescription%3E%20GazeDevicePreview.GetBooleanControlDescriptions%28ushort%20usagePage%2C%20ushort%20usageId%29");
 		}

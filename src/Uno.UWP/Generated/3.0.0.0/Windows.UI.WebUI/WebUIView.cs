@@ -166,42 +166,42 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Navigate( global::System.Uri source)
+		public void Navigate(global::System.Uri source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "void WebUIView.Navigate(Uri source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NavigateToString( string text)
+		public void NavigateToString(string text)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "void WebUIView.NavigateToString(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NavigateToLocalStreamUri( global::System.Uri source,  global::Windows.Web.IUriToStreamResolver streamResolver)
+		public void NavigateToLocalStreamUri(global::System.Uri source, global::Windows.Web.IUriToStreamResolver streamResolver)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "void WebUIView.NavigateToLocalStreamUri(Uri source, IUriToStreamResolver streamResolver)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage)
+		public void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "void WebUIView.NavigateWithHttpRequestMessage(HttpRequestMessage requestMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments)
+		public global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync(string scriptName, global::System.Collections.Generic.IEnumerable<string> arguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> WebUIView.InvokeScriptAsync(string scriptName, IEnumerable<string> arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20WebUIView.InvokeScriptAsync%28string%20scriptName%2C%20IEnumerable%3Cstring%3E%20arguments%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
+		public global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebUIView.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebUIView.CapturePreviewToStreamAsync%28IRandomAccessStream%20stream%29");
 		}
@@ -215,14 +215,14 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath)
+		public global::System.Uri BuildLocalStreamUri(string contentIdentifier, string relativePath)
 		{
 			throw new global::System.NotImplementedException("The member Uri WebUIView.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebUIView.BuildLocalStreamUri%28string%20contentIdentifier%2C%20string%20relativePath%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void GetDeferredPermissionRequestById( uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result)
+		public void GetDeferredPermissionRequestById(uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result)
 		{
 			throw new global::System.NotImplementedException("The member void WebUIView.GetDeferredPermissionRequestById(uint id, out WebViewControlDeferredPermissionRequest result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20WebUIView.GetDeferredPermissionRequestById%28uint%20id%2C%20out%20WebViewControlDeferredPermissionRequest%20result%29");
 		}
@@ -263,7 +263,7 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.WebUIView.WebResourceRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddInitializeScript( string script)
+		public void AddInitializeScript(string script)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WebUI.WebUIView", "void WebUIView.AddInitializeScript(string script)");
 		}
@@ -277,7 +277,7 @@ namespace Windows.UI.WebUI
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync( global::System.Uri uri)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.UI.WebUI.WebUIView> CreateAsync(global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebUIView> WebUIView.CreateAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebUIView%3E%20WebUIView.CreateAsync%28Uri%20uri%29");
 		}

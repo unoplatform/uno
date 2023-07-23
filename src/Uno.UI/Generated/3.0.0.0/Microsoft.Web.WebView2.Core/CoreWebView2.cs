@@ -150,7 +150,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.ContextMenuRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodForSessionAsync( string sessionId,  string methodName,  string parametersAsJson)
+		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodForSessionAsync(string sessionId, string methodName, string parametersAsJson) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2.CallDevToolsProtocolMethodForSessionAsync%28string%20sessionId%2C%20string%20methodName%2C%20string%20parametersAsJson%29");
 		}
@@ -176,7 +176,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2.DOMContentLoaded.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NavigateWithWebResourceRequest( global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest Request)
+		public void NavigateWithWebResourceRequest(global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest Request)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.NavigateWithWebResourceRequest(CoreWebView2WebResourceRequest Request)");
 		}
@@ -198,14 +198,14 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetVirtualHostNameToFolderMapping( string hostName,  string folderPath,  global::Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind accessKind)
+		public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, global::Microsoft.Web.WebView2.Core.CoreWebView2HostResourceAccessKind accessKind)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ClearVirtualHostNameToFolderMapping( string hostName)
+		public void ClearVirtualHostNameToFolderMapping(string hostName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.ClearVirtualHostNameToFolderMapping(string hostName)");
 		}
@@ -225,7 +225,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> PrintToPdfAsync( string ResultFilePath,  global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
+		public global::Windows.Foundation.IAsyncOperation<bool> PrintToPdfAsync(string ResultFilePath, global::Microsoft.Web.WebView2.Core.CoreWebView2PrintSettings printSettings)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CoreWebView2.PrintToPdfAsync(string ResultFilePath, CoreWebView2PrintSettings printSettings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CoreWebView2.PrintToPdfAsync%28string%20ResultFilePath%2C%20CoreWebView2PrintSettings%20printSettings%29");
 		}
@@ -301,14 +301,14 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.NavigateToString(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<string> AddScriptToExecuteOnDocumentCreatedAsync( string javaScript)
+		public global::Windows.Foundation.IAsyncOperation<string> AddScriptToExecuteOnDocumentCreatedAsync(string javaScript)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync(string javaScript) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2.AddScriptToExecuteOnDocumentCreatedAsync%28string%20javaScript%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveScriptToExecuteOnDocumentCreated( string id)
+		public void RemoveScriptToExecuteOnDocumentCreated(string id)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.RemoveScriptToExecuteOnDocumentCreated(string id)");
 		}
@@ -316,7 +316,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.ExecuteScriptAsync(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction CapturePreviewAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat imageFormat,  global::Windows.Storage.Streams.IRandomAccessStream imageStream)
+		public global::Windows.Foundation.IAsyncAction CapturePreviewAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2CapturePreviewImageFormat imageFormat, global::Windows.Storage.Streams.IRandomAccessStream imageStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2.CapturePreviewAsync(CoreWebView2CapturePreviewImageFormat imageFormat, IRandomAccessStream imageStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2.CapturePreviewAsync%28CoreWebView2CapturePreviewImageFormat%20imageFormat%2C%20IRandomAccessStream%20imageStream%29");
 		}
@@ -324,21 +324,21 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Reload()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void PostWebMessageAsJson( string webMessageAsJson)
+		public void PostWebMessageAsJson(string webMessageAsJson)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.PostWebMessageAsJson(string webMessageAsJson)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void PostWebMessageAsString( string webMessageAsString)
+		public void PostWebMessageAsString(string webMessageAsString)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.PostWebMessageAsString(string webMessageAsString)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodAsync( string methodName,  string parametersAsJson)
+		public global::Windows.Foundation.IAsyncOperation<string> CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CoreWebView2.CallDevToolsProtocolMethodAsync(string methodName, string parametersAsJson) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CoreWebView2.CallDevToolsProtocolMethodAsync%28string%20methodName%2C%20string%20parametersAsJson%29");
 		}
@@ -347,7 +347,7 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.GoForward()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver GetDevToolsProtocolEventReceiver( string eventName)
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2DevToolsProtocolEventReceiver GetDevToolsProtocolEventReceiver(string eventName)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2DevToolsProtocolEventReceiver CoreWebView2.GetDevToolsProtocolEventReceiver(string eventName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2DevToolsProtocolEventReceiver%20CoreWebView2.GetDevToolsProtocolEventReceiver%28string%20eventName%29");
 		}
@@ -355,14 +355,14 @@ namespace Microsoft.Web.WebView2.Core
 		// Skipping already declared method Microsoft.Web.WebView2.Core.CoreWebView2.Stop()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddHostObjectToScript( string name,  object rawObject)
+		public void AddHostObjectToScript(string name, object rawObject)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.AddHostObjectToScript(string name, object rawObject)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveHostObjectFromScript( string name)
+		public void RemoveHostObjectFromScript(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.RemoveHostObjectFromScript(string name)");
 		}
@@ -376,14 +376,14 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddWebResourceRequestedFilter( string uri,  global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext ResourceContext)
+		public void AddWebResourceRequestedFilter(string uri, global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext ResourceContext)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.AddWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext ResourceContext)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveWebResourceRequestedFilter( string uri,  global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext ResourceContext)
+		public void RemoveWebResourceRequestedFilter(string uri, global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceContext ResourceContext)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2", "void CoreWebView2.RemoveWebResourceRequestedFilter(string uri, CoreWebView2WebResourceContext ResourceContext)");
 		}

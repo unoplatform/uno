@@ -22,13 +22,13 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.IBasicAudioEffect.UseInputFrameForOutput.get
 		// Forced skipping of method Windows.Media.Effects.IBasicAudioEffect.SupportedEncodingProperties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetEncodingProperties( global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties);
+		void SetEncodingProperties(global::Windows.Media.MediaProperties.AudioEncodingProperties encodingProperties);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ProcessFrame( global::Windows.Media.Effects.ProcessAudioFrameContext context);
+		void ProcessFrame(global::Windows.Media.Effects.ProcessAudioFrameContext context);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Close( global::Windows.Media.Effects.MediaEffectClosedReason reason);
+		void Close(global::Windows.Media.Effects.MediaEffectClosedReason reason);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void DiscardQueuedFrames();

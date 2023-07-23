@@ -51,26 +51,26 @@ namespace Windows.UI.Xaml.Media.Media3D
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DepthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DepthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Depth), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.PerspectiveTransform3D), 
+			nameof(Depth), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.PerspectiveTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OffsetXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OffsetXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OffsetX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.PerspectiveTransform3D), 
+			nameof(OffsetX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.PerspectiveTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OffsetYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OffsetYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OffsetY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Media3D.PerspectiveTransform3D), 
+			nameof(OffsetY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Media3D.PerspectiveTransform3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

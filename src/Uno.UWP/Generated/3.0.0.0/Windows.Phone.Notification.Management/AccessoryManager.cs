@@ -127,28 +127,28 @@ namespace Windows.Phone.Notification.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SnoozeAlarmByInstanceId( string instanceId)
+		public static void SnoozeAlarmByInstanceId(string instanceId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SnoozeAlarmByInstanceId(string instanceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DismissAlarmByInstanceId( string instanceId)
+		public static void DismissAlarmByInstanceId(string instanceId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DismissAlarmByInstanceId(string instanceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SnoozeReminderByInstanceId( string instanceId)
+		public static void SnoozeReminderByInstanceId(string instanceId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SnoozeReminderByInstanceId(string instanceId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DismissReminderByInstanceId( string instanceId)
+		public static void DismissReminderByInstanceId(string instanceId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DismissReminderByInstanceId(string instanceId)");
 		}
@@ -163,7 +163,7 @@ namespace Windows.Phone.Notification.Management
 		// Forced skipping of method Windows.Phone.Notification.Management.AccessoryManager.SpeedDialList.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void ClearToast( string instanceId)
+		public static void ClearToast(string instanceId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.ClearToast(string instanceId)");
 		}
@@ -171,28 +171,28 @@ namespace Windows.Phone.Notification.Management
 		// Forced skipping of method Windows.Phone.Notification.Management.AccessoryManager.IsPhonePinLocked.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void IncreaseVolume( int step)
+		public static void IncreaseVolume(int step)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.IncreaseVolume(int step)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DecreaseVolume( int step)
+		public static void DecreaseVolume(int step)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DecreaseVolume(int step)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetMute( bool mute)
+		public static void SetMute(bool mute)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SetMute(bool mute)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetRingerVibrate( bool ringer,  bool vibrate)
+		public static void SetRingerVibrate(bool ringer, bool vibrate)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SetRingerVibrate(bool ringer, bool vibrate)");
 		}
@@ -207,35 +207,35 @@ namespace Windows.Phone.Notification.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Phone.Notification.Management.EmailFolderInfo> GetFolders( string emailAccount)
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Phone.Notification.Management.EmailFolderInfo> GetFolders(string emailAccount)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<EmailFolderInfo> AccessoryManager.GetFolders(string emailAccount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CEmailFolderInfo%3E%20AccessoryManager.GetFolders%28string%20emailAccount%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EnableEmailNotificationEmailAccount( string emailAccount)
+		public static void EnableEmailNotificationEmailAccount(string emailAccount)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.EnableEmailNotificationEmailAccount(string emailAccount)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DisableEmailNotificationEmailAccount( string emailAccount)
+		public static void DisableEmailNotificationEmailAccount(string emailAccount)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DisableEmailNotificationEmailAccount(string emailAccount)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EnableEmailNotificationFolderFilter( string emailAccount,  global::System.Collections.Generic.IReadOnlyList<string> folders)
+		public static void EnableEmailNotificationFolderFilter(string emailAccount, global::System.Collections.Generic.IReadOnlyList<string> folders)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.EnableEmailNotificationFolderFilter(string emailAccount, IReadOnlyList<string> folders)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void UpdateEmailReadStatus( global::Windows.Phone.Notification.Management.BinaryId messageEntryId,  bool isRead)
+		public static void UpdateEmailReadStatus(global::Windows.Phone.Notification.Management.BinaryId messageEntryId, bool isRead)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.UpdateEmailReadStatus(BinaryId messageEntryId, bool isRead)");
 		}
@@ -256,7 +256,7 @@ namespace Windows.Phone.Notification.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void ProcessTriggerDetails( global::Windows.Phone.Notification.Management.IAccessoryNotificationTriggerDetails pDetails)
+		public static void ProcessTriggerDetails(global::Windows.Phone.Notification.Management.IAccessoryNotificationTriggerDetails pDetails)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.ProcessTriggerDetails(IAccessoryNotificationTriggerDetails pDetails)");
 		}
@@ -264,98 +264,98 @@ namespace Windows.Phone.Notification.Management
 		// Forced skipping of method Windows.Phone.Notification.Management.AccessoryManager.PhoneLineDetails.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Phone.Notification.Management.PhoneLineDetails GetPhoneLineDetails( global::System.Guid phoneLine)
+		public static global::Windows.Phone.Notification.Management.PhoneLineDetails GetPhoneLineDetails(global::System.Guid phoneLine)
 		{
 			throw new global::System.NotImplementedException("The member PhoneLineDetails AccessoryManager.GetPhoneLineDetails(Guid phoneLine) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineDetails%20AccessoryManager.GetPhoneLineDetails%28Guid%20phoneLine%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void AcceptPhoneCall( uint phoneCallId)
+		public static void AcceptPhoneCall(uint phoneCallId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.AcceptPhoneCall(uint phoneCallId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void AcceptPhoneCall( uint phoneCallId,  global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
+		public static void AcceptPhoneCall(uint phoneCallId, global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.AcceptPhoneCall(uint phoneCallId, PhoneCallAudioEndpoint endPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void AcceptPhoneCallWithVideo( uint phoneCallId)
+		public static void AcceptPhoneCallWithVideo(uint phoneCallId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.AcceptPhoneCallWithVideo(uint phoneCallId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void AcceptPhoneCallWithVideo( uint phoneCallId,  global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
+		public static void AcceptPhoneCallWithVideo(uint phoneCallId, global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.AcceptPhoneCallWithVideo(uint phoneCallId, PhoneCallAudioEndpoint endPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void RejectPhoneCall( uint phoneCallId)
+		public static void RejectPhoneCall(uint phoneCallId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.RejectPhoneCall(uint phoneCallId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void RejectPhoneCall( uint phoneCallId,  uint textResponseID)
+		public static void RejectPhoneCall(uint phoneCallId, uint textResponseID)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.RejectPhoneCall(uint phoneCallId, uint textResponseID)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void MakePhoneCall( global::System.Guid phoneLine,  string phoneNumber)
+		public static void MakePhoneCall(global::System.Guid phoneLine, string phoneNumber)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.MakePhoneCall(Guid phoneLine, string phoneNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void MakePhoneCall( global::System.Guid phoneLine,  string phoneNumber,  global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
+		public static void MakePhoneCall(global::System.Guid phoneLine, string phoneNumber, global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.MakePhoneCall(Guid phoneLine, string phoneNumber, PhoneCallAudioEndpoint endPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void MakePhoneCallWithVideo( global::System.Guid phoneLine,  string phoneNumber)
+		public static void MakePhoneCallWithVideo(global::System.Guid phoneLine, string phoneNumber)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.MakePhoneCallWithVideo(Guid phoneLine, string phoneNumber)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void MakePhoneCallWithVideo( global::System.Guid phoneLine,  string phoneNumber,  global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
+		public static void MakePhoneCallWithVideo(global::System.Guid phoneLine, string phoneNumber, global::Windows.Phone.Notification.Management.PhoneCallAudioEndpoint endPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.MakePhoneCallWithVideo(Guid phoneLine, string phoneNumber, PhoneCallAudioEndpoint endPoint)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SwapPhoneCalls( uint phoneCallIdToHold,  uint phoneCallIdOnHold)
+		public static void SwapPhoneCalls(uint phoneCallIdToHold, uint phoneCallIdOnHold)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SwapPhoneCalls(uint phoneCallIdToHold, uint phoneCallIdOnHold)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void HoldPhoneCall( uint phoneCallId,  bool holdCall)
+		public static void HoldPhoneCall(uint phoneCallId, bool holdCall)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.HoldPhoneCall(uint phoneCallId, bool holdCall)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EndPhoneCall( uint phoneCallId)
+		public static void EndPhoneCall(uint phoneCallId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.EndPhoneCall(uint phoneCallId)");
 		}
@@ -366,42 +366,42 @@ namespace Windows.Phone.Notification.Management
 		// Forced skipping of method Windows.Phone.Notification.Management.AccessoryManager.PhoneCallAudioEndpoint.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SnoozeAlarm( global::System.Guid alarmId)
+		public static void SnoozeAlarm(global::System.Guid alarmId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SnoozeAlarm(Guid alarmId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SnoozeAlarm( global::System.Guid alarmId,  global::System.TimeSpan timeSpan)
+		public static void SnoozeAlarm(global::System.Guid alarmId, global::System.TimeSpan timeSpan)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SnoozeAlarm(Guid alarmId, TimeSpan timeSpan)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DismissAlarm( global::System.Guid alarmId)
+		public static void DismissAlarm(global::System.Guid alarmId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DismissAlarm(Guid alarmId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SnoozeReminder( global::System.Guid reminderId)
+		public static void SnoozeReminder(global::System.Guid reminderId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SnoozeReminder(Guid reminderId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SnoozeReminder( global::System.Guid reminderId,  global::System.TimeSpan timeSpan)
+		public static void SnoozeReminder(global::System.Guid reminderId, global::System.TimeSpan timeSpan)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.SnoozeReminder(Guid reminderId, TimeSpan timeSpan)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DismissReminder( global::System.Guid reminderId)
+		public static void DismissReminder(global::System.Guid reminderId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DismissReminder(Guid reminderId)");
 		}
@@ -417,7 +417,7 @@ namespace Windows.Phone.Notification.Management
 		// Forced skipping of method Windows.Phone.Notification.Management.AccessoryManager.MediaPlaybackStatus.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void PerformMediaPlaybackCommand( global::Windows.Phone.Notification.Management.PlaybackCommand command)
+		public static void PerformMediaPlaybackCommand(global::Windows.Phone.Notification.Management.PlaybackCommand command)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.PerformMediaPlaybackCommand(PlaybackCommand command)");
 		}
@@ -434,21 +434,21 @@ namespace Windows.Phone.Notification.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EnableNotificationsForApplication( string appId)
+		public static void EnableNotificationsForApplication(string appId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.EnableNotificationsForApplication(string appId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DisableNotificationsForApplication( string appId)
+		public static void DisableNotificationsForApplication(string appId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.DisableNotificationsForApplication(string appId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsNotificationEnabledForApplication( string appId)
+		public static bool IsNotificationEnabledForApplication(string appId)
 		{
 			throw new global::System.NotImplementedException("The member bool AccessoryManager.IsNotificationEnabledForApplication(string appId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AccessoryManager.IsNotificationEnabledForApplication%28string%20appId%29");
 		}
@@ -462,7 +462,7 @@ namespace Windows.Phone.Notification.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EnableAccessoryNotificationTypes( int accessoryNotificationTypes)
+		public static void EnableAccessoryNotificationTypes(int accessoryNotificationTypes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Notification.Management.AccessoryManager", "void AccessoryManager.EnableAccessoryNotificationTypes(int accessoryNotificationTypes)");
 		}
@@ -483,7 +483,7 @@ namespace Windows.Phone.Notification.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.Streams.IRandomAccessStreamReference GetAppIcon( string appId)
+		public static global::Windows.Storage.Streams.IRandomAccessStreamReference GetAppIcon(string appId)
 		{
 			throw new global::System.NotImplementedException("The member IRandomAccessStreamReference AccessoryManager.GetAppIcon(string appId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20AccessoryManager.GetAppIcon%28string%20appId%29");
 		}

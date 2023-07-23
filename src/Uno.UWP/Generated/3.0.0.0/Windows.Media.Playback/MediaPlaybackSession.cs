@@ -211,7 +211,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSupportedPlaybackRateRange( double rate1,  double rate2)
+		public bool IsSupportedPlaybackRateRange(double rate1, double rate2)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaPlaybackSession.IsSupportedPlaybackRateRange(double rate1, double rate2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlaybackSession.IsSupportedPlaybackRateRange%28double%20rate1%2C%20double%20rate2%29");
 		}

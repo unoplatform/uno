@@ -64,7 +64,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxServerSearchReadBatchRequest.SuggestedBatchSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SaveMessageAsync( global::Windows.ApplicationModel.Email.EmailMessage message)
+		public global::Windows.Foundation.IAsyncAction SaveMessageAsync(global::Windows.ApplicationModel.Email.EmailMessage message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxServerSearchReadBatchRequest.SaveMessageAsync(EmailMessage message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxServerSearchReadBatchRequest.SaveMessageAsync%28EmailMessage%20message%29");
 		}
@@ -78,7 +78,7 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportFailedAsync( global::Windows.ApplicationModel.Email.EmailBatchStatus batchStatus)
+		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(global::Windows.ApplicationModel.Email.EmailBatchStatus batchStatus)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxServerSearchReadBatchRequest.ReportFailedAsync(EmailBatchStatus batchStatus) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxServerSearchReadBatchRequest.ReportFailedAsync%28EmailBatchStatus%20batchStatus%29");
 		}

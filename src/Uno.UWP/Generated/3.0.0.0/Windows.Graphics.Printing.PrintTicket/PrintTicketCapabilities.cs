@@ -207,14 +207,14 @@ namespace Windows.Graphics.Printing.PrintTicket
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketCapabilities.PageResolutionFeature.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature( string name,  string xmlNamespace)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketFeature GetFeature(string name, string xmlNamespace)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketFeature PrintTicketCapabilities.GetFeature(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketFeature%20PrintTicketCapabilities.GetFeature%28string%20name%2C%20string%20xmlNamespace%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition GetParameterDefinition( string name,  string xmlNamespace)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketParameterDefinition GetParameterDefinition(string name, string xmlNamespace)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketParameterDefinition PrintTicketCapabilities.GetParameterDefinition(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketParameterDefinition%20PrintTicketCapabilities.GetParameterDefinition%28string%20name%2C%20string%20xmlNamespace%29");
 		}

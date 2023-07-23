@@ -96,7 +96,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.Pickers.FileSavePicker CreateForUser( global::Windows.System.User user)
+		public static global::Windows.Storage.Pickers.FileSavePicker CreateForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member FileSavePicker FileSavePicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileSavePicker%20FileSavePicker.CreateForUser%28User%20user%29");
 		}

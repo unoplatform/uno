@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpTransferCodingHeaderValue( string input) 
+		public HttpTransferCodingHeaderValue(string input) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpTransferCodingHeaderValue", "HttpTransferCodingHeaderValue.HttpTransferCodingHeaderValue(string input)");
 		}
@@ -46,14 +46,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpTransferCodingHeaderValue HttpTransferCodingHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpTransferCodingHeaderValue%20HttpTransferCodingHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue transferCodingHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValue transferCodingHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpTransferCodingHeaderValue.TryParse(string input, out HttpTransferCodingHeaderValue transferCodingHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpTransferCodingHeaderValue.TryParse%28string%20input%2C%20out%20HttpTransferCodingHeaderValue%20transferCodingHeaderValue%29");
 		}

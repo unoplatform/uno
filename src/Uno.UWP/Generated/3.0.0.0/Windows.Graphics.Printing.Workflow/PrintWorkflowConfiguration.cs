@@ -39,7 +39,7 @@ namespace Windows.Graphics.Printing.Workflow
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AbortPrintFlow( global::Windows.Graphics.Printing.Workflow.PrintWorkflowJobAbortReason reason)
+		public void AbortPrintFlow(global::Windows.Graphics.Printing.Workflow.PrintWorkflowJobAbortReason reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.Workflow.PrintWorkflowConfiguration", "void PrintWorkflowConfiguration.AbortPrintFlow(PrintWorkflowJobAbortReason reason)");
 		}

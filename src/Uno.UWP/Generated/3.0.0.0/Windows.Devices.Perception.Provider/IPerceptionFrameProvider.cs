@@ -36,7 +36,7 @@ namespace Windows.Devices.Perception.Provider
 		void Stop();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetProperty( global::Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest value);
+		void SetProperty(global::Windows.Devices.Perception.Provider.PerceptionPropertyChangeRequest value);
 #endif
 	}
 }

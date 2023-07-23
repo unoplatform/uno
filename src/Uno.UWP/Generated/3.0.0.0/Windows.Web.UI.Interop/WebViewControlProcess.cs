@@ -39,7 +39,7 @@ namespace Windows.Web.UI.Interop
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebViewControlProcess( global::Windows.Web.UI.Interop.WebViewControlProcessOptions processOptions) 
+		public WebViewControlProcess(global::Windows.Web.UI.Interop.WebViewControlProcessOptions processOptions) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.UI.Interop.WebViewControlProcess", "WebViewControlProcess.WebViewControlProcess(WebViewControlProcessOptions processOptions)");
 		}
@@ -58,7 +58,7 @@ namespace Windows.Web.UI.Interop
 		// Forced skipping of method Windows.Web.UI.Interop.WebViewControlProcess.IsPrivateNetworkClientServerCapabilityEnabled.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Web.UI.Interop.WebViewControl> CreateWebViewControlAsync( long hostWindowHandle,  global::Windows.Foundation.Rect bounds)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Web.UI.Interop.WebViewControl> CreateWebViewControlAsync(long hostWindowHandle, global::Windows.Foundation.Rect bounds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WebViewControl> WebViewControlProcess.CreateWebViewControlAsync(long hostWindowHandle, Rect bounds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWebViewControl%3E%20WebViewControlProcess.CreateWebViewControlAsync%28long%20hostWindowHandle%2C%20Rect%20bounds%29");
 		}

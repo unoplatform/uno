@@ -148,7 +148,7 @@ namespace Windows.UI.WebUI
 		// Forced skipping of method Windows.UI.WebUI.HtmlPrintDocumentSource.PageRange.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TrySetPageRange( string strPageRange)
+		public bool TrySetPageRange(string strPageRange)
 		{
 			throw new global::System.NotImplementedException("The member bool HtmlPrintDocumentSource.TrySetPageRange(string strPageRange) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HtmlPrintDocumentSource.TrySetPageRange%28string%20strPageRange%29");
 		}

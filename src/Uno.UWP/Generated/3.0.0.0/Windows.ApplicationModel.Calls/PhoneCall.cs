@@ -87,14 +87,14 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus SendDtmfKey( global::Windows.ApplicationModel.Calls.DtmfKey key,  global::Windows.ApplicationModel.Calls.DtmfToneAudioPlayback dtmfToneAudioPlayback)
+		public global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus SendDtmfKey(global::Windows.ApplicationModel.Calls.DtmfKey key, global::Windows.ApplicationModel.Calls.DtmfToneAudioPlayback dtmfToneAudioPlayback)
 		{
 			throw new global::System.NotImplementedException("The member PhoneCallOperationStatus PhoneCall.SendDtmfKey(DtmfKey key, DtmfToneAudioPlayback dtmfToneAudioPlayback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallOperationStatus%20PhoneCall.SendDtmfKey%28DtmfKey%20key%2C%20DtmfToneAudioPlayback%20dtmfToneAudioPlayback%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus> SendDtmfKeyAsync( global::Windows.ApplicationModel.Calls.DtmfKey key,  global::Windows.ApplicationModel.Calls.DtmfToneAudioPlayback dtmfToneAudioPlayback)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus> SendDtmfKeyAsync(global::Windows.ApplicationModel.Calls.DtmfKey key, global::Windows.ApplicationModel.Calls.DtmfToneAudioPlayback dtmfToneAudioPlayback)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallOperationStatus> PhoneCall.SendDtmfKeyAsync(DtmfKey key, DtmfToneAudioPlayback dtmfToneAudioPlayback) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneCallOperationStatus%3E%20PhoneCall.SendDtmfKeyAsync%28DtmfKey%20key%2C%20DtmfToneAudioPlayback%20dtmfToneAudioPlayback%29");
 		}
@@ -185,21 +185,21 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus ChangeAudioDevice( global::Windows.ApplicationModel.Calls.PhoneCallAudioDevice endpoint)
+		public global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus ChangeAudioDevice(global::Windows.ApplicationModel.Calls.PhoneCallAudioDevice endpoint)
 		{
 			throw new global::System.NotImplementedException("The member PhoneCallOperationStatus PhoneCall.ChangeAudioDevice(PhoneCallAudioDevice endpoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCallOperationStatus%20PhoneCall.ChangeAudioDevice%28PhoneCallAudioDevice%20endpoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus> ChangeAudioDeviceAsync( global::Windows.ApplicationModel.Calls.PhoneCallAudioDevice endpoint)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallOperationStatus> ChangeAudioDeviceAsync(global::Windows.ApplicationModel.Calls.PhoneCallAudioDevice endpoint)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallOperationStatus> PhoneCall.ChangeAudioDeviceAsync(PhoneCallAudioDevice endpoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneCallOperationStatus%3E%20PhoneCall.ChangeAudioDeviceAsync%28PhoneCallAudioDevice%20endpoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Calls.PhoneCall GetFromId( string callId)
+		public static global::Windows.ApplicationModel.Calls.PhoneCall GetFromId(string callId)
 		{
 			throw new global::System.NotImplementedException("The member PhoneCall PhoneCall.GetFromId(string callId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneCall%20PhoneCall.GetFromId%28string%20callId%29");
 		}

@@ -66,34 +66,34 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.HubSection), 
+			nameof(ContentTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.HubSection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.HubSection), 
+			nameof(Header), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.HubSection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.HubSection), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.HubSection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsHeaderInteractiveProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsHeaderInteractiveProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsHeaderInteractive), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.HubSection), 
+			nameof(IsHeaderInteractive), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.HubSection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -19,7 +19,7 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync( uint startIndex,  uint maxNumberOfItems)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync(uint startIndex, uint maxNumberOfItems)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IStorageItem>> StorageItemQueryResult.GetItemsAsync(uint startIndex, uint maxNumberOfItems) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CIStorageItem%3E%3E%20StorageItemQueryResult.GetItemsAsync%28uint%20startIndex%2C%20uint%20maxNumberOfItems%29");
 		}
@@ -45,7 +45,7 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.StorageItemQueryResult.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync( object value)
+		public global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync(object value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<uint> StorageItemQueryResult.FindStartIndexAsync(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cuint%3E%20StorageItemQueryResult.FindStartIndexAsync%28object%20value%29");
 		}
@@ -59,7 +59,7 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ApplyNewQueryOptions( global::Windows.Storage.Search.QueryOptions newQueryOptions)
+		public void ApplyNewQueryOptions(global::Windows.Storage.Search.QueryOptions newQueryOptions)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.StorageItemQueryResult", "void StorageItemQueryResult.ApplyNewQueryOptions(QueryOptions newQueryOptions)");
 		}

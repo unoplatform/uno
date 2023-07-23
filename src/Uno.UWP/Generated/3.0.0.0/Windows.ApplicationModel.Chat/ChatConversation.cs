@@ -141,7 +141,7 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync( global::System.DateTimeOffset value)
+		public global::Windows.Foundation.IAsyncAction MarkMessagesAsReadAsync(global::System.DateTimeOffset value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ChatConversation.MarkMessagesAsReadAsync(DateTimeOffset value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ChatConversation.MarkMessagesAsReadAsync%28DateTimeOffset%20value%29");
 		}
@@ -155,14 +155,14 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyLocalParticipantComposing( string transportId,  string participantAddress,  bool isComposing)
+		public void NotifyLocalParticipantComposing(string transportId, string participantAddress, bool isComposing)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "void ChatConversation.NotifyLocalParticipantComposing(string transportId, string participantAddress, bool isComposing)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyRemoteParticipantComposing( string transportId,  string participantAddress,  bool isComposing)
+		public void NotifyRemoteParticipantComposing(string transportId, string participantAddress, bool isComposing)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Chat.ChatConversation", "void ChatConversation.NotifyRemoteParticipantComposing(string transportId, string participantAddress, bool isComposing)");
 		}

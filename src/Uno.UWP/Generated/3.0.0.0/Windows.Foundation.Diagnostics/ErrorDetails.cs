@@ -42,7 +42,7 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.ErrorDetails.HelpUri.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync( int errorCode)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Foundation.Diagnostics.ErrorDetails> CreateFromHResultAsync(int errorCode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ErrorDetails> ErrorDetails.CreateFromHResultAsync(int errorCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CErrorDetails%3E%20ErrorDetails.CreateFromHResultAsync%28int%20errorCode%29");
 		}

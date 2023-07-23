@@ -89,21 +89,21 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioDeviceInputNode.OutgoingConnections.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination)
+		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceInputNode", "void AudioDeviceInputNode.AddOutgoingConnection(IAudioNode destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination,  double gain)
+		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination, double gain)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceInputNode", "void AudioDeviceInputNode.AddOutgoingConnection(IAudioNode destination, double gain)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination)
+		public void RemoveOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceInputNode", "void AudioDeviceInputNode.RemoveOutgoingConnection(IAudioNode destination)");
 		}
@@ -137,14 +137,14 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void DisableEffectsByDefinition( global::Windows.Media.Effects.IAudioEffectDefinition definition)
+		public void DisableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceInputNode", "void AudioDeviceInputNode.DisableEffectsByDefinition(IAudioEffectDefinition definition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableEffectsByDefinition( global::Windows.Media.Effects.IAudioEffectDefinition definition)
+		public void EnableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioDeviceInputNode", "void AudioDeviceInputNode.EnableEffectsByDefinition(IAudioEffectDefinition definition)");
 		}

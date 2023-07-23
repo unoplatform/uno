@@ -43,7 +43,7 @@ namespace Windows.Networking.BackgroundTransfer
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetRequestHeader( string headerName,  string headerValue);
+		void SetRequestHeader(string headerName, string headerValue);
 #endif
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ServerCredential.get
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.IBackgroundTransferBase.ServerCredential.set

@@ -206,110 +206,110 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property SelectionHighlightColorProperty
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property PlaceholderTextProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorFontEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(IsColorFontEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DesiredCandidateWindowAlignment), typeof(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(DesiredCandidateWindowAlignment), typeof(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 #endif
 		// Skipping already declared property PlaceholderForegroundProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 #endif
 		// Skipping already declared property CharacterCasingProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsHandwritingViewEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsHandwritingViewEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsHandwritingViewEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(IsHandwritingViewEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HandwritingViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HandwritingViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HandwritingView), typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(HandwritingView), typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.HandwritingView)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProofingMenuFlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProofingMenuFlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ProofingMenuFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(ProofingMenuFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 		// Skipping already declared property DescriptionProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanUndoProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanUndoProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanUndo), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(CanUndo), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanRedoProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanRedoProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanRedo), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(CanRedo), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanPasteClipboardContent), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
+			nameof(CanPasteClipboardContent), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.TextBox()
@@ -348,7 +348,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBox.SelectAll()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.Rect GetRectFromCharacterIndex( int charIndex,  bool trailingEdge)
+		public global::Windows.Foundation.Rect GetRectFromCharacterIndex(int charIndex, bool trailingEdge)
 		{
 			throw new global::System.NotImplementedException("The member Rect TextBox.GetRectFromCharacterIndex(int charIndex, bool trailingEdge) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Rect%20TextBox.GetRectFromCharacterIndex%28int%20charIndex%2C%20bool%20trailingEdge%29");
 		}

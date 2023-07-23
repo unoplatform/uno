@@ -227,7 +227,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription( uint jobPageNumber)
+		public global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription(uint jobPageNumber)
 		{
 			throw new global::System.NotImplementedException("The member PrintPageDescription PrintTaskOptions.GetPageDescription(uint jobPageNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintPageDescription%20PrintTaskOptions.GetPageDescription%28uint%20jobPageNumber%29");
 		}
@@ -261,7 +261,7 @@ namespace Windows.Graphics.Printing
 		// Forced skipping of method Windows.Graphics.Printing.PrintTaskOptions.Bordering.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Streams.IRandomAccessStream GetPagePrintTicket( global::Windows.Graphics.Printing.PrintPageInfo printPageInfo)
+		public global::Windows.Storage.Streams.IRandomAccessStream GetPagePrintTicket(global::Windows.Graphics.Printing.PrintPageInfo printPageInfo)
 		{
 			throw new global::System.NotImplementedException("The member IRandomAccessStream PrintTaskOptions.GetPagePrintTicket(PrintPageInfo printPageInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStream%20PrintTaskOptions.GetPagePrintTicket%28PrintPageInfo%20printPageInfo%29");
 		}

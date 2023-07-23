@@ -205,7 +205,7 @@ namespace Windows.Management.Deployment
 		// Forced skipping of method Windows.Management.Deployment.AutoUpdateSettingsOptions.OptionalPackageUris.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Management.Deployment.AutoUpdateSettingsOptions CreateFromAppInstallerInfo( global::Windows.ApplicationModel.AppInstallerInfo appInstallerInfo)
+		public static global::Windows.Management.Deployment.AutoUpdateSettingsOptions CreateFromAppInstallerInfo(global::Windows.ApplicationModel.AppInstallerInfo appInstallerInfo)
 		{
 			throw new global::System.NotImplementedException("The member AutoUpdateSettingsOptions AutoUpdateSettingsOptions.CreateFromAppInstallerInfo(AppInstallerInfo appInstallerInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AutoUpdateSettingsOptions%20AutoUpdateSettingsOptions.CreateFromAppInstallerInfo%28AppInstallerInfo%20appInstallerInfo%29");
 		}

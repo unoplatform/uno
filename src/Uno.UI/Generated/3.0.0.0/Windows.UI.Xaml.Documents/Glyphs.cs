@@ -149,82 +149,82 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FillProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FillProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Fill), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(Fill), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontRenderingEmSizeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontRenderingEmSizeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontRenderingEmSize), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(FontRenderingEmSize), typeof(double),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontUriProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontUriProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontUri), typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(FontUri), typeof(global::System.Uri),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IndicesProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IndicesProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Indices), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(Indices), typeof(string),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OriginXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OriginXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OriginX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(OriginX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OriginYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OriginYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OriginY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(OriginY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StyleSimulationsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StyleSimulationsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StyleSimulations), typeof(global::Windows.UI.Xaml.Media.StyleSimulations), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(StyleSimulations), typeof(global::Windows.UI.Xaml.Media.StyleSimulations),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.StyleSimulations)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty UnicodeStringProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty UnicodeStringProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(UnicodeString), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(UnicodeString), typeof(string),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorFontPaletteIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ColorFontPaletteIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ColorFontPaletteIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(ColorFontPaletteIndex), typeof(int),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorFontEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
+			nameof(IsColorFontEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Documents.Glyphs),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

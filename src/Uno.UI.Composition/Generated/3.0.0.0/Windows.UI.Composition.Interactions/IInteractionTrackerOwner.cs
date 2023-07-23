@@ -8,22 +8,22 @@ namespace Windows.UI.Composition.Interactions
 	public partial interface IInteractionTrackerOwner 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void CustomAnimationStateEntered( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs args);
+		void CustomAnimationStateEntered(global::Windows.UI.Composition.Interactions.InteractionTracker sender, global::Windows.UI.Composition.Interactions.InteractionTrackerCustomAnimationStateEnteredArgs args);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void IdleStateEntered( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs args);
+		void IdleStateEntered(global::Windows.UI.Composition.Interactions.InteractionTracker sender, global::Windows.UI.Composition.Interactions.InteractionTrackerIdleStateEnteredArgs args);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void InertiaStateEntered( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs args);
+		void InertiaStateEntered(global::Windows.UI.Composition.Interactions.InteractionTracker sender, global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs args);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void InteractingStateEntered( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs args);
+		void InteractingStateEntered(global::Windows.UI.Composition.Interactions.InteractionTracker sender, global::Windows.UI.Composition.Interactions.InteractionTrackerInteractingStateEnteredArgs args);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void RequestIgnored( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs args);
+		void RequestIgnored(global::Windows.UI.Composition.Interactions.InteractionTracker sender, global::Windows.UI.Composition.Interactions.InteractionTrackerRequestIgnoredArgs args);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ValuesChanged( global::Windows.UI.Composition.Interactions.InteractionTracker sender,  global::Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs args);
+		void ValuesChanged(global::Windows.UI.Composition.Interactions.InteractionTracker sender, global::Windows.UI.Composition.Interactions.InteractionTrackerValuesChangedArgs args);
 #endif
 	}
 }

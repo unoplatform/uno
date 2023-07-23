@@ -15,10 +15,10 @@ namespace Windows.UI.Input
 #endif
 		// Forced skipping of method Windows.UI.Input.IPointerPointTransform.Inverse.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool TryTransform( global::Windows.Foundation.Point inPoint, out global::Windows.Foundation.Point outPoint);
+		bool TryTransform(global::Windows.Foundation.Point inPoint, out global::Windows.Foundation.Point outPoint);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.Rect TransformBounds( global::Windows.Foundation.Rect rect);
+		global::Windows.Foundation.Rect TransformBounds(global::Windows.Foundation.Rect rect);
 #endif
 	}
 }

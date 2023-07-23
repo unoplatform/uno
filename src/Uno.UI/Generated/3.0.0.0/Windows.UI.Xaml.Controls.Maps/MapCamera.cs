@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location) : base()
+		public MapCamera(global::Windows.Devices.Geolocation.Geopoint location) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapCamera", "MapCamera.MapCamera(Geopoint location)");
 		}
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCamera.MapCamera(Windows.Devices.Geolocation.Geopoint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location,  double headingInDegrees) : base()
+		public MapCamera(global::Windows.Devices.Geolocation.Geopoint location, double headingInDegrees) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapCamera", "MapCamera.MapCamera(Geopoint location, double headingInDegrees)");
 		}
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCamera.MapCamera(Windows.Devices.Geolocation.Geopoint, double)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location,  double headingInDegrees,  double pitchInDegrees) : base()
+		public MapCamera(global::Windows.Devices.Geolocation.Geopoint location, double headingInDegrees, double pitchInDegrees) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapCamera", "MapCamera.MapCamera(Geopoint location, double headingInDegrees, double pitchInDegrees)");
 		}
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapCamera.MapCamera(Windows.Devices.Geolocation.Geopoint, double, double)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapCamera( global::Windows.Devices.Geolocation.Geopoint location,  double headingInDegrees,  double pitchInDegrees,  double rollInDegrees,  double fieldOfViewInDegrees) : base()
+		public MapCamera(global::Windows.Devices.Geolocation.Geopoint location, double headingInDegrees, double pitchInDegrees, double rollInDegrees, double fieldOfViewInDegrees) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapCamera", "MapCamera.MapCamera(Geopoint location, double headingInDegrees, double pitchInDegrees, double rollInDegrees, double fieldOfViewInDegrees)");
 		}

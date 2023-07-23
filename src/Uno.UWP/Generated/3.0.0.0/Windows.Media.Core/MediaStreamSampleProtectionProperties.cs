@@ -9,7 +9,7 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetKeyIdentifier( byte[] value)
+		public void SetKeyIdentifier(byte[] value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSampleProtectionProperties", "void MediaStreamSampleProtectionProperties.SetKeyIdentifier(byte[] value)");
 		}
@@ -23,7 +23,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetInitializationVector( byte[] value)
+		public void SetInitializationVector(byte[] value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSampleProtectionProperties", "void MediaStreamSampleProtectionProperties.SetInitializationVector(byte[] value)");
 		}
@@ -37,7 +37,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSubSampleMapping( byte[] value)
+		public void SetSubSampleMapping(byte[] value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSampleProtectionProperties", "void MediaStreamSampleProtectionProperties.SetSubSampleMapping(byte[] value)");
 		}

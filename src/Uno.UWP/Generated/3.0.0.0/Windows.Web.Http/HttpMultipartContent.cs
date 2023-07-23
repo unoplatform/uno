@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMultipartContent( string subtype) 
+		public HttpMultipartContent(string subtype) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartContent", "HttpMultipartContent.HttpMultipartContent(string subtype)");
 		}
@@ -27,7 +27,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.HttpMultipartContent(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMultipartContent( string subtype,  string boundary) 
+		public HttpMultipartContent(string subtype, string boundary) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartContent", "HttpMultipartContent.HttpMultipartContent(string subtype, string boundary)");
 		}
@@ -43,7 +43,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.HttpMultipartContent()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.Web.Http.IHttpContent content)
+		public void Add(global::Windows.Web.Http.IHttpContent content)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartContent", "void HttpMultipartContent.Add(IHttpContent content)");
 		}
@@ -86,7 +86,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync( global::Windows.Storage.Streams.IOutputStream outputStream)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync(global::Windows.Storage.Streams.IOutputStream outputStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<ulong, ulong> HttpMultipartContent.WriteToStreamAsync(IOutputStream outputStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Culong%2C%20ulong%3E%20HttpMultipartContent.WriteToStreamAsync%28IOutputStream%20outputStream%29");
 		}

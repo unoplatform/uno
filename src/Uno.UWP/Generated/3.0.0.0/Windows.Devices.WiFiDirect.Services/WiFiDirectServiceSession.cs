@@ -95,14 +95,14 @@ namespace Windows.Devices.WiFiDirect.Services
 		// Forced skipping of method Windows.Devices.WiFiDirect.Services.WiFiDirectServiceSession.SessionStatusChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction AddStreamSocketListenerAsync( global::Windows.Networking.Sockets.StreamSocketListener value)
+		public global::Windows.Foundation.IAsyncAction AddStreamSocketListenerAsync(global::Windows.Networking.Sockets.StreamSocketListener value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddStreamSocketListenerAsync(StreamSocketListener value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WiFiDirectServiceSession.AddStreamSocketListenerAsync%28StreamSocketListener%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction AddDatagramSocketAsync( global::Windows.Networking.Sockets.DatagramSocket value)
+		public global::Windows.Foundation.IAsyncAction AddDatagramSocketAsync(global::Windows.Networking.Sockets.DatagramSocket value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WiFiDirectServiceSession.AddDatagramSocketAsync(DatagramSocket value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WiFiDirectServiceSession.AddDatagramSocketAsync%28DatagramSocket%20value%29");
 		}

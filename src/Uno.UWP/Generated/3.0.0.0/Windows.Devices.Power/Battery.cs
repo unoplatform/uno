@@ -40,7 +40,7 @@ namespace Windows.Devices.Power
 		// Forced skipping of method Windows.Devices.Power.Battery.AggregateBattery.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Power.Battery> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Battery> Battery.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBattery%3E%20Battery.FromIdAsync%28string%20deviceId%29");
 		}

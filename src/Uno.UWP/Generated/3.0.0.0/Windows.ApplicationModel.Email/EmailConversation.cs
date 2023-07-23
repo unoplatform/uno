@@ -159,7 +159,7 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailMessage>> FindMessagesAsync( uint count)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Email.EmailMessage>> FindMessagesAsync(uint count)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EmailMessage>> EmailConversation.FindMessagesAsync(uint count) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEmailMessage%3E%3E%20EmailConversation.FindMessagesAsync%28uint%20count%29");
 		}

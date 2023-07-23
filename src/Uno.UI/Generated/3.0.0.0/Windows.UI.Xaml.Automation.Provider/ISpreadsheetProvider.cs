@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 	public partial interface ISpreadsheetProvider 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple GetItemByName( string name);
+		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple GetItemByName(string name);
 #endif
 	}
 }

@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.AppExtensions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemovePackageAsync( string packageFullName)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemovePackageAsync(string packageFullName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppExtensionCatalog.RequestRemovePackageAsync(string packageFullName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppExtensionCatalog.RequestRemovePackageAsync%28string%20packageFullName%29");
 		}
@@ -33,7 +33,7 @@ namespace Windows.ApplicationModel.AppExtensions
 		// Forced skipping of method Windows.ApplicationModel.AppExtensions.AppExtensionCatalog.PackageStatusChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open( string appExtensionName)
+		public static global::Windows.ApplicationModel.AppExtensions.AppExtensionCatalog Open(string appExtensionName)
 		{
 			throw new global::System.NotImplementedException("The member AppExtensionCatalog AppExtensionCatalog.Open(string appExtensionName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppExtensionCatalog%20AppExtensionCatalog.Open%28string%20appExtensionName%29");
 		}

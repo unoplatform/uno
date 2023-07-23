@@ -24,14 +24,14 @@ namespace Windows.Perception.Spatial.Surfaces
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetBoundingVolume( global::Windows.Perception.Spatial.SpatialBoundingVolume bounds)
+		public void SetBoundingVolume(global::Windows.Perception.Spatial.SpatialBoundingVolume bounds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "void SpatialSurfaceObserver.SetBoundingVolume(SpatialBoundingVolume bounds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetBoundingVolumes( global::System.Collections.Generic.IEnumerable<global::Windows.Perception.Spatial.SpatialBoundingVolume> bounds)
+		public void SetBoundingVolumes(global::System.Collections.Generic.IEnumerable<global::Windows.Perception.Spatial.SpatialBoundingVolume> bounds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "void SpatialSurfaceObserver.SetBoundingVolumes(IEnumerable<SpatialBoundingVolume> bounds)");
 		}

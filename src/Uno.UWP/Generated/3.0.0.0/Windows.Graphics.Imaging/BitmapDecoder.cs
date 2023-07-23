@@ -229,7 +229,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapFrame> GetFrameAsync( uint frameIndex)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapFrame> GetFrameAsync(uint frameIndex)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapFrame> BitmapDecoder.GetFrameAsync(uint frameIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapFrame%3E%20BitmapDecoder.GetFrameAsync%28uint%20frameIndex%29");
 		}
@@ -259,7 +259,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode,  global::Windows.Graphics.Imaging.BitmapTransform transform,  global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode,  global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.PixelDataProvider> GetPixelDataAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PixelDataProvider> BitmapDecoder.GetPixelDataAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPixelDataProvider%3E%20BitmapDecoder.GetPixelDataAsync%28BitmapPixelFormat%20pixelFormat%2C%20BitmapAlphaMode%20alphaMode%2C%20BitmapTransform%20transform%2C%20ExifOrientationMode%20exifOrientationMode%2C%20ColorManagementMode%20colorManagementMode%29");
 		}
@@ -273,14 +273,14 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapDecoder.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20BitmapDecoder.GetSoftwareBitmapAsync%28BitmapPixelFormat%20pixelFormat%2C%20BitmapAlphaMode%20alphaMode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat,  global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode,  global::Windows.Graphics.Imaging.BitmapTransform transform,  global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode,  global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.SoftwareBitmap> GetSoftwareBitmapAsync(global::Windows.Graphics.Imaging.BitmapPixelFormat pixelFormat, global::Windows.Graphics.Imaging.BitmapAlphaMode alphaMode, global::Windows.Graphics.Imaging.BitmapTransform transform, global::Windows.Graphics.Imaging.ExifOrientationMode exifOrientationMode, global::Windows.Graphics.Imaging.ColorManagementMode colorManagementMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SoftwareBitmap> BitmapDecoder.GetSoftwareBitmapAsync(BitmapPixelFormat pixelFormat, BitmapAlphaMode alphaMode, BitmapTransform transform, ExifOrientationMode exifOrientationMode, ColorManagementMode colorManagementMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSoftwareBitmap%3E%20BitmapDecoder.GetSoftwareBitmapAsync%28BitmapPixelFormat%20pixelFormat%2C%20BitmapAlphaMode%20alphaMode%2C%20BitmapTransform%20transform%2C%20ExifOrientationMode%20exifOrientationMode%2C%20ColorManagementMode%20colorManagementMode%29");
 		}
@@ -303,14 +303,14 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapDecoder> CreateAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapDecoder> CreateAsync(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapDecoder> BitmapDecoder.CreateAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapDecoder%3E%20BitmapDecoder.CreateAsync%28IRandomAccessStream%20stream%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapDecoder> CreateAsync( global::System.Guid decoderId,  global::Windows.Storage.Streams.IRandomAccessStream stream)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Graphics.Imaging.BitmapDecoder> CreateAsync(global::System.Guid decoderId, global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BitmapDecoder> BitmapDecoder.CreateAsync(Guid decoderId, IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBitmapDecoder%3E%20BitmapDecoder.CreateAsync%28Guid%20decoderId%2C%20IRandomAccessStream%20stream%29");
 		}

@@ -144,14 +144,14 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> ResetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
+		public global::Windows.Foundation.IAsyncOperation<bool> ResetStatisticsAsync(global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedPosPrinter.ResetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ClaimedPosPrinter.ResetStatisticsAsync%28IEnumerable%3Cstring%3E%20statisticsCategories%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> UpdateStatisticsAsync( global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> statistics)
+		public global::Windows.Foundation.IAsyncOperation<bool> UpdateStatisticsAsync(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> statistics)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedPosPrinter.UpdateStatisticsAsync(IEnumerable<KeyValuePair<string, string>> statistics) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ClaimedPosPrinter.UpdateStatisticsAsync%28IEnumerable%3CKeyValuePair%3Cstring%2C%20string%3E%3E%20statistics%29");
 		}

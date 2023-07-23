@@ -108,7 +108,7 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.VideoProfileMediaDescription.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Devices.Enumeration.Panel GetRelativePanel( global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
+		public global::Windows.Devices.Enumeration.Panel GetRelativePanel(global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
 		{
 			throw new global::System.NotImplementedException("The member Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Panel%20MediaFrameSourceInfo.GetRelativePanel%28DisplayRegion%20displayRegion%29");
 		}

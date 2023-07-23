@@ -39,7 +39,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpChallengeHeaderValue( string scheme) 
+		public HttpChallengeHeaderValue(string scheme) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue.HttpChallengeHeaderValue(string scheme)");
 		}
@@ -47,7 +47,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpChallengeHeaderValue.HttpChallengeHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpChallengeHeaderValue( string scheme,  string token) 
+		public HttpChallengeHeaderValue(string scheme, string token) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpChallengeHeaderValue", "HttpChallengeHeaderValue.HttpChallengeHeaderValue(string scheme, string token)");
 		}
@@ -65,14 +65,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpChallengeHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpChallengeHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpChallengeHeaderValue HttpChallengeHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpChallengeHeaderValue%20HttpChallengeHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpChallengeHeaderValue challengeHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpChallengeHeaderValue challengeHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpChallengeHeaderValue.TryParse(string input, out HttpChallengeHeaderValue challengeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpChallengeHeaderValue.TryParse%28string%20input%2C%20out%20HttpChallengeHeaderValue%20challengeHeaderValue%29");
 		}

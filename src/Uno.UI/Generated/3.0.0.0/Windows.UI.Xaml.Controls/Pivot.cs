@@ -64,10 +64,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property SelectedItemProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SlideInAnimationGroupProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SlideInAnimationGroupProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"SlideInAnimationGroup", typeof(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
+			"SlideInAnimationGroup", typeof(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup),
+			typeof(global::Windows.UI.Xaml.Controls.Pivot),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup)));
 #endif
 		// Skipping already declared property TitleProperty
@@ -78,18 +78,18 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property RightHeaderTemplateProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderFocusVisualPlacementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderFocusVisualPlacementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderFocusVisualPlacement), typeof(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
+			nameof(HeaderFocusVisualPlacement), typeof(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement),
+			typeof(global::Windows.UI.Xaml.Controls.Pivot),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PivotHeaderFocusVisualPlacement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsHeaderItemsCarouselEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsHeaderItemsCarouselEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsHeaderItemsCarouselEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Pivot), 
+			nameof(IsHeaderItemsCarouselEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Pivot),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Pivot.Pivot()
@@ -143,14 +143,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Pivot.SlideInAnimationGroupProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup GetSlideInAnimationGroup( global::Windows.UI.Xaml.FrameworkElement element)
+		public static global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup GetSlideInAnimationGroup(global::Windows.UI.Xaml.FrameworkElement element)
 		{
 			return (global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup)element.GetValue(SlideInAnimationGroupProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetSlideInAnimationGroup( global::Windows.UI.Xaml.FrameworkElement element,  global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup value)
+		public static void SetSlideInAnimationGroup(global::Windows.UI.Xaml.FrameworkElement element, global::Windows.UI.Xaml.Controls.PivotSlideInAnimationGroup value)
 		{
 			element.SetValue(SlideInAnimationGroupProperty, value);
 		}

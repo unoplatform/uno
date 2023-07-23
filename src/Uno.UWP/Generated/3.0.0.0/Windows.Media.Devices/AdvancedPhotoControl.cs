@@ -42,7 +42,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.AdvancedPhotoControl.Mode.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Configure( global::Windows.Media.Devices.AdvancedPhotoCaptureSettings settings)
+		public void Configure(global::Windows.Media.Devices.AdvancedPhotoCaptureSettings settings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.AdvancedPhotoControl", "void AdvancedPhotoControl.Configure(AdvancedPhotoCaptureSettings settings)");
 		}

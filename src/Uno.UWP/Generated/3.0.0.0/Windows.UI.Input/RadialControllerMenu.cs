@@ -43,7 +43,7 @@ namespace Windows.UI.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SelectMenuItem( global::Windows.UI.Input.RadialControllerMenuItem menuItem)
+		public void SelectMenuItem(global::Windows.UI.Input.RadialControllerMenuItem menuItem)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RadialControllerMenu", "void RadialControllerMenu.SelectMenuItem(RadialControllerMenuItem menuItem)");
 		}

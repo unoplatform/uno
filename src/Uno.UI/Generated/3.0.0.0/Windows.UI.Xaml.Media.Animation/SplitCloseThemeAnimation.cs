@@ -163,90 +163,90 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ClosedLengthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ClosedLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ClosedLength), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ClosedLength), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ClosedTargetNameProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ClosedTargetNameProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ClosedTargetName), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ClosedTargetName), typeof(string),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ClosedTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ClosedTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ClosedTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ClosedTarget), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentTargetNameProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentTargetNameProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentTargetName), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ContentTargetName), typeof(string),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ContentTarget), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentTranslationDirectionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentTranslationDirectionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentTranslationDirection), typeof(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ContentTranslationDirection), typeof(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentTranslationOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentTranslationOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentTranslationOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(ContentTranslationOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OffsetFromCenterProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OffsetFromCenterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OffsetFromCenter), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(OffsetFromCenter), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OpenedLengthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OpenedLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OpenedLength), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(OpenedLength), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OpenedTargetNameProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OpenedTargetNameProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OpenedTargetName), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(OpenedTargetName), typeof(string),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OpenedTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OpenedTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OpenedTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation), 
+			nameof(OpenedTarget), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.Media.Animation.SplitCloseThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

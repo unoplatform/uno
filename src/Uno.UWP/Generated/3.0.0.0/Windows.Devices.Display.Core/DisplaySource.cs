@@ -41,7 +41,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplaySource.SourceId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Streams.IBuffer GetMetadata( global::System.Guid Key)
+		public global::Windows.Storage.Streams.IBuffer GetMetadata(global::System.Guid Key)
 		{
 			throw new global::System.NotImplementedException("The member IBuffer DisplaySource.GetMetadata(Guid Key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IBuffer%20DisplaySource.GetMetadata%28Guid%20Key%29");
 		}

@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty EdgeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty EdgeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Edge), typeof(global::Windows.UI.Xaml.Controls.Primitives.EdgeTransitionLocation), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PaneThemeTransition), 
+			nameof(Edge), typeof(global::Windows.UI.Xaml.Controls.Primitives.EdgeTransitionLocation),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PaneThemeTransition),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.EdgeTransitionLocation)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

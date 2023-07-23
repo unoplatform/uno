@@ -20,7 +20,7 @@ namespace Windows.Graphics.Printing.Workflow
 		// Forced skipping of method Windows.Graphics.Printing.Workflow.PrintWorkflowSubmittedEventArgs.Operation.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowTarget GetTarget( global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket jobPrintTicket)
+		public global::Windows.Graphics.Printing.Workflow.PrintWorkflowTarget GetTarget(global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket jobPrintTicket)
 		{
 			throw new global::System.NotImplementedException("The member PrintWorkflowTarget PrintWorkflowSubmittedEventArgs.GetTarget(WorkflowPrintTicket jobPrintTicket) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintWorkflowTarget%20PrintWorkflowSubmittedEventArgs.GetTarget%28WorkflowPrintTicket%20jobPrintTicket%29");
 		}

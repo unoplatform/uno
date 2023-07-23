@@ -69,14 +69,14 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.LampArrayEffectPlaylist()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Append( global::Windows.Devices.Lights.Effects.ILampArrayEffect effect)
+		public void Append(global::Windows.Devices.Lights.Effects.ILampArrayEffect effect)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.Append(ILampArrayEffect effect)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void OverrideZIndex( int zIndex)
+		public void OverrideZIndex(int zIndex)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.OverrideZIndex(int zIndex)");
 		}
@@ -115,21 +115,21 @@ namespace Windows.Devices.Lights.Effects
 		// Forced skipping of method Windows.Devices.Lights.Effects.LampArrayEffectPlaylist.First()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void StartAll( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
+		public static void StartAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.StartAll(IEnumerable<LampArrayEffectPlaylist> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void StopAll( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
+		public static void StopAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.StopAll(IEnumerable<LampArrayEffectPlaylist> value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void PauseAll( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
+		public static void PauseAll(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Lights.Effects.LampArrayEffectPlaylist> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayEffectPlaylist", "void LampArrayEffectPlaylist.PauseAll(IEnumerable<LampArrayEffectPlaylist> value)");
 		}

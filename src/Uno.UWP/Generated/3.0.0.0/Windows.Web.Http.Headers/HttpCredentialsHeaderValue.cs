@@ -39,7 +39,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpCredentialsHeaderValue( string scheme) 
+		public HttpCredentialsHeaderValue(string scheme) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string scheme)");
 		}
@@ -47,7 +47,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpCredentialsHeaderValue( string scheme,  string token) 
+		public HttpCredentialsHeaderValue(string scheme, string token) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCredentialsHeaderValue", "HttpCredentialsHeaderValue.HttpCredentialsHeaderValue(string scheme, string token)");
 		}
@@ -65,14 +65,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpCredentialsHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCredentialsHeaderValue%20HttpCredentialsHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue credentialsHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue credentialsHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpCredentialsHeaderValue.TryParse(string input, out HttpCredentialsHeaderValue credentialsHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCredentialsHeaderValue.TryParse%28string%20input%2C%20out%20HttpCredentialsHeaderValue%20credentialsHeaderValue%29");
 		}

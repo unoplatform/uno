@@ -187,106 +187,106 @@ namespace Windows.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterOfRotationX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(CenterOfRotationX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterOfRotationY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(CenterOfRotationY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterOfRotationZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CenterOfRotationZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(CenterOfRotationZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(GlobalOffsetX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(GlobalOffsetX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(GlobalOffsetY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(GlobalOffsetY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GlobalOffsetZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(GlobalOffsetZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(GlobalOffsetZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LocalOffsetX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(LocalOffsetX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LocalOffsetY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(LocalOffsetY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LocalOffsetZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LocalOffsetZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(LocalOffsetZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProjectionMatrixProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ProjectionMatrix), typeof(global::Windows.UI.Xaml.Media.Media3D.Matrix3D), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(ProjectionMatrix), typeof(global::Windows.UI.Xaml.Media.Media3D.Matrix3D),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Matrix3D)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(RotationX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(RotationY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RotationZ), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.PlaneProjection), 
+			nameof(RotationZ), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.PlaneProjection),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -103,7 +103,7 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.PlaybackSpeedFactor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddFrame( global::Windows.Media.AudioFrame frame)
+		public void AddFrame(global::Windows.Media.AudioFrame frame)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.AddFrame(AudioFrame frame)");
 		}
@@ -123,21 +123,21 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioFrameInputNode.OutgoingConnections.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination)
+		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.AddOutgoingConnection(IAudioNode destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination,  double gain)
+		public void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination, double gain)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.AddOutgoingConnection(IAudioNode destination, double gain)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination)
+		public void RemoveOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.RemoveOutgoingConnection(IAudioNode destination)");
 		}
@@ -171,14 +171,14 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void DisableEffectsByDefinition( global::Windows.Media.Effects.IAudioEffectDefinition definition)
+		public void DisableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.DisableEffectsByDefinition(IAudioEffectDefinition definition)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableEffectsByDefinition( global::Windows.Media.Effects.IAudioEffectDefinition definition)
+		public void EnableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioFrameInputNode", "void AudioFrameInputNode.EnableEffectsByDefinition(IAudioEffectDefinition definition)");
 		}

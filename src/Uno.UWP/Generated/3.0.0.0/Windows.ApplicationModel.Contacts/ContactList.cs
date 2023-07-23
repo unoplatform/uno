@@ -179,7 +179,7 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetContactFromRemoteIdAsync( string remoteId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetContactFromRemoteIdAsync(string remoteId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetContactFromRemoteIdAsync(string remoteId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContact%3E%20ContactList.GetContactFromRemoteIdAsync%28string%20remoteId%29");
 		}
@@ -200,28 +200,28 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Contacts.ContactReader GetContactReader( global::Windows.ApplicationModel.Contacts.ContactQueryOptions options)
+		public global::Windows.ApplicationModel.Contacts.ContactReader GetContactReader(global::Windows.ApplicationModel.Contacts.ContactQueryOptions options)
 		{
 			throw new global::System.NotImplementedException("The member ContactReader ContactList.GetContactReader(ContactQueryOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactReader%20ContactList.GetContactReader%28ContactQueryOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SaveContactAsync( global::Windows.ApplicationModel.Contacts.Contact contact)
+		public global::Windows.Foundation.IAsyncAction SaveContactAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.SaveContactAsync(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactList.SaveContactAsync%28Contact%20contact%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction DeleteContactAsync( global::Windows.ApplicationModel.Contacts.Contact contact)
+		public global::Windows.Foundation.IAsyncAction DeleteContactAsync(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactList.DeleteContactAsync(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactList.DeleteContactAsync%28Contact%20contact%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetContactAsync( string contactId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.Contact> GetContactAsync(string contactId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Contact> ContactList.GetContactAsync(string contactId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContact%3E%20ContactList.GetContactAsync%28string%20contactId%29");
 		}
@@ -238,7 +238,7 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactList.LimitedWriteOperations.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Contacts.ContactChangeTracker GetChangeTracker( string identity)
+		public global::Windows.ApplicationModel.Contacts.ContactChangeTracker GetChangeTracker(string identity)
 		{
 			throw new global::System.NotImplementedException("The member ContactChangeTracker ContactList.GetChangeTracker(string identity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactChangeTracker%20ContactList.GetChangeTracker%28string%20identity%29");
 		}

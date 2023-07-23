@@ -16,7 +16,7 @@ namespace Windows.Media.Capture
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.AdvancedCapturedPhoto> CaptureAsync( object context)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.AdvancedCapturedPhoto> CaptureAsync(object context)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdvancedCapturedPhoto> AdvancedPhotoCapture.CaptureAsync(object context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdvancedCapturedPhoto%3E%20AdvancedPhotoCapture.CaptureAsync%28object%20context%29");
 		}

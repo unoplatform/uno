@@ -47,14 +47,14 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.Devices.WiFiDirect.WiFiDirectDeviceSelectorType type)
+		public static string GetDeviceSelector(global::Windows.Devices.WiFiDirect.WiFiDirectDeviceSelectorType type)
 		{
 			throw new global::System.NotImplementedException("The member string WiFiDirectDevice.GetDeviceSelector(WiFiDirectDeviceSelectorType type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WiFiDirectDevice.GetDeviceSelector%28WiFiDirectDeviceSelectorType%20type%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync( string deviceId,  global::Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters connectionParameters)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync(string deviceId, global::Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters connectionParameters)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId, WiFiDirectConnectionParameters connectionParameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiDirectDevice%3E%20WiFiDirectDevice.FromIdAsync%28string%20deviceId%2C%20WiFiDirectConnectionParameters%20connectionParameters%29");
 		}
@@ -68,7 +68,7 @@ namespace Windows.Devices.WiFiDirect
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.WiFiDirect.WiFiDirectDevice> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<WiFiDirectDevice> WiFiDirectDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CWiFiDirectDevice%3E%20WiFiDirectDevice.FromIdAsync%28string%20deviceId%29");
 		}

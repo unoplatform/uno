@@ -53,10 +53,10 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.BypassCacheOnRetrieve.get
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationClient.BypassCacheOnRetrieve.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetRequestHeader( string name,  string value);
+		void SetRequestHeader(string name, string value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync( global::System.Uri uri);
+		global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Syndication.SyndicationFeed, global::Windows.Web.Syndication.RetrievalProgress> RetrieveFeedAsync(global::System.Uri uri);
 #endif
 	}
 }

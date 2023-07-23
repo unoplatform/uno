@@ -25,7 +25,7 @@ namespace Windows.Gaming.UI
 		// Forced skipping of method Windows.Gaming.UI.GameChatOverlay.DesiredPosition.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddMessage( string sender,  string message,  global::Windows.Gaming.UI.GameChatMessageOrigin origin)
+		public void AddMessage(string sender, string message, global::Windows.Gaming.UI.GameChatMessageOrigin origin)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.UI.GameChatOverlay", "void GameChatOverlay.AddMessage(string sender, string message, GameChatMessageOrigin origin)");
 		}

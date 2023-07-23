@@ -69,21 +69,21 @@ namespace Windows.System.UserProfile
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser( global::Windows.System.User user)
+		public static global::Windows.System.UserProfile.GlobalizationPreferencesForUser GetForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member GlobalizationPreferencesForUser GlobalizationPreferences.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GlobalizationPreferencesForUser%20GlobalizationPreferences.GetForUser%28User%20user%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TrySetHomeGeographicRegion( string region)
+		public static bool TrySetHomeGeographicRegion(string region)
 		{
 			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetHomeGeographicRegion(string region) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GlobalizationPreferences.TrySetHomeGeographicRegion%28string%20region%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TrySetLanguages( global::System.Collections.Generic.IEnumerable<string> languageTags)
+		public static bool TrySetLanguages(global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{
 			throw new global::System.NotImplementedException("The member bool GlobalizationPreferences.TrySetLanguages(IEnumerable<string> languageTags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GlobalizationPreferences.TrySetLanguages%28IEnumerable%3Cstring%3E%20languageTags%29");
 		}

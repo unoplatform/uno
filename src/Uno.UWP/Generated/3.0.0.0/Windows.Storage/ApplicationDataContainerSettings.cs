@@ -49,7 +49,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( string key,  object value)
+		public void Add(string key, object value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -57,7 +57,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
+		public bool ContainsKey(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -65,7 +65,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string key)
+		public bool Remove(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -73,7 +73,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, object>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out object value)
+		public bool TryGetValue(string key, out object value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -116,7 +116,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::System.Collections.Generic.KeyValuePair<string, object> item)
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, object> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -132,7 +132,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, object> item)
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, object> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -140,7 +140,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, object>[] array,  int arrayIndex)
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, object>[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -148,7 +148,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, object>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, object> item)
+		public bool Remove(global::System.Collections.Generic.KeyValuePair<string, object> item)
 		{
 			throw new global::System.NotSupportedException();
 		}

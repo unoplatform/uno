@@ -29,7 +29,7 @@ namespace Windows.Devices.Sms
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SmsFilterRules( global::Windows.Devices.Sms.SmsFilterActionType actionType) 
+		public SmsFilterRules(global::Windows.Devices.Sms.SmsFilterActionType actionType) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sms.SmsFilterRules", "SmsFilterRules.SmsFilterRules(SmsFilterActionType actionType)");
 		}

@@ -215,7 +215,7 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SecondaryTile( string tileId,  string displayName,  string arguments,  global::System.Uri square150x150Logo,  global::Windows.UI.StartScreen.TileSize desiredSize) 
+		public SecondaryTile(string tileId, string displayName, string arguments, global::System.Uri square150x150Logo, global::Windows.UI.StartScreen.TileSize desiredSize) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile(string tileId, string displayName, string arguments, Uri square150x150Logo, TileSize desiredSize)");
 		}
@@ -223,7 +223,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile(string, string, string, System.Uri, Windows.UI.StartScreen.TileSize)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SecondaryTile( string tileId,  string shortName,  string displayName,  string arguments,  global::Windows.UI.StartScreen.TileOptions tileOptions,  global::System.Uri logoReference) 
+		public SecondaryTile(string tileId, string shortName, string displayName, string arguments, global::Windows.UI.StartScreen.TileOptions tileOptions, global::System.Uri logoReference) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile(string tileId, string shortName, string displayName, string arguments, TileOptions tileOptions, Uri logoReference)");
 		}
@@ -231,7 +231,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile(string, string, string, string, Windows.UI.StartScreen.TileOptions, System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SecondaryTile( string tileId,  string shortName,  string displayName,  string arguments,  global::Windows.UI.StartScreen.TileOptions tileOptions,  global::System.Uri logoReference,  global::System.Uri wideLogoReference) 
+		public SecondaryTile(string tileId, string shortName, string displayName, string arguments, global::Windows.UI.StartScreen.TileOptions tileOptions, global::System.Uri logoReference, global::System.Uri wideLogoReference) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile(string tileId, string shortName, string displayName, string arguments, TileOptions tileOptions, Uri logoReference, Uri wideLogoReference)");
 		}
@@ -239,7 +239,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.SecondaryTile(string, string, string, string, Windows.UI.StartScreen.TileOptions, System.Uri, System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SecondaryTile( string tileId) 
+		public SecondaryTile(string tileId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.StartScreen.SecondaryTile", "SecondaryTile.SecondaryTile(string tileId)");
 		}
@@ -286,21 +286,21 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateAsync( global::Windows.Foundation.Point invocationPoint)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateAsync(global::Windows.Foundation.Point invocationPoint)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.RequestCreateAsync(Point invocationPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.RequestCreateAsync%28Point%20invocationPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateForSelectionAsync( global::Windows.Foundation.Rect selection)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateForSelectionAsync(global::Windows.Foundation.Rect selection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.RequestCreateForSelectionAsync(Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.RequestCreateForSelectionAsync%28Rect%20selection%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateForSelectionAsync( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement preferredPlacement)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestCreateForSelectionAsync(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.RequestCreateForSelectionAsync(Rect selection, Placement preferredPlacement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.RequestCreateForSelectionAsync%28Rect%20selection%2C%20Placement%20preferredPlacement%29");
 		}
@@ -314,21 +314,21 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteAsync( global::Windows.Foundation.Point invocationPoint)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteAsync(global::Windows.Foundation.Point invocationPoint)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.RequestDeleteAsync(Point invocationPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.RequestDeleteAsync%28Point%20invocationPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteForSelectionAsync( global::Windows.Foundation.Rect selection)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteForSelectionAsync(global::Windows.Foundation.Rect selection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.RequestDeleteForSelectionAsync(Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.RequestDeleteForSelectionAsync%28Rect%20selection%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteForSelectionAsync( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement preferredPlacement)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestDeleteForSelectionAsync(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> SecondaryTile.RequestDeleteForSelectionAsync(Rect selection, Placement preferredPlacement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20SecondaryTile.RequestDeleteForSelectionAsync%28Rect%20selection%2C%20Placement%20preferredPlacement%29");
 		}
@@ -349,7 +349,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.SecondaryTile.VisualElementsRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool Exists( string tileId)
+		public static bool Exists(string tileId)
 		{
 			throw new global::System.NotImplementedException("The member bool SecondaryTile.Exists(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SecondaryTile.Exists%28string%20tileId%29");
 		}
@@ -363,7 +363,7 @@ namespace Windows.UI.StartScreen
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllAsync( string applicationId)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.StartScreen.SecondaryTile>> FindAllAsync(string applicationId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<SecondaryTile>> SecondaryTile.FindAllAsync(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CSecondaryTile%3E%3E%20SecondaryTile.FindAllAsync%28string%20applicationId%29");
 		}

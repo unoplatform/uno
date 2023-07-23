@@ -65,7 +65,7 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReportUserInteractionRequired( global::Windows.Security.Authentication.Web.Core.WebProviderError value)
+		public void ReportUserInteractionRequired(global::Windows.Security.Authentication.Web.Core.WebProviderError value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "void WebAccountProviderGetTokenSilentOperation.ReportUserInteractionRequired(WebProviderError value)");
 		}
@@ -79,7 +79,7 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReportError( global::Windows.Security.Authentication.Web.Core.WebProviderError value)
+		public void ReportError(global::Windows.Security.Authentication.Web.Core.WebProviderError value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountProviderGetTokenSilentOperation", "void WebAccountProviderGetTokenSilentOperation.ReportError(WebProviderError value)");
 		}

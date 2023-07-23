@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.AppListEntry.AppUserModelId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> LaunchForUserAsync( global::Windows.System.User user)
+		public global::Windows.Foundation.IAsyncOperation<bool> LaunchForUserAsync(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppListEntry.LaunchForUserAsync(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppListEntry.LaunchForUserAsync%28User%20user%29");
 		}

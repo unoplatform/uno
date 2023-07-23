@@ -40,7 +40,7 @@ namespace Windows.Devices.Perception.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PerceptionCorrelation( string targetId,  global::System.Numerics.Vector3 position,  global::System.Numerics.Quaternion orientation) 
+		public PerceptionCorrelation(string targetId, global::System.Numerics.Vector3 position, global::System.Numerics.Quaternion orientation) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionCorrelation", "PerceptionCorrelation.PerceptionCorrelation(string targetId, Vector3 position, Quaternion orientation)");
 		}

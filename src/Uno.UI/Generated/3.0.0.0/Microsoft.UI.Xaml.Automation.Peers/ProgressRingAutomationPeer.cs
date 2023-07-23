@@ -69,7 +69,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ProgressRingAutomationPeer( global::Microsoft.UI.Xaml.Controls.ProgressRing owner) : base(owner)
+		public ProgressRingAutomationPeer(global::Microsoft.UI.Xaml.Controls.ProgressRing owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer", "ProgressRingAutomationPeer.ProgressRingAutomationPeer(ProgressRing owner)");
 		}
@@ -83,7 +83,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetValue( double value)
+		public void SetValue(double value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ProgressRingAutomationPeer", "void ProgressRingAutomationPeer.SetValue(double value)");
 		}

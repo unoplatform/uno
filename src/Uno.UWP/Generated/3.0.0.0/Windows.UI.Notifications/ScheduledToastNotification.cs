@@ -118,7 +118,7 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ScheduledToastNotification.ScheduledToastNotification(Windows.Data.Xml.Dom.XmlDocument, System.DateTimeOffset)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ScheduledToastNotification( global::Windows.Data.Xml.Dom.XmlDocument content,  global::System.DateTimeOffset deliveryTime,  global::System.TimeSpan snoozeInterval,  uint maximumSnoozeCount) 
+		public ScheduledToastNotification(global::Windows.Data.Xml.Dom.XmlDocument content, global::System.DateTimeOffset deliveryTime, global::System.TimeSpan snoozeInterval, uint maximumSnoozeCount) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ScheduledToastNotification", "ScheduledToastNotification.ScheduledToastNotification(XmlDocument content, DateTimeOffset deliveryTime, TimeSpan snoozeInterval, uint maximumSnoozeCount)");
 		}

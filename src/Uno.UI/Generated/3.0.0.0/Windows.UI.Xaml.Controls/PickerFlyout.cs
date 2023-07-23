@@ -37,18 +37,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ConfirmationButtonsVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ConfirmationButtonsVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ConfirmationButtonsVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.PickerFlyout), 
+			nameof(ConfirmationButtonsVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.PickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Content), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.PickerFlyout), 
+			nameof(Content), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Controls.PickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.PickerFlyout.PickerFlyout()
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.PickerFlyout.Confirmed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> ShowAtAsync( global::Windows.UI.Xaml.FrameworkElement target)
+		public global::Windows.Foundation.IAsyncOperation<bool> ShowAtAsync(global::Windows.UI.Xaml.FrameworkElement target)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PickerFlyout.ShowAtAsync%28FrameworkElement%20target%29");
 		}

@@ -22,7 +22,7 @@ namespace Windows.System.Profile
 		// Forced skipping of method Windows.System.Profile.PlatformDiagnosticsAndUsageDataSettings.CollectionLevelChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool CanCollectDiagnostics( global::Windows.System.Profile.PlatformDataCollectionLevel level)
+		public static bool CanCollectDiagnostics(global::Windows.System.Profile.PlatformDataCollectionLevel level)
 		{
 			throw new global::System.NotImplementedException("The member bool PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics(PlatformDataCollectionLevel level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlatformDiagnosticsAndUsageDataSettings.CanCollectDiagnostics%28PlatformDataCollectionLevel%20level%29");
 		}

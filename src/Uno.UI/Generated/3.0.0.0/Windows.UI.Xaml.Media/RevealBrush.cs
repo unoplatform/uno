@@ -38,27 +38,27 @@ namespace Windows.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AlwaysUseFallbackProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AlwaysUseFallbackProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AlwaysUseFallback), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
+			nameof(AlwaysUseFallback), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.RevealBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property ColorProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"State", typeof(global::Windows.UI.Xaml.Media.RevealBrushState), 
-			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
+			"State", typeof(global::Windows.UI.Xaml.Media.RevealBrushState),
+			typeof(global::Windows.UI.Xaml.Media.RevealBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.RevealBrushState)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TargetThemeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TargetThemeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TargetTheme), typeof(global::Windows.UI.Xaml.ApplicationTheme), 
-			typeof(global::Windows.UI.Xaml.Media.RevealBrush), 
+			nameof(TargetTheme), typeof(global::Windows.UI.Xaml.ApplicationTheme),
+			typeof(global::Windows.UI.Xaml.Media.RevealBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ApplicationTheme)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Media.RevealBrush.RevealBrush()
@@ -75,14 +75,14 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.RevealBrush.StateProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetState( global::Windows.UI.Xaml.UIElement element,  global::Windows.UI.Xaml.Media.RevealBrushState value)
+		public static void SetState(global::Windows.UI.Xaml.UIElement element, global::Windows.UI.Xaml.Media.RevealBrushState value)
 		{
 			element.SetValue(StateProperty, value);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Media.RevealBrushState GetState( global::Windows.UI.Xaml.UIElement element)
+		public static global::Windows.UI.Xaml.Media.RevealBrushState GetState(global::Windows.UI.Xaml.UIElement element)
 		{
 			return (global::Windows.UI.Xaml.Media.RevealBrushState)element.GetValue(StateProperty);
 		}

@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpProductInfoHeaderValue( string productComment) 
+		public HttpProductInfoHeaderValue(string productComment) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpProductInfoHeaderValue", "HttpProductInfoHeaderValue.HttpProductInfoHeaderValue(string productComment)");
 		}
@@ -37,7 +37,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpProductInfoHeaderValue.HttpProductInfoHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpProductInfoHeaderValue( string productName,  string productVersion) 
+		public HttpProductInfoHeaderValue(string productName, string productVersion) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpProductInfoHeaderValue", "HttpProductInfoHeaderValue.HttpProductInfoHeaderValue(string productName, string productVersion)");
 		}
@@ -54,14 +54,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValue HttpProductInfoHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpProductInfoHeaderValue%20HttpProductInfoHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue productInfoHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpProductInfoHeaderValue productInfoHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpProductInfoHeaderValue.TryParse(string input, out HttpProductInfoHeaderValue productInfoHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpProductInfoHeaderValue.TryParse%28string%20input%2C%20out%20HttpProductInfoHeaderValue%20productInfoHeaderValue%29");
 		}

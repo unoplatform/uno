@@ -42,7 +42,7 @@ namespace Windows.Media.Protection.PlayReady
 		global::Windows.Media.Protection.PlayReady.PlayReadySoapMessage GenerateManualEnablingChallenge();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes);
+		global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes);
 #endif
 	}
 }

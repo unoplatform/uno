@@ -85,7 +85,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSource.Controller.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState TryGetStateAtTimestamp( global::Windows.Perception.PerceptionTimestamp timestamp)
+		public global::Windows.UI.Input.Spatial.SpatialInteractionSourceState TryGetStateAtTimestamp(global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
 			throw new global::System.NotImplementedException("The member SpatialInteractionSourceState SpatialInteractionSource.TryGetStateAtTimestamp(PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialInteractionSourceState%20SpatialInteractionSource.TryGetStateAtTimestamp%28PerceptionTimestamp%20timestamp%29");
 		}

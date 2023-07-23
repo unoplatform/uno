@@ -39,14 +39,14 @@ namespace Windows.UI.Input.Inking.Analysis
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalyzer.IsAnalyzing.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddDataForStroke( global::Windows.UI.Input.Inking.InkStroke stroke)
+		public void AddDataForStroke(global::Windows.UI.Input.Inking.InkStroke stroke)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Analysis.InkAnalyzer", "void InkAnalyzer.AddDataForStroke(InkStroke stroke)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddDataForStrokes( global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Inking.InkStroke> strokes)
+		public void AddDataForStrokes(global::System.Collections.Generic.IEnumerable<global::Windows.UI.Input.Inking.InkStroke> strokes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Analysis.InkAnalyzer", "void InkAnalyzer.AddDataForStrokes(IEnumerable<InkStroke> strokes)");
 		}
@@ -60,28 +60,28 @@ namespace Windows.UI.Input.Inking.Analysis
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveDataForStroke( uint strokeId)
+		public void RemoveDataForStroke(uint strokeId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Analysis.InkAnalyzer", "void InkAnalyzer.RemoveDataForStroke(uint strokeId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveDataForStrokes( global::System.Collections.Generic.IEnumerable<uint> strokeIds)
+		public void RemoveDataForStrokes(global::System.Collections.Generic.IEnumerable<uint> strokeIds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Analysis.InkAnalyzer", "void InkAnalyzer.RemoveDataForStrokes(IEnumerable<uint> strokeIds)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReplaceDataForStroke( global::Windows.UI.Input.Inking.InkStroke stroke)
+		public void ReplaceDataForStroke(global::Windows.UI.Input.Inking.InkStroke stroke)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Analysis.InkAnalyzer", "void InkAnalyzer.ReplaceDataForStroke(InkStroke stroke)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetStrokeDataKind( uint strokeId,  global::Windows.UI.Input.Inking.Analysis.InkAnalysisStrokeKind strokeKind)
+		public void SetStrokeDataKind(uint strokeId, global::Windows.UI.Input.Inking.Analysis.InkAnalysisStrokeKind strokeKind)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Analysis.InkAnalyzer", "void InkAnalyzer.SetStrokeDataKind(uint strokeId, InkAnalysisStrokeKind strokeKind)");
 		}

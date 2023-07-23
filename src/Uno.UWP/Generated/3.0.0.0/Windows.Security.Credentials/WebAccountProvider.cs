@@ -79,7 +79,7 @@ namespace Windows.Security.Credentials
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebAccountProvider( string id,  string displayName,  global::System.Uri iconUri) 
+		public WebAccountProvider(string id, string displayName, global::System.Uri iconUri) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Credentials.WebAccountProvider", "WebAccountProvider.WebAccountProvider(string id, string displayName, Uri iconUri)");
 		}

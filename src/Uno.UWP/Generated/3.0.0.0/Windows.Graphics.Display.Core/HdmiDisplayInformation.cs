@@ -30,21 +30,21 @@ namespace Windows.Graphics.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync( global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync%28HdmiDisplayMode%20mode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync( global::Windows.Graphics.Display.Core.HdmiDisplayMode mode,  global::Windows.Graphics.Display.Core.HdmiDisplayHdrOption hdrOption)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode, global::Windows.Graphics.Display.Core.HdmiDisplayHdrOption hdrOption)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode, HdmiDisplayHdrOption hdrOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync%28HdmiDisplayMode%20mode%2C%20HdmiDisplayHdrOption%20hdrOption%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync( global::Windows.Graphics.Display.Core.HdmiDisplayMode mode,  global::Windows.Graphics.Display.Core.HdmiDisplayHdrOption hdrOption,  global::Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata hdrMetadata)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestSetCurrentDisplayModeAsync(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode, global::Windows.Graphics.Display.Core.HdmiDisplayHdrOption hdrOption, global::Windows.Graphics.Display.Core.HdmiDisplayHdr2086Metadata hdrMetadata)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync(HdmiDisplayMode mode, HdmiDisplayHdrOption hdrOption, HdmiDisplayHdr2086Metadata hdrMetadata) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20HdmiDisplayInformation.RequestSetCurrentDisplayModeAsync%28HdmiDisplayMode%20mode%2C%20HdmiDisplayHdrOption%20hdrOption%2C%20HdmiDisplayHdr2086Metadata%20hdrMetadata%29");
 		}

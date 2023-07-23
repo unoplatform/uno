@@ -49,10 +49,10 @@ namespace Windows.Media.Audio
 		void Reset();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void DisableEffectsByDefinition( global::Windows.Media.Effects.IAudioEffectDefinition definition);
+		void DisableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void EnableEffectsByDefinition( global::Windows.Media.Effects.IAudioEffectDefinition definition);
+		void EnableEffectsByDefinition(global::Windows.Media.Effects.IAudioEffectDefinition definition);
 #endif
 	}
 }

@@ -175,14 +175,14 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpRequestHeaderCollection.UserAgent.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Append( string name,  string value)
+		public void Append(string name, string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "void HttpRequestHeaderCollection.Append(string name, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryAppendWithoutValidation( string name,  string value)
+		public bool TryAppendWithoutValidation(string name, string value)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpRequestHeaderCollection.TryAppendWithoutValidation(string name, string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpRequestHeaderCollection.TryAppendWithoutValidation%28string%20name%2C%20string%20value%29");
 		}
@@ -200,7 +200,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, string>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( string key,  string value)
+		public void Add(string key, string value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -230,7 +230,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::System.Collections.Generic.KeyValuePair<string, string> item)
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -238,7 +238,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, string> item)
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, string> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -246,7 +246,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, string>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, string>[] array,  int arrayIndex)
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, string>[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}

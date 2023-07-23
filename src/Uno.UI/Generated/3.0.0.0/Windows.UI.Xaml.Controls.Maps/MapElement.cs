@@ -107,58 +107,58 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Visible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(Visible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ZIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(ZIndex), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MapTabIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MapTabIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MapTabIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(MapTabIndex), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MapStyleSheetEntryProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MapStyleSheetEntryProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MapStyleSheetEntry), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(MapStyleSheetEntry), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MapStyleSheetEntryStateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MapStyleSheetEntryStateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MapStyleSheetEntryState), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(MapStyleSheetEntryState), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TagProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TagProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Tag), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(Tag), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
+			nameof(IsEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

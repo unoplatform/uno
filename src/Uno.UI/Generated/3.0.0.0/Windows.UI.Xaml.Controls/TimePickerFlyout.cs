@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickerFlyout.TimePicked.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.TimeSpan?> ShowAtAsync( global::Windows.UI.Xaml.FrameworkElement target)
+		public global::Windows.Foundation.IAsyncOperation<global::System.TimeSpan?> ShowAtAsync(global::Windows.UI.Xaml.FrameworkElement target)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<TimeSpan?> TimePickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CTimeSpan%3F%3E%20TimePickerFlyout.ShowAtAsync%28FrameworkElement%20target%29");
 		}

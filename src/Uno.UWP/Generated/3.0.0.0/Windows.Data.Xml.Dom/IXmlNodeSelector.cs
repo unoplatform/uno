@@ -10,10 +10,10 @@ namespace Windows.Data.Xml.Dom
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSelector.SelectSingleNode(string)
 		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNodeSelector.SelectNodes(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces);
+		global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS(string xpath, object namespaces);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces);
+		global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS(string xpath, object namespaces);
 #endif
 	}
 }

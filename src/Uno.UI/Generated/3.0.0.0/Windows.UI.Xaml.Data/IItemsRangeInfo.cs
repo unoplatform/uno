@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Data
 	public partial interface IItemsRangeInfo : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void RangesChanged( global::Windows.UI.Xaml.Data.ItemIndexRange visibleRange,  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Data.ItemIndexRange> trackedItems);
+		void RangesChanged(global::Windows.UI.Xaml.Data.ItemIndexRange visibleRange, global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Data.ItemIndexRange> trackedItems);
 #endif
 	}
 }

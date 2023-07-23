@@ -51,26 +51,26 @@ namespace Windows.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CenterProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CenterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Center), typeof(global::Windows.Foundation.Point), 
-			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
+			nameof(Center), typeof(global::Windows.Foundation.Point),
+			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RadiusXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RadiusXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RadiusX), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
+			nameof(RadiusX), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RadiusYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RadiusYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RadiusY), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry), 
+			nameof(RadiusY), typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.EllipseGeometry),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__

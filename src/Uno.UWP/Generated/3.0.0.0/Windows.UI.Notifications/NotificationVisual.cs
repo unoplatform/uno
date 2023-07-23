@@ -36,7 +36,7 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.NotificationVisual.Bindings.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Notifications.NotificationBinding GetBinding( string templateName)
+		public global::Windows.UI.Notifications.NotificationBinding GetBinding(string templateName)
 		{
 			throw new global::System.NotImplementedException("The member NotificationBinding NotificationVisual.GetBinding(string templateName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationBinding%20NotificationVisual.GetBinding%28string%20templateName%29");
 		}

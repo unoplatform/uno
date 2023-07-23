@@ -28,7 +28,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.GeovisitMonitor.MonitoringScope.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Start( global::Windows.Devices.Geolocation.VisitMonitoringScope value)
+		public void Start(global::Windows.Devices.Geolocation.VisitMonitoringScope value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeovisitMonitor", "void GeovisitMonitor.Start(VisitMonitoringScope value)");
 		}

@@ -222,10 +222,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontSizeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 #endif
 		// Skipping already declared property FontStyleProperty
@@ -237,10 +237,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PaddingProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedTextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedTextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(SelectedText), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 		// Skipping already declared property TextAlignmentProperty
@@ -249,69 +249,69 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property TextWrappingProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorFontEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(IsColorFontEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property MaxLinesProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OpticalMarginAlignment), typeof(global::Windows.UI.Xaml.OpticalMarginAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(OpticalMarginAlignment), typeof(global::Windows.UI.Xaml.OpticalMarginAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.OpticalMarginAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextLineBounds), typeof(global::Windows.UI.Xaml.TextLineBounds), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(TextLineBounds), typeof(global::Windows.UI.Xaml.TextLineBounds),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextLineBounds)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property TextDecorationsProperty
 		// Skipping already declared property HorizontalTextAlignmentProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextTrimmed), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(IsTextTrimmed), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBlock), 
+			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.TextBlock),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TextBlock.TextBlock()
@@ -366,7 +366,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Select( global::Windows.UI.Xaml.Documents.TextPointer start,  global::Windows.UI.Xaml.Documents.TextPointer end)
+		public void Select(global::Windows.UI.Xaml.Documents.TextPointer start, global::Windows.UI.Xaml.Documents.TextPointer end)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBlock", "void TextBlock.Select(TextPointer start, TextPointer end)");
 		}

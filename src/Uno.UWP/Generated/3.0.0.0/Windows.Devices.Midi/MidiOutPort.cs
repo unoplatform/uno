@@ -19,14 +19,14 @@ namespace Windows.Devices.Midi
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage)
+		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendMessage(IMidiMessage midiMessage)");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public void SendBuffer( global::Windows.Storage.Streams.IBuffer midiData)
+		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendBuffer(IBuffer midiData)");
 		}
@@ -41,7 +41,7 @@ namespace Windows.Devices.Midi
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.IMidiOutPort> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.IMidiOutPort> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IMidiOutPort> MidiOutPort.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIMidiOutPort%3E%20MidiOutPort.FromIdAsync%28string%20deviceId%29");
 		}

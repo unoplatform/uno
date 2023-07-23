@@ -31,21 +31,21 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.BrightnessOverrideSettings.DesiredNits.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromLevel( double level)
+		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromLevel(double level)
 		{
 			throw new global::System.NotImplementedException("The member BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromLevel(double level) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverrideSettings%20BrightnessOverrideSettings.CreateFromLevel%28double%20level%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromNits( float nits)
+		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromNits(float nits)
 		{
 			throw new global::System.NotImplementedException("The member BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromNits(float nits) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverrideSettings%20BrightnessOverrideSettings.CreateFromNits%28float%20nits%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromDisplayBrightnessOverrideScenario( global::Windows.Graphics.Display.DisplayBrightnessOverrideScenario overrideScenario)
+		public static global::Windows.Graphics.Display.BrightnessOverrideSettings CreateFromDisplayBrightnessOverrideScenario(global::Windows.Graphics.Display.DisplayBrightnessOverrideScenario overrideScenario)
 		{
 			throw new global::System.NotImplementedException("The member BrightnessOverrideSettings BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario(DisplayBrightnessOverrideScenario overrideScenario) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BrightnessOverrideSettings%20BrightnessOverrideSettings.CreateFromDisplayBrightnessOverrideScenario%28DisplayBrightnessOverrideScenario%20overrideScenario%29");
 		}

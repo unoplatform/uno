@@ -60,7 +60,7 @@ namespace Windows.Devices.WiFiDirect
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectConnectionParameters.PreferredPairingProcedure.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.DevicePairingKinds GetDevicePairingKinds( global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod configurationMethod)
+		public static global::Windows.Devices.Enumeration.DevicePairingKinds GetDevicePairingKinds(global::Windows.Devices.WiFiDirect.WiFiDirectConfigurationMethod configurationMethod)
 		{
 			throw new global::System.NotImplementedException("The member DevicePairingKinds WiFiDirectConnectionParameters.GetDevicePairingKinds(WiFiDirectConfigurationMethod configurationMethod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DevicePairingKinds%20WiFiDirectConnectionParameters.GetDevicePairingKinds%28WiFiDirectConfigurationMethod%20configurationMethod%29");
 		}

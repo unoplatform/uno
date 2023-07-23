@@ -124,7 +124,7 @@ namespace Windows.Graphics.Display.Core
 		// Forced skipping of method Windows.Graphics.Display.Core.HdmiDisplayMode.BitsPerPixel.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsEqual( global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
+		public bool IsEqual(global::Windows.Graphics.Display.Core.HdmiDisplayMode mode)
 		{
 			throw new global::System.NotImplementedException("The member bool HdmiDisplayMode.IsEqual(HdmiDisplayMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HdmiDisplayMode.IsEqual%28HdmiDisplayMode%20mode%29");
 		}

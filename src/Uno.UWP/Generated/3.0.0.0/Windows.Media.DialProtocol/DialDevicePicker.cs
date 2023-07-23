@@ -45,28 +45,28 @@ namespace Windows.Media.DialProtocol
 		// Forced skipping of method Windows.Media.DialProtocol.DialDevicePicker.DialDevicePickerDismissed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show( global::Windows.Foundation.Rect selection)
+		public void Show(global::Windows.Foundation.Rect selection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.Show(Rect selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement preferredPlacement)
+		public void Show(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.Show(Rect selection, Placement preferredPlacement)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync( global::Windows.Foundation.Rect selection)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync(global::Windows.Foundation.Rect selection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDialDevice%3E%20DialDevicePicker.PickSingleDialDeviceAsync%28Rect%20selection%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement preferredPlacement)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.DialProtocol.DialDevice> PickSingleDialDeviceAsync(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement preferredPlacement)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DialDevice> DialDevicePicker.PickSingleDialDeviceAsync(Rect selection, Placement preferredPlacement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDialDevice%3E%20DialDevicePicker.PickSingleDialDeviceAsync%28Rect%20selection%2C%20Placement%20preferredPlacement%29");
 		}
@@ -80,7 +80,7 @@ namespace Windows.Media.DialProtocol
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDisplayStatus( global::Windows.Media.DialProtocol.DialDevice device,  global::Windows.Media.DialProtocol.DialDeviceDisplayStatus status)
+		public void SetDisplayStatus(global::Windows.Media.DialProtocol.DialDevice device, global::Windows.Media.DialProtocol.DialDeviceDisplayStatus status)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.DialProtocol.DialDevicePicker", "void DialDevicePicker.SetDisplayStatus(DialDevice device, DialDeviceDisplayStatus status)");
 		}

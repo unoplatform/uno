@@ -17,7 +17,7 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.SystemButtonEventController.SystemFunctionLockIndicatorChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Input.SystemButtonEventController CreateForDispatcherQueue( global::Windows.System.DispatcherQueue queue)
+		public static global::Windows.UI.Input.SystemButtonEventController CreateForDispatcherQueue(global::Windows.System.DispatcherQueue queue)
 		{
 			throw new global::System.NotImplementedException("The member SystemButtonEventController SystemButtonEventController.CreateForDispatcherQueue(DispatcherQueue queue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SystemButtonEventController%20SystemButtonEventController.CreateForDispatcherQueue%28DispatcherQueue%20queue%29");
 		}

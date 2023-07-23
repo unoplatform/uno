@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FillRule), typeof(global::Windows.UI.Xaml.Media.FillRule), 
-			typeof(global::Windows.UI.Xaml.Shapes.Polygon), 
+			nameof(FillRule), typeof(global::Windows.UI.Xaml.Media.FillRule),
+			typeof(global::Windows.UI.Xaml.Shapes.Polygon),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 #endif
 		// Skipping already declared property PointsProperty

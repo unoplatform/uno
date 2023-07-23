@@ -53,26 +53,26 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Skipping already declared property DecodePixelTypeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AutoPlay), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
+			nameof(AutoPlay), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAnimatedBitmapProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAnimatedBitmapProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAnimatedBitmap), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
+			nameof(IsAnimatedBitmap), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPlayingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsPlayingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsPlaying), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage), 
+			nameof(IsPlaying), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Imaging.BitmapImage),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Imaging.BitmapImage.BitmapImage(System.Uri)

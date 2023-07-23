@@ -22,7 +22,7 @@ namespace Windows.UI.Popups
 		// Forced skipping of method Windows.UI.Popups.PopupMenu.Commands.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync( global::Windows.Foundation.Point invocationPoint)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync(global::Windows.Foundation.Point invocationPoint)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IUICommand> PopupMenu.ShowAsync(Point invocationPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIUICommand%3E%20PopupMenu.ShowAsync%28Point%20invocationPoint%29");
 		}

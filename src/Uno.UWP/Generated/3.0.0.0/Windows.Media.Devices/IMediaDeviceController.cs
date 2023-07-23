@@ -8,13 +8,13 @@ namespace Windows.Media.Devices
 	public partial interface IMediaDeviceController 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaProperties.IMediaEncodingProperties> GetAvailableMediaStreamProperties( global::Windows.Media.Capture.MediaStreamType mediaStreamType);
+		global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.MediaProperties.IMediaEncodingProperties> GetAvailableMediaStreamProperties(global::Windows.Media.Capture.MediaStreamType mediaStreamType);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Media.MediaProperties.IMediaEncodingProperties GetMediaStreamProperties( global::Windows.Media.Capture.MediaStreamType mediaStreamType);
+		global::Windows.Media.MediaProperties.IMediaEncodingProperties GetMediaStreamProperties(global::Windows.Media.Capture.MediaStreamType mediaStreamType);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncAction SetMediaStreamPropertiesAsync( global::Windows.Media.Capture.MediaStreamType mediaStreamType,  global::Windows.Media.MediaProperties.IMediaEncodingProperties mediaEncodingProperties);
+		global::Windows.Foundation.IAsyncAction SetMediaStreamPropertiesAsync(global::Windows.Media.Capture.MediaStreamType mediaStreamType, global::Windows.Media.MediaProperties.IMediaEncodingProperties mediaEncodingProperties);
 #endif
 	}
 }

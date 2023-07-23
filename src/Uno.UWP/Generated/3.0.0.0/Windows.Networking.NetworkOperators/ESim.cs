@@ -82,14 +82,14 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> DeleteProfileAsync( string profileId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> DeleteProfileAsync(string profileId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESim.DeleteProfileAsync(string profileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimOperationResult%3E%20ESim.DeleteProfileAsync%28string%20profileId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult> DownloadProfileMetadataAsync( string activationCode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDownloadProfileMetadataResult> DownloadProfileMetadataAsync(string activationCode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDownloadProfileMetadataResult> ESim.DownloadProfileMetadataAsync(string activationCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimDownloadProfileMetadataResult%3E%20ESim.DownloadProfileMetadataAsync%28string%20activationCode%29");
 		}
@@ -112,7 +112,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Networking.NetworkOperators.ESimDiscoverResult Discover( string serverAddress,  string matchingId)
+		public global::Windows.Networking.NetworkOperators.ESimDiscoverResult Discover(string serverAddress, string matchingId)
 		{
 			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover(string serverAddress, string matchingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ESimDiscoverResult%20ESim.Discover%28string%20serverAddress%2C%20string%20matchingId%29");
 		}
@@ -126,7 +126,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDiscoverResult> DiscoverAsync( string serverAddress,  string matchingId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDiscoverResult> DiscoverAsync(string serverAddress, string matchingId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync(string serverAddress, string matchingId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimDiscoverResult%3E%20ESim.DiscoverAsync%28string%20serverAddress%2C%20string%20matchingId%29");
 		}

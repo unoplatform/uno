@@ -70,14 +70,14 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetRelatedToAdjacentPanelsAsync( string firstPanelId,  string secondPanelId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetRelatedToAdjacentPanelsAsync(string firstPanelId, string secondPanelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHingeAngleSensor%3E%20HingeAngleSensor.GetRelatedToAdjacentPanelsAsync%28string%20firstPanelId%2C%20string%20secondPanelId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHingeAngleSensor%3E%20HingeAngleSensor.FromIdAsync%28string%20deviceId%29");
 		}

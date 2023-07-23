@@ -47,18 +47,18 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Background), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Documents.TextHighlighter), 
+			nameof(Background), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Documents.TextHighlighter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Foreground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Documents.TextHighlighter), 
+			nameof(Foreground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Documents.TextHighlighter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

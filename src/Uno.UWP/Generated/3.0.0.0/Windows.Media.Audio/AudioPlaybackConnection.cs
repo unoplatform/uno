@@ -75,7 +75,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioPlaybackConnection TryCreateFromId( string id)
+		public static global::Windows.Media.Audio.AudioPlaybackConnection TryCreateFromId(string id)
 		{
 			throw new global::System.NotImplementedException("The member AudioPlaybackConnection AudioPlaybackConnection.TryCreateFromId(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioPlaybackConnection%20AudioPlaybackConnection.TryCreateFromId%28string%20id%29");
 		}

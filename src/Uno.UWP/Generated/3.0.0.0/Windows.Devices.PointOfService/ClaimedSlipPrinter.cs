@@ -250,21 +250,21 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> InsertSlipAsync( global::System.TimeSpan timeout)
+		public global::Windows.Foundation.IAsyncOperation<bool> InsertSlipAsync(global::System.TimeSpan timeout)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedSlipPrinter.InsertSlipAsync(TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ClaimedSlipPrinter.InsertSlipAsync%28TimeSpan%20timeout%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RemoveSlipAsync( global::System.TimeSpan timeout)
+		public global::Windows.Foundation.IAsyncOperation<bool> RemoveSlipAsync(global::System.TimeSpan timeout)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ClaimedSlipPrinter.RemoveSlipAsync(TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ClaimedSlipPrinter.RemoveSlipAsync%28TimeSpan%20timeout%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ChangePrintSide( global::Windows.Devices.PointOfService.PosPrinterPrintSide printSide)
+		public void ChangePrintSide(global::Windows.Devices.PointOfService.PosPrinterPrintSide printSide)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedSlipPrinter", "void ClaimedSlipPrinter.ChangePrintSide(PosPrinterPrintSide printSide)");
 		}
@@ -296,7 +296,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedSlipPrinter.IsReadyToPrint.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ValidateData( string data)
+		public bool ValidateData(string data)
 		{
 			throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.ValidateData(string data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedSlipPrinter.ValidateData%28string%20data%29");
 		}

@@ -450,14 +450,14 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.MeetingInfo.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Streams.IRandomAccessStreamReference GetBodyStream( global::Windows.ApplicationModel.Email.EmailMessageBodyKind type)
+		public global::Windows.Storage.Streams.IRandomAccessStreamReference GetBodyStream(global::Windows.ApplicationModel.Email.EmailMessageBodyKind type)
 		{
 			throw new global::System.NotImplementedException("The member IRandomAccessStreamReference EmailMessage.GetBodyStream(EmailMessageBodyKind type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IRandomAccessStreamReference%20EmailMessage.GetBodyStream%28EmailMessageBodyKind%20type%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetBodyStream( global::Windows.ApplicationModel.Email.EmailMessageBodyKind type,  global::Windows.Storage.Streams.IRandomAccessStreamReference stream)
+		public void SetBodyStream(global::Windows.ApplicationModel.Email.EmailMessageBodyKind type, global::Windows.Storage.Streams.IRandomAccessStreamReference stream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMessage", "void EmailMessage.SetBodyStream(EmailMessageBodyKind type, IRandomAccessStreamReference stream)");
 		}

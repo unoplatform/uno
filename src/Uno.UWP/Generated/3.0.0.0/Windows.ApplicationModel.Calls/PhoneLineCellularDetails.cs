@@ -53,7 +53,7 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLineCellularDetails.RegistrationRejectCode.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string GetNetworkOperatorDisplayText( global::Windows.ApplicationModel.Calls.PhoneLineNetworkOperatorDisplayTextLocation location)
+		public string GetNetworkOperatorDisplayText(global::Windows.ApplicationModel.Calls.PhoneLineNetworkOperatorDisplayTextLocation location)
 		{
 			throw new global::System.NotImplementedException("The member string PhoneLineCellularDetails.GetNetworkOperatorDisplayText(PhoneLineNetworkOperatorDisplayTextLocation location) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20PhoneLineCellularDetails.GetNetworkOperatorDisplayText%28PhoneLineNetworkOperatorDisplayTextLocation%20location%29");
 		}

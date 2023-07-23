@@ -19,7 +19,7 @@ namespace Windows.Phone.System.UserProfile.GameServices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void NotifyPartnerTokenExpired( global::System.Uri audienceUri)
+		public static void NotifyPartnerTokenExpired(global::System.Uri audienceUri)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.System.UserProfile.GameServices.Core.GameService", "void GameService.NotifyPartnerTokenExpired(Uri audienceUri)");
 		}
@@ -48,7 +48,7 @@ namespace Windows.Phone.System.UserProfile.GameServices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<string> GetPartnerTokenAsync( global::System.Uri audienceUri)
+		public static global::Windows.Foundation.IAsyncOperation<string> GetPartnerTokenAsync(global::System.Uri audienceUri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> GameService.GetPartnerTokenAsync(Uri audienceUri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20GameService.GetPartnerTokenAsync%28Uri%20audienceUri%29");
 		}
@@ -62,21 +62,21 @@ namespace Windows.Phone.System.UserProfile.GameServices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void GrantAchievement( uint achievementId)
+		public static void GrantAchievement(uint achievementId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.System.UserProfile.GameServices.Core.GameService", "void GameService.GrantAchievement(uint achievementId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void GrantAvatarAward( uint avatarAwardId)
+		public static void GrantAvatarAward(uint avatarAwardId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.System.UserProfile.GameServices.Core.GameService", "void GameService.GrantAvatarAward(uint avatarAwardId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void PostResult( uint gameVariant,  global::Windows.Phone.System.UserProfile.GameServices.Core.GameServiceScoreKind scoreKind,  long scoreValue,  global::Windows.Phone.System.UserProfile.GameServices.Core.GameServiceGameOutcome gameOutcome,  global::Windows.Storage.Streams.IBuffer buffer)
+		public static void PostResult(uint gameVariant, global::Windows.Phone.System.UserProfile.GameServices.Core.GameServiceScoreKind scoreKind, long scoreValue, global::Windows.Phone.System.UserProfile.GameServices.Core.GameServiceGameOutcome gameOutcome, global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.System.UserProfile.GameServices.Core.GameService", "void GameService.PostResult(uint gameVariant, GameServiceScoreKind scoreKind, long scoreValue, GameServiceGameOutcome gameOutcome, IBuffer buffer)");
 		}

@@ -43,7 +43,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpExpectationHeaderValue( string name) 
+		public HttpExpectationHeaderValue(string name) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValue", "HttpExpectationHeaderValue.HttpExpectationHeaderValue(string name)");
 		}
@@ -51,7 +51,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.HttpExpectationHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpExpectationHeaderValue( string name,  string value) 
+		public HttpExpectationHeaderValue(string name, string value) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValue", "HttpExpectationHeaderValue.HttpExpectationHeaderValue(string name, string value)");
 		}
@@ -70,14 +70,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpExpectationHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpExpectationHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpExpectationHeaderValue HttpExpectationHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpExpectationHeaderValue%20HttpExpectationHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpExpectationHeaderValue expectationHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpExpectationHeaderValue expectationHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpExpectationHeaderValue.TryParse(string input, out HttpExpectationHeaderValue expectationHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpExpectationHeaderValue.TryParse%28string%20input%2C%20out%20HttpExpectationHeaderValue%20expectationHeaderValue%29");
 		}

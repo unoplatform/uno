@@ -50,10 +50,10 @@ namespace Windows.UI.Xaml.Automation.Provider
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IScrollProvider.VerticalScrollPercent.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IScrollProvider.VerticalViewSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Scroll( global::Windows.UI.Xaml.Automation.ScrollAmount horizontalAmount,  global::Windows.UI.Xaml.Automation.ScrollAmount verticalAmount);
+		void Scroll(global::Windows.UI.Xaml.Automation.ScrollAmount horizontalAmount, global::Windows.UI.Xaml.Automation.ScrollAmount verticalAmount);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetScrollPercent( double horizontalPercent,  double verticalPercent);
+		void SetScrollPercent(double horizontalPercent, double verticalPercent);
 #endif
 	}
 }

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackageView.GetTextAsync()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<string> GetTextAsync( string formatId)
+		public global::Windows.Foundation.IAsyncOperation<string> GetTextAsync(string formatId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DataPackageView.GetTextAsync(string formatId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20DataPackageView.GetTextAsync%28string%20formatId%29");
 		}
@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync( string enterpriseId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.EnterpriseData.ProtectionPolicyEvaluationResult> RequestAccessAsync(string enterpriseId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ProtectionPolicyEvaluationResult> DataPackageView.RequestAccessAsync(string enterpriseId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CProtectionPolicyEvaluationResult%3E%20DataPackageView.RequestAccessAsync%28string%20enterpriseId%29");
 		}

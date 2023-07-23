@@ -81,7 +81,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpeechRecognitionTopicConstraint( global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario,  string topicHint) 
+		public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint)");
 		}
@@ -89,7 +89,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(Windows.Media.SpeechRecognition.SpeechRecognitionScenario, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpeechRecognitionTopicConstraint( global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario,  string topicHint,  string tag) 
+		public SpeechRecognitionTopicConstraint(global::Windows.Media.SpeechRecognition.SpeechRecognitionScenario scenario, string topicHint, string tag) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionTopicConstraint", "SpeechRecognitionTopicConstraint.SpeechRecognitionTopicConstraint(SpeechRecognitionScenario scenario, string topicHint, string tag)");
 		}

@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FlipViewItemDataAutomationPeer( object item,  global::Windows.UI.Xaml.Automation.Peers.FlipViewAutomationPeer parent) : base(item, parent)
+		public FlipViewItemDataAutomationPeer(object item, global::Windows.UI.Xaml.Automation.Peers.FlipViewAutomationPeer parent) : base(item, parent)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.FlipViewItemDataAutomationPeer", "FlipViewItemDataAutomationPeer.FlipViewItemDataAutomationPeer(object item, FlipViewAutomationPeer parent)");
 		}

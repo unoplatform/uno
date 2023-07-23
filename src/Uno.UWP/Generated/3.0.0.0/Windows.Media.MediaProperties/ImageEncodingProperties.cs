@@ -101,7 +101,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateUncompressed( global::Windows.Media.MediaProperties.MediaPixelFormat format)
+		public static global::Windows.Media.MediaProperties.ImageEncodingProperties CreateUncompressed(global::Windows.Media.MediaProperties.MediaPixelFormat format)
 		{
 			throw new global::System.NotImplementedException("The member ImageEncodingProperties ImageEncodingProperties.CreateUncompressed(MediaPixelFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ImageEncodingProperties%20ImageEncodingProperties.CreateUncompressed%28MediaPixelFormat%20format%29");
 		}

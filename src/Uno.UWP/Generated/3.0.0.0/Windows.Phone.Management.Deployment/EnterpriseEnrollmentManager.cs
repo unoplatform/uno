@@ -38,14 +38,14 @@ namespace Windows.Phone.Management.Deployment
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.Management.Deployment.EnterpriseEnrollmentResult> RequestEnrollmentAsync( string enrollmentToken)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.Management.Deployment.EnterpriseEnrollmentResult> RequestEnrollmentAsync(string enrollmentToken)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<EnterpriseEnrollmentResult> EnterpriseEnrollmentManager.RequestEnrollmentAsync(string enrollmentToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEnterpriseEnrollmentResult%3E%20EnterpriseEnrollmentManager.RequestEnrollmentAsync%28string%20enrollmentToken%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestUnenrollmentAsync( global::Windows.Phone.Management.Deployment.Enterprise enterprise)
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestUnenrollmentAsync(global::Windows.Phone.Management.Deployment.Enterprise enterprise)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EnterpriseEnrollmentManager.RequestUnenrollmentAsync(Enterprise enterprise) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20EnterpriseEnrollmentManager.RequestUnenrollmentAsync%28Enterprise%20enterprise%29");
 		}

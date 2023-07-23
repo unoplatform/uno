@@ -123,7 +123,7 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportSession.DestinationFileNamePrefix.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportFindItemsResult, uint> FindItemsAsync( global::Windows.Media.Import.PhotoImportContentTypeFilter contentTypeFilter,  global::Windows.Media.Import.PhotoImportItemSelectionMode itemSelectionMode)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Media.Import.PhotoImportFindItemsResult, uint> FindItemsAsync(global::Windows.Media.Import.PhotoImportContentTypeFilter contentTypeFilter, global::Windows.Media.Import.PhotoImportItemSelectionMode itemSelectionMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<PhotoImportFindItemsResult, uint> PhotoImportSession.FindItemsAsync(PhotoImportContentTypeFilter contentTypeFilter, PhotoImportItemSelectionMode itemSelectionMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CPhotoImportFindItemsResult%2C%20uint%3E%20PhotoImportSession.FindItemsAsync%28PhotoImportContentTypeFilter%20contentTypeFilter%2C%20PhotoImportItemSelectionMode%20itemSelectionMode%29");
 		}

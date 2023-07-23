@@ -121,7 +121,7 @@ namespace Windows.Devices.Geolocation
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync( global::System.TimeSpan maximumAge,  global::System.TimeSpan timeout)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(global::System.TimeSpan maximumAge, global::System.TimeSpan timeout)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Geoposition> Geolocator.GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGeoposition%3E%20Geolocator.GetGeopositionAsync%28TimeSpan%20maximumAge%2C%20TimeSpan%20timeout%29");
 		}
@@ -151,14 +151,14 @@ namespace Windows.Devices.Geolocation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync( global::System.DateTimeOffset startTime)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync(global::System.DateTimeOffset startTime)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CGeoposition%3E%3E%20Geolocator.GetGeopositionHistoryAsync%28DateTimeOffset%20startTime%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync( global::System.DateTimeOffset startTime,  global::System.TimeSpan duration)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Geolocation.Geoposition>> GetGeopositionHistoryAsync(global::System.DateTimeOffset startTime, global::System.TimeSpan duration)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<Geoposition>> Geolocator.GetGeopositionHistoryAsync(DateTimeOffset startTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CGeoposition%3E%3E%20Geolocator.GetGeopositionHistoryAsync%28DateTimeOffset%20startTime%2C%20TimeSpan%20duration%29");
 		}

@@ -106,7 +106,7 @@ namespace Windows.UI.StartScreen
 		// Forced skipping of method Windows.UI.StartScreen.JumpListItem.Logo.set
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments( string arguments,  string displayName)
+		public static global::Windows.UI.StartScreen.JumpListItem CreateWithArguments(string arguments, string displayName)
 		{
 			throw new global::System.NotImplementedException("The member JumpListItem JumpListItem.CreateWithArguments(string arguments, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=JumpListItem%20JumpListItem.CreateWithArguments%28string%20arguments%2C%20string%20displayName%29");
 		}

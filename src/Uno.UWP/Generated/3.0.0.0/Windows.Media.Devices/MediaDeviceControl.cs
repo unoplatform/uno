@@ -27,7 +27,7 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TrySetValue( double value)
+		public bool TrySetValue(double value)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TrySetValue(double value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TrySetValue%28double%20value%29");
 		}
@@ -41,7 +41,7 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TrySetAuto( bool value)
+		public bool TrySetAuto(bool value)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaDeviceControl.TrySetAuto(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaDeviceControl.TrySetAuto%28bool%20value%29");
 		}

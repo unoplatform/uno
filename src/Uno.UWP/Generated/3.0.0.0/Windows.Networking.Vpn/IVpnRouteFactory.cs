@@ -8,7 +8,7 @@ namespace Windows.Networking.Vpn
 	public partial interface IVpnRouteFactory 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Networking.Vpn.VpnRoute CreateVpnRoute( global::Windows.Networking.HostName address,  byte prefixSize);
+		global::Windows.Networking.Vpn.VpnRoute CreateVpnRoute(global::Windows.Networking.HostName address, byte prefixSize);
 #endif
 	}
 }

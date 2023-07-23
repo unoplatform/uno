@@ -9,35 +9,35 @@ namespace Microsoft.Web.WebView2.Core
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string GetHeader( string name)
+		public string GetHeader(string name)
 		{
 			throw new global::System.NotImplementedException("The member string CoreWebView2HttpRequestHeaders.GetHeader(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2HttpRequestHeaders.GetHeader%28string%20name%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator GetHeaders( string name)
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2HttpHeadersCollectionIterator GetHeaders(string name)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2HttpHeadersCollectionIterator CoreWebView2HttpRequestHeaders.GetHeaders(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2HttpHeadersCollectionIterator%20CoreWebView2HttpRequestHeaders.GetHeaders%28string%20name%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( string name)
+		public bool Contains(string name)
 		{
 			throw new global::System.NotImplementedException("The member bool CoreWebView2HttpRequestHeaders.Contains(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreWebView2HttpRequestHeaders.Contains%28string%20name%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetHeader( string name,  string value)
+		public void SetHeader(string name, string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders", "void CoreWebView2HttpRequestHeaders.SetHeader(string name, string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveHeader( string name)
+		public void RemoveHeader(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2HttpRequestHeaders", "void CoreWebView2HttpRequestHeaders.RemoveHeader(string name)");
 		}

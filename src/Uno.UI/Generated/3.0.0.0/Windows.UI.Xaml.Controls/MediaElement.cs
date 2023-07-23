@@ -487,298 +487,298 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DownloadProgressOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DownloadProgressOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DownloadProgressOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(DownloadProgressOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Source), typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Source), typeof(global::System.Uri),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Stereo3DVideoPackingModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Stereo3DVideoPackingModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Stereo3DVideoPackingMode), typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Stereo3DVideoPackingMode), typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Stereo3DVideoRenderModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Stereo3DVideoRenderModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Stereo3DVideoRenderMode), typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoRenderMode), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Stereo3DVideoRenderMode), typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoRenderMode),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stereo3DVideoRenderMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ActualStereo3DVideoPackingModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ActualStereo3DVideoPackingModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ActualStereo3DVideoPackingMode), typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(ActualStereo3DVideoPackingMode), typeof(global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stereo3DVideoPackingMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AspectRatioHeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AspectRatioHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AspectRatioHeight), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AspectRatioHeight), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AspectRatioWidthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AspectRatioWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AspectRatioWidth), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AspectRatioWidth), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AudioCategoryProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AudioCategoryProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AudioCategory), typeof(global::Windows.UI.Xaml.Media.AudioCategory), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AudioCategory), typeof(global::Windows.UI.Xaml.Media.AudioCategory),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.AudioCategory)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AudioDeviceTypeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AudioDeviceTypeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AudioDeviceType), typeof(global::Windows.UI.Xaml.Media.AudioDeviceType), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AudioDeviceType), typeof(global::Windows.UI.Xaml.Media.AudioDeviceType),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.AudioDeviceType)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AudioStreamCountProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AudioStreamCountProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AudioStreamCount), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AudioStreamCount), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AudioStreamIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AudioStreamIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AudioStreamIndex), typeof(int?), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AudioStreamIndex), typeof(int?),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int?)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AutoPlay), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AutoPlay), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BalanceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BalanceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Balance), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Balance), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BufferingProgressProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BufferingProgressProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BufferingProgress), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(BufferingProgress), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanPauseProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanPauseProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanPause), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(CanPause), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanSeekProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanSeekProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanSeek), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(CanSeek), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CurrentStateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CurrentStateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CurrentState), typeof(global::Windows.UI.Xaml.Media.MediaElementState), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(CurrentState), typeof(global::Windows.UI.Xaml.Media.MediaElementState),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.MediaElementState)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DefaultPlaybackRateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DefaultPlaybackRateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultPlaybackRate), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(DefaultPlaybackRate), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VolumeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VolumeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Volume), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Volume), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DownloadProgressProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DownloadProgressProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DownloadProgress), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(DownloadProgress), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAudioOnlyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAudioOnlyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAudioOnly), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(IsAudioOnly), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsLoopingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsLoopingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsLooping), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(IsLooping), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsMutedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsMutedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsMuted), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(IsMuted), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsStereo3DVideoProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsStereo3DVideoProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsStereo3DVideo), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(IsStereo3DVideo), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty NaturalDurationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty NaturalDurationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(NaturalDuration), typeof(global::Windows.UI.Xaml.Duration), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(NaturalDuration), typeof(global::Windows.UI.Xaml.Duration),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Duration)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoHeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(NaturalVideoHeight), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(NaturalVideoHeight), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoWidthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty NaturalVideoWidthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(NaturalVideoWidth), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(NaturalVideoWidth), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlayToSource), typeof(global::Windows.Media.PlayTo.PlayToSource), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(PlayToSource), typeof(global::Windows.Media.PlayTo.PlayToSource),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaybackRateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaybackRateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaybackRate), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(PlaybackRate), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PositionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PositionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Position), typeof(global::System.TimeSpan), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Position), typeof(global::System.TimeSpan),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PosterSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PosterSource), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(PosterSource), typeof(global::Windows.UI.Xaml.Media.ImageSource),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProtectionManagerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProtectionManagerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ProtectionManager), typeof(global::Windows.Media.Protection.MediaProtectionManager), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(ProtectionManager), typeof(global::Windows.Media.Protection.MediaProtectionManager),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.Protection.MediaProtectionManager)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RealTimePlaybackProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RealTimePlaybackProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RealTimePlayback), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(RealTimePlayback), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFullWindow), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(IsFullWindow), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlayToPreferredSourceUriProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlayToPreferredSourceUriProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlayToPreferredSourceUri), typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(PlayToPreferredSourceUri), typeof(global::System.Uri),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AreTransportControlsEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AreTransportControlsEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AreTransportControlsEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.MediaElement), 
+			nameof(AreTransportControlsEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.MediaElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -882,35 +882,35 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Media.MediaCanPlayResponse CanPlayType( string type)
+		public global::Windows.UI.Xaml.Media.MediaCanPlayResponse CanPlayType(string type)
 		{
 			throw new global::System.NotImplementedException("The member MediaCanPlayResponse MediaElement.CanPlayType(string type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaCanPlayResponse%20MediaElement.CanPlayType%28string%20type%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSource( global::Windows.Storage.Streams.IRandomAccessStream stream,  string mimeType)
+		public void SetSource(global::Windows.Storage.Streams.IRandomAccessStream stream, string mimeType)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaElement", "void MediaElement.SetSource(IRandomAccessStream stream, string mimeType)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string GetAudioStreamLanguage( int? index)
+		public string GetAudioStreamLanguage(int? index)
 		{
 			throw new global::System.NotImplementedException("The member string MediaElement.GetAudioStreamLanguage(int? index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20MediaElement.GetAudioStreamLanguage%28int%3F%20index%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddAudioEffect( string effectID,  bool effectOptional,  global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
+		public void AddAudioEffect(string effectID, bool effectOptional, global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaElement", "void MediaElement.AddAudioEffect(string effectID, bool effectOptional, IPropertySet effectConfiguration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddVideoEffect( string effectID,  bool effectOptional,  global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
+		public void AddVideoEffect(string effectID, bool effectOptional, global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaElement", "void MediaElement.AddVideoEffect(string effectID, bool effectOptional, IPropertySet effectConfiguration)");
 		}
@@ -931,7 +931,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaElement.IsFullWindow.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetMediaStreamSource( global::Windows.Media.Core.IMediaSource source)
+		public void SetMediaStreamSource(global::Windows.Media.Core.IMediaSource source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaElement", "void MediaElement.SetMediaStreamSource(IMediaSource source)");
 		}
@@ -944,7 +944,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MediaElement.PartialMediaFailureDetected.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPlaybackSource( global::Windows.Media.Playback.IMediaPlaybackSource source)
+		public void SetPlaybackSource(global::Windows.Media.Playback.IMediaPlaybackSource source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.MediaElement", "void MediaElement.SetPlaybackSource(IMediaPlaybackSource source)");
 		}

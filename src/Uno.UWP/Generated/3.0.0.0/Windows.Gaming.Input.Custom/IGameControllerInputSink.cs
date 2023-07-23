@@ -8,10 +8,10 @@ namespace Windows.Gaming.Input.Custom
 	public partial interface IGameControllerInputSink 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void OnInputResumed( ulong timestamp);
+		void OnInputResumed(ulong timestamp);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void OnInputSuspended( ulong timestamp);
+		void OnInputSuspended(ulong timestamp);
 #endif
 	}
 }

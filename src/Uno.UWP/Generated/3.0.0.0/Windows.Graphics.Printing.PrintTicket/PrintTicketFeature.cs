@@ -73,7 +73,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 		// Forced skipping of method Windows.Graphics.Printing.PrintTicket.PrintTicketFeature.DisplayName.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetOption( string name,  string xmlNamespace)
+		public global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption GetOption(string name, string xmlNamespace)
 		{
 			throw new global::System.NotImplementedException("The member PrintTicketOption PrintTicketFeature.GetOption(string name, string xmlNamespace) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PrintTicketOption%20PrintTicketFeature.GetOption%28string%20name%2C%20string%20xmlNamespace%29");
 		}
@@ -88,7 +88,7 @@ namespace Windows.Graphics.Printing.PrintTicket
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSelectedOption( global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption value)
+		public void SetSelectedOption(global::Windows.Graphics.Printing.PrintTicket.PrintTicketOption value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintTicket.PrintTicketFeature", "void PrintTicketFeature.SetSelectedOption(PrintTicketOption value)");
 		}

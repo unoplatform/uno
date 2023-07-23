@@ -110,35 +110,35 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.OrientationSensor.MaxBatchSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.Devices.Sensors.SensorReadingType readingType)
+		public static string GetDeviceSelector(global::Windows.Devices.Sensors.SensorReadingType readingType)
 		{
 			throw new global::System.NotImplementedException("The member string OrientationSensor.GetDeviceSelector(SensorReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20OrientationSensor.GetDeviceSelector%28SensorReadingType%20readingType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.Devices.Sensors.SensorReadingType readingType,  global::Windows.Devices.Sensors.SensorOptimizationGoal optimizationGoal)
+		public static string GetDeviceSelector(global::Windows.Devices.Sensors.SensorReadingType readingType, global::Windows.Devices.Sensors.SensorOptimizationGoal optimizationGoal)
 		{
 			throw new global::System.NotImplementedException("The member string OrientationSensor.GetDeviceSelector(SensorReadingType readingType, SensorOptimizationGoal optimizationGoal) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20OrientationSensor.GetDeviceSelector%28SensorReadingType%20readingType%2C%20SensorOptimizationGoal%20optimizationGoal%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.OrientationSensor> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.OrientationSensor> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OrientationSensor> OrientationSensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COrientationSensor%3E%20OrientationSensor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Sensors.OrientationSensor GetDefault( global::Windows.Devices.Sensors.SensorReadingType sensorReadingtype)
+		public static global::Windows.Devices.Sensors.OrientationSensor GetDefault(global::Windows.Devices.Sensors.SensorReadingType sensorReadingtype)
 		{
 			throw new global::System.NotImplementedException("The member OrientationSensor OrientationSensor.GetDefault(SensorReadingType sensorReadingtype) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OrientationSensor%20OrientationSensor.GetDefault%28SensorReadingType%20sensorReadingtype%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Sensors.OrientationSensor GetDefault( global::Windows.Devices.Sensors.SensorReadingType sensorReadingType,  global::Windows.Devices.Sensors.SensorOptimizationGoal optimizationGoal)
+		public static global::Windows.Devices.Sensors.OrientationSensor GetDefault(global::Windows.Devices.Sensors.SensorReadingType sensorReadingType, global::Windows.Devices.Sensors.SensorOptimizationGoal optimizationGoal)
 		{
 			throw new global::System.NotImplementedException("The member OrientationSensor OrientationSensor.GetDefault(SensorReadingType sensorReadingType, SensorOptimizationGoal optimizationGoal) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=OrientationSensor%20OrientationSensor.GetDefault%28SensorReadingType%20sensorReadingType%2C%20SensorOptimizationGoal%20optimizationGoal%29");
 		}

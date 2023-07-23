@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.Completed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Unregister( bool cancelTask)
+		public void Unregister(bool cancelTask)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistration", "void BackgroundTaskRegistration.Unregister(bool cancelTask)");
 		}
@@ -67,7 +67,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistration.AllTaskGroups.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup GetTaskGroup( string groupId)
+		public static global::Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup GetTaskGroup(string groupId)
 		{
 			throw new global::System.NotImplementedException("The member BackgroundTaskRegistrationGroup BackgroundTaskRegistration.GetTaskGroup(string groupId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundTaskRegistrationGroup%20BackgroundTaskRegistration.GetTaskGroup%28string%20groupId%29");
 		}

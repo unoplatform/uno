@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Calls.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetCallOrigin( global::System.Guid requestId,  global::Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin callOrigin)
+		public static void SetCallOrigin(global::System.Guid requestId, global::Windows.ApplicationModel.Calls.Provider.PhoneCallOrigin callOrigin)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager", "void PhoneCallOriginManager.SetCallOrigin(Guid requestId, PhoneCallOrigin callOrigin)");
 		}

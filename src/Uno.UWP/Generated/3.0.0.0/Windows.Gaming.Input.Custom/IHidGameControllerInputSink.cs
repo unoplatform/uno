@@ -8,7 +8,7 @@ namespace Windows.Gaming.Input.Custom
 	public partial interface IHidGameControllerInputSink : global::Windows.Gaming.Input.Custom.IGameControllerInputSink
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void OnInputReportReceived( ulong timestamp,  byte reportId,  byte[] reportBuffer);
+		void OnInputReportReceived(ulong timestamp, byte reportId, byte[] reportBuffer);
 #endif
 	}
 }

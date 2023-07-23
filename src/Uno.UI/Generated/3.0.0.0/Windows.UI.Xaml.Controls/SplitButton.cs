@@ -51,26 +51,26 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CommandParameter), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitButton), 
+			nameof(CommandParameter), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.SplitButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Command), typeof(global::System.Windows.Input.ICommand), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitButton), 
+			nameof(Command), typeof(global::System.Windows.Input.ICommand),
+			typeof(global::Windows.UI.Xaml.Controls.SplitButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Flyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.SplitButton), 
+			nameof(Flyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.SplitButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.SplitButton.SplitButton()

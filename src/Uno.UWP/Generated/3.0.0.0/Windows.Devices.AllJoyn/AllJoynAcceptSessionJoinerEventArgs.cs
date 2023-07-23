@@ -60,7 +60,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllJoynAcceptSessionJoinerEventArgs( string uniqueName,  ushort sessionPort,  global::Windows.Devices.AllJoyn.AllJoynTrafficType trafficType,  byte proximity,  global::Windows.Devices.AllJoyn.IAllJoynAcceptSessionJoiner acceptSessionJoiner) 
+		public AllJoynAcceptSessionJoinerEventArgs(string uniqueName, ushort sessionPort, global::Windows.Devices.AllJoyn.AllJoynTrafficType trafficType, byte proximity, global::Windows.Devices.AllJoyn.IAllJoynAcceptSessionJoiner acceptSessionJoiner) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynAcceptSessionJoinerEventArgs", "AllJoynAcceptSessionJoinerEventArgs.AllJoynAcceptSessionJoinerEventArgs(string uniqueName, ushort sessionPort, AllJoynTrafficType trafficType, byte proximity, IAllJoynAcceptSessionJoiner acceptSessionJoiner)");
 		}

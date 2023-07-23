@@ -15,15 +15,15 @@ namespace Windows.Networking.Sockets
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocket.OutputStream.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncAction ConnectAsync( global::System.Uri uri);
+		global::Windows.Foundation.IAsyncAction ConnectAsync(global::System.Uri uri);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetRequestHeader( string headerName,  string headerValue);
+		void SetRequestHeader(string headerName, string headerValue);
 #endif
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocket.Closed.add
 		// Forced skipping of method Windows.Networking.Sockets.IWebSocket.Closed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Close( ushort code,  string reason);
+		void Close(ushort code, string reason);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.Sockets.IWebSocket, global::Windows.Networking.Sockets.WebSocketClosedEventArgs> Closed;

@@ -9,35 +9,35 @@ namespace Windows.Foundation.Diagnostics
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void TraceOperationCreation( global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel,  global::Windows.Foundation.Diagnostics.CausalitySource source,  global::System.Guid platformId,  ulong operationId,  string operationName,  ulong relatedContext)
+		public static void TraceOperationCreation(global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel, global::Windows.Foundation.Diagnostics.CausalitySource source, global::System.Guid platformId, ulong operationId, string operationName, ulong relatedContext)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.AsyncCausalityTracer", "void AsyncCausalityTracer.TraceOperationCreation(CausalityTraceLevel traceLevel, CausalitySource source, Guid platformId, ulong operationId, string operationName, ulong relatedContext)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void TraceOperationCompletion( global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel,  global::Windows.Foundation.Diagnostics.CausalitySource source,  global::System.Guid platformId,  ulong operationId,  global::Windows.Foundation.AsyncStatus status)
+		public static void TraceOperationCompletion(global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel, global::Windows.Foundation.Diagnostics.CausalitySource source, global::System.Guid platformId, ulong operationId, global::Windows.Foundation.AsyncStatus status)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.AsyncCausalityTracer", "void AsyncCausalityTracer.TraceOperationCompletion(CausalityTraceLevel traceLevel, CausalitySource source, Guid platformId, ulong operationId, AsyncStatus status)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void TraceOperationRelation( global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel,  global::Windows.Foundation.Diagnostics.CausalitySource source,  global::System.Guid platformId,  ulong operationId,  global::Windows.Foundation.Diagnostics.CausalityRelation relation)
+		public static void TraceOperationRelation(global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel, global::Windows.Foundation.Diagnostics.CausalitySource source, global::System.Guid platformId, ulong operationId, global::Windows.Foundation.Diagnostics.CausalityRelation relation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.AsyncCausalityTracer", "void AsyncCausalityTracer.TraceOperationRelation(CausalityTraceLevel traceLevel, CausalitySource source, Guid platformId, ulong operationId, CausalityRelation relation)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void TraceSynchronousWorkStart( global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel,  global::Windows.Foundation.Diagnostics.CausalitySource source,  global::System.Guid platformId,  ulong operationId,  global::Windows.Foundation.Diagnostics.CausalitySynchronousWork work)
+		public static void TraceSynchronousWorkStart(global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel, global::Windows.Foundation.Diagnostics.CausalitySource source, global::System.Guid platformId, ulong operationId, global::Windows.Foundation.Diagnostics.CausalitySynchronousWork work)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.AsyncCausalityTracer", "void AsyncCausalityTracer.TraceSynchronousWorkStart(CausalityTraceLevel traceLevel, CausalitySource source, Guid platformId, ulong operationId, CausalitySynchronousWork work)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void TraceSynchronousWorkCompletion( global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel,  global::Windows.Foundation.Diagnostics.CausalitySource source,  global::Windows.Foundation.Diagnostics.CausalitySynchronousWork work)
+		public static void TraceSynchronousWorkCompletion(global::Windows.Foundation.Diagnostics.CausalityTraceLevel traceLevel, global::Windows.Foundation.Diagnostics.CausalitySource source, global::Windows.Foundation.Diagnostics.CausalitySynchronousWork work)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.AsyncCausalityTracer", "void AsyncCausalityTracer.TraceSynchronousWorkCompletion(CausalityTraceLevel traceLevel, CausalitySource source, CausalitySynchronousWork work)");
 		}

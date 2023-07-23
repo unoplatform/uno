@@ -129,7 +129,7 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public QueryOptions( global::Windows.Storage.Search.CommonFileQuery query,  global::System.Collections.Generic.IEnumerable<string> fileTypeFilter) 
+		public QueryOptions(global::Windows.Storage.Search.CommonFileQuery query, global::System.Collections.Generic.IEnumerable<string> fileTypeFilter) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions(CommonFileQuery query, IEnumerable<string> fileTypeFilter)");
 		}
@@ -137,7 +137,7 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.QueryOptions.QueryOptions(Windows.Storage.Search.CommonFileQuery, System.Collections.Generic.IEnumerable<string>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public QueryOptions( global::Windows.Storage.Search.CommonFolderQuery query) 
+		public QueryOptions(global::Windows.Storage.Search.CommonFolderQuery query) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "QueryOptions.QueryOptions(CommonFolderQuery query)");
 		}
@@ -174,21 +174,21 @@ namespace Windows.Storage.Search
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void LoadFromString( string value)
+		public void LoadFromString(string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.LoadFromString(string value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetThumbnailPrefetch( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize,  global::Windows.Storage.FileProperties.ThumbnailOptions options)
+		public void SetThumbnailPrefetch(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize, global::Windows.Storage.FileProperties.ThumbnailOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.SetThumbnailPrefetch(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPropertyPrefetch( global::Windows.Storage.FileProperties.PropertyPrefetchOptions options,  global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
+		public void SetPropertyPrefetch(global::Windows.Storage.FileProperties.PropertyPrefetchOptions options, global::System.Collections.Generic.IEnumerable<string> propertiesToRetrieve)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Search.QueryOptions", "void QueryOptions.SetPropertyPrefetch(PropertyPrefetchOptions options, IEnumerable<string> propertiesToRetrieve)");
 		}

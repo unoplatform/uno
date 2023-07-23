@@ -16,21 +16,21 @@ namespace Windows.ApplicationModel.UserDataAccounts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> GetAccountAsync( string id)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> GetAccountAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.GetAccountAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.GetAccountAsync%28string%20id%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync( string userDisplayName)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync(string userDisplayName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync( string userDisplayName,  string packageRelativeAppId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync(string userDisplayName, string packageRelativeAppId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%2C%20string%20packageRelativeAppId%29");
 		}
@@ -39,7 +39,7 @@ namespace Windows.ApplicationModel.UserDataAccounts
 		// Forced skipping of method Windows.ApplicationModel.UserDataAccounts.UserDataAccountStore.StoreChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync( string userDisplayName,  string packageRelativeAppId,  string enterpriseId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataAccounts.UserDataAccount> CreateAccountAsync(string userDisplayName, string packageRelativeAppId, string enterpriseId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataAccount> UserDataAccountStore.CreateAccountAsync(string userDisplayName, string packageRelativeAppId, string enterpriseId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataAccount%3E%20UserDataAccountStore.CreateAccountAsync%28string%20userDisplayName%2C%20string%20packageRelativeAppId%2C%20string%20enterpriseId%29");
 		}

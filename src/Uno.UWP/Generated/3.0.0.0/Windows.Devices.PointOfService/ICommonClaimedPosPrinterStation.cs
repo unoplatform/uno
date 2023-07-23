@@ -109,7 +109,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsPaperEmpty.get
 		// Forced skipping of method Windows.Devices.PointOfService.ICommonClaimedPosPrinterStation.IsReadyToPrint.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool ValidateData( string data);
+		bool ValidateData(string data);
 #endif
 	}
 }

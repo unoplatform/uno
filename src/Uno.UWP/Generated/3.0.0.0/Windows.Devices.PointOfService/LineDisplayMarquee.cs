@@ -57,7 +57,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplayMarquee.ScrollWaitInterval.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryStartScrollingAsync( global::Windows.Devices.PointOfService.LineDisplayScrollDirection direction)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryStartScrollingAsync(global::Windows.Devices.PointOfService.LineDisplayScrollDirection direction)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> LineDisplayMarquee.TryStartScrollingAsync(LineDisplayScrollDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20LineDisplayMarquee.TryStartScrollingAsync%28LineDisplayScrollDirection%20direction%29");
 		}

@@ -19,7 +19,7 @@ namespace Windows.Foundation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WwwFormUrlDecoder( string query) 
+		public WwwFormUrlDecoder(string query) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.WwwFormUrlDecoder", "WwwFormUrlDecoder.WwwFormUrlDecoder(string query)");
 		}
@@ -27,7 +27,7 @@ namespace Windows.Foundation
 		// Forced skipping of method Windows.Foundation.WwwFormUrlDecoder.WwwFormUrlDecoder(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string GetFirstValueByName( string name)
+		public string GetFirstValueByName(string name)
 		{
 			throw new global::System.NotImplementedException("The member string WwwFormUrlDecoder.GetFirstValueByName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WwwFormUrlDecoder.GetFirstValueByName%28string%20name%29");
 		}

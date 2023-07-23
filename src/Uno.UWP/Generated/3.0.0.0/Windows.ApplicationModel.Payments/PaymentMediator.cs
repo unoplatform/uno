@@ -24,21 +24,21 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestSubmitResult> SubmitPaymentRequestAsync( global::Windows.ApplicationModel.Payments.PaymentRequest paymentRequest)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestSubmitResult> SubmitPaymentRequestAsync(global::Windows.ApplicationModel.Payments.PaymentRequest paymentRequest)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentRequestSubmitResult> PaymentMediator.SubmitPaymentRequestAsync(PaymentRequest paymentRequest) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentRequestSubmitResult%3E%20PaymentMediator.SubmitPaymentRequestAsync%28PaymentRequest%20paymentRequest%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestSubmitResult> SubmitPaymentRequestAsync( global::Windows.ApplicationModel.Payments.PaymentRequest paymentRequest,  global::Windows.ApplicationModel.Payments.PaymentRequestChangedHandler changeHandler)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestSubmitResult> SubmitPaymentRequestAsync(global::Windows.ApplicationModel.Payments.PaymentRequest paymentRequest, global::Windows.ApplicationModel.Payments.PaymentRequestChangedHandler changeHandler)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentRequestSubmitResult> PaymentMediator.SubmitPaymentRequestAsync(PaymentRequest paymentRequest, PaymentRequestChangedHandler changeHandler) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentRequestSubmitResult%3E%20PaymentMediator.SubmitPaymentRequestAsync%28PaymentRequest%20paymentRequest%2C%20PaymentRequestChangedHandler%20changeHandler%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult> CanMakePaymentAsync( global::Windows.ApplicationModel.Payments.PaymentRequest paymentRequest)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentCanMakePaymentResult> CanMakePaymentAsync(global::Windows.ApplicationModel.Payments.PaymentRequest paymentRequest)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentCanMakePaymentResult> PaymentMediator.CanMakePaymentAsync(PaymentRequest paymentRequest) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentCanMakePaymentResult%3E%20PaymentMediator.CanMakePaymentAsync%28PaymentRequest%20paymentRequest%29");
 		}

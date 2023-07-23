@@ -107,58 +107,58 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Background), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(Background), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BehaviorOnInvokedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BehaviorOnInvokedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BehaviorOnInvoked), typeof(global::Windows.UI.Xaml.Controls.SwipeBehaviorOnInvoked), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(BehaviorOnInvoked), typeof(global::Windows.UI.Xaml.Controls.SwipeBehaviorOnInvoked),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeBehaviorOnInvoked)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CommandParameter), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(CommandParameter), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Command), typeof(global::System.Windows.Input.ICommand), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(Command), typeof(global::System.Windows.Input.ICommand),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Foreground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(Foreground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IconSource), typeof(global::Windows.UI.Xaml.Controls.IconSource), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(IconSource), typeof(global::Windows.UI.Xaml.Controls.IconSource),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconSource)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Text), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
+			nameof(Text), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.SwipeItem.SwipeItem()

@@ -40,7 +40,7 @@ namespace Windows.Devices.Sms
 		// Forced skipping of method Windows.Devices.Sms.SmsMessageRegistration.AllRegistrations.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Sms.SmsMessageRegistration Register( string id,  global::Windows.Devices.Sms.SmsFilterRules filterRules)
+		public static global::Windows.Devices.Sms.SmsMessageRegistration Register(string id, global::Windows.Devices.Sms.SmsFilterRules filterRules)
 		{
 			throw new global::System.NotImplementedException("The member SmsMessageRegistration SmsMessageRegistration.Register(string id, SmsFilterRules filterRules) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SmsMessageRegistration%20SmsMessageRegistration.Register%28string%20id%2C%20SmsFilterRules%20filterRules%29");
 		}

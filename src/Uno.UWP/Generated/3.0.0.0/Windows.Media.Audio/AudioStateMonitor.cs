@@ -29,21 +29,21 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioStateMonitor CreateForRenderMonitoring( global::Windows.Media.Render.AudioRenderCategory category)
+		public static global::Windows.Media.Audio.AudioStateMonitor CreateForRenderMonitoring(global::Windows.Media.Render.AudioRenderCategory category)
 		{
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForRenderMonitoring(AudioRenderCategory category) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForRenderMonitoring%28AudioRenderCategory%20category%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioStateMonitor CreateForRenderMonitoring( global::Windows.Media.Render.AudioRenderCategory category,  global::Windows.Media.Devices.AudioDeviceRole role)
+		public static global::Windows.Media.Audio.AudioStateMonitor CreateForRenderMonitoring(global::Windows.Media.Render.AudioRenderCategory category, global::Windows.Media.Devices.AudioDeviceRole role)
 		{
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForRenderMonitoring(AudioRenderCategory category, AudioDeviceRole role) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForRenderMonitoring%28AudioRenderCategory%20category%2C%20AudioDeviceRole%20role%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioStateMonitor CreateForRenderMonitoringWithCategoryAndDeviceId( global::Windows.Media.Render.AudioRenderCategory category,  string deviceId)
+		public static global::Windows.Media.Audio.AudioStateMonitor CreateForRenderMonitoringWithCategoryAndDeviceId(global::Windows.Media.Render.AudioRenderCategory category, string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForRenderMonitoringWithCategoryAndDeviceId(AudioRenderCategory category, string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForRenderMonitoringWithCategoryAndDeviceId%28AudioRenderCategory%20category%2C%20string%20deviceId%29");
 		}
@@ -57,21 +57,21 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioStateMonitor CreateForCaptureMonitoring( global::Windows.Media.Capture.MediaCategory category)
+		public static global::Windows.Media.Audio.AudioStateMonitor CreateForCaptureMonitoring(global::Windows.Media.Capture.MediaCategory category)
 		{
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForCaptureMonitoring(MediaCategory category) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForCaptureMonitoring%28MediaCategory%20category%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioStateMonitor CreateForCaptureMonitoring( global::Windows.Media.Capture.MediaCategory category,  global::Windows.Media.Devices.AudioDeviceRole role)
+		public static global::Windows.Media.Audio.AudioStateMonitor CreateForCaptureMonitoring(global::Windows.Media.Capture.MediaCategory category, global::Windows.Media.Devices.AudioDeviceRole role)
 		{
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForCaptureMonitoring(MediaCategory category, AudioDeviceRole role) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForCaptureMonitoring%28MediaCategory%20category%2C%20AudioDeviceRole%20role%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioStateMonitor CreateForCaptureMonitoringWithCategoryAndDeviceId( global::Windows.Media.Capture.MediaCategory category,  string deviceId)
+		public static global::Windows.Media.Audio.AudioStateMonitor CreateForCaptureMonitoringWithCategoryAndDeviceId(global::Windows.Media.Capture.MediaCategory category, string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member AudioStateMonitor AudioStateMonitor.CreateForCaptureMonitoringWithCategoryAndDeviceId(MediaCategory category, string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioStateMonitor%20AudioStateMonitor.CreateForCaptureMonitoringWithCategoryAndDeviceId%28MediaCategory%20category%2C%20string%20deviceId%29");
 		}

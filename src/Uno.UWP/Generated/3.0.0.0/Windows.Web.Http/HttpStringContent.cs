@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpStringContent( string content) 
+		public HttpStringContent(string content) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpStringContent", "HttpStringContent.HttpStringContent(string content)");
 		}
@@ -27,7 +27,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpStringContent.HttpStringContent(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpStringContent( string content,  global::Windows.Storage.Streams.UnicodeEncoding encoding) 
+		public HttpStringContent(string content, global::Windows.Storage.Streams.UnicodeEncoding encoding) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpStringContent", "HttpStringContent.HttpStringContent(string content, UnicodeEncoding encoding)");
 		}
@@ -35,7 +35,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpStringContent.HttpStringContent(string, Windows.Storage.Streams.UnicodeEncoding)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpStringContent( string content,  global::Windows.Storage.Streams.UnicodeEncoding encoding,  string mediaType) 
+		public HttpStringContent(string content, global::Windows.Storage.Streams.UnicodeEncoding encoding, string mediaType) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpStringContent", "HttpStringContent.HttpStringContent(string content, UnicodeEncoding encoding, string mediaType)");
 		}
@@ -79,7 +79,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync( global::Windows.Storage.Streams.IOutputStream outputStream)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync(global::Windows.Storage.Streams.IOutputStream outputStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<ulong, ulong> HttpStringContent.WriteToStreamAsync(IOutputStream outputStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Culong%2C%20ulong%3E%20HttpStringContent.WriteToStreamAsync%28IOutputStream%20outputStream%29");
 		}

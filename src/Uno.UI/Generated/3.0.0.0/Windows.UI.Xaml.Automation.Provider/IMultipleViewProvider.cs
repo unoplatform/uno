@@ -18,10 +18,10 @@ namespace Windows.UI.Xaml.Automation.Provider
 		int[] GetSupportedViews();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string GetViewName( int viewId);
+		string GetViewName(int viewId);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetCurrentView( int viewId);
+		void SetCurrentView(int viewId);
 #endif
 	}
 }

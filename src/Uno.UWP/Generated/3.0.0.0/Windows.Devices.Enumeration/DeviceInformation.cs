@@ -50,7 +50,7 @@ namespace Windows.Devices.Enumeration
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Update( global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
+		public void Update(global::Windows.Devices.Enumeration.DeviceInformationUpdate updateInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DeviceInformation", "void DeviceInformation.Update(DeviceInformationUpdate updateInfo)");
 		}
@@ -73,42 +73,42 @@ namespace Windows.Devices.Enumeration
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceInformation.Pairing.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetAqsFilterFromDeviceClass( global::Windows.Devices.Enumeration.DeviceClass deviceClass)
+		public static string GetAqsFilterFromDeviceClass(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
 			throw new global::System.NotImplementedException("The member string DeviceInformation.GetAqsFilterFromDeviceClass(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20DeviceInformation.GetAqsFilterFromDeviceClass%28DeviceClass%20deviceClass%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync( string deviceId,  global::System.Collections.Generic.IEnumerable<string> additionalProperties,  global::Windows.Devices.Enumeration.DeviceInformationKind kind)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DeviceInformation.CreateFromIdAsync%28string%20deviceId%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync( string aqsFilter,  global::System.Collections.Generic.IEnumerable<string> additionalProperties,  global::Windows.Devices.Enumeration.DeviceInformationKind kind)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformationCollection%3E%20DeviceInformation.FindAllAsync%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher( string aqsFilter,  global::System.Collections.Generic.IEnumerable<string> additionalProperties,  global::Windows.Devices.Enumeration.DeviceInformationKind kind)
+		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties, global::Windows.Devices.Enumeration.DeviceInformationKind kind)
 		{
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%2C%20DeviceInformationKind%20kind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DeviceInformation.CreateFromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync( string deviceId,  global::System.Collections.Generic.IEnumerable<string> additionalProperties)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync(string deviceId, global::System.Collections.Generic.IEnumerable<string> additionalProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId, IEnumerable<string> additionalProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DeviceInformation.CreateFromIdAsync%28string%20deviceId%2C%20IEnumerable%3Cstring%3E%20additionalProperties%29");
 		}
@@ -122,7 +122,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync( global::Windows.Devices.Enumeration.DeviceClass deviceClass)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformationCollection%3E%20DeviceInformation.FindAllAsync%28DeviceClass%20deviceClass%29");
 		}
@@ -130,7 +130,7 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceInformation.FindAllAsync(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync( string aqsFilter,  global::System.Collections.Generic.IEnumerable<string> additionalProperties)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(string aqsFilter, IEnumerable<string> additionalProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformationCollection%3E%20DeviceInformation.FindAllAsync%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%29");
 		}
@@ -144,7 +144,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher( global::Windows.Devices.Enumeration.DeviceClass deviceClass)
+		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(global::Windows.Devices.Enumeration.DeviceClass deviceClass)
 		{
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(DeviceClass deviceClass) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28DeviceClass%20deviceClass%29");
 		}
@@ -152,7 +152,7 @@ namespace Windows.Devices.Enumeration
 		// Skipping already declared method Windows.Devices.Enumeration.DeviceInformation.CreateWatcher(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher( string aqsFilter,  global::System.Collections.Generic.IEnumerable<string> additionalProperties)
+		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher(string aqsFilter, global::System.Collections.Generic.IEnumerable<string> additionalProperties)
 		{
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20DeviceInformation.CreateWatcher%28string%20aqsFilter%2C%20IEnumerable%3Cstring%3E%20additionalProperties%29");
 		}

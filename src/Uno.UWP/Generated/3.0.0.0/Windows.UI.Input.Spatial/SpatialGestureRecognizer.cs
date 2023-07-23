@@ -19,7 +19,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpatialGestureRecognizer( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings) 
+		public SpatialGestureRecognizer(global::Windows.UI.Input.Spatial.SpatialGestureSettings settings) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "SpatialGestureRecognizer.SpatialGestureRecognizer(SpatialGestureSettings settings)");
 		}
@@ -55,7 +55,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialGestureRecognizer.NavigationCanceled.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CaptureInteraction( global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
+		public void CaptureInteraction(global::Windows.UI.Input.Spatial.SpatialInteraction interaction)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "void SpatialGestureRecognizer.CaptureInteraction(SpatialInteraction interaction)");
 		}
@@ -69,7 +69,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TrySetGestureSettings( global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
+		public bool TrySetGestureSettings(global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
 			throw new global::System.NotImplementedException("The member bool SpatialGestureRecognizer.TrySetGestureSettings(SpatialGestureSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SpatialGestureRecognizer.TrySetGestureSettings%28SpatialGestureSettings%20settings%29");
 		}

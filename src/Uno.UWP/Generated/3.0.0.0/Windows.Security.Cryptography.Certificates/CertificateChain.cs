@@ -16,14 +16,14 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate( global::Windows.Security.Cryptography.Certificates.ChainValidationParameters parameter)
+		public global::Windows.Security.Cryptography.Certificates.ChainValidationResult Validate(global::Windows.Security.Cryptography.Certificates.ChainValidationParameters parameter)
 		{
 			throw new global::System.NotImplementedException("The member ChainValidationResult CertificateChain.Validate(ChainValidationParameters parameter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ChainValidationResult%20CertificateChain.Validate%28ChainValidationParameters%20parameter%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> GetCertificates( bool includeRoot)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Security.Cryptography.Certificates.Certificate> GetCertificates(bool includeRoot)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<Certificate> CertificateChain.GetCertificates(bool includeRoot) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CCertificate%3E%20CertificateChain.GetCertificates%28bool%20includeRoot%29");
 		}

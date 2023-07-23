@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MenuBarAutomationPeer( global::Microsoft.UI.Xaml.Controls.MenuBar owner) : base(owner)
+		public MenuBarAutomationPeer(global::Microsoft.UI.Xaml.Controls.MenuBar owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.MenuBarAutomationPeer", "MenuBarAutomationPeer.MenuBarAutomationPeer(MenuBar owner)");
 		}

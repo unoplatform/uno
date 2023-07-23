@@ -118,28 +118,28 @@ namespace Windows.Media.Control
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryChangeAutoRepeatModeAsync( global::Windows.Media.MediaPlaybackAutoRepeatMode requestedAutoRepeatMode)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryChangeAutoRepeatModeAsync(global::Windows.Media.MediaPlaybackAutoRepeatMode requestedAutoRepeatMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> GlobalSystemMediaTransportControlsSession.TryChangeAutoRepeatModeAsync(MediaPlaybackAutoRepeatMode requestedAutoRepeatMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20GlobalSystemMediaTransportControlsSession.TryChangeAutoRepeatModeAsync%28MediaPlaybackAutoRepeatMode%20requestedAutoRepeatMode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryChangePlaybackRateAsync( double requestedPlaybackRate)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryChangePlaybackRateAsync(double requestedPlaybackRate)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> GlobalSystemMediaTransportControlsSession.TryChangePlaybackRateAsync(double requestedPlaybackRate) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20GlobalSystemMediaTransportControlsSession.TryChangePlaybackRateAsync%28double%20requestedPlaybackRate%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryChangeShuffleActiveAsync( bool requestedShuffleState)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryChangeShuffleActiveAsync(bool requestedShuffleState)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> GlobalSystemMediaTransportControlsSession.TryChangeShuffleActiveAsync(bool requestedShuffleState) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20GlobalSystemMediaTransportControlsSession.TryChangeShuffleActiveAsync%28bool%20requestedShuffleState%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryChangePlaybackPositionAsync( long requestedPlaybackPosition)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryChangePlaybackPositionAsync(long requestedPlaybackPosition)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> GlobalSystemMediaTransportControlsSession.TryChangePlaybackPositionAsync(long requestedPlaybackPosition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20GlobalSystemMediaTransportControlsSession.TryChangePlaybackPositionAsync%28long%20requestedPlaybackPosition%29");
 		}

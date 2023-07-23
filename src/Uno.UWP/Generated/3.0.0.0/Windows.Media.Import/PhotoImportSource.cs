@@ -192,14 +192,14 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromIdAsync( string sourceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromIdAsync(string sourceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhotoImportSource> PhotoImportSource.FromIdAsync(string sourceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhotoImportSource%3E%20PhotoImportSource.FromIdAsync%28string%20sourceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromFolderAsync( global::Windows.Storage.IStorageFolder sourceRootFolder)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Import.PhotoImportSource> FromFolderAsync(global::Windows.Storage.IStorageFolder sourceRootFolder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhotoImportSource> PhotoImportSource.FromFolderAsync(IStorageFolder sourceRootFolder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhotoImportSource%3E%20PhotoImportSource.FromFolderAsync%28IStorageFolder%20sourceRootFolder%29");
 		}

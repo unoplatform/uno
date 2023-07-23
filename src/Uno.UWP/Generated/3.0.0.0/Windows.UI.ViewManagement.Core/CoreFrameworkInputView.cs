@@ -13,7 +13,7 @@ namespace Windows.UI.ViewManagement.Core
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreFrameworkInputView.OcclusionsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.ViewManagement.Core.CoreFrameworkInputView GetForUIContext( global::Windows.UI.UIContext context)
+		public static global::Windows.UI.ViewManagement.Core.CoreFrameworkInputView GetForUIContext(global::Windows.UI.UIContext context)
 		{
 			throw new global::System.NotImplementedException("The member CoreFrameworkInputView CoreFrameworkInputView.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreFrameworkInputView%20CoreFrameworkInputView.GetForUIContext%28UIContext%20context%29");
 		}

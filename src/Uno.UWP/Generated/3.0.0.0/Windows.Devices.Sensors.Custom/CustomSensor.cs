@@ -83,14 +83,14 @@ namespace Windows.Devices.Sensors.Custom
 		// Forced skipping of method Windows.Devices.Sensors.Custom.CustomSensor.MaxBatchSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::System.Guid interfaceId)
+		public static string GetDeviceSelector(global::System.Guid interfaceId)
 		{
 			throw new global::System.NotImplementedException("The member string CustomSensor.GetDeviceSelector(Guid interfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CustomSensor.GetDeviceSelector%28Guid%20interfaceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Custom.CustomSensor> FromIdAsync( string sensorId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Custom.CustomSensor> FromIdAsync(string sensorId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CustomSensor> CustomSensor.FromIdAsync(string sensorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCustomSensor%3E%20CustomSensor.FromIdAsync%28string%20sensorId%29");
 		}

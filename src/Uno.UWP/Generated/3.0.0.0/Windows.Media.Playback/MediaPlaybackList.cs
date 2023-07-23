@@ -154,7 +154,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Playback.MediaPlaybackItem MoveTo( uint itemIndex)
+		public global::Windows.Media.Playback.MediaPlaybackItem MoveTo(uint itemIndex)
 		{
 			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.MoveTo(uint itemIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaPlaybackItem%20MediaPlaybackList.MoveTo%28uint%20itemIndex%29");
 		}
@@ -166,7 +166,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffledItems.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetShuffledItems( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.MediaPlaybackItem> value)
+		public void SetShuffledItems(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.MediaPlaybackItem> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "void MediaPlaybackList.SetShuffledItems(IEnumerable<MediaPlaybackItem> value)");
 		}

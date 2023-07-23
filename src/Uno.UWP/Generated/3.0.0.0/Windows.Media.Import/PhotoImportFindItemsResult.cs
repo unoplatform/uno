@@ -283,7 +283,7 @@ namespace Windows.Media.Import
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetImportMode( global::Windows.Media.Import.PhotoImportImportMode value)
+		public void SetImportMode(global::Windows.Media.Import.PhotoImportImportMode value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.SetImportMode(PhotoImportImportMode value)");
 		}
@@ -312,7 +312,7 @@ namespace Windows.Media.Import
 		// Forced skipping of method Windows.Media.Import.PhotoImportFindItemsResult.ItemImported.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddItemsInDateRangeToSelection( global::System.DateTimeOffset rangeStart,  global::System.TimeSpan rangeLength)
+		public void AddItemsInDateRangeToSelection(global::System.DateTimeOffset rangeStart, global::System.TimeSpan rangeLength)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Import.PhotoImportFindItemsResult", "void PhotoImportFindItemsResult.AddItemsInDateRangeToSelection(DateTimeOffset rangeStart, TimeSpan rangeLength)");
 		}

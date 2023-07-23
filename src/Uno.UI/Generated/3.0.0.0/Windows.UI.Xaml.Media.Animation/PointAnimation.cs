@@ -79,42 +79,42 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ByProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ByProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(By), typeof(global::Windows.Foundation.Point?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
+			nameof(By), typeof(global::Windows.Foundation.Point?),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point?)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
+			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(EnableDependentAnimation), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
+			nameof(EnableDependentAnimation), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FromProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FromProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(From), typeof(global::Windows.Foundation.Point?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
+			nameof(From), typeof(global::Windows.Foundation.Point?),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point?)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ToProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ToProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(To), typeof(global::Windows.Foundation.Point?), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation), 
+			nameof(To), typeof(global::Windows.Foundation.Point?),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point?)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

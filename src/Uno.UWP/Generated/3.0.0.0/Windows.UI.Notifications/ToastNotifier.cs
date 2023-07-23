@@ -19,14 +19,14 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show( global::Windows.UI.Notifications.ToastNotification notification)
+		public void Show(global::Windows.UI.Notifications.ToastNotification notification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.Show(ToastNotification notification)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Hide( global::Windows.UI.Notifications.ToastNotification notification)
+		public void Hide(global::Windows.UI.Notifications.ToastNotification notification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.Hide(ToastNotification notification)");
 		}
@@ -34,14 +34,14 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ToastNotifier.Setting.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddToSchedule( global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
+		public void AddToSchedule(global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.AddToSchedule(ScheduledToastNotification scheduledToast)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveFromSchedule( global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
+		public void RemoveFromSchedule(global::Windows.UI.Notifications.ScheduledToastNotification scheduledToast)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotifier", "void ToastNotifier.RemoveFromSchedule(ScheduledToastNotification scheduledToast)");
 		}
@@ -55,14 +55,14 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Notifications.NotificationUpdateResult Update( global::Windows.UI.Notifications.NotificationData data,  string tag,  string group)
+		public global::Windows.UI.Notifications.NotificationUpdateResult Update(global::Windows.UI.Notifications.NotificationData data, string tag, string group)
 		{
 			throw new global::System.NotImplementedException("The member NotificationUpdateResult ToastNotifier.Update(NotificationData data, string tag, string group) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationUpdateResult%20ToastNotifier.Update%28NotificationData%20data%2C%20string%20tag%2C%20string%20group%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Notifications.NotificationUpdateResult Update( global::Windows.UI.Notifications.NotificationData data,  string tag)
+		public global::Windows.UI.Notifications.NotificationUpdateResult Update(global::Windows.UI.Notifications.NotificationData data, string tag)
 		{
 			throw new global::System.NotImplementedException("The member NotificationUpdateResult ToastNotifier.Update(NotificationData data, string tag) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NotificationUpdateResult%20ToastNotifier.Update%28NotificationData%20data%2C%20string%20tag%29");
 		}

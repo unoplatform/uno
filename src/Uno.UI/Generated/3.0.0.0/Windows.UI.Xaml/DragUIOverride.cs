@@ -24,14 +24,14 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.DragUIOverride.SetContentFromBitmapImage(Windows.UI.Xaml.Media.Imaging.BitmapImage, Windows.Foundation.Point)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetContentFromSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
+		public void SetContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DragUIOverride", "void DragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetContentFromSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap,  global::Windows.Foundation.Point anchorPoint)
+		public void SetContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap, global::Windows.Foundation.Point anchorPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DragUIOverride", "void DragUIOverride.SetContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap, Point anchorPoint)");
 		}

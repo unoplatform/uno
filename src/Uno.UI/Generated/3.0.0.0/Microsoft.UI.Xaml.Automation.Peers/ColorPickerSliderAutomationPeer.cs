@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ColorPickerSliderAutomationPeer( global::Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner) : base(owner)
+		public ColorPickerSliderAutomationPeer(global::Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ColorPickerSliderAutomationPeer", "ColorPickerSliderAutomationPeer.ColorPickerSliderAutomationPeer(ColorPickerSlider owner)");
 		}

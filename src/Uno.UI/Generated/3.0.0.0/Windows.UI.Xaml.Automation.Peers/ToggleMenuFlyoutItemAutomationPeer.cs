@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ToggleMenuFlyoutItemAutomationPeer( global::Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem owner) : base(owner)
+		public ToggleMenuFlyoutItemAutomationPeer(global::Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.ToggleMenuFlyoutItemAutomationPeer", "ToggleMenuFlyoutItemAutomationPeer.ToggleMenuFlyoutItemAutomationPeer(ToggleMenuFlyoutItem owner)");
 		}

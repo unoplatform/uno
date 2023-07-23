@@ -30,21 +30,21 @@ namespace Windows.ApplicationModel.Resources.Core
 		// Forced skipping of method Windows.ApplicationModel.Resources.Core.ResourceMap.Uri.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate GetValue( string resource)
+		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate GetValue(string resource)
 		{
 			throw new global::System.NotImplementedException("The member ResourceCandidate ResourceMap.GetValue(string resource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceCandidate%20ResourceMap.GetValue%28string%20resource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate GetValue( string resource,  global::Windows.ApplicationModel.Resources.Core.ResourceContext context)
+		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate GetValue(string resource, global::Windows.ApplicationModel.Resources.Core.ResourceContext context)
 		{
 			throw new global::System.NotImplementedException("The member ResourceCandidate ResourceMap.GetValue(string resource, ResourceContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceCandidate%20ResourceMap.GetValue%28string%20resource%2C%20ResourceContext%20context%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Resources.Core.ResourceMap GetSubtree( string reference)
+		public global::Windows.ApplicationModel.Resources.Core.ResourceMap GetSubtree(string reference)
 		{
 			throw new global::System.NotImplementedException("The member ResourceMap ResourceMap.GetSubtree(string reference) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceMap%20ResourceMap.GetSubtree%28string%20reference%29");
 		}
@@ -58,7 +58,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
+		public bool ContainsKey(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IReadOnlyDictionary<string, Windows.ApplicationModel.Resources.Core.NamedResource>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out global::Windows.ApplicationModel.Resources.Core.NamedResource value)
+		public bool TryGetValue(string key, out global::Windows.ApplicationModel.Resources.Core.NamedResource value)
 		{
 			throw new global::System.NotSupportedException();
 		}

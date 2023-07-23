@@ -59,7 +59,7 @@ namespace Windows.Networking
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HostName( string hostName) 
+		public HostName(string hostName) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.HostName", "HostName.HostName(string hostName)");
 		}
@@ -72,7 +72,7 @@ namespace Windows.Networking
 		// Forced skipping of method Windows.Networking.HostName.Type.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsEqual( global::Windows.Networking.HostName hostName)
+		public bool IsEqual(global::Windows.Networking.HostName hostName)
 		{
 			throw new global::System.NotImplementedException("The member bool HostName.IsEqual(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HostName.IsEqual%28HostName%20hostName%29");
 		}
@@ -86,7 +86,7 @@ namespace Windows.Networking
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static int Compare( string value1,  string value2)
+		public static int Compare(string value1, string value2)
 		{
 			throw new global::System.NotImplementedException("The member int HostName.Compare(string value1, string value2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20HostName.Compare%28string%20value1%2C%20string%20value2%29");
 		}

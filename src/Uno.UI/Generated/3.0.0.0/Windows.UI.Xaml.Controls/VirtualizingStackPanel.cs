@@ -37,34 +37,34 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AreScrollSnapPointsRegularProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AreScrollSnapPointsRegularProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AreScrollSnapPointsRegular), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
+			nameof(AreScrollSnapPointsRegular), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsVirtualizingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsVirtualizingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsVirtualizing", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
+			"IsVirtualizing", typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
-			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation),
+			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VirtualizationModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VirtualizationModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"VirtualizationMode", typeof(global::Windows.UI.Xaml.Controls.VirtualizationMode), 
-			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
+			"VirtualizationMode", typeof(global::Windows.UI.Xaml.Controls.VirtualizationMode),
+			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.VirtualizationMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.CleanUpVirtualizedItemEvent.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnCleanUpVirtualizedItem( global::Windows.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)
+		protected virtual void OnCleanUpVirtualizedItem(global::Windows.UI.Xaml.Controls.CleanUpVirtualizedItemEventArgs e)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.VirtualizingStackPanel", "void VirtualizingStackPanel.OnCleanUpVirtualizedItem(CleanUpVirtualizedItemEventArgs e)");
 		}
@@ -93,14 +93,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.VirtualizationModeProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.Controls.VirtualizationMode GetVirtualizationMode( global::Windows.UI.Xaml.DependencyObject element)
+		public static global::Windows.UI.Xaml.Controls.VirtualizationMode GetVirtualizationMode(global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (global::Windows.UI.Xaml.Controls.VirtualizationMode)element.GetValue(VirtualizationModeProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetVirtualizationMode( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.Controls.VirtualizationMode value)
+		public static void SetVirtualizationMode(global::Windows.UI.Xaml.DependencyObject element, global::Windows.UI.Xaml.Controls.VirtualizationMode value)
 		{
 			element.SetValue(VirtualizationModeProperty, value);
 		}
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.VirtualizingStackPanel.IsVirtualizingProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetIsVirtualizing( global::Windows.UI.Xaml.DependencyObject o)
+		public static bool GetIsVirtualizing(global::Windows.UI.Xaml.DependencyObject o)
 		{
 			return (bool)o.GetValue(IsVirtualizingProperty);
 		}

@@ -108,14 +108,14 @@ namespace Windows.Graphics.Display
 		// Forced skipping of method Windows.Graphics.Display.AdvancedColorInfo.SdrWhiteLevelInNits.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsHdrMetadataFormatCurrentlySupported( global::Windows.Graphics.Display.HdrMetadataFormat format)
+		public bool IsHdrMetadataFormatCurrentlySupported(global::Windows.Graphics.Display.HdrMetadataFormat format)
 		{
 			throw new global::System.NotImplementedException("The member bool AdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported(HdrMetadataFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdvancedColorInfo.IsHdrMetadataFormatCurrentlySupported%28HdrMetadataFormat%20format%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsAdvancedColorKindAvailable( global::Windows.Graphics.Display.AdvancedColorKind kind)
+		public bool IsAdvancedColorKindAvailable(global::Windows.Graphics.Display.AdvancedColorKind kind)
 		{
 			throw new global::System.NotImplementedException("The member bool AdvancedColorInfo.IsAdvancedColorKindAvailable(AdvancedColorKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdvancedColorInfo.IsAdvancedColorKindAvailable%28AdvancedColorKind%20kind%29");
 		}

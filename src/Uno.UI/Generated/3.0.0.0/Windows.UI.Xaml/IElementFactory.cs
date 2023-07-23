@@ -8,10 +8,10 @@ namespace Windows.UI.Xaml
 	public partial interface IElementFactory 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.UIElement GetElement( global::Windows.UI.Xaml.ElementFactoryGetArgs args);
+		global::Windows.UI.Xaml.UIElement GetElement(global::Windows.UI.Xaml.ElementFactoryGetArgs args);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void RecycleElement( global::Windows.UI.Xaml.ElementFactoryRecycleArgs args);
+		void RecycleElement(global::Windows.UI.Xaml.ElementFactoryRecycleArgs args);
 #endif
 	}
 }

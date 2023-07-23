@@ -46,14 +46,14 @@ namespace Windows.Devices.Midi
 		// Forced skipping of method Windows.Devices.Midi.MidiSynthesizer.Volume.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage)
+		public void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendMessage(IMidiMessage midiMessage)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendBuffer( global::Windows.Storage.Streams.IBuffer midiData)
+		public void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiSynthesizer", "void MidiSynthesizer.SendBuffer(IBuffer midiData)");
 		}
@@ -75,14 +75,14 @@ namespace Windows.Devices.Midi
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync( global::Windows.Devices.Enumeration.DeviceInformation audioDevice)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.MidiSynthesizer> CreateAsync(global::Windows.Devices.Enumeration.DeviceInformation audioDevice)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiSynthesizer> MidiSynthesizer.CreateAsync(DeviceInformation audioDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMidiSynthesizer%3E%20MidiSynthesizer.CreateAsync%28DeviceInformation%20audioDevice%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsSynthesizer( global::Windows.Devices.Enumeration.DeviceInformation midiDevice)
+		public static bool IsSynthesizer(global::Windows.Devices.Enumeration.DeviceInformation midiDevice)
 		{
 			throw new global::System.NotImplementedException("The member bool MidiSynthesizer.IsSynthesizer(DeviceInformation midiDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MidiSynthesizer.IsSynthesizer%28DeviceInformation%20midiDevice%29");
 		}

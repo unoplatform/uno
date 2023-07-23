@@ -44,7 +44,7 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public NDLicenseFetchDescriptor( global::Windows.Media.Protection.PlayReady.NDContentIDType contentIDType,  byte[] contentIDBytes,  global::Windows.Media.Protection.PlayReady.INDCustomData licenseFetchChallengeCustomData) 
+		public NDLicenseFetchDescriptor(global::Windows.Media.Protection.PlayReady.NDContentIDType contentIDType, byte[] contentIDBytes, global::Windows.Media.Protection.PlayReady.INDCustomData licenseFetchChallengeCustomData) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDLicenseFetchDescriptor", "NDLicenseFetchDescriptor.NDLicenseFetchDescriptor(NDContentIDType contentIDType, byte[] contentIDBytes, INDCustomData licenseFetchChallengeCustomData)");
 		}

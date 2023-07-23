@@ -141,7 +141,7 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public EmailAttachment( string fileName,  global::Windows.Storage.Streams.IRandomAccessStreamReference data,  string mimeType) 
+		public EmailAttachment(string fileName, global::Windows.Storage.Streams.IRandomAccessStreamReference data, string mimeType) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachment.EmailAttachment(string fileName, IRandomAccessStreamReference data, string mimeType)");
 		}
@@ -149,7 +149,7 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailAttachment.EmailAttachment(string, Windows.Storage.Streams.IRandomAccessStreamReference, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public EmailAttachment( string fileName,  global::Windows.Storage.Streams.IRandomAccessStreamReference data) 
+		public EmailAttachment(string fileName, global::Windows.Storage.Streams.IRandomAccessStreamReference data) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailAttachment", "EmailAttachment.EmailAttachment(string fileName, IRandomAccessStreamReference data)");
 		}

@@ -41,7 +41,7 @@ namespace Windows.Storage.Streams
 		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadDateTime()
 		// Skipping already declared method Windows.Storage.Streams.IDataReader.ReadTimeSpan()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync( uint count);
+		global::Windows.Storage.Streams.DataReaderLoadOperation LoadAsync(uint count);
 #endif
 		// Skipping already declared method Windows.Storage.Streams.IDataReader.DetachBuffer()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

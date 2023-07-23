@@ -20,7 +20,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerSequence.Size.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( global::Windows.Media.Playback.PlaybackMediaMarker value)
+		public void Insert(global::Windows.Media.Playback.PlaybackMediaMarker value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarkerSequence", "void PlaybackMediaMarkerSequence.Insert(PlaybackMediaMarker value)");
 		}

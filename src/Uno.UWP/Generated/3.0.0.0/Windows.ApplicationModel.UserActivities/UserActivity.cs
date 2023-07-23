@@ -123,7 +123,7 @@ namespace Windows.ApplicationModel.UserActivities
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UserActivity( string activityId) 
+		public UserActivity(string activityId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivity", "UserActivity.UserActivity(string activityId)");
 		}
@@ -167,21 +167,21 @@ namespace Windows.ApplicationModel.UserActivities
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivity.IsRoamable.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.UserActivities.UserActivity TryParseFromJson( string json)
+		public static global::Windows.ApplicationModel.UserActivities.UserActivity TryParseFromJson(string json)
 		{
 			throw new global::System.NotImplementedException("The member UserActivity UserActivity.TryParseFromJson(string json) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserActivity%20UserActivity.TryParseFromJson%28string%20json%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivity> TryParseFromJsonArray( string json)
+		public static global::System.Collections.Generic.IList<global::Windows.ApplicationModel.UserActivities.UserActivity> TryParseFromJsonArray(string json)
 		{
 			throw new global::System.NotImplementedException("The member IList<UserActivity> UserActivity.TryParseFromJsonArray(string json) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CUserActivity%3E%20UserActivity.TryParseFromJsonArray%28string%20json%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string ToJsonArray( global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.UserActivities.UserActivity> activities)
+		public static string ToJsonArray(global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.UserActivities.UserActivity> activities)
 		{
 			throw new global::System.NotImplementedException("The member string UserActivity.ToJsonArray(IEnumerable<UserActivity> activities) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20UserActivity.ToJsonArray%28IEnumerable%3CUserActivity%3E%20activities%29");
 		}

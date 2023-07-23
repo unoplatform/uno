@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		// Forced skipping of method Windows.UI.Xaml.Input.ContextRequestedEventArgs.Handled.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetPosition( global::Windows.UI.Xaml.UIElement relativeTo, out global::Windows.Foundation.Point point)
+		public bool TryGetPosition(global::Windows.UI.Xaml.UIElement relativeTo, out global::Windows.Foundation.Point point)
 		{
 			throw new global::System.NotImplementedException("The member bool ContextRequestedEventArgs.TryGetPosition(UIElement relativeTo, out Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ContextRequestedEventArgs.TryGetPosition%28UIElement%20relativeTo%2C%20out%20Point%20point%29");
 		}

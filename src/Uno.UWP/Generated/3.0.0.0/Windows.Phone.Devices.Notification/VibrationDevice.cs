@@ -9,7 +9,7 @@ namespace Windows.Phone.Devices.Notification
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Vibrate( global::System.TimeSpan duration)
+		public void Vibrate(global::System.TimeSpan duration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.Devices.Notification.VibrationDevice", "void VibrationDevice.Vibrate(TimeSpan duration)");
 		}

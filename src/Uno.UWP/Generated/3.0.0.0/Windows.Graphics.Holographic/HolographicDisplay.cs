@@ -86,7 +86,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicDisplay.RefreshRate.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Holographic.HolographicViewConfiguration TryGetViewConfiguration( global::Windows.Graphics.Holographic.HolographicViewConfigurationKind kind)
+		public global::Windows.Graphics.Holographic.HolographicViewConfiguration TryGetViewConfiguration(global::Windows.Graphics.Holographic.HolographicViewConfigurationKind kind)
 		{
 			throw new global::System.NotImplementedException("The member HolographicViewConfiguration HolographicDisplay.TryGetViewConfiguration(HolographicViewConfigurationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HolographicViewConfiguration%20HolographicDisplay.TryGetViewConfiguration%28HolographicViewConfigurationKind%20kind%29");
 		}

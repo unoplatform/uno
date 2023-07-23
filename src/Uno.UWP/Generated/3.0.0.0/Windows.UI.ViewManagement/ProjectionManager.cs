@@ -19,21 +19,21 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync( int projectionViewId,  int anchorViewId,  global::Windows.Devices.Enumeration.DeviceInformation displayDeviceInfo)
+		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Devices.Enumeration.DeviceInformation displayDeviceInfo)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StartProjectingAsync(int projectionViewId, int anchorViewId, DeviceInformation displayDeviceInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StartProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%2C%20DeviceInformation%20displayDeviceInfo%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestStartProjectingAsync( int projectionViewId,  int anchorViewId,  global::Windows.Foundation.Rect selection)
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestStartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Foundation.Rect selection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ProjectionManager.RequestStartProjectingAsync(int projectionViewId, int anchorViewId, Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ProjectionManager.RequestStartProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%2C%20Rect%20selection%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestStartProjectingAsync( int projectionViewId,  int anchorViewId,  global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement prefferedPlacement)
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestStartProjectingAsync(int projectionViewId, int anchorViewId, global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement prefferedPlacement)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ProjectionManager.RequestStartProjectingAsync(int projectionViewId, int anchorViewId, Rect selection, Placement prefferedPlacement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ProjectionManager.RequestStartProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%2C%20Rect%20selection%2C%20Placement%20prefferedPlacement%29");
 		}
@@ -47,21 +47,21 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync( int projectionViewId,  int anchorViewId)
+		public static global::Windows.Foundation.IAsyncAction StartProjectingAsync(int projectionViewId, int anchorViewId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StartProjectingAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StartProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction SwapDisplaysForViewsAsync( int projectionViewId,  int anchorViewId)
+		public static global::Windows.Foundation.IAsyncAction SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.SwapDisplaysForViewsAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.SwapDisplaysForViewsAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction StopProjectingAsync( int projectionViewId,  int anchorViewId)
+		public static global::Windows.Foundation.IAsyncAction StopProjectingAsync(int projectionViewId, int anchorViewId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ProjectionManager.StopProjectingAsync(int projectionViewId, int anchorViewId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ProjectionManager.StopProjectingAsync%28int%20projectionViewId%2C%20int%20anchorViewId%29");
 		}

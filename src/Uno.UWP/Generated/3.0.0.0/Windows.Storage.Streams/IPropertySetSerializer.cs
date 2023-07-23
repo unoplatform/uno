@@ -8,10 +8,10 @@ namespace Windows.Storage.Streams
 	public partial interface IPropertySetSerializer 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Storage.Streams.IBuffer Serialize( global::Windows.Foundation.Collections.IPropertySet propertySet);
+		global::Windows.Storage.Streams.IBuffer Serialize(global::Windows.Foundation.Collections.IPropertySet propertySet);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Deserialize( global::Windows.Foundation.Collections.IPropertySet propertySet,  global::Windows.Storage.Streams.IBuffer buffer);
+		void Deserialize(global::Windows.Foundation.Collections.IPropertySet propertySet, global::Windows.Storage.Streams.IBuffer buffer);
 #endif
 	}
 }

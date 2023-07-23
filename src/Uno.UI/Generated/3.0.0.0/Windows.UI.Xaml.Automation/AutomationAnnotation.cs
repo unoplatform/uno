@@ -37,23 +37,23 @@ namespace Windows.UI.Xaml.Automation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ElementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ElementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Element), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
+			nameof(Element), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Type), typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
+			nameof(Type), typeof(global::Windows.UI.Xaml.Automation.AnnotationType),
+			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AutomationAnnotation( global::Windows.UI.Xaml.Automation.AnnotationType type) : base()
+		public AutomationAnnotation(global::Windows.UI.Xaml.Automation.AnnotationType type) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation(AnnotationType type)");
 		}
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Automation
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationAnnotation.AutomationAnnotation(Windows.UI.Xaml.Automation.AnnotationType)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AutomationAnnotation( global::Windows.UI.Xaml.Automation.AnnotationType type,  global::Windows.UI.Xaml.UIElement element) : base()
+		public AutomationAnnotation(global::Windows.UI.Xaml.Automation.AnnotationType type, global::Windows.UI.Xaml.UIElement element) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation(AnnotationType type, UIElement element)");
 		}

@@ -202,10 +202,10 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property FontSizeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 #endif
 		// Skipping already declared property FontStyleProperty
@@ -213,75 +213,75 @@ namespace Windows.UI.Xaml.Documents
 		// Skipping already declared property ForegroundProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Language), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(Language), typeof(string),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AccessKey), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(AccessKey), typeof(string),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 		// Skipping already declared property AllowFocusOnInteractionProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAccessKeyScope), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(IsAccessKeyScope), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipHorizontalOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(KeyTipHorizontalOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipVerticalOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
+			nameof(KeyTipVerticalOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Documents.TextElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 		// Skipping already declared property TextDecorationsProperty
@@ -308,7 +308,7 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.ElementEnd.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public object FindName( string name)
+		public object FindName(string name)
 		{
 			throw new global::System.NotImplementedException("The member object TextElement.FindName(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20TextElement.FindName%28string%20name%29");
 		}

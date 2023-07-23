@@ -49,34 +49,34 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CollapsedGlyphVisibilityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CollapsedGlyphVisibilityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CollapsedGlyphVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
+			nameof(CollapsedGlyphVisibility), typeof(global::Windows.UI.Xaml.Visibility),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragItemsCountProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragItemsCountProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragItemsCount), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
+			nameof(DragItemsCount), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ExpandedGlyphVisibilityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ExpandedGlyphVisibilityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ExpandedGlyphVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
+			nameof(ExpandedGlyphVisibility), typeof(global::Windows.UI.Xaml.Visibility),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IndentationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IndentationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Indentation), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
+			nameof(Indentation), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

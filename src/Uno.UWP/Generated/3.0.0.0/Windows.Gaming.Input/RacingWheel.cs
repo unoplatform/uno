@@ -115,7 +115,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.RacingWheel.WheelMotor.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( global::Windows.Gaming.Input.RacingWheelButtons button)
+		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.RacingWheelButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel RacingWheel.GetButtonLabel(RacingWheelButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20RacingWheel.GetButtonLabel%28RacingWheelButtons%20button%29");
 		}
@@ -145,7 +145,7 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Gaming.Input.RacingWheel FromGameController( global::Windows.Gaming.Input.IGameController gameController)
+		public static global::Windows.Gaming.Input.RacingWheel FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member RacingWheel RacingWheel.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RacingWheel%20RacingWheel.FromGameController%28IGameController%20gameController%29");
 		}

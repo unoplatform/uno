@@ -29,18 +29,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CompositionScaleX), typeof(float), 
-			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel), 
+			nameof(CompositionScaleX), typeof(float),
+			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(float)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CompositionScaleY), typeof(float), 
-			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel), 
+			nameof(CompositionScaleY), typeof(float),
+			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(float)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwapChainPanel.CompositionScaleChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Core.CoreIndependentInputSource CreateCoreIndependentInputSource( global::Windows.UI.Core.CoreInputDeviceTypes deviceTypes)
+		public global::Windows.UI.Core.CoreIndependentInputSource CreateCoreIndependentInputSource(global::Windows.UI.Core.CoreInputDeviceTypes deviceTypes)
 		{
 			throw new global::System.NotImplementedException("The member CoreIndependentInputSource SwapChainPanel.CreateCoreIndependentInputSource(CoreInputDeviceTypes deviceTypes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreIndependentInputSource%20SwapChainPanel.CreateCoreIndependentInputSource%28CoreInputDeviceTypes%20deviceTypes%29");
 		}

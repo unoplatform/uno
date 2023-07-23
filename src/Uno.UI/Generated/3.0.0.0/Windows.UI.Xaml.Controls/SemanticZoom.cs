@@ -80,42 +80,42 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanChangeViewsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanChangeViewsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanChangeViews), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(CanChangeViews), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsZoomOutButtonEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsZoomOutButtonEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomOutButtonEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(IsZoomOutButtonEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewActiveProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewActiveProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomedInViewActive), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(IsZoomedInViewActive), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ZoomedInViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ZoomedInViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomedInView), typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation), 
-			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(ZoomedInView), typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation),
+			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ZoomedOutViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ZoomedOutViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomedOutView), typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation), 
-			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(ZoomedOutView), typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation),
+			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

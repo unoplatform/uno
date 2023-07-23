@@ -49,7 +49,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ConfigureAccessPointAsync( global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration configuration)
+		public global::Windows.Foundation.IAsyncAction ConfigureAccessPointAsync(global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration configuration)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction NetworkOperatorTetheringManager.ConfigureAccessPointAsync(NetworkOperatorTetheringAccessPointConfiguration configuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20NetworkOperatorTetheringManager.ConfigureAccessPointAsync%28NetworkOperatorTetheringAccessPointConfiguration%20configuration%29");
 		}
@@ -112,35 +112,35 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromConnectionProfile( global::Windows.Networking.Connectivity.ConnectionProfile profile,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
+		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromConnectionProfile(global::Windows.Networking.Connectivity.ConnectionProfile profile, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
 			throw new global::System.NotImplementedException("The member NetworkOperatorTetheringManager NetworkOperatorTetheringManager.CreateFromConnectionProfile(ConnectionProfile profile, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkOperatorTetheringManager%20NetworkOperatorTetheringManager.CreateFromConnectionProfile%28ConnectionProfile%20profile%2C%20NetworkAdapter%20adapter%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.TetheringCapability GetTetheringCapabilityFromConnectionProfile( global::Windows.Networking.Connectivity.ConnectionProfile profile)
+		public static global::Windows.Networking.NetworkOperators.TetheringCapability GetTetheringCapabilityFromConnectionProfile(global::Windows.Networking.Connectivity.ConnectionProfile profile)
 		{
 			throw new global::System.NotImplementedException("The member TetheringCapability NetworkOperatorTetheringManager.GetTetheringCapabilityFromConnectionProfile(ConnectionProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TetheringCapability%20NetworkOperatorTetheringManager.GetTetheringCapabilityFromConnectionProfile%28ConnectionProfile%20profile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromConnectionProfile( global::Windows.Networking.Connectivity.ConnectionProfile profile)
+		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromConnectionProfile(global::Windows.Networking.Connectivity.ConnectionProfile profile)
 		{
 			throw new global::System.NotImplementedException("The member NetworkOperatorTetheringManager NetworkOperatorTetheringManager.CreateFromConnectionProfile(ConnectionProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkOperatorTetheringManager%20NetworkOperatorTetheringManager.CreateFromConnectionProfile%28ConnectionProfile%20profile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.TetheringCapability GetTetheringCapability( string networkAccountId)
+		public static global::Windows.Networking.NetworkOperators.TetheringCapability GetTetheringCapability(string networkAccountId)
 		{
 			throw new global::System.NotImplementedException("The member TetheringCapability NetworkOperatorTetheringManager.GetTetheringCapability(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TetheringCapability%20NetworkOperatorTetheringManager.GetTetheringCapability%28string%20networkAccountId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromNetworkAccountId( string networkAccountId)
+		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromNetworkAccountId(string networkAccountId)
 		{
 			throw new global::System.NotImplementedException("The member NetworkOperatorTetheringManager NetworkOperatorTetheringManager.CreateFromNetworkAccountId(string networkAccountId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=NetworkOperatorTetheringManager%20NetworkOperatorTetheringManager.CreateFromNetworkAccountId%28string%20networkAccountId%29");
 		}

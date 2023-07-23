@@ -19,7 +19,7 @@ namespace Windows.Globalization.Collation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CharacterGroupings( string language) 
+		public CharacterGroupings(string language) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings(string language)");
 		}
@@ -35,7 +35,7 @@ namespace Windows.Globalization.Collation
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string Lookup( string text)
+		public string Lookup(string text)
 		{
 			throw new global::System.NotImplementedException("The member string CharacterGroupings.Lookup(string text) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CharacterGroupings.Lookup%28string%20text%29");
 		}

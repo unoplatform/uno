@@ -431,234 +431,234 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AcceptsReturnProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AcceptsReturnProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AcceptsReturn), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(AcceptsReturn), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty InputScopeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty InputScopeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(InputScope), typeof(global::Windows.UI.Xaml.Input.InputScope), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(InputScope), typeof(global::Windows.UI.Xaml.Input.InputScope),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.InputScope)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsReadOnlyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsReadOnlyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsReadOnly), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(IsReadOnly), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSpellCheckEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsSpellCheckEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSpellCheckEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(IsSpellCheckEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextPredictionEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextPredictionEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextPredictionEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(IsTextPredictionEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(TextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextWrappingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextWrappingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextWrapping), typeof(global::Windows.UI.Xaml.TextWrapping), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(TextWrapping), typeof(global::Windows.UI.Xaml.TextWrapping),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextWrapping)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(Header), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorFontEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(IsColorFontEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(PlaceholderText), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DesiredCandidateWindowAlignment), typeof(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(DesiredCandidateWindowAlignment), typeof(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ClipboardCopyFormatProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ClipboardCopyFormatProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ClipboardCopyFormat), typeof(global::Windows.UI.Xaml.Controls.RichEditClipboardFormat), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(ClipboardCopyFormat), typeof(global::Windows.UI.Xaml.Controls.RichEditClipboardFormat),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RichEditClipboardFormat)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxLengthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxLength), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(MaxLength), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CharacterCasingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CharacterCasingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CharacterCasing), typeof(global::Windows.UI.Xaml.Controls.CharacterCasing), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(CharacterCasing), typeof(global::Windows.UI.Xaml.Controls.CharacterCasing),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CharacterCasing)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisabledFormattingAcceleratorsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DisabledFormattingAcceleratorsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisabledFormattingAccelerators), typeof(global::Windows.UI.Xaml.Controls.DisabledFormattingAccelerators), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(DisabledFormattingAccelerators), typeof(global::Windows.UI.Xaml.Controls.DisabledFormattingAccelerators),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.DisabledFormattingAccelerators)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentLinkBackgroundColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentLinkBackgroundColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentLinkBackgroundColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(ContentLinkBackgroundColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentLinkForegroundColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentLinkForegroundColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentLinkForegroundColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(ContentLinkForegroundColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentLinkProvidersProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentLinkProvidersProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentLinkProviders), typeof(global::Windows.UI.Xaml.Documents.ContentLinkProviderCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(ContentLinkProviders), typeof(global::Windows.UI.Xaml.Documents.ContentLinkProviderCollection),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Documents.ContentLinkProviderCollection)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HandwritingViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HandwritingViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HandwritingView), typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(HandwritingView), typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.HandwritingView)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsHandwritingViewEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsHandwritingViewEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsHandwritingViewEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(IsHandwritingViewEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Description), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(Description), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProofingMenuFlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProofingMenuFlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ProofingMenuFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(ProofingMenuFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.RichEditBox), 
+			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.RichEditBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RichEditBox.RichEditBox()

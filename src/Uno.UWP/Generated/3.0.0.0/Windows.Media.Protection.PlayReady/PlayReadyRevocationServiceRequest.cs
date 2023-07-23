@@ -101,7 +101,7 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes)
+		public global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes)
 		{
 			throw new global::System.NotImplementedException("The member Exception PlayReadyRevocationServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PlayReadyRevocationServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}

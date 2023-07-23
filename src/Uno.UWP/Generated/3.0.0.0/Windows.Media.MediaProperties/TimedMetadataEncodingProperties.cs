@@ -51,7 +51,7 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.TimedMetadataEncodingProperties()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetFormatUserData( byte[] value)
+		public void SetFormatUserData(byte[] value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.TimedMetadataEncodingProperties", "void TimedMetadataEncodingProperties.SetFormatUserData(byte[] value)");
 		}
@@ -90,14 +90,14 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSsa( byte[] formatUserData)
+		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSsa(byte[] formatUserData)
 		{
 			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSsa(byte[] formatUserData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreateSsa%28byte%5B%5D%20formatUserData%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateVobSub( byte[] formatUserData)
+		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateVobSub(byte[] formatUserData)
 		{
 			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateVobSub(byte[] formatUserData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataEncodingProperties%20TimedMetadataEncodingProperties.CreateVobSub%28byte%5B%5D%20formatUserData%29");
 		}

@@ -47,7 +47,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.State.get
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.IPrintOptionDetails.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool TrySetValue( object value);
+		bool TrySetValue(object value);
 #endif
 	}
 }

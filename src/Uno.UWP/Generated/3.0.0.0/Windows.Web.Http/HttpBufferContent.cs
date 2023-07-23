@@ -19,7 +19,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpBufferContent( global::Windows.Storage.Streams.IBuffer content) 
+		public HttpBufferContent(global::Windows.Storage.Streams.IBuffer content) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpBufferContent", "HttpBufferContent.HttpBufferContent(IBuffer content)");
 		}
@@ -27,7 +27,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpBufferContent.HttpBufferContent(Windows.Storage.Streams.IBuffer)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpBufferContent( global::Windows.Storage.Streams.IBuffer content,  uint offset,  uint count) 
+		public HttpBufferContent(global::Windows.Storage.Streams.IBuffer content, uint offset, uint count) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpBufferContent", "HttpBufferContent.HttpBufferContent(IBuffer content, uint offset, uint count)");
 		}
@@ -71,7 +71,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync( global::Windows.Storage.Streams.IOutputStream outputStream)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<ulong, ulong> WriteToStreamAsync(global::Windows.Storage.Streams.IOutputStream outputStream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<ulong, ulong> HttpBufferContent.WriteToStreamAsync(IOutputStream outputStream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Culong%2C%20ulong%3E%20HttpBufferContent.WriteToStreamAsync%28IOutputStream%20outputStream%29");
 		}

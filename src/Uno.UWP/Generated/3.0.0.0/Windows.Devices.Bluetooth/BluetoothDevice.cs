@@ -159,21 +159,21 @@ namespace Windows.Devices.Bluetooth
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesAsync( global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesAsync(global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesAsync(BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesAsync%28BluetoothCacheMode%20cacheMode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync( global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesForIdAsync(RfcommServiceId serviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesForIdAsync%28RfcommServiceId%20serviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync( global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId,  global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.Rfcomm.RfcommDeviceServicesResult> GetRfcommServicesForIdAsync(global::Windows.Devices.Bluetooth.Rfcomm.RfcommServiceId serviceId, global::Windows.Devices.Bluetooth.BluetoothCacheMode cacheMode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RfcommDeviceServicesResult> BluetoothDevice.GetRfcommServicesForIdAsync(RfcommServiceId serviceId, BluetoothCacheMode cacheMode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRfcommDeviceServicesResult%3E%20BluetoothDevice.GetRfcommServicesForIdAsync%28RfcommServiceId%20serviceId%2C%20BluetoothCacheMode%20cacheMode%29");
 		}
@@ -193,28 +193,28 @@ namespace Windows.Devices.Bluetooth
 		// Skipping already declared method Windows.Devices.Bluetooth.BluetoothDevice.GetDeviceSelectorFromBluetoothAddress(ulong)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelectorFromClassOfDevice( global::Windows.Devices.Bluetooth.BluetoothClassOfDevice classOfDevice)
+		public static string GetDeviceSelectorFromClassOfDevice(global::Windows.Devices.Bluetooth.BluetoothClassOfDevice classOfDevice)
 		{
 			throw new global::System.NotImplementedException("The member string BluetoothDevice.GetDeviceSelectorFromClassOfDevice(BluetoothClassOfDevice classOfDevice) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BluetoothDevice.GetDeviceSelectorFromClassOfDevice%28BluetoothClassOfDevice%20classOfDevice%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothDevice%3E%20BluetoothDevice.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromHostNameAsync( global::Windows.Networking.HostName hostName)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromHostNameAsync(global::Windows.Networking.HostName hostName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromHostNameAsync(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothDevice%3E%20BluetoothDevice.FromHostNameAsync%28HostName%20hostName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromBluetoothAddressAsync( ulong address)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.BluetoothDevice> FromBluetoothAddressAsync(ulong address)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BluetoothDevice> BluetoothDevice.FromBluetoothAddressAsync(ulong address) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBluetoothDevice%3E%20BluetoothDevice.FromBluetoothAddressAsync%28ulong%20address%29");
 		}

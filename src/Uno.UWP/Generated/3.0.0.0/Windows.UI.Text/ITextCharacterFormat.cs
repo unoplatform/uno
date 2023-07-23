@@ -222,13 +222,13 @@ namespace Windows.UI.Text
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.Weight.get
 		// Forced skipping of method Windows.UI.Text.ITextCharacterFormat.Weight.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetClone( global::Windows.UI.Text.ITextCharacterFormat value);
+		void SetClone(global::Windows.UI.Text.ITextCharacterFormat value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Text.ITextCharacterFormat GetClone();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsEqual( global::Windows.UI.Text.ITextCharacterFormat format);
+		bool IsEqual(global::Windows.UI.Text.ITextCharacterFormat format);
 #endif
 	}
 }

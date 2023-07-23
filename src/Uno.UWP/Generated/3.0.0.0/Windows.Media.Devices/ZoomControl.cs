@@ -91,7 +91,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.ZoomControl.Mode.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Configure( global::Windows.Media.Devices.ZoomSettings settings)
+		public void Configure(global::Windows.Media.Devices.ZoomSettings settings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.ZoomControl", "void ZoomControl.Configure(ZoomSettings settings)");
 		}

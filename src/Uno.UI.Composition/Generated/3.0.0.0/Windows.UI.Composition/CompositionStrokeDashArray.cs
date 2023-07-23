@@ -34,7 +34,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int IndexOf( float item)
+		public int IndexOf(float item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -42,7 +42,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( int index,  float item)
+		public void Insert(int index, float item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -50,7 +50,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAt( int index)
+		public void RemoveAt(int index)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -73,7 +73,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( float item)
+		public void Add(float item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -89,7 +89,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( float item)
+		public bool Contains(float item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -97,7 +97,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( float[] array,  int arrayIndex)
+		public void CopyTo(float[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -105,7 +105,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<float>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( float item)
+		public bool Remove(float item)
 		{
 			throw new global::System.NotSupportedException();
 		}

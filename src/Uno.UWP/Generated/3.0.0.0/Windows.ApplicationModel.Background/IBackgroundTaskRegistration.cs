@@ -21,7 +21,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.add
 		// Forced skipping of method Windows.ApplicationModel.Background.IBackgroundTaskRegistration.Completed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Unregister( bool cancelTask);
+		void Unregister(bool cancelTask);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		event global::Windows.ApplicationModel.Background.BackgroundTaskCompletedEventHandler Completed;

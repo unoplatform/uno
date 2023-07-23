@@ -96,50 +96,50 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property ClockIdentifierProperty
 #if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			nameof(Header), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinuteIncrement), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			nameof(MinuteIncrement), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Time), typeof(global::System.TimeSpan), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			nameof(Time), typeof(global::System.TimeSpan),
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 #endif
 #if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			nameof(LightDismissOverlayMode), typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode),
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 #endif
 #if false || false || false || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedTimeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedTimeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedTime), typeof(global::System.TimeSpan?), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
+			nameof(SelectedTime), typeof(global::System.TimeSpan?),
+			typeof(global::Windows.UI.Xaml.Controls.TimePicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan?)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TimePicker.TimePicker()

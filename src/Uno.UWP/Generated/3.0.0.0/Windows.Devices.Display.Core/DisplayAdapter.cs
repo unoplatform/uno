@@ -97,7 +97,7 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayAdapter.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Display.Core.DisplayAdapter FromId( global::Windows.Graphics.DisplayAdapterId id)
+		public static global::Windows.Devices.Display.Core.DisplayAdapter FromId(global::Windows.Graphics.DisplayAdapterId id)
 		{
 			throw new global::System.NotImplementedException("The member DisplayAdapter DisplayAdapter.FromId(DisplayAdapterId id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayAdapter%20DisplayAdapter.FromId%28DisplayAdapterId%20id%29");
 		}

@@ -20,7 +20,7 @@ namespace Windows.Graphics.Printing.PrintSupport
 		// Forced skipping of method Windows.Graphics.Printing.PrintSupport.PrintSupportPrintTicketValidationRequestedEventArgs.PrintTicket.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPrintTicketValidationStatus( global::Windows.Graphics.Printing.PrintSupport.WorkflowPrintTicketValidationStatus status)
+		public void SetPrintTicketValidationStatus(global::Windows.Graphics.Printing.PrintSupport.WorkflowPrintTicketValidationStatus status)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintSupport.PrintSupportPrintTicketValidationRequestedEventArgs", "void PrintSupportPrintTicketValidationRequestedEventArgs.SetPrintTicketValidationStatus(WorkflowPrintTicketValidationStatus status)");
 		}

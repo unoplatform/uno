@@ -19,14 +19,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ParseAdd( string input)
+		public void ParseAdd(string input)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageHeaderValueCollection", "void HttpLanguageHeaderValueCollection.ParseAdd(string input)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryParseAdd( string input)
+		public bool TryParseAdd(string input)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpLanguageHeaderValueCollection.TryParseAdd(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpLanguageHeaderValueCollection.TryParseAdd%28string%20input%29");
 		}
@@ -55,7 +55,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int IndexOf( global::Windows.Globalization.Language item)
+		public int IndexOf(global::Windows.Globalization.Language item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -63,7 +63,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( int index,  global::Windows.Globalization.Language item)
+		public void Insert(int index, global::Windows.Globalization.Language item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -71,7 +71,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAt( int index)
+		public void RemoveAt(int index)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -94,7 +94,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.Globalization.Language item)
+		public void Add(global::Windows.Globalization.Language item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -110,7 +110,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::Windows.Globalization.Language item)
+		public bool Contains(global::Windows.Globalization.Language item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -118,7 +118,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::Windows.Globalization.Language[] array,  int arrayIndex)
+		public void CopyTo(global::Windows.Globalization.Language[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -126,7 +126,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.Globalization.Language>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::Windows.Globalization.Language item)
+		public bool Remove(global::Windows.Globalization.Language item)
 		{
 			throw new global::System.NotSupportedException();
 		}

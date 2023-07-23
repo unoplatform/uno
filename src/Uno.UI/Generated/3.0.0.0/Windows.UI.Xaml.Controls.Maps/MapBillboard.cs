@@ -75,31 +75,31 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CollisionBehaviorDesiredProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CollisionBehaviorDesiredProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CollisionBehaviorDesired), typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
+			nameof(CollisionBehaviorDesired), typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapElementCollisionBehavior)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LocationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LocationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
+			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty NormalizedAnchorPointProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty NormalizedAnchorPointProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(NormalizedAnchorPoint), typeof(global::Windows.Foundation.Point), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard), 
+			nameof(NormalizedAnchorPoint), typeof(global::Windows.Foundation.Point),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapBillboard),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapBillboard( global::Windows.UI.Xaml.Controls.Maps.MapCamera camera) : base()
+		public MapBillboard(global::Windows.UI.Xaml.Controls.Maps.MapCamera camera) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapBillboard", "MapBillboard.MapBillboard(MapCamera camera)");
 		}

@@ -16,7 +16,7 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsOcclusionKindSupported( global::Windows.Media.Devices.CameraOcclusionKind occlusionKind)
+		public bool IsOcclusionKindSupported(global::Windows.Media.Devices.CameraOcclusionKind occlusionKind)
 		{
 			throw new global::System.NotImplementedException("The member bool CameraOcclusionInfo.IsOcclusionKindSupported(CameraOcclusionKind occlusionKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CameraOcclusionInfo.IsOcclusionKindSupported%28CameraOcclusionKind%20occlusionKind%29");
 		}

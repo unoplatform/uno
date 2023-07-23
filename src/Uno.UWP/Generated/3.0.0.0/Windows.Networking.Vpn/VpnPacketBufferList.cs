@@ -33,14 +33,14 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Append( global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
+		public void Append(global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.Append(VpnPacketBuffer nextVpnPacketBuffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddAtBegin( global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
+		public void AddAtBegin(global::Windows.Networking.Vpn.VpnPacketBuffer nextVpnPacketBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnPacketBufferList", "void VpnPacketBufferList.AddAtBegin(VpnPacketBuffer nextVpnPacketBuffer)");
 		}

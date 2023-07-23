@@ -9,14 +9,14 @@ namespace Windows.Perception
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Perception.PerceptionTimestamp FromSystemRelativeTargetTime( global::System.TimeSpan targetTime)
+		public static global::Windows.Perception.PerceptionTimestamp FromSystemRelativeTargetTime(global::System.TimeSpan targetTime)
 		{
 			throw new global::System.NotImplementedException("The member PerceptionTimestamp PerceptionTimestampHelper.FromSystemRelativeTargetTime(TimeSpan targetTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20PerceptionTimestampHelper.FromSystemRelativeTargetTime%28TimeSpan%20targetTime%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Perception.PerceptionTimestamp FromHistoricalTargetTime( global::System.DateTimeOffset targetTime)
+		public static global::Windows.Perception.PerceptionTimestamp FromHistoricalTargetTime(global::System.DateTimeOffset targetTime)
 		{
 			throw new global::System.NotImplementedException("The member PerceptionTimestamp PerceptionTimestampHelper.FromHistoricalTargetTime(DateTimeOffset targetTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionTimestamp%20PerceptionTimestampHelper.FromHistoricalTargetTime%28DateTimeOffset%20targetTime%29");
 		}

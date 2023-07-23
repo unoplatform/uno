@@ -317,178 +317,178 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(CheckBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckHintBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckHintBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckHintBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(CheckHintBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckSelectingBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckSelectingBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckSelectingBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(CheckSelectingBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentMarginProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentMarginProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentMargin), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(ContentMargin), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisabledOpacityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DisabledOpacityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisabledOpacity), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(DisabledOpacity), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(DragBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(DragForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragOpacityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragOpacityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragOpacity), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(DragOpacity), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FocusBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FocusBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(FocusBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GridViewItemPresenterHorizontalContentAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GridViewItemPresenterHorizontalContentAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(GridViewItemPresenterHorizontalContentAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(GridViewItemPresenterHorizontalContentAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GridViewItemPresenterPaddingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GridViewItemPresenterPaddingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(GridViewItemPresenterPadding), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(GridViewItemPresenterPadding), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GridViewItemPresenterVerticalContentAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GridViewItemPresenterVerticalContentAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(GridViewItemPresenterVerticalContentAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(GridViewItemPresenterVerticalContentAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(PlaceholderBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundMarginProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundMarginProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverBackgroundMargin), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(PointerOverBackgroundMargin), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(PointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ReorderHintOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ReorderHintOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ReorderHintOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(ReorderHintOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(SelectedBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderThicknessProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderThicknessProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedBorderThickness), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(SelectedBorderThickness), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(SelectedForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(SelectedPointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(SelectedPointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionCheckMarkVisualEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter), 
+			nameof(SelectionCheckMarkVisualEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.GridViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false

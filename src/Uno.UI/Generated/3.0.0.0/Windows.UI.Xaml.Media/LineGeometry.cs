@@ -37,18 +37,18 @@ namespace Windows.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty EndPointProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty EndPointProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(EndPoint), typeof(global::Windows.Foundation.Point), 
-			typeof(global::Windows.UI.Xaml.Media.LineGeometry), 
+			nameof(EndPoint), typeof(global::Windows.Foundation.Point),
+			typeof(global::Windows.UI.Xaml.Media.LineGeometry),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StartPointProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StartPointProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StartPoint), typeof(global::Windows.Foundation.Point), 
-			typeof(global::Windows.UI.Xaml.Media.LineGeometry), 
+			nameof(StartPoint), typeof(global::Windows.Foundation.Point),
+			typeof(global::Windows.UI.Xaml.Media.LineGeometry),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || __MACOS__

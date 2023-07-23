@@ -36,7 +36,7 @@ namespace Windows.UI.ViewManagement.Core
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.XYFocusTransferredToPrimaryView.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryTransferXYFocusToPrimaryView( global::Windows.Foundation.Rect origin,  global::Windows.UI.ViewManagement.Core.CoreInputViewXYFocusTransferDirection direction)
+		public bool TryTransferXYFocusToPrimaryView(global::Windows.Foundation.Rect origin, global::Windows.UI.ViewManagement.Core.CoreInputViewXYFocusTransferDirection direction)
 		{
 			throw new global::System.NotImplementedException("The member bool CoreInputView.TryTransferXYFocusToPrimaryView(Rect origin, CoreInputViewXYFocusTransferDirection direction) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.TryTransferXYFocusToPrimaryView%28Rect%20origin%2C%20CoreInputViewXYFocusTransferDirection%20direction%29");
 		}
@@ -50,7 +50,7 @@ namespace Windows.UI.ViewManagement.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryShow( global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
+		public bool TryShow(global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
 		{
 			throw new global::System.NotImplementedException("The member bool CoreInputView.TryShow(CoreInputViewKind type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.TryShow%28CoreInputViewKind%20type%29");
 		}
@@ -68,7 +68,7 @@ namespace Windows.UI.ViewManagement.Core
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewHiding.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsKindSupported( global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
+		public bool IsKindSupported(global::Windows.UI.ViewManagement.Core.CoreInputViewKind type)
 		{
 			throw new global::System.NotImplementedException("The member bool CoreInputView.IsKindSupported(CoreInputViewKind type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CoreInputView.IsKindSupported%28CoreInputViewKind%20type%29");
 		}
@@ -79,7 +79,7 @@ namespace Windows.UI.ViewManagement.Core
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.PrimaryViewAnimationStarting.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForUIContext( global::Windows.UI.UIContext context)
+		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForUIContext(global::Windows.UI.UIContext context)
 		{
 			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForUIContext(UIContext context) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreInputView%20CoreInputView.GetForUIContext%28UIContext%20context%29");
 		}

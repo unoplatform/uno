@@ -39,7 +39,7 @@ namespace Windows.Security.Authentication.Web.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebAccountClientView( global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType,  global::System.Uri applicationCallbackUri) 
+		public WebAccountClientView(global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType, global::System.Uri applicationCallbackUri) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientView.WebAccountClientView(WebAccountClientViewType viewType, Uri applicationCallbackUri)");
 		}
@@ -47,7 +47,7 @@ namespace Windows.Security.Authentication.Web.Provider
 		// Forced skipping of method Windows.Security.Authentication.Web.Provider.WebAccountClientView.WebAccountClientView(Windows.Security.Authentication.Web.Provider.WebAccountClientViewType, System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebAccountClientView( global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType,  global::System.Uri applicationCallbackUri,  string accountPairwiseId) 
+		public WebAccountClientView(global::Windows.Security.Authentication.Web.Provider.WebAccountClientViewType viewType, global::System.Uri applicationCallbackUri, string accountPairwiseId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Provider.WebAccountClientView", "WebAccountClientView.WebAccountClientView(WebAccountClientViewType viewType, Uri applicationCallbackUri, string accountPairwiseId)");
 		}

@@ -59,14 +59,14 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaBreakSchedule.ScheduleChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void InsertMidrollBreak( global::Windows.Media.Playback.MediaBreak mediaBreak)
+		public void InsertMidrollBreak(global::Windows.Media.Playback.MediaBreak mediaBreak)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "void MediaBreakSchedule.InsertMidrollBreak(MediaBreak mediaBreak)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveMidrollBreak( global::Windows.Media.Playback.MediaBreak mediaBreak)
+		public void RemoveMidrollBreak(global::Windows.Media.Playback.MediaBreak mediaBreak)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreakSchedule", "void MediaBreakSchedule.RemoveMidrollBreak(MediaBreak mediaBreak)");
 		}

@@ -115,7 +115,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VideoFrame( global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height) 
+		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame.VideoFrame(BitmapPixelFormat format, int width, int height)");
 		}
@@ -123,7 +123,7 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.VideoFrame.VideoFrame(Windows.Graphics.Imaging.BitmapPixelFormat, int, int)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VideoFrame( global::Windows.Graphics.Imaging.BitmapPixelFormat format,  int width,  int height,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
+		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame.VideoFrame(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
 		}
@@ -132,7 +132,7 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.VideoFrame.SoftwareBitmap.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction CopyToAsync( global::Windows.Media.VideoFrame frame)
+		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%29");
 		}
@@ -158,35 +158,35 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction CopyToAsync( global::Windows.Media.VideoFrame frame,  global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds,  global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
+		public global::Windows.Foundation.IAsyncAction CopyToAsync(global::Windows.Media.VideoFrame frame, global::Windows.Graphics.Imaging.BitmapBounds? sourceBounds, global::Windows.Graphics.Imaging.BitmapBounds? destinationBounds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction VideoFrame.CopyToAsync(VideoFrame frame, BitmapBounds? sourceBounds, BitmapBounds? destinationBounds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20VideoFrame.CopyToAsync%28VideoFrame%20frame%2C%20BitmapBounds%3F%20sourceBounds%2C%20BitmapBounds%3F%20destinationBounds%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked( global::Windows.Graphics.DirectX.DirectXPixelFormat format,  int width,  int height)
+		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked(global::Windows.Graphics.DirectX.DirectXPixelFormat format, int width, int height)
 		{
 			throw new global::System.NotImplementedException("The member VideoFrame VideoFrame.CreateAsDirect3D11SurfaceBacked(DirectXPixelFormat format, int width, int height) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoFrame.CreateAsDirect3D11SurfaceBacked%28DirectXPixelFormat%20format%2C%20int%20width%2C%20int%20height%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked( global::Windows.Graphics.DirectX.DirectXPixelFormat format,  int width,  int height,  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device)
+		public static global::Windows.Media.VideoFrame CreateAsDirect3D11SurfaceBacked(global::Windows.Graphics.DirectX.DirectXPixelFormat format, int width, int height, global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device)
 		{
 			throw new global::System.NotImplementedException("The member VideoFrame VideoFrame.CreateAsDirect3D11SurfaceBacked(DirectXPixelFormat format, int width, int height, IDirect3DDevice device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoFrame.CreateAsDirect3D11SurfaceBacked%28DirectXPixelFormat%20format%2C%20int%20width%2C%20int%20height%2C%20IDirect3DDevice%20device%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.VideoFrame CreateWithSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
+		public static global::Windows.Media.VideoFrame CreateWithSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap bitmap)
 		{
 			throw new global::System.NotImplementedException("The member VideoFrame VideoFrame.CreateWithSoftwareBitmap(SoftwareBitmap bitmap) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoFrame.CreateWithSoftwareBitmap%28SoftwareBitmap%20bitmap%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.VideoFrame CreateWithDirect3D11Surface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface)
+		public static global::Windows.Media.VideoFrame CreateWithDirect3D11Surface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface)
 		{
 			throw new global::System.NotImplementedException("The member VideoFrame VideoFrame.CreateWithDirect3D11Surface(IDirect3DSurface surface) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoFrame%20VideoFrame.CreateWithDirect3D11Surface%28IDirect3DSurface%20surface%29");
 		}

@@ -82,28 +82,28 @@ namespace Windows.Devices.Haptics
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public void SendHapticFeedback( global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback)
+		public void SendHapticFeedback(global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Haptics.SimpleHapticsController", "void SimpleHapticsController.SendHapticFeedback(SimpleHapticsControllerFeedback feedback)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendHapticFeedback( global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback,  double intensity)
+		public void SendHapticFeedback(global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback, double intensity)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Haptics.SimpleHapticsController", "void SimpleHapticsController.SendHapticFeedback(SimpleHapticsControllerFeedback feedback, double intensity)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendHapticFeedbackForDuration( global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback,  double intensity,  global::System.TimeSpan playDuration)
+		public void SendHapticFeedbackForDuration(global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback, double intensity, global::System.TimeSpan playDuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Haptics.SimpleHapticsController", "void SimpleHapticsController.SendHapticFeedbackForDuration(SimpleHapticsControllerFeedback feedback, double intensity, TimeSpan playDuration)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SendHapticFeedbackForPlayCount( global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback,  double intensity,  int playCount,  global::System.TimeSpan replayPauseInterval)
+		public void SendHapticFeedbackForPlayCount(global::Windows.Devices.Haptics.SimpleHapticsControllerFeedback feedback, double intensity, int playCount, global::System.TimeSpan replayPauseInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Haptics.SimpleHapticsController", "void SimpleHapticsController.SendHapticFeedbackForPlayCount(SimpleHapticsControllerFeedback feedback, double intensity, int playCount, TimeSpan replayPauseInterval)");
 		}

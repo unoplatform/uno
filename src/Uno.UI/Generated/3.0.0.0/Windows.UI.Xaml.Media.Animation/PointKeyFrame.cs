@@ -37,18 +37,18 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTimeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTimeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTime), typeof(global::Windows.UI.Xaml.Media.Animation.KeyTime), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame), 
+			nameof(KeyTime), typeof(global::Windows.UI.Xaml.Media.Animation.KeyTime),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeyTime)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Value), typeof(global::Windows.Foundation.Point), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame), 
+			nameof(Value), typeof(global::Windows.Foundation.Point),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -17,21 +17,21 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.FrameworkView.FrameworkView()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Initialize( global::Windows.ApplicationModel.Core.CoreApplicationView applicationView)
+		public void Initialize(global::Windows.ApplicationModel.Core.CoreApplicationView applicationView)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkView", "void FrameworkView.Initialize(CoreApplicationView applicationView)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetWindow( global::Windows.UI.Core.CoreWindow window)
+		public void SetWindow(global::Windows.UI.Core.CoreWindow window)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkView", "void FrameworkView.SetWindow(CoreWindow window)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Load( string entryPoint)
+		public void Load(string entryPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.FrameworkView", "void FrameworkView.Load(string entryPoint)");
 		}

@@ -60,7 +60,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.HatSwitchKind.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( global::Windows.Gaming.Input.FlightStickButtons button)
+		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.FlightStickButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel FlightStick.GetButtonLabel(FlightStickButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20FlightStick.GetButtonLabel%28FlightStickButtons%20button%29");
 		}
@@ -95,7 +95,7 @@ namespace Windows.Gaming.Input
 		// Forced skipping of method Windows.Gaming.Input.FlightStick.FlightSticks.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Gaming.Input.FlightStick FromGameController( global::Windows.Gaming.Input.IGameController gameController)
+		public static global::Windows.Gaming.Input.FlightStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member FlightStick FlightStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FlightStick%20FlightStick.FromGameController%28IGameController%20gameController%29");
 		}

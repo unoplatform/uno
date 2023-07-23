@@ -86,21 +86,21 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MseStreamSource.Duration.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Core.MseSourceBuffer AddSourceBuffer( string mimeType)
+		public global::Windows.Media.Core.MseSourceBuffer AddSourceBuffer(string mimeType)
 		{
 			throw new global::System.NotImplementedException("The member MseSourceBuffer MseStreamSource.AddSourceBuffer(string mimeType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MseSourceBuffer%20MseStreamSource.AddSourceBuffer%28string%20mimeType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveSourceBuffer( global::Windows.Media.Core.MseSourceBuffer buffer)
+		public void RemoveSourceBuffer(global::Windows.Media.Core.MseSourceBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseStreamSource", "void MseStreamSource.RemoveSourceBuffer(MseSourceBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EndOfStream( global::Windows.Media.Core.MseEndOfStreamStatus status)
+		public void EndOfStream(global::Windows.Media.Core.MseEndOfStreamStatus status)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseStreamSource", "void MseStreamSource.EndOfStream(MseEndOfStreamStatus status)");
 		}
@@ -109,7 +109,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MseStreamSource.LiveSeekableRange.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsContentTypeSupported( string contentType)
+		public static bool IsContentTypeSupported(string contentType)
 		{
 			throw new global::System.NotImplementedException("The member bool MseStreamSource.IsContentTypeSupported(string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MseStreamSource.IsContentTypeSupported%28string%20contentType%29");
 		}

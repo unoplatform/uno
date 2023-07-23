@@ -193,7 +193,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Certificate( global::Windows.Storage.Streams.IBuffer certBlob) 
+		public Certificate(global::Windows.Storage.Streams.IBuffer certBlob) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.Certificate", "Certificate.Certificate(IBuffer certBlob)");
 		}
@@ -201,14 +201,14 @@ namespace Windows.Security.Cryptography.Certificates
 		// Forced skipping of method Windows.Security.Cryptography.Certificates.Certificate.Certificate(Windows.Storage.Streams.IBuffer)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCertificateChain%3E%20Certificate.BuildChainAsync%28IEnumerable%3CCertificate%3E%20certificates%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates,  global::Windows.Security.Cryptography.Certificates.ChainBuildingParameters parameters)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Cryptography.Certificates.CertificateChain> BuildChainAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates, global::Windows.Security.Cryptography.Certificates.ChainBuildingParameters parameters)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CertificateChain> Certificate.BuildChainAsync(IEnumerable<Certificate> certificates, ChainBuildingParameters parameters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCertificateChain%3E%20Certificate.BuildChainAsync%28IEnumerable%3CCertificate%3E%20certificates%2C%20ChainBuildingParameters%20parameters%29");
 		}
@@ -223,7 +223,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public byte[] GetHashValue( string hashAlgorithmName)
+		public byte[] GetHashValue(string hashAlgorithmName)
 		{
 			throw new global::System.NotImplementedException("The member byte[] Certificate.GetHashValue(string hashAlgorithmName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20Certificate.GetHashValue%28string%20hashAlgorithmName%29");
 		}

@@ -138,58 +138,58 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DefaultSectionIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DefaultSectionIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultSectionIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(DefaultSectionIndex), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(Header), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsActiveView), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(IsActiveView), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomedInView), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(IsZoomedInView), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SemanticZoomOwner), typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
-			typeof(global::Windows.UI.Xaml.Controls.Hub), 
+			nameof(SemanticZoomOwner), typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
+			typeof(global::Windows.UI.Xaml.Controls.Hub),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SemanticZoom)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Hub.SectionsInViewChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ScrollToSection( global::Windows.UI.Xaml.Controls.HubSection section)
+		public void ScrollToSection(global::Windows.UI.Xaml.Controls.HubSection section)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Hub", "void Hub.ScrollToSection(HubSection section)");
 		}
@@ -244,35 +244,35 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void MakeVisible( global::Windows.UI.Xaml.Controls.SemanticZoomLocation item)
+		public void MakeVisible(global::Windows.UI.Xaml.Controls.SemanticZoomLocation item)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Hub", "void Hub.MakeVisible(SemanticZoomLocation item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void StartViewChangeFrom(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Hub", "void Hub.StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void StartViewChangeTo(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Hub", "void Hub.StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CompleteViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void CompleteViewChangeFrom(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Hub", "void Hub.CompleteViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CompleteViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void CompleteViewChangeTo(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Hub", "void Hub.CompleteViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}

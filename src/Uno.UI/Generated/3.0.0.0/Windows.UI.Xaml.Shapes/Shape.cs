@@ -111,51 +111,51 @@ namespace Windows.UI.Xaml.Shapes
 		// Skipping already declared property StrokeDashArrayProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashCapProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashCapProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeDashCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
+			nameof(StrokeDashCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap),
+			typeof(global::Windows.UI.Xaml.Shapes.Shape),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeDashOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
+			nameof(StrokeDashOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Shapes.Shape),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeEndLineCapProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeEndLineCapProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeEndLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
+			nameof(StrokeEndLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap),
+			typeof(global::Windows.UI.Xaml.Shapes.Shape),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeLineJoinProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeLineJoinProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeLineJoin), typeof(global::Windows.UI.Xaml.Media.PenLineJoin), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
+			nameof(StrokeLineJoin), typeof(global::Windows.UI.Xaml.Media.PenLineJoin),
+			typeof(global::Windows.UI.Xaml.Shapes.Shape),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineJoin)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeMiterLimitProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeMiterLimitProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeMiterLimit), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
+			nameof(StrokeMiterLimit), typeof(double),
+			typeof(global::Windows.UI.Xaml.Shapes.Shape),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 		// Skipping already declared property StrokeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeStartLineCapProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeStartLineCapProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeStartLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap), 
-			typeof(global::Windows.UI.Xaml.Shapes.Shape), 
+			nameof(StrokeStartLineCap), typeof(global::Windows.UI.Xaml.Media.PenLineCap),
+			typeof(global::Windows.UI.Xaml.Shapes.Shape),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.PenLineCap)));
 #endif
 		// Skipping already declared property StrokeThicknessProperty

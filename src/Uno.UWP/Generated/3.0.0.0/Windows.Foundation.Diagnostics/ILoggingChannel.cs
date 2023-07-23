@@ -29,16 +29,16 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Enabled.get
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.Level.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogMessage( string eventString);
+		void LogMessage(string eventString);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogMessage( string eventString,  global::Windows.Foundation.Diagnostics.LoggingLevel level);
+		void LogMessage(string eventString, global::Windows.Foundation.Diagnostics.LoggingLevel level);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogValuePair( string value1,  int value2);
+		void LogValuePair(string value1, int value2);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogValuePair( string value1,  int value2,  global::Windows.Foundation.Diagnostics.LoggingLevel level);
+		void LogValuePair(string value1, int value2, global::Windows.Foundation.Diagnostics.LoggingLevel level);
 #endif
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.LoggingEnabled.add
 		// Forced skipping of method Windows.Foundation.Diagnostics.ILoggingChannel.LoggingEnabled.remove

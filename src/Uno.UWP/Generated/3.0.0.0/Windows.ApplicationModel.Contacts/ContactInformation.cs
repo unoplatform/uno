@@ -82,7 +82,7 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactInformation.CustomFields.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactField> QueryCustomFields( string customName)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactField> QueryCustomFields(string customName)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ContactField> ContactInformation.QueryCustomFields(string customName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CContactField%3E%20ContactInformation.QueryCustomFields%28string%20customName%29");
 		}

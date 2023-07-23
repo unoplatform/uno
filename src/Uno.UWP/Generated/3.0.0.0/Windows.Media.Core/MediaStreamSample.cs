@@ -130,21 +130,21 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSample.Direct3D11Surface.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface,  global::System.TimeSpan timestamp)
+		public static global::Windows.Media.Core.MediaStreamSample CreateFromDirect3D11Surface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface surface, global::System.TimeSpan timestamp)
 		{
 			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromDirect3D11Surface(IDirect3DSurface surface, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSample%20MediaStreamSample.CreateFromDirect3D11Surface%28IDirect3DSurface%20surface%2C%20TimeSpan%20timestamp%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaStreamSample CreateFromBuffer( global::Windows.Storage.Streams.IBuffer buffer,  global::System.TimeSpan timestamp)
+		public static global::Windows.Media.Core.MediaStreamSample CreateFromBuffer(global::Windows.Storage.Streams.IBuffer buffer, global::System.TimeSpan timestamp)
 		{
 			throw new global::System.NotImplementedException("The member MediaStreamSample MediaStreamSample.CreateFromBuffer(IBuffer buffer, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaStreamSample%20MediaStreamSample.CreateFromBuffer%28IBuffer%20buffer%2C%20TimeSpan%20timestamp%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Core.MediaStreamSample> CreateFromStreamAsync( global::Windows.Storage.Streams.IInputStream stream,  uint count,  global::System.TimeSpan timestamp)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Core.MediaStreamSample> CreateFromStreamAsync(global::Windows.Storage.Streams.IInputStream stream, uint count, global::System.TimeSpan timestamp)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaStreamSample> MediaStreamSample.CreateFromStreamAsync(IInputStream stream, uint count, TimeSpan timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaStreamSample%3E%20MediaStreamSample.CreateFromStreamAsync%28IInputStream%20stream%2C%20uint%20count%2C%20TimeSpan%20timestamp%29");
 		}

@@ -51,7 +51,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.Head.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose TryGetInteractionSourcePose( global::Windows.UI.Input.Spatial.SpatialInteractionSource source)
+		public global::Windows.UI.Input.Spatial.SpatialPointerInteractionSourcePose TryGetInteractionSourcePose(global::Windows.UI.Input.Spatial.SpatialInteractionSource source)
 		{
 			throw new global::System.NotImplementedException("The member SpatialPointerInteractionSourcePose SpatialPointerPose.TryGetInteractionSourcePose(SpatialInteractionSource source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerInteractionSourcePose%20SpatialPointerPose.TryGetInteractionSourcePose%28SpatialInteractionSource%20source%29");
 		}
@@ -60,7 +60,7 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialPointerPose.IsHeadCapturedBySystem.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetAtTimestamp( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::Windows.Perception.PerceptionTimestamp timestamp)
+		public static global::Windows.UI.Input.Spatial.SpatialPointerPose TryGetAtTimestamp(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::Windows.Perception.PerceptionTimestamp timestamp)
 		{
 			throw new global::System.NotImplementedException("The member SpatialPointerPose SpatialPointerPose.TryGetAtTimestamp(SpatialCoordinateSystem coordinateSystem, PerceptionTimestamp timestamp) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialPointerPose%20SpatialPointerPose.TryGetAtTimestamp%28SpatialCoordinateSystem%20coordinateSystem%2C%20PerceptionTimestamp%20timestamp%29");
 		}

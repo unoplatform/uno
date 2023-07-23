@@ -23,34 +23,34 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ExitElementContainerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"ExitElementContainer", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo), 
+			"ExitElementContainer", typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ExitElementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ExitElementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ExitElement), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo), 
+			nameof(ExitElement), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsEntranceElementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsEntranceElementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsEntranceElement", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo), 
+			"IsEntranceElement", typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsExitElementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsExitElementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsExitElement", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo), 
+			"IsExitElement", typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -67,14 +67,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsEntranceElementProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetIsEntranceElement( global::Windows.UI.Xaml.UIElement element)
+		public static bool GetIsEntranceElement(global::Windows.UI.Xaml.UIElement element)
 		{
 			return (bool)element.GetValue(IsEntranceElementProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetIsEntranceElement( global::Windows.UI.Xaml.UIElement element,  bool value)
+		public static void SetIsEntranceElement(global::Windows.UI.Xaml.UIElement element, bool value)
 		{
 			element.SetValue(IsEntranceElementProperty, value);
 		}
@@ -82,14 +82,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.IsExitElementProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetIsExitElement( global::Windows.UI.Xaml.UIElement element)
+		public static bool GetIsExitElement(global::Windows.UI.Xaml.UIElement element)
 		{
 			return (bool)element.GetValue(IsExitElementProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetIsExitElement( global::Windows.UI.Xaml.UIElement element,  bool value)
+		public static void SetIsExitElement(global::Windows.UI.Xaml.UIElement element, bool value)
 		{
 			element.SetValue(IsExitElementProperty, value);
 		}
@@ -97,14 +97,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo.ExitElementContainerProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetExitElementContainer( global::Windows.UI.Xaml.Controls.ListViewBase element)
+		public static bool GetExitElementContainer(global::Windows.UI.Xaml.Controls.ListViewBase element)
 		{
 			return (bool)element.GetValue(ExitElementContainerProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetExitElementContainer( global::Windows.UI.Xaml.Controls.ListViewBase element,  bool value)
+		public static void SetExitElementContainer(global::Windows.UI.Xaml.Controls.ListViewBase element, bool value)
 		{
 			element.SetValue(ExitElementContainerProperty, value);
 		}

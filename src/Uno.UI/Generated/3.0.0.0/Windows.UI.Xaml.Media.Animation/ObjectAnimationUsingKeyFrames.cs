@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Skipping already declared property KeyFrames
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty EnableDependentAnimationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(EnableDependentAnimation), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames), 
+			nameof(EnableDependentAnimation), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Media.Animation.ObjectAnimationUsingKeyFrames.ObjectAnimationUsingKeyFrames()

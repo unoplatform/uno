@@ -27,7 +27,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetActualStartPosition( global::System.TimeSpan position)
+		public void SetActualStartPosition(global::System.TimeSpan position)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSourceStartingRequest", "void MediaStreamSourceStartingRequest.SetActualStartPosition(TimeSpan position)");
 		}

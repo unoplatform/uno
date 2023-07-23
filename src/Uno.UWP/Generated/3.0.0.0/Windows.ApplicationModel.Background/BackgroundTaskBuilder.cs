@@ -89,14 +89,14 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.TaskEntryPoint.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetTrigger( global::Windows.ApplicationModel.Background.IBackgroundTrigger trigger)
+		public void SetTrigger(global::Windows.ApplicationModel.Background.IBackgroundTrigger trigger)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.SetTrigger(IBackgroundTrigger trigger)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddCondition( global::Windows.ApplicationModel.Background.IBackgroundCondition condition)
+		public void AddCondition(global::Windows.ApplicationModel.Background.IBackgroundCondition condition)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.AddCondition(IBackgroundCondition condition)");
 		}
@@ -118,7 +118,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.TaskGroup.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetTaskEntryPointClsid( global::System.Guid TaskEntryPoint)
+		public void SetTaskEntryPointClsid(global::System.Guid TaskEntryPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.SetTaskEntryPointClsid(Guid TaskEntryPoint)");
 		}

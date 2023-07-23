@@ -11,10 +11,10 @@ namespace Windows.UI.Xaml
 		void ResetTemplate();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool ProcessBinding( uint phase);
+		bool ProcessBinding(uint phase);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int ProcessBindings( global::Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs arg);
+		int ProcessBindings(global::Windows.UI.Xaml.Controls.ContainerContentChangingEventArgs arg);
 #endif
 	}
 }

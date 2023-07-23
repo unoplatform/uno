@@ -38,14 +38,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpDateOrDeltaHeaderValue HttpDateOrDeltaHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpDateOrDeltaHeaderValue%20HttpDateOrDeltaHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpDateOrDeltaHeaderValue.TryParse(string input, out HttpDateOrDeltaHeaderValue dateOrDeltaHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpDateOrDeltaHeaderValue.TryParse%28string%20input%2C%20out%20HttpDateOrDeltaHeaderValue%20dateOrDeltaHeaderValue%29");
 		}

@@ -239,35 +239,35 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsContentTypeSupported( string contentType)
+		public static bool IsContentTypeSupported(string contentType)
 		{
 			throw new global::System.NotImplementedException("The member bool AdaptiveMediaSource.IsContentTypeSupported(string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20AdaptiveMediaSource.IsContentTypeSupported%28string%20contentType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromUriAsync( global::System.Uri uri)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromUriAsync(global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromUriAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromUriAsync%28Uri%20uri%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromUriAsync( global::System.Uri uri,  global::Windows.Web.Http.HttpClient httpClient)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromUriAsync(global::System.Uri uri, global::Windows.Web.Http.HttpClient httpClient)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromUriAsync(Uri uri, HttpClient httpClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromUriAsync%28Uri%20uri%2C%20HttpClient%20httpClient%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromStreamAsync( global::Windows.Storage.Streams.IInputStream stream,  global::System.Uri uri,  string contentType)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromStreamAsync(global::Windows.Storage.Streams.IInputStream stream, global::System.Uri uri, string contentType)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromStreamAsync%28IInputStream%20stream%2C%20Uri%20uri%2C%20string%20contentType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromStreamAsync( global::Windows.Storage.Streams.IInputStream stream,  global::System.Uri uri,  string contentType,  global::Windows.Web.Http.HttpClient httpClient)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceCreationResult> CreateFromStreamAsync(global::Windows.Storage.Streams.IInputStream stream, global::System.Uri uri, string contentType, global::Windows.Web.Http.HttpClient httpClient)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AdaptiveMediaSourceCreationResult> AdaptiveMediaSource.CreateFromStreamAsync(IInputStream stream, Uri uri, string contentType, HttpClient httpClient) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAdaptiveMediaSourceCreationResult%3E%20AdaptiveMediaSource.CreateFromStreamAsync%28IInputStream%20stream%2C%20Uri%20uri%2C%20string%20contentType%2C%20HttpClient%20httpClient%29");
 		}

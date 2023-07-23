@@ -56,28 +56,28 @@ namespace Windows.Media.Casting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.Media.Casting.CastingPlaybackTypes type)
+		public static string GetDeviceSelector(global::Windows.Media.Casting.CastingPlaybackTypes type)
 		{
 			throw new global::System.NotImplementedException("The member string CastingDevice.GetDeviceSelector(CastingPlaybackTypes type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CastingDevice.GetDeviceSelector%28CastingPlaybackTypes%20type%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<string> GetDeviceSelectorFromCastingSourceAsync( global::Windows.Media.Casting.CastingSource castingSource)
+		public static global::Windows.Foundation.IAsyncOperation<string> GetDeviceSelectorFromCastingSourceAsync(global::Windows.Media.Casting.CastingSource castingSource)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CastingDevice.GetDeviceSelectorFromCastingSourceAsync(CastingSource castingSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CastingDevice.GetDeviceSelectorFromCastingSourceAsync%28CastingSource%20castingSource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingDevice> FromIdAsync( string value)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Casting.CastingDevice> FromIdAsync(string value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CastingDevice> CastingDevice.FromIdAsync(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCastingDevice%3E%20CastingDevice.FromIdAsync%28string%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> DeviceInfoSupportsCastingAsync( global::Windows.Devices.Enumeration.DeviceInformation device)
+		public static global::Windows.Foundation.IAsyncOperation<bool> DeviceInfoSupportsCastingAsync(global::Windows.Devices.Enumeration.DeviceInformation device)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> CastingDevice.DeviceInfoSupportsCastingAsync(DeviceInformation device) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20CastingDevice.DeviceInfoSupportsCastingAsync%28DeviceInformation%20device%29");
 		}

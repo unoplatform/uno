@@ -9,7 +9,7 @@ namespace Windows.Perception.Spatial
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Matrix4x4? TryGetTransformTo( global::Windows.Perception.Spatial.SpatialCoordinateSystem target)
+		public global::System.Numerics.Matrix4x4? TryGetTransformTo(global::Windows.Perception.Spatial.SpatialCoordinateSystem target)
 		{
 			throw new global::System.NotImplementedException("The member Matrix4x4? SpatialCoordinateSystem.TryGetTransformTo(SpatialCoordinateSystem target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Matrix4x4%3F%20SpatialCoordinateSystem.TryGetTransformTo%28SpatialCoordinateSystem%20target%29");
 		}

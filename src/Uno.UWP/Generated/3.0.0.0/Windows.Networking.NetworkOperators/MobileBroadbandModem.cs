@@ -94,7 +94,7 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModem.DeviceServices.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceService GetDeviceService( global::System.Guid deviceServiceId)
+		public global::Windows.Networking.NetworkOperators.MobileBroadbandDeviceService GetDeviceService(global::System.Guid deviceServiceId)
 		{
 			throw new global::System.NotImplementedException("The member MobileBroadbandDeviceService MobileBroadbandModem.GetDeviceService(Guid deviceServiceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandDeviceService%20MobileBroadbandModem.GetDeviceService%28Guid%20deviceServiceId%29");
 		}
@@ -124,7 +124,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandModemStatus> SetIsPassthroughEnabledAsync( bool value)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.MobileBroadbandModemStatus> SetIsPassthroughEnabledAsync(bool value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MobileBroadbandModemStatus> MobileBroadbandModem.SetIsPassthroughEnabledAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMobileBroadbandModemStatus%3E%20MobileBroadbandModem.SetIsPassthroughEnabledAsync%28bool%20value%29");
 		}
@@ -148,7 +148,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Networking.NetworkOperators.MobileBroadbandModem FromId( string deviceId)
+		public static global::Windows.Networking.NetworkOperators.MobileBroadbandModem FromId(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member MobileBroadbandModem MobileBroadbandModem.FromId(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MobileBroadbandModem%20MobileBroadbandModem.FromId%28string%20deviceId%29");
 		}

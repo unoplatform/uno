@@ -8,7 +8,7 @@ namespace Windows.Web
 	public partial interface IUriToStreamResolver 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IInputStream> UriToStreamAsync( global::System.Uri uri);
+		global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IInputStream> UriToStreamAsync(global::System.Uri uri);
 #endif
 	}
 }

@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.Background
 	public partial interface IBackgroundTaskInstance2 : global::Windows.ApplicationModel.Background.IBackgroundTaskInstance
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		uint GetThrottleCount( global::Windows.ApplicationModel.Background.BackgroundTaskThrottleCounter counter);
+		uint GetThrottleCount(global::Windows.ApplicationModel.Background.BackgroundTaskThrottleCounter counter);
 #endif
 	}
 }

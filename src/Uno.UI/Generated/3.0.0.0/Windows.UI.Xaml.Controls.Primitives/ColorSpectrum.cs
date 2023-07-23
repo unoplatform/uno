@@ -149,82 +149,82 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Color), typeof(global::Windows.UI.Color), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(Color), typeof(global::Windows.UI.Color),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ComponentsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ComponentsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Components), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(Components), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HsvColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HsvColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HsvColor), typeof(global::System.Numerics.Vector4), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(HsvColor), typeof(global::System.Numerics.Vector4),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Numerics.Vector4)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxHueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxHueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxHue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(MaxHue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxSaturationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxSaturationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxSaturation), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(MaxSaturation), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxValue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(MaxValue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinHueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinHueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinHue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(MinHue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinSaturationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinSaturationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinSaturation), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(MinSaturation), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinValue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(MinValue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ShapeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ShapeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Shape), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumShape), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
+			nameof(Shape), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumShape),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorSpectrumShape)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

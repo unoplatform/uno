@@ -80,31 +80,31 @@ namespace Windows.Web.UI
 		void Stop();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Navigate( global::System.Uri source);
+		void Navigate(global::System.Uri source);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void NavigateToString( string text);
+		void NavigateToString(string text);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void NavigateToLocalStreamUri( global::System.Uri source,  global::Windows.Web.IUriToStreamResolver streamResolver);
+		void NavigateToLocalStreamUri(global::System.Uri source, global::Windows.Web.IUriToStreamResolver streamResolver);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void NavigateWithHttpRequestMessage( global::Windows.Web.Http.HttpRequestMessage requestMessage);
+		void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync( string scriptName,  global::System.Collections.Generic.IEnumerable<string> arguments);
+		global::Windows.Foundation.IAsyncOperation<string> InvokeScriptAsync(string scriptName, global::System.Collections.Generic.IEnumerable<string> arguments);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream);
+		global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream stream);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.DataTransfer.DataPackage> CaptureSelectedContentToDataPackageAsync();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath);
+		global::System.Uri BuildLocalStreamUri(string contentIdentifier, string relativePath);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void GetDeferredPermissionRequestById( uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result);
+		void GetDeferredPermissionRequestById(uint id, out global::Windows.Web.UI.WebViewControlDeferredPermissionRequest result);
 #endif
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.add
 		// Forced skipping of method Windows.Web.UI.IWebViewControl.NavigationStarting.remove

@@ -95,10 +95,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property XYFocusDown
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AllowedScriptNotifyUrisProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AllowedScriptNotifyUrisProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AllowedScriptNotifyUris), typeof(global::System.Collections.Generic.IList<global::System.Uri>), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			nameof(AllowedScriptNotifyUris), typeof(global::System.Collections.Generic.IList<global::System.Uri>),
+			typeof(global::Windows.UI.Xaml.Controls.WebView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::System.Uri>)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -113,10 +113,10 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DataTransferPackageProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DataTransferPackageProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DataTransferPackage), typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			nameof(DataTransferPackage), typeof(global::Windows.ApplicationModel.DataTransfer.DataPackage),
+			typeof(global::Windows.UI.Xaml.Controls.WebView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.DataTransfer.DataPackage)));
 #endif
 		// Skipping already declared property SourceProperty
@@ -124,19 +124,19 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CanGoForwardProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DefaultBackgroundColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DefaultBackgroundColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultBackgroundColor), typeof(global::Windows.UI.Color), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			nameof(DefaultBackgroundColor), typeof(global::Windows.UI.Color),
+			typeof(global::Windows.UI.Xaml.Controls.WebView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 #endif
 		// Skipping already declared property DocumentTitleProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContainsFullScreenElementProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContainsFullScreenElementProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContainsFullScreenElement), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.WebView), 
+			nameof(ContainsFullScreenElement), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.WebView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property XYFocusUpProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebView( global::Windows.UI.Xaml.Controls.WebViewExecutionMode executionMode) : base()
+		public WebView(global::Windows.UI.Xaml.Controls.WebViewExecutionMode executionMode) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "WebView.WebView(WebViewExecutionMode executionMode)");
 		}
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.NavigationFailed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public string InvokeScript( string scriptName,  string[] arguments)
+		public string InvokeScript(string scriptName, string[] arguments)
 		{
 			throw new global::System.NotImplementedException("The member string WebView.InvokeScript(string scriptName, string[] arguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20WebView.InvokeScript%28string%20scriptName%2C%20string%5B%5D%20arguments%29");
 		}
@@ -198,7 +198,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.WebView.Stop()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync( global::Windows.Storage.Streams.IRandomAccessStream stream)
+		public global::Windows.Foundation.IAsyncAction CapturePreviewToStreamAsync(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction WebView.CapturePreviewToStreamAsync(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20WebView.CapturePreviewToStreamAsync%28IRandomAccessStream%20stream%29");
 		}
@@ -213,14 +213,14 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NavigateToLocalStreamUri( global::System.Uri source,  global::Windows.Web.IUriToStreamResolver streamResolver)
+		public void NavigateToLocalStreamUri(global::System.Uri source, global::Windows.Web.IUriToStreamResolver streamResolver)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.NavigateToLocalStreamUri(Uri source, IUriToStreamResolver streamResolver)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Uri BuildLocalStreamUri( string contentIdentifier,  string relativePath)
+		public global::System.Uri BuildLocalStreamUri(string contentIdentifier, string relativePath)
 		{
 			throw new global::System.NotImplementedException("The member Uri WebView.BuildLocalStreamUri(string contentIdentifier, string relativePath) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Uri%20WebView.BuildLocalStreamUri%28string%20contentIdentifier%2C%20string%20relativePath%29");
 		}
@@ -259,14 +259,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.WebView.PermissionRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddWebAllowedObject( string name,  object pObject)
+		public void AddWebAllowedObject(string name, object pObject)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebView", "void WebView.AddWebAllowedObject(string name, object pObject)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Controls.WebViewDeferredPermissionRequest DeferredPermissionRequestById( uint id)
+		public global::Windows.UI.Xaml.Controls.WebViewDeferredPermissionRequest DeferredPermissionRequestById(uint id)
 		{
 			throw new global::System.NotImplementedException("The member WebViewDeferredPermissionRequest WebView.DeferredPermissionRequestById(uint id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=WebViewDeferredPermissionRequest%20WebView.DeferredPermissionRequestById%28uint%20id%29");
 		}

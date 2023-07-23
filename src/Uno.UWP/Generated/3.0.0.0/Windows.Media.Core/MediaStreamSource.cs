@@ -127,7 +127,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaStreamSource( global::Windows.Media.Core.IMediaStreamDescriptor descriptor) 
+		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaStreamSource.MediaStreamSource(IMediaStreamDescriptor descriptor)");
 		}
@@ -135,7 +135,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaStreamSource(Windows.Media.Core.IMediaStreamDescriptor)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaStreamSource( global::Windows.Media.Core.IMediaStreamDescriptor descriptor,  global::Windows.Media.Core.IMediaStreamDescriptor descriptor2) 
+		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor, global::Windows.Media.Core.IMediaStreamDescriptor descriptor2) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaStreamSource.MediaStreamSource(IMediaStreamDescriptor descriptor, IMediaStreamDescriptor descriptor2)");
 		}
@@ -153,14 +153,14 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.SwitchStreamsRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyError( global::Windows.Media.Core.MediaStreamSourceErrorStatus errorStatus)
+		public void NotifyError(global::Windows.Media.Core.MediaStreamSourceErrorStatus errorStatus)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.NotifyError(MediaStreamSourceErrorStatus errorStatus)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddStreamDescriptor( global::Windows.Media.Core.IMediaStreamDescriptor descriptor)
+		public void AddStreamDescriptor(global::Windows.Media.Core.IMediaStreamDescriptor descriptor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.AddStreamDescriptor(IMediaStreamDescriptor descriptor)");
 		}
@@ -175,7 +175,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.BufferTime.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetBufferedRange( global::System.TimeSpan startOffset,  global::System.TimeSpan endOffset)
+		public void SetBufferedRange(global::System.TimeSpan startOffset, global::System.TimeSpan endOffset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.SetBufferedRange(TimeSpan startOffset, TimeSpan endOffset)");
 		}
@@ -186,7 +186,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.Thumbnail.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddProtectionKey( global::Windows.Media.Core.IMediaStreamDescriptor streamDescriptor,  byte[] keyIdentifier,  byte[] licenseData)
+		public void AddProtectionKey(global::Windows.Media.Core.IMediaStreamDescriptor streamDescriptor, byte[] keyIdentifier, byte[] licenseData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "void MediaStreamSource.AddProtectionKey(IMediaStreamDescriptor streamDescriptor, byte[] keyIdentifier, byte[] licenseData)");
 		}

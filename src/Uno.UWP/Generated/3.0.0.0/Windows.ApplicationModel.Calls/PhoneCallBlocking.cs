@@ -41,7 +41,7 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneCallBlocking.BlockPrivateNumbers.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> SetCallBlockingListAsync( global::System.Collections.Generic.IEnumerable<string> phoneNumberList)
+		public static global::Windows.Foundation.IAsyncOperation<bool> SetCallBlockingListAsync(global::System.Collections.Generic.IEnumerable<string> phoneNumberList)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallBlocking.SetCallBlockingListAsync(IEnumerable<string> phoneNumberList) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PhoneCallBlocking.SetCallBlockingListAsync%28IEnumerable%3Cstring%3E%20phoneNumberList%29");
 		}

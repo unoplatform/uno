@@ -65,18 +65,18 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PathProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PathProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Path), typeof(global::Windows.Devices.Geolocation.Geopath), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapPolyline), 
+			nameof(Path), typeof(global::Windows.Devices.Geolocation.Geopath),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapPolyline),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopath)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(StrokeDashed), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapPolyline), 
+			nameof(StrokeDashed), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapPolyline),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

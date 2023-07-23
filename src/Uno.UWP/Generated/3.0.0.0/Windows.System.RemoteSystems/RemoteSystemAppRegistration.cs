@@ -45,7 +45,7 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetForUser( global::Windows.System.User user)
+		public static global::Windows.System.RemoteSystems.RemoteSystemAppRegistration GetForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemAppRegistration RemoteSystemAppRegistration.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemAppRegistration%20RemoteSystemAppRegistration.GetForUser%28User%20user%29");
 		}

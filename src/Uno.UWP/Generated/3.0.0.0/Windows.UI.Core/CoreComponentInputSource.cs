@@ -124,7 +124,7 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreComponentInputSource.PointerWheelChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Core.CoreVirtualKeyStates GetCurrentKeyState( global::Windows.System.VirtualKey virtualKey)
+		public global::Windows.UI.Core.CoreVirtualKeyStates GetCurrentKeyState(global::Windows.System.VirtualKey virtualKey)
 		{
 			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreComponentInputSource.GetCurrentKeyState(VirtualKey virtualKey) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreVirtualKeyStates%20CoreComponentInputSource.GetCurrentKeyState%28VirtualKey%20virtualKey%29");
 		}

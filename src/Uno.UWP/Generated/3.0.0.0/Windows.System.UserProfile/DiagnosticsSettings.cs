@@ -38,7 +38,7 @@ namespace Windows.System.UserProfile
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.UserProfile.DiagnosticsSettings GetForUser( global::Windows.System.User user)
+		public static global::Windows.System.UserProfile.DiagnosticsSettings GetForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member DiagnosticsSettings DiagnosticsSettings.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DiagnosticsSettings%20DiagnosticsSettings.GetForUser%28User%20user%29");
 		}

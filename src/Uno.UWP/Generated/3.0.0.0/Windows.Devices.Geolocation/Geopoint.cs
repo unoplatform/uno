@@ -33,7 +33,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition)
 #if false || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Geopoint( global::Windows.Devices.Geolocation.BasicGeoposition position,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
+		public Geopoint(global::Windows.Devices.Geolocation.BasicGeoposition position, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopoint", "Geopoint.Geopoint(BasicGeoposition position, AltitudeReferenceSystem altitudeReferenceSystem)");
 		}
@@ -41,7 +41,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geopoint.Geopoint(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem)
 #if false || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Geopoint( global::Windows.Devices.Geolocation.BasicGeoposition position,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem,  uint spatialReferenceId) 
+		public Geopoint(global::Windows.Devices.Geolocation.BasicGeoposition position, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopoint", "Geopoint.Geopoint(BasicGeoposition position, AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)");
 		}

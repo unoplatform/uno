@@ -20,21 +20,21 @@ namespace Windows.Devices.Printers.Extensions
 		// Forced skipping of method Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs.Status.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetExtendedStatus( global::Windows.Devices.Printers.Extensions.Print3DWorkflowDetail value)
+		public void SetExtendedStatus(global::Windows.Devices.Printers.Extensions.Print3DWorkflowDetail value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs", "void Print3DWorkflowPrintRequestedEventArgs.SetExtendedStatus(Print3DWorkflowDetail value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSource( object source)
+		public void SetSource(object source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs", "void Print3DWorkflowPrintRequestedEventArgs.SetSource(object source)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSourceChanged( bool value)
+		public void SetSourceChanged(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Printers.Extensions.Print3DWorkflowPrintRequestedEventArgs", "void Print3DWorkflowPrintRequestedEventArgs.SetSourceChanged(bool value)");
 		}

@@ -29,7 +29,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BitmapTypedValue( object value,  global::Windows.Foundation.PropertyType type) 
+		public BitmapTypedValue(object value, global::Windows.Foundation.PropertyType type) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.BitmapTypedValue", "BitmapTypedValue.BitmapTypedValue(object value, PropertyType type)");
 		}

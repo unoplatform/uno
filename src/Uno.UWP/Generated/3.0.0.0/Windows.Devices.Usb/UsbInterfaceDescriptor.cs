@@ -64,14 +64,14 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbInterfaceDescriptor.InterfaceNumber.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbInterfaceDescriptor parsed)
+		public static bool TryParse(global::Windows.Devices.Usb.UsbDescriptor descriptor, out global::Windows.Devices.Usb.UsbInterfaceDescriptor parsed)
 		{
 			throw new global::System.NotImplementedException("The member bool UsbInterfaceDescriptor.TryParse(UsbDescriptor descriptor, out UsbInterfaceDescriptor parsed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UsbInterfaceDescriptor.TryParse%28UsbDescriptor%20descriptor%2C%20out%20UsbInterfaceDescriptor%20parsed%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Usb.UsbInterfaceDescriptor Parse( global::Windows.Devices.Usb.UsbDescriptor descriptor)
+		public static global::Windows.Devices.Usb.UsbInterfaceDescriptor Parse(global::Windows.Devices.Usb.UsbDescriptor descriptor)
 		{
 			throw new global::System.NotImplementedException("The member UsbInterfaceDescriptor UsbInterfaceDescriptor.Parse(UsbDescriptor descriptor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UsbInterfaceDescriptor%20UsbInterfaceDescriptor.Parse%28UsbDescriptor%20descriptor%29");
 		}

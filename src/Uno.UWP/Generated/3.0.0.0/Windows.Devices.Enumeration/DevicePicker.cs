@@ -56,28 +56,28 @@ namespace Windows.Devices.Enumeration
 		// Forced skipping of method Windows.Devices.Enumeration.DevicePicker.DevicePickerDismissed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show( global::Windows.Foundation.Rect selection)
+		public void Show(global::Windows.Foundation.Rect selection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePicker", "void DevicePicker.Show(Rect selection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Show( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement placement)
+		public void Show(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement placement)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePicker", "void DevicePicker.Show(Rect selection, Placement placement)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> PickSingleDeviceAsync( global::Windows.Foundation.Rect selection)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> PickSingleDeviceAsync(global::Windows.Foundation.Rect selection)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DevicePicker.PickSingleDeviceAsync(Rect selection) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DevicePicker.PickSingleDeviceAsync%28Rect%20selection%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> PickSingleDeviceAsync( global::Windows.Foundation.Rect selection,  global::Windows.UI.Popups.Placement placement)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> PickSingleDeviceAsync(global::Windows.Foundation.Rect selection, global::Windows.UI.Popups.Placement placement)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DevicePicker.PickSingleDeviceAsync(Rect selection, Placement placement) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDeviceInformation%3E%20DevicePicker.PickSingleDeviceAsync%28Rect%20selection%2C%20Placement%20placement%29");
 		}
@@ -91,7 +91,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDisplayStatus( global::Windows.Devices.Enumeration.DeviceInformation device,  string status,  global::Windows.Devices.Enumeration.DevicePickerDisplayStatusOptions options)
+		public void SetDisplayStatus(global::Windows.Devices.Enumeration.DeviceInformation device, string status, global::Windows.Devices.Enumeration.DevicePickerDisplayStatusOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePicker", "void DevicePicker.SetDisplayStatus(DeviceInformation device, string status, DevicePickerDisplayStatusOptions options)");
 		}

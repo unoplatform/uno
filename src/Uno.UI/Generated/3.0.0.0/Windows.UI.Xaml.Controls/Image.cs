@@ -35,18 +35,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty NineGridProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty NineGridProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(NineGrid), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Image), 
+			nameof(NineGrid), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Image),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlayToSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlayToSource), typeof(global::Windows.Media.PlayTo.PlayToSource), 
-			typeof(global::Windows.UI.Xaml.Controls.Image), 
+			nameof(PlayToSource), typeof(global::Windows.Media.PlayTo.PlayToSource),
+			typeof(global::Windows.UI.Xaml.Controls.Image),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Media.PlayTo.PlayToSource)));
 #endif
 		// Skipping already declared property SourceProperty

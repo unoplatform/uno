@@ -25,14 +25,14 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.BackgroundMediaPlayer.MessageReceivedFromForeground.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SendMessageToBackground( global::Windows.Foundation.Collections.ValueSet value)
+		public static void SendMessageToBackground(global::Windows.Foundation.Collections.ValueSet value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "void BackgroundMediaPlayer.SendMessageToBackground(ValueSet value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SendMessageToForeground( global::Windows.Foundation.Collections.ValueSet value)
+		public static void SendMessageToForeground(global::Windows.Foundation.Collections.ValueSet value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.BackgroundMediaPlayer", "void BackgroundMediaPlayer.SendMessageToForeground(ValueSet value)");
 		}

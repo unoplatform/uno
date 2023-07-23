@@ -15,13 +15,13 @@ namespace Windows.Media.Audio
 #endif
 		// Forced skipping of method Windows.Media.Audio.IAudioInputNode.OutgoingConnections.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void AddOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination);
+		void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void AddOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination,  double gain);
+		void AddOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination, double gain);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void RemoveOutgoingConnection( global::Windows.Media.Audio.IAudioNode destination);
+		void RemoveOutgoingConnection(global::Windows.Media.Audio.IAudioNode destination);
 #endif
 	}
 }

@@ -65,14 +65,14 @@ namespace Windows.Devices.WiFiDirect
 		// Forced skipping of method Windows.Devices.WiFiDirect.WiFiDirectInformationElement.Value.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromBuffer( global::Windows.Storage.Streams.IBuffer buffer)
+		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromBuffer(IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectInformationElement.CreateFromBuffer%28IBuffer%20buffer%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromDeviceInformation( global::Windows.Devices.Enumeration.DeviceInformation deviceInformation)
+		public static global::System.Collections.Generic.IList<global::Windows.Devices.WiFiDirect.WiFiDirectInformationElement> CreateFromDeviceInformation(global::Windows.Devices.Enumeration.DeviceInformation deviceInformation)
 		{
 			throw new global::System.NotImplementedException("The member IList<WiFiDirectInformationElement> WiFiDirectInformationElement.CreateFromDeviceInformation(DeviceInformation deviceInformation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3CWiFiDirectInformationElement%3E%20WiFiDirectInformationElement.CreateFromDeviceInformation%28DeviceInformation%20deviceInformation%29");
 		}

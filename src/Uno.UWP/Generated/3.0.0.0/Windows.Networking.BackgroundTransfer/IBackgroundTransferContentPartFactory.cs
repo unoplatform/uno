@@ -8,10 +8,10 @@ namespace Windows.Networking.BackgroundTransfer
 	public partial interface IBackgroundTransferContentPartFactory 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart CreateWithName( string name);
+		global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart CreateWithName(string name);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart CreateWithNameAndFileName( string name,  string fileName);
+		global::Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart CreateWithNameAndFileName(string name, string fileName);
 #endif
 	}
 }

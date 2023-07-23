@@ -97,14 +97,14 @@ namespace Windows.ApplicationModel
 		// Forced skipping of method Windows.ApplicationModel.AppInfo.Current.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelId( string appUserModelId)
+		public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelId(string appUserModelId)
 		{
 			throw new global::System.NotImplementedException("The member AppInfo AppInfo.GetFromAppUserModelId(string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInfo%20AppInfo.GetFromAppUserModelId%28string%20appUserModelId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelIdForUser( global::Windows.System.User user,  string appUserModelId)
+		public static global::Windows.ApplicationModel.AppInfo GetFromAppUserModelIdForUser(global::Windows.System.User user, string appUserModelId)
 		{
 			throw new global::System.NotImplementedException("The member AppInfo AppInfo.GetFromAppUserModelIdForUser(User user, string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInfo%20AppInfo.GetFromAppUserModelIdForUser%28User%20user%2C%20string%20appUserModelId%29");
 		}

@@ -49,7 +49,7 @@ namespace Windows.Media.Capture.Frames
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceGroup> FromIdAsync( string id)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Capture.Frames.MediaFrameSourceGroup> FromIdAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MediaFrameSourceGroup> MediaFrameSourceGroup.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMediaFrameSourceGroup%3E%20MediaFrameSourceGroup.FromIdAsync%28string%20id%29");
 		}

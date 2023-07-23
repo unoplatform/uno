@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 		// Forced skipping of method Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation.SourcePackageFamilyName.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReportCompleted( string itemId)
+		public void ReportCompleted(string itemId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation", "void AddAppointmentOperation.ReportCompleted(string itemId)");
 		}
@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Appointments.AppointmentsProvider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReportError( string value)
+		public void ReportError(string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Appointments.AppointmentsProvider.AddAppointmentOperation", "void AddAppointmentOperation.ReportError(string value)");
 		}

@@ -53,14 +53,14 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitterDecayModel.NaturalProperties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateNatural( double minGain,  double maxGain,  double unityGainDistance,  double cutoffDistance)
+		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance)
 		{
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateNatural(double minGain, double maxGain, double unityGainDistance, double cutoffDistance) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitterDecayModel.CreateNatural%28double%20minGain%2C%20double%20maxGain%2C%20double%20unityGainDistance%2C%20double%20cutoffDistance%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateCustom( double minGain,  double maxGain)
+		public static global::Windows.Media.Audio.AudioNodeEmitterDecayModel CreateCustom(double minGain, double maxGain)
 		{
 			throw new global::System.NotImplementedException("The member AudioNodeEmitterDecayModel AudioNodeEmitterDecayModel.CreateCustom(double minGain, double maxGain) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioNodeEmitterDecayModel%20AudioNodeEmitterDecayModel.CreateCustom%28double%20minGain%2C%20double%20maxGain%29");
 		}

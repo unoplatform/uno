@@ -34,18 +34,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Items), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.MenuFlyoutItemBase>), 
-			typeof(global::Windows.UI.Xaml.Controls.MenuBarItem), 
+			nameof(Items), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.MenuFlyoutItemBase>),
+			typeof(global::Windows.UI.Xaml.Controls.MenuBarItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.MenuFlyoutItemBase>)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Title), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.MenuBarItem), 
+			nameof(Title), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.MenuBarItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.MenuBarItem.MenuBarItem()

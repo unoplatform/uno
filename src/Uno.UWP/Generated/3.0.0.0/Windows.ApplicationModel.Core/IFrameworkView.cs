@@ -8,13 +8,13 @@ namespace Windows.ApplicationModel.Core
 	public partial interface IFrameworkView 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Initialize( global::Windows.ApplicationModel.Core.CoreApplicationView applicationView);
+		void Initialize(global::Windows.ApplicationModel.Core.CoreApplicationView applicationView);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetWindow( global::Windows.UI.Core.CoreWindow window);
+		void SetWindow(global::Windows.UI.Core.CoreWindow window);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Load( string entryPoint);
+		void Load(string entryPoint);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Run();

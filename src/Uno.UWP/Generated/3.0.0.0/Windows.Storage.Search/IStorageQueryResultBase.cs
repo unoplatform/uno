@@ -22,13 +22,13 @@ namespace Windows.Storage.Search
 		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.OptionsChanged.add
 		// Forced skipping of method Windows.Storage.Search.IStorageQueryResultBase.OptionsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync( object value);
+		global::Windows.Foundation.IAsyncOperation<uint> FindStartIndexAsync(object value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.Storage.Search.QueryOptions GetCurrentQueryOptions();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ApplyNewQueryOptions( global::Windows.Storage.Search.QueryOptions newQueryOptions);
+		void ApplyNewQueryOptions(global::Windows.Storage.Search.QueryOptions newQueryOptions);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		event global::Windows.Foundation.TypedEventHandler<global::Windows.Storage.Search.IStorageQueryResultBase, object> ContentsChanged;

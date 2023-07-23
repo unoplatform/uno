@@ -210,14 +210,14 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayPath.Scaling.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayModeInfo> FindModes( global::Windows.Devices.Display.Core.DisplayModeQueryOptions flags)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Display.Core.DisplayModeInfo> FindModes(global::Windows.Devices.Display.Core.DisplayModeQueryOptions flags)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayModeInfo> DisplayPath.FindModes(DisplayModeQueryOptions flags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CDisplayModeInfo%3E%20DisplayPath.FindModes%28DisplayModeQueryOptions%20flags%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ApplyPropertiesFromMode( global::Windows.Devices.Display.Core.DisplayModeInfo modeResult)
+		public void ApplyPropertiesFromMode(global::Windows.Devices.Display.Core.DisplayModeInfo modeResult)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPath", "void DisplayPath.ApplyPropertiesFromMode(DisplayModeInfo modeResult)");
 		}

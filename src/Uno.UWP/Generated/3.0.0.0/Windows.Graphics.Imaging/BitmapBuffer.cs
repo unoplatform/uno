@@ -16,7 +16,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Graphics.Imaging.BitmapPlaneDescription GetPlaneDescription( int index)
+		public global::Windows.Graphics.Imaging.BitmapPlaneDescription GetPlaneDescription(int index)
 		{
 			throw new global::System.NotImplementedException("The member BitmapPlaneDescription BitmapBuffer.GetPlaneDescription(int index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BitmapPlaneDescription%20BitmapBuffer.GetPlaneDescription%28int%20index%29");
 		}

@@ -80,7 +80,7 @@ namespace Windows.UI.Input.Inking.Analysis
 		// Forced skipping of method Windows.UI.Input.Inking.Analysis.InkAnalysisRoot.RecognizedText.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.Analysis.IInkAnalysisNode> FindNodes( global::Windows.UI.Input.Inking.Analysis.InkAnalysisNodeKind nodeKind)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Input.Inking.Analysis.IInkAnalysisNode> FindNodes(global::Windows.UI.Input.Inking.Analysis.InkAnalysisNodeKind nodeKind)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<IInkAnalysisNode> InkAnalysisRoot.FindNodes(InkAnalysisNodeKind nodeKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CIInkAnalysisNode%3E%20InkAnalysisRoot.FindNodes%28InkAnalysisNodeKind%20nodeKind%29");
 		}

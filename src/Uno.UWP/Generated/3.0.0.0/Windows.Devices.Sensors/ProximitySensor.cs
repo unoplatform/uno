@@ -58,7 +58,7 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ProximitySensorReading> GetReadingsFromTriggerDetails( global::Windows.Devices.Sensors.SensorDataThresholdTriggerDetails triggerDetails)
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ProximitySensorReading> GetReadingsFromTriggerDetails(global::Windows.Devices.Sensors.SensorDataThresholdTriggerDetails triggerDetails)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ProximitySensorReading> ProximitySensor.GetReadingsFromTriggerDetails(SensorDataThresholdTriggerDetails triggerDetails) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CProximitySensorReading%3E%20ProximitySensor.GetReadingsFromTriggerDetails%28SensorDataThresholdTriggerDetails%20triggerDetails%29");
 		}
@@ -66,7 +66,7 @@ namespace Windows.Devices.Sensors
 		// Skipping already declared method Windows.Devices.Sensors.ProximitySensor.GetDeviceSelector()
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Sensors.ProximitySensor FromId( string sensorId)
+		public static global::Windows.Devices.Sensors.ProximitySensor FromId(string sensorId)
 		{
 			throw new global::System.NotImplementedException("The member ProximitySensor ProximitySensor.FromId(string sensorId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProximitySensor%20ProximitySensor.FromId%28string%20sensorId%29");
 		}

@@ -16,7 +16,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetFrameStyle( global::Windows.UI.WindowManagement.AppWindowFrameStyle frameStyle)
+		public void SetFrameStyle(global::Windows.UI.WindowManagement.AppWindowFrameStyle frameStyle)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindowFrame", "void AppWindowFrame.SetFrameStyle(AppWindowFrameStyle frameStyle)");
 		}

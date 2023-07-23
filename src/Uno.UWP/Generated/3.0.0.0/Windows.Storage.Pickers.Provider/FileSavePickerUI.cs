@@ -58,7 +58,7 @@ namespace Windows.Storage.Pickers.Provider
 		// Forced skipping of method Windows.Storage.Pickers.Provider.FileSavePickerUI.FileName.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Pickers.Provider.SetFileNameResult TrySetFileName( string value)
+		public global::Windows.Storage.Pickers.Provider.SetFileNameResult TrySetFileName(string value)
 		{
 			throw new global::System.NotImplementedException("The member SetFileNameResult FileSavePickerUI.TrySetFileName(string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SetFileNameResult%20FileSavePickerUI.TrySetFileName%28string%20value%29");
 		}

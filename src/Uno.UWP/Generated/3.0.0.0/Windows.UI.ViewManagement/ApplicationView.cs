@@ -229,14 +229,14 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public bool TryResizeView( global::Windows.Foundation.Size value)
+		public bool TryResizeView(global::Windows.Foundation.Size value)
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryResizeView(Size value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ApplicationView.TryResizeView%28Size%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
-		public void SetPreferredMinSize( global::Windows.Foundation.Size minSize)
+		public void SetPreferredMinSize(global::Windows.Foundation.Size minSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.SetPreferredMinSize(Size minSize)");
 		}
@@ -272,7 +272,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void ClearPersistedState( string key)
+		public static void ClearPersistedState(string key)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ClearPersistedState(string key)");
 		}
@@ -290,7 +290,7 @@ namespace Windows.UI.ViewManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static int GetApplicationViewIdForWindow( global::Windows.UI.Core.ICoreWindow window)
+		public static int GetApplicationViewIdForWindow(global::Windows.UI.Core.ICoreWindow window)
 		{
 			throw new global::System.NotImplementedException("The member int ApplicationView.GetApplicationViewIdForWindow(ICoreWindow window) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20ApplicationView.GetApplicationViewIdForWindow%28ICoreWindow%20window%29");
 		}

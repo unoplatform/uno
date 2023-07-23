@@ -113,7 +113,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public TimedMetadataTrack( string id,  string language,  global::Windows.Media.Core.TimedMetadataKind kind) 
+		public TimedMetadataTrack(string id, string language, global::Windows.Media.Core.TimedMetadataKind kind) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "TimedMetadataTrack.TimedMetadataTrack(string id, string language, TimedMetadataKind kind)");
 		}
@@ -131,14 +131,14 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.TimedMetadataTrack.DispatchType.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddCue( global::Windows.Media.Core.IMediaCue cue)
+		public void AddCue(global::Windows.Media.Core.IMediaCue cue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "void TimedMetadataTrack.AddCue(IMediaCue cue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveCue( global::Windows.Media.Core.IMediaCue cue)
+		public void RemoveCue(global::Windows.Media.Core.IMediaCue cue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataTrack", "void TimedMetadataTrack.RemoveCue(IMediaCue cue)");
 		}

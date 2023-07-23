@@ -41,7 +41,7 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.MemoryManager.ExpectedAppMemoryUsageLimit.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TrySetAppMemoryUsageLimit( ulong value)
+		public static bool TrySetAppMemoryUsageLimit(ulong value)
 		{
 			throw new global::System.NotImplementedException("The member bool MemoryManager.TrySetAppMemoryUsageLimit(ulong value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MemoryManager.TrySetAppMemoryUsageLimit%28ulong%20value%29");
 		}

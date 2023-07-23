@@ -27,14 +27,14 @@ namespace Windows.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void DeleteSessionById( string sessionId)
+		public static void DeleteSessionById(string sessionId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.MdmSessionManager", "void MdmSessionManager.DeleteSessionById(string sessionId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Management.MdmSession GetSessionById( string sessionId)
+		public static global::Windows.Management.MdmSession GetSessionById(string sessionId)
 		{
 			throw new global::System.NotImplementedException("The member MdmSession MdmSessionManager.GetSessionById(string sessionId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MdmSession%20MdmSessionManager.GetSessionById%28string%20sessionId%29");
 		}

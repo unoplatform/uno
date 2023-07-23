@@ -117,7 +117,7 @@ namespace Windows.ApplicationModel.Email
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailFolder.Kind.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailFolder> CreateFolderAsync( string name)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailFolder> CreateFolderAsync(string name)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailFolder> EmailFolder.CreateFolderAsync(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailFolder%3E%20EmailFolder.CreateFolderAsync%28string%20name%29");
 		}
@@ -145,14 +145,14 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Email.EmailConversationReader GetConversationReader( global::Windows.ApplicationModel.Email.EmailQueryOptions options)
+		public global::Windows.ApplicationModel.Email.EmailConversationReader GetConversationReader(global::Windows.ApplicationModel.Email.EmailQueryOptions options)
 		{
 			throw new global::System.NotImplementedException("The member EmailConversationReader EmailFolder.GetConversationReader(EmailQueryOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailConversationReader%20EmailFolder.GetConversationReader%28EmailQueryOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailMessage> GetMessageAsync( string id)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Email.EmailMessage> GetMessageAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<EmailMessage> EmailFolder.GetMessageAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CEmailMessage%3E%20EmailFolder.GetMessageAsync%28string%20id%29");
 		}
@@ -166,7 +166,7 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Email.EmailMessageReader GetMessageReader( global::Windows.ApplicationModel.Email.EmailQueryOptions options)
+		public global::Windows.ApplicationModel.Email.EmailMessageReader GetMessageReader(global::Windows.ApplicationModel.Email.EmailQueryOptions options)
 		{
 			throw new global::System.NotImplementedException("The member EmailMessageReader EmailFolder.GetMessageReader(EmailQueryOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=EmailMessageReader%20EmailFolder.GetMessageReader%28EmailQueryOptions%20options%29");
 		}
@@ -180,14 +180,14 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryMoveAsync( global::Windows.ApplicationModel.Email.EmailFolder newParentFolder)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryMoveAsync(global::Windows.ApplicationModel.Email.EmailFolder newParentFolder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EmailFolder.TryMoveAsync(EmailFolder newParentFolder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20EmailFolder.TryMoveAsync%28EmailFolder%20newParentFolder%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryMoveAsync( global::Windows.ApplicationModel.Email.EmailFolder newParentFolder,  string newFolderName)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryMoveAsync(global::Windows.ApplicationModel.Email.EmailFolder newParentFolder, string newFolderName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> EmailFolder.TryMoveAsync(EmailFolder newParentFolder, string newFolderName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20EmailFolder.TryMoveAsync%28EmailFolder%20newParentFolder%2C%20string%20newFolderName%29");
 		}
@@ -201,7 +201,7 @@ namespace Windows.ApplicationModel.Email
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SaveMessageAsync( global::Windows.ApplicationModel.Email.EmailMessage message)
+		public global::Windows.Foundation.IAsyncAction SaveMessageAsync(global::Windows.ApplicationModel.Email.EmailMessage message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailFolder.SaveMessageAsync(EmailMessage message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailFolder.SaveMessageAsync%28EmailMessage%20message%29");
 		}

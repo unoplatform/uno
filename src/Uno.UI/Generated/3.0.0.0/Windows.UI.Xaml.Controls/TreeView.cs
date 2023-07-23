@@ -155,74 +155,74 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.TreeViewSelectionMode), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.TreeViewSelectionMode),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TreeViewSelectionMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanDragItemsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanDragItemsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanDragItems), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(CanDragItems), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanReorderItemsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanReorderItemsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanReorderItems), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(CanReorderItems), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerStyleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemContainerStyle), typeof(global::Windows.UI.Xaml.Style), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(ItemContainerStyle), typeof(global::Windows.UI.Xaml.Style),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerStyleSelectorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerStyleSelectorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemContainerStyleSelector), typeof(global::Windows.UI.Xaml.Controls.StyleSelector), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(ItemContainerStyleSelector), typeof(global::Windows.UI.Xaml.Controls.StyleSelector),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.StyleSelector)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemContainerTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(ItemContainerTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateSelectorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateSelectorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTemplateSelector), typeof(global::Windows.UI.Xaml.Controls.DataTemplateSelector), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(ItemTemplateSelector), typeof(global::Windows.UI.Xaml.Controls.DataTemplateSelector),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.DataTemplateSelector)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemsSource), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
+			nameof(ItemsSource), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.TreeView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.TreeView.TreeView()
@@ -233,14 +233,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeView.SelectedNodes.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Expand( global::Windows.UI.Xaml.Controls.TreeViewNode value)
+		public void Expand(global::Windows.UI.Xaml.Controls.TreeViewNode value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeView", "void TreeView.Expand(TreeViewNode value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Collapse( global::Windows.UI.Xaml.Controls.TreeViewNode value)
+		public void Collapse(global::Windows.UI.Xaml.Controls.TreeViewNode value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeView", "void TreeView.Collapse(TreeViewNode value)");
 		}
@@ -260,28 +260,28 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeView.Collapsed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Controls.TreeViewNode NodeFromContainer( global::Windows.UI.Xaml.DependencyObject container)
+		public global::Windows.UI.Xaml.Controls.TreeViewNode NodeFromContainer(global::Windows.UI.Xaml.DependencyObject container)
 		{
 			throw new global::System.NotImplementedException("The member TreeViewNode TreeView.NodeFromContainer(DependencyObject container) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TreeViewNode%20TreeView.NodeFromContainer%28DependencyObject%20container%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.DependencyObject ContainerFromNode( global::Windows.UI.Xaml.Controls.TreeViewNode node)
+		public global::Windows.UI.Xaml.DependencyObject ContainerFromNode(global::Windows.UI.Xaml.Controls.TreeViewNode node)
 		{
 			throw new global::System.NotImplementedException("The member DependencyObject TreeView.ContainerFromNode(TreeViewNode node) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DependencyObject%20TreeView.ContainerFromNode%28TreeViewNode%20node%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public object ItemFromContainer( global::Windows.UI.Xaml.DependencyObject container)
+		public object ItemFromContainer(global::Windows.UI.Xaml.DependencyObject container)
 		{
 			throw new global::System.NotImplementedException("The member object TreeView.ItemFromContainer(DependencyObject container) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=object%20TreeView.ItemFromContainer%28DependencyObject%20container%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.DependencyObject ContainerFromItem( object item)
+		public global::Windows.UI.Xaml.DependencyObject ContainerFromItem(object item)
 		{
 			throw new global::System.NotImplementedException("The member DependencyObject TreeView.ContainerFromItem(object item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DependencyObject%20TreeView.ContainerFromItem%28object%20item%29");
 		}

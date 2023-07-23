@@ -52,7 +52,7 @@ namespace Windows.UI.Composition.Scenes
 		// Forced skipping of method Windows.UI.Composition.Scenes.SceneMeshRendererComponent.UVMappings.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Composition.Scenes.SceneMeshRendererComponent Create( global::Windows.UI.Composition.Compositor compositor)
+		public static global::Windows.UI.Composition.Scenes.SceneMeshRendererComponent Create(global::Windows.UI.Composition.Compositor compositor)
 		{
 			throw new global::System.NotImplementedException("The member SceneMeshRendererComponent SceneMeshRendererComponent.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SceneMeshRendererComponent%20SceneMeshRendererComponent.Create%28Compositor%20compositor%29");
 		}

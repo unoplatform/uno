@@ -56,21 +56,21 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation.Data.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPointerId( uint pointerId)
+		public void SetPointerId(uint pointerId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "void CoreDragOperation.SetPointerId(uint pointerId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDragUIContentFromSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
+		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "void CoreDragOperation.SetDragUIContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDragUIContentFromSoftwareBitmap( global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap,  global::Windows.Foundation.Point anchorPoint)
+		public void SetDragUIContentFromSoftwareBitmap(global::Windows.Graphics.Imaging.SoftwareBitmap softwareBitmap, global::Windows.Foundation.Point anchorPoint)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragOperation", "void CoreDragOperation.SetDragUIContentFromSoftwareBitmap(SoftwareBitmap softwareBitmap, Point anchorPoint)");
 		}

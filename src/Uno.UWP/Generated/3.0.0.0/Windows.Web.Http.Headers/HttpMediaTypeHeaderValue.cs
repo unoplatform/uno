@@ -47,7 +47,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMediaTypeHeaderValue( string mediaType) 
+		public HttpMediaTypeHeaderValue(string mediaType) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "HttpMediaTypeHeaderValue.HttpMediaTypeHeaderValue(string mediaType)");
 		}
@@ -67,14 +67,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpMediaTypeHeaderValue HttpMediaTypeHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMediaTypeHeaderValue%20HttpMediaTypeHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue mediaTypeHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpMediaTypeHeaderValue mediaTypeHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpMediaTypeHeaderValue.TryParse(string input, out HttpMediaTypeHeaderValue mediaTypeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMediaTypeHeaderValue.TryParse%28string%20input%2C%20out%20HttpMediaTypeHeaderValue%20mediaTypeHeaderValue%29");
 		}

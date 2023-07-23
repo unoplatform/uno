@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Hosting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DesignerAppManager( string appUserModelId) 
+		public DesignerAppManager(string appUserModelId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Hosting.DesignerAppManager", "DesignerAppManager.DesignerAppManager(string appUserModelId)");
 		}
@@ -30,14 +30,14 @@ namespace Windows.UI.Xaml.Hosting
 		// Forced skipping of method Windows.UI.Xaml.Hosting.DesignerAppManager.DesignerAppExited.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Hosting.DesignerAppView> CreateNewViewAsync( global::Windows.UI.Xaml.Hosting.DesignerAppViewState initialViewState,  global::Windows.Foundation.Size initialViewSize)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Xaml.Hosting.DesignerAppView> CreateNewViewAsync(global::Windows.UI.Xaml.Hosting.DesignerAppViewState initialViewState, global::Windows.Foundation.Size initialViewSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DesignerAppView> DesignerAppManager.CreateNewViewAsync(DesignerAppViewState initialViewState, Size initialViewSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDesignerAppView%3E%20DesignerAppManager.CreateNewViewAsync%28DesignerAppViewState%20initialViewState%2C%20Size%20initialViewSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction LoadObjectIntoAppAsync( string dllName,  global::System.Guid classId,  string initializationData)
+		public global::Windows.Foundation.IAsyncAction LoadObjectIntoAppAsync(string dllName, global::System.Guid classId, string initializationData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DesignerAppManager.LoadObjectIntoAppAsync(string dllName, Guid classId, string initializationData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DesignerAppManager.LoadObjectIntoAppAsync%28string%20dllName%2C%20Guid%20classId%2C%20string%20initializationData%29");
 		}

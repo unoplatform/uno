@@ -29,7 +29,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentCodingWithQualityHeaderValue( string contentCoding) 
+		public HttpContentCodingWithQualityHeaderValue(string contentCoding) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string contentCoding)");
 		}
@@ -37,7 +37,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentCodingWithQualityHeaderValue( string contentCoding,  double quality) 
+		public HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality)");
 		}
@@ -54,14 +54,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpContentCodingWithQualityHeaderValue HttpContentCodingWithQualityHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentCodingWithQualityHeaderValue%20HttpContentCodingWithQualityHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue contentCodingWithQualityHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue contentCodingWithQualityHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpContentCodingWithQualityHeaderValue.TryParse(string input, out HttpContentCodingWithQualityHeaderValue contentCodingWithQualityHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentCodingWithQualityHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentCodingWithQualityHeaderValue%20contentCodingWithQualityHeaderValue%29");
 		}

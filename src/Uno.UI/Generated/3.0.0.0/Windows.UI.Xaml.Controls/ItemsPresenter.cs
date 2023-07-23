@@ -96,51 +96,51 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property AreVerticalSnapPointsRegular
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Header), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
+			nameof(Header), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
+			nameof(HeaderTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 #endif
 		// Skipping already declared property PaddingProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FooterProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FooterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Footer), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
+			nameof(Footer), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FooterTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FooterTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FooterTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
+			nameof(FooterTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FooterTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter), 
+			nameof(FooterTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()

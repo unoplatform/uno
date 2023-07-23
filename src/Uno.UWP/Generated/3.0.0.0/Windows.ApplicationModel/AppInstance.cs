@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.AppInstance FindOrRegisterInstanceForKey( string key)
+		public static global::Windows.ApplicationModel.AppInstance FindOrRegisterInstanceForKey(string key)
 		{
 			throw new global::System.NotImplementedException("The member AppInstance AppInstance.FindOrRegisterInstanceForKey(string key) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppInstance%20AppInstance.FindOrRegisterInstanceForKey%28string%20key%29");
 		}

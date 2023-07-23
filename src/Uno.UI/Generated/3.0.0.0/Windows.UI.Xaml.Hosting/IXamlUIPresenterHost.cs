@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Hosting
 	public partial interface IXamlUIPresenterHost 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		string ResolveFileResource( string path);
+		string ResolveFileResource(string path);
 #endif
 	}
 }

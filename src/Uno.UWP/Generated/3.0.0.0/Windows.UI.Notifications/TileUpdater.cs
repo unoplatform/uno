@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Update( global::Windows.UI.Notifications.TileNotification notification)
+		public void Update(global::Windows.UI.Notifications.TileNotification notification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.Update(TileNotification notification)");
 		}
@@ -33,7 +33,7 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableNotificationQueue( bool enable)
+		public void EnableNotificationQueue(bool enable)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueue(bool enable)");
 		}
@@ -41,14 +41,14 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.TileUpdater.Setting.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddToSchedule( global::Windows.UI.Notifications.ScheduledTileNotification scheduledTile)
+		public void AddToSchedule(global::Windows.UI.Notifications.ScheduledTileNotification scheduledTile)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.AddToSchedule(ScheduledTileNotification scheduledTile)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveFromSchedule( global::Windows.UI.Notifications.ScheduledTileNotification scheduledTile)
+		public void RemoveFromSchedule(global::Windows.UI.Notifications.ScheduledTileNotification scheduledTile)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.RemoveFromSchedule(ScheduledTileNotification scheduledTile)");
 		}
@@ -62,14 +62,14 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartPeriodicUpdate( global::System.Uri tileContent,  global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
+		public void StartPeriodicUpdate(global::System.Uri tileContent, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.StartPeriodicUpdate(Uri tileContent, PeriodicUpdateRecurrence requestedInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartPeriodicUpdate( global::System.Uri tileContent,  global::System.DateTimeOffset startTime,  global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
+		public void StartPeriodicUpdate(global::System.Uri tileContent, global::System.DateTimeOffset startTime, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.StartPeriodicUpdate(Uri tileContent, DateTimeOffset startTime, PeriodicUpdateRecurrence requestedInterval)");
 		}
@@ -83,35 +83,35 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartPeriodicUpdateBatch( global::System.Collections.Generic.IEnumerable<global::System.Uri> tileContents,  global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
+		public void StartPeriodicUpdateBatch(global::System.Collections.Generic.IEnumerable<global::System.Uri> tileContents, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.StartPeriodicUpdateBatch(IEnumerable<Uri> tileContents, PeriodicUpdateRecurrence requestedInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartPeriodicUpdateBatch( global::System.Collections.Generic.IEnumerable<global::System.Uri> tileContents,  global::System.DateTimeOffset startTime,  global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
+		public void StartPeriodicUpdateBatch(global::System.Collections.Generic.IEnumerable<global::System.Uri> tileContents, global::System.DateTimeOffset startTime, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.StartPeriodicUpdateBatch(IEnumerable<Uri> tileContents, DateTimeOffset startTime, PeriodicUpdateRecurrence requestedInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableNotificationQueueForSquare150x150( bool enable)
+		public void EnableNotificationQueueForSquare150x150(bool enable)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueueForSquare150x150(bool enable)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableNotificationQueueForWide310x150( bool enable)
+		public void EnableNotificationQueueForWide310x150(bool enable)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueueForWide310x150(bool enable)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableNotificationQueueForSquare310x310( bool enable)
+		public void EnableNotificationQueueForSquare310x310(bool enable)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileUpdater", "void TileUpdater.EnableNotificationQueueForSquare310x310(bool enable)");
 		}

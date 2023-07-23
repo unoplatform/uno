@@ -131,66 +131,66 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisplayMemberPathProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DisplayMemberPathProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisplayMemberPath), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(DisplayMemberPath), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemsSource), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(ItemsSource), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(SelectedIndex), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedItemProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedItemProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedItem), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(SelectedItem), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedValuePathProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedValuePath), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(SelectedValuePath), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedValue), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(SelectedValue), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode), 
-			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout), 
+			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode),
+			typeof(global::Windows.UI.Xaml.Controls.ListPickerFlyout),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListPickerFlyoutSelectionMode)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ListPickerFlyout.ListPickerFlyout()
@@ -216,7 +216,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListPickerFlyout.ItemsPicked.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<object>> ShowAtAsync( global::Windows.UI.Xaml.FrameworkElement target)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<object>> ShowAtAsync(global::Windows.UI.Xaml.FrameworkElement target)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<object>> ListPickerFlyout.ShowAtAsync(FrameworkElement target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3Cobject%3E%3E%20ListPickerFlyout.ShowAtAsync%28FrameworkElement%20target%29");
 		}

@@ -41,19 +41,19 @@ namespace Windows.UI.Xaml.Controls
 		void CompleteViewChange();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void MakeVisible( global::Windows.UI.Xaml.Controls.SemanticZoomLocation item);
+		void MakeVisible(global::Windows.UI.Xaml.Controls.SemanticZoomLocation item);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void StartViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
+		void StartViewChangeFrom(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void StartViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
+		void StartViewChangeTo(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void CompleteViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
+		void CompleteViewChangeFrom(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void CompleteViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
+		void CompleteViewChangeTo(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination);
 #endif
 	}
 }

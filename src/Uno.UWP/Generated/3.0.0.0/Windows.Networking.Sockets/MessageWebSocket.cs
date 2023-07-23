@@ -52,14 +52,14 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.OutputStream.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ConnectAsync( global::System.Uri uri)
+		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MessageWebSocket.ConnectAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MessageWebSocket.ConnectAsync%28Uri%20uri%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetRequestHeader( string headerName,  string headerValue)
+		public void SetRequestHeader(string headerName, string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "void MessageWebSocket.SetRequestHeader(string headerName, string headerValue)");
 		}
@@ -68,7 +68,7 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.Closed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Close( ushort code,  string reason)
+		public void Close(ushort code, string reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.MessageWebSocket", "void MessageWebSocket.Close(ushort code, string reason)");
 		}
@@ -84,14 +84,14 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.MessageWebSocket.ServerCustomValidationRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendNonfinalFrameAsync( global::Windows.Storage.Streams.IBuffer data)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendNonfinalFrameAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendNonfinalFrameAsync(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20MessageWebSocket.SendNonfinalFrameAsync%28IBuffer%20data%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendFinalFrameAsync( global::Windows.Storage.Streams.IBuffer data)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> SendFinalFrameAsync(global::Windows.Storage.Streams.IBuffer data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> MessageWebSocket.SendFinalFrameAsync(IBuffer data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20MessageWebSocket.SendFinalFrameAsync%28IBuffer%20data%29");
 		}

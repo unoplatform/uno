@@ -20,28 +20,28 @@ namespace Windows.ApplicationModel.Search
 		// Forced skipping of method Windows.ApplicationModel.Search.SearchSuggestionCollection.Size.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendQuerySuggestion( string text)
+		public void AppendQuerySuggestion(string text)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchSuggestionCollection", "void SearchSuggestionCollection.AppendQuerySuggestion(string text)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendQuerySuggestions( global::System.Collections.Generic.IEnumerable<string> suggestions)
+		public void AppendQuerySuggestions(global::System.Collections.Generic.IEnumerable<string> suggestions)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchSuggestionCollection", "void SearchSuggestionCollection.AppendQuerySuggestions(IEnumerable<string> suggestions)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendResultSuggestion( string text,  string detailText,  string tag,  global::Windows.Storage.Streams.IRandomAccessStreamReference image,  string imageAlternateText)
+		public void AppendResultSuggestion(string text, string detailText, string tag, global::Windows.Storage.Streams.IRandomAccessStreamReference image, string imageAlternateText)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchSuggestionCollection", "void SearchSuggestionCollection.AppendResultSuggestion(string text, string detailText, string tag, IRandomAccessStreamReference image, string imageAlternateText)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendSearchSeparator( string label)
+		public void AppendSearchSeparator(string label)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchSuggestionCollection", "void SearchSuggestionCollection.AppendSearchSeparator(string label)");
 		}

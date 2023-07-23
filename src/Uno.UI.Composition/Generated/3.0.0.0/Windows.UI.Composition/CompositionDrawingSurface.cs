@@ -53,35 +53,35 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionDrawingSurface.SizeInt32.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Resize( global::Windows.Graphics.SizeInt32 sizePixels)
+		public void Resize(global::Windows.Graphics.SizeInt32 sizePixels)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.Resize(SizeInt32 sizePixels)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Scroll( global::Windows.Graphics.PointInt32 offset)
+		public void Scroll(global::Windows.Graphics.PointInt32 offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.Scroll(PointInt32 offset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Scroll( global::Windows.Graphics.PointInt32 offset,  global::Windows.Graphics.RectInt32 scrollRect)
+		public void Scroll(global::Windows.Graphics.PointInt32 offset, global::Windows.Graphics.RectInt32 scrollRect)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.Scroll(PointInt32 offset, RectInt32 scrollRect)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ScrollWithClip( global::Windows.Graphics.PointInt32 offset,  global::Windows.Graphics.RectInt32 clipRect)
+		public void ScrollWithClip(global::Windows.Graphics.PointInt32 offset, global::Windows.Graphics.RectInt32 clipRect)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.ScrollWithClip(PointInt32 offset, RectInt32 clipRect)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ScrollWithClip( global::Windows.Graphics.PointInt32 offset,  global::Windows.Graphics.RectInt32 clipRect,  global::Windows.Graphics.RectInt32 scrollRect)
+		public void ScrollWithClip(global::Windows.Graphics.PointInt32 offset, global::Windows.Graphics.RectInt32 clipRect, global::Windows.Graphics.RectInt32 scrollRect)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionDrawingSurface", "void CompositionDrawingSurface.ScrollWithClip(PointInt32 offset, RectInt32 clipRect, RectInt32 scrollRect)");
 		}

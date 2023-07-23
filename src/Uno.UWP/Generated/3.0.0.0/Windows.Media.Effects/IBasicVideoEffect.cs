@@ -36,13 +36,13 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.TimeIndependent.get
 		// Forced skipping of method Windows.Media.Effects.IBasicVideoEffect.SupportedEncodingProperties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetEncodingProperties( global::Windows.Media.MediaProperties.VideoEncodingProperties encodingProperties,  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device);
+		void SetEncodingProperties(global::Windows.Media.MediaProperties.VideoEncodingProperties encodingProperties, global::Windows.Graphics.DirectX.Direct3D11.IDirect3DDevice device);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ProcessFrame( global::Windows.Media.Effects.ProcessVideoFrameContext context);
+		void ProcessFrame(global::Windows.Media.Effects.ProcessVideoFrameContext context);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Close( global::Windows.Media.Effects.MediaEffectClosedReason reason);
+		void Close(global::Windows.Media.Effects.MediaEffectClosedReason reason);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void DiscardQueuedFrames();

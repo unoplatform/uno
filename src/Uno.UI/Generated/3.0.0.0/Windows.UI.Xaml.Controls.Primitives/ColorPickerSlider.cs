@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorChannelProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ColorChannelProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ColorChannel), typeof(global::Windows.UI.Xaml.Controls.ColorPickerHsvChannel), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorPickerSlider), 
+			nameof(ColorChannel), typeof(global::Windows.UI.Xaml.Controls.ColorPickerHsvChannel),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorPickerSlider),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorPickerHsvChannel)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

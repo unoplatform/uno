@@ -39,7 +39,7 @@ namespace Windows.Networking.Connectivity
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RoutePolicy( global::Windows.Networking.Connectivity.ConnectionProfile connectionProfile,  global::Windows.Networking.HostName hostName,  global::Windows.Networking.DomainNameType type) 
+		public RoutePolicy(global::Windows.Networking.Connectivity.ConnectionProfile connectionProfile, global::Windows.Networking.HostName hostName, global::Windows.Networking.DomainNameType type) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Connectivity.RoutePolicy", "RoutePolicy.RoutePolicy(ConnectionProfile connectionProfile, HostName hostName, DomainNameType type)");
 		}

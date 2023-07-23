@@ -176,14 +176,14 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Controller.AcceleratorKeyPressed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetBoundsAndZoomFactor( global::Windows.Foundation.Rect Bounds,  double ZoomFactor)
+		public void SetBoundsAndZoomFactor(global::Windows.Foundation.Rect Bounds, double ZoomFactor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.SetBoundsAndZoomFactor(Rect Bounds, double ZoomFactor)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void MoveFocus( global::Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusReason reason)
+		public void MoveFocus(global::Microsoft.Web.WebView2.Core.CoreWebView2MoveFocusReason reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.Web.WebView2.Core.CoreWebView2Controller", "void CoreWebView2Controller.MoveFocus(CoreWebView2MoveFocusReason reason)");
 		}

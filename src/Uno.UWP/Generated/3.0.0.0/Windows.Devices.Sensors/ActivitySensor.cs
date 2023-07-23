@@ -87,21 +87,21 @@ namespace Windows.Devices.Sensors
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.ActivitySensor> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.ActivitySensor> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivitySensor> ActivitySensor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivitySensor%3E%20ActivitySensor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReading>> GetSystemHistoryAsync( global::System.DateTimeOffset fromTime)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReading>> GetSystemHistoryAsync(global::System.DateTimeOffset fromTime)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivitySensorReading>> ActivitySensor.GetSystemHistoryAsync(DateTimeOffset fromTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CActivitySensorReading%3E%3E%20ActivitySensor.GetSystemHistoryAsync%28DateTimeOffset%20fromTime%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReading>> GetSystemHistoryAsync( global::System.DateTimeOffset fromTime,  global::System.TimeSpan duration)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.Sensors.ActivitySensorReading>> GetSystemHistoryAsync(global::System.DateTimeOffset fromTime, global::System.TimeSpan duration)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ActivitySensorReading>> ActivitySensor.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CActivitySensorReading%3E%3E%20ActivitySensor.GetSystemHistoryAsync%28DateTimeOffset%20fromTime%2C%20TimeSpan%20duration%29");
 		}

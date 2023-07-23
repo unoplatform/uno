@@ -28,10 +28,10 @@ namespace Windows.UI.Xaml.Automation.Provider
 		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider[] GetVisibleRanges();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider RangeFromChild( global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple childElement);
+		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider RangeFromChild(global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple childElement);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider RangeFromPoint( global::Windows.Foundation.Point screenLocation);
+		global::Windows.UI.Xaml.Automation.Provider.ITextRangeProvider RangeFromPoint(global::Windows.Foundation.Point screenLocation);
 #endif
 	}
 }

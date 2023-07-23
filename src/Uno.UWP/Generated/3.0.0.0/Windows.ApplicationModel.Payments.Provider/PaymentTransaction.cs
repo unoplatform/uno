@@ -68,21 +68,21 @@ namespace Windows.ApplicationModel.Payments.Provider
 		// Forced skipping of method Windows.ApplicationModel.Payments.Provider.PaymentTransaction.PayerPhoneNumber.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateShippingAddressAsync( global::Windows.ApplicationModel.Payments.PaymentAddress shippingAddress)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateShippingAddressAsync(global::Windows.ApplicationModel.Payments.PaymentAddress shippingAddress)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentRequestChangedResult> PaymentTransaction.UpdateShippingAddressAsync(PaymentAddress shippingAddress) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentRequestChangedResult%3E%20PaymentTransaction.UpdateShippingAddressAsync%28PaymentAddress%20shippingAddress%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateSelectedShippingOptionAsync( global::Windows.ApplicationModel.Payments.PaymentShippingOption selectedShippingOption)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.PaymentRequestChangedResult> UpdateSelectedShippingOptionAsync(global::Windows.ApplicationModel.Payments.PaymentShippingOption selectedShippingOption)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentRequestChangedResult> PaymentTransaction.UpdateSelectedShippingOptionAsync(PaymentShippingOption selectedShippingOption) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentRequestChangedResult%3E%20PaymentTransaction.UpdateSelectedShippingOptionAsync%28PaymentShippingOption%20selectedShippingOption%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransactionAcceptResult> AcceptAsync( global::Windows.ApplicationModel.Payments.PaymentToken paymentToken)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransactionAcceptResult> AcceptAsync(global::Windows.ApplicationModel.Payments.PaymentToken paymentToken)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentTransactionAcceptResult> PaymentTransaction.AcceptAsync(PaymentToken paymentToken) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentTransactionAcceptResult%3E%20PaymentTransaction.AcceptAsync%28PaymentToken%20paymentToken%29");
 		}
@@ -96,7 +96,7 @@ namespace Windows.ApplicationModel.Payments.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransaction> FromIdAsync( string id)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Payments.Provider.PaymentTransaction> FromIdAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PaymentTransaction> PaymentTransaction.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPaymentTransaction%3E%20PaymentTransaction.FromIdAsync%28string%20id%29");
 		}

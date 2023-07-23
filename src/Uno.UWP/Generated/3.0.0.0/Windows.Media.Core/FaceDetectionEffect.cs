@@ -43,7 +43,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.FaceDetectionEffect.FaceDetected.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetProperties( global::Windows.Foundation.Collections.IPropertySet configuration)
+		public void SetProperties(global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.FaceDetectionEffect", "void FaceDetectionEffect.SetProperties(IPropertySet configuration)");
 		}

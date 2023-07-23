@@ -75,7 +75,7 @@ namespace Windows.Security.Authentication.Identity.Provider
 		// Forced skipping of method Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorInfo.PresenceMonitoringMode.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction UpdateDevicePresenceAsync( global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDevicePresence presenceState)
+		public global::Windows.Foundation.IAsyncAction UpdateDevicePresenceAsync(global::Windows.Security.Authentication.Identity.Provider.SecondaryAuthenticationFactorDevicePresence presenceState)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SecondaryAuthenticationFactorInfo.UpdateDevicePresenceAsync(SecondaryAuthenticationFactorDevicePresence presenceState) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SecondaryAuthenticationFactorInfo.UpdateDevicePresenceAsync%28SecondaryAuthenticationFactorDevicePresence%20presenceState%29");
 		}

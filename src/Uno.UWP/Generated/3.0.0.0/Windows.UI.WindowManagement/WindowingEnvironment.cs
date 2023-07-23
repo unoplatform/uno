@@ -47,7 +47,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.WindowingEnvironment> FindAll( global::Windows.UI.WindowManagement.WindowingEnvironmentKind kind)
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.WindowingEnvironment> FindAll(global::Windows.UI.WindowManagement.WindowingEnvironmentKind kind)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<WindowingEnvironment> WindowingEnvironment.FindAll(WindowingEnvironmentKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CWindowingEnvironment%3E%20WindowingEnvironment.FindAll%28WindowingEnvironmentKind%20kind%29");
 		}

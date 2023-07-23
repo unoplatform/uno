@@ -101,14 +101,14 @@ namespace Windows.Media.PlayTo
 		// Forced skipping of method Windows.Media.PlayTo.PlayToReceiver.StopRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyVolumeChange( double volume,  bool mute)
+		public void NotifyVolumeChange(double volume, bool mute)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyVolumeChange(double volume, bool mute)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyRateChange( double rate)
+		public void NotifyRateChange(double rate)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyRateChange(double rate)");
 		}
@@ -122,14 +122,14 @@ namespace Windows.Media.PlayTo
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyTimeUpdate( global::System.TimeSpan currentTime)
+		public void NotifyTimeUpdate(global::System.TimeSpan currentTime)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyTimeUpdate(TimeSpan currentTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyDurationChange( global::System.TimeSpan duration)
+		public void NotifyDurationChange(global::System.TimeSpan duration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.PlayTo.PlayToReceiver", "void PlayToReceiver.NotifyDurationChange(TimeSpan duration)");
 		}

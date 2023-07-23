@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IDockProvider.DockPosition.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetDockPosition( global::Windows.UI.Xaml.Automation.DockPosition dockPosition);
+		void SetDockPosition(global::Windows.UI.Xaml.Automation.DockPosition dockPosition);
 #endif
 	}
 }

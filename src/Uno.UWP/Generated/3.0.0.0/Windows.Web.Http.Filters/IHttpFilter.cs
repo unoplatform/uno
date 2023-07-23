@@ -8,7 +8,7 @@ namespace Windows.Web.Http.Filters
 	public partial interface IHttpFilter : global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync( global::Windows.Web.Http.HttpRequestMessage request);
+		global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync(global::Windows.Web.Http.HttpRequestMessage request);
 #endif
 	}
 }

@@ -50,49 +50,49 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.DatagramSocket.OutputStream.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ConnectAsync( global::Windows.Networking.HostName remoteHostName,  string remoteServiceName)
+		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.ConnectAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.ConnectAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ConnectAsync( global::Windows.Networking.EndpointPair endpointPair)
+		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::Windows.Networking.EndpointPair endpointPair)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.ConnectAsync(EndpointPair endpointPair) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.ConnectAsync%28EndpointPair%20endpointPair%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync( string localServiceName)
+		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.BindServiceNameAsync(string localServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.BindServiceNameAsync%28string%20localServiceName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction BindEndpointAsync( global::Windows.Networking.HostName localHostName,  string localServiceName)
+		public global::Windows.Foundation.IAsyncAction BindEndpointAsync(global::Windows.Networking.HostName localHostName, string localServiceName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.BindEndpointAsync(HostName localHostName, string localServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.BindEndpointAsync%28HostName%20localHostName%2C%20string%20localServiceName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void JoinMulticastGroup( global::Windows.Networking.HostName host)
+		public void JoinMulticastGroup(global::Windows.Networking.HostName host)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocket", "void DatagramSocket.JoinMulticastGroup(HostName host)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IOutputStream> GetOutputStreamAsync( global::Windows.Networking.HostName remoteHostName,  string remoteServiceName)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IOutputStream> GetOutputStreamAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IOutputStream> DatagramSocket.GetOutputStreamAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIOutputStream%3E%20DatagramSocket.GetOutputStreamAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IOutputStream> GetOutputStreamAsync( global::Windows.Networking.EndpointPair endpointPair)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IOutputStream> GetOutputStreamAsync(global::Windows.Networking.EndpointPair endpointPair)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IOutputStream> DatagramSocket.GetOutputStreamAsync(EndpointPair endpointPair) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIOutputStream%3E%20DatagramSocket.GetOutputStreamAsync%28EndpointPair%20endpointPair%29");
 		}
@@ -108,7 +108,7 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync( string localServiceName,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
+		public global::Windows.Foundation.IAsyncAction BindServiceNameAsync(string localServiceName, global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DatagramSocket.BindServiceNameAsync(string localServiceName, NetworkAdapter adapter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DatagramSocket.BindServiceNameAsync%28string%20localServiceName%2C%20NetworkAdapter%20adapter%29");
 		}
@@ -122,49 +122,49 @@ namespace Windows.Networking.Sockets
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableTransferOwnership( global::System.Guid taskId)
+		public void EnableTransferOwnership(global::System.Guid taskId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocket", "void DatagramSocket.EnableTransferOwnership(Guid taskId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableTransferOwnership( global::System.Guid taskId,  global::Windows.Networking.Sockets.SocketActivityConnectedStandbyAction connectedStandbyAction)
+		public void EnableTransferOwnership(global::System.Guid taskId, global::Windows.Networking.Sockets.SocketActivityConnectedStandbyAction connectedStandbyAction)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocket", "void DatagramSocket.EnableTransferOwnership(Guid taskId, SocketActivityConnectedStandbyAction connectedStandbyAction)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TransferOwnership( string socketId)
+		public void TransferOwnership(string socketId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocket", "void DatagramSocket.TransferOwnership(string socketId)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TransferOwnership( string socketId,  global::Windows.Networking.Sockets.SocketActivityContext data)
+		public void TransferOwnership(string socketId, global::Windows.Networking.Sockets.SocketActivityContext data)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocket", "void DatagramSocket.TransferOwnership(string socketId, SocketActivityContext data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TransferOwnership( string socketId,  global::Windows.Networking.Sockets.SocketActivityContext data,  global::System.TimeSpan keepAliveTime)
+		public void TransferOwnership(string socketId, global::Windows.Networking.Sockets.SocketActivityContext data, global::System.TimeSpan keepAliveTime)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.DatagramSocket", "void DatagramSocket.TransferOwnership(string socketId, SocketActivityContext data, TimeSpan keepAliveTime)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync( global::Windows.Networking.HostName remoteHostName,  string remoteServiceName)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> DatagramSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20DatagramSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync( global::Windows.Networking.HostName remoteHostName,  string remoteServiceName,  global::Windows.Networking.HostNameSortOptions sortOptions)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.EndpointPair>> GetEndpointPairsAsync(global::Windows.Networking.HostName remoteHostName, string remoteServiceName, global::Windows.Networking.HostNameSortOptions sortOptions)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<EndpointPair>> DatagramSocket.GetEndpointPairsAsync(HostName remoteHostName, string remoteServiceName, HostNameSortOptions sortOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CEndpointPair%3E%3E%20DatagramSocket.GetEndpointPairsAsync%28HostName%20remoteHostName%2C%20string%20remoteServiceName%2C%20HostNameSortOptions%20sortOptions%29");
 		}

@@ -53,7 +53,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentRangeHeaderValue( ulong length) 
+		public HttpContentRangeHeaderValue(ulong length) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong length)");
 		}
@@ -61,7 +61,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentRangeHeaderValue( ulong from,  ulong to) 
+		public HttpContentRangeHeaderValue(ulong from, ulong to) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong from, ulong to)");
 		}
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong, ulong)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentRangeHeaderValue( ulong from,  ulong to,  ulong length) 
+		public HttpContentRangeHeaderValue(ulong from, ulong to, ulong length) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentRangeHeaderValue", "HttpContentRangeHeaderValue.HttpContentRangeHeaderValue(ulong from, ulong to, ulong length)");
 		}
@@ -89,14 +89,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpContentRangeHeaderValue HttpContentRangeHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentRangeHeaderValue%20HttpContentRangeHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue contentRangeHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentRangeHeaderValue contentRangeHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpContentRangeHeaderValue.TryParse(string input, out HttpContentRangeHeaderValue contentRangeHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentRangeHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentRangeHeaderValue%20contentRangeHeaderValue%29");
 		}

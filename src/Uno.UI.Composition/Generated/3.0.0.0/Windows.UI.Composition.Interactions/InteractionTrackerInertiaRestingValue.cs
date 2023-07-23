@@ -41,7 +41,7 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue.RestingValue.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue Create( global::Windows.UI.Composition.Compositor compositor)
+		public static global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaRestingValue Create(global::Windows.UI.Composition.Compositor compositor)
 		{
 			throw new global::System.NotImplementedException("The member InteractionTrackerInertiaRestingValue InteractionTrackerInertiaRestingValue.Create(Compositor compositor) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=InteractionTrackerInertiaRestingValue%20InteractionTrackerInertiaRestingValue.Create%28Compositor%20compositor%29");
 		}

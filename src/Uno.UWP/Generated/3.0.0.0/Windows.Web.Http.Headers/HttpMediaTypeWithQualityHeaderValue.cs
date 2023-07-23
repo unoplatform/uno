@@ -61,7 +61,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMediaTypeWithQualityHeaderValue( string mediaType) 
+		public HttpMediaTypeWithQualityHeaderValue(string mediaType) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue", "HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string mediaType)");
 		}
@@ -69,7 +69,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMediaTypeWithQualityHeaderValue( string mediaType,  double quality) 
+		public HttpMediaTypeWithQualityHeaderValue(string mediaType, double quality) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue", "HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string mediaType, double quality)");
 		}
@@ -91,14 +91,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpMediaTypeWithQualityHeaderValue HttpMediaTypeWithQualityHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpMediaTypeWithQualityHeaderValue%20HttpMediaTypeWithQualityHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpMediaTypeWithQualityHeaderValue.TryParse(string input, out HttpMediaTypeWithQualityHeaderValue mediaTypeWithQualityHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpMediaTypeWithQualityHeaderValue.TryParse%28string%20input%2C%20out%20HttpMediaTypeWithQualityHeaderValue%20mediaTypeWithQualityHeaderValue%29");
 		}

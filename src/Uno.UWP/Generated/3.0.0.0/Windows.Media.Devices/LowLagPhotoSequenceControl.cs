@@ -126,7 +126,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.LowLagPhotoSequenceControl.PhotosPerSecondLimit.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate( global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
+		public global::Windows.Media.MediaProperties.MediaRatio GetHighestConcurrentFrameRate(global::Windows.Media.MediaProperties.IMediaEncodingProperties captureProperties)
 		{
 			throw new global::System.NotImplementedException("The member MediaRatio LowLagPhotoSequenceControl.GetHighestConcurrentFrameRate(IMediaEncodingProperties captureProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaRatio%20LowLagPhotoSequenceControl.GetHighestConcurrentFrameRate%28IMediaEncodingProperties%20captureProperties%29");
 		}

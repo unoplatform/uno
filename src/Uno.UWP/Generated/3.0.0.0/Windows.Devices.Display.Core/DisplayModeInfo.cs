@@ -95,14 +95,14 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayModeInfo.IsInterlaced.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Devices.Display.Core.DisplayBitsPerChannel GetWireFormatSupportedBitsPerChannel( global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding encoding)
+		public global::Windows.Devices.Display.Core.DisplayBitsPerChannel GetWireFormatSupportedBitsPerChannel(global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding encoding)
 		{
 			throw new global::System.NotImplementedException("The member DisplayBitsPerChannel DisplayModeInfo.GetWireFormatSupportedBitsPerChannel(DisplayWireFormatPixelEncoding encoding) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DisplayBitsPerChannel%20DisplayModeInfo.GetWireFormatSupportedBitsPerChannel%28DisplayWireFormatPixelEncoding%20encoding%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsWireFormatSupported( global::Windows.Devices.Display.Core.DisplayWireFormat wireFormat)
+		public bool IsWireFormatSupported(global::Windows.Devices.Display.Core.DisplayWireFormat wireFormat)
 		{
 			throw new global::System.NotImplementedException("The member bool DisplayModeInfo.IsWireFormatSupported(DisplayWireFormat wireFormat) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayModeInfo.IsWireFormatSupported%28DisplayWireFormat%20wireFormat%29");
 		}

@@ -141,7 +141,7 @@ namespace Windows.Networking.Proximity
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void Start( string peerMessage)
+		public static void Start(string peerMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Proximity.PeerFinder", "void PeerFinder.Start(string peerMessage)");
 		}
@@ -166,7 +166,7 @@ namespace Windows.Networking.Proximity
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Sockets.StreamSocket> ConnectAsync( global::Windows.Networking.Proximity.PeerInformation peerInformation)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.Sockets.StreamSocket> ConnectAsync(global::Windows.Networking.Proximity.PeerInformation peerInformation)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StreamSocket> PeerFinder.ConnectAsync(PeerInformation peerInformation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStreamSocket%3E%20PeerFinder.ConnectAsync%28PeerInformation%20peerInformation%29");
 		}

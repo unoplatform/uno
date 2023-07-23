@@ -72,31 +72,31 @@ namespace Windows.UI.Text
 		global::Windows.UI.Text.ITextParagraphFormat GetDefaultParagraphFormat();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Text.ITextRange GetRange( int startPosition,  int endPosition);
+		global::Windows.UI.Text.ITextRange GetRange(int startPosition, int endPosition);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Text.ITextRange GetRangeFromPoint( global::Windows.Foundation.Point point,  global::Windows.UI.Text.PointOptions options);
+		global::Windows.UI.Text.ITextRange GetRangeFromPoint(global::Windows.Foundation.Point point, global::Windows.UI.Text.PointOptions options);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void GetText( global::Windows.UI.Text.TextGetOptions options, out string value);
+		void GetText(global::Windows.UI.Text.TextGetOptions options, out string value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LoadFromStream( global::Windows.UI.Text.TextSetOptions options,  global::Windows.Storage.Streams.IRandomAccessStream value);
+		void LoadFromStream(global::Windows.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Redo();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SaveToStream( global::Windows.UI.Text.TextGetOptions options,  global::Windows.Storage.Streams.IRandomAccessStream value);
+		void SaveToStream(global::Windows.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetDefaultCharacterFormat( global::Windows.UI.Text.ITextCharacterFormat value);
+		void SetDefaultCharacterFormat(global::Windows.UI.Text.ITextCharacterFormat value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetDefaultParagraphFormat( global::Windows.UI.Text.ITextParagraphFormat value);
+		void SetDefaultParagraphFormat(global::Windows.UI.Text.ITextParagraphFormat value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetText( global::Windows.UI.Text.TextSetOptions options,  string value);
+		void SetText(global::Windows.UI.Text.TextSetOptions options, string value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		void Undo();

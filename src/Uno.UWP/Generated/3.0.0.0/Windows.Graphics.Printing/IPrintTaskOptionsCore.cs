@@ -8,7 +8,7 @@ namespace Windows.Graphics.Printing
 	public partial interface IPrintTaskOptionsCore 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription( uint jobPageNumber);
+		global::Windows.Graphics.Printing.PrintPageDescription GetPageDescription(uint jobPageNumber);
 #endif
 	}
 }

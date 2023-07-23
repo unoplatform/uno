@@ -140,10 +140,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property BackgroundSizing
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CharacterSpacing), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(CharacterSpacing), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 		// Skipping already declared property ContentProperty
@@ -154,10 +154,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontSizeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 #endif
 		// Skipping already declared property FontStyleProperty
@@ -165,26 +165,26 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property ForegroundProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OpticalMarginAlignment), typeof(global::Windows.UI.Xaml.OpticalMarginAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(OpticalMarginAlignment), typeof(global::Windows.UI.Xaml.OpticalMarginAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.OpticalMarginAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextLineBounds), typeof(global::Windows.UI.Xaml.TextLineBounds), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(TextLineBounds), typeof(global::Windows.UI.Xaml.TextLineBounds),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextLineBounds)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property BackgroundProperty
@@ -194,18 +194,18 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property HorizontalContentAlignmentProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LineHeight), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(LineHeight), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LineStackingStrategy), typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
-			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
+			nameof(LineStackingStrategy), typeof(global::Windows.UI.Xaml.LineStackingStrategy),
+			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.LineStackingStrategy)));
 #endif
 		// Skipping already declared property MaxLinesProperty

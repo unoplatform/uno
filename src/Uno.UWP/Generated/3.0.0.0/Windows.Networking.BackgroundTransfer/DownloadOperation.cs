@@ -181,7 +181,7 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.DownloadOperation.CostPolicy.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Streams.IInputStream GetResultStreamAt( ulong position)
+		public global::Windows.Storage.Streams.IInputStream GetResultStreamAt(ulong position)
 		{
 			throw new global::System.NotImplementedException("The member IInputStream DownloadOperation.GetResultStreamAt(ulong position) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IInputStream%20DownloadOperation.GetResultStreamAt%28ulong%20position%29");
 		}
@@ -226,14 +226,14 @@ namespace Windows.Networking.BackgroundTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetRequestHeader( string headerName,  string headerValue)
+		public void SetRequestHeader(string headerName, string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "void DownloadOperation.SetRequestHeader(string headerName, string headerValue)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveRequestHeader( string headerName)
+		public void RemoveRequestHeader(string headerName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.DownloadOperation", "void DownloadOperation.RemoveRequestHeader(string headerName)");
 		}

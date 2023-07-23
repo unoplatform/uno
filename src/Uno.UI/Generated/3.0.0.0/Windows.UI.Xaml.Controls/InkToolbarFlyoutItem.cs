@@ -37,18 +37,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCheckedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsCheckedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsChecked), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem), 
+			nameof(IsChecked), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KindProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KindProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Kind), typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem), 
+			nameof(Kind), typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

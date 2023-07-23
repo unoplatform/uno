@@ -80,7 +80,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession> FromDeviceIdAsync( global::Windows.Devices.Bluetooth.BluetoothDeviceId deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattSession> FromDeviceIdAsync(global::Windows.Devices.Bluetooth.BluetoothDeviceId deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GattSession> GattSession.FromDeviceIdAsync(BluetoothDeviceId deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CGattSession%3E%20GattSession.FromDeviceIdAsync%28BluetoothDeviceId%20deviceId%29");
 		}

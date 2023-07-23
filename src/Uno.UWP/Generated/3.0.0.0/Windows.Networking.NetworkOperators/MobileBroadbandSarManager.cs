@@ -80,7 +80,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetConfigurationAsync( global::System.Collections.Generic.IEnumerable<global::Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar> antennas)
+		public global::Windows.Foundation.IAsyncAction SetConfigurationAsync(global::System.Collections.Generic.IEnumerable<global::Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar> antennas)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.SetConfigurationAsync(IEnumerable<MobileBroadbandAntennaSar> antennas) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MobileBroadbandSarManager.SetConfigurationAsync%28IEnumerable%3CMobileBroadbandAntennaSar%3E%20antennas%29");
 		}
@@ -94,7 +94,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetTransmissionStateChangedHysteresisAsync( global::System.TimeSpan timerPeriod)
+		public global::Windows.Foundation.IAsyncAction SetTransmissionStateChangedHysteresisAsync(global::System.TimeSpan timerPeriod)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction MobileBroadbandSarManager.SetTransmissionStateChangedHysteresisAsync(TimeSpan timerPeriod) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20MobileBroadbandSarManager.SetTransmissionStateChangedHysteresisAsync%28TimeSpan%20timerPeriod%29");
 		}

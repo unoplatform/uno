@@ -1043,7 +1043,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.BarcodeSymbologies.ExtendedBase.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetName( uint scanDataType)
+		public static string GetName(uint scanDataType)
 		{
 			throw new global::System.NotImplementedException("The member string BarcodeSymbologies.GetName(uint scanDataType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20BarcodeSymbologies.GetName%28uint%20scanDataType%29");
 		}

@@ -150,7 +150,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RequestMoveToDisplayRegion( global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
+		public void RequestMoveToDisplayRegion(global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.RequestMoveToDisplayRegion(DisplayRegion displayRegion)");
 		}
@@ -164,35 +164,35 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RequestMoveAdjacentToWindow( global::Windows.UI.WindowManagement.AppWindow anchorWindow)
+		public void RequestMoveAdjacentToWindow(global::Windows.UI.WindowManagement.AppWindow anchorWindow)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.RequestMoveAdjacentToWindow(AppWindow anchorWindow)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RequestMoveRelativeToWindowContent( global::Windows.UI.WindowManagement.AppWindow anchorWindow,  global::Windows.Foundation.Point contentOffset)
+		public void RequestMoveRelativeToWindowContent(global::Windows.UI.WindowManagement.AppWindow anchorWindow, global::Windows.Foundation.Point contentOffset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.RequestMoveRelativeToWindowContent(AppWindow anchorWindow, Point contentOffset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RequestMoveRelativeToCurrentViewContent( global::Windows.Foundation.Point contentOffset)
+		public void RequestMoveRelativeToCurrentViewContent(global::Windows.Foundation.Point contentOffset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.RequestMoveRelativeToCurrentViewContent(Point contentOffset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RequestMoveRelativeToDisplayRegion( global::Windows.UI.WindowManagement.DisplayRegion displayRegion,  global::Windows.Foundation.Point displayRegionOffset)
+		public void RequestMoveRelativeToDisplayRegion(global::Windows.UI.WindowManagement.DisplayRegion displayRegion, global::Windows.Foundation.Point displayRegionOffset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.RequestMoveRelativeToDisplayRegion(DisplayRegion displayRegion, Point displayRegionOffset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RequestSize( global::Windows.Foundation.Size frameSize)
+		public void RequestSize(global::Windows.Foundation.Size frameSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.RequestSize(Size frameSize)");
 		}
@@ -226,7 +226,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void ClearPersistedState( string key)
+		public static void ClearPersistedState(string key)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindow", "void AppWindow.ClearPersistedState(string key)");
 		}

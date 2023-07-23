@@ -230,7 +230,7 @@ namespace Windows.Web.Http.Filters
 		// Forced skipping of method Windows.Web.Http.Filters.HttpBaseProtocolFilter.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync( global::Windows.Web.Http.HttpRequestMessage request)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpResponseMessage, global::Windows.Web.Http.HttpProgress> SendRequestAsync(global::Windows.Web.Http.HttpRequestMessage request)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpResponseMessage, HttpProgress> HttpBaseProtocolFilter.SendRequestAsync(HttpRequestMessage request) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CHttpResponseMessage%2C%20HttpProgress%3E%20HttpBaseProtocolFilter.SendRequestAsync%28HttpRequestMessage%20request%29");
 		}
@@ -244,7 +244,7 @@ namespace Windows.Web.Http.Filters
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser( global::Windows.System.User user)
+		public static global::Windows.Web.Http.Filters.HttpBaseProtocolFilter CreateForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member HttpBaseProtocolFilter HttpBaseProtocolFilter.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpBaseProtocolFilter%20HttpBaseProtocolFilter.CreateForUser%28User%20user%29");
 		}

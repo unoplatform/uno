@@ -275,154 +275,154 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Color), typeof(global::Windows.UI.Color), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(Color), typeof(global::Windows.UI.Color),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorSpectrumComponentsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ColorSpectrumComponentsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ColorSpectrumComponents), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(ColorSpectrumComponents), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ColorSpectrumShapeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ColorSpectrumShapeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ColorSpectrumShape), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumShape), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(ColorSpectrumShape), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumShape),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorSpectrumShape)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAlphaEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAlphaEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAlphaEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsAlphaEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAlphaSliderVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAlphaSliderVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAlphaSliderVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsAlphaSliderVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAlphaTextInputVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAlphaTextInputVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAlphaTextInputVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsAlphaTextInputVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorChannelTextInputVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorChannelTextInputVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorChannelTextInputVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsColorChannelTextInputVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorPreviewVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorPreviewVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorPreviewVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsColorPreviewVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorSliderVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorSliderVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorSliderVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsColorSliderVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsColorSpectrumVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsColorSpectrumVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsColorSpectrumVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsColorSpectrumVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsHexInputVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsHexInputVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsHexInputVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsHexInputVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsMoreButtonVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsMoreButtonVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsMoreButtonVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(IsMoreButtonVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxHueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxHueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxHue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(MaxHue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxSaturationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxSaturationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxSaturation), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(MaxSaturation), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxValue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(MaxValue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinHueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinHueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinHue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(MinHue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinSaturationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinSaturationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinSaturation), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(MinSaturation), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MinValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MinValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MinValue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(MinValue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PreviousColorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PreviousColorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PreviousColor), typeof(global::Windows.UI.Color?), 
-			typeof(global::Windows.UI.Xaml.Controls.ColorPicker), 
+			nameof(PreviousColor), typeof(global::Windows.UI.Color?),
+			typeof(global::Windows.UI.Xaml.Controls.ColorPicker),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Color?)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ColorPicker.ColorPicker()

@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactMatchReason> GetMatchingPropertiesWithMatchReason( global::Windows.ApplicationModel.Contacts.Contact contact)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactMatchReason> GetMatchingPropertiesWithMatchReason(global::Windows.ApplicationModel.Contacts.Contact contact)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ContactMatchReason> ContactReader.GetMatchingPropertiesWithMatchReason(Contact contact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CContactMatchReason%3E%20ContactReader.GetMatchingPropertiesWithMatchReason%28Contact%20contact%29");
 		}

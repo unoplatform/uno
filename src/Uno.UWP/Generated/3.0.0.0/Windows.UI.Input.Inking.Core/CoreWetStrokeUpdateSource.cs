@@ -30,7 +30,7 @@ namespace Windows.UI.Input.Inking.Core
 		// Forced skipping of method Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource.InkPresenter.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource Create( global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
+		public static global::Windows.UI.Input.Inking.Core.CoreWetStrokeUpdateSource Create(global::Windows.UI.Input.Inking.InkPresenter inkPresenter)
 		{
 			throw new global::System.NotImplementedException("The member CoreWetStrokeUpdateSource CoreWetStrokeUpdateSource.Create(InkPresenter inkPresenter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWetStrokeUpdateSource%20CoreWetStrokeUpdateSource.Create%28InkPresenter%20inkPresenter%29");
 		}

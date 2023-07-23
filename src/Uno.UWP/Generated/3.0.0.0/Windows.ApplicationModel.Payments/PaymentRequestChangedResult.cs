@@ -51,7 +51,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentRequestChangedResult( bool changeAcceptedByMerchant) 
+		public PaymentRequestChangedResult(bool changeAcceptedByMerchant) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentRequestChangedResult.PaymentRequestChangedResult(bool changeAcceptedByMerchant)");
 		}
@@ -59,7 +59,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentRequestChangedResult.PaymentRequestChangedResult(bool)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentRequestChangedResult( bool changeAcceptedByMerchant,  global::Windows.ApplicationModel.Payments.PaymentDetails updatedPaymentDetails) 
+		public PaymentRequestChangedResult(bool changeAcceptedByMerchant, global::Windows.ApplicationModel.Payments.PaymentDetails updatedPaymentDetails) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentRequestChangedResult", "PaymentRequestChangedResult.PaymentRequestChangedResult(bool changeAcceptedByMerchant, PaymentDetails updatedPaymentDetails)");
 		}

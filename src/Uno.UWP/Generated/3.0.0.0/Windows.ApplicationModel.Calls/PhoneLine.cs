@@ -153,28 +153,28 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.LineConfiguration.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> IsImmediateDialNumberAsync( string number)
+		public global::Windows.Foundation.IAsyncOperation<bool> IsImmediateDialNumberAsync(string number)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneLine.IsImmediateDialNumberAsync(string number) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20PhoneLine.IsImmediateDialNumberAsync%28string%20number%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Dial( string number,  string displayName)
+		public void Dial(string number, string displayName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.Dial(string number, string displayName)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void DialWithOptions( global::Windows.ApplicationModel.Calls.PhoneDialOptions options)
+		public void DialWithOptions(global::Windows.ApplicationModel.Calls.PhoneDialOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.DialWithOptions(PhoneDialOptions options)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void EnableTextReply( bool value)
+		public void EnableTextReply(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneLine", "void PhoneLine.EnableTextReply(bool value)");
 		}
@@ -182,14 +182,14 @@ namespace Windows.ApplicationModel.Calls
 		// Forced skipping of method Windows.ApplicationModel.Calls.PhoneLine.TransportDeviceId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Calls.PhoneLineDialResult DialWithResult( string number,  string displayName)
+		public global::Windows.ApplicationModel.Calls.PhoneLineDialResult DialWithResult(string number, string displayName)
 		{
 			throw new global::System.NotImplementedException("The member PhoneLineDialResult PhoneLine.DialWithResult(string number, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneLineDialResult%20PhoneLine.DialWithResult%28string%20number%2C%20string%20displayName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLineDialResult> DialWithResultAsync( string number,  string displayName)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLineDialResult> DialWithResultAsync(string number, string displayName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLineDialResult> PhoneLine.DialWithResultAsync(string number, string displayName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneLineDialResult%3E%20PhoneLine.DialWithResultAsync%28string%20number%2C%20string%20displayName%29");
 		}
@@ -210,7 +210,7 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync( global::System.Guid lineId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneLine> FromIdAsync(global::System.Guid lineId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneLine> PhoneLine.FromIdAsync(Guid lineId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneLine%3E%20PhoneLine.FromIdAsync%28Guid%20lineId%29");
 		}

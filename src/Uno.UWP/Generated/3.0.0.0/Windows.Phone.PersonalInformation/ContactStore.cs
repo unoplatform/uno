@@ -19,21 +19,21 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.StoredContact> FindContactByRemoteIdAsync( string id)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.StoredContact> FindContactByRemoteIdAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoredContact> ContactStore.FindContactByRemoteIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoredContact%3E%20ContactStore.FindContactByRemoteIdAsync%28string%20id%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.StoredContact> FindContactByIdAsync( string id)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.StoredContact> FindContactByIdAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoredContact> ContactStore.FindContactByIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoredContact%3E%20ContactStore.FindContactByIdAsync%28string%20id%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction DeleteContactAsync( string id)
+		public global::Windows.Foundation.IAsyncAction DeleteContactAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactStore.DeleteContactAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactStore.DeleteContactAsync%28string%20id%29");
 		}
@@ -47,7 +47,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Phone.PersonalInformation.ContactQueryResult CreateContactQuery( global::Windows.Phone.PersonalInformation.ContactQueryOptions options)
+		public global::Windows.Phone.PersonalInformation.ContactQueryResult CreateContactQuery(global::Windows.Phone.PersonalInformation.ContactQueryOptions options)
 		{
 			throw new global::System.NotImplementedException("The member ContactQueryResult ContactStore.CreateContactQuery(ContactQueryOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ContactQueryResult%20ContactStore.CreateContactQuery%28ContactQueryOptions%20options%29");
 		}
@@ -62,7 +62,7 @@ namespace Windows.Phone.PersonalInformation
 		// Forced skipping of method Windows.Phone.PersonalInformation.ContactStore.RevisionNumber.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Phone.PersonalInformation.ContactChangeRecord>> GetChangesAsync( ulong baseRevisionNumber)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Phone.PersonalInformation.ContactChangeRecord>> GetChangesAsync(ulong baseRevisionNumber)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ContactChangeRecord>> ContactStore.GetChangesAsync(ulong baseRevisionNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CContactChangeRecord%3E%3E%20ContactStore.GetChangesAsync%28ulong%20baseRevisionNumber%29");
 		}
@@ -76,14 +76,14 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SaveExtendedPropertiesAsync( global::System.Collections.Generic.IReadOnlyDictionary<string, object> data)
+		public global::Windows.Foundation.IAsyncAction SaveExtendedPropertiesAsync(global::System.Collections.Generic.IReadOnlyDictionary<string, object> data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactStore.SaveExtendedPropertiesAsync(IReadOnlyDictionary<string, object> data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactStore.SaveExtendedPropertiesAsync%28IReadOnlyDictionary%3Cstring%2C%20object%3E%20data%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.StoredContact> CreateMeContactAsync( string id)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.StoredContact> CreateMeContactAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoredContact> ContactStore.CreateMeContactAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStoredContact%3E%20ContactStore.CreateMeContactAsync%28string%20id%29");
 		}
@@ -97,7 +97,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.ContactStore> CreateOrOpenAsync( global::Windows.Phone.PersonalInformation.ContactStoreSystemAccessMode access,  global::Windows.Phone.PersonalInformation.ContactStoreApplicationAccessMode sharing)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.ContactStore> CreateOrOpenAsync(global::Windows.Phone.PersonalInformation.ContactStoreSystemAccessMode access, global::Windows.Phone.PersonalInformation.ContactStoreApplicationAccessMode sharing)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ContactStore> ContactStore.CreateOrOpenAsync(ContactStoreSystemAccessMode access, ContactStoreApplicationAccessMode sharing) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContactStore%3E%20ContactStore.CreateOrOpenAsync%28ContactStoreSystemAccessMode%20access%2C%20ContactStoreApplicationAccessMode%20sharing%29");
 		}

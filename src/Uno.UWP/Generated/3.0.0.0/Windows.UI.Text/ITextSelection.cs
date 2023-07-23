@@ -24,25 +24,25 @@ namespace Windows.UI.Text
 		// Forced skipping of method Windows.UI.Text.ITextSelection.Options.set
 		// Forced skipping of method Windows.UI.Text.ITextSelection.Type.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int EndKey( global::Windows.UI.Text.TextRangeUnit unit,  bool extend);
+		int EndKey(global::Windows.UI.Text.TextRangeUnit unit, bool extend);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int HomeKey( global::Windows.UI.Text.TextRangeUnit unit,  bool extend);
+		int HomeKey(global::Windows.UI.Text.TextRangeUnit unit, bool extend);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int MoveDown( global::Windows.UI.Text.TextRangeUnit unit,  int count,  bool extend);
+		int MoveDown(global::Windows.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int MoveLeft( global::Windows.UI.Text.TextRangeUnit unit,  int count,  bool extend);
+		int MoveLeft(global::Windows.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int MoveRight( global::Windows.UI.Text.TextRangeUnit unit,  int count,  bool extend);
+		int MoveRight(global::Windows.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		int MoveUp( global::Windows.UI.Text.TextRangeUnit unit,  int count,  bool extend);
+		int MoveUp(global::Windows.UI.Text.TextRangeUnit unit, int count, bool extend);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void TypeText( string value);
+		void TypeText(string value);
 #endif
 	}
 }

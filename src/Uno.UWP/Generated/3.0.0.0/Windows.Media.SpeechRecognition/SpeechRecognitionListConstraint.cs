@@ -71,7 +71,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpeechRecognitionListConstraint( global::System.Collections.Generic.IEnumerable<string> commands) 
+		public SpeechRecognitionListConstraint(global::System.Collections.Generic.IEnumerable<string> commands) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(IEnumerable<string> commands)");
 		}
@@ -79,7 +79,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(System.Collections.Generic.IEnumerable<string>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpeechRecognitionListConstraint( global::System.Collections.Generic.IEnumerable<string> commands,  string tag) 
+		public SpeechRecognitionListConstraint(global::System.Collections.Generic.IEnumerable<string> commands, string tag) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionListConstraint", "SpeechRecognitionListConstraint.SpeechRecognitionListConstraint(IEnumerable<string> commands, string tag)");
 		}

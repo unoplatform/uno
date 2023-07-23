@@ -79,42 +79,42 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LineHeight), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Documents.Block), 
+			nameof(LineHeight), typeof(double),
+			typeof(global::Windows.UI.Xaml.Documents.Block),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(LineStackingStrategy), typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
-			typeof(global::Windows.UI.Xaml.Documents.Block), 
+			nameof(LineStackingStrategy), typeof(global::Windows.UI.Xaml.LineStackingStrategy),
+			typeof(global::Windows.UI.Xaml.Documents.Block),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.LineStackingStrategy)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MarginProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Margin), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Documents.Block), 
+			nameof(Margin), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Documents.Block),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
-			typeof(global::Windows.UI.Xaml.Documents.Block), 
+			nameof(TextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment),
+			typeof(global::Windows.UI.Xaml.Documents.Block),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
-			typeof(global::Windows.UI.Xaml.Documents.Block), 
+			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment),
+			typeof(global::Windows.UI.Xaml.Documents.Block),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

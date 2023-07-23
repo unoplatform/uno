@@ -47,7 +47,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( string key,  global::Windows.UI.Composition.ICompositionAnimationBase value)
+		public void Add(string key, global::Windows.UI.Composition.ICompositionAnimationBase value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -55,7 +55,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
+		public bool ContainsKey(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -63,7 +63,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string key)
+		public bool Remove(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -71,7 +71,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.UI.Composition.ICompositionAnimationBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out global::Windows.UI.Composition.ICompositionAnimationBase value)
+		public bool TryGetValue(string key, out global::Windows.UI.Composition.ICompositionAnimationBase value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -114,7 +114,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -130,7 +130,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -138,7 +138,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>[] array,  int arrayIndex)
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase>[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -146,7 +146,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
+		public bool Remove(global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.ICompositionAnimationBase> item)
 		{
 			throw new global::System.NotSupportedException();
 		}

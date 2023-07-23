@@ -125,7 +125,7 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.IsAvailableBySpatialProximity.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> GetCapabilitySupportedAsync( string capabilityName)
+		public global::Windows.Foundation.IAsyncOperation<bool> GetCapabilitySupportedAsync(string capabilityName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> RemoteSystem.GetCapabilitySupportedAsync(string capabilityName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20RemoteSystem.GetCapabilitySupportedAsync%28string%20capabilityName%29");
 		}
@@ -137,28 +137,28 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystem.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcherForUser( global::Windows.System.User user)
+		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcherForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcherForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemWatcher%20RemoteSystem.CreateWatcherForUser%28User%20user%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcherForUser( global::Windows.System.User user,  global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.IRemoteSystemFilter> filters)
+		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcherForUser(global::Windows.System.User user, global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.IRemoteSystemFilter> filters)
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcherForUser(User user, IEnumerable<IRemoteSystemFilter> filters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemWatcher%20RemoteSystem.CreateWatcherForUser%28User%20user%2C%20IEnumerable%3CIRemoteSystemFilter%3E%20filters%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsAuthorizationKindEnabled( global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind kind)
+		public static bool IsAuthorizationKindEnabled(global::Windows.System.RemoteSystems.RemoteSystemAuthorizationKind kind)
 		{
 			throw new global::System.NotImplementedException("The member bool RemoteSystem.IsAuthorizationKindEnabled(RemoteSystemAuthorizationKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RemoteSystem.IsAuthorizationKindEnabled%28RemoteSystemAuthorizationKind%20kind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystem> FindByHostNameAsync( global::Windows.Networking.HostName hostName)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.System.RemoteSystems.RemoteSystem> FindByHostNameAsync(global::Windows.Networking.HostName hostName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RemoteSystem> RemoteSystem.FindByHostNameAsync(HostName hostName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRemoteSystem%3E%20RemoteSystem.FindByHostNameAsync%28HostName%20hostName%29");
 		}
@@ -172,7 +172,7 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcher( global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.IRemoteSystemFilter> filters)
+		public static global::Windows.System.RemoteSystems.RemoteSystemWatcher CreateWatcher(global::System.Collections.Generic.IEnumerable<global::Windows.System.RemoteSystems.IRemoteSystemFilter> filters)
 		{
 			throw new global::System.NotImplementedException("The member RemoteSystemWatcher RemoteSystem.CreateWatcher(IEnumerable<IRemoteSystemFilter> filters) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RemoteSystemWatcher%20RemoteSystem.CreateWatcher%28IEnumerable%3CIRemoteSystemFilter%3E%20filters%29");
 		}

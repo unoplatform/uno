@@ -38,14 +38,14 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Miracast.MiracastReceiverApplySettingsResult DisconnectAllAndApplySettings( global::Windows.Media.Miracast.MiracastReceiverSettings settings)
+		public global::Windows.Media.Miracast.MiracastReceiverApplySettingsResult DisconnectAllAndApplySettings(global::Windows.Media.Miracast.MiracastReceiverSettings settings)
 		{
 			throw new global::System.NotImplementedException("The member MiracastReceiverApplySettingsResult MiracastReceiver.DisconnectAllAndApplySettings(MiracastReceiverSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverApplySettingsResult%20MiracastReceiver.DisconnectAllAndApplySettings%28MiracastReceiverSettings%20settings%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Miracast.MiracastReceiverApplySettingsResult> DisconnectAllAndApplySettingsAsync( global::Windows.Media.Miracast.MiracastReceiverSettings settings)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Miracast.MiracastReceiverApplySettingsResult> DisconnectAllAndApplySettingsAsync(global::Windows.Media.Miracast.MiracastReceiverSettings settings)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MiracastReceiverApplySettingsResult> MiracastReceiver.DisconnectAllAndApplySettingsAsync(MiracastReceiverSettings settings) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMiracastReceiverApplySettingsResult%3E%20MiracastReceiver.DisconnectAllAndApplySettingsAsync%28MiracastReceiverSettings%20settings%29");
 		}
@@ -68,14 +68,14 @@ namespace Windows.Media.Miracast
 		// Forced skipping of method Windows.Media.Miracast.MiracastReceiver.StatusChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Miracast.MiracastReceiverSession CreateSession( global::Windows.ApplicationModel.Core.CoreApplicationView view)
+		public global::Windows.Media.Miracast.MiracastReceiverSession CreateSession(global::Windows.ApplicationModel.Core.CoreApplicationView view)
 		{
 			throw new global::System.NotImplementedException("The member MiracastReceiverSession MiracastReceiver.CreateSession(CoreApplicationView view) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MiracastReceiverSession%20MiracastReceiver.CreateSession%28CoreApplicationView%20view%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Miracast.MiracastReceiverSession> CreateSessionAsync( global::Windows.ApplicationModel.Core.CoreApplicationView view)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Media.Miracast.MiracastReceiverSession> CreateSessionAsync(global::Windows.ApplicationModel.Core.CoreApplicationView view)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MiracastReceiverSession> MiracastReceiver.CreateSessionAsync(CoreApplicationView view) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CMiracastReceiverSession%3E%20MiracastReceiver.CreateSessionAsync%28CoreApplicationView%20view%29");
 		}
@@ -89,7 +89,7 @@ namespace Windows.Media.Miracast
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveKnownTransmitter( global::Windows.Media.Miracast.MiracastTransmitter transmitter)
+		public void RemoveKnownTransmitter(global::Windows.Media.Miracast.MiracastTransmitter transmitter)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Miracast.MiracastReceiver", "void MiracastReceiver.RemoveKnownTransmitter(MiracastTransmitter transmitter)");
 		}

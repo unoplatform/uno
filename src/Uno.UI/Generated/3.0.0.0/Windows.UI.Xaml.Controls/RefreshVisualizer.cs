@@ -47,10 +47,10 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Content), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
+			nameof(Content), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -60,18 +60,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerOrientation), 
-			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerOrientation),
+			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizerOrientation)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(State), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerState), 
-			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
+			nameof(State), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerState),
+			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizerState)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RefreshVisualizer.RefreshVisualizer()

@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStore> RequestStoreAsync( global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStoreAccessType accessType)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStore> RequestStoreAsync(global::Windows.ApplicationModel.UserDataTasks.UserDataTaskStoreAccessType accessType)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<UserDataTaskStore> UserDataTaskManager.RequestStoreAsync(UserDataTaskStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CUserDataTaskStore%3E%20UserDataTaskManager.RequestStoreAsync%28UserDataTaskStoreAccessType%20accessType%29");
 		}
@@ -34,7 +34,7 @@ namespace Windows.ApplicationModel.UserDataTasks
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.UserDataTasks.UserDataTaskManager GetForUser( global::Windows.System.User user)
+		public static global::Windows.ApplicationModel.UserDataTasks.UserDataTaskManager GetForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member UserDataTaskManager UserDataTaskManager.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserDataTaskManager%20UserDataTaskManager.GetForUser%28User%20user%29");
 		}

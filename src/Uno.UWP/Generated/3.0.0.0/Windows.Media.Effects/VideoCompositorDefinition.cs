@@ -29,7 +29,7 @@ namespace Windows.Media.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VideoCompositorDefinition( string activatableClassId) 
+		public VideoCompositorDefinition(string activatableClassId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoCompositorDefinition", "VideoCompositorDefinition.VideoCompositorDefinition(string activatableClassId)");
 		}
@@ -37,7 +37,7 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.VideoCompositorDefinition.VideoCompositorDefinition(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VideoCompositorDefinition( string activatableClassId,  global::Windows.Foundation.Collections.IPropertySet props) 
+		public VideoCompositorDefinition(string activatableClassId, global::Windows.Foundation.Collections.IPropertySet props) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.VideoCompositorDefinition", "VideoCompositorDefinition.VideoCompositorDefinition(string activatableClassId, IPropertySet props)");
 		}

@@ -104,7 +104,7 @@ namespace Windows.System.Diagnostics
 		// Forced skipping of method Windows.System.Diagnostics.ProcessDiagnosticInfo.IsPackaged.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId( uint processId)
+		public static global::Windows.System.Diagnostics.ProcessDiagnosticInfo TryGetForProcessId(uint processId)
 		{
 			throw new global::System.NotImplementedException("The member ProcessDiagnosticInfo ProcessDiagnosticInfo.TryGetForProcessId(uint processId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ProcessDiagnosticInfo%20ProcessDiagnosticInfo.TryGetForProcessId%28uint%20processId%29");
 		}

@@ -71,42 +71,42 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsProtractorItemVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsProtractorItemVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsProtractorItemVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton), 
+			nameof(IsProtractorItemVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsRulerItemVisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsRulerItemVisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsRulerItemVisible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton), 
+			nameof(IsRulerItemVisible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProtractorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProtractorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Protractor), typeof(global::Windows.UI.Input.Inking.InkPresenterProtractor), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton), 
+			nameof(Protractor), typeof(global::Windows.UI.Input.Inking.InkPresenterProtractor),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkPresenterProtractor)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RulerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RulerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Ruler), typeof(global::Windows.UI.Input.Inking.InkPresenterRuler), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton), 
+			nameof(Ruler), typeof(global::Windows.UI.Input.Inking.InkPresenterRuler),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkPresenterRuler)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedStencilProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedStencilProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedStencil), typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilKind), 
-			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton), 
+			nameof(SelectedStencil), typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilKind),
+			typeof(global::Windows.UI.Xaml.Controls.InkToolbarStencilButton),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarStencilKind)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

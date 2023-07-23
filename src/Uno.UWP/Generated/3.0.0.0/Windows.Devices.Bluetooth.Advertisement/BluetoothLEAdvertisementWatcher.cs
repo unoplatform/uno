@@ -123,7 +123,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BluetoothLEAdvertisementWatcher( global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter advertisementFilter) 
+		public BluetoothLEAdvertisementWatcher(global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementFilter advertisementFilter) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementWatcher", "BluetoothLEAdvertisementWatcher.BluetoothLEAdvertisementWatcher(BluetoothLEAdvertisementFilter advertisementFilter)");
 		}

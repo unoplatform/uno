@@ -42,14 +42,14 @@ namespace Windows.ApplicationModel.Email.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailMailboxCreateFolderRequest.Name.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Email.EmailFolder folder)
+		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Email.EmailFolder folder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxCreateFolderRequest.ReportCompletedAsync(EmailFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxCreateFolderRequest.ReportCompletedAsync%28EmailFolder%20folder%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportFailedAsync( global::Windows.ApplicationModel.Email.EmailMailboxCreateFolderStatus status)
+		public global::Windows.Foundation.IAsyncAction ReportFailedAsync(global::Windows.ApplicationModel.Email.EmailMailboxCreateFolderStatus status)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction EmailMailboxCreateFolderRequest.ReportFailedAsync(EmailMailboxCreateFolderStatus status) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20EmailMailboxCreateFolderRequest.ReportFailedAsync%28EmailMailboxCreateFolderStatus%20status%29");
 		}

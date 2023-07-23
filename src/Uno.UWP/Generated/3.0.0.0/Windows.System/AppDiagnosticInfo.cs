@@ -55,7 +55,7 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoForPackageAsync( string packageFamilyName)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoForPackageAsync(string packageFamilyName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppDiagnosticInfo>> AppDiagnosticInfo.RequestInfoForPackageAsync(string packageFamilyName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppDiagnosticInfo%3E%3E%20AppDiagnosticInfo.RequestInfoForPackageAsync%28string%20packageFamilyName%29");
 		}
@@ -69,7 +69,7 @@ namespace Windows.System
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoForAppAsync( string appUserModelId)
+		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<global::Windows.System.AppDiagnosticInfo>> RequestInfoForAppAsync(string appUserModelId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<AppDiagnosticInfo>> AppDiagnosticInfo.RequestInfoForAppAsync(string appUserModelId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIList%3CAppDiagnosticInfo%3E%3E%20AppDiagnosticInfo.RequestInfoForAppAsync%28string%20appUserModelId%29");
 		}

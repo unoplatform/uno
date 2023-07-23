@@ -19,7 +19,7 @@ namespace Windows.Foundation.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public LoggingSession( string name) 
+		public LoggingSession(string name) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "LoggingSession.LoggingSession(string name)");
 		}
@@ -28,28 +28,28 @@ namespace Windows.Foundation.Diagnostics
 		// Forced skipping of method Windows.Foundation.Diagnostics.LoggingSession.Name.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> SaveToFileAsync( global::Windows.Storage.IStorageFolder folder,  string fileName)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> SaveToFileAsync(global::Windows.Storage.IStorageFolder folder, string fileName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> LoggingSession.SaveToFileAsync(IStorageFolder folder, string fileName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20LoggingSession.SaveToFileAsync%28IStorageFolder%20folder%2C%20string%20fileName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddLoggingChannel( global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel)
+		public void AddLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.AddLoggingChannel(ILoggingChannel loggingChannel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddLoggingChannel( global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel,  global::Windows.Foundation.Diagnostics.LoggingLevel maxLevel)
+		public void AddLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel, global::Windows.Foundation.Diagnostics.LoggingLevel maxLevel)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.AddLoggingChannel(ILoggingChannel loggingChannel, LoggingLevel maxLevel)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveLoggingChannel( global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel)
+		public void RemoveLoggingChannel(global::Windows.Foundation.Diagnostics.ILoggingChannel loggingChannel)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.LoggingSession", "void LoggingSession.RemoveLoggingChannel(ILoggingChannel loggingChannel)");
 		}

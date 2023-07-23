@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Core
 		// Skipping already declared property Views
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView( global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)
+		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView(global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)
 		{
 			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.CreateNewView(IFrameworkViewSource viewSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreApplicationView%20CoreApplication.CreateNewView%28IFrameworkViewSource%20viewSource%29");
 		}
@@ -62,7 +62,7 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.Views.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView( string runtimeType,  string entryPoint)
+		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView(string runtimeType, string entryPoint)
 		{
 			throw new global::System.NotImplementedException("The member CoreApplicationView CoreApplication.CreateNewView(string runtimeType, string entryPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreApplicationView%20CoreApplication.CreateNewView%28string%20runtimeType%2C%20string%20entryPoint%29");
 		}
@@ -79,14 +79,14 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.Exiting.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync( string launchArguments)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartAsync(string launchArguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> CoreApplication.RequestRestartAsync(string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20CoreApplication.RequestRestartAsync%28string%20launchArguments%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync( global::Windows.System.User user,  string launchArguments)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Core.AppRestartFailureReason> RequestRestartForUserAsync(global::Windows.System.User user, string launchArguments)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppRestartFailureReason> CoreApplication.RequestRestartForUserAsync(User user, string launchArguments) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppRestartFailureReason%3E%20CoreApplication.RequestRestartForUserAsync%28User%20user%2C%20string%20launchArguments%29");
 		}
@@ -99,7 +99,7 @@ namespace Windows.ApplicationModel.Core
 		// Forced skipping of method Windows.ApplicationModel.Core.CoreApplication.EnteredBackground.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void EnablePrelaunch( bool value)
+		public static void EnablePrelaunch(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "void CoreApplication.EnablePrelaunch(bool value)");
 		}
@@ -113,14 +113,14 @@ namespace Windows.ApplicationModel.Core
 		// Skipping already declared method Windows.ApplicationModel.Core.CoreApplication.GetCurrentView()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void Run( global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)
+		public static void Run(global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "void CoreApplication.Run(IFrameworkViewSource viewSource)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void RunWithActivationFactories( global::Windows.Foundation.IGetActivationFactory activationFactoryCallback)
+		public static void RunWithActivationFactories(global::Windows.Foundation.IGetActivationFactory activationFactoryCallback)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Core.CoreApplication", "void CoreApplication.RunWithActivationFactories(IGetActivationFactory activationFactoryCallback)");
 		}

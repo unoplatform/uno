@@ -91,10 +91,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property AreStickyGroupHeadersEnabled
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CacheLengthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CacheLengthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CacheLength), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.ItemsStackPanel), 
+			nameof(CacheLength), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.ItemsStackPanel),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 		// Skipping already declared property GroupHeaderPlacementProperty

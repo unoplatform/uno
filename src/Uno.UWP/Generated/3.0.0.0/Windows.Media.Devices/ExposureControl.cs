@@ -71,7 +71,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.ExposureControl.Auto.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetAutoAsync( bool value)
+		public global::Windows.Foundation.IAsyncAction SetAutoAsync(bool value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetAutoAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ExposureControl.SetAutoAsync%28bool%20value%29");
 		}
@@ -82,7 +82,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.ExposureControl.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetValueAsync( global::System.TimeSpan shutterDuration)
+		public global::Windows.Foundation.IAsyncAction SetValueAsync(global::System.TimeSpan shutterDuration)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ExposureControl.SetValueAsync(TimeSpan shutterDuration) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ExposureControl.SetValueAsync%28TimeSpan%20shutterDuration%29");
 		}

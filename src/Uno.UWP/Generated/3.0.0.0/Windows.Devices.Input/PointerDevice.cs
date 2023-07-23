@@ -77,7 +77,7 @@ namespace Windows.Devices.Input
 		// Forced skipping of method Windows.Devices.Input.PointerDevice.MaxPointersWithZDistance.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Input.PointerDevice GetPointerDevice( uint pointerId)
+		public static global::Windows.Devices.Input.PointerDevice GetPointerDevice(uint pointerId)
 		{
 			throw new global::System.NotImplementedException("The member PointerDevice PointerDevice.GetPointerDevice(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PointerDevice%20PointerDevice.GetPointerDevice%28uint%20pointerId%29");
 		}

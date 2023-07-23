@@ -62,21 +62,21 @@ namespace Windows.Services.Maps.OfflineMaps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesAsync( global::Windows.Devices.Geolocation.Geopoint queryPoint)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesAsync(global::Windows.Devices.Geolocation.Geopoint queryPoint)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OfflineMapPackageQueryResult> OfflineMapPackage.FindPackagesAsync(Geopoint queryPoint) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COfflineMapPackageQueryResult%3E%20OfflineMapPackage.FindPackagesAsync%28Geopoint%20queryPoint%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesInBoundingBoxAsync( global::Windows.Devices.Geolocation.GeoboundingBox queryBoundingBox)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesInBoundingBoxAsync(global::Windows.Devices.Geolocation.GeoboundingBox queryBoundingBox)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OfflineMapPackageQueryResult> OfflineMapPackage.FindPackagesInBoundingBoxAsync(GeoboundingBox queryBoundingBox) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COfflineMapPackageQueryResult%3E%20OfflineMapPackage.FindPackagesInBoundingBoxAsync%28GeoboundingBox%20queryBoundingBox%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesInGeocircleAsync( global::Windows.Devices.Geolocation.Geocircle queryCircle)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Maps.OfflineMaps.OfflineMapPackageQueryResult> FindPackagesInGeocircleAsync(global::Windows.Devices.Geolocation.Geocircle queryCircle)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<OfflineMapPackageQueryResult> OfflineMapPackage.FindPackagesInGeocircleAsync(Geocircle queryCircle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3COfflineMapPackageQueryResult%3E%20OfflineMapPackage.FindPackagesInGeocircleAsync%28Geocircle%20queryCircle%29");
 		}

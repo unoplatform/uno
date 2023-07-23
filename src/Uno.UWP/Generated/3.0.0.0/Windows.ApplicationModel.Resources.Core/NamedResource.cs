@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate Resolve( global::Windows.ApplicationModel.Resources.Core.ResourceContext resourceContext)
+		public global::Windows.ApplicationModel.Resources.Core.ResourceCandidate Resolve(global::Windows.ApplicationModel.Resources.Core.ResourceContext resourceContext)
 		{
 			throw new global::System.NotImplementedException("The member ResourceCandidate NamedResource.Resolve(ResourceContext resourceContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ResourceCandidate%20NamedResource.Resolve%28ResourceContext%20resourceContext%29");
 		}
@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceCandidate> ResolveAll( global::Windows.ApplicationModel.Resources.Core.ResourceContext resourceContext)
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Resources.Core.ResourceCandidate> ResolveAll(global::Windows.ApplicationModel.Resources.Core.ResourceContext resourceContext)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<ResourceCandidate> NamedResource.ResolveAll(ResourceContext resourceContext) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3CResourceCandidate%3E%20NamedResource.ResolveAll%28ResourceContext%20resourceContext%29");
 		}

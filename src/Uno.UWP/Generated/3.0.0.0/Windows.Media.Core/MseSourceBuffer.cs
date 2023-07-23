@@ -105,21 +105,21 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MseSourceBuffer.AppendWindowEnd.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendBuffer( global::Windows.Storage.Streams.IBuffer buffer)
+		public void AppendBuffer(global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.AppendBuffer(IBuffer buffer)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendStream( global::Windows.Storage.Streams.IInputStream stream)
+		public void AppendStream(global::Windows.Storage.Streams.IInputStream stream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.AppendStream(IInputStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AppendStream( global::Windows.Storage.Streams.IInputStream stream,  ulong maxSize)
+		public void AppendStream(global::Windows.Storage.Streams.IInputStream stream, ulong maxSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.AppendStream(IInputStream stream, ulong maxSize)");
 		}
@@ -133,7 +133,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Remove( global::System.TimeSpan start,  global::System.TimeSpan? end)
+		public void Remove(global::System.TimeSpan start, global::System.TimeSpan? end)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MseSourceBuffer", "void MseSourceBuffer.Remove(TimeSpan start, TimeSpan? end)");
 		}

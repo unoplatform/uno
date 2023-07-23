@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Resources.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public uint GetMany( global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap>[] items)
+		public uint GetMany(global::System.Collections.Generic.KeyValuePair<string, global::Windows.ApplicationModel.Resources.Core.ResourceMap>[] items)
 		{
 			throw new global::System.NotImplementedException("The member uint ResourceMapMapViewIterator.GetMany(KeyValuePair<string, ResourceMap>[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20ResourceMapMapViewIterator.GetMany%28KeyValuePair%3Cstring%2C%20ResourceMap%3E%5B%5D%20items%29");
 		}

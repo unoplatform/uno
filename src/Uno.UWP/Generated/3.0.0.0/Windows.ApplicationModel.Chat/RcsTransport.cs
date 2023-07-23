@@ -64,14 +64,14 @@ namespace Windows.ApplicationModel.Chat
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsTransport.Configuration.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsStoreAndForwardEnabled( global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
+		public bool IsStoreAndForwardEnabled(global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
 		{
 			throw new global::System.NotImplementedException("The member bool RcsTransport.IsStoreAndForwardEnabled(RcsServiceKind serviceKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RcsTransport.IsStoreAndForwardEnabled%28RcsServiceKind%20serviceKind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsServiceKindSupported( global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
+		public bool IsServiceKindSupported(global::Windows.ApplicationModel.Chat.RcsServiceKind serviceKind)
 		{
 			throw new global::System.NotImplementedException("The member bool RcsTransport.IsServiceKindSupported(RcsServiceKind serviceKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RcsTransport.IsServiceKindSupported%28RcsServiceKind%20serviceKind%29");
 		}

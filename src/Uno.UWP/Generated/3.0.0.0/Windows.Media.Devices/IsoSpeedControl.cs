@@ -92,7 +92,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.Preset.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetPresetAsync( global::Windows.Media.Devices.IsoSpeedPreset preset)
+		public global::Windows.Foundation.IAsyncAction SetPresetAsync(global::Windows.Media.Devices.IsoSpeedPreset preset)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction IsoSpeedControl.SetPresetAsync(IsoSpeedPreset preset) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20IsoSpeedControl.SetPresetAsync%28IsoSpeedPreset%20preset%29");
 		}
@@ -103,7 +103,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.IsoSpeedControl.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetValueAsync( uint isoSpeed)
+		public global::Windows.Foundation.IAsyncAction SetValueAsync(uint isoSpeed)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction IsoSpeedControl.SetValueAsync(uint isoSpeed) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20IsoSpeedControl.SetValueAsync%28uint%20isoSpeed%29");
 		}

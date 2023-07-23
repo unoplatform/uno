@@ -58,7 +58,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.Language.Script.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags( string singleton)
+		public global::System.Collections.Generic.IReadOnlyList<string> GetExtensionSubtags(string singleton)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<string> Language.GetExtensionSubtags(string singleton) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20Language.GetExtensionSubtags%28string%20singleton%29");
 		}
@@ -67,21 +67,21 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.Language.AbbreviatedName.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::System.Collections.Generic.IList<string> GetMuiCompatibleLanguageListFromLanguageTags( global::System.Collections.Generic.IEnumerable<string> languageTags)
+		public static global::System.Collections.Generic.IList<string> GetMuiCompatibleLanguageListFromLanguageTags(global::System.Collections.Generic.IEnumerable<string> languageTags)
 		{
 			throw new global::System.NotImplementedException("The member IList<string> Language.GetMuiCompatibleLanguageListFromLanguageTags(IEnumerable<string> languageTags) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IList%3Cstring%3E%20Language.GetMuiCompatibleLanguageListFromLanguageTags%28IEnumerable%3Cstring%3E%20languageTags%29");
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TrySetInputMethodLanguageTag( string languageTag)
+		public static bool TrySetInputMethodLanguageTag(string languageTag)
 		{
 			throw new global::System.NotImplementedException("The member bool Language.TrySetInputMethodLanguageTag(string languageTag) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Language.TrySetInputMethodLanguageTag%28string%20languageTag%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsWellFormed( string languageTag)
+		public static bool IsWellFormed(string languageTag)
 		{
 			throw new global::System.NotImplementedException("The member bool Language.IsWellFormed(string languageTag) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20Language.IsWellFormed%28string%20languageTag%29");
 		}

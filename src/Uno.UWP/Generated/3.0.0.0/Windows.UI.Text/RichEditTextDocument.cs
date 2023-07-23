@@ -100,7 +100,7 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetMath( string value)
+		public void SetMath(string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetMath(string value)");
 		}
@@ -114,7 +114,7 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetMathMode( global::Windows.UI.Text.RichEditMathMode mode)
+		public void SetMathMode(global::Windows.UI.Text.RichEditMathMode mode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetMathMode(RichEditMathMode mode)");
 		}
@@ -198,28 +198,28 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Text.ITextRange GetRange( int startPosition,  int endPosition)
+		public global::Windows.UI.Text.ITextRange GetRange(int startPosition, int endPosition)
 		{
 			throw new global::System.NotImplementedException("The member ITextRange RichEditTextDocument.GetRange(int startPosition, int endPosition) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextRange%20RichEditTextDocument.GetRange%28int%20startPosition%2C%20int%20endPosition%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Text.ITextRange GetRangeFromPoint( global::Windows.Foundation.Point point,  global::Windows.UI.Text.PointOptions options)
+		public global::Windows.UI.Text.ITextRange GetRangeFromPoint(global::Windows.Foundation.Point point, global::Windows.UI.Text.PointOptions options)
 		{
 			throw new global::System.NotImplementedException("The member ITextRange RichEditTextDocument.GetRangeFromPoint(Point point, PointOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ITextRange%20RichEditTextDocument.GetRangeFromPoint%28Point%20point%2C%20PointOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void GetText( global::Windows.UI.Text.TextGetOptions options, out string value)
+		public void GetText(global::Windows.UI.Text.TextGetOptions options, out string value)
 		{
 			throw new global::System.NotImplementedException("The member void RichEditTextDocument.GetText(TextGetOptions options, out string value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=void%20RichEditTextDocument.GetText%28TextGetOptions%20options%2C%20out%20string%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void LoadFromStream( global::Windows.UI.Text.TextSetOptions options,  global::Windows.Storage.Streams.IRandomAccessStream value)
+		public void LoadFromStream(global::Windows.UI.Text.TextSetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.LoadFromStream(TextSetOptions options, IRandomAccessStream value)");
 		}
@@ -233,28 +233,28 @@ namespace Windows.UI.Text
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SaveToStream( global::Windows.UI.Text.TextGetOptions options,  global::Windows.Storage.Streams.IRandomAccessStream value)
+		public void SaveToStream(global::Windows.UI.Text.TextGetOptions options, global::Windows.Storage.Streams.IRandomAccessStream value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SaveToStream(TextGetOptions options, IRandomAccessStream value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDefaultCharacterFormat( global::Windows.UI.Text.ITextCharacterFormat value)
+		public void SetDefaultCharacterFormat(global::Windows.UI.Text.ITextCharacterFormat value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetDefaultCharacterFormat(ITextCharacterFormat value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDefaultParagraphFormat( global::Windows.UI.Text.ITextParagraphFormat value)
+		public void SetDefaultParagraphFormat(global::Windows.UI.Text.ITextParagraphFormat value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetDefaultParagraphFormat(ITextParagraphFormat value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetText( global::Windows.UI.Text.TextSetOptions options,  string value)
+		public void SetText(global::Windows.UI.Text.TextSetOptions options, string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetText(TextSetOptions options, string value)");
 		}

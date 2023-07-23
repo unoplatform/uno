@@ -36,10 +36,10 @@ namespace Windows.UI.Xaml.Automation.Provider
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.ITransformProvider2.MaxZoom.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.ITransformProvider2.MinZoom.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Zoom( double zoom);
+		void Zoom(double zoom);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ZoomByUnit( global::Windows.UI.Xaml.Automation.ZoomUnit zoomUnit);
+		void ZoomByUnit(global::Windows.UI.Xaml.Automation.ZoomUnit zoomUnit);
 #endif
 	}
 }

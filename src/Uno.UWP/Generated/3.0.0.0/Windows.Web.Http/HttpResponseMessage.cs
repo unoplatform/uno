@@ -113,7 +113,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpResponseMessage( global::Windows.Web.Http.HttpStatusCode statusCode) 
+		public HttpResponseMessage(global::Windows.Web.Http.HttpStatusCode statusCode) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage.HttpResponseMessage(HttpStatusCode statusCode)");
 		}

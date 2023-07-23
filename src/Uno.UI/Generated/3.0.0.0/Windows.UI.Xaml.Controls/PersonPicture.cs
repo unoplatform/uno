@@ -149,82 +149,82 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BadgeGlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BadgeGlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BadgeGlyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(BadgeGlyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BadgeImageSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BadgeImageSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BadgeImageSource), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(BadgeImageSource), typeof(global::Windows.UI.Xaml.Media.ImageSource),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BadgeNumberProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BadgeNumberProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BadgeNumber), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(BadgeNumber), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BadgeTextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BadgeTextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(BadgeText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(BadgeText), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContactProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContactProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Contact), typeof(global::Windows.ApplicationModel.Contacts.Contact), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(Contact), typeof(global::Windows.ApplicationModel.Contacts.Contact),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.ApplicationModel.Contacts.Contact)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisplayNameProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DisplayNameProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisplayName), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(DisplayName), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty InitialsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty InitialsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Initials), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(Initials), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsGroupProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsGroupProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsGroup), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(IsGroup), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PreferSmallImageProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PreferSmallImageProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PreferSmallImage), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(PreferSmallImage), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProfilePictureProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProfilePictureProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ProfilePicture), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
-			typeof(global::Windows.UI.Xaml.Controls.PersonPicture), 
+			nameof(ProfilePicture), typeof(global::Windows.UI.Xaml.Media.ImageSource),
+			typeof(global::Windows.UI.Xaml.Controls.PersonPicture),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.PersonPicture.PersonPicture()

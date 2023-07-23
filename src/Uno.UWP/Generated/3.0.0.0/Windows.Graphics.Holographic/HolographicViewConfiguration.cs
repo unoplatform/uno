@@ -119,7 +119,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicViewConfiguration.RenderTargetSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.Size RequestRenderTargetSize( global::Windows.Foundation.Size size)
+		public global::Windows.Foundation.Size RequestRenderTargetSize(global::Windows.Foundation.Size size)
 		{
 			throw new global::System.NotImplementedException("The member Size HolographicViewConfiguration.RequestRenderTargetSize(Size size) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20HolographicViewConfiguration.RequestRenderTargetSize%28Size%20size%29");
 		}

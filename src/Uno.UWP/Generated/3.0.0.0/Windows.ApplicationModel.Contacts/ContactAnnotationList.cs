@@ -49,21 +49,21 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TrySaveAnnotationAsync( global::Windows.ApplicationModel.Contacts.ContactAnnotation annotation)
+		public global::Windows.Foundation.IAsyncOperation<bool> TrySaveAnnotationAsync(global::Windows.ApplicationModel.Contacts.ContactAnnotation annotation)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ContactAnnotationList.TrySaveAnnotationAsync(ContactAnnotation annotation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ContactAnnotationList.TrySaveAnnotationAsync%28ContactAnnotation%20annotation%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.ContactAnnotation> GetAnnotationAsync( string annotationId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Contacts.ContactAnnotation> GetAnnotationAsync(string annotationId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ContactAnnotation> ContactAnnotationList.GetAnnotationAsync(string annotationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContactAnnotation%3E%20ContactAnnotationList.GetAnnotationAsync%28string%20annotationId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactAnnotation>> FindAnnotationsByRemoteIdAsync( string remoteId)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Contacts.ContactAnnotation>> FindAnnotationsByRemoteIdAsync(string remoteId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<ContactAnnotation>> ContactAnnotationList.FindAnnotationsByRemoteIdAsync(string remoteId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CContactAnnotation%3E%3E%20ContactAnnotationList.FindAnnotationsByRemoteIdAsync%28string%20remoteId%29");
 		}
@@ -77,7 +77,7 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction DeleteAnnotationAsync( global::Windows.ApplicationModel.Contacts.ContactAnnotation annotation)
+		public global::Windows.Foundation.IAsyncAction DeleteAnnotationAsync(global::Windows.ApplicationModel.Contacts.ContactAnnotation annotation)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactAnnotationList.DeleteAnnotationAsync(ContactAnnotation annotation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactAnnotationList.DeleteAnnotationAsync%28ContactAnnotation%20annotation%29");
 		}

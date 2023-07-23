@@ -10,7 +10,7 @@ namespace Windows.Devices.Perception.Provider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PerceptionVideoFrameAllocator( uint maxOutstandingFrameCountForWrite,  global::Windows.Graphics.Imaging.BitmapPixelFormat format,  global::Windows.Foundation.Size resolution,  global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
+		public PerceptionVideoFrameAllocator(uint maxOutstandingFrameCountForWrite, global::Windows.Graphics.Imaging.BitmapPixelFormat format, global::Windows.Foundation.Size resolution, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionVideoFrameAllocator", "PerceptionVideoFrameAllocator.PerceptionVideoFrameAllocator(uint maxOutstandingFrameCountForWrite, BitmapPixelFormat format, Size resolution, BitmapAlphaMode alpha)");
 		}
@@ -25,7 +25,7 @@ namespace Windows.Devices.Perception.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame( global::Windows.Media.VideoFrame frame)
+		public global::Windows.Devices.Perception.Provider.PerceptionFrame CopyFromVideoFrame(global::Windows.Media.VideoFrame frame)
 		{
 			throw new global::System.NotImplementedException("The member PerceptionFrame PerceptionVideoFrameAllocator.CopyFromVideoFrame(VideoFrame frame) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PerceptionFrame%20PerceptionVideoFrameAllocator.CopyFromVideoFrame%28VideoFrame%20frame%29");
 		}

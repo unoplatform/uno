@@ -125,34 +125,34 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Skipping already declared property RegionProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanTiltUpProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanTiltUpProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanTiltUp), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			nameof(CanTiltUp), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanZoomInProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanZoomInProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanZoomIn), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			nameof(CanZoomIn), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanZoomOutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanZoomOutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanZoomOut), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			nameof(CanZoomOut), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanTiltDownProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanTiltDownProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanTiltDown), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl), 
+			nameof(CanTiltDown), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapControl.MapControl()

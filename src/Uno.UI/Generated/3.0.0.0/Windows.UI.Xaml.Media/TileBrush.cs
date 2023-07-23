@@ -51,26 +51,26 @@ namespace Windows.UI.Xaml.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AlignmentXProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AlignmentXProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AlignmentX), typeof(global::Windows.UI.Xaml.Media.AlignmentX), 
-			typeof(global::Windows.UI.Xaml.Media.TileBrush), 
+			nameof(AlignmentX), typeof(global::Windows.UI.Xaml.Media.AlignmentX),
+			typeof(global::Windows.UI.Xaml.Media.TileBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.AlignmentX)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AlignmentYProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AlignmentYProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AlignmentY), typeof(global::Windows.UI.Xaml.Media.AlignmentY), 
-			typeof(global::Windows.UI.Xaml.Media.TileBrush), 
+			nameof(AlignmentY), typeof(global::Windows.UI.Xaml.Media.AlignmentY),
+			typeof(global::Windows.UI.Xaml.Media.TileBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.AlignmentY)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch), 
-			typeof(global::Windows.UI.Xaml.Media.TileBrush), 
+			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch),
+			typeof(global::Windows.UI.Xaml.Media.TileBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

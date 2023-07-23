@@ -11,7 +11,7 @@ namespace Windows.Media.Protection.PlayReady
 		global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest CreateLAServiceRequest();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ConfigureMediaProtectionManager( global::Windows.Media.Protection.MediaProtectionManager mpm);
+		void ConfigureMediaProtectionManager(global::Windows.Media.Protection.MediaProtectionManager mpm);
 #endif
 	}
 }

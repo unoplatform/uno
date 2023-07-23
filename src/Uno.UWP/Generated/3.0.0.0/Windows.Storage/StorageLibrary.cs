@@ -46,7 +46,7 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemoveFolderAsync( global::Windows.Storage.StorageFolder folder)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestRemoveFolderAsync(global::Windows.Storage.StorageFolder folder)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> StorageLibrary.RequestRemoveFolderAsync(StorageFolder folder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20StorageLibrary.RequestRemoveFolderAsync%28StorageFolder%20folder%29");
 		}
@@ -65,14 +65,14 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryForUserAsync( global::Windows.System.User user,  global::Windows.Storage.KnownLibraryId libraryId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryForUserAsync(global::Windows.System.User user, global::Windows.Storage.KnownLibraryId libraryId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryForUserAsync(User user, KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryForUserAsync%28User%20user%2C%20KnownLibraryId%20libraryId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync( global::Windows.Storage.KnownLibraryId libraryId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageLibrary> GetLibraryAsync(global::Windows.Storage.KnownLibraryId libraryId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageLibrary> StorageLibrary.GetLibraryAsync(KnownLibraryId libraryId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageLibrary%3E%20StorageLibrary.GetLibraryAsync%28KnownLibraryId%20libraryId%29");
 		}

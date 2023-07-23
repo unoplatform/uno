@@ -37,7 +37,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( string key,  global::Windows.Graphics.Imaging.BitmapTypedValue value)
+		public void Add(string key, global::Windows.Graphics.Imaging.BitmapTypedValue value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -45,7 +45,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ContainsKey( string key)
+		public bool ContainsKey(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -53,7 +53,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( string key)
+		public bool Remove(string key)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -61,7 +61,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IDictionary<string, Windows.Graphics.Imaging.BitmapTypedValue>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetValue( string key, out global::Windows.Graphics.Imaging.BitmapTypedValue value)
+		public bool TryGetValue(string key, out global::Windows.Graphics.Imaging.BitmapTypedValue value)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -104,7 +104,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
+		public void Add(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -120,7 +120,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
+		public bool Contains(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -128,7 +128,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>[] array,  int arrayIndex)
+		public void CopyTo(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue>[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -136,7 +136,7 @@ namespace Windows.Graphics.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<System.Collections.Generic.KeyValuePair<string, Windows.Graphics.Imaging.BitmapTypedValue>>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
+		public bool Remove(global::System.Collections.Generic.KeyValuePair<string, global::Windows.Graphics.Imaging.BitmapTypedValue> item)
 		{
 			throw new global::System.NotSupportedException();
 		}

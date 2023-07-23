@@ -112,7 +112,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 		// Forced skipping of method Windows.Graphics.Printing.OptionDetails.PrintMediaTypeOptionDetails.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TrySetValue( object value)
+		public bool TrySetValue(object value)
 		{
 			throw new global::System.NotImplementedException("The member bool PrintMediaTypeOptionDetails.TrySetValue(object value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PrintMediaTypeOptionDetails.TrySetValue%28object%20value%29");
 		}

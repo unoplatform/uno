@@ -31,7 +31,7 @@ namespace Windows.ApplicationModel.Contacts.DataProvider
 		// Forced skipping of method Windows.ApplicationModel.Contacts.DataProvider.ContactListCreateOrUpdateContactRequest.Contact.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync( global::Windows.ApplicationModel.Contacts.Contact createdOrUpdatedContact)
+		public global::Windows.Foundation.IAsyncAction ReportCompletedAsync(global::Windows.ApplicationModel.Contacts.Contact createdOrUpdatedContact)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactListCreateOrUpdateContactRequest.ReportCompletedAsync(Contact createdOrUpdatedContact) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactListCreateOrUpdateContactRequest.ReportCompletedAsync%28Contact%20createdOrUpdatedContact%29");
 		}

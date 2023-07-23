@@ -51,7 +51,7 @@ namespace Windows.Storage.Pickers
 #endif
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync( string pickerOperationId)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync(string pickerOperationId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FileOpenPicker.PickSingleFileAsync%28string%20pickerOperationId%29");
 		}
@@ -82,7 +82,7 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.User.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser( global::Windows.System.User user)
+		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=FileOpenPicker%20FileOpenPicker.CreateForUser%28User%20user%29");
 		}

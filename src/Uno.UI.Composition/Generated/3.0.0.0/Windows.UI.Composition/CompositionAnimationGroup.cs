@@ -20,14 +20,14 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionAnimationGroup.Count.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.UI.Composition.CompositionAnimation value)
+		public void Add(global::Windows.UI.Composition.CompositionAnimation value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimationGroup", "void CompositionAnimationGroup.Add(CompositionAnimation value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Remove( global::Windows.UI.Composition.CompositionAnimation value)
+		public void Remove(global::Windows.UI.Composition.CompositionAnimation value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionAnimationGroup", "void CompositionAnimationGroup.Remove(CompositionAnimation value)");
 		}

@@ -63,7 +63,7 @@ namespace Windows.ApplicationModel.AppService
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.IsRemoteSystemConnection.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> CheckCallerForCapabilityAsync( string capabilityName)
+		public global::Windows.Foundation.IAsyncOperation<bool> CheckCallerForCapabilityAsync(string capabilityName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppServiceTriggerDetails.CheckCallerForCapabilityAsync(string capabilityName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20AppServiceTriggerDetails.CheckCallerForCapabilityAsync%28string%20capabilityName%29");
 		}

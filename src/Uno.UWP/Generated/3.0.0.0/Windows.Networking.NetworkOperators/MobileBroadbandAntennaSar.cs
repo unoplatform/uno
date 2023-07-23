@@ -29,7 +29,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MobileBroadbandAntennaSar( int antennaIndex,  int sarBackoffIndex) 
+		public MobileBroadbandAntennaSar(int antennaIndex, int sarBackoffIndex) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandAntennaSar", "MobileBroadbandAntennaSar.MobileBroadbandAntennaSar(int antennaIndex, int sarBackoffIndex)");
 		}

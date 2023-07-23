@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Preview.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsHolographicActivation( global::Windows.ApplicationModel.Activation.IActivatedEventArgs activatedEventArgs)
+		public static bool IsHolographicActivation(global::Windows.ApplicationModel.Activation.IActivatedEventArgs activatedEventArgs)
 		{
 			throw new global::System.NotImplementedException("The member bool HolographicApplicationPreview.IsHolographicActivation(IActivatedEventArgs activatedEventArgs) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HolographicApplicationPreview.IsHolographicActivation%28IActivatedEventArgs%20activatedEventArgs%29");
 		}

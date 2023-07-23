@@ -69,7 +69,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReportCompleted( global::Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink quicklink)
+		public void ReportCompleted(global::Windows.ApplicationModel.DataTransfer.ShareTarget.QuickLink quicklink)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation", "void ShareOperation.ReportCompleted(QuickLink quicklink)");
 		}
@@ -83,7 +83,7 @@ namespace Windows.ApplicationModel.DataTransfer.ShareTarget
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ReportError( string value)
+		public void ReportError(string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareTarget.ShareOperation", "void ShareOperation.ReportError(string value)");
 		}

@@ -137,14 +137,14 @@ namespace Windows.Devices.Display.Core
 		// Forced skipping of method Windows.Devices.Display.Core.DisplayTarget.IsStale.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsSame( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
+		public bool IsSame(global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
 			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsSame(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayTarget.IsSame%28DisplayTarget%20otherTarget%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsEqual( global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
+		public bool IsEqual(global::Windows.Devices.Display.Core.DisplayTarget otherTarget)
 		{
 			throw new global::System.NotImplementedException("The member bool DisplayTarget.IsEqual(DisplayTarget otherTarget) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20DisplayTarget.IsEqual%28DisplayTarget%20otherTarget%29");
 		}

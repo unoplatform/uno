@@ -123,21 +123,21 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.Accelerometer.ReportThreshold.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Accelerometer> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Accelerometer> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Accelerometer> Accelerometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAccelerometer%3E%20Accelerometer.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
+		public static string GetDeviceSelector(global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
 		{
 			throw new global::System.NotImplementedException("The member string Accelerometer.GetDeviceSelector(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20Accelerometer.GetDeviceSelector%28AccelerometerReadingType%20readingType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Sensors.Accelerometer GetDefault( global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
+		public static global::Windows.Devices.Sensors.Accelerometer GetDefault(global::Windows.Devices.Sensors.AccelerometerReadingType readingType)
 		{
 			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Accelerometer%20Accelerometer.GetDefault%28AccelerometerReadingType%20readingType%29");
 		}

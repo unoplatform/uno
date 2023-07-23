@@ -286,21 +286,21 @@ namespace Windows.Devices.SerialCommunication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( string portName)
+		public static string GetDeviceSelector(string portName)
 		{
 			throw new global::System.NotImplementedException("The member string SerialDevice.GetDeviceSelector(string portName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.GetDeviceSelector%28string%20portName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelectorFromUsbVidPid( ushort vendorId,  ushort productId)
+		public static string GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId)
 		{
 			throw new global::System.NotImplementedException("The member string SerialDevice.GetDeviceSelectorFromUsbVidPid(ushort vendorId, ushort productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SerialDevice.GetDeviceSelectorFromUsbVidPid%28ushort%20vendorId%2C%20ushort%20productId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SerialCommunication.SerialDevice> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SerialCommunication.SerialDevice> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SerialDevice> SerialDevice.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSerialDevice%3E%20SerialDevice.FromIdAsync%28string%20deviceId%29");
 		}

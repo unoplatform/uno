@@ -42,42 +42,42 @@ namespace Windows.Devices.Enumeration.Pnp
 		// Forced skipping of method Windows.Devices.Enumeration.Pnp.PnpObject.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Update( global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate updateInfo)
+		public void Update(global::Windows.Devices.Enumeration.Pnp.PnpObjectUpdate updateInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.Pnp.PnpObject", "void PnpObject.Update(PnpObjectUpdate updateInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObject> CreateFromIdAsync( global::Windows.Devices.Enumeration.Pnp.PnpObjectType type,  string id,  global::System.Collections.Generic.IEnumerable<string> requestedProperties)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObject> CreateFromIdAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, string id, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PnpObject> PnpObject.CreateFromIdAsync(PnpObjectType type, string id, IEnumerable<string> requestedProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPnpObject%3E%20PnpObject.CreateFromIdAsync%28PnpObjectType%20type%2C%20string%20id%2C%20IEnumerable%3Cstring%3E%20requestedProperties%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObjectCollection> FindAllAsync( global::Windows.Devices.Enumeration.Pnp.PnpObjectType type,  global::System.Collections.Generic.IEnumerable<string> requestedProperties)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObjectCollection> FindAllAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PnpObjectCollection> PnpObject.FindAllAsync(PnpObjectType type, IEnumerable<string> requestedProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPnpObjectCollection%3E%20PnpObject.FindAllAsync%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObjectCollection> FindAllAsync( global::Windows.Devices.Enumeration.Pnp.PnpObjectType type,  global::System.Collections.Generic.IEnumerable<string> requestedProperties,  string aqsFilter)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.Pnp.PnpObjectCollection> FindAllAsync(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties, string aqsFilter)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PnpObjectCollection> PnpObject.FindAllAsync(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPnpObjectCollection%3E%20PnpObject.FindAllAsync%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%2C%20string%20aqsFilter%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher CreateWatcher( global::Windows.Devices.Enumeration.Pnp.PnpObjectType type,  global::System.Collections.Generic.IEnumerable<string> requestedProperties)
+		public static global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher CreateWatcher(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties)
 		{
 			throw new global::System.NotImplementedException("The member PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObjectWatcher%20PnpObject.CreateWatcher%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher CreateWatcher( global::Windows.Devices.Enumeration.Pnp.PnpObjectType type,  global::System.Collections.Generic.IEnumerable<string> requestedProperties,  string aqsFilter)
+		public static global::Windows.Devices.Enumeration.Pnp.PnpObjectWatcher CreateWatcher(global::Windows.Devices.Enumeration.Pnp.PnpObjectType type, global::System.Collections.Generic.IEnumerable<string> requestedProperties, string aqsFilter)
 		{
 			throw new global::System.NotImplementedException("The member PnpObjectWatcher PnpObject.CreateWatcher(PnpObjectType type, IEnumerable<string> requestedProperties, string aqsFilter) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PnpObjectWatcher%20PnpObject.CreateWatcher%28PnpObjectType%20type%2C%20IEnumerable%3Cstring%3E%20requestedProperties%2C%20string%20aqsFilter%29");
 		}

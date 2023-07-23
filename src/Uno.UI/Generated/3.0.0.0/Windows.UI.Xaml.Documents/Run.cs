@@ -24,10 +24,10 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection), 
-			typeof(global::Windows.UI.Xaml.Documents.Run), 
+			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection),
+			typeof(global::Windows.UI.Xaml.Documents.Run),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Documents.Run.Run()

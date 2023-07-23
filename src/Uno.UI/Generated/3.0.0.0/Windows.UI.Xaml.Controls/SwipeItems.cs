@@ -33,10 +33,10 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Mode), typeof(global::Windows.UI.Xaml.Controls.SwipeMode), 
-			typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
+			nameof(Mode), typeof(global::Windows.UI.Xaml.Controls.SwipeMode),
+			typeof(global::Windows.UI.Xaml.Controls.SwipeItems),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeMode)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.SwipeItems.SwipeItems()
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int IndexOf( global::Windows.UI.Xaml.Controls.SwipeItem item)
+		public int IndexOf(global::Windows.UI.Xaml.Controls.SwipeItem item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( int index,  global::Windows.UI.Xaml.Controls.SwipeItem item)
+		public void Insert(int index, global::Windows.UI.Xaml.Controls.SwipeItem item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAt( int index)
+		public void RemoveAt(int index)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.UI.Xaml.Controls.SwipeItem item)
+		public void Add(global::Windows.UI.Xaml.Controls.SwipeItem item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::Windows.UI.Xaml.Controls.SwipeItem item)
+		public bool Contains(global::Windows.UI.Xaml.Controls.SwipeItem item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::Windows.UI.Xaml.Controls.SwipeItem[] array,  int arrayIndex)
+		public void CopyTo(global::Windows.UI.Xaml.Controls.SwipeItem[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.Controls.SwipeItem>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::Windows.UI.Xaml.Controls.SwipeItem item)
+		public bool Remove(global::Windows.UI.Xaml.Controls.SwipeItem item)
 		{
 			throw new global::System.NotSupportedException();
 		}

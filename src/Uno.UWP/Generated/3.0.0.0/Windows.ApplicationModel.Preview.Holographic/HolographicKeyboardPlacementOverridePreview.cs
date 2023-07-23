@@ -10,14 +10,14 @@ namespace Windows.ApplicationModel.Preview.Holographic
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPlacementOverride( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 topCenterPosition,  global::System.Numerics.Vector3 normal)
+		public void SetPlacementOverride(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 topCenterPosition, global::System.Numerics.Vector3 normal)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview", "void HolographicKeyboardPlacementOverridePreview.SetPlacementOverride(SpatialCoordinateSystem coordinateSystem, Vector3 topCenterPosition, Vector3 normal)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPlacementOverride( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem,  global::System.Numerics.Vector3 topCenterPosition,  global::System.Numerics.Vector3 normal,  global::System.Numerics.Vector2 maxSize)
+		public void SetPlacementOverride(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 topCenterPosition, global::System.Numerics.Vector3 normal, global::System.Numerics.Vector2 maxSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Preview.Holographic.HolographicKeyboardPlacementOverridePreview", "void HolographicKeyboardPlacementOverridePreview.SetPlacementOverride(SpatialCoordinateSystem coordinateSystem, Vector3 topCenterPosition, Vector3 normal, Vector2 maxSize)");
 		}

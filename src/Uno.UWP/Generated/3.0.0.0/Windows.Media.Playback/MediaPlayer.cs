@@ -336,7 +336,7 @@ namespace Windows.Media.Playback
 		// Skipping already declared method Windows.Media.Playback.MediaPlayer.Pause()
 #if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public void SetUriSource( global::System.Uri value)
+		public void SetUriSource(global::System.Uri value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.SetUriSource(Uri value)");
 		}
@@ -345,21 +345,21 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.ProtectionManager.set
 #if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public void SetFileSource( global::Windows.Storage.IStorageFile file)
+		public void SetFileSource(global::Windows.Storage.IStorageFile file)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.SetFileSource(IStorageFile file)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public void SetStreamSource( global::Windows.Storage.Streams.IRandomAccessStream stream)
+		public void SetStreamSource(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.SetStreamSource(IRandomAccessStream stream)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public void SetMediaSource( global::Windows.Media.Core.IMediaSource source)
+		public void SetMediaSource(global::Windows.Media.Core.IMediaSource source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.SetMediaSource(IMediaSource source)");
 		}
@@ -373,7 +373,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.AudioDeviceType.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddAudioEffect( string activatableClassId,  bool effectOptional,  global::Windows.Foundation.Collections.IPropertySet configuration)
+		public void AddAudioEffect(string activatableClassId, bool effectOptional, global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.AddAudioEffect(string activatableClassId, bool effectOptional, IPropertySet configuration)");
 		}
@@ -428,7 +428,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || false || false || false || false || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__MACOS__")]
-		public void SetSurfaceSize( global::Windows.Foundation.Size size)
+		public void SetSurfaceSize(global::Windows.Foundation.Size size)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.SetSurfaceSize(Size size)");
 		}
@@ -436,7 +436,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.GetSurface(Windows.UI.Composition.Compositor)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddVideoEffect( string activatableClassId,  bool effectOptional,  global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
+		public void AddVideoEffect(string activatableClassId, bool effectOptional, global::Windows.Foundation.Collections.IPropertySet effectConfiguration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.AddVideoEffect(string activatableClassId, bool effectOptional, IPropertySet effectConfiguration)");
 		}
@@ -447,21 +447,21 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.IsVideoFrameServerEnabled.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyFrameToVideoSurface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
+		public void CopyFrameToVideoSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.CopyFrameToVideoSurface(IDirect3DSurface destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyFrameToVideoSurface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination,  global::Windows.Foundation.Rect targetRectangle)
+		public void CopyFrameToVideoSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination, global::Windows.Foundation.Rect targetRectangle)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.CopyFrameToVideoSurface(IDirect3DSurface destination, Rect targetRectangle)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyFrameToStereoscopicVideoSurfaces( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destinationLeftEye,  global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destinationRightEye)
+		public void CopyFrameToStereoscopicVideoSurfaces(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destinationLeftEye, global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destinationRightEye)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlayer", "void MediaPlayer.CopyFrameToStereoscopicVideoSurfaces(IDirect3DSurface destinationLeftEye, IDirect3DSurface destinationRightEye)");
 		}
@@ -470,14 +470,14 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlayer.SubtitleFrameChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool RenderSubtitlesToSurface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
+		public bool RenderSubtitlesToSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaPlayer.RenderSubtitlesToSurface(IDirect3DSurface destination) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.RenderSubtitlesToSurface%28IDirect3DSurface%20destination%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool RenderSubtitlesToSurface( global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination,  global::Windows.Foundation.Rect targetRectangle)
+		public bool RenderSubtitlesToSurface(global::Windows.Graphics.DirectX.Direct3D11.IDirect3DSurface destination, global::Windows.Foundation.Rect targetRectangle)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaPlayer.RenderSubtitlesToSurface(IDirect3DSurface destination, Rect targetRectangle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20MediaPlayer.RenderSubtitlesToSurface%28IDirect3DSurface%20destination%2C%20Rect%20targetRectangle%29");
 		}

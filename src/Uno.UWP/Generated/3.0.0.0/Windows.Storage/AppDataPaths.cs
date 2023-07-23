@@ -108,7 +108,7 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.AppDataPaths.RoamingAppData.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Storage.AppDataPaths GetForUser( global::Windows.System.User user)
+		public static global::Windows.Storage.AppDataPaths GetForUser(global::Windows.System.User user)
 		{
 			throw new global::System.NotImplementedException("The member AppDataPaths AppDataPaths.GetForUser(User user) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AppDataPaths%20AppDataPaths.GetForUser%28User%20user%29");
 		}

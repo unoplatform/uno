@@ -25,14 +25,14 @@ namespace Windows.ApplicationModel.Chat
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.RcsTransport> GetTransportAsync( string transportId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Chat.RcsTransport> GetTransportAsync(string transportId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<RcsTransport> RcsManager.GetTransportAsync(string transportId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CRcsTransport%3E%20RcsManager.GetTransportAsync%28string%20transportId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction LeaveConversationAsync( global::Windows.ApplicationModel.Chat.ChatConversation conversation)
+		public static global::Windows.Foundation.IAsyncAction LeaveConversationAsync(global::Windows.ApplicationModel.Chat.ChatConversation conversation)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction RcsManager.LeaveConversationAsync(ChatConversation conversation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20RcsManager.LeaveConversationAsync%28ChatConversation%20conversation%29");
 		}

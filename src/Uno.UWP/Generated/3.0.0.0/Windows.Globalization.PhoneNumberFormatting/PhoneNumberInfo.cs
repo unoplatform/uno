@@ -29,7 +29,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PhoneNumberInfo( string number) 
+		public PhoneNumberInfo(string number) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo", "PhoneNumberInfo.PhoneNumberInfo(string number)");
 		}
@@ -74,7 +74,7 @@ namespace Windows.Globalization.PhoneNumberFormatting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberMatchResult CheckNumberMatch( global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo otherNumber)
+		public global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberMatchResult CheckNumberMatch(global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo otherNumber)
 		{
 			throw new global::System.NotImplementedException("The member PhoneNumberMatchResult PhoneNumberInfo.CheckNumberMatch(PhoneNumberInfo otherNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberMatchResult%20PhoneNumberInfo.CheckNumberMatch%28PhoneNumberInfo%20otherNumber%29");
 		}
@@ -88,14 +88,14 @@ namespace Windows.Globalization.PhoneNumberFormatting
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse( string input, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
+		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
 		{
 			throw new global::System.NotImplementedException("The member PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, out PhoneNumberInfo phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberParseResult%20PhoneNumberInfo.TryParse%28string%20input%2C%20out%20PhoneNumberInfo%20phoneNumber%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse( string input,  string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
+		public static global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberParseResult TryParse(string input, string regionCode, out global::Windows.Globalization.PhoneNumberFormatting.PhoneNumberInfo phoneNumber)
 		{
 			throw new global::System.NotImplementedException("The member PhoneNumberParseResult PhoneNumberInfo.TryParse(string input, string regionCode, out PhoneNumberInfo phoneNumber) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PhoneNumberParseResult%20PhoneNumberInfo.TryParse%28string%20input%2C%20string%20regionCode%2C%20out%20PhoneNumberInfo%20phoneNumber%29");
 		}

@@ -31,7 +31,7 @@ namespace Windows.Devices.Input
 		// Forced skipping of method Windows.Devices.Input.PenDevice.SimpleHapticsController.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Input.PenDevice GetFromPointerId( uint pointerId)
+		public static global::Windows.Devices.Input.PenDevice GetFromPointerId(uint pointerId)
 		{
 			throw new global::System.NotImplementedException("The member PenDevice PenDevice.GetFromPointerId(uint pointerId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PenDevice%20PenDevice.GetFromPointerId%28uint%20pointerId%29");
 		}

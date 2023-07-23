@@ -59,14 +59,14 @@ namespace Windows.Media.Devices
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Configure( global::Windows.Media.Devices.DigitalWindowMode digitalWindowMode)
+		public void Configure(global::Windows.Media.Devices.DigitalWindowMode digitalWindowMode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.DigitalWindowControl", "void DigitalWindowControl.Configure(DigitalWindowMode digitalWindowMode)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Configure( global::Windows.Media.Devices.DigitalWindowMode digitalWindowMode,  global::Windows.Media.Devices.DigitalWindowBounds digitalWindowBounds)
+		public void Configure(global::Windows.Media.Devices.DigitalWindowMode digitalWindowMode, global::Windows.Media.Devices.DigitalWindowBounds digitalWindowBounds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.DigitalWindowControl", "void DigitalWindowControl.Configure(DigitalWindowMode digitalWindowMode, DigitalWindowBounds digitalWindowBounds)");
 		}
@@ -74,7 +74,7 @@ namespace Windows.Media.Devices
 		// Forced skipping of method Windows.Media.Devices.DigitalWindowControl.SupportedCapabilities.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Devices.DigitalWindowCapability GetCapabilityForSize( int width,  int height)
+		public global::Windows.Media.Devices.DigitalWindowCapability GetCapabilityForSize(int width, int height)
 		{
 			throw new global::System.NotImplementedException("The member DigitalWindowCapability DigitalWindowControl.GetCapabilityForSize(int width, int height) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DigitalWindowCapability%20DigitalWindowControl.GetCapabilityForSize%28int%20width%2C%20int%20height%29");
 		}

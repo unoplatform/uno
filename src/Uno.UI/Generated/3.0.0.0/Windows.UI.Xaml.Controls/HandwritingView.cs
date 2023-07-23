@@ -103,50 +103,50 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AreCandidatesEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AreCandidatesEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AreCandidatesEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(AreCandidatesEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsOpenProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsOpen), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(IsOpen), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlacementAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlacementAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlacementAlignment), typeof(global::Windows.UI.Xaml.Controls.HandwritingPanelPlacementAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(PlacementAlignment), typeof(global::Windows.UI.Xaml.Controls.HandwritingPanelPlacementAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.HandwritingPanelPlacementAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlacementTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement), 
-			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(PlacementTarget), typeof(global::Windows.UI.Xaml.UIElement),
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsCommandBarOpenProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsCommandBarOpenProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsCommandBarOpen), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(IsCommandBarOpen), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSwitchToKeyboardEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsSwitchToKeyboardEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSwitchToKeyboardEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(IsSwitchToKeyboardEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.HandwritingView),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -194,14 +194,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.HandwritingView.TextSubmitted.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Collections.Generic.IReadOnlyList<string> GetCandidates( uint candidatesSessionId)
+		public global::System.Collections.Generic.IReadOnlyList<string> GetCandidates(uint candidatesSessionId)
 		{
 			throw new global::System.NotImplementedException("The member IReadOnlyList<string> HandwritingView.GetCandidates(uint candidatesSessionId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IReadOnlyList%3Cstring%3E%20HandwritingView.GetCandidates%28uint%20candidatesSessionId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SelectCandidate( uint candidatesSessionId,  uint selectedCandidateIndex)
+		public void SelectCandidate(uint candidatesSessionId, uint selectedCandidateIndex)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.HandwritingView", "void HandwritingView.SelectCandidate(uint candidatesSessionId, uint selectedCandidateIndex)");
 		}

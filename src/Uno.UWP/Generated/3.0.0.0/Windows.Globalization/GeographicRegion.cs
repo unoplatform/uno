@@ -79,7 +79,7 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GeographicRegion( string geographicRegionCode) 
+		public GeographicRegion(string geographicRegionCode) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.GeographicRegion", "GeographicRegion.GeographicRegion(string geographicRegionCode)");
 		}
@@ -102,7 +102,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.GeographicRegion.CurrenciesInUse.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsSupported( string geographicRegionCode)
+		public static bool IsSupported(string geographicRegionCode)
 		{
 			throw new global::System.NotImplementedException("The member bool GeographicRegion.IsSupported(string geographicRegionCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20GeographicRegion.IsSupported%28string%20geographicRegionCode%29");
 		}

@@ -114,7 +114,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetDisplayPictureAsync( global::Windows.Storage.Streams.IInputStream stream)
+		public global::Windows.Foundation.IAsyncAction SetDisplayPictureAsync(global::Windows.Storage.Streams.IInputStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ContactInformation.SetDisplayPictureAsync(IInputStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ContactInformation.SetDisplayPictureAsync%28IInputStream%20stream%29");
 		}
@@ -136,14 +136,14 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> ToVcardAsync( global::Windows.Phone.PersonalInformation.VCardFormat format)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> ToVcardAsync(global::Windows.Phone.PersonalInformation.VCardFormat format)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> ContactInformation.ToVcardAsync(VCardFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20ContactInformation.ToVcardAsync%28VCardFormat%20format%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.ContactInformation> ParseVcardAsync( global::Windows.Storage.Streams.IInputStream vcard)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Phone.PersonalInformation.ContactInformation> ParseVcardAsync(global::Windows.Storage.Streams.IInputStream vcard)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ContactInformation> ContactInformation.ParseVcardAsync(IInputStream vcard) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CContactInformation%3E%20ContactInformation.ParseVcardAsync%28IInputStream%20vcard%29");
 		}

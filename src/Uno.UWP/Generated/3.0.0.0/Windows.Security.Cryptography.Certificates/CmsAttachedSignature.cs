@@ -39,7 +39,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CmsAttachedSignature( global::Windows.Storage.Streams.IBuffer inputBlob) 
+		public CmsAttachedSignature(global::Windows.Storage.Streams.IBuffer inputBlob) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.Certificates.CmsAttachedSignature", "CmsAttachedSignature.CmsAttachedSignature(IBuffer inputBlob)");
 		}
@@ -57,7 +57,7 @@ namespace Windows.Security.Cryptography.Certificates
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GenerateSignatureAsync( global::Windows.Storage.Streams.IBuffer data,  global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> signers,  global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IBuffer> GenerateSignatureAsync(global::Windows.Storage.Streams.IBuffer data, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.CmsSignerInfo> signers, global::System.Collections.Generic.IEnumerable<global::Windows.Security.Cryptography.Certificates.Certificate> certificates)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IBuffer> CmsAttachedSignature.GenerateSignatureAsync(IBuffer data, IEnumerable<CmsSignerInfo> signers, IEnumerable<Certificate> certificates) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIBuffer%3E%20CmsAttachedSignature.GenerateSignatureAsync%28IBuffer%20data%2C%20IEnumerable%3CCmsSignerInfo%3E%20signers%2C%20IEnumerable%3CCertificate%3E%20certificates%29");
 		}

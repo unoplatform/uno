@@ -19,14 +19,14 @@ namespace Windows.Perception.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SaveAsync( global::Windows.Perception.Spatial.SpatialEntity entity)
+		public global::Windows.Foundation.IAsyncAction SaveAsync(global::Windows.Perception.Spatial.SpatialEntity entity)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpatialEntityStore.SaveAsync(SpatialEntity entity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpatialEntityStore.SaveAsync%28SpatialEntity%20entity%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction RemoveAsync( global::Windows.Perception.Spatial.SpatialEntity entity)
+		public global::Windows.Foundation.IAsyncAction RemoveAsync(global::Windows.Perception.Spatial.SpatialEntity entity)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction SpatialEntityStore.RemoveAsync(SpatialEntity entity) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20SpatialEntityStore.RemoveAsync%28SpatialEntity%20entity%29");
 		}
@@ -41,7 +41,7 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialEntityStore.IsSupported.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Perception.Spatial.SpatialEntityStore TryGet( global::Windows.System.RemoteSystems.RemoteSystemSession session)
+		public static global::Windows.Perception.Spatial.SpatialEntityStore TryGet(global::Windows.System.RemoteSystems.RemoteSystemSession session)
 		{
 			throw new global::System.NotImplementedException("The member SpatialEntityStore SpatialEntityStore.TryGet(RemoteSystemSession session) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialEntityStore%20SpatialEntityStore.TryGet%28RemoteSystemSession%20session%29");
 		}

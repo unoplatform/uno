@@ -8,7 +8,7 @@ namespace Windows.UI.Composition
 	public partial interface IAnimationObject 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo);
+		void PopulatePropertyInfo(string propertyName, global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo);
 #endif
 	}
 }

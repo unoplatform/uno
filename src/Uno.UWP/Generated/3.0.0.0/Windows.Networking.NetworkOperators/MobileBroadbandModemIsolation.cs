@@ -9,7 +9,7 @@ namespace Windows.Networking.NetworkOperators
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MobileBroadbandModemIsolation( string modemDeviceId,  string ruleGroupId) 
+		public MobileBroadbandModemIsolation(string modemDeviceId, string ruleGroupId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandModemIsolation", "MobileBroadbandModemIsolation.MobileBroadbandModemIsolation(string modemDeviceId, string ruleGroupId)");
 		}
@@ -17,14 +17,14 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.MobileBroadbandModemIsolation.MobileBroadbandModemIsolation(string, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddAllowedHost( global::Windows.Networking.HostName host)
+		public void AddAllowedHost(global::Windows.Networking.HostName host)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandModemIsolation", "void MobileBroadbandModemIsolation.AddAllowedHost(HostName host)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddAllowedHostRange( global::Windows.Networking.HostName first,  global::Windows.Networking.HostName last)
+		public void AddAllowedHostRange(global::Windows.Networking.HostName first, global::Windows.Networking.HostName last)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.MobileBroadbandModemIsolation", "void MobileBroadbandModemIsolation.AddAllowedHostRange(HostName first, HostName last)");
 		}

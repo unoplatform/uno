@@ -33,7 +33,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpCookiePairHeaderValue( string name) 
+		public HttpCookiePairHeaderValue(string name) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCookiePairHeaderValue", "HttpCookiePairHeaderValue.HttpCookiePairHeaderValue(string name)");
 		}
@@ -41,7 +41,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpCookiePairHeaderValue.HttpCookiePairHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpCookiePairHeaderValue( string name,  string value) 
+		public HttpCookiePairHeaderValue(string name, string value) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpCookiePairHeaderValue", "HttpCookiePairHeaderValue.HttpCookiePairHeaderValue(string name, string value)");
 		}
@@ -59,14 +59,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValue HttpCookiePairHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpCookiePairHeaderValue%20HttpCookiePairHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue cookiePairHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpCookiePairHeaderValue cookiePairHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpCookiePairHeaderValue.TryParse(string input, out HttpCookiePairHeaderValue cookiePairHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpCookiePairHeaderValue.TryParse%28string%20input%2C%20out%20HttpCookiePairHeaderValue%20cookiePairHeaderValue%29");
 		}

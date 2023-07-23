@@ -56,14 +56,14 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerButtonLabel GetOptionalButtonLabel( global::Windows.Gaming.Input.OptionalUINavigationButtons button)
+		public global::Windows.Gaming.Input.GameControllerButtonLabel GetOptionalButtonLabel(global::Windows.Gaming.Input.OptionalUINavigationButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetOptionalButtonLabel(OptionalUINavigationButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20UINavigationController.GetOptionalButtonLabel%28OptionalUINavigationButtons%20button%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerButtonLabel GetRequiredButtonLabel( global::Windows.Gaming.Input.RequiredUINavigationButtons button)
+		public global::Windows.Gaming.Input.GameControllerButtonLabel GetRequiredButtonLabel(global::Windows.Gaming.Input.RequiredUINavigationButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel UINavigationController.GetRequiredButtonLabel(RequiredUINavigationButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20UINavigationController.GetRequiredButtonLabel%28RequiredUINavigationButtons%20button%29");
 		}
@@ -86,7 +86,7 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Gaming.Input.UINavigationController FromGameController( global::Windows.Gaming.Input.IGameController gameController)
+		public static global::Windows.Gaming.Input.UINavigationController FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member UINavigationController UINavigationController.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UINavigationController%20UINavigationController.FromGameController%28IGameController%20gameController%29");
 		}

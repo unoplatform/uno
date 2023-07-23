@@ -161,7 +161,7 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyStatics.SecureStopServiceRequestType.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool CheckSupportedHardware( global::Windows.Media.Protection.PlayReady.PlayReadyHardwareDRMFeatures hwdrmFeature)
+		public static bool CheckSupportedHardware(global::Windows.Media.Protection.PlayReady.PlayReadyHardwareDRMFeatures hwdrmFeature)
 		{
 			throw new global::System.NotImplementedException("The member bool PlayReadyStatics.CheckSupportedHardware(PlayReadyHardwareDRMFeatures hwdrmFeature) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PlayReadyStatics.CheckSupportedHardware%28PlayReadyHardwareDRMFeatures%20hwdrmFeature%29");
 		}

@@ -46,35 +46,35 @@ namespace Windows.ApplicationModel.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.ListingInformation> LoadListingInformationByProductIdsAsync( global::System.Collections.Generic.IEnumerable<string> productIds)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.ListingInformation> LoadListingInformationByProductIdsAsync(global::System.Collections.Generic.IEnumerable<string> productIds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ListingInformation> CurrentAppSimulator.LoadListingInformationByProductIdsAsync(IEnumerable<string> productIds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CListingInformation%3E%20CurrentAppSimulator.LoadListingInformationByProductIdsAsync%28IEnumerable%3Cstring%3E%20productIds%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.ListingInformation> LoadListingInformationByKeywordsAsync( global::System.Collections.Generic.IEnumerable<string> keywords)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.ListingInformation> LoadListingInformationByKeywordsAsync(global::System.Collections.Generic.IEnumerable<string> keywords)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ListingInformation> CurrentAppSimulator.LoadListingInformationByKeywordsAsync(IEnumerable<string> keywords) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CListingInformation%3E%20CurrentAppSimulator.LoadListingInformationByKeywordsAsync%28IEnumerable%3Cstring%3E%20keywords%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.FulfillmentResult> ReportConsumableFulfillmentAsync( string productId,  global::System.Guid transactionId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.FulfillmentResult> ReportConsumableFulfillmentAsync(string productId, global::System.Guid transactionId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<FulfillmentResult> CurrentAppSimulator.ReportConsumableFulfillmentAsync(string productId, Guid transactionId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CFulfillmentResult%3E%20CurrentAppSimulator.ReportConsumableFulfillmentAsync%28string%20productId%2C%20Guid%20transactionId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.PurchaseResults> RequestProductPurchaseAsync( string productId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.PurchaseResults> RequestProductPurchaseAsync(string productId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PurchaseResults> CurrentAppSimulator.RequestProductPurchaseAsync(string productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPurchaseResults%3E%20CurrentAppSimulator.RequestProductPurchaseAsync%28string%20productId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.PurchaseResults> RequestProductPurchaseAsync( string productId,  string offerId,  global::Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties displayProperties)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Store.PurchaseResults> RequestProductPurchaseAsync(string productId, string offerId, global::Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties displayProperties)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PurchaseResults> CurrentAppSimulator.RequestProductPurchaseAsync(string productId, string offerId, ProductPurchaseDisplayProperties displayProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPurchaseResults%3E%20CurrentAppSimulator.RequestProductPurchaseAsync%28string%20productId%2C%20string%20offerId%2C%20ProductPurchaseDisplayProperties%20displayProperties%29");
 		}
@@ -91,14 +91,14 @@ namespace Windows.ApplicationModel.Store
 		// Forced skipping of method Windows.ApplicationModel.Store.CurrentAppSimulator.AppId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<string> RequestAppPurchaseAsync( bool includeReceipt)
+		public static global::Windows.Foundation.IAsyncOperation<string> RequestAppPurchaseAsync(bool includeReceipt)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CurrentAppSimulator.RequestAppPurchaseAsync(bool includeReceipt) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CurrentAppSimulator.RequestAppPurchaseAsync%28bool%20includeReceipt%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<string> RequestProductPurchaseAsync( string productId,  bool includeReceipt)
+		public static global::Windows.Foundation.IAsyncOperation<string> RequestProductPurchaseAsync(string productId, bool includeReceipt)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CurrentAppSimulator.RequestProductPurchaseAsync(string productId, bool includeReceipt) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CurrentAppSimulator.RequestProductPurchaseAsync%28string%20productId%2C%20bool%20includeReceipt%29");
 		}
@@ -119,14 +119,14 @@ namespace Windows.ApplicationModel.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<string> GetProductReceiptAsync( string productId)
+		public static global::Windows.Foundation.IAsyncOperation<string> GetProductReceiptAsync(string productId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> CurrentAppSimulator.GetProductReceiptAsync(string productId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cstring%3E%20CurrentAppSimulator.GetProductReceiptAsync%28string%20productId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncAction ReloadSimulatorAsync( global::Windows.Storage.StorageFile simulatorSettingsFile)
+		public static global::Windows.Foundation.IAsyncAction ReloadSimulatorAsync(global::Windows.Storage.StorageFile simulatorSettingsFile)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CurrentAppSimulator.ReloadSimulatorAsync(StorageFile simulatorSettingsFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CurrentAppSimulator.ReloadSimulatorAsync%28StorageFile%20simulatorSettingsFile%29");
 		}

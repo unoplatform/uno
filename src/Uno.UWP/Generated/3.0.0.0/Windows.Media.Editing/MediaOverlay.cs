@@ -75,7 +75,7 @@ namespace Windows.Media.Editing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaOverlay( global::Windows.Media.Editing.MediaClip clip) 
+		public MediaOverlay(global::Windows.Media.Editing.MediaClip clip) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay.MediaOverlay(MediaClip clip)");
 		}
@@ -83,7 +83,7 @@ namespace Windows.Media.Editing
 		// Forced skipping of method Windows.Media.Editing.MediaOverlay.MediaOverlay(Windows.Media.Editing.MediaClip)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaOverlay( global::Windows.Media.Editing.MediaClip clip,  global::Windows.Foundation.Rect position,  double opacity) 
+		public MediaOverlay(global::Windows.Media.Editing.MediaClip clip, global::Windows.Foundation.Rect position, double opacity) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Editing.MediaOverlay", "MediaOverlay.MediaOverlay(MediaClip clip, Rect position, double opacity)");
 		}

@@ -63,7 +63,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaBreak( global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod) 
+		public MediaBreak(global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "MediaBreak.MediaBreak(MediaBreakInsertionMethod insertionMethod)");
 		}
@@ -71,7 +71,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaBreak.MediaBreak(Windows.Media.Playback.MediaBreakInsertionMethod)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaBreak( global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod,  global::System.TimeSpan presentationPosition) 
+		public MediaBreak(global::Windows.Media.Playback.MediaBreakInsertionMethod insertionMethod, global::System.TimeSpan presentationPosition) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaBreak", "MediaBreak.MediaBreak(MediaBreakInsertionMethod insertionMethod, TimeSpan presentationPosition)");
 		}

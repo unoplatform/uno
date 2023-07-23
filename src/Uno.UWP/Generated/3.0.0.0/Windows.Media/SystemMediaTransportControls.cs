@@ -275,7 +275,7 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.SystemMediaTransportControls.PlaybackRate.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateTimelineProperties( global::Windows.Media.SystemMediaTransportControlsTimelineProperties timelineProperties)
+		public void UpdateTimelineProperties(global::Windows.Media.SystemMediaTransportControlsTimelineProperties timelineProperties)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SystemMediaTransportControls", "void SystemMediaTransportControls.UpdateTimelineProperties(SystemMediaTransportControlsTimelineProperties timelineProperties)");
 		}

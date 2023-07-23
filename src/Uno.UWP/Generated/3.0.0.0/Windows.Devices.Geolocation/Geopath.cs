@@ -49,7 +49,7 @@ namespace Windows.Devices.Geolocation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Geopath( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions) 
+		public Geopath(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath.Geopath(IEnumerable<BasicGeoposition> positions)");
 		}
@@ -57,7 +57,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Geopath(System.Collections.Generic.IEnumerable<Windows.Devices.Geolocation.BasicGeoposition>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Geopath( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
+		public Geopath(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath.Geopath(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeReferenceSystem)");
 		}
@@ -65,7 +65,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.Geopath.Geopath(System.Collections.Generic.IEnumerable<Windows.Devices.Geolocation.BasicGeoposition>, Windows.Devices.Geolocation.AltitudeReferenceSystem)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Geopath( global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions,  global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem,  uint spatialReferenceId) 
+		public Geopath(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Geolocation.BasicGeoposition> positions, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.Geopath", "Geopath.Geopath(IEnumerable<BasicGeoposition> positions, AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)");
 		}

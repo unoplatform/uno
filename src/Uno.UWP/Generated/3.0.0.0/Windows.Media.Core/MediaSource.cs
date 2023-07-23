@@ -146,70 +146,70 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaSource.DownloadOperation.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromDownloadOperation( global::Windows.Networking.BackgroundTransfer.DownloadOperation downloadOperation)
+		public static global::Windows.Media.Core.MediaSource CreateFromDownloadOperation(global::Windows.Networking.BackgroundTransfer.DownloadOperation downloadOperation)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromDownloadOperation(DownloadOperation downloadOperation) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromDownloadOperation%28DownloadOperation%20downloadOperation%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromMediaFrameSource( global::Windows.Media.Capture.Frames.MediaFrameSource frameSource)
+		public static global::Windows.Media.Core.MediaSource CreateFromMediaFrameSource(global::Windows.Media.Capture.Frames.MediaFrameSource frameSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaFrameSource(MediaFrameSource frameSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaFrameSource%28MediaFrameSource%20frameSource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromMediaBinder( global::Windows.Media.Core.MediaBinder binder)
+		public static global::Windows.Media.Core.MediaSource CreateFromMediaBinder(global::Windows.Media.Core.MediaBinder binder)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaBinder(MediaBinder binder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaBinder%28MediaBinder%20binder%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromAdaptiveMediaSource( global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource mediaSource)
+		public static global::Windows.Media.Core.MediaSource CreateFromAdaptiveMediaSource(global::Windows.Media.Streaming.Adaptive.AdaptiveMediaSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromAdaptiveMediaSource(AdaptiveMediaSource mediaSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromAdaptiveMediaSource%28AdaptiveMediaSource%20mediaSource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromMediaStreamSource( global::Windows.Media.Core.MediaStreamSource mediaSource)
+		public static global::Windows.Media.Core.MediaSource CreateFromMediaStreamSource(global::Windows.Media.Core.MediaStreamSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMediaStreamSource(MediaStreamSource mediaSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMediaStreamSource%28MediaStreamSource%20mediaSource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromMseStreamSource( global::Windows.Media.Core.MseStreamSource mediaSource)
+		public static global::Windows.Media.Core.MediaSource CreateFromMseStreamSource(global::Windows.Media.Core.MseStreamSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromMseStreamSource(MseStreamSource mediaSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromMseStreamSource%28MseStreamSource%20mediaSource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromIMediaSource( global::Windows.Media.Core.IMediaSource mediaSource)
+		public static global::Windows.Media.Core.MediaSource CreateFromIMediaSource(global::Windows.Media.Core.IMediaSource mediaSource)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromIMediaSource(IMediaSource mediaSource) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromIMediaSource%28IMediaSource%20mediaSource%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromStorageFile( global::Windows.Storage.IStorageFile file)
+		public static global::Windows.Media.Core.MediaSource CreateFromStorageFile(global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStorageFile(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromStorageFile%28IStorageFile%20file%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromStream( global::Windows.Storage.Streams.IRandomAccessStream stream,  string contentType)
+		public static global::Windows.Media.Core.MediaSource CreateFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream, string contentType)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStream(IRandomAccessStream stream, string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromStream%28IRandomAccessStream%20stream%2C%20string%20contentType%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.Core.MediaSource CreateFromStreamReference( global::Windows.Storage.Streams.IRandomAccessStreamReference stream,  string contentType)
+		public static global::Windows.Media.Core.MediaSource CreateFromStreamReference(global::Windows.Storage.Streams.IRandomAccessStreamReference stream, string contentType)
 		{
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStreamReference(IRandomAccessStreamReference stream, string contentType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromStreamReference%28IRandomAccessStreamReference%20stream%2C%20string%20contentType%29");
 		}

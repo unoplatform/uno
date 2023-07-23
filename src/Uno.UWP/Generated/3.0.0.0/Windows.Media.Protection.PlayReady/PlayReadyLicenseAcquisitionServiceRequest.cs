@@ -143,7 +143,7 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Exception ProcessManualEnablingResponse( byte[] responseBytes)
+		public global::System.Exception ProcessManualEnablingResponse(byte[] responseBytes)
 		{
 			throw new global::System.NotImplementedException("The member Exception PlayReadyLicenseAcquisitionServiceRequest.ProcessManualEnablingResponse(byte[] responseBytes) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Exception%20PlayReadyLicenseAcquisitionServiceRequest.ProcessManualEnablingResponse%28byte%5B%5D%20responseBytes%29");
 		}
@@ -153,7 +153,7 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest.SessionId.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable( global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader,  bool fullyEvaluated)
+		public global::Windows.Media.Protection.PlayReady.PlayReadyLicenseIterable CreateLicenseIterable(global::Windows.Media.Protection.PlayReady.PlayReadyContentHeader contentHeader, bool fullyEvaluated)
 		{
 			throw new global::System.NotImplementedException("The member PlayReadyLicenseIterable PlayReadyLicenseAcquisitionServiceRequest.CreateLicenseIterable(PlayReadyContentHeader contentHeader, bool fullyEvaluated) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=PlayReadyLicenseIterable%20PlayReadyLicenseAcquisitionServiceRequest.CreateLicenseIterable%28PlayReadyContentHeader%20contentHeader%2C%20bool%20fullyEvaluated%29");
 		}

@@ -9,14 +9,14 @@ namespace Windows.UI.Composition
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void InsertKeyFrame( float normalizedProgressKey,  global::System.Numerics.Vector2 value)
+		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector2 value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Vector2KeyFrameAnimation", "void Vector2KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector2 value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void InsertKeyFrame( float normalizedProgressKey,  global::System.Numerics.Vector2 value,  global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
+		public void InsertKeyFrame(float normalizedProgressKey, global::System.Numerics.Vector2 value, global::Windows.UI.Composition.CompositionEasingFunction easingFunction)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Vector2KeyFrameAnimation", "void Vector2KeyFrameAnimation.InsertKeyFrame(float normalizedProgressKey, Vector2 value, CompositionEasingFunction easingFunction)");
 		}

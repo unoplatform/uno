@@ -8,7 +8,7 @@ namespace Windows.Networking.Vpn
 	public partial interface IVpnChannelStatics 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void ProcessEventAsync( object thirdPartyPlugIn,  object @event);
+		void ProcessEventAsync(object thirdPartyPlugIn, object @event);
 #endif
 	}
 }

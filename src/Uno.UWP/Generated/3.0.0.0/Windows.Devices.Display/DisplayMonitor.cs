@@ -228,7 +228,7 @@ namespace Windows.Devices.Display
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.MaxAverageFullFrameLuminanceInNits.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public byte[] GetDescriptor( global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
+		public byte[] GetDescriptor(global::Windows.Devices.Display.DisplayMonitorDescriptorKind descriptorKind)
 		{
 			throw new global::System.NotImplementedException("The member byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=byte%5B%5D%20DisplayMonitor.GetDescriptor%28DisplayMonitorDescriptorKind%20descriptorKind%29");
 		}
@@ -243,14 +243,14 @@ namespace Windows.Devices.Display
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DisplayMonitor> DisplayMonitor.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDisplayMonitor%3E%20DisplayMonitor.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromInterfaceIdAsync( string deviceInterfaceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Display.DisplayMonitor> FromInterfaceIdAsync(string deviceInterfaceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DisplayMonitor> DisplayMonitor.FromInterfaceIdAsync(string deviceInterfaceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDisplayMonitor%3E%20DisplayMonitor.FromInterfaceIdAsync%28string%20deviceInterfaceId%29");
 		}

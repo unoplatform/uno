@@ -121,66 +121,66 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CaptionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CaptionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Caption), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(Caption), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty InitialSetValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty InitialSetValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(InitialSetValue), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(InitialSetValue), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsClearEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsClearEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsClearEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(IsClearEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsReadOnlyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsReadOnlyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsReadOnly), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(IsReadOnly), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ItemInfoProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ItemInfoProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ItemInfo), typeof(global::Windows.UI.Xaml.Controls.RatingItemInfo), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(ItemInfo), typeof(global::Windows.UI.Xaml.Controls.RatingItemInfo),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RatingItemInfo)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxRatingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxRatingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxRating), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(MaxRating), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderValue), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(PlaceholderValue), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Value), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
+			nameof(Value), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.RatingControl),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RatingControl.RatingControl()

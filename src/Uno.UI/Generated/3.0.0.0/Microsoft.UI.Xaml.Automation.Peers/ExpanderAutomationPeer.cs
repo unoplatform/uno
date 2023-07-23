@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ExpanderAutomationPeer( global::Microsoft.UI.Xaml.Controls.Expander owner) : base(owner)
+		public ExpanderAutomationPeer(global::Microsoft.UI.Xaml.Controls.Expander owner) : base(owner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Microsoft.UI.Xaml.Automation.Peers.ExpanderAutomationPeer", "ExpanderAutomationPeer.ExpanderAutomationPeer(Expander owner)");
 		}

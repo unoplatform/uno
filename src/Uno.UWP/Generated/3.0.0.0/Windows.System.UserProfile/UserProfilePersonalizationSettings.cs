@@ -19,14 +19,14 @@ namespace Windows.System.UserProfile
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TrySetLockScreenImageAsync( global::Windows.Storage.StorageFile imageFile)
+		public global::Windows.Foundation.IAsyncOperation<bool> TrySetLockScreenImageAsync(global::Windows.Storage.StorageFile imageFile)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> UserProfilePersonalizationSettings.TrySetLockScreenImageAsync(StorageFile imageFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20UserProfilePersonalizationSettings.TrySetLockScreenImageAsync%28StorageFile%20imageFile%29");
 		}
 #endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TrySetWallpaperImageAsync( global::Windows.Storage.StorageFile imageFile)
+		public global::Windows.Foundation.IAsyncOperation<bool> TrySetWallpaperImageAsync(global::Windows.Storage.StorageFile imageFile)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> UserProfilePersonalizationSettings.TrySetWallpaperImageAsync(StorageFile imageFile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20UserProfilePersonalizationSettings.TrySetWallpaperImageAsync%28StorageFile%20imageFile%29");
 		}

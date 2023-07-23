@@ -215,122 +215,122 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AllowOverstretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AllowOverstretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AllowOverstretch), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(AllowOverstretch), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty BoundsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty BoundsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Bounds), typeof(global::Windows.Devices.Geolocation.GeoboundingBox), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(Bounds), typeof(global::Windows.Devices.Geolocation.GeoboundingBox),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.GeoboundingBox)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DataSourceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DataSourceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DataSource), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(DataSource), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsFadingEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsFadingEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsFadingEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(IsFadingEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsRetryEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsRetryEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsRetryEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(IsRetryEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTransparencyEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTransparencyEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTransparencyEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(IsTransparencyEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LayerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LayerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Layer), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(Layer), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TilePixelSizeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TilePixelSizeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TilePixelSize), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(TilePixelSize), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Visible), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(Visible), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ZIndex), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(ZIndex), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ZoomLevelRangeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ZoomLevelRangeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ZoomLevelRange), typeof(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(ZoomLevelRange), typeof(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AnimationStateProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AnimationStateProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AnimationState), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(AnimationState), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AutoPlay), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(AutoPlay), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FrameCountProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FrameCountProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FrameCount), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(FrameCount), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FrameDurationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FrameDurationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FrameDuration), typeof(global::System.TimeSpan), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
+			nameof(FrameDuration), typeof(global::System.TimeSpan),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -343,7 +343,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource) : base()
+		public MapTileSource(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "MapTileSource.MapTileSource(MapTileDataSource dataSource)");
 		}
@@ -351,7 +351,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource(Windows.UI.Xaml.Controls.Maps.MapTileDataSource)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource,  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange) : base()
+		public MapTileSource(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource, global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "MapTileSource.MapTileSource(MapTileDataSource dataSource, MapZoomLevelRange zoomLevelRange)");
 		}
@@ -359,7 +359,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource(Windows.UI.Xaml.Controls.Maps.MapTileDataSource, Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource,  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange,  global::Windows.Devices.Geolocation.GeoboundingBox bounds) : base()
+		public MapTileSource(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource, global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange, global::Windows.Devices.Geolocation.GeoboundingBox bounds) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "MapTileSource.MapTileSource(MapTileDataSource dataSource, MapZoomLevelRange zoomLevelRange, GeoboundingBox bounds)");
 		}
@@ -367,7 +367,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource(Windows.UI.Xaml.Controls.Maps.MapTileDataSource, Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange, Windows.Devices.Geolocation.GeoboundingBox)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource,  global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange,  global::Windows.Devices.Geolocation.GeoboundingBox bounds,  int tileSizeInPixels) : base()
+		public MapTileSource(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource, global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange zoomLevelRange, global::Windows.Devices.Geolocation.GeoboundingBox bounds, int tileSizeInPixels) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "MapTileSource.MapTileSource(MapTileDataSource dataSource, MapZoomLevelRange zoomLevelRange, GeoboundingBox bounds, int tileSizeInPixels)");
 		}

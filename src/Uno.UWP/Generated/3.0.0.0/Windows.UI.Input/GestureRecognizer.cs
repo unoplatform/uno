@@ -378,7 +378,7 @@ namespace Windows.UI.Input
 		// Skipping already declared method Windows.UI.Input.GestureRecognizer.ProcessUpEvent(Windows.UI.Input.PointerPoint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ProcessMouseWheelEvent( global::Windows.UI.Input.PointerPoint value,  bool isShiftKeyDown,  bool isControlKeyDown)
+		public void ProcessMouseWheelEvent(global::Windows.UI.Input.PointerPoint value, bool isShiftKeyDown, bool isControlKeyDown)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessMouseWheelEvent(PointerPoint value, bool isShiftKeyDown, bool isControlKeyDown)");
 		}

@@ -49,7 +49,7 @@ namespace Windows.Devices.PointOfService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UnifiedPosErrorData( string message,  global::Windows.Devices.PointOfService.UnifiedPosErrorSeverity severity,  global::Windows.Devices.PointOfService.UnifiedPosErrorReason reason,  uint extendedReason) 
+		public UnifiedPosErrorData(string message, global::Windows.Devices.PointOfService.UnifiedPosErrorSeverity severity, global::Windows.Devices.PointOfService.UnifiedPosErrorReason reason, uint extendedReason) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.UnifiedPosErrorData", "UnifiedPosErrorData.UnifiedPosErrorData(string message, UnifiedPosErrorSeverity severity, UnifiedPosErrorReason reason, uint extendedReason)");
 		}

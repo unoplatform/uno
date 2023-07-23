@@ -49,7 +49,7 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel( global::Windows.Gaming.Input.ArcadeStickButtons button)
+		public global::Windows.Gaming.Input.GameControllerButtonLabel GetButtonLabel(global::Windows.Gaming.Input.ArcadeStickButtons button)
 		{
 			throw new global::System.NotImplementedException("The member GameControllerButtonLabel ArcadeStick.GetButtonLabel(ArcadeStickButtons button) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=GameControllerButtonLabel%20ArcadeStick.GetButtonLabel%28ArcadeStickButtons%20button%29");
 		}
@@ -79,7 +79,7 @@ namespace Windows.Gaming.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Gaming.Input.ArcadeStick FromGameController( global::Windows.Gaming.Input.IGameController gameController)
+		public static global::Windows.Gaming.Input.ArcadeStick FromGameController(global::Windows.Gaming.Input.IGameController gameController)
 		{
 			throw new global::System.NotImplementedException("The member ArcadeStick ArcadeStick.FromGameController(IGameController gameController) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ArcadeStick%20ArcadeStick.FromGameController%28IGameController%20gameController%29");
 		}

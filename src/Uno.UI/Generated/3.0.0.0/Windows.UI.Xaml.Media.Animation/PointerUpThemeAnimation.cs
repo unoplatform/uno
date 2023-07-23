@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TargetNameProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TargetNameProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TargetName), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.PointerUpThemeAnimation), 
+			nameof(TargetName), typeof(string),
+			typeof(global::Windows.UI.Xaml.Media.Animation.PointerUpThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

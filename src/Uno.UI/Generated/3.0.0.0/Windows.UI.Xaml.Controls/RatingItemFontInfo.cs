@@ -93,50 +93,50 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisabledGlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DisabledGlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisabledGlyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
+			nameof(DisabledGlyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty GlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty GlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Glyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
+			nameof(Glyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderGlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderGlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderGlyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
+			nameof(PlaceholderGlyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverGlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverGlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverGlyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
+			nameof(PointerOverGlyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverPlaceholderGlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverPlaceholderGlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverPlaceholderGlyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
+			nameof(PointerOverPlaceholderGlyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty UnsetGlyphProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty UnsetGlyphProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(UnsetGlyph), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo), 
+			nameof(UnsetGlyph), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.RatingItemFontInfo),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -26,14 +26,14 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList.PresentationModeChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.Playback.TimedMetadataTrackPresentationMode GetPresentationMode( uint index)
+		public global::Windows.Media.Playback.TimedMetadataTrackPresentationMode GetPresentationMode(uint index)
 		{
 			throw new global::System.NotImplementedException("The member TimedMetadataTrackPresentationMode MediaPlaybackTimedMetadataTrackList.GetPresentationMode(uint index) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TimedMetadataTrackPresentationMode%20MediaPlaybackTimedMetadataTrackList.GetPresentationMode%28uint%20index%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPresentationMode( uint index,  global::Windows.Media.Playback.TimedMetadataTrackPresentationMode value)
+		public void SetPresentationMode(uint index, global::Windows.Media.Playback.TimedMetadataTrackPresentationMode value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackTimedMetadataTrackList", "void MediaPlaybackTimedMetadataTrackList.SetPresentationMode(uint index, TimedMetadataTrackPresentationMode value)");
 		}

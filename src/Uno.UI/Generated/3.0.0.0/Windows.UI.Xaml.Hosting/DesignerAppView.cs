@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Hosting
 		// Forced skipping of method Windows.UI.Xaml.Hosting.DesignerAppView.ViewSize.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction UpdateViewAsync( global::Windows.UI.Xaml.Hosting.DesignerAppViewState viewState,  global::Windows.Foundation.Size viewSize)
+		public global::Windows.Foundation.IAsyncAction UpdateViewAsync(global::Windows.UI.Xaml.Hosting.DesignerAppViewState viewState, global::Windows.Foundation.Size viewSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction DesignerAppView.UpdateViewAsync(DesignerAppViewState viewState, Size viewSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20DesignerAppView.UpdateViewAsync%28DesignerAppViewState%20viewState%2C%20Size%20viewSize%29");
 		}

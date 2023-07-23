@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.Completed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryStart( global::Windows.UI.Xaml.UIElement destination)
+		public bool TryStart(global::Windows.UI.Xaml.UIElement destination)
 		{
 			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.TryStart%28UIElement%20destination%29");
 		}
@@ -55,14 +55,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ConnectedAnimation.IsScaleAnimationEnabled.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryStart( global::Windows.UI.Xaml.UIElement destination,  global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.UIElement> coordinatedElements)
+		public bool TryStart(global::Windows.UI.Xaml.UIElement destination, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.UIElement> coordinatedElements)
 		{
 			throw new global::System.NotImplementedException("The member bool ConnectedAnimation.TryStart(UIElement destination, IEnumerable<UIElement> coordinatedElements) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ConnectedAnimation.TryStart%28UIElement%20destination%2C%20IEnumerable%3CUIElement%3E%20coordinatedElements%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetAnimationComponent( global::Windows.UI.Xaml.Media.Animation.ConnectedAnimationComponent component,  global::Windows.UI.Composition.ICompositionAnimationBase animation)
+		public void SetAnimationComponent(global::Windows.UI.Xaml.Media.Animation.ConnectedAnimationComponent component, global::Windows.UI.Composition.ICompositionAnimationBase animation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ConnectedAnimation", "void ConnectedAnimation.SetAnimationComponent(ConnectedAnimationComponent component, ICompositionAnimationBase animation)");
 		}

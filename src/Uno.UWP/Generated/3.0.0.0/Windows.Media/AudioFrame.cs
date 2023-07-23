@@ -95,7 +95,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AudioFrame( uint capacity) 
+		public AudioFrame(uint capacity) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.AudioFrame", "AudioFrame.AudioFrame(uint capacity)");
 		}
@@ -103,7 +103,7 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.AudioFrame.AudioFrame(uint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Media.AudioBuffer LockBuffer( global::Windows.Media.AudioBufferAccessMode mode)
+		public global::Windows.Media.AudioBuffer LockBuffer(global::Windows.Media.AudioBufferAccessMode mode)
 		{
 			throw new global::System.NotImplementedException("The member AudioBuffer AudioFrame.LockBuffer(AudioBufferAccessMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=AudioBuffer%20AudioFrame.LockBuffer%28AudioBufferAccessMode%20mode%29");
 		}

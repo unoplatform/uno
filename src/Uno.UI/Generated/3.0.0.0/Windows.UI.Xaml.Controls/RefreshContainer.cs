@@ -37,18 +37,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PullDirectionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PullDirectionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PullDirection), typeof(global::Windows.UI.Xaml.Controls.RefreshPullDirection), 
-			typeof(global::Windows.UI.Xaml.Controls.RefreshContainer), 
+			nameof(PullDirection), typeof(global::Windows.UI.Xaml.Controls.RefreshPullDirection),
+			typeof(global::Windows.UI.Xaml.Controls.RefreshContainer),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshPullDirection)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty VisualizerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty VisualizerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Visualizer), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
-			typeof(global::Windows.UI.Xaml.Controls.RefreshContainer), 
+			nameof(Visualizer), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer),
+			typeof(global::Windows.UI.Xaml.Controls.RefreshContainer),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizer)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RefreshContainer.RefreshContainer()

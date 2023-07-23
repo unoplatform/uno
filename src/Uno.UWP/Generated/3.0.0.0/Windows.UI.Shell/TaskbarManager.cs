@@ -38,7 +38,7 @@ namespace Windows.UI.Shell
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> IsAppListEntryPinnedAsync( global::Windows.ApplicationModel.Core.AppListEntry appListEntry)
+		public global::Windows.Foundation.IAsyncOperation<bool> IsAppListEntryPinnedAsync(global::Windows.ApplicationModel.Core.AppListEntry appListEntry)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.IsAppListEntryPinnedAsync(AppListEntry appListEntry) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.IsAppListEntryPinnedAsync%28AppListEntry%20appListEntry%29");
 		}
@@ -52,28 +52,28 @@ namespace Windows.UI.Shell
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestPinAppListEntryAsync( global::Windows.ApplicationModel.Core.AppListEntry appListEntry)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestPinAppListEntryAsync(global::Windows.ApplicationModel.Core.AppListEntry appListEntry)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.RequestPinAppListEntryAsync(AppListEntry appListEntry) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.RequestPinAppListEntryAsync%28AppListEntry%20appListEntry%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> IsSecondaryTilePinnedAsync( string tileId)
+		public global::Windows.Foundation.IAsyncOperation<bool> IsSecondaryTilePinnedAsync(string tileId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.IsSecondaryTilePinnedAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.IsSecondaryTilePinnedAsync%28string%20tileId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> RequestPinSecondaryTileAsync( global::Windows.UI.StartScreen.SecondaryTile secondaryTile)
+		public global::Windows.Foundation.IAsyncOperation<bool> RequestPinSecondaryTileAsync(global::Windows.UI.StartScreen.SecondaryTile secondaryTile)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.RequestPinSecondaryTileAsync(SecondaryTile secondaryTile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.RequestPinSecondaryTileAsync%28SecondaryTile%20secondaryTile%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryUnpinSecondaryTileAsync( string tileId)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryUnpinSecondaryTileAsync(string tileId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> TaskbarManager.TryUnpinSecondaryTileAsync(string tileId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20TaskbarManager.TryUnpinSecondaryTileAsync%28string%20tileId%29");
 		}

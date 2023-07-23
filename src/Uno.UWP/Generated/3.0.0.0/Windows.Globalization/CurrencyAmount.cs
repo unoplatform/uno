@@ -29,7 +29,7 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CurrencyAmount( string amount,  string currency) 
+		public CurrencyAmount(string amount, string currency) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.CurrencyAmount", "CurrencyAmount.CurrencyAmount(string amount, string currency)");
 		}

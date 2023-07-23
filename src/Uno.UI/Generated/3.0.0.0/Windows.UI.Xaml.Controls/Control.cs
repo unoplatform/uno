@@ -124,10 +124,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property FontSizeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 #endif
 		// Skipping already declared property FontStyleProperty
@@ -145,46 +145,46 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property VerticalContentAlignmentProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CharacterSpacing), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(CharacterSpacing), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleKeyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleKeyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultStyleKey), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(DefaultStyleKey), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextScaleFactorEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property IsTemplateFocusTargetProperty
 		// Skipping already declared property UseSystemFocusVisualsProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ElementSoundModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(ElementSoundMode), typeof(global::Windows.UI.Xaml.ElementSoundMode),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementSoundMode)));
 #endif
 		// Skipping already declared property IsFocusEngagedProperty
 		// Skipping already declared property IsFocusEngagementEnabledProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RequiresPointerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RequiresPointerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RequiresPointer), typeof(global::Windows.UI.Xaml.Controls.RequiresPointer), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(RequiresPointer), typeof(global::Windows.UI.Xaml.Controls.RequiresPointer),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RequiresPointer)));
 #endif
 		// Skipping already declared property XYFocusDownProperty
@@ -193,18 +193,18 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property XYFocusUpProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleResourceUriProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DefaultStyleResourceUriProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DefaultStyleResourceUri), typeof(global::System.Uri), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			nameof(DefaultStyleResourceUri), typeof(global::System.Uri),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Uri)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTemplateKeyTipTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTemplateKeyTipTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"IsTemplateKeyTipTarget", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Control), 
+			"IsTemplateKeyTipTarget", typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Control),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property CornerRadiusProperty
@@ -313,21 +313,21 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.Control.OnDrop(Windows.UI.Xaml.DragEventArgs)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnPreviewKeyDown( global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+		protected virtual void OnPreviewKeyDown(global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyDown(KeyRoutedEventArgs e)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnPreviewKeyUp( global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+		protected virtual void OnPreviewKeyUp(global::Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnPreviewKeyUp(KeyRoutedEventArgs e)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnCharacterReceived( global::Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs e)
+		protected virtual void OnCharacterReceived(global::Windows.UI.Xaml.Input.CharacterReceivedRoutedEventArgs e)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnCharacterReceived(CharacterReceivedRoutedEventArgs e)");
 		}
@@ -338,14 +338,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.Control.IsTemplateKeyTipTargetProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool GetIsTemplateKeyTipTarget( global::Windows.UI.Xaml.DependencyObject element)
+		public static bool GetIsTemplateKeyTipTarget(global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (bool)element.GetValue(IsTemplateKeyTipTargetProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetIsTemplateKeyTipTarget( global::Windows.UI.Xaml.DependencyObject element,  bool value)
+		public static void SetIsTemplateKeyTipTarget(global::Windows.UI.Xaml.DependencyObject element, bool value)
 		{
 			element.SetValue(IsTemplateKeyTipTargetProperty, value);
 		}

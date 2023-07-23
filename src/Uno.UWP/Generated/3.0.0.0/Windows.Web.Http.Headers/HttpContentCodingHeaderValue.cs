@@ -19,7 +19,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentCodingHeaderValue( string contentCoding) 
+		public HttpContentCodingHeaderValue(string contentCoding) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingHeaderValue", "HttpContentCodingHeaderValue.HttpContentCodingHeaderValue(string contentCoding)");
 		}
@@ -35,14 +35,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpContentCodingHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpContentCodingHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpContentCodingHeaderValue HttpContentCodingHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentCodingHeaderValue%20HttpContentCodingHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpContentCodingHeaderValue contentCodingHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentCodingHeaderValue contentCodingHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpContentCodingHeaderValue.TryParse(string input, out HttpContentCodingHeaderValue contentCodingHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentCodingHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentCodingHeaderValue%20contentCodingHeaderValue%29");
 		}

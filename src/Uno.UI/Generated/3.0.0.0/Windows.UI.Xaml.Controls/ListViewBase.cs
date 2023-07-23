@@ -163,80 +163,80 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property HeaderTemplateProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeaderTransitionsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HeaderTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(HeaderTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 #endif
 		// Skipping already declared property IncrementalLoadingThresholdProperty
 		// Skipping already declared property IncrementalLoadingTriggerProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsActiveView), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(IsActiveView), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property IsItemClickEnabledProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsSwipeEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsSwipeEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsSwipeEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(IsSwipeEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsZoomedInView), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(IsZoomedInView), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property SelectionModeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SemanticZoomOwner), typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(SemanticZoomOwner), typeof(global::Windows.UI.Xaml.Controls.SemanticZoom),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SemanticZoom)));
 #endif
 		// Skipping already declared property FooterProperty
 		// Skipping already declared property FooterTemplateProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FooterTransitionsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FooterTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(FooterTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ShowsScrollingPlaceholdersProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ShowsScrollingPlaceholdersProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ShowsScrollingPlaceholders), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(ShowsScrollingPlaceholders), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ReorderModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ReorderModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ReorderMode), typeof(global::Windows.UI.Xaml.Controls.ListViewReorderMode), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(ReorderMode), typeof(global::Windows.UI.Xaml.Controls.ListViewReorderMode),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListViewReorderMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsMultiSelectCheckBoxEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsMultiSelectCheckBoxEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase), 
+			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property SingleSelectionFollowsFocusProperty
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.DragItemsStarting.remove
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ScrollIntoView( object item)
+		public void ScrollIntoView(object item)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.ScrollIntoView(object item)");
 		}
@@ -286,7 +286,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void ScrollIntoView( object item,  global::Windows.UI.Xaml.Controls.ScrollIntoViewAlignment alignment)
+		public void ScrollIntoView(object item, global::Windows.UI.Xaml.Controls.ScrollIntoViewAlignment alignment)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.ScrollIntoView(object item, ScrollIntoViewAlignment alignment)");
 		}
@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.ContainerContentChanging.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetDesiredContainerUpdateDuration( global::System.TimeSpan duration)
+		public void SetDesiredContainerUpdateDuration(global::System.TimeSpan duration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.SetDesiredContainerUpdateDuration(TimeSpan duration)");
 		}
@@ -327,14 +327,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.ChoosingGroupHeaderContainer.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SelectRange( global::Windows.UI.Xaml.Data.ItemIndexRange itemIndexRange)
+		public void SelectRange(global::Windows.UI.Xaml.Data.ItemIndexRange itemIndexRange)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.SelectRange(ItemIndexRange itemIndexRange)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void DeselectRange( global::Windows.UI.Xaml.Data.ItemIndexRange itemIndexRange)
+		public void DeselectRange(global::Windows.UI.Xaml.Data.ItemIndexRange itemIndexRange)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.DeselectRange(ItemIndexRange itemIndexRange)");
 		}
@@ -350,14 +350,14 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryStartConnectedAnimationAsync( global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation animation,  object item,  string elementName)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryStartConnectedAnimationAsync(global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation animation, object item, string elementName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ListViewBase.TryStartConnectedAnimationAsync(ConnectedAnimation animation, object item, string elementName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ListViewBase.TryStartConnectedAnimationAsync%28ConnectedAnimation%20animation%2C%20object%20item%2C%20string%20elementName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareConnectedAnimation( string key,  object item,  string elementName)
+		public global::Windows.UI.Xaml.Media.Animation.ConnectedAnimation PrepareConnectedAnimation(string key, object item, string elementName)
 		{
 			throw new global::System.NotImplementedException("The member ConnectedAnimation ListViewBase.PrepareConnectedAnimation(string key, object item, string elementName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ConnectedAnimation%20ListViewBase.PrepareConnectedAnimation%28string%20key%2C%20object%20item%2C%20string%20elementName%29");
 		}
@@ -384,35 +384,35 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void MakeVisible( global::Windows.UI.Xaml.Controls.SemanticZoomLocation item)
+		public void MakeVisible(global::Windows.UI.Xaml.Controls.SemanticZoomLocation item)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.MakeVisible(SemanticZoomLocation item)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void StartViewChangeFrom(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.StartViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void StartViewChangeTo(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.StartViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CompleteViewChangeFrom( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void CompleteViewChangeFrom(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChangeFrom(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CompleteViewChangeTo( global::Windows.UI.Xaml.Controls.SemanticZoomLocation source,  global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
+		public void CompleteViewChangeTo(global::Windows.UI.Xaml.Controls.SemanticZoomLocation source, global::Windows.UI.Xaml.Controls.SemanticZoomLocation destination)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ListViewBase", "void ListViewBase.CompleteViewChangeTo(SemanticZoomLocation source, SemanticZoomLocation destination)");
 		}

@@ -8,7 +8,7 @@ namespace Windows.Networking.Vpn
 	public partial interface IVpnInterfaceIdFactory 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Networking.Vpn.VpnInterfaceId CreateVpnInterfaceId( byte[] address);
+		global::Windows.Networking.Vpn.VpnInterfaceId CreateVpnInterfaceId(byte[] address);
 #endif
 	}
 }

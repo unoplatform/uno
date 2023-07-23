@@ -17,7 +17,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		// Forced skipping of method Windows.Devices.Bluetooth.GenericAttributeProfile.GattReliableWriteTransaction.GattReliableWriteTransaction()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void WriteValue( global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic characteristic,  global::Windows.Storage.Streams.IBuffer value)
+		public void WriteValue(global::Windows.Devices.Bluetooth.GenericAttributeProfile.GattCharacteristic characteristic, global::Windows.Storage.Streams.IBuffer value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.GenericAttributeProfile.GattReliableWriteTransaction", "void GattReliableWriteTransaction.WriteValue(GattCharacteristic characteristic, IBuffer value)");
 		}

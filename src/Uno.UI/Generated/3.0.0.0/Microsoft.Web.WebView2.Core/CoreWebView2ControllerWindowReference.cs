@@ -31,14 +31,14 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference.CoreWindow.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromWindowHandle( ulong windowHandle)
+		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromWindowHandle(ulong windowHandle)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2ControllerWindowReference.CreateFromWindowHandle(ulong windowHandle) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerWindowReference%20CoreWebView2ControllerWindowReference.CreateFromWindowHandle%28ulong%20windowHandle%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromCoreWindow( global::Windows.UI.Core.CoreWindow coreWindow)
+		public static global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference CreateFromCoreWindow(global::Windows.UI.Core.CoreWindow coreWindow)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2ControllerWindowReference CoreWebView2ControllerWindowReference.CreateFromCoreWindow(CoreWindow coreWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ControllerWindowReference%20CoreWebView2ControllerWindowReference.CreateFromCoreWindow%28CoreWindow%20coreWindow%29");
 		}

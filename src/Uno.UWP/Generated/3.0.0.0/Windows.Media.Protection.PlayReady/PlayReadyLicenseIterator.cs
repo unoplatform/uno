@@ -38,7 +38,7 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public uint GetMany( global::Windows.Media.Protection.PlayReady.IPlayReadyLicense[] items)
+		public uint GetMany(global::Windows.Media.Protection.PlayReady.IPlayReadyLicense[] items)
 		{
 			throw new global::System.NotImplementedException("The member uint PlayReadyLicenseIterator.GetMany(IPlayReadyLicense[] items) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20PlayReadyLicenseIterator.GetMany%28IPlayReadyLicense%5B%5D%20items%29");
 		}

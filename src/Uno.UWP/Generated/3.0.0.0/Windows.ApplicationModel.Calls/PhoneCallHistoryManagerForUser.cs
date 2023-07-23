@@ -19,7 +19,7 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryStore> RequestStoreAsync( global::Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType accessType)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Calls.PhoneCallHistoryStore> RequestStoreAsync(global::Windows.ApplicationModel.Calls.PhoneCallHistoryStoreAccessType accessType)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallHistoryStore> PhoneCallHistoryManagerForUser.RequestStoreAsync(PhoneCallHistoryStoreAccessType accessType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPhoneCallHistoryStore%3E%20PhoneCallHistoryManagerForUser.RequestStoreAsync%28PhoneCallHistoryStoreAccessType%20accessType%29");
 		}

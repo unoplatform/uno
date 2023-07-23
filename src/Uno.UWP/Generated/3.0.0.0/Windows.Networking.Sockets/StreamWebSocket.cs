@@ -61,14 +61,14 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocket.OutputStream.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ConnectAsync( global::System.Uri uri)
+		public global::Windows.Foundation.IAsyncAction ConnectAsync(global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StreamWebSocket.ConnectAsync(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StreamWebSocket.ConnectAsync%28Uri%20uri%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetRequestHeader( string headerName,  string headerValue)
+		public void SetRequestHeader(string headerName, string headerValue)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocket", "void StreamWebSocket.SetRequestHeader(string headerName, string headerValue)");
 		}
@@ -77,7 +77,7 @@ namespace Windows.Networking.Sockets
 		// Forced skipping of method Windows.Networking.Sockets.StreamWebSocket.Closed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Close( ushort code,  string reason)
+		public void Close(ushort code, string reason)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Sockets.StreamWebSocket", "void StreamWebSocket.Close(ushort code, string reason)");
 		}

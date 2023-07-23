@@ -169,49 +169,49 @@ namespace Windows.Storage.BulkAccess
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.PropertiesUpdated.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync( string desiredName)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FolderInformation.CreateFileAsync(string desiredName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FolderInformation.CreateFileAsync%28string%20desiredName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync( string desiredName,  global::Windows.Storage.CreationCollisionOption options)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync(string desiredName, global::Windows.Storage.CreationCollisionOption options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FolderInformation.CreateFileAsync(string desiredName, CreationCollisionOption options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FolderInformation.CreateFileAsync%28string%20desiredName%2C%20CreationCollisionOption%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync( string desiredName)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync(string desiredName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> FolderInformation.CreateFolderAsync(string desiredName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20FolderInformation.CreateFolderAsync%28string%20desiredName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync( string desiredName,  global::Windows.Storage.CreationCollisionOption options)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> CreateFolderAsync(string desiredName, global::Windows.Storage.CreationCollisionOption options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> FolderInformation.CreateFolderAsync(string desiredName, CreationCollisionOption options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20FolderInformation.CreateFolderAsync%28string%20desiredName%2C%20CreationCollisionOption%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileAsync( string name)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileAsync(string name)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FolderInformation.GetFileAsync(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20FolderInformation.GetFileAsync%28string%20name%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync( string name)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync(string name)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> FolderInformation.GetFolderAsync(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFolder%3E%20FolderInformation.GetFolderAsync%28string%20name%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync( string name)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> GetItemAsync(string name)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IStorageItem> FolderInformation.GetItemAsync(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIStorageItem%3E%20FolderInformation.GetItemAsync%28string%20name%29");
 		}
@@ -239,14 +239,14 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName)
+		public global::Windows.Foundation.IAsyncAction RenameAsync(string desiredName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction FolderInformation.RenameAsync(string desiredName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FolderInformation.RenameAsync%28string%20desiredName%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName,  global::Windows.Storage.NameCollisionOption option)
+		public global::Windows.Foundation.IAsyncAction RenameAsync(string desiredName, global::Windows.Storage.NameCollisionOption option)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction FolderInformation.RenameAsync(string desiredName, NameCollisionOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FolderInformation.RenameAsync%28string%20desiredName%2C%20NameCollisionOption%20option%29");
 		}
@@ -260,7 +260,7 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction DeleteAsync( global::Windows.Storage.StorageDeleteOption option)
+		public global::Windows.Foundation.IAsyncAction DeleteAsync(global::Windows.Storage.StorageDeleteOption option)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction FolderInformation.DeleteAsync(StorageDeleteOption option) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20FolderInformation.DeleteAsync%28StorageDeleteOption%20option%29");
 		}
@@ -278,28 +278,28 @@ namespace Windows.Storage.BulkAccess
 		// Forced skipping of method Windows.Storage.BulkAccess.FolderInformation.DateCreated.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsOfType( global::Windows.Storage.StorageItemTypes type)
+		public bool IsOfType(global::Windows.Storage.StorageItemTypes type)
 		{
 			throw new global::System.NotImplementedException("The member bool FolderInformation.IsOfType(StorageItemTypes type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FolderInformation.IsOfType%28StorageItemTypes%20type%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20FolderInformation.GetThumbnailAsync%28ThumbnailMode%20mode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20FolderInformation.GetThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize,  global::Windows.Storage.FileProperties.ThumbnailOptions options)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize, global::Windows.Storage.FileProperties.ThumbnailOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> FolderInformation.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20FolderInformation.GetThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%2C%20ThumbnailOptions%20options%29");
 		}
@@ -324,14 +324,14 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQuery( global::Windows.Storage.Search.CommonFileQuery query)
+		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQuery(global::Windows.Storage.Search.CommonFileQuery query)
 		{
 			throw new global::System.NotImplementedException("The member StorageFileQueryResult FolderInformation.CreateFileQuery(CommonFileQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFileQueryResult%20FolderInformation.CreateFileQuery%28CommonFileQuery%20query%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQueryWithOptions( global::Windows.Storage.Search.QueryOptions queryOptions)
+		public global::Windows.Storage.Search.StorageFileQueryResult CreateFileQueryWithOptions(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
 			throw new global::System.NotImplementedException("The member StorageFileQueryResult FolderInformation.CreateFileQueryWithOptions(QueryOptions queryOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFileQueryResult%20FolderInformation.CreateFileQueryWithOptions%28QueryOptions%20queryOptions%29");
 		}
@@ -345,14 +345,14 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQuery( global::Windows.Storage.Search.CommonFolderQuery query)
+		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQuery(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
 			throw new global::System.NotImplementedException("The member StorageFolderQueryResult FolderInformation.CreateFolderQuery(CommonFolderQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolderQueryResult%20FolderInformation.CreateFolderQuery%28CommonFolderQuery%20query%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQueryWithOptions( global::Windows.Storage.Search.QueryOptions queryOptions)
+		public global::Windows.Storage.Search.StorageFolderQueryResult CreateFolderQueryWithOptions(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
 			throw new global::System.NotImplementedException("The member StorageFolderQueryResult FolderInformation.CreateFolderQueryWithOptions(QueryOptions queryOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageFolderQueryResult%20FolderInformation.CreateFolderQueryWithOptions%28QueryOptions%20queryOptions%29");
 		}
@@ -366,63 +366,63 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Storage.Search.StorageItemQueryResult CreateItemQueryWithOptions( global::Windows.Storage.Search.QueryOptions queryOptions)
+		public global::Windows.Storage.Search.StorageItemQueryResult CreateItemQueryWithOptions(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
 			throw new global::System.NotImplementedException("The member StorageItemQueryResult FolderInformation.CreateItemQueryWithOptions(QueryOptions queryOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StorageItemQueryResult%20FolderInformation.CreateItemQueryWithOptions%28QueryOptions%20queryOptions%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync( global::Windows.Storage.Search.CommonFileQuery query,  uint startIndex,  uint maxItemsToRetrieve)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync(global::Windows.Storage.Search.CommonFileQuery query, uint startIndex, uint maxItemsToRetrieve)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFile>> FolderInformation.GetFilesAsync(CommonFileQuery query, uint startIndex, uint maxItemsToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStorageFile%3E%3E%20FolderInformation.GetFilesAsync%28CommonFileQuery%20query%2C%20uint%20startIndex%2C%20uint%20maxItemsToRetrieve%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync( global::Windows.Storage.Search.CommonFileQuery query)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>> GetFilesAsync(global::Windows.Storage.Search.CommonFileQuery query)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFile>> FolderInformation.GetFilesAsync(CommonFileQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStorageFile%3E%3E%20FolderInformation.GetFilesAsync%28CommonFileQuery%20query%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync( global::Windows.Storage.Search.CommonFolderQuery query,  uint startIndex,  uint maxItemsToRetrieve)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync(global::Windows.Storage.Search.CommonFolderQuery query, uint startIndex, uint maxItemsToRetrieve)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFolder>> FolderInformation.GetFoldersAsync(CommonFolderQuery query, uint startIndex, uint maxItemsToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStorageFolder%3E%3E%20FolderInformation.GetFoldersAsync%28CommonFolderQuery%20query%2C%20uint%20startIndex%2C%20uint%20maxItemsToRetrieve%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync( global::Windows.Storage.Search.CommonFolderQuery query)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFolder>> GetFoldersAsync(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFolder>> FolderInformation.GetFoldersAsync(CommonFolderQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CStorageFolder%3E%3E%20FolderInformation.GetFoldersAsync%28CommonFolderQuery%20query%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync( uint startIndex,  uint maxItemsToRetrieve)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.IStorageItem>> GetItemsAsync(uint startIndex, uint maxItemsToRetrieve)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<IStorageItem>> FolderInformation.GetItemsAsync(uint startIndex, uint maxItemsToRetrieve) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CIStorageItem%3E%3E%20FolderInformation.GetItemsAsync%28uint%20startIndex%2C%20uint%20maxItemsToRetrieve%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool AreQueryOptionsSupported( global::Windows.Storage.Search.QueryOptions queryOptions)
+		public bool AreQueryOptionsSupported(global::Windows.Storage.Search.QueryOptions queryOptions)
 		{
 			throw new global::System.NotImplementedException("The member bool FolderInformation.AreQueryOptionsSupported(QueryOptions queryOptions) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FolderInformation.AreQueryOptionsSupported%28QueryOptions%20queryOptions%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsCommonFolderQuerySupported( global::Windows.Storage.Search.CommonFolderQuery query)
+		public bool IsCommonFolderQuerySupported(global::Windows.Storage.Search.CommonFolderQuery query)
 		{
 			throw new global::System.NotImplementedException("The member bool FolderInformation.IsCommonFolderQuerySupported(CommonFolderQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FolderInformation.IsCommonFolderQuerySupported%28CommonFolderQuery%20query%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsCommonFileQuerySupported( global::Windows.Storage.Search.CommonFileQuery query)
+		public bool IsCommonFileQuerySupported(global::Windows.Storage.Search.CommonFileQuery query)
 		{
 			throw new global::System.NotImplementedException("The member bool FolderInformation.IsCommonFileQuerySupported(CommonFileQuery query) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FolderInformation.IsCommonFileQuerySupported%28CommonFileQuery%20query%29");
 		}
@@ -436,14 +436,14 @@ namespace Windows.Storage.BulkAccess
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsEqual( global::Windows.Storage.IStorageItem item)
+		public bool IsEqual(global::Windows.Storage.IStorageItem item)
 		{
 			throw new global::System.NotImplementedException("The member bool FolderInformation.IsEqual(IStorageItem item) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20FolderInformation.IsEqual%28IStorageItem%20item%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> TryGetItemAsync( string name)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.IStorageItem> TryGetItemAsync(string name)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IStorageItem> FolderInformation.TryGetItemAsync(string name) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIStorageItem%3E%20FolderInformation.TryGetItemAsync%28string%20name%29");
 		}

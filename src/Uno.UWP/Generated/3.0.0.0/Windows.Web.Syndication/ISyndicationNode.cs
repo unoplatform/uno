@@ -67,7 +67,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.AttributeExtensions.get
 		// Forced skipping of method Windows.Web.Syndication.ISyndicationNode.ElementExtensions.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument( global::Windows.Web.Syndication.SyndicationFormat format);
+		global::Windows.Data.Xml.Dom.XmlDocument GetXmlDocument(global::Windows.Web.Syndication.SyndicationFormat format);
 #endif
 	}
 }

@@ -488,26 +488,26 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property HoldingEvent
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsDoubleTapEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsDoubleTapEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsDoubleTapEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(IsDoubleTapEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsHoldingEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsHoldingEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsHoldingEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(IsHoldingEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsRightTapEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsRightTapEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsRightTapEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(IsRightTapEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property KeyDownEvent
@@ -516,10 +516,10 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property ManipulationDeltaEvent
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTapEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTapEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTapEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(IsTapEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property ManipulationInertiaStartingEvent
@@ -536,10 +536,10 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property PointerWheelChangedEvent
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ProjectionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ProjectionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Projection), typeof(global::Windows.UI.Xaml.Media.Projection), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Projection), typeof(global::Windows.UI.Xaml.Media.Projection),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Projection)));
 #endif
 		// Skipping already declared property RightTappedEvent
@@ -547,19 +547,19 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property TappedEvent
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty UseLayoutRoundingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty UseLayoutRoundingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(UseLayoutRounding), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(UseLayoutRounding), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property AllowDropProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CacheModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CacheModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CacheMode), typeof(global::Windows.UI.Xaml.Media.CacheMode), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(CacheMode), typeof(global::Windows.UI.Xaml.Media.CacheMode),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.CacheMode)));
 #endif
 		// Skipping already declared property ClipProperty
@@ -571,92 +571,92 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property ShadowProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CompositeModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CompositeModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CompositeMode), typeof(global::Windows.UI.Xaml.Media.ElementCompositeMode), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(CompositeMode), typeof(global::Windows.UI.Xaml.Media.ElementCompositeMode),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ElementCompositeMode)));
 #endif
 		// Skipping already declared property CanDragProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty Transform3DProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty Transform3DProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Transform3D), typeof(global::Windows.UI.Xaml.Media.Media3D.Transform3D), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Transform3D), typeof(global::Windows.UI.Xaml.Media.Media3D.Transform3D),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Transform3D)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AccessKey), typeof(string), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(AccessKey), typeof(string),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 		// Skipping already declared property ContextFlyoutProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsAccessKeyScope), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(IsAccessKeyScope), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HighContrastAdjustmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HighContrastAdjustmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HighContrastAdjustment), typeof(global::Windows.UI.Xaml.ElementHighContrastAdjustment), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(HighContrastAdjustment), typeof(global::Windows.UI.Xaml.ElementHighContrastAdjustment),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementHighContrastAdjustment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipHorizontalOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(KeyTipHorizontalOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipVerticalOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(KeyTipVerticalOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LightsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LightsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Lights), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Lights), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>)));
 #endif
 		// Skipping already declared property XYFocusDownNavigationStrategyProperty
@@ -711,34 +711,34 @@ namespace Windows.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyTipTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyTipTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyTipTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(KeyTipTarget), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyboardAcceleratorPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(KeyboardAcceleratorPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(KeyboardAcceleratorPlacementTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(KeyboardAcceleratorPlacementTarget), typeof(global::Windows.UI.Xaml.DependencyObject),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanBeScrollAnchorProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanBeScrollAnchorProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanBeScrollAnchor), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(CanBeScrollAnchor), typeof(bool),
+			typeof(global::Windows.UI.Xaml.UIElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Forced skipping of method Windows.UI.Xaml.UIElement.DesiredSize.get
@@ -828,14 +828,14 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.UIElement.ManipulationCompleted.remove
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void Measure( global::Windows.Foundation.Size availableSize)
+		public void Measure(global::Windows.Foundation.Size availableSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.Measure(Size availableSize)");
 		}
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public void Arrange( global::Windows.Foundation.Rect finalRect)
+		public void Arrange(global::Windows.Foundation.Rect finalRect)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.Arrange(Rect finalRect)");
 		}
@@ -939,7 +939,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.UIElement.PreviewKeyUp.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void TryInvokeKeyboardAccelerator( global::Windows.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
+		public void TryInvokeKeyboardAccelerator(global::Windows.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.TryInvokeKeyboardAccelerator(ProcessKeyboardAcceleratorEventArgs args)");
 		}
@@ -976,14 +976,14 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.UIElement.RotationAxis.set
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartAnimation( global::Windows.UI.Composition.ICompositionAnimationBase animation)
+		public void StartAnimation(global::Windows.UI.Composition.ICompositionAnimationBase animation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.StartAnimation(ICompositionAnimationBase animation)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StopAnimation( global::Windows.UI.Composition.ICompositionAnimationBase animation)
+		public void StopAnimation(global::Windows.UI.Composition.ICompositionAnimationBase animation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.StopAnimation(ICompositionAnimationBase animation)");
 		}
@@ -1005,7 +1005,7 @@ namespace Windows.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>> FindSubElementsForTouchTargeting( global::Windows.Foundation.Point point,  global::Windows.Foundation.Rect boundingRect)
+		protected virtual global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.IEnumerable<global::Windows.Foundation.Point>> FindSubElementsForTouchTargeting(global::Windows.Foundation.Point point, global::Windows.Foundation.Rect boundingRect)
 		{
 			throw new global::System.NotImplementedException("The member IEnumerable<IEnumerable<Point>> UIElement.FindSubElementsForTouchTargeting(Point point, Rect boundingRect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IEnumerable%3CIEnumerable%3CPoint%3E%3E%20UIElement.FindSubElementsForTouchTargeting%28Point%20point%2C%20Rect%20boundingRect%29");
 		}
@@ -1013,14 +1013,14 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.UIElement.GetChildrenInTabFocusOrder()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnProcessKeyboardAccelerators( global::Windows.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
+		protected virtual void OnProcessKeyboardAccelerators(global::Windows.UI.Xaml.Input.ProcessKeyboardAcceleratorEventArgs args)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.OnProcessKeyboardAccelerators(ProcessKeyboardAcceleratorEventArgs args)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void OnKeyboardAcceleratorInvoked( global::Windows.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs args)
+		protected virtual void OnKeyboardAcceleratorInvoked(global::Windows.UI.Xaml.Input.KeyboardAcceleratorInvokedEventArgs args)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.OnKeyboardAcceleratorInvoked(KeyboardAcceleratorInvokedEventArgs args)");
 		}
@@ -1028,14 +1028,14 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.UIElement.OnBringIntoViewRequested(Windows.UI.Xaml.BringIntoViewRequestedEventArgs)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		protected virtual void PopulatePropertyInfoOverride( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo animationPropertyInfo)
+		protected virtual void PopulatePropertyInfoOverride(string propertyName, global::Windows.UI.Composition.AnimationPropertyInfo animationPropertyInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.PopulatePropertyInfoOverride(string propertyName, AnimationPropertyInfo animationPropertyInfo)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void PopulatePropertyInfo( string propertyName,  global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
+		public void PopulatePropertyInfo(string propertyName, global::Windows.UI.Composition.AnimationPropertyInfo propertyInfo)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}
@@ -1074,7 +1074,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.UIElement.CanDragProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryStartDirectManipulation( global::Windows.UI.Xaml.Input.Pointer value)
+		public static bool TryStartDirectManipulation(global::Windows.UI.Xaml.Input.Pointer value)
 		{
 			throw new global::System.NotImplementedException("The member bool UIElement.TryStartDirectManipulation(Pointer value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20UIElement.TryStartDirectManipulation%28Pointer%20value%29");
 		}

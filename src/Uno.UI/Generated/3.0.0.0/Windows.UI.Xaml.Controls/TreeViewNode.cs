@@ -92,34 +92,34 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Content), typeof(object), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
+			nameof(Content), typeof(object),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(object)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DepthProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DepthProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Depth), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
+			nameof(Depth), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HasChildrenProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HasChildrenProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HasChildren), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
+			nameof(HasChildren), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsExpandedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsExpandedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsExpanded), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
+			nameof(IsExpanded), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

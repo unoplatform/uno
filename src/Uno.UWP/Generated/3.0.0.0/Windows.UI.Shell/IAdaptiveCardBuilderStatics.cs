@@ -8,7 +8,7 @@ namespace Windows.UI.Shell
 	public partial interface IAdaptiveCardBuilderStatics 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Shell.IAdaptiveCard CreateAdaptiveCardFromJson( string value);
+		global::Windows.UI.Shell.IAdaptiveCard CreateAdaptiveCardFromJson(string value);
 #endif
 	}
 }

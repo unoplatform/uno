@@ -8,49 +8,49 @@ namespace Windows.Devices.PointOfService
 	public partial interface IReceiptOrSlipJob : global::Windows.Devices.PointOfService.IPosPrinterJob
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetBarcodeRotation( global::Windows.Devices.PointOfService.PosPrinterRotation value);
+		void SetBarcodeRotation(global::Windows.Devices.PointOfService.PosPrinterRotation value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetPrintRotation( global::Windows.Devices.PointOfService.PosPrinterRotation value,  bool includeBitmaps);
+		void SetPrintRotation(global::Windows.Devices.PointOfService.PosPrinterRotation value, bool includeBitmaps);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetPrintArea( global::Windows.Foundation.Rect value);
+		void SetPrintArea(global::Windows.Foundation.Rect value);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetBitmap( uint bitmapNumber,  global::Windows.Graphics.Imaging.BitmapFrame bitmap,  global::Windows.Devices.PointOfService.PosPrinterAlignment alignment);
+		void SetBitmap(uint bitmapNumber, global::Windows.Graphics.Imaging.BitmapFrame bitmap, global::Windows.Devices.PointOfService.PosPrinterAlignment alignment);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetBitmap( uint bitmapNumber,  global::Windows.Graphics.Imaging.BitmapFrame bitmap,  global::Windows.Devices.PointOfService.PosPrinterAlignment alignment,  uint width);
+		void SetBitmap(uint bitmapNumber, global::Windows.Graphics.Imaging.BitmapFrame bitmap, global::Windows.Devices.PointOfService.PosPrinterAlignment alignment, uint width);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetCustomAlignedBitmap( uint bitmapNumber,  global::Windows.Graphics.Imaging.BitmapFrame bitmap,  uint alignmentDistance);
+		void SetCustomAlignedBitmap(uint bitmapNumber, global::Windows.Graphics.Imaging.BitmapFrame bitmap, uint alignmentDistance);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetCustomAlignedBitmap( uint bitmapNumber,  global::Windows.Graphics.Imaging.BitmapFrame bitmap,  uint alignmentDistance,  uint width);
+		void SetCustomAlignedBitmap(uint bitmapNumber, global::Windows.Graphics.Imaging.BitmapFrame bitmap, uint alignmentDistance, uint width);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintSavedBitmap( uint bitmapNumber);
+		void PrintSavedBitmap(uint bitmapNumber);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void DrawRuledLine( string positionList,  global::Windows.Devices.PointOfService.PosPrinterLineDirection lineDirection,  uint lineWidth,  global::Windows.Devices.PointOfService.PosPrinterLineStyle lineStyle,  uint lineColor);
+		void DrawRuledLine(string positionList, global::Windows.Devices.PointOfService.PosPrinterLineDirection lineDirection, uint lineWidth, global::Windows.Devices.PointOfService.PosPrinterLineStyle lineStyle, uint lineColor);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintBarcode( string data,  uint symbology,  uint height,  uint width,  global::Windows.Devices.PointOfService.PosPrinterBarcodeTextPosition textPosition,  global::Windows.Devices.PointOfService.PosPrinterAlignment alignment);
+		void PrintBarcode(string data, uint symbology, uint height, uint width, global::Windows.Devices.PointOfService.PosPrinterBarcodeTextPosition textPosition, global::Windows.Devices.PointOfService.PosPrinterAlignment alignment);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintBarcodeCustomAlign( string data,  uint symbology,  uint height,  uint width,  global::Windows.Devices.PointOfService.PosPrinterBarcodeTextPosition textPosition,  uint alignmentDistance);
+		void PrintBarcodeCustomAlign(string data, uint symbology, uint height, uint width, global::Windows.Devices.PointOfService.PosPrinterBarcodeTextPosition textPosition, uint alignmentDistance);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintBitmap( global::Windows.Graphics.Imaging.BitmapFrame bitmap,  global::Windows.Devices.PointOfService.PosPrinterAlignment alignment);
+		void PrintBitmap(global::Windows.Graphics.Imaging.BitmapFrame bitmap, global::Windows.Devices.PointOfService.PosPrinterAlignment alignment);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintBitmap( global::Windows.Graphics.Imaging.BitmapFrame bitmap,  global::Windows.Devices.PointOfService.PosPrinterAlignment alignment,  uint width);
+		void PrintBitmap(global::Windows.Graphics.Imaging.BitmapFrame bitmap, global::Windows.Devices.PointOfService.PosPrinterAlignment alignment, uint width);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintCustomAlignedBitmap( global::Windows.Graphics.Imaging.BitmapFrame bitmap,  uint alignmentDistance);
+		void PrintCustomAlignedBitmap(global::Windows.Graphics.Imaging.BitmapFrame bitmap, uint alignmentDistance);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void PrintCustomAlignedBitmap( global::Windows.Graphics.Imaging.BitmapFrame bitmap,  uint alignmentDistance,  uint width);
+		void PrintCustomAlignedBitmap(global::Windows.Graphics.Imaging.BitmapFrame bitmap, uint alignmentDistance, uint width);
 #endif
 	}
 }

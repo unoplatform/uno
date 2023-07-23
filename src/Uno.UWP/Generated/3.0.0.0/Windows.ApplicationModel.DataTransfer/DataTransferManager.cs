@@ -15,7 +15,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataTransferManager.ShareProvidersRequested.remove
 #if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public static void ShowShareUI( global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
+		public static void ShowShareUI(global::Windows.ApplicationModel.DataTransfer.ShareUIOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataTransferManager", "void DataTransferManager.ShowShareUI(ShareUIOptions options)");
 		}

@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IValueProvider.IsReadOnly.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IValueProvider.Value.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void SetValue( string value);
+		void SetValue(string value);
 #endif
 	}
 }

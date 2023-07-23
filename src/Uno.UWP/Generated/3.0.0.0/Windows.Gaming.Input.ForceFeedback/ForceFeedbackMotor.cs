@@ -58,7 +58,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 		// Forced skipping of method Windows.Gaming.Input.ForceFeedback.ForceFeedbackMotor.SupportedAxes.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackLoadEffectResult> LoadEffectAsync( global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.Input.ForceFeedback.ForceFeedbackLoadEffectResult> LoadEffectAsync(global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ForceFeedbackLoadEffectResult> ForceFeedbackMotor.LoadEffectAsync(IForceFeedbackEffect effect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CForceFeedbackLoadEffectResult%3E%20ForceFeedbackMotor.LoadEffectAsync%28IForceFeedbackEffect%20effect%29");
 		}
@@ -107,7 +107,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<bool> TryUnloadEffectAsync( global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
+		public global::Windows.Foundation.IAsyncOperation<bool> TryUnloadEffectAsync(global::Windows.Gaming.Input.ForceFeedback.IForceFeedbackEffect effect)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ForceFeedbackMotor.TryUnloadEffectAsync(IForceFeedbackEffect effect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20ForceFeedbackMotor.TryUnloadEffectAsync%28IForceFeedbackEffect%20effect%29");
 		}

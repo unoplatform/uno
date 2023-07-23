@@ -49,7 +49,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Accept( string pin)
+		public void Accept(string pin)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "void DevicePairingRequestedEventArgs.Accept(string pin)");
 		}
@@ -63,7 +63,7 @@ namespace Windows.Devices.Enumeration
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AcceptWithPasswordCredential( global::Windows.Security.Credentials.PasswordCredential passwordCredential)
+		public void AcceptWithPasswordCredential(global::Windows.Security.Credentials.PasswordCredential passwordCredential)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "void DevicePairingRequestedEventArgs.AcceptWithPasswordCredential(PasswordCredential passwordCredential)");
 		}

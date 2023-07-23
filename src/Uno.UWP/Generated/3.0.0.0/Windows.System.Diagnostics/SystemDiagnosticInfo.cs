@@ -41,7 +41,7 @@ namespace Windows.System.Diagnostics
 		// Forced skipping of method Windows.System.Diagnostics.SystemDiagnosticInfo.CpuUsage.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool IsArchitectureSupported( global::Windows.System.ProcessorArchitecture type)
+		public static bool IsArchitectureSupported(global::Windows.System.ProcessorArchitecture type)
 		{
 			throw new global::System.NotImplementedException("The member bool SystemDiagnosticInfo.IsArchitectureSupported(ProcessorArchitecture type) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20SystemDiagnosticInfo.IsArchitectureSupported%28ProcessorArchitecture%20type%29");
 		}

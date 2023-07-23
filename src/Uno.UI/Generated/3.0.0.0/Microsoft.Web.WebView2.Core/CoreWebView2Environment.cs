@@ -36,14 +36,14 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest CreateWebResourceRequest( string uri,  string Method,  global::Windows.Storage.Streams.IRandomAccessStream postData,  string Headers)
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceRequest CreateWebResourceRequest(string uri, string Method, global::Windows.Storage.Streams.IRandomAccessStream postData, string Headers)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2WebResourceRequest CoreWebView2Environment.CreateWebResourceRequest(string uri, string Method, IRandomAccessStream postData, string Headers) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceRequest%20CoreWebView2Environment.CreateWebResourceRequest%28string%20uri%2C%20string%20Method%2C%20IRandomAccessStream%20postData%2C%20string%20Headers%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController> CreateCoreWebView2CompositionControllerAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow)
+		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController> CreateCoreWebView2CompositionControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2CompositionController> CoreWebView2Environment.CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference ParentWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2CompositionController%3E%20CoreWebView2Environment.CreateCoreWebView2CompositionControllerAsync%28CoreWebView2ControllerWindowReference%20ParentWindow%29");
 		}
@@ -76,21 +76,21 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem CreateContextMenuItem( string Label,  global::Windows.Storage.Streams.IRandomAccessStream iconStream,  global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItemKind Kind)
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItem CreateContextMenuItem(string Label, global::Windows.Storage.Streams.IRandomAccessStream iconStream, global::Microsoft.Web.WebView2.Core.CoreWebView2ContextMenuItemKind Kind)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2ContextMenuItem CoreWebView2Environment.CreateContextMenuItem(string Label, IRandomAccessStream iconStream, CoreWebView2ContextMenuItemKind Kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2ContextMenuItem%20CoreWebView2Environment.CreateContextMenuItem%28string%20Label%2C%20IRandomAccessStream%20iconStream%2C%20CoreWebView2ContextMenuItemKind%20Kind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller> CreateCoreWebView2ControllerAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow,  global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions options)
+		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller> CreateCoreWebView2ControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow, global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2Controller> CoreWebView2Environment.CreateCoreWebView2ControllerAsync(CoreWebView2ControllerWindowReference ParentWindow, CoreWebView2ControllerOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2Controller%3E%20CoreWebView2Environment.CreateCoreWebView2ControllerAsync%28CoreWebView2ControllerWindowReference%20ParentWindow%2C%20CoreWebView2ControllerOptions%20options%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController> CreateCoreWebView2CompositionControllerAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow,  global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions options)
+		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2CompositionController> CreateCoreWebView2CompositionControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow, global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2CompositionController> CoreWebView2Environment.CreateCoreWebView2CompositionControllerAsync(CoreWebView2ControllerWindowReference ParentWindow, CoreWebView2ControllerOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2CompositionController%3E%20CoreWebView2Environment.CreateCoreWebView2CompositionControllerAsync%28CoreWebView2ControllerWindowReference%20ParentWindow%2C%20CoreWebView2ControllerOptions%20options%29");
 		}
@@ -100,14 +100,14 @@ namespace Microsoft.Web.WebView2.Core
 		// Forced skipping of method Microsoft.Web.WebView2.Core.CoreWebView2Environment.NewBrowserVersionAvailable.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller> CreateCoreWebView2ControllerAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow)
+		public global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Controller> CreateCoreWebView2ControllerAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2ControllerWindowReference ParentWindow)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2Controller> CoreWebView2Environment.CreateCoreWebView2ControllerAsync(CoreWebView2ControllerWindowReference ParentWindow) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2Controller%3E%20CoreWebView2Environment.CreateCoreWebView2ControllerAsync%28CoreWebView2ControllerWindowReference%20ParentWindow%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse CreateWebResourceResponse( global::Windows.Storage.Streams.IRandomAccessStream Content,  int StatusCode,  string ReasonPhrase,  string Headers)
+		public global::Microsoft.Web.WebView2.Core.CoreWebView2WebResourceResponse CreateWebResourceResponse(global::Windows.Storage.Streams.IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers)
 		{
 			throw new global::System.NotImplementedException("The member CoreWebView2WebResourceResponse CoreWebView2Environment.CreateWebResourceResponse(IRandomAccessStream Content, int StatusCode, string ReasonPhrase, string Headers) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CoreWebView2WebResourceResponse%20CoreWebView2Environment.CreateWebResourceResponse%28IRandomAccessStream%20Content%2C%20int%20StatusCode%2C%20string%20ReasonPhrase%2C%20string%20Headers%29");
 		}
@@ -121,7 +121,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateWithOptionsAsync( string browserExecutableFolder,  string userDataFolder,  global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
+		public static global::Windows.Foundation.IAsyncOperation<global::Microsoft.Web.WebView2.Core.CoreWebView2Environment> CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, global::Microsoft.Web.WebView2.Core.CoreWebView2EnvironmentOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<CoreWebView2Environment> CoreWebView2Environment.CreateWithOptionsAsync(string browserExecutableFolder, string userDataFolder, CoreWebView2EnvironmentOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCoreWebView2Environment%3E%20CoreWebView2Environment.CreateWithOptionsAsync%28string%20browserExecutableFolder%2C%20string%20userDataFolder%2C%20CoreWebView2EnvironmentOptions%20options%29");
 		}
@@ -135,14 +135,14 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetAvailableBrowserVersionString( string browserExecutableFolder)
+		public static string GetAvailableBrowserVersionString(string browserExecutableFolder)
 		{
 			throw new global::System.NotImplementedException("The member string CoreWebView2Environment.GetAvailableBrowserVersionString(string browserExecutableFolder) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20CoreWebView2Environment.GetAvailableBrowserVersionString%28string%20browserExecutableFolder%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static int CompareBrowserVersionString( string browserVersionString1,  string browserVersionString2)
+		public static int CompareBrowserVersionString(string browserVersionString1, string browserVersionString2)
 		{
 			throw new global::System.NotImplementedException("The member int CoreWebView2Environment.CompareBrowserVersionString(string browserVersionString1, string browserVersionString2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=int%20CoreWebView2Environment.CompareBrowserVersionString%28string%20browserVersionString1%2C%20string%20browserVersionString2%29");
 		}

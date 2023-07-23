@@ -67,14 +67,14 @@ namespace Windows.Devices.SmartCards
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static string GetDeviceSelector( global::Windows.Devices.SmartCards.SmartCardReaderKind kind)
+		public static string GetDeviceSelector(global::Windows.Devices.SmartCards.SmartCardReaderKind kind)
 		{
 			throw new global::System.NotImplementedException("The member string SmartCardReader.GetDeviceSelector(SmartCardReaderKind kind) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20SmartCardReader.GetDeviceSelector%28SmartCardReaderKind%20kind%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardReader> FromIdAsync( string deviceId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.SmartCards.SmartCardReader> FromIdAsync(string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<SmartCardReader> SmartCardReader.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CSmartCardReader%3E%20SmartCardReader.FromIdAsync%28string%20deviceId%29");
 		}

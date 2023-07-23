@@ -100,7 +100,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.NetworkOperators.ESimOperationResult, global::Windows.Networking.NetworkOperators.ESimProfileInstallProgress> ConfirmInstallAsync( string confirmationCode)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Networking.NetworkOperators.ESimOperationResult, global::Windows.Networking.NetworkOperators.ESimProfileInstallProgress> ConfirmInstallAsync(string confirmationCode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<ESimOperationResult, ESimProfileInstallProgress> ESimProfileMetadata.ConfirmInstallAsync(string confirmationCode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3CESimOperationResult%2C%20ESimProfileInstallProgress%3E%20ESimProfileMetadata.ConfirmInstallAsync%28string%20confirmationCode%29");
 		}

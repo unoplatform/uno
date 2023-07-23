@@ -19,7 +19,7 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Update( global::Windows.UI.Notifications.TileFlyoutNotification notification)
+		public void Update(global::Windows.UI.Notifications.TileFlyoutNotification notification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.Update(TileFlyoutNotification notification)");
 		}
@@ -33,14 +33,14 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartPeriodicUpdate( global::System.Uri tileFlyoutContent,  global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
+		public void StartPeriodicUpdate(global::System.Uri tileFlyoutContent, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.StartPeriodicUpdate(Uri tileFlyoutContent, PeriodicUpdateRecurrence requestedInterval)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void StartPeriodicUpdate( global::System.Uri tileFlyoutContent,  global::System.DateTimeOffset startTime,  global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
+		public void StartPeriodicUpdate(global::System.Uri tileFlyoutContent, global::System.DateTimeOffset startTime, global::Windows.UI.Notifications.PeriodicUpdateRecurrence requestedInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.TileFlyoutUpdater", "void TileFlyoutUpdater.StartPeriodicUpdate(Uri tileFlyoutContent, DateTimeOffset startTime, PeriodicUpdateRecurrence requestedInterval)");
 		}

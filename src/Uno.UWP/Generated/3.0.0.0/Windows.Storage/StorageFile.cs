@@ -96,21 +96,21 @@ namespace Windows.Storage
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetThumbnailAsync(ThumbnailMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFile.GetThumbnailAsync%28ThumbnailMode%20mode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFile.GetThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize,  global::Windows.Storage.FileProperties.ThumbnailOptions options)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize, global::Windows.Storage.FileProperties.ThumbnailOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFile.GetThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%2C%20ThumbnailOptions%20options%29");
 		}
@@ -121,21 +121,21 @@ namespace Windows.Storage
 		// Forced skipping of method Windows.Storage.StorageFile.Properties.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetScaledImageAsThumbnailAsync(ThumbnailMode mode) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFile.GetScaledImageAsThumbnailAsync%28ThumbnailMode%20mode%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetScaledImageAsThumbnailAsync(ThumbnailMode mode, uint requestedSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFile.GetScaledImageAsThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync( global::Windows.Storage.FileProperties.ThumbnailMode mode,  uint requestedSize,  global::Windows.Storage.FileProperties.ThumbnailOptions options)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.StorageItemThumbnail> GetScaledImageAsThumbnailAsync(global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedSize, global::Windows.Storage.FileProperties.ThumbnailOptions options)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageItemThumbnail> StorageFile.GetScaledImageAsThumbnailAsync(ThumbnailMode mode, uint requestedSize, ThumbnailOptions options) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageItemThumbnail%3E%20StorageFile.GetScaledImageAsThumbnailAsync%28ThumbnailMode%20mode%2C%20uint%20requestedSize%2C%20ThumbnailOptions%20options%29");
 		}
@@ -148,7 +148,7 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.StorageFile.OpenTransactedWriteAsync(Windows.Storage.StorageOpenOptions)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromPathForUserAsync( global::Windows.System.User user,  string path)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromPathForUserAsync(global::Windows.System.User user, string path)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.GetFileFromPathForUserAsync(User user, string path) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20StorageFile.GetFileFromPathForUserAsync%28User%20user%2C%20string%20path%29");
 		}
@@ -157,28 +157,28 @@ namespace Windows.Storage
 		// Skipping already declared method Windows.Storage.StorageFile.GetFileFromApplicationUriAsync(System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateStreamedFileAsync( string displayNameWithExtension,  global::Windows.Storage.StreamedFileDataRequestedHandler dataRequested,  global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateStreamedFileAsync(string displayNameWithExtension, global::Windows.Storage.StreamedFileDataRequestedHandler dataRequested, global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.CreateStreamedFileAsync(string displayNameWithExtension, StreamedFileDataRequestedHandler dataRequested, IRandomAccessStreamReference thumbnail) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20StorageFile.CreateStreamedFileAsync%28string%20displayNameWithExtension%2C%20StreamedFileDataRequestedHandler%20dataRequested%2C%20IRandomAccessStreamReference%20thumbnail%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ReplaceWithStreamedFileAsync( global::Windows.Storage.IStorageFile fileToReplace,  global::Windows.Storage.StreamedFileDataRequestedHandler dataRequested,  global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ReplaceWithStreamedFileAsync(global::Windows.Storage.IStorageFile fileToReplace, global::Windows.Storage.StreamedFileDataRequestedHandler dataRequested, global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.ReplaceWithStreamedFileAsync(IStorageFile fileToReplace, StreamedFileDataRequestedHandler dataRequested, IRandomAccessStreamReference thumbnail) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20StorageFile.ReplaceWithStreamedFileAsync%28IStorageFile%20fileToReplace%2C%20StreamedFileDataRequestedHandler%20dataRequested%2C%20IRandomAccessStreamReference%20thumbnail%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateStreamedFileFromUriAsync( string displayNameWithExtension,  global::System.Uri uri,  global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateStreamedFileFromUriAsync(string displayNameWithExtension, global::System.Uri uri, global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.CreateStreamedFileFromUriAsync(string displayNameWithExtension, Uri uri, IRandomAccessStreamReference thumbnail) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20StorageFile.CreateStreamedFileFromUriAsync%28string%20displayNameWithExtension%2C%20Uri%20uri%2C%20IRandomAccessStreamReference%20thumbnail%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ReplaceWithStreamedFileFromUriAsync( global::Windows.Storage.IStorageFile fileToReplace,  global::System.Uri uri,  global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> ReplaceWithStreamedFileFromUriAsync(global::Windows.Storage.IStorageFile fileToReplace, global::System.Uri uri, global::Windows.Storage.Streams.IRandomAccessStreamReference thumbnail)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.ReplaceWithStreamedFileFromUriAsync(IStorageFile fileToReplace, Uri uri, IRandomAccessStreamReference thumbnail) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStorageFile%3E%20StorageFile.ReplaceWithStreamedFileFromUriAsync%28IStorageFile%20fileToReplace%2C%20Uri%20uri%2C%20IRandomAccessStreamReference%20thumbnail%29");
 		}

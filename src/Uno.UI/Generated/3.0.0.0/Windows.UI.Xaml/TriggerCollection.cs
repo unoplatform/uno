@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public int IndexOf( global::Windows.UI.Xaml.TriggerBase item)
+		public int IndexOf(global::Windows.UI.Xaml.TriggerBase item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Insert( int index,  global::Windows.UI.Xaml.TriggerBase item)
+		public void Insert(int index, global::Windows.UI.Xaml.TriggerBase item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IList<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveAt( int index)
+		public void RemoveAt(int index)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void Add( global::Windows.UI.Xaml.TriggerBase item)
+		public void Add(global::Windows.UI.Xaml.TriggerBase item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Contains( global::Windows.UI.Xaml.TriggerBase item)
+		public bool Contains(global::Windows.UI.Xaml.TriggerBase item)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void CopyTo( global::Windows.UI.Xaml.TriggerBase[] array,  int arrayIndex)
+		public void CopyTo(global::Windows.UI.Xaml.TriggerBase[] array, int arrayIndex)
 		{
 			throw new global::System.NotSupportedException();
 		}
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.ICollection<Windows.UI.Xaml.TriggerBase>
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Remove( global::Windows.UI.Xaml.TriggerBase item)
+		public bool Remove(global::Windows.UI.Xaml.TriggerBase item)
 		{
 			throw new global::System.NotSupportedException();
 		}

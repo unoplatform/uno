@@ -93,50 +93,50 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ChooseSuggestionOnEnterProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ChooseSuggestionOnEnterProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ChooseSuggestionOnEnter), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
+			nameof(ChooseSuggestionOnEnter), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.SearchBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusOnKeyboardInputProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FocusOnKeyboardInputProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FocusOnKeyboardInput), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
+			nameof(FocusOnKeyboardInput), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.SearchBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
+			nameof(PlaceholderText), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.SearchBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty QueryTextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty QueryTextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(QueryText), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
+			nameof(QueryText), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.SearchBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SearchHistoryContextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SearchHistoryContextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SearchHistoryContext), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
+			nameof(SearchHistoryContext), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.SearchBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SearchHistoryEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SearchHistoryEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SearchHistoryEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
+			nameof(SearchHistoryEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.SearchBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.SearchBox.PrepareForFocusOnKeyboardInput.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetLocalContentSuggestionSettings( global::Windows.ApplicationModel.Search.LocalContentSuggestionSettings settings)
+		public void SetLocalContentSuggestionSettings(global::Windows.ApplicationModel.Search.LocalContentSuggestionSettings settings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SearchBox", "void SearchBox.SetLocalContentSuggestionSettings(LocalContentSuggestionSettings settings)");
 		}

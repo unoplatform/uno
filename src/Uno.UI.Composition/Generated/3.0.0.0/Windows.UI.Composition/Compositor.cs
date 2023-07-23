@@ -79,21 +79,21 @@ namespace Windows.UI.Composition
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateContainerVisual()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction( global::System.Numerics.Vector2 controlPoint1,  global::System.Numerics.Vector2 controlPoint2)
+		public global::Windows.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction(global::System.Numerics.Vector2 controlPoint1, global::System.Numerics.Vector2 controlPoint2)
 		{
 			throw new global::System.NotImplementedException("The member CubicBezierEasingFunction Compositor.CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CubicBezierEasingFunction%20Compositor.CreateCubicBezierEasingFunction%28Vector2%20controlPoint1%2C%20Vector2%20controlPoint2%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionEffectFactory CreateEffectFactory( global::Windows.Graphics.Effects.IGraphicsEffect graphicsEffect)
+		public global::Windows.UI.Composition.CompositionEffectFactory CreateEffectFactory(global::Windows.Graphics.Effects.IGraphicsEffect graphicsEffect)
 		{
 			throw new global::System.NotImplementedException("The member CompositionEffectFactory Compositor.CreateEffectFactory(IGraphicsEffect graphicsEffect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionEffectFactory%20Compositor.CreateEffectFactory%28IGraphicsEffect%20graphicsEffect%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionEffectFactory CreateEffectFactory( global::Windows.Graphics.Effects.IGraphicsEffect graphicsEffect,  global::System.Collections.Generic.IEnumerable<string> animatableProperties)
+		public global::Windows.UI.Composition.CompositionEffectFactory CreateEffectFactory(global::Windows.Graphics.Effects.IGraphicsEffect graphicsEffect, global::System.Collections.Generic.IEnumerable<string> animatableProperties)
 		{
 			throw new global::System.NotImplementedException("The member CompositionEffectFactory Compositor.CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionEffectFactory%20Compositor.CreateEffectFactory%28IGraphicsEffect%20graphicsEffect%2C%20IEnumerable%3Cstring%3E%20animatableProperties%29");
 		}
@@ -107,7 +107,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.ExpressionAnimation CreateExpressionAnimation( string expression)
+		public global::Windows.UI.Composition.ExpressionAnimation CreateExpressionAnimation(string expression)
 		{
 			throw new global::System.NotImplementedException("The member ExpressionAnimation Compositor.CreateExpressionAnimation(string expression) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ExpressionAnimation%20Compositor.CreateExpressionAnimation%28string%20expression%29");
 		}
@@ -164,7 +164,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionCommitBatch GetCommitBatch( global::Windows.UI.Composition.CompositionBatchTypes batchType)
+		public global::Windows.UI.Composition.CompositionCommitBatch GetCommitBatch(global::Windows.UI.Composition.CompositionBatchTypes batchType)
 		{
 			throw new global::System.NotImplementedException("The member CompositionCommitBatch Compositor.GetCommitBatch(CompositionBatchTypes batchType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionCommitBatch%20Compositor.GetCommitBatch%28CompositionBatchTypes%20batchType%29");
 		}
@@ -255,7 +255,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.StepEasingFunction CreateStepEasingFunction( int stepCount)
+		public global::Windows.UI.Composition.StepEasingFunction CreateStepEasingFunction(int stepCount)
 		{
 			throw new global::System.NotImplementedException("The member StepEasingFunction Compositor.CreateStepEasingFunction(int stepCount) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=StepEasingFunction%20Compositor.CreateStepEasingFunction%28int%20stepCount%29");
 		}
@@ -364,7 +364,7 @@ namespace Windows.UI.Composition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual( global::Windows.UI.Composition.Visual source)
+		public global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual(global::Windows.UI.Composition.Visual source)
 		{
 			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual(Visual source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RedirectVisual%20Compositor.CreateRedirectVisual%28Visual%20source%29");
 		}

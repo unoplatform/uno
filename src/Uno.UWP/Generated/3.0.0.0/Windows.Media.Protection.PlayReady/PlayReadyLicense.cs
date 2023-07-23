@@ -115,7 +115,7 @@ namespace Windows.Media.Protection.PlayReady
 		// Forced skipping of method Windows.Media.Protection.PlayReady.PlayReadyLicense.ChainDepth.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Guid GetKIDAtChainDepth( uint chainDepth)
+		public global::System.Guid GetKIDAtChainDepth(uint chainDepth)
 		{
 			throw new global::System.NotImplementedException("The member Guid PlayReadyLicense.GetKIDAtChainDepth(uint chainDepth) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Guid%20PlayReadyLicense.GetKIDAtChainDepth%28uint%20chainDepth%29");
 		}

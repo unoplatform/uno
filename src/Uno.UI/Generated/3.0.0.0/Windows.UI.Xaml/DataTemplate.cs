@@ -9,10 +9,10 @@ namespace Windows.UI.Xaml
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ExtensionInstanceProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ExtensionInstanceProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"ExtensionInstance", typeof(global::Windows.UI.Xaml.IDataTemplateExtension), 
-			typeof(global::Windows.UI.Xaml.DataTemplate), 
+			"ExtensionInstance", typeof(global::Windows.UI.Xaml.IDataTemplateExtension),
+			typeof(global::Windows.UI.Xaml.DataTemplate),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.IDataTemplateExtension)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.DataTemplate.DataTemplate()
@@ -20,14 +20,14 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.DataTemplate.LoadContent()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.UIElement GetElement( global::Windows.UI.Xaml.ElementFactoryGetArgs args)
+		public global::Windows.UI.Xaml.UIElement GetElement(global::Windows.UI.Xaml.ElementFactoryGetArgs args)
 		{
 			throw new global::System.NotImplementedException("The member UIElement DataTemplate.GetElement(ElementFactoryGetArgs args) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UIElement%20DataTemplate.GetElement%28ElementFactoryGetArgs%20args%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RecycleElement( global::Windows.UI.Xaml.ElementFactoryRecycleArgs args)
+		public void RecycleElement(global::Windows.UI.Xaml.ElementFactoryRecycleArgs args)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DataTemplate", "void DataTemplate.RecycleElement(ElementFactoryRecycleArgs args)");
 		}
@@ -35,14 +35,14 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.DataTemplate.ExtensionInstanceProperty.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.IDataTemplateExtension GetExtensionInstance( global::Windows.UI.Xaml.FrameworkElement element)
+		public static global::Windows.UI.Xaml.IDataTemplateExtension GetExtensionInstance(global::Windows.UI.Xaml.FrameworkElement element)
 		{
 			return (global::Windows.UI.Xaml.IDataTemplateExtension)element.GetValue(ExtensionInstanceProperty);
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void SetExtensionInstance( global::Windows.UI.Xaml.FrameworkElement element,  global::Windows.UI.Xaml.IDataTemplateExtension value)
+		public static void SetExtensionInstance(global::Windows.UI.Xaml.FrameworkElement element, global::Windows.UI.Xaml.IDataTemplateExtension value)
 		{
 			element.SetValue(ExtensionInstanceProperty, value);
 		}

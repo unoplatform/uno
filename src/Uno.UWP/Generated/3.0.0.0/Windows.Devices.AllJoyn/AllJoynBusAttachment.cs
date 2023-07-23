@@ -60,7 +60,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllJoynBusAttachment( string connectionSpecification) 
+		public AllJoynBusAttachment(string connectionSpecification) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "AllJoynBusAttachment.AllJoynBusAttachment(string connectionSpecification)");
 		}
@@ -80,7 +80,7 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.UniqueName.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<int> PingAsync( string uniqueName)
+		public global::Windows.Foundation.IAsyncOperation<int> PingAsync(string uniqueName)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<int> AllJoynBusAttachment.PingAsync(string uniqueName) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cint%3E%20AllJoynBusAttachment.PingAsync%28string%20uniqueName%29");
 		}
@@ -110,14 +110,14 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AuthenticationComplete.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync( global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync(global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynBusAttachment.GetAboutDataAsync(AllJoynServiceInfo serviceInfo) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynBusAttachment.GetAboutDataAsync%28AllJoynServiceInfo%20serviceInfo%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync( global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo,  global::Windows.Globalization.Language language)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.AllJoyn.AllJoynAboutDataView> GetAboutDataAsync(global::Windows.Devices.AllJoyn.AllJoynServiceInfo serviceInfo, global::Windows.Globalization.Language language)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AllJoynAboutDataView> AllJoynBusAttachment.GetAboutDataAsync(AllJoynServiceInfo serviceInfo, Language language) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAllJoynAboutDataView%3E%20AllJoynBusAttachment.GetAboutDataAsync%28AllJoynServiceInfo%20serviceInfo%2C%20Language%20language%29");
 		}
@@ -135,7 +135,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Devices.Enumeration.DeviceWatcher GetWatcher( global::System.Collections.Generic.IEnumerable<string> requiredInterfaces)
+		public static global::Windows.Devices.Enumeration.DeviceWatcher GetWatcher(global::System.Collections.Generic.IEnumerable<string> requiredInterfaces)
 		{
 			throw new global::System.NotImplementedException("The member DeviceWatcher AllJoynBusAttachment.GetWatcher(IEnumerable<string> requiredInterfaces) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DeviceWatcher%20AllJoynBusAttachment.GetWatcher%28IEnumerable%3Cstring%3E%20requiredInterfaces%29");
 		}

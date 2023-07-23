@@ -208,7 +208,7 @@ namespace Windows.UI.WindowManagement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPreferredVisibility( global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility visibilityMode)
+		public void SetPreferredVisibility(global::Windows.UI.WindowManagement.AppWindowTitleBarVisibility visibilityMode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.WindowManagement.AppWindowTitleBar", "void AppWindowTitleBar.SetPreferredVisibility(AppWindowTitleBarVisibility visibilityMode)");
 		}

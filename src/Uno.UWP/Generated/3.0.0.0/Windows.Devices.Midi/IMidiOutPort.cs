@@ -14,10 +14,10 @@ namespace Windows.Devices.Midi
 		}
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage);
+		void SendMessage(global::Windows.Devices.Midi.IMidiMessage midiMessage);
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		void SendBuffer( global::Windows.Storage.Streams.IBuffer midiData);
+		void SendBuffer(global::Windows.Storage.Streams.IBuffer midiData);
 #endif
 		// Forced skipping of method Windows.Devices.Midi.IMidiOutPort.DeviceId.get
 	}

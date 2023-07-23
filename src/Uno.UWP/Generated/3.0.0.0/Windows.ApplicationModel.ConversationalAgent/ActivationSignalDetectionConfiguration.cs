@@ -103,14 +103,14 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.IsActive.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetEnabled( bool value)
+		public void SetEnabled(bool value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "void ActivationSignalDetectionConfiguration.SetEnabled(bool value)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetEnabledAsync( bool value)
+		public global::Windows.Foundation.IAsyncAction SetEnabledAsync(bool value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ActivationSignalDetectionConfiguration.SetEnabledAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ActivationSignalDetectionConfiguration.SetEnabledAsync%28bool%20value%29");
 		}
@@ -120,14 +120,14 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.AvailabilityChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetModelData( string dataType,  global::Windows.Storage.Streams.IInputStream data)
+		public void SetModelData(string dataType, global::Windows.Storage.Streams.IInputStream data)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration", "void ActivationSignalDetectionConfiguration.SetModelData(string dataType, IInputStream data)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetModelDataAsync( string dataType,  global::Windows.Storage.Streams.IInputStream data)
+		public global::Windows.Foundation.IAsyncAction SetModelDataAsync(string dataType, global::Windows.Storage.Streams.IInputStream data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ActivationSignalDetectionConfiguration.SetModelDataAsync(string dataType, IInputStream data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20ActivationSignalDetectionConfiguration.SetModelDataAsync%28string%20dataType%2C%20IInputStream%20data%29");
 		}
@@ -179,14 +179,14 @@ namespace Windows.ApplicationModel.ConversationalAgent
 		// Forced skipping of method Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfiguration.TrainingDataFormat.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationTrainingStatus ApplyTrainingData( global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionTrainingDataFormat trainingDataFormat,  global::Windows.Storage.Streams.IInputStream trainingData)
+		public global::Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationTrainingStatus ApplyTrainingData(global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionTrainingDataFormat trainingDataFormat, global::Windows.Storage.Streams.IInputStream trainingData)
 		{
 			throw new global::System.NotImplementedException("The member DetectionConfigurationTrainingStatus ActivationSignalDetectionConfiguration.ApplyTrainingData(ActivationSignalDetectionTrainingDataFormat trainingDataFormat, IInputStream trainingData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=DetectionConfigurationTrainingStatus%20ActivationSignalDetectionConfiguration.ApplyTrainingData%28ActivationSignalDetectionTrainingDataFormat%20trainingDataFormat%2C%20IInputStream%20trainingData%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationTrainingStatus> ApplyTrainingDataAsync( global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionTrainingDataFormat trainingDataFormat,  global::Windows.Storage.Streams.IInputStream trainingData)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.DetectionConfigurationTrainingStatus> ApplyTrainingDataAsync(global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionTrainingDataFormat trainingDataFormat, global::Windows.Storage.Streams.IInputStream trainingData)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DetectionConfigurationTrainingStatus> ActivationSignalDetectionConfiguration.ApplyTrainingDataAsync(ActivationSignalDetectionTrainingDataFormat trainingDataFormat, IInputStream trainingData) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CDetectionConfigurationTrainingStatus%3E%20ActivationSignalDetectionConfiguration.ApplyTrainingDataAsync%28ActivationSignalDetectionTrainingDataFormat%20trainingDataFormat%2C%20IInputStream%20trainingData%29");
 		}
@@ -214,28 +214,28 @@ namespace Windows.ApplicationModel.ConversationalAgent
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult SetModelDataWithResult( string dataType,  global::Windows.Storage.Streams.IInputStream data)
+		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult SetModelDataWithResult(string dataType, global::Windows.Storage.Streams.IInputStream data)
 		{
 			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfigurationSetModelDataResult ActivationSignalDetectionConfiguration.SetModelDataWithResult(string dataType, IInputStream data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationSignalDetectionConfigurationSetModelDataResult%20ActivationSignalDetectionConfiguration.SetModelDataWithResult%28string%20dataType%2C%20IInputStream%20data%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult> SetModelDataWithResultAsync( string dataType,  global::Windows.Storage.Streams.IInputStream data)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationSetModelDataResult> SetModelDataWithResultAsync(string dataType, global::Windows.Storage.Streams.IInputStream data)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfigurationSetModelDataResult> ActivationSignalDetectionConfiguration.SetModelDataWithResultAsync(string dataType, IInputStream data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivationSignalDetectionConfigurationSetModelDataResult%3E%20ActivationSignalDetectionConfiguration.SetModelDataWithResultAsync%28string%20dataType%2C%20IInputStream%20data%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult> SetEnabledWithResultAsync( bool value)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult> SetEnabledWithResultAsync(bool value)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ActivationSignalDetectionConfigurationStateChangeResult> ActivationSignalDetectionConfiguration.SetEnabledWithResultAsync(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CActivationSignalDetectionConfigurationStateChangeResult%3E%20ActivationSignalDetectionConfiguration.SetEnabledWithResultAsync%28bool%20value%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult SetEnabledWithResult( bool value)
+		public global::Windows.ApplicationModel.ConversationalAgent.ActivationSignalDetectionConfigurationStateChangeResult SetEnabledWithResult(bool value)
 		{
 			throw new global::System.NotImplementedException("The member ActivationSignalDetectionConfigurationStateChangeResult ActivationSignalDetectionConfiguration.SetEnabledWithResult(bool value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=ActivationSignalDetectionConfigurationStateChangeResult%20ActivationSignalDetectionConfiguration.SetEnabledWithResult%28bool%20value%29");
 		}

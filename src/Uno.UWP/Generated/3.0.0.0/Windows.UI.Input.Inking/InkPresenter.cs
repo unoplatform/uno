@@ -121,7 +121,7 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void UpdateDefaultDrawingAttributes( global::Windows.UI.Input.Inking.InkDrawingAttributes value)
+		public void UpdateDefaultDrawingAttributes(global::Windows.UI.Input.Inking.InkDrawingAttributes value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "void InkPresenter.UpdateDefaultDrawingAttributes(InkDrawingAttributes value)");
 		}
@@ -135,7 +135,7 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetPredefinedConfiguration( global::Windows.UI.Input.Inking.InkPresenterPredefinedConfiguration value)
+		public void SetPredefinedConfiguration(global::Windows.UI.Input.Inking.InkPresenterPredefinedConfiguration value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPresenter", "void InkPresenter.SetPredefinedConfiguration(InkPresenterPredefinedConfiguration value)");
 		}

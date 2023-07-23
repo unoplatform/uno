@@ -89,7 +89,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentDispositionHeaderValue( string dispositionType) 
+		public HttpContentDispositionHeaderValue(string dispositionType) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentDispositionHeaderValue", "HttpContentDispositionHeaderValue.HttpContentDispositionHeaderValue(string dispositionType)");
 		}
@@ -115,14 +115,14 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue Parse( string input)
+		public static global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue Parse(string input)
 		{
 			throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentDispositionHeaderValue.Parse(string input) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=HttpContentDispositionHeaderValue%20HttpContentDispositionHeaderValue.Parse%28string%20input%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static bool TryParse( string input, out global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue contentDispositionHeaderValue)
+		public static bool TryParse(string input, out global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue contentDispositionHeaderValue)
 		{
 			throw new global::System.NotImplementedException("The member bool HttpContentDispositionHeaderValue.TryParse(string input, out HttpContentDispositionHeaderValue contentDispositionHeaderValue) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20HttpContentDispositionHeaderValue.TryParse%28string%20input%2C%20out%20HttpContentDispositionHeaderValue%20contentDispositionHeaderValue%29");
 		}

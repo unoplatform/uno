@@ -51,7 +51,7 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationAttribute( string attributeName,  string attributeNamespace,  string attributeValue) 
+		public SyndicationAttribute(string attributeName, string attributeNamespace, string attributeValue) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationAttribute", "SyndicationAttribute.SyndicationAttribute(string attributeName, string attributeNamespace, string attributeValue)");
 		}

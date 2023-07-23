@@ -11,34 +11,34 @@ namespace Windows.Foundation.Diagnostics
 		bool IsEnabled();
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsEnabled( global::Windows.Foundation.Diagnostics.LoggingLevel level);
+		bool IsEnabled(global::Windows.Foundation.Diagnostics.LoggingLevel level);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		bool IsEnabled( global::Windows.Foundation.Diagnostics.LoggingLevel level,  long keywords);
+		bool IsEnabled(global::Windows.Foundation.Diagnostics.LoggingLevel level, long keywords);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogEvent( string eventName);
+		void LogEvent(string eventName);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogEvent( string eventName,  global::Windows.Foundation.Diagnostics.LoggingFields fields);
+		void LogEvent(string eventName, global::Windows.Foundation.Diagnostics.LoggingFields fields);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogEvent( string eventName,  global::Windows.Foundation.Diagnostics.LoggingFields fields,  global::Windows.Foundation.Diagnostics.LoggingLevel level);
+		void LogEvent(string eventName, global::Windows.Foundation.Diagnostics.LoggingFields fields, global::Windows.Foundation.Diagnostics.LoggingLevel level);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void LogEvent( string eventName,  global::Windows.Foundation.Diagnostics.LoggingFields fields,  global::Windows.Foundation.Diagnostics.LoggingLevel level,  global::Windows.Foundation.Diagnostics.LoggingOptions options);
+		void LogEvent(string eventName, global::Windows.Foundation.Diagnostics.LoggingFields fields, global::Windows.Foundation.Diagnostics.LoggingLevel level, global::Windows.Foundation.Diagnostics.LoggingOptions options);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity( string startEventName);
+		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity( string startEventName,  global::Windows.Foundation.Diagnostics.LoggingFields fields);
+		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName, global::Windows.Foundation.Diagnostics.LoggingFields fields);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity( string startEventName,  global::Windows.Foundation.Diagnostics.LoggingFields fields,  global::Windows.Foundation.Diagnostics.LoggingLevel level);
+		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName, global::Windows.Foundation.Diagnostics.LoggingFields fields, global::Windows.Foundation.Diagnostics.LoggingLevel level);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity( string startEventName,  global::Windows.Foundation.Diagnostics.LoggingFields fields,  global::Windows.Foundation.Diagnostics.LoggingLevel level,  global::Windows.Foundation.Diagnostics.LoggingOptions options);
+		global::Windows.Foundation.Diagnostics.LoggingActivity StartActivity(string startEventName, global::Windows.Foundation.Diagnostics.LoggingFields fields, global::Windows.Foundation.Diagnostics.LoggingLevel level, global::Windows.Foundation.Diagnostics.LoggingOptions options);
 #endif
 	}
 }

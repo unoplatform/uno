@@ -9,7 +9,7 @@ namespace Windows.Storage.Compression
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Compressor( global::Windows.Storage.Streams.IOutputStream underlyingStream) 
+		public Compressor(global::Windows.Storage.Streams.IOutputStream underlyingStream) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Compression.Compressor", "Compressor.Compressor(IOutputStream underlyingStream)");
 		}
@@ -17,7 +17,7 @@ namespace Windows.Storage.Compression
 		// Forced skipping of method Windows.Storage.Compression.Compressor.Compressor(Windows.Storage.Streams.IOutputStream)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Compressor( global::Windows.Storage.Streams.IOutputStream underlyingStream,  global::Windows.Storage.Compression.CompressAlgorithm algorithm,  uint blockSize) 
+		public Compressor(global::Windows.Storage.Streams.IOutputStream underlyingStream, global::Windows.Storage.Compression.CompressAlgorithm algorithm, uint blockSize) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Compression.Compressor", "Compressor.Compressor(IOutputStream underlyingStream, CompressAlgorithm algorithm, uint blockSize)");
 		}
@@ -39,7 +39,7 @@ namespace Windows.Storage.Compression
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync( global::Windows.Storage.Streams.IBuffer buffer)
+		public global::Windows.Foundation.IAsyncOperationWithProgress<uint, uint> WriteAsync(global::Windows.Storage.Streams.IBuffer buffer)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<uint, uint> Compressor.WriteAsync(IBuffer buffer) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperationWithProgress%3Cuint%2C%20uint%3E%20Compressor.WriteAsync%28IBuffer%20buffer%29");
 		}

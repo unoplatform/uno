@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IGridProvider.ColumnCount.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IGridProvider.RowCount.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple GetItem( int row,  int column);
+		global::Windows.UI.Xaml.Automation.Provider.IRawElementProviderSimple GetItem(int row, int column);
 #endif
 	}
 }

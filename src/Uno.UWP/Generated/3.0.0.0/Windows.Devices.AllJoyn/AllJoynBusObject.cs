@@ -30,7 +30,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllJoynBusObject( string objectPath) 
+		public AllJoynBusObject(string objectPath) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "AllJoynBusObject.AllJoynBusObject(string objectPath)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusObject.AllJoynBusObject(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllJoynBusObject( string objectPath,  global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment) 
+		public AllJoynBusObject(string objectPath, global::Windows.Devices.AllJoyn.AllJoynBusAttachment busAttachment) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "AllJoynBusObject.AllJoynBusObject(string objectPath, AllJoynBusAttachment busAttachment)");
 		}
@@ -68,7 +68,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void AddProducer( global::Windows.Devices.AllJoyn.IAllJoynProducer producer)
+		public void AddProducer(global::Windows.Devices.AllJoyn.IAllJoynProducer producer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusObject", "void AllJoynBusObject.AddProducer(IAllJoynProducer producer)");
 		}

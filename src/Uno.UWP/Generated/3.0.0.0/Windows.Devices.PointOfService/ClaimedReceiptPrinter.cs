@@ -239,7 +239,7 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedReceiptPrinter.IsReadyToPrint.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool ValidateData( string data)
+		public bool ValidateData(string data)
 		{
 			throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.ValidateData(string data) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20ClaimedReceiptPrinter.ValidateData%28string%20data%29");
 		}

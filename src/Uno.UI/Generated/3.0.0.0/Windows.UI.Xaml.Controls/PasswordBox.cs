@@ -87,10 +87,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property MaxLengthProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PasswordCharProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PasswordCharProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PasswordChar), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			nameof(PasswordChar), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 		// Skipping already declared property PasswordProperty
@@ -99,10 +99,10 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PlaceholderTextProperty
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property SelectionHighlightColorProperty
@@ -110,27 +110,27 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PasswordRevealModeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder),
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanPasteClipboardContent), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			nameof(CanPasteClipboardContent), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property DescriptionProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
+			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase),
+			typeof(global::Windows.UI.Xaml.Controls.PasswordBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.PasswordBox.PasswordBox()

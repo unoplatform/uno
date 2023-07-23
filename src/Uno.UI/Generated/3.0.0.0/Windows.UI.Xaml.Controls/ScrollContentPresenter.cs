@@ -64,18 +64,18 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CanContentRenderOutsideBoundsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CanContentRenderOutsideBounds), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter), 
+			nameof(CanContentRenderOutsideBounds), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SizesContentToTemplatedParentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SizesContentToTemplatedParentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SizesContentToTemplatedParent), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter), 
+			nameof(SizesContentToTemplatedParent), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ScrollContentPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollContentPresenter.ScrollContentPresenter()
@@ -178,14 +178,14 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public void SetHorizontalOffset( double offset)
+		public void SetHorizontalOffset(double offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "void ScrollContentPresenter.SetHorizontalOffset(double offset)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__NETSTD_REFERENCE__")]
-		public void SetVerticalOffset( double offset)
+		public void SetVerticalOffset(double offset)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.ScrollContentPresenter", "void ScrollContentPresenter.SetVerticalOffset(double offset)");
 		}

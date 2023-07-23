@@ -35,14 +35,14 @@ namespace Windows.UI.Notifications.Management
 		// Forced skipping of method Windows.UI.Notifications.Management.UserNotificationListener.NotificationChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.UserNotification>> GetNotificationsAsync( global::Windows.UI.Notifications.NotificationKinds kinds)
+		public global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Notifications.UserNotification>> GetNotificationsAsync(global::Windows.UI.Notifications.NotificationKinds kinds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<UserNotification>> UserNotificationListener.GetNotificationsAsync(NotificationKinds kinds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIReadOnlyList%3CUserNotification%3E%3E%20UserNotificationListener.GetNotificationsAsync%28NotificationKinds%20kinds%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Notifications.UserNotification GetNotification( uint notificationId)
+		public global::Windows.UI.Notifications.UserNotification GetNotification(uint notificationId)
 		{
 			throw new global::System.NotImplementedException("The member UserNotification UserNotificationListener.GetNotification(uint notificationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=UserNotification%20UserNotificationListener.GetNotification%28uint%20notificationId%29");
 		}
@@ -56,7 +56,7 @@ namespace Windows.UI.Notifications.Management
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void RemoveNotification( uint notificationId)
+		public void RemoveNotification(uint notificationId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.Management.UserNotificationListener", "void UserNotificationListener.RemoveNotification(uint notificationId)");
 		}

@@ -111,7 +111,7 @@ namespace Windows.Networking.NetworkOperators
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> SetNicknameAsync( string newNickname)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimOperationResult> SetNicknameAsync(string newNickname)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimOperationResult> ESimProfile.SetNicknameAsync(string newNickname) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CESimOperationResult%3E%20ESimProfile.SetNicknameAsync%28string%20newNickname%29");
 		}

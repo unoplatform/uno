@@ -52,14 +52,14 @@ namespace Windows.Perception.Spatial
 		// Forced skipping of method Windows.Perception.Spatial.SpatialStageFrameOfReference.LookDirectionRange.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Perception.Spatial.SpatialCoordinateSystem GetCoordinateSystemAtCurrentLocation( global::Windows.Perception.Spatial.SpatialLocator locator)
+		public global::Windows.Perception.Spatial.SpatialCoordinateSystem GetCoordinateSystemAtCurrentLocation(global::Windows.Perception.Spatial.SpatialLocator locator)
 		{
 			throw new global::System.NotImplementedException("The member SpatialCoordinateSystem SpatialStageFrameOfReference.GetCoordinateSystemAtCurrentLocation(SpatialLocator locator) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=SpatialCoordinateSystem%20SpatialStageFrameOfReference.GetCoordinateSystemAtCurrentLocation%28SpatialLocator%20locator%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::System.Numerics.Vector3[] TryGetMovementBounds( global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
+		public global::System.Numerics.Vector3[] TryGetMovementBounds(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem)
 		{
 			throw new global::System.NotImplementedException("The member Vector3[] SpatialStageFrameOfReference.TryGetMovementBounds(SpatialCoordinateSystem coordinateSystem) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Vector3%5B%5D%20SpatialStageFrameOfReference.TryGetMovementBounds%28SpatialCoordinateSystem%20coordinateSystem%29");
 		}

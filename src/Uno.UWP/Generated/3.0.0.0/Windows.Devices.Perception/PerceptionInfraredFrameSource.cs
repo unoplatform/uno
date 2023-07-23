@@ -158,42 +158,42 @@ namespace Windows.Devices.Perception
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool CanControlIndependentlyFrom( string targetId)
+		public bool CanControlIndependentlyFrom(string targetId)
 		{
 			throw new global::System.NotImplementedException("The member bool PerceptionInfraredFrameSource.CanControlIndependentlyFrom(string targetId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionInfraredFrameSource.CanControlIndependentlyFrom%28string%20targetId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsCorrelatedWith( string targetId)
+		public bool IsCorrelatedWith(string targetId)
 		{
 			throw new global::System.NotImplementedException("The member bool PerceptionInfraredFrameSource.IsCorrelatedWith(string targetId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionInfraredFrameSource.IsCorrelatedWith%28string%20targetId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool TryGetTransformTo( string targetId, out global::System.Numerics.Matrix4x4 result)
+		public bool TryGetTransformTo(string targetId, out global::System.Numerics.Matrix4x4 result)
 		{
 			throw new global::System.NotImplementedException("The member bool PerceptionInfraredFrameSource.TryGetTransformTo(string targetId, out Matrix4x4 result) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20PerceptionInfraredFrameSource.TryGetTransformTo%28string%20targetId%2C%20out%20Matrix4x4%20result%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics> TryGetDepthCorrelatedCameraIntrinsicsAsync( global::Windows.Devices.Perception.PerceptionDepthFrameSource target)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthCorrelatedCameraIntrinsics> TryGetDepthCorrelatedCameraIntrinsicsAsync(global::Windows.Devices.Perception.PerceptionDepthFrameSource target)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionDepthCorrelatedCameraIntrinsics> PerceptionInfraredFrameSource.TryGetDepthCorrelatedCameraIntrinsicsAsync(PerceptionDepthFrameSource target) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionDepthCorrelatedCameraIntrinsics%3E%20PerceptionInfraredFrameSource.TryGetDepthCorrelatedCameraIntrinsicsAsync%28PerceptionDepthFrameSource%20target%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper> TryGetDepthCorrelatedCoordinateMapperAsync( string targetId,  global::Windows.Devices.Perception.PerceptionDepthFrameSource depthFrameSourceToMapWith)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionDepthCorrelatedCoordinateMapper> TryGetDepthCorrelatedCoordinateMapperAsync(string targetId, global::Windows.Devices.Perception.PerceptionDepthFrameSource depthFrameSourceToMapWith)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionDepthCorrelatedCoordinateMapper> PerceptionInfraredFrameSource.TryGetDepthCorrelatedCoordinateMapperAsync(string targetId, PerceptionDepthFrameSource depthFrameSourceToMapWith) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionDepthCorrelatedCoordinateMapper%3E%20PerceptionInfraredFrameSource.TryGetDepthCorrelatedCoordinateMapperAsync%28string%20targetId%2C%20PerceptionDepthFrameSource%20depthFrameSourceToMapWith%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult> TrySetVideoProfileAsync( global::Windows.Devices.Perception.PerceptionControlSession controlSession,  global::Windows.Devices.Perception.PerceptionVideoProfile profile)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionFrameSourcePropertyChangeResult> TrySetVideoProfileAsync(global::Windows.Devices.Perception.PerceptionControlSession controlSession, global::Windows.Devices.Perception.PerceptionVideoProfile profile)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionFrameSourcePropertyChangeResult> PerceptionInfraredFrameSource.TrySetVideoProfileAsync(PerceptionControlSession controlSession, PerceptionVideoProfile profile) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionFrameSourcePropertyChangeResult%3E%20PerceptionInfraredFrameSource.TrySetVideoProfileAsync%28PerceptionControlSession%20controlSession%2C%20PerceptionVideoProfile%20profile%29");
 		}
@@ -222,7 +222,7 @@ namespace Windows.Devices.Perception
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionInfraredFrameSource> FromIdAsync( string id)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Perception.PerceptionInfraredFrameSource> FromIdAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PerceptionInfraredFrameSource> PerceptionInfraredFrameSource.FromIdAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPerceptionInfraredFrameSource%3E%20PerceptionInfraredFrameSource.FromIdAsync%28string%20id%29");
 		}

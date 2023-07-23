@@ -28,10 +28,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		// Skipping already declared property ByProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
+			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
 #endif
 		// Skipping already declared property EnableDependentAnimationProperty

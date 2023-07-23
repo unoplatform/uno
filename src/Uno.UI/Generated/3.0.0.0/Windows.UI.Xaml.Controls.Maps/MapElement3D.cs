@@ -93,42 +93,42 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HeadingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HeadingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Heading), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D), 
+			nameof(Heading), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty LocationProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty LocationProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D), 
+			nameof(Location), typeof(global::Windows.Devices.Geolocation.Geopoint),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopoint)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PitchProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PitchProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Pitch), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D), 
+			nameof(Pitch), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RollProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RollProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Roll), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D), 
+			nameof(Roll), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ScaleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ScaleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Scale), typeof(global::System.Numerics.Vector3), 
-			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D), 
+			nameof(Scale), typeof(global::System.Numerics.Vector3),
+			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement3D),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::System.Numerics.Vector3)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

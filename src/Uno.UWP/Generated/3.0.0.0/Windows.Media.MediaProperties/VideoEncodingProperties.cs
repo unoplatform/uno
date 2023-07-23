@@ -159,7 +159,7 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.VideoEncodingProperties.Subtype.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetFormatUserData( byte[] value)
+		public void SetFormatUserData(byte[] value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.MediaProperties.VideoEncodingProperties", "void VideoEncodingProperties.SetFormatUserData(byte[] value)");
 		}
@@ -205,7 +205,7 @@ namespace Windows.Media.MediaProperties
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateUncompressed( string subtype,  uint width,  uint height)
+		public static global::Windows.Media.MediaProperties.VideoEncodingProperties CreateUncompressed(string subtype, uint width, uint height)
 		{
 			throw new global::System.NotImplementedException("The member VideoEncodingProperties VideoEncodingProperties.CreateUncompressed(string subtype, uint width, uint height) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=VideoEncodingProperties%20VideoEncodingProperties.CreateUncompressed%28string%20subtype%2C%20uint%20width%2C%20uint%20height%29");
 		}

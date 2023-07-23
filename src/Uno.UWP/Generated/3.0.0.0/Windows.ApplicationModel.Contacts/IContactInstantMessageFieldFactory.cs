@@ -8,13 +8,13 @@ namespace Windows.ApplicationModel.Contacts
 	public partial interface IContactInstantMessageFieldFactory 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage( string userName);
+		global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage(string userName);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage( string userName,  global::Windows.ApplicationModel.Contacts.ContactFieldCategory category);
+		global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage(string userName, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category);
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage( string userName,  global::Windows.ApplicationModel.Contacts.ContactFieldCategory category,  string service,  string displayText,  global::System.Uri verb);
+		global::Windows.ApplicationModel.Contacts.ContactInstantMessageField CreateInstantMessage(string userName, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string service, string displayText, global::System.Uri verb);
 #endif
 	}
 }

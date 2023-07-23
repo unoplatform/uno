@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial interface IInsertionPanel 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void GetInsertionIndexes( global::Windows.Foundation.Point position, out int first, out int second);
+		void GetInsertionIndexes(global::Windows.Foundation.Point position, out int first, out int second);
 #endif
 	}
 }

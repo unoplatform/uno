@@ -67,7 +67,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds,  global::System.DateTimeOffset startTime,  global::System.DateTimeOffset endTime)
+		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds, global::System.DateTimeOffset startTime, global::System.DateTimeOffset endTime)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2Profile.ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds dataKinds, DateTimeOffset startTime, DateTimeOffset endTime) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2Profile.ClearBrowsingDataAsync%28CoreWebView2BrowsingDataKinds%20dataKinds%2C%20DateTimeOffset%20startTime%2C%20DateTimeOffset%20endTime%29");
 		}
@@ -81,7 +81,7 @@ namespace Microsoft.Web.WebView2.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync( global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds)
+		public global::Windows.Foundation.IAsyncAction ClearBrowsingDataAsync(global::Microsoft.Web.WebView2.Core.CoreWebView2BrowsingDataKinds dataKinds)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction CoreWebView2Profile.ClearBrowsingDataAsync(CoreWebView2BrowsingDataKinds dataKinds) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20CoreWebView2Profile.ClearBrowsingDataAsync%28CoreWebView2BrowsingDataKinds%20dataKinds%29");
 		}

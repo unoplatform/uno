@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StreetsideExperience( global::Windows.UI.Xaml.Controls.Maps.StreetsidePanorama panorama) : base()
+		public StreetsideExperience(global::Windows.UI.Xaml.Controls.Maps.StreetsidePanorama panorama) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.StreetsideExperience", "StreetsideExperience.StreetsideExperience(StreetsidePanorama panorama)");
 		}
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.StreetsideExperience.StreetsideExperience(Windows.UI.Xaml.Controls.Maps.StreetsidePanorama)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StreetsideExperience( global::Windows.UI.Xaml.Controls.Maps.StreetsidePanorama panorama,  double headingInDegrees,  double pitchInDegrees,  double fieldOfViewInDegrees) : base()
+		public StreetsideExperience(global::Windows.UI.Xaml.Controls.Maps.StreetsidePanorama panorama, double headingInDegrees, double pitchInDegrees, double fieldOfViewInDegrees) : base()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.StreetsideExperience", "StreetsideExperience.StreetsideExperience(StreetsidePanorama panorama, double headingInDegrees, double pitchInDegrees, double fieldOfViewInDegrees)");
 		}

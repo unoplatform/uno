@@ -835,474 +835,474 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedPointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPointerOverBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedPointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderThicknessProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderThicknessProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedBorderThickness), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedBorderThickness), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ReorderHintOffsetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ReorderHintOffsetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ReorderHintOffset), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(ReorderHintOffset), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundMarginProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundMarginProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverBackgroundMargin), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(PointerOverBackgroundMargin), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(PointerOverBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(PlaceholderBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ListViewItemPresenterVerticalContentAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ListViewItemPresenterVerticalContentAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ListViewItemPresenterVerticalContentAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(ListViewItemPresenterVerticalContentAlignment), typeof(global::Windows.UI.Xaml.VerticalAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ListViewItemPresenterPaddingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ListViewItemPresenterPaddingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ListViewItemPresenterPadding), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(ListViewItemPresenterPadding), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ListViewItemPresenterHorizontalContentAlignmentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ListViewItemPresenterHorizontalContentAlignmentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ListViewItemPresenterHorizontalContentAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(ListViewItemPresenterHorizontalContentAlignment), typeof(global::Windows.UI.Xaml.HorizontalAlignment),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FocusBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FocusBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(FocusBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragOpacityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragOpacityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragOpacity), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(DragOpacity), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(DragForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DragBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DragBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DragBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(DragBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty DisabledOpacityProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty DisabledOpacityProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(DisabledOpacity), typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(DisabledOpacity), typeof(double),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ContentMarginProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ContentMarginProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ContentMargin), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(ContentMargin), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckSelectingBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckSelectingBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckSelectingBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckSelectingBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckHintBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckHintBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckHintBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckHintBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionCheckMarkVisualEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionCheckMarkVisualEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionCheckMarkVisualEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PressedBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PressedBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PressedBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(PressedBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPressedBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPressedBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPressedBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedPressedBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(PointerOverForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FocusSecondaryBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty FocusSecondaryBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FocusSecondaryBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(FocusSecondaryBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckMode), typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenterCheckMode), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckMode), typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenterCheckMode),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenterCheckMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RevealBackgroundShowsAboveContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RevealBackgroundShowsAboveContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RevealBackgroundShowsAboveContent), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(RevealBackgroundShowsAboveContent), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RevealBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RevealBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RevealBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(RevealBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RevealBorderThicknessProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RevealBorderThicknessProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RevealBorderThickness), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(RevealBorderThickness), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty RevealBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty RevealBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(RevealBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(RevealBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorPressedBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorPressedBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorPointerOverBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorPointerOverBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorPointerOverBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorPointerOverBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorModeProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorModeProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorMode), typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenterSelectionIndicatorMode), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorMode), typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenterSelectionIndicatorMode),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenterSelectionIndicatorMode)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorCornerRadiusProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorCornerRadiusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorCornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorCornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.CornerRadius)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorDisabledBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorDisabledBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedPressedBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedPressedBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedPressedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedPressedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedInnerBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedInnerBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedInnerBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedInnerBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedDisabledBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedDisabledBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedDisabledBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedDisabledBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedDisabledBackgroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedDisabledBackgroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedDisabledBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedDisabledBackground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectedBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PointerOverBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(PointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckPressedBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckPressedBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckDisabledBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckDisabledBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedPressedBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedPressedBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxSelectedPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxSelectedPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedPointerOverBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedPointerOverBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxSelectedPointerOverBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxSelectedPointerOverBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedDisabledBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedDisabledBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxSelectedDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxSelectedDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxSelectedBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxSelectedBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxSelectedBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPressedBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPressedBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxPressedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxPressedBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPressedBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPressedBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxPressedBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPointerOverBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPointerOverBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxPointerOverBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxPointerOverBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPointerOverBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxPointerOverBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxPointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxPointerOverBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxDisabledBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxDisabledBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxDisabledBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxDisabledBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxDisabledBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxDisabledBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxDisabledBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxCornerRadiusProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxCornerRadiusProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxCornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxCornerRadius), typeof(global::Windows.UI.Xaml.CornerRadius),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.CornerRadius)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxBorderBrushProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty CheckBoxBorderBrushProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(CheckBoxBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(CheckBoxBorderBrush), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorVisualEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionIndicatorVisualEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionIndicatorVisualEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter), 
+			nameof(SelectionIndicatorVisualEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.ListViewItemPresenter),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false

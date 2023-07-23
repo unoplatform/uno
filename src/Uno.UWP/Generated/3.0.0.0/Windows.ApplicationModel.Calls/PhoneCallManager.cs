@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.Calls
 #endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public static void ShowPhoneCallUI( string phoneNumber,  string displayName)
+		public static void ShowPhoneCallUI(string phoneNumber, string displayName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Calls.PhoneCallManager", "void PhoneCallManager.ShowPhoneCallUI(string phoneNumber, string displayName)");
 		}

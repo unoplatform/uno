@@ -137,7 +137,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StoredContact( global::Windows.Phone.PersonalInformation.ContactStore store) 
+		public StoredContact(global::Windows.Phone.PersonalInformation.ContactStore store) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.PersonalInformation.StoredContact", "StoredContact.StoredContact(ContactStore store)");
 		}
@@ -145,7 +145,7 @@ namespace Windows.Phone.PersonalInformation
 		// Forced skipping of method Windows.Phone.PersonalInformation.StoredContact.StoredContact(Windows.Phone.PersonalInformation.ContactStore)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StoredContact( global::Windows.Phone.PersonalInformation.ContactStore store,  global::Windows.Phone.PersonalInformation.ContactInformation contact) 
+		public StoredContact(global::Windows.Phone.PersonalInformation.ContactStore store, global::Windows.Phone.PersonalInformation.ContactInformation contact) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.PersonalInformation.StoredContact", "StoredContact.StoredContact(ContactStore store, ContactInformation contact)");
 		}
@@ -171,7 +171,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction ReplaceExistingContactAsync( string id)
+		public global::Windows.Foundation.IAsyncAction ReplaceExistingContactAsync(string id)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.ReplaceExistingContactAsync(string id) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StoredContact.ReplaceExistingContactAsync%28string%20id%29");
 		}
@@ -195,7 +195,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncAction SetDisplayPictureAsync( global::Windows.Storage.Streams.IInputStream stream)
+		public global::Windows.Foundation.IAsyncAction SetDisplayPictureAsync(global::Windows.Storage.Streams.IInputStream stream)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction StoredContact.SetDisplayPictureAsync(IInputStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncAction%20StoredContact.SetDisplayPictureAsync%28IInputStream%20stream%29");
 		}
@@ -217,7 +217,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> ToVcardAsync( global::Windows.Phone.PersonalInformation.VCardFormat format)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.Streams.IRandomAccessStream> ToVcardAsync(global::Windows.Phone.PersonalInformation.VCardFormat format)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IRandomAccessStream> StoredContact.ToVcardAsync(VCardFormat format) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CIRandomAccessStream%3E%20StoredContact.ToVcardAsync%28VCardFormat%20format%29");
 		}

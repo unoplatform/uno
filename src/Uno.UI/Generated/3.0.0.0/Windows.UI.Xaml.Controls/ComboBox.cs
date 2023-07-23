@@ -136,52 +136,52 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property PlaceholderTextProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextSearchEnabledProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextSearchEnabledProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextSearchEnabled), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			nameof(IsTextSearchEnabled), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property LightDismissOverlayModeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionChangedTriggerProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SelectionChangedTriggerProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionChangedTrigger), typeof(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			nameof(SelectionChangedTrigger), typeof(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger),
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ComboBoxSelectionChangedTrigger)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush),
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 #endif
 		// Skipping already declared property DescriptionProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsEditableProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsEditableProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsEditable), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			nameof(IsEditable), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(TextBoxStyle), typeof(global::Windows.UI.Xaml.Style), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			nameof(TextBoxStyle), typeof(global::Windows.UI.Xaml.Style),
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Text), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
+			nameof(Text), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.ComboBox),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.ComboBox.ComboBox()

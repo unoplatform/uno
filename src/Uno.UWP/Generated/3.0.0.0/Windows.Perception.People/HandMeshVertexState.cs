@@ -30,7 +30,7 @@ namespace Windows.Perception.People
 		// Forced skipping of method Windows.Perception.People.HandMeshVertexState.CoordinateSystem.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void GetVertices( global::Windows.Perception.People.HandMeshVertex[] vertices)
+		public void GetVertices(global::Windows.Perception.People.HandMeshVertex[] vertices)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.People.HandMeshVertexState", "void HandMeshVertexState.GetVertices(HandMeshVertex[] vertices)");
 		}

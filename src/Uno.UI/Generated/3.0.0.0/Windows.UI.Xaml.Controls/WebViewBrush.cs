@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SourceNameProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty SourceNameProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SourceName), typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.WebViewBrush), 
+			nameof(SourceName), typeof(string),
+			typeof(global::Windows.UI.Xaml.Controls.WebViewBrush),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void SetSource( global::Windows.UI.Xaml.Controls.WebView source)
+		public void SetSource(global::Windows.UI.Xaml.Controls.WebView source)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.WebViewBrush", "void WebViewBrush.SetSource(WebView source)");
 		}

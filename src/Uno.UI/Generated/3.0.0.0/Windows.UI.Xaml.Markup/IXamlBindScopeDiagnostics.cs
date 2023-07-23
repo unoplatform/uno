@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Markup
 	public partial interface IXamlBindScopeDiagnostics 
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		void Disable( int lineNumber,  int columnNumber);
+		void Disable(int lineNumber, int columnNumber);
 #endif
 	}
 }

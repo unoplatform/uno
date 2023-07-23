@@ -57,10 +57,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared property ChildProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ChildTransitionsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ChildTransitionsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ChildTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
+			nameof(ChildTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 #endif
 		// Skipping already declared property HorizontalOffsetProperty
@@ -70,10 +70,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Skipping already declared property LightDismissOverlayModeProperty
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty ShouldConstrainToRootBoundsProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty ShouldConstrainToRootBoundsProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(ShouldConstrainToRootBounds), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup), 
+			nameof(ShouldConstrainToRootBounds), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.Primitives.Popup),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property DesiredPlacementProperty

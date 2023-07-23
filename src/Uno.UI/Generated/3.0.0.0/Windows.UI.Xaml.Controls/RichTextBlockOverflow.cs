@@ -111,42 +111,42 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(HasOverflowContent), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
+			nameof(HasOverflowContent), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(OverflowContentTarget), typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
-			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
+			nameof(OverflowContentTarget), typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow),
+			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PaddingProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty PaddingProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(Padding), typeof(global::Windows.UI.Xaml.Thickness), 
-			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
+			nameof(Padding), typeof(global::Windows.UI.Xaml.Thickness),
+			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty MaxLinesProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty MaxLinesProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(MaxLines), typeof(int), 
-			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
+			nameof(MaxLines), typeof(int),
+			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(int)));
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } = 
+		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsTextTrimmed), typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
+			nameof(IsTextTrimmed), typeof(bool),
+			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.RichTextBlockOverflow.RichTextBlockOverflow()
@@ -162,14 +162,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.RichTextBlockOverflow.BaselineOffset.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Documents.TextPointer GetPositionFromPoint( global::Windows.Foundation.Point point)
+		public global::Windows.UI.Xaml.Documents.TextPointer GetPositionFromPoint(global::Windows.Foundation.Point point)
 		{
 			throw new global::System.NotImplementedException("The member TextPointer RichTextBlockOverflow.GetPositionFromPoint(Point point) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=TextPointer%20RichTextBlockOverflow.GetPositionFromPoint%28Point%20point%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool Focus( global::Windows.UI.Xaml.FocusState value)
+		public bool Focus(global::Windows.UI.Xaml.FocusState value)
 		{
 			throw new global::System.NotImplementedException("The member bool RichTextBlockOverflow.Focus(FocusState value) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20RichTextBlockOverflow.Focus%28FocusState%20value%29");
 		}

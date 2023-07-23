@@ -9,7 +9,7 @@ namespace Windows.ApplicationModel.Background
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindForModernStandbyAsync( global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess,  string reason)
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindForModernStandbyAsync(global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess, string reason)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BackgroundExecutionManager.RequestAccessKindForModernStandbyAsync(BackgroundAccessRequestKind requestedAccess, string reason) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20BackgroundExecutionManager.RequestAccessKindForModernStandbyAsync%28BackgroundAccessRequestKind%20requestedAccess%2C%20string%20reason%29");
 		}
@@ -23,14 +23,14 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatusForModernStandby( string applicationId)
+		public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatusForModernStandby(string applicationId)
 		{
 			throw new global::System.NotImplementedException("The member BackgroundAccessStatus BackgroundExecutionManager.GetAccessStatusForModernStandby(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundAccessStatus%20BackgroundExecutionManager.GetAccessStatusForModernStandby%28string%20applicationId%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindAsync( global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess,  string reason)
+		public static global::Windows.Foundation.IAsyncOperation<bool> RequestAccessKindAsync(global::Windows.ApplicationModel.Background.BackgroundAccessRequestKind requestedAccess, string reason)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> BackgroundExecutionManager.RequestAccessKindAsync(BackgroundAccessRequestKind requestedAccess, string reason) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3Cbool%3E%20BackgroundExecutionManager.RequestAccessKindAsync%28BackgroundAccessRequestKind%20requestedAccess%2C%20string%20reason%29");
 		}
@@ -44,7 +44,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.BackgroundAccessStatus> RequestAccessAsync( string applicationId)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.Background.BackgroundAccessStatus> RequestAccessAsync(string applicationId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BackgroundAccessStatus> BackgroundExecutionManager.RequestAccessAsync(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CBackgroundAccessStatus%3E%20BackgroundExecutionManager.RequestAccessAsync%28string%20applicationId%29");
 		}
@@ -58,7 +58,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static void RemoveAccess( string applicationId)
+		public static void RemoveAccess(string applicationId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundExecutionManager", "void BackgroundExecutionManager.RemoveAccess(string applicationId)");
 		}
@@ -72,7 +72,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatus( string applicationId)
+		public static global::Windows.ApplicationModel.Background.BackgroundAccessStatus GetAccessStatus(string applicationId)
 		{
 			throw new global::System.NotImplementedException("The member BackgroundAccessStatus BackgroundExecutionManager.GetAccessStatus(string applicationId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=BackgroundAccessStatus%20BackgroundExecutionManager.GetAccessStatus%28string%20applicationId%29");
 		}

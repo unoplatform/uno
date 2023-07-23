@@ -70,7 +70,7 @@ namespace Windows.ApplicationModel.AppService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceResponse> SendMessageAsync( global::Windows.Foundation.Collections.ValueSet message)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceResponse> SendMessageAsync(global::Windows.Foundation.Collections.ValueSet message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppServiceResponse> AppServiceConnection.SendMessageAsync(ValueSet message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppServiceResponse%3E%20AppServiceConnection.SendMessageAsync%28ValueSet%20message%29");
 		}
@@ -81,7 +81,7 @@ namespace Windows.ApplicationModel.AppService
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.ServiceClosed.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceConnectionStatus> OpenRemoteAsync( global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest)
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceConnectionStatus> OpenRemoteAsync(global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppServiceConnectionStatus> AppServiceConnection.OpenRemoteAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CAppServiceConnectionStatus%3E%20AppServiceConnection.OpenRemoteAsync%28RemoteSystemConnectionRequest%20remoteSystemConnectionRequest%29");
 		}
@@ -97,7 +97,7 @@ namespace Windows.ApplicationModel.AppService
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.StatelessAppServiceResponse> SendStatelessMessageAsync( global::Windows.ApplicationModel.AppService.AppServiceConnection connection,  global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest connectionRequest,  global::Windows.Foundation.Collections.ValueSet message)
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.StatelessAppServiceResponse> SendStatelessMessageAsync(global::Windows.ApplicationModel.AppService.AppServiceConnection connection, global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest connectionRequest, global::Windows.Foundation.Collections.ValueSet message)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StatelessAppServiceResponse> AppServiceConnection.SendStatelessMessageAsync(AppServiceConnection connection, RemoteSystemConnectionRequest connectionRequest, ValueSet message) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CStatelessAppServiceResponse%3E%20AppServiceConnection.SendStatelessMessageAsync%28AppServiceConnection%20connection%2C%20RemoteSystemConnectionRequest%20connectionRequest%2C%20ValueSet%20message%29");
 		}

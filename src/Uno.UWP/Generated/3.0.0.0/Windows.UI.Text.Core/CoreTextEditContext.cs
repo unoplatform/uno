@@ -105,14 +105,14 @@ namespace Windows.UI.Text.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifyTextChanged( global::Windows.UI.Text.Core.CoreTextRange modifiedRange,  int newLength,  global::Windows.UI.Text.Core.CoreTextRange newSelection)
+		public void NotifyTextChanged(global::Windows.UI.Text.Core.CoreTextRange modifiedRange, int newLength, global::Windows.UI.Text.Core.CoreTextRange newSelection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifyTextChanged(CoreTextRange modifiedRange, int newLength, CoreTextRange newSelection)");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public void NotifySelectionChanged( global::Windows.UI.Text.Core.CoreTextRange selection)
+		public void NotifySelectionChanged(global::Windows.UI.Text.Core.CoreTextRange selection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.Core.CoreTextEditContext", "void CoreTextEditContext.NotifySelectionChanged(CoreTextRange selection)");
 		}
