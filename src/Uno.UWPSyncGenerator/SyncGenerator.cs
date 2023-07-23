@@ -148,7 +148,10 @@ namespace Uno.UWPSyncGenerator
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({allSymbols.GenerateNotImplementedList()})]");
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant("#endif");
+					}
 				}
 
 				var enumBaseType =
@@ -176,7 +179,10 @@ namespace Uno.UWPSyncGenerator
 
 				if (type.TypeKind == TypeKind.Enum)
 				{
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant("#endif");
+					}
 				}
 			}
 		}

@@ -427,7 +427,10 @@ namespace Uno.UWPSyncGenerator
 					MacOSSymbol == null ? MacDefine : "false",
 				};
 
-				b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
+				}
 			}
 
 			public string GenerateNotImplementedList()
@@ -729,7 +732,10 @@ namespace Uno.UWPSyncGenerator
 						b.AppendLineInvariant($"throw new global::System.NotSupportedException();");
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 			}
 
@@ -772,7 +778,10 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
@@ -862,7 +871,10 @@ namespace Uno.UWPSyncGenerator
 
 				b.AppendLineInvariant($"public delegate {SanitizeType(IMethodSymbol.ReturnType)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}({members});");
 
-				b.AppendLineInvariant($"#endif");
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#endif");
+				}
 			}
 			else
 			{
@@ -893,7 +905,10 @@ namespace Uno.UWPSyncGenerator
 						b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(field.Type)} {field.Name};");
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
@@ -943,7 +958,10 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
@@ -1033,7 +1051,11 @@ namespace Uno.UWPSyncGenerator
 							BuildNotImplementedException(b, method, false);
 						}
 
-						b.AppendLineInvariant($"#endif");
+						using (b.Indent(-b.CurrentLevel))
+						{
+							b.AppendLineInvariant($"#endif");
+						}
+
 						writtenMethods.Add(method);
 					}
 					else
@@ -1103,7 +1125,10 @@ namespace Uno.UWPSyncGenerator
 							}
 						}
 
-						b.AppendLineInvariant($"#endif");
+						using (b.Indent(-b.CurrentLevel))
+						{
+							b.AppendLineInvariant($"#endif");
+						}
 
 						writtenMethods.Add(method);
 					}
@@ -1527,7 +1552,10 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
