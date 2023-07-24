@@ -1,24 +1,15 @@
-﻿using System;
+﻿#if __SKIA__
+using System;
 using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.Xaml;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 
-#if NETFX_CORE
-using Uno.UI.Extensions;
-#elif __IOS__
-using UIKit;
-#elif __MACOS__
-using AppKit;
-#else
-#endif
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ContentControl
 	{
-#if __SKIA__
 		[TestMethod]
 		public void When_Native_Element()
 		{
@@ -65,6 +56,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(coreWindow.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
 		}
-#endif
 	}
 }
+#endif
