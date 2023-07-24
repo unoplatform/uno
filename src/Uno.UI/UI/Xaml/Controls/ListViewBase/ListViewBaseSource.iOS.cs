@@ -163,6 +163,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				key.IsDisplayed = false;
 
+				// Reset the parent that may have been set by
+				// GetBindableSupplementaryView for header and footer content
+				key.Content.SetParent(null);
+
 				if (_onRecycled.TryGetValue(key, out var actions))
 				{
 					foreach (var a in actions) { a(); }
@@ -388,8 +392,28 @@ namespace Windows.UI.Xaml.Controls
 					supplementaryView.Content = content
 						.Binding("Content", "");
 				}
+
 				supplementaryView.Content.ContentTemplate = template;
-				supplementaryView.Content.DataContext = context;
+
+				if (elementKind == NativeListViewBase.ListViewFooterElementKindNS || elementKind == NativeListViewBase.ListViewHeaderElementKindNS)
+				{
+					supplementaryView.Content.SetParent(Owner.XamlParent);
+
+					if (context is not null)
+					{
+						supplementaryView.Content.Content = context;
+					}
+
+					// We need to reset the DataContext as it may have been forced to null as a local value
+					// during ItemsControl.CleanUpContainer
+					// See https://github.com/unoplatform/uno/blob/54041db0bd6d5049d8efab90b097eaca936bfca1/src/Uno.UI/UI/Xaml/Controls/ItemsControl/ItemsControl.cs#L1200
+					supplementaryView.Content.ClearValue(ContentControl.DataContextProperty);
+				}
+				else
+				{
+					supplementaryView.Content.DataContext = context;
+				}
+
 				if (style != null)
 				{
 					supplementaryView.Content.Style = style;
