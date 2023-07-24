@@ -2,20 +2,23 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Services.Store
 {
-	#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+	#if false || false || false || false || false || false || false
+	#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
+	#endif
 	public   enum StoreRateAndReviewStatus 
 	{
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Succeeded = 0,
+		#if false || false || false || false || false || false || false
+		Succeeded,
 		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		CanceledByUser = 1,
+		#if false || false || false || false || false || false || false
+		CanceledByUser,
 		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		NetworkError = 2,
+		#if false || false || false || false || false || false || false
+		NetworkError,
 		#endif
-		#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		Error = 3,
+		#if false || false || false || false || false || false || false
+		Error,
 		#endif
 	}
 	#endif
