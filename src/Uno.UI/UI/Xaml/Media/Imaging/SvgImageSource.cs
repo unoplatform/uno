@@ -63,6 +63,7 @@ public partial class SvgImageSource : ImageSource
 #if __CROSSRUNTIME__
 		InvalidateSource();
 #endif
+		InvalidateImageSource();
 	}
 
 	/// <summary>

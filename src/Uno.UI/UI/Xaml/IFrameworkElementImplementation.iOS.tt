@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Uno.UI.DataBinding;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers;
 using Uno.UI.Media;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -860,57 +861,24 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 
-		SerialDisposable _brushColorChanged = new SerialDisposable();
-		SerialDisposable _brushOpacityChanged = new SerialDisposable();
+		WeakBrushChangedProxy _brushChangedProxy;
+		Action _brushChanged;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			if (e.NewValue != null)
-			{
-				if(e.NewValue is SolidColorBrush scb)
-				{
-					BackgroundColor = scb.ColorWithOpacity;
-
-					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
-						SolidColorBrush.ColorProperty,
-						(s, colorArg) => BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
-					);
-					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
-						SolidColorBrush.OpacityProperty,
-						(s, colorArg) => BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
-					);
-				}
-				else if (e.NewValue is GradientBrush gb)
-				{
-					BackgroundColor = gb.FallbackColorWithOpacity;
-
-					_brushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.FallbackColorProperty,
-						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
-					);
-					_brushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-						GradientBrush.OpacityProperty,
-						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
-					);
-				}
-				else
-				{
-					_brushColorChanged.Disposable = null;
-					_brushOpacityChanged.Disposable = null;
-					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Warning))
-					{
-						this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
-					}
-					BackgroundColor = SolidColorBrushHelper.Transparent.Color;
-				}
-			}
-			else
-			{
-				_brushColorChanged.Disposable = null;
-				_brushOpacityChanged.Disposable = null;
-				BackgroundColor = SolidColorBrushHelper.Transparent.Color;
-			}
+			_brushChangedProxy ??= new();
+			var brush = (Brush)e.NewValue;
+			_brushChanged = () => BackgroundColor = Brush.GetFallbackColor(brush);
+			_brushChangedProxy.Subscribe(brush, _brushChanged);
 		}
+
+		~<#= mixin.ClassName #>()
+		{
+			_brushChangedProxy?.Unsubscribe();
+			FinalizerPartial();
+		}
+
+		partial void FinalizerPartial();
 
 		#endregion
 

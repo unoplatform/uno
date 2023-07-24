@@ -27,6 +27,10 @@ namespace Windows.UI.Xaml.Media
 		private protected static HttpClient? _httpClient;
 		private protected ImageData _imageData = ImageData.Empty;
 
+		internal event Action? Invalidated;
+
+		private protected void InvalidateImageSource() => Invalidated?.Invoke();
+
 		public static class TraceProvider
 		{
 			public static readonly Guid Id = Guid.Parse("{FC4E2720-2DCF-418C-B360-93314AB3B813}");

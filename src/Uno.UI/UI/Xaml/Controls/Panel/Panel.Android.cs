@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
+using Uno.UI.Helpers;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -20,13 +21,29 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private readonly SerialDisposable _backgroundBrushChanged = new SerialDisposable();
-		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
+		private WeakBrushChangedProxy _backgroundBrushChangedProxy;
+		private Action _backgroundBrushChanged;
+
+		private WeakBrushChangedProxy _borderBrushChangedProxy;
+		private Action _borderBrushChanged;
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Panel()
 		{
 			Initialize();
+		}
+
+		~Panel()
+		{
+			_backgroundBrushChangedProxy?.Unsubscribe();
+			_borderBrushChangedProxy?.Unsubscribe();
+		}
+
+		protected override void JavaFinalize()
+		{
+			_backgroundBrushChangedProxy?.Unsubscribe();
+			_borderBrushChangedProxy?.Unsubscribe();
+			base.JavaFinalize();
 		}
 
 		protected override void OnChildViewAdded(View child)
@@ -97,8 +114,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder(), UpdateBorder);
-			UpdateBorder();
+			_borderBrushChangedProxy ??= new();
+			_borderBrushChanged ??= () => UpdateBorder();
+			_borderBrushChangedProxy.Subscribe(newValue, _borderBrushChanged);
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
@@ -114,8 +132,9 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			_backgroundBrushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
-			UpdateBorder();
+			_backgroundBrushChangedProxy ??= new();
+			_backgroundBrushChanged ??= () => UpdateBorder();
+			_backgroundBrushChangedProxy.Subscribe(e.NewValue as Brush, _backgroundBrushChanged);
 		}
 
 		protected override void OnBeforeArrange()
