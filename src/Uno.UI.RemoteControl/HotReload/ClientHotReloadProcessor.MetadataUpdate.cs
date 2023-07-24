@@ -194,6 +194,13 @@ namespace Uno.UI.RemoteControl.HotReload
 							// Get the replacement type, or null if not replaced
 							var mappedType = originalType.GetMappedType();
 
+							// If the mapped type is the same as the original type, then we don't need to replace it
+							// this time around, since it didn't change
+							if(mappedType == fe.GetType())
+							{
+								mappedType = null;
+							}
+
 							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
 						},
 					enumerateChildrenAfterMatch: true))
@@ -263,8 +270,15 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 		}
 
+		private static bool firstTime= true;
 		public static void UpdateApplication(Type[] types)
 		{
+			if (firstTime)
+			{
+				Debugger.Break();
+				firstTime = false;
+			}
+
 			foreach (var t in types)
 			{
 				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
