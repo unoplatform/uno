@@ -39,7 +39,13 @@ namespace Windows.Media.Capture
 						break;
 
 					case CameraCaptureUIMode.Video:
+#pragma warning disable CA1416 // UTType.Image, UTType.Movie is supported on ios version 14 and above
+						picker.MediaTypes = new string[] { MobileCoreServices.UTType.Movie };
+#pragma warning restore CA1416
 						picker.CameraCaptureMode = UIImagePickerControllerCameraCaptureMode.Video;
+
+						await ValidateCameraAccess();
+						await ValidateMicrophoneAccess();
 						break;
 				}
 			}
@@ -106,6 +112,34 @@ namespace Windows.Media.Capture
 			return UIDevice.CurrentDevice.CheckSystemVersion(10, 0)
 				? NSBundle.MainBundle.ObjectForInfoDictionary(usageKey) != null
 				: true;
+		}
+
+		private async Task ValidateMicrophoneAccess()
+		{
+			if (!IsUsageKeyDefined("NSMicrophoneUsageDescription"))
+			{
+				throw new InvalidOperationException("Info.plist must define NSMicrophoneUsageDescription");
+			}
+
+			var isAllowed = (await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVAuthorizationMediaType.Audio));
+			if (!isAllowed)
+			{
+				throw new UnauthorizedAccessException();
+			}
+		}
+
+		private async Task ValidateCameraAccess()
+		{
+			if (!IsUsageKeyDefined("NSCameraUsageDescription"))
+			{
+				throw new InvalidOperationException("Info.plist must define NSCameraUsageDescription");
+			}
+
+			var isAllowed = (await AVCaptureDevice.RequestAccessForMediaTypeAsync(AVAuthorizationMediaType.Video));
+			if (!isAllowed)
+			{
+				throw new UnauthorizedAccessException();
+			}
 		}
 
 		private async Task ValidatePhotoLibraryAccess()
