@@ -6,6 +6,7 @@ using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Skia.Platform.Extensions;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfUIElement = System.Windows.UIElement;
 
@@ -80,9 +81,9 @@ namespace Uno.UI.Skia.Platform
 			if (owner is XamlRoot xamlRoot
 				&& GetOverlayLayer(xamlRoot) is { } layer
 				&& content is System.Windows.FrameworkElement contentAsFE
-				&& contentAsFE.Parent != layer)
+				&& contentAsFE.Parent == layer)
 			{
-				layer.Children.Add(contentAsFE);
+				layer.Children.Remove(contentAsFE);
 			}
 			else
 			{
@@ -92,6 +93,12 @@ namespace Uno.UI.Skia.Platform
 				}
 			}
 		}
+
+		public bool IsNativeElementAttached(object owner, object nativeElement) =>
+			nativeElement is System.Windows.FrameworkElement contentAsFE
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } layer
+				&& contentAsFE.Parent == layer;
 
 		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
 		{
