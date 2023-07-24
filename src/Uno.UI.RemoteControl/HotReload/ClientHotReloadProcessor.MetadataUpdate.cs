@@ -270,15 +270,8 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 		}
 
-		private static bool firstTime= true;
 		public static void UpdateApplication(Type[] types)
 		{
-			if (firstTime)
-			{
-				Debugger.Break();
-				firstTime = false;
-			}
-
 			foreach (var t in types)
 			{
 				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
