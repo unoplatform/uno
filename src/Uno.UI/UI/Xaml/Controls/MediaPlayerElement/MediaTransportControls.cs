@@ -775,24 +775,49 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
-
-			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+			if (_mpe.MediaPlayer.IsLoopingEnabled
+				&& !_mpe.MediaPlayer.IsLoopingAllEnabled
+				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
+			{
+				_mpe.MediaPlayer.IsLoopingAllEnabled = true;
+			}
+			else
+			{
+				_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+				_mpe.MediaPlayer.IsLoopingAllEnabled = false;
+			}
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
-			if (_mediaPlayer is not null)
+			if (_mpe is not null
+				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
-				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+				_mpe?.MediaPlayer?.PreviousTrack();
+			}
+			else
+			{
+				if (_mediaPlayer is not null)
+				{
+					_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+					_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+				}
 			}
 		}
 		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
-			if (_mediaPlayer is not null)
+			if (_mpe is not null
+				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
-				_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
-				_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
+				_mpe?.MediaPlayer?.NextTrack();
+			}
+			else
+			{
+				if (_mediaPlayer is not null)
+				{
+					_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
+					_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
+				}
 			}
 		}
 		private void ZoomButtonTapped(object sender, RoutedEventArgs e)
@@ -1153,14 +1178,18 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var state = _mpe.MediaPlayer.IsLoopingEnabled
+			var state = _mpe.MediaPlayer.IsLoopingAllEnabled
 				? VisualState.RepeatStates.RepeatAllState
-				: VisualState.RepeatStates.RepeatNoneState;
+				: _mpe.MediaPlayer.IsLoopingEnabled
+					? VisualState.RepeatStates.RepeatOneState
+					: VisualState.RepeatStates.RepeatNoneState;
 			VisualStateManager.GoToState(this, state, useTransitions);
 
-			var uiaKey = _mpe.MediaPlayer.IsLoopingEnabled
+			var uiaKey = _mpe.MediaPlayer.IsLoopingAllEnabled
 				? UIAKeys.UIA_MEDIA_REPEAT_ALL
-				: UIAKeys.UIA_MEDIA_REPEAT_NONE;
+				: _mpe.MediaPlayer.IsLoopingEnabled
+					? UIAKeys.UIA_MEDIA_REPEAT_ONE
+					: UIAKeys.UIA_MEDIA_REPEAT_NONE;
 			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
 		}
 	}

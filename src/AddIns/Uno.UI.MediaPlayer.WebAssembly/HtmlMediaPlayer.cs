@@ -215,18 +215,13 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			if (_activeElement == null)
-			{
-				return;
-			}
-			_activeElement.RegisterHtmlEventHandler("ended", value);
+			_htmlVideo.RegisterHtmlEventHandler("ended", value);
+			_htmlAudio.RegisterHtmlEventHandler("ended", value);
 		}
 		remove
 		{
-			if (_activeElement != null)
-			{
-				_activeElement.UnregisterHtmlEventHandler("ended", value);
-			}
+			_htmlVideo.UnregisterHtmlEventHandler("ended", value);
+			_htmlAudio.UnregisterHtmlEventHandler("ended", value);
 		}
 	}
 
@@ -470,6 +465,7 @@ internal partial class HtmlMediaPlayer : Border
 				}
 			}
 
+			player.TimeUpdated += player.OnHtmlTimeUpdated;
 		}
 	}
 
@@ -658,27 +654,6 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			_playbackRate = value;
 			NativeMethods.SetPlaybackRate(IsAudio ? _htmlAudio.HtmlId : _htmlVideo.HtmlId, value);
-		}
-	}
-
-	private bool _isLoopingEnabled;
-	public void SetIsLoopingEnabled(bool value)
-	{
-		_isLoopingEnabled = value;
-		if (_activeElement != null)
-		{
-			if (_isLoopingEnabled)
-			{
-				_activeElement.SetHtmlAttribute("loop", "loop");
-			}
-			else
-			{
-				_activeElement.ClearHtmlAttribute("loop");
-			}
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"{_activeElementName} loop {_isLoopingEnabled}: [{Source}]");
-			}
 		}
 	}
 }

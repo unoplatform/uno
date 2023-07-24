@@ -31,6 +31,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private bool _updatingPosition;
 	private bool _isPlayRequested;
 	private bool _isPlayerPrepared;
+	private bool _isLoopingEnabled;
+	private bool _isLoopingAllEnabled;
 	private List<Uri>? _playlistItems;
 	private int _playlistIndex;
 	private TimeSpan _naturalDuration;
@@ -115,17 +117,21 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	private bool _isLoopingEnabled;
 	public bool IsLoopingEnabled
 	{
 		get => _isLoopingEnabled;
 		set
 		{
 			_isLoopingEnabled = value;
-			if (_player is not null)
-			{
-				_player.SetIsLoopingEnabled(value);
-			}
+		}
+	}
+
+	public bool IsLoopingAllEnabled
+	{
+		get => _isLoopingAllEnabled;
+		set
+		{
+			_isLoopingAllEnabled = value;
 		}
 	}
 
@@ -325,6 +331,24 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			this.Log().Debug($"MediaPlayerElementExtension.InitializeSource({ex.Message})");
 			OnMediaFailed(ex);
 		}
+	}
+
+	public void ReInitializeSource()
+	{
+		NaturalDuration = TimeSpan.Zero;
+		if (Position != TimeSpan.Zero)
+		{
+			Position = TimeSpan.Zero;
+		}
+
+		if (_owner.Source == null)
+		{
+			return;
+		}
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+		InitializePlayer();
+		ApplyVideoSource();
+		Events?.RaiseSourceChanged();
 	}
 
 	private void ApplyVideoSource()
@@ -573,6 +597,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		OnMediaFailed(message: $"MediaPlayer Error: {(string)what}");
 	}
 
+
 	public void OnCompletion(object? sender, object what)
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -582,14 +607,34 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		Events?.RaiseMediaEnded();
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
-
-		// Play next item in playlist, if any
-		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		if (IsLoopingEnabled && !IsLoopingAllEnabled)
 		{
-			_uri = _playlistItems[++_playlistIndex];
-			ApplyVideoSource();
+			//ReInitializeSource();
+			Play();
+		}
+		else
+		{
+			// Play first item in playlist, if any and repeat all
+			if (_playlistItems != null && _playlistIndex >= _playlistItems.Count - 1 && IsLoopingAllEnabled)
+			{
+				_playlistIndex = 0;
+				_uri = _playlistItems[_playlistIndex];
+				ReInitializeSource();
+				Play();
+			}
+			else
+			{
+				// Play next item in playlist, if any
+				if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+				{
+					_uri = _playlistItems[++_playlistIndex];
+					ReInitializeSource();
+					Play();
+				}
+			}
 		}
 	}
+
 
 	private void OnMediaFailed(global::System.Exception? ex = null, string? message = null)
 	{
@@ -651,5 +696,29 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public void SetTransportControlsBounds(Rect bounds)
 	{
 		// No effect on WebAssembly.
+	}
+
+	public void PreviousTrack()
+	{
+		// Play prev item in playlist, if any
+		if (_playlistItems != null && _playlistIndex > 0)
+		{
+			Pause();
+			_uri = _playlistItems[--_playlistIndex];
+			ReInitializeSource();
+			Play();
+		}
+	}
+
+	public void NextTrack()
+	{
+		// Play next item in playlist, if any
+		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		{
+			Pause();
+			_uri = _playlistItems[++_playlistIndex];
+			ReInitializeSource();
+			Play();
+		}
 	}
 }
