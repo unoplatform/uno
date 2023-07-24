@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-auto", "scroll-y-disabled", "scroll-y-hidden", "scroll-y-visible" };
+		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-disabled", "scroll-y-auto", "scroll-y-hidden", "scroll-y-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeVerticalScrollBarVisibility { set => VerticalScrollBarVisibility = value; }
 		internal ScrollBarVisibility VerticalScrollBarVisibility
@@ -130,7 +130,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
+		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-disabled", "scroll-x-auto", "scroll-x-hidden", "scroll-x-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeHorizontalScrollBarVisibility { set => HorizontalScrollBarVisibility = value; }
 		internal ScrollBarVisibility HorizontalScrollBarVisibility
