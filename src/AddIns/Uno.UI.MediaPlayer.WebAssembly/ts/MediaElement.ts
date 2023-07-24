@@ -10,7 +10,13 @@ namespace Uno.UI.Media {
 		}
 
 		public static getCurrentPosition(htmlId: number): number {
-			return document.getElementById(htmlId.toString()).currentTime;
+			const element = document.getElementById(htmlId);
+			if (element !== null && element !== undefined) {
+				return element.currentTime;
+			} else {
+				return 0;
+			}
+			//return document.getElementById(htmlId.toString()).currentTime;
 		}
 
 		public static getPaused(htmlId: number): number {
@@ -18,7 +24,11 @@ namespace Uno.UI.Media {
 		}
 
 		public static setCurrentPosition(htmlId: number, currentTime: number) {
-			document.getElementById(htmlId.toString()).currentTime = currentTime;
+			const element = document.getElementById(htmlId);
+			if (element !== null && element !== undefined) {
+				element.currentTime = currentTime;
+			}
+			//document.getElementById(htmlId.toString()).currentTime = currentTime;
 		}
 
 		public static setAttribute(htmlId: number, name: string, value: string) {
