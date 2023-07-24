@@ -83,7 +83,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"SelectedItem",
 			typeof(object),
 			typeof(Selector),
-			new FrameworkPropertyMetadata(defaultValue: null)
+			new FrameworkPropertyMetadata(defaultValue: null),
+			new List<DependencyProperty> { ItemsControl.ItemsSourceProperty }
 		);
 
 		public object SelectedItem

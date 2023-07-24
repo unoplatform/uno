@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Windows.UI.Xaml;
@@ -51,7 +52,7 @@ namespace Windows.UI.Xaml
 
 		private static int _globalId;
 
-		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached)
+		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached, IEnumerable<DependencyProperty> dependentProperties)
 		{
 			_name = name;
 			_propertyType = propertyType;
@@ -70,6 +71,13 @@ namespace Windows.UI.Xaml
 
 			// Improve the performance of the hash code by
 			CachedHashCode = _name.GetHashCode() ^ ownerType.GetHashCode();
+
+			DependentProperties = dependentProperties.ToImmutableArray();
+		}
+
+		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached):
+			this(name, propertyType, ownerType, defaultMetadata, attached, Enumerable.Empty<DependencyProperty>())
+		{
 		}
 
 		/// <summary>
@@ -95,12 +103,13 @@ namespace Windows.UI.Xaml
 		/// <param name="name">The name of the property.</param>
 		/// <param name="propertyType">The type of the property</param>
 		/// <param name="ownerType">The owner type of the property</param>
-		/// <param name="typeMetadata">The metadata to use when creating the property</param>
+		/// <param name="defaultMetadata">The metadata to use when creating the property</param>
+		/// <param name="dependentProperties">Other properties whose bindings need to update before the new property's bindings</param>
 		/// <returns>A dependency property instance</returns>
 		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
-		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
+		internal static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, IEnumerable<DependencyProperty> dependentProperties)
 		{
-			var newProperty = new DependencyProperty(name, propertyType, ownerType, typeMetadata, attached: false);
+			var newProperty = new DependencyProperty(name, propertyType, ownerType, defaultMetadata, attached: true, dependentProperties);
 
 			try
 			{
@@ -116,6 +125,18 @@ namespace Windows.UI.Xaml
 
 			return newProperty;
 		}
+
+		/// <summary>
+		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
+		/// </summary>
+		/// <param name="name">The name of the property.</param>
+		/// <param name="propertyType">The type of the property</param>
+		/// <param name="ownerType">The owner type of the property</param>
+		/// <param name="typeMetadata">The metadata to use when creating the property</param>
+		/// <returns>A dependency property instance</returns>
+		/// <exception cref="InvalidOperationException">A property with the same name has already been declared for the ownerType</exception>
+		public static DependencyProperty Register(string name, Type propertyType, Type ownerType, PropertyMetadata typeMetadata)
+			=> Register(name, propertyType, ownerType, typeMetadata, Enumerable.Empty<DependencyProperty>());
 
 		/// <summary>
 		/// Registers a dependency property on the specified <paramref name="ownerType"/>.
@@ -190,6 +211,8 @@ namespace Windows.UI.Xaml
 			[MethodImpl(MethodImplOptions.AggressiveInlining)]
 			get;
 		}
+
+		internal ImmutableArray<DependencyProperty> DependentProperties { get; } = ImmutableArray<DependencyProperty>.Empty;
 
 		/// <summary>
 		/// Specifies a static value that is used by the dependency property system rather than null to indicate that

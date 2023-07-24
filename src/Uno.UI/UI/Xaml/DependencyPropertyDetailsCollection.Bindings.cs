@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public void ApplyDataContext(object dataContext)
 		{
+			_bindings = new (_bindings.OrderBy(x => x, new BindingExpressionComparer()));
 			var bindings = _bindings.Data;
 
 			for (int i = 0; i < bindings.Length; i++)
@@ -146,7 +148,12 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					_bindings = _bindings.Add(bindingExpression);
+					var index = Array.BinarySearch(_bindings.Data, bindingExpression, new BindingExpressionComparer());
+					if (index < 0)
+					{
+						index = ~index;
+					}
+					_bindings = _bindings.Insert(index, bindingExpression);
 
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
@@ -218,6 +225,28 @@ namespace Windows.UI.Xaml
 			}
 
 			return null;
+		}
+
+		class BindingExpressionComparer : IComparer<BindingExpression>
+		{
+			public int Compare(BindingExpression expression1, BindingExpression expression2)
+			{
+				var property1 = expression1.TargetPropertyDetails.Property;
+				var property2 = expression2.TargetPropertyDetails.Property;
+
+				if (property1.DependentProperties.Contains(property2))
+				{
+					return -1;
+				}
+
+				if (property2.DependentProperties.Contains(property1))
+				{
+					return 1;
+				}
+
+				// make sure we define a total order
+				return string.Compare(property1.ToString(), property2.ToString(), StringComparison.OrdinalIgnoreCase);
+			}
 		}
 	}
 }

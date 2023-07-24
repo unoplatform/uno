@@ -114,6 +114,13 @@ namespace Uno.Collections
 
 		/// <inheritdoc />
 		[Pure]
+		IImmutableList<T> IImmutableList<T>.Insert(int index, T element)
+		{
+			return Insert(index, element);
+		}
+
+		/// <inheritdoc />
+		[Pure]
 		IImmutableList<T> IImmutableList<T>.Add(T value)
 		{
 			return Add(value);
@@ -132,7 +139,7 @@ namespace Uno.Collections
 
 		/// <inheritdoc />
 		[Pure]
-		public IImmutableList<T> Insert(int index, T element)
+		public ImmutableList<T> Insert(int index, T element)
 		{
 			var newData = new T[_data.Length + 1];
 			newData[index] = element; // will throw out-of-range exception if index is not valid
@@ -141,7 +148,7 @@ namespace Uno.Collections
 			{
 				Array.Copy(_data, newData, index);
 			}
-			if (index + 1 < _data.Length)
+			if (index < _data.Length)
 			{
 				Array.Copy(_data, index, newData, index + 1, _data.Length - index);
 			}
