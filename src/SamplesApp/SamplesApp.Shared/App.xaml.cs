@@ -123,6 +123,8 @@ namespace SamplesApp
 			if (activationKind == ActivationKind.Launch)
 			{
 				AssertIssue8356();
+
+				AssertIssue12936();
 			}
 
 			var sw = Stopwatch.StartNew();
@@ -648,6 +650,18 @@ namespace SamplesApp
 
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+		}
+
+		/// <summary>
+		/// Asserts that the App Title was found in manifest and load from resources.
+		/// </summary>
+		public void AssertIssue12936()
+		{
+			var title = ApplicationView.GetForCurrentView().Title;
+
+			Assert.IsFalse(string.IsNullOrEmpty(title), "App Title is empty.");
+
+			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title["ms-resource:".Length..].Trim()}' wasn't found in resources. App Title contains 'ms-resource:'.");
 		}
 
 		/// <summary>
