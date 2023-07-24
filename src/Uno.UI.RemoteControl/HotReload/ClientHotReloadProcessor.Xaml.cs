@@ -127,7 +127,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			var commonProperties = from oldProp in DependencyProperty.GetPropertiesForType(oldView.GetType())
 								   from newProp in DependencyProperty.GetPropertiesForType(newView.GetType())
 								   where oldProp.Name == newProp.Name
-								   let oldValue = oldView.GetValue(oldProp)
+								   let oldValue = oldView.GetValue(oldProp, DependencyPropertyValuePrecedences.Local)
 								   let newValue = newView.GetValue(newProp)
 								   where oldValue is not null && newValue is null
 								   select (oldProp, oldValue, newProp);
