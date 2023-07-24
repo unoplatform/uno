@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class CachedFileManager 
+	public static partial class CachedFileManager
 	{
 		// Skipping already declared method Windows.Storage.CachedFileManager.DeferUpdates(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.CachedFileManager.CompleteUpdatesAsync(Windows.Storage.IStorageFile)

@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Appointments.DataProvider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AppointmentDataProviderConnection 
+	public partial class AppointmentDataProviderConnection
 	{
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.SyncRequested.add
 		// Forced skipping of method Windows.ApplicationModel.Appointments.DataProvider.AppointmentDataProviderConnection.SyncRequested.remove

@@ -6,7 +6,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NumeralSystemTranslator 
+	public partial class NumeralSystemTranslator
 	{
 		// Skipping already declared property NumeralSystem
 		// Skipping already declared property Languages

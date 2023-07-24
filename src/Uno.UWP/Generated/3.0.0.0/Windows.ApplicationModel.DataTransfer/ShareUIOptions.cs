@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ShareUIOptions 
+	public partial class ShareUIOptions
 	{
 		// Skipping already declared property Theme
 		// Skipping already declared property SelectionRect

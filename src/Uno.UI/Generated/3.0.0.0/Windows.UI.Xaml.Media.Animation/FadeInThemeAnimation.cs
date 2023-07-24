@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FadeInThemeAnimation 
+	public partial class FadeInThemeAnimation
 	{
 		// Skipping already declared property TargetName
 		// Skipping already declared property TargetNameProperty

@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Media
 {
 #if false || false || false || false || false || false || false
-	public enum AlignmentY 
+	public enum AlignmentY
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.AlignmentY.Top
 		// Skipping already declared field Windows.UI.Xaml.Media.AlignmentY.Center

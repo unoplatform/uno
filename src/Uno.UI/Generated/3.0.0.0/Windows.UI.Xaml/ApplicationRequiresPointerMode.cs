@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public enum ApplicationRequiresPointerMode 
+	public enum ApplicationRequiresPointerMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.ApplicationRequiresPointerMode.Auto
 		// Skipping already declared field Windows.UI.Xaml.ApplicationRequiresPointerMode.WhenRequested

@@ -4,7 +4,7 @@
 namespace Windows.Gaming.Input
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum GameControllerSwitchKind 
+	public enum GameControllerSwitchKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		TwoWay = 0,

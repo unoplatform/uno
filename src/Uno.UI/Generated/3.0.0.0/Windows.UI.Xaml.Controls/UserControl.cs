@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class UserControl 
+	public partial class UserControl
 	{
 		// Skipping already declared property Content
 		// Skipping already declared property ContentProperty

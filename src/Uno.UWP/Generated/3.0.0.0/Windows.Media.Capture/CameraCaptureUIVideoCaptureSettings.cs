@@ -6,7 +6,7 @@ namespace Windows.Media.Capture
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CameraCaptureUIVideoCaptureSettings 
+	public partial class CameraCaptureUIVideoCaptureSettings
 	{
 #if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

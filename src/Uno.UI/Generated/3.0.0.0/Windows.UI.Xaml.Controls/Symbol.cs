@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum Symbol 
+	public enum Symbol
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Symbol.Previous
 		// Skipping already declared field Windows.UI.Xaml.Controls.Symbol.Next

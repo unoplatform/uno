@@ -4,7 +4,7 @@
 namespace Windows.Devices.Geolocation
 {
 #if false || false || false || false || false || false || false
-	public enum AltitudeReferenceSystem 
+	public enum AltitudeReferenceSystem
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.AltitudeReferenceSystem.Unspecified
 		// Skipping already declared field Windows.Devices.Geolocation.AltitudeReferenceSystem.Terrain

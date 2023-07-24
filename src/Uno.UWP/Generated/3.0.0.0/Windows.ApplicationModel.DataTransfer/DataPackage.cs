@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DataPackage 
+	public partial class DataPackage
 	{
 		// Skipping already declared property RequestedOperation
 		// Skipping already declared property Properties

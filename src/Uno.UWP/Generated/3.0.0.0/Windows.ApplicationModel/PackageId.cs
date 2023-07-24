@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PackageId 
+	public partial class PackageId
 	{
 		// Skipping already declared property Architecture
 		// Skipping already declared property FamilyName

@@ -6,7 +6,7 @@ namespace Windows.Media.Playback
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlaybackMediaMarkerReachedEventArgs 
+	public partial class PlaybackMediaMarkerReachedEventArgs
 	{
 		// Skipping already declared property PlaybackMediaMarker
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarkerReachedEventArgs.PlaybackMediaMarker.get

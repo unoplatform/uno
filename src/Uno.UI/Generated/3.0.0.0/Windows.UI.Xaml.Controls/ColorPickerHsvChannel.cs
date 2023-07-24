@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ColorPickerHsvChannel 
+	public enum ColorPickerHsvChannel
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Hue = 0,

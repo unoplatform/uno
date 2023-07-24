@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum TabViewWidthMode 
+	public enum TabViewWidthMode
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TabViewWidthMode.Equal
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TabViewWidthMode.SizeToContent

@@ -6,7 +6,7 @@ namespace Windows.Devices.Sms
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SmsEncodedLength 
+	public partial struct SmsEncodedLength
 	{
 		// Forced skipping of method Windows.Devices.Sms.SmsEncodedLength.SmsEncodedLength()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

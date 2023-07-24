@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum SplitViewPanePlacement 
+	public enum SplitViewPanePlacement
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.SplitViewPanePlacement.Left
 		// Skipping already declared field Windows.UI.Xaml.Controls.SplitViewPanePlacement.Right

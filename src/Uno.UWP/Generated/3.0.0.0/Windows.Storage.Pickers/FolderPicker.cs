@@ -6,7 +6,7 @@ namespace Windows.Storage.Pickers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FolderPicker 
+	public partial class FolderPicker
 	{
 		// Skipping already declared property ViewMode
 		// Skipping already declared property SuggestedStartLocation

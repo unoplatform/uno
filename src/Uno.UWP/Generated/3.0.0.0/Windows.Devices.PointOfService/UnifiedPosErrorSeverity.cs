@@ -4,7 +4,7 @@
 namespace Windows.Devices.PointOfService
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum UnifiedPosErrorSeverity 
+	public enum UnifiedPosErrorSeverity
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		UnknownErrorSeverity = 0,

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RoutedEventArgs 
+	public partial class RoutedEventArgs
 	{
 		// Skipping already declared property OriginalSource
 		// Skipping already declared method Windows.UI.Xaml.RoutedEventArgs.RoutedEventArgs()

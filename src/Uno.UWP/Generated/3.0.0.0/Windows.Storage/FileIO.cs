@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class FileIO 
+	public static partial class FileIO
 	{
 		// Skipping already declared method Windows.Storage.FileIO.ReadTextAsync(Windows.Storage.IStorageFile)
 		// Skipping already declared method Windows.Storage.FileIO.ReadTextAsync(Windows.Storage.IStorageFile, Windows.Storage.Streams.UnicodeEncoding)

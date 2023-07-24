@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FontIcon 
+	public partial class FontIcon
 	{
 		// Skipping already declared property Glyph
 		// Skipping already declared property FontWeight

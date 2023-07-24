@@ -4,7 +4,7 @@
 namespace Windows.Devices.Midi
 {
 #if false || false || false || false || false || false || false
-	public enum MidiMessageType 
+	public enum MidiMessageType
 	{
 		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.None
 		// Skipping already declared field Windows.Devices.Midi.MidiMessageType.NoteOff

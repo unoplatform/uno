@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Application 
+	public partial class Application
 	{
 		// Skipping already declared property Resources
 		// Skipping already declared property RequestedTheme

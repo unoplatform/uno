@@ -6,7 +6,7 @@ namespace Windows.Media.Capture
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CameraCaptureUI 
+	public partial class CameraCaptureUI
 	{
 		// Skipping already declared property PhotoSettings
 		// Skipping already declared property VideoSettings

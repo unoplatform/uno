@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum UniformGridLayoutItemsJustification 
+	public enum UniformGridLayoutItemsJustification
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification.Start
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.UniformGridLayoutItemsJustification.Center

@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class LightSensorReading 
+	public partial class LightSensorReading
 	{
 		// Skipping already declared property IlluminanceInLux
 		// Skipping already declared property Timestamp

@@ -6,7 +6,7 @@ namespace Windows.Security.ExchangeActiveSyncProvisioning
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class EasClientDeviceInformation 
+	public partial class EasClientDeviceInformation
 	{
 		// Skipping already declared property FriendlyName
 		// Skipping already declared property Id

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ContentDialogButtonClickEventArgs 
+	public partial class ContentDialogButtonClickEventArgs
 	{
 		// Skipping already declared property Cancel
 		// Forced skipping of method Windows.UI.Xaml.Controls.ContentDialogButtonClickEventArgs.Cancel.get

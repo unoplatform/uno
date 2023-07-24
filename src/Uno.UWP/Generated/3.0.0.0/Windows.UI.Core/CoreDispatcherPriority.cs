@@ -4,7 +4,7 @@
 namespace Windows.UI.Core
 {
 #if false || false || false || false || false || false || false
-	public enum CoreDispatcherPriority 
+	public enum CoreDispatcherPriority
 	{
 		// Skipping already declared field Windows.UI.Core.CoreDispatcherPriority.Idle
 		// Skipping already declared field Windows.UI.Core.CoreDispatcherPriority.Low

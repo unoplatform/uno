@@ -6,7 +6,7 @@ namespace Windows.Services.Store
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StoreProductResult 
+	public partial class StoreProductResult
 	{
 		// Skipping already declared property ExtendedError
 		// Skipping already declared property Product

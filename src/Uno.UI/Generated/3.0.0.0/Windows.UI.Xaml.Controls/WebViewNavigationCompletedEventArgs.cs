@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class WebViewNavigationCompletedEventArgs 
+	public partial class WebViewNavigationCompletedEventArgs
 	{
 		// Skipping already declared property IsSuccess
 		// Skipping already declared property Uri

@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Contacts
 {
 #if false || false || false || false || false || false || false
-	public enum ContactPhoneKind 
+	public enum ContactPhoneKind
 	{
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactPhoneKind.Home
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactPhoneKind.Mobile

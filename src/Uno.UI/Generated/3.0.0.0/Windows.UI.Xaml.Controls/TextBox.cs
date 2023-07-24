@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TextBox 
+	public partial class TextBox
 	{
 		// Skipping already declared property TextWrapping
 		// Skipping already declared property TextAlignment

@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls.Maps
 {
 #if false || false || false || false || false || false || false
-	public enum MapVisibleRegionKind 
+	public enum MapVisibleRegionKind
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapVisibleRegionKind.Near
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapVisibleRegionKind.Full

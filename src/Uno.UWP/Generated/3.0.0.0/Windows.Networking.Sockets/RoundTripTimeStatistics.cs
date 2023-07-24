@@ -6,7 +6,7 @@ namespace Windows.Networking.Sockets
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RoundTripTimeStatistics 
+	public partial struct RoundTripTimeStatistics
 	{
 		// Forced skipping of method Windows.Networking.Sockets.RoundTripTimeStatistics.RoundTripTimeStatistics()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

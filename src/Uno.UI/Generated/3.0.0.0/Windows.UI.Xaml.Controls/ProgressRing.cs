@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ProgressRing 
+	public partial class ProgressRing
 	{
 		// Skipping already declared property IsActive
 		// Skipping already declared property TemplateSettings

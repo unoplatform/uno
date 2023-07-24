@@ -5,7 +5,7 @@ namespace Windows.Devices.Perception
 {
 	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PerceptionFrameSourceAccessStatus 
+	public enum PerceptionFrameSourceAccessStatus
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Unspecified = 0,

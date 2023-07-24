@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
 #if false || false || false || false || false || false || false
-	public enum AutomationControlType 
+	public enum AutomationControlType
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationControlType.Button
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationControlType.Calendar

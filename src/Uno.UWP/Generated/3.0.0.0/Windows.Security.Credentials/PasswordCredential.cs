@@ -6,7 +6,7 @@ namespace Windows.Security.Credentials
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PasswordCredential 
+	public partial class PasswordCredential
 	{
 		// Skipping already declared property UserName
 		// Skipping already declared property Resource

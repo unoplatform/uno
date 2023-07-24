@@ -4,7 +4,7 @@
 namespace Windows.Globalization.DateTimeFormatting
 {
 #if false || false || false || false || false || false || false
-	public enum MonthFormat 
+	public enum MonthFormat
 	{
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.None
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MonthFormat.Default

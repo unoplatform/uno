@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum ContentDialogResult 
+	public enum ContentDialogResult
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogResult.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogResult.Primary

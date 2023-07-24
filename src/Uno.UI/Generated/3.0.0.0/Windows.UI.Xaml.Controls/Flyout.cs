@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Flyout 
+	public partial class Flyout
 	{
 		// Skipping already declared property FlyoutPresenterStyle
 		// Skipping already declared property Content

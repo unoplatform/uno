@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum RefreshPullDirection 
+	public enum RefreshPullDirection
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshPullDirection.LeftToRight
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.RefreshPullDirection.TopToBottom

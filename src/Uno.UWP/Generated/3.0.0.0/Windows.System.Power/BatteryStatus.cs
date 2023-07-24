@@ -4,7 +4,7 @@
 namespace Windows.System.Power
 {
 #if false || false || false || false || false || false || false
-	public enum BatteryStatus 
+	public enum BatteryStatus
 	{
 		// Skipping already declared field Windows.System.Power.BatteryStatus.NotPresent
 		// Skipping already declared field Windows.System.Power.BatteryStatus.Discharging

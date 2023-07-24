@@ -4,7 +4,7 @@
 namespace Windows.Globalization.NumberFormatting
 {
 #if false || false || false || false || false || false || false
-	public enum RoundingAlgorithm 
+	public enum RoundingAlgorithm
 	{
 		// Skipping already declared field Windows.Globalization.NumberFormatting.RoundingAlgorithm.None
 		// Skipping already declared field Windows.Globalization.NumberFormatting.RoundingAlgorithm.RoundDown

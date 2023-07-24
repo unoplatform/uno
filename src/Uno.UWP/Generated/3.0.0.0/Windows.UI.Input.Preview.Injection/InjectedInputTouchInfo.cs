@@ -6,7 +6,7 @@ namespace Windows.UI.Input.Preview.Injection
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class InjectedInputTouchInfo 
+	public partial class InjectedInputTouchInfo
 	{
 		// Skipping already declared property TouchParameters
 		// Skipping already declared property Pressure

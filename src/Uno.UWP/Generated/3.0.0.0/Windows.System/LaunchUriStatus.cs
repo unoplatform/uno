@@ -4,7 +4,7 @@
 namespace Windows.System
 {
 #if false || false || false || false || false || false || false
-	public enum LaunchUriStatus 
+	public enum LaunchUriStatus
 	{
 		// Skipping already declared field Windows.System.LaunchUriStatus.Success
 		// Skipping already declared field Windows.System.LaunchUriStatus.AppUnavailable

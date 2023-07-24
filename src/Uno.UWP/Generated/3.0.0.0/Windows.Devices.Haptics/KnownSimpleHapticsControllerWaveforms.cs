@@ -6,7 +6,7 @@ namespace Windows.Devices.Haptics
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class KnownSimpleHapticsControllerWaveforms 
+	public static partial class KnownSimpleHapticsControllerWaveforms
 	{
 		// Skipping already declared property BuzzContinuous
 		// Skipping already declared property Click

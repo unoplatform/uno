@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StorageProvider 
+	public partial class StorageProvider
 	{
 		// Skipping already declared property DisplayName
 		// Skipping already declared property Id

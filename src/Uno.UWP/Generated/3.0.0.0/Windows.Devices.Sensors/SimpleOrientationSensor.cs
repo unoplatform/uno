@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SimpleOrientationSensor 
+	public partial class SimpleOrientationSensor
 	{
 		// Skipping already declared property ReadingTransform
 		// Skipping already declared property DeviceId

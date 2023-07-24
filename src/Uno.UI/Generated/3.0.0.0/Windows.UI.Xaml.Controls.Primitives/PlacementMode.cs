@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public enum PlacementMode 
+	public enum PlacementMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PlacementMode.Bottom
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.PlacementMode.Left

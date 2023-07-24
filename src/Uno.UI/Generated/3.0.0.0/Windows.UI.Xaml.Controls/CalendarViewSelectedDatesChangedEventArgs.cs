@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CalendarViewSelectedDatesChangedEventArgs 
+	public partial class CalendarViewSelectedDatesChangedEventArgs
 	{
 		// Skipping already declared property AddedDates
 		// Skipping already declared property RemovedDates

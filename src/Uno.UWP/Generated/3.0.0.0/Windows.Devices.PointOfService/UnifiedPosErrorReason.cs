@@ -4,7 +4,7 @@
 namespace Windows.Devices.PointOfService
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum UnifiedPosErrorReason 
+	public enum UnifiedPosErrorReason
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		UnknownErrorReason = 0,

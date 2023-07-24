@@ -4,7 +4,7 @@
 namespace Windows.Media.Audio
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum AudioNodeEmitterDecayKind 
+	public enum AudioNodeEmitterDecayKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Natural = 0,

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RenderingEventArgs 
+	public partial class RenderingEventArgs
 	{
 		// Skipping already declared property RenderingTime
 		// Forced skipping of method Windows.UI.Xaml.Media.RenderingEventArgs.RenderingTime.get

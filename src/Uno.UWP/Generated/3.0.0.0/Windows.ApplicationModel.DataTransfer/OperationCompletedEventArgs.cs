@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class OperationCompletedEventArgs 
+	public partial class OperationCompletedEventArgs
 	{
 		// Skipping already declared property Operation
 		// Skipping already declared property AcceptedFormatId

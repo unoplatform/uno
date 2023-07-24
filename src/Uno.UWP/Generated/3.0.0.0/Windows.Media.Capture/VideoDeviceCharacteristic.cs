@@ -4,7 +4,7 @@
 namespace Windows.Media.Capture
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum VideoDeviceCharacteristic 
+	public enum VideoDeviceCharacteristic
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		AllStreamsIndependent = 0,

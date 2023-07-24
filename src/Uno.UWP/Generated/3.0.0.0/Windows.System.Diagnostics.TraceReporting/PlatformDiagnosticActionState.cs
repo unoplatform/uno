@@ -4,7 +4,7 @@
 namespace Windows.System.Diagnostics.TraceReporting
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PlatformDiagnosticActionState 
+	public enum PlatformDiagnosticActionState
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Success = 0,

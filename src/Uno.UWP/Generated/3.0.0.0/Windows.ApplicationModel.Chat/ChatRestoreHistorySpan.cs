@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ChatRestoreHistorySpan 
+	public enum ChatRestoreHistorySpan
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		LastMonth = 0,

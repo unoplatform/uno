@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CalendarViewDayItemChangingEventArgs 
+	public partial class CalendarViewDayItemChangingEventArgs
 	{
 		// Skipping already declared property InRecycleQueue
 		// Skipping already declared property Item

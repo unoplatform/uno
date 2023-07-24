@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum AutoSuggestionBoxTextChangeReason 
+	public enum AutoSuggestionBoxTextChangeReason
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.UserInput
 		// Skipping already declared field Windows.UI.Xaml.Controls.AutoSuggestionBoxTextChangeReason.ProgrammaticChange

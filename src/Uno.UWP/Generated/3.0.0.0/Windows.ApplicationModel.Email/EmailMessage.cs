@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Email
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class EmailMessage 
+	public partial class EmailMessage
 	{
 		// Skipping already declared property Subject
 		// Skipping already declared property Body

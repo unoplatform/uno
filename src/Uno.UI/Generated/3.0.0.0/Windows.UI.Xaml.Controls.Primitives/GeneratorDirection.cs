@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public enum GeneratorDirection 
+	public enum GeneratorDirection
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GeneratorDirection.Forward
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.GeneratorDirection.Backward

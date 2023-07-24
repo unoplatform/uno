@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum SwipeMode 
+	public enum SwipeMode
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeMode.Reveal
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeMode.Execute

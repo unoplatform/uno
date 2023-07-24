@@ -6,7 +6,7 @@ namespace Windows.UI.Core.Preview
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SystemNavigationManagerPreview 
+	public partial class SystemNavigationManagerPreview
 	{
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.add
 		// Forced skipping of method Windows.UI.Core.Preview.SystemNavigationManagerPreview.CloseRequested.remove

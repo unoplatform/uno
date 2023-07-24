@@ -6,7 +6,7 @@ namespace Windows.Graphics.DirectX.Direct3D11
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct Direct3DSurfaceDescription 
+	public partial struct Direct3DSurfaceDescription
 	{
 		// Forced skipping of method Windows.Graphics.DirectX.Direct3D11.Direct3DSurfaceDescription.Direct3DSurfaceDescription()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

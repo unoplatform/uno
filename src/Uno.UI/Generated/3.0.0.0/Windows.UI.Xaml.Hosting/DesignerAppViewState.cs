@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Hosting
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum DesignerAppViewState 
+	public enum DesignerAppViewState
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Visible = 0,

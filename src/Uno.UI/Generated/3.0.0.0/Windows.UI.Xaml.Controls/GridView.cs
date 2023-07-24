@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GridView 
+	public partial class GridView
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.GridView.GridView()
 		// Forced skipping of method Windows.UI.Xaml.Controls.GridView.GridView()

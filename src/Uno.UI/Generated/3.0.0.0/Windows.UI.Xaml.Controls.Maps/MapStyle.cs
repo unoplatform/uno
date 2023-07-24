@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls.Maps
 {
 #if false || false || false || false || false || false || false
-	public enum MapStyle 
+	public enum MapStyle
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapStyle.Road

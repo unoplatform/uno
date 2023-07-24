@@ -4,7 +4,7 @@
 namespace Windows.Globalization.DateTimeFormatting
 {
 #if false || false || false || false || false || false || false
-	public enum MinuteFormat 
+	public enum MinuteFormat
 	{
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MinuteFormat.None
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.MinuteFormat.Default

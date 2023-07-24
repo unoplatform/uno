@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum SwipeBehaviorOnInvoked 
+	public enum SwipeBehaviorOnInvoked
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked.Auto
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.SwipeBehaviorOnInvoked.Close

@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum ScrollMode 
+	public enum ScrollMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollMode.Disabled
 		// Skipping already declared field Windows.UI.Xaml.Controls.ScrollMode.Enabled

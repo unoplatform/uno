@@ -4,7 +4,7 @@
 namespace Windows.Devices.SmartCards
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum SmartCardPinCharacterPolicyOption 
+	public enum SmartCardPinCharacterPolicyOption
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Allow = 0,

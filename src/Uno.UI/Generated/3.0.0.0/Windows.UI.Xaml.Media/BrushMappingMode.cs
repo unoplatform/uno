@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Media
 {
 #if false || false || false || false || false || false || false
-	public enum BrushMappingMode 
+	public enum BrushMappingMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.BrushMappingMode.Absolute
 		// Skipping already declared field Windows.UI.Xaml.Media.BrushMappingMode.RelativeToBoundingBox

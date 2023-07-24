@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Calls
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PhoneAudioRoutingEndpoint 
+	public enum PhoneAudioRoutingEndpoint
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Default = 0,

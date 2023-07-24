@@ -4,7 +4,7 @@
 namespace Windows.UI.Input
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum RadialControllerMenuKnownIcon 
+	public enum RadialControllerMenuKnownIcon
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Scroll = 0,

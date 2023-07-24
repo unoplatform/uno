@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BackRequestedEventArgs 
+	public partial class BackRequestedEventArgs
 	{
 		// Skipping already declared property Handled
 		// Forced skipping of method Windows.UI.Core.BackRequestedEventArgs.Handled.get

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Image 
+	public partial class Image
 	{
 		// Skipping already declared property Stretch
 		// Skipping already declared property Source

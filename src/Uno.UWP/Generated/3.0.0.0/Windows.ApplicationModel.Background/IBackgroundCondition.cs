@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Background
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IBackgroundCondition 
+	public partial interface IBackgroundCondition
 	{
 	}
 }

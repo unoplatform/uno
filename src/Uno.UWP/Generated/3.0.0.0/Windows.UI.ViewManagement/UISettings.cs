@@ -6,7 +6,7 @@ namespace Windows.UI.ViewManagement
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class UISettings 
+	public partial class UISettings
 	{
 		// Skipping already declared property AnimationsEnabled
 		// Skipping already declared property CaretBlinkRate

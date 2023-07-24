@@ -6,7 +6,7 @@ namespace Windows.Devices.PointOfService
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct SizeUInt32 
+	public partial struct SizeUInt32
 	{
 		// Forced skipping of method Windows.Devices.PointOfService.SizeUInt32.SizeUInt32()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

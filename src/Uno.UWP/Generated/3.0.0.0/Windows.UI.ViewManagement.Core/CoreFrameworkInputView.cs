@@ -6,7 +6,7 @@ namespace Windows.UI.ViewManagement.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreFrameworkInputView 
+	public partial class CoreFrameworkInputView
 	{
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreFrameworkInputView.PrimaryViewAnimationStarting.add
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreFrameworkInputView.PrimaryViewAnimationStarting.remove

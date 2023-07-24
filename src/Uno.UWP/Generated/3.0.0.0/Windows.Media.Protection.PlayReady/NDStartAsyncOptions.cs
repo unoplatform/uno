@@ -5,7 +5,7 @@ namespace Windows.Media.Protection.PlayReady
 {
 	// This type is deprecated. Consider not implementing it.
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum NDStartAsyncOptions 
+	public enum NDStartAsyncOptions
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		MutualAuthentication = 1,

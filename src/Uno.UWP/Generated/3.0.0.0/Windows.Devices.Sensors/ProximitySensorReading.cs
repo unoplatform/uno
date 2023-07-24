@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ProximitySensorReading 
+	public partial class ProximitySensorReading
 	{
 		// Skipping already declared property DistanceInMillimeters
 		// Skipping already declared property IsDetected

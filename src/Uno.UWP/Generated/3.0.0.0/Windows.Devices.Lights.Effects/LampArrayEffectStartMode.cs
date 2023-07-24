@@ -4,7 +4,7 @@
 namespace Windows.Devices.Lights.Effects
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum LampArrayEffectStartMode 
+	public enum LampArrayEffectStartMode
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Sequential = 0,

@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || __SKIA__ || false || false
 	[global::Uno.NotImplemented("__SKIA__")]
 #endif
-	public partial class HingeAngleSensor 
+	public partial class HingeAngleSensor
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

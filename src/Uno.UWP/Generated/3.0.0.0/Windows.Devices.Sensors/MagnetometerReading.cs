@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MagnetometerReading 
+	public partial class MagnetometerReading
 	{
 		// Skipping already declared property DirectionalAccuracy
 		// Skipping already declared property MagneticFieldX

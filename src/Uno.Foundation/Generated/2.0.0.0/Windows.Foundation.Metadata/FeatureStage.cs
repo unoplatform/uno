@@ -4,7 +4,7 @@
 namespace Windows.Foundation.Metadata
 {
 #if false || false || false || false || false || false || false
-	public enum FeatureStage 
+	public enum FeatureStage
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.FeatureStage.AlwaysDisabled
 		// Skipping already declared field Windows.Foundation.Metadata.FeatureStage.DisabledByDefault

@@ -4,7 +4,7 @@
 namespace Windows.Graphics.DirectX
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum DirectXColorSpace 
+	public enum DirectXColorSpace
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		RgbFullG22NoneP709 = 0,

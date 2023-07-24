@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum PanelScrollingDirection 
+	public enum PanelScrollingDirection
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.PanelScrollingDirection.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.PanelScrollingDirection.Forward

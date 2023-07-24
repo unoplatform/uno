@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MenuFlyout 
+	public partial class MenuFlyout
 	{
 		// Skipping already declared property MenuFlyoutPresenterStyle
 		// Skipping already declared property Items

@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Resources.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ResourceCandidateKind 
+	public enum ResourceCandidateKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		String = 0,

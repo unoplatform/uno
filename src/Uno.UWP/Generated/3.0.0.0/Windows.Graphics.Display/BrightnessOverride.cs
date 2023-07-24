@@ -6,7 +6,7 @@ namespace Windows.Graphics.Display
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BrightnessOverride 
+	public partial class BrightnessOverride
 	{
 		// Skipping already declared property BrightnessLevel
 		// Skipping already declared property IsOverrideActive

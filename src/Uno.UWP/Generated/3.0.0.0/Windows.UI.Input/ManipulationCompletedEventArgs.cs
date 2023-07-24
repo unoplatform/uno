@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ManipulationCompletedEventArgs 
+	public partial class ManipulationCompletedEventArgs
 	{
 		// Skipping already declared property Cumulative
 		// Skipping already declared property PointerDeviceType

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ScrollContentPresenter 
+	public partial class ScrollContentPresenter
 	{
 		// Skipping already declared property ScrollOwner
 		// Skipping already declared property CanVerticallyScroll

@@ -4,7 +4,7 @@
 namespace Windows.UI.Input
 {
 #if false || false || false || false || false || false || false
-	public enum DraggingState 
+	public enum DraggingState
 	{
 		// Skipping already declared field Windows.UI.Input.DraggingState.Started
 		// Skipping already declared field Windows.UI.Input.DraggingState.Continuing

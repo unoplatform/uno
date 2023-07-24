@@ -6,7 +6,7 @@ namespace Windows.Phone.Devices.Notification
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || false || __MACOS__
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__MACOS__")]
 #endif
-	public partial class VibrationDevice 
+	public partial class VibrationDevice
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

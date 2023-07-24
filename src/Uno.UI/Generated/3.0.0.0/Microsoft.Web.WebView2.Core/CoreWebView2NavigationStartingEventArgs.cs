@@ -6,7 +6,7 @@ namespace Microsoft.Web.WebView2.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreWebView2NavigationStartingEventArgs 
+	public partial class CoreWebView2NavigationStartingEventArgs
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property IsRedirected

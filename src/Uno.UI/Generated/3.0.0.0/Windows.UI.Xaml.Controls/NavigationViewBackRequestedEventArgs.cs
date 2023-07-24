@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationViewBackRequestedEventArgs 
+	public partial class NavigationViewBackRequestedEventArgs
 	{
 	}
 }

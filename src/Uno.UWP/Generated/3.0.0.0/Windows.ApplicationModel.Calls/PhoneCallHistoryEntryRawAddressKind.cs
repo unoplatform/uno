@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Calls
 {
 #if false || false || false || false || false || false || false
-	public enum PhoneCallHistoryEntryRawAddressKind 
+	public enum PhoneCallHistoryEntryRawAddressKind
 	{
 		// Skipping already declared field Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind.PhoneNumber
 		// Skipping already declared field Windows.ApplicationModel.Calls.PhoneCallHistoryEntryRawAddressKind.Custom

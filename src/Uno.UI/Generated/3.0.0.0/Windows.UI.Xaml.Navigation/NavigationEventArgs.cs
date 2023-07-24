@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Navigation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationEventArgs 
+	public partial class NavigationEventArgs
 	{
 		// Skipping already declared property Uri
 		// Skipping already declared property Content

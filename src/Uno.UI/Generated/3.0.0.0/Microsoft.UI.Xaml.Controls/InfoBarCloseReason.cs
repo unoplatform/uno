@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum InfoBarCloseReason 
+	public enum InfoBarCloseReason
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.InfoBarCloseReason.CloseButton
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.InfoBarCloseReason.Programmatic

@@ -6,7 +6,7 @@ namespace Windows.UI
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class UIContext 
+	public partial class UIContext
 	{
 	}
 }

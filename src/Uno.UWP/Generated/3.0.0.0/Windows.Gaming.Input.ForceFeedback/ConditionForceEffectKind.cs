@@ -4,7 +4,7 @@
 namespace Windows.Gaming.Input.ForceFeedback
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ConditionForceEffectKind 
+	public enum ConditionForceEffectKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Spring = 0,

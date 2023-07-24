@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ElementSoundPlayer 
+	public partial class ElementSoundPlayer
 	{
 		// Skipping already declared property Volume
 		// Skipping already declared property State

@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GyrometerReading 
+	public partial class GyrometerReading
 	{
 		// Skipping already declared property AngularVelocityX
 		// Skipping already declared property AngularVelocityY

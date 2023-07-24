@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CalendarViewDayItem 
+	public partial class CalendarViewDayItem
 	{
 		// Skipping already declared property IsBlackout
 		// Skipping already declared property Date

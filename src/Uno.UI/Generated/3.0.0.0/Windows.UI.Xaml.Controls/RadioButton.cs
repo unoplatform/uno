@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RadioButton 
+	public partial class RadioButton
 	{
 		// Skipping already declared property GroupName
 		// Skipping already declared property GroupNameProperty

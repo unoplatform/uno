@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public enum FocusState 
+	public enum FocusState
 	{
 		// Skipping already declared field Windows.UI.Xaml.FocusState.Unfocused
 		// Skipping already declared field Windows.UI.Xaml.FocusState.Pointer

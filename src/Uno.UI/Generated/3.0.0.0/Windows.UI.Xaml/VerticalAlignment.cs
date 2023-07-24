@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public enum VerticalAlignment 
+	public enum VerticalAlignment
 	{
 		// Skipping already declared field Windows.UI.Xaml.VerticalAlignment.Top
 		// Skipping already declared field Windows.UI.Xaml.VerticalAlignment.Center

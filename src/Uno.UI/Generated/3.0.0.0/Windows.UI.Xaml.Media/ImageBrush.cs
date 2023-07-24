@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ImageBrush 
+	public partial class ImageBrush
 	{
 		// Skipping already declared property ImageSource
 		// Skipping already declared property ImageSourceProperty

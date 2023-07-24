@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BreadcrumbBarItemClickedEventArgs 
+	public partial class BreadcrumbBarItemClickedEventArgs
 	{
 		// Skipping already declared property Index
 		// Skipping already declared property Item

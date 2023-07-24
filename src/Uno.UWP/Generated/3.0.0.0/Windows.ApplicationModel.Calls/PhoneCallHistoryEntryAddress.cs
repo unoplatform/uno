@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Calls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PhoneCallHistoryEntryAddress 
+	public partial class PhoneCallHistoryEntryAddress
 	{
 		// Skipping already declared property RawAddressKind
 		// Skipping already declared property RawAddress

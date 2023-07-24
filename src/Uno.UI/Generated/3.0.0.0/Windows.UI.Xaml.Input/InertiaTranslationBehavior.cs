@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class InertiaTranslationBehavior 
+	public partial class InertiaTranslationBehavior
 	{
 		// Skipping already declared property DesiredDisplacement
 		// Skipping already declared property DesiredDeceleration

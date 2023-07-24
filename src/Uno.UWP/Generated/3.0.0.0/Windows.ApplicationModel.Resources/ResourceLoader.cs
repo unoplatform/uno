@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Resources
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ResourceLoader 
+	public partial class ResourceLoader
 	{
 		// Skipping already declared method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)
 		// Forced skipping of method Windows.ApplicationModel.Resources.ResourceLoader.ResourceLoader(string)

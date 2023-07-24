@@ -6,7 +6,7 @@ namespace Windows.System.Profile
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class AnalyticsInfo 
+	public static partial class AnalyticsInfo
 	{
 		// Skipping already declared property DeviceForm
 		// Skipping already declared property VersionInfo

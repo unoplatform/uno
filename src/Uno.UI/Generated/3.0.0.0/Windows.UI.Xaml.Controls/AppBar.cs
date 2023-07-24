@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AppBar 
+	public partial class AppBar
 	{
 		// Skipping already declared property IsSticky
 		// Skipping already declared property IsOpen

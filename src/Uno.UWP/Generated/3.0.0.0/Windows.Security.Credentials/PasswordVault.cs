@@ -6,7 +6,7 @@ namespace Windows.Security.Credentials
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PasswordVault 
+	public partial class PasswordVault
 	{
 		// Skipping already declared method Windows.Security.Credentials.PasswordVault.PasswordVault()
 		// Forced skipping of method Windows.Security.Credentials.PasswordVault.PasswordVault()

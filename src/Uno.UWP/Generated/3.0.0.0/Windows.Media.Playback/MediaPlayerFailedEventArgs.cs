@@ -6,7 +6,7 @@ namespace Windows.Media.Playback
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MediaPlayerFailedEventArgs 
+	public partial class MediaPlayerFailedEventArgs
 	{
 		// Skipping already declared property Error
 		// Skipping already declared property ErrorMessage

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SelectionItemPatternIdentifiers 
+	public partial class SelectionItemPatternIdentifiers
 	{
 		// Skipping already declared property IsSelectedProperty
 		// Skipping already declared property SelectionContainerProperty

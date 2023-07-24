@@ -6,7 +6,7 @@ namespace Windows.Graphics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct RectInt32 
+	public partial struct RectInt32
 	{
 		// Forced skipping of method Windows.Graphics.RectInt32.RectInt32()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

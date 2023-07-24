@@ -6,7 +6,7 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DeviceInformationUpdate 
+	public partial class DeviceInformationUpdate
 	{
 		// Skipping already declared property Id
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

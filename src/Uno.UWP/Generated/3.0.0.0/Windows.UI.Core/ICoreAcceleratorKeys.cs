@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface ICoreAcceleratorKeys 
+	public partial interface ICoreAcceleratorKeys
 	{
 		// Forced skipping of method Windows.UI.Core.ICoreAcceleratorKeys.AcceleratorKeyActivated.add
 		// Forced skipping of method Windows.UI.Core.ICoreAcceleratorKeys.AcceleratorKeyActivated.remove

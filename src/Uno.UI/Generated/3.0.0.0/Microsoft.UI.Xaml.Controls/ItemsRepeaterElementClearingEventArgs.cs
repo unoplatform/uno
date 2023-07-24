@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemsRepeaterElementClearingEventArgs 
+	public partial class ItemsRepeaterElementClearingEventArgs
 	{
 		// Skipping already declared property Element
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.ItemsRepeaterElementClearingEventArgs.Element.get

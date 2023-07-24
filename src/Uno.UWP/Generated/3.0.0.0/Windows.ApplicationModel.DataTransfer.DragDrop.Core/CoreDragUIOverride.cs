@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreDragUIOverride 
+	public partial class CoreDragUIOverride
 	{
 		// Skipping already declared property IsGlyphVisible
 		// Skipping already declared property IsContentVisible

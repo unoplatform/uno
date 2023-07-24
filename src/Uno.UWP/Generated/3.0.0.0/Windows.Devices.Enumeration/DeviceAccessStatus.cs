@@ -4,7 +4,7 @@
 namespace Windows.Devices.Enumeration
 {
 #if false || false || false || false || false || false || false
-	public enum DeviceAccessStatus 
+	public enum DeviceAccessStatus
 	{
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceAccessStatus.Unspecified
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceAccessStatus.Allowed

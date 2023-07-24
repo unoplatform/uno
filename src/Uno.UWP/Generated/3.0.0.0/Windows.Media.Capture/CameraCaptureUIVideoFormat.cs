@@ -4,7 +4,7 @@
 namespace Windows.Media.Capture
 {
 #if false || false || false || false || false || false || false
-	public enum CameraCaptureUIVideoFormat 
+	public enum CameraCaptureUIVideoFormat
 	{
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIVideoFormat.Mp4
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIVideoFormat.Wmv

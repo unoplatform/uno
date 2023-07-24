@@ -4,7 +4,7 @@
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 #if false || false || false || false || false || false || false
-	public enum GattCommunicationStatus 
+	public enum GattCommunicationStatus
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.Success
 		// Skipping already declared field Windows.Devices.Bluetooth.GenericAttributeProfile.GattCommunicationStatus.Unreachable

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DurationHelper 
+	public partial class DurationHelper
 	{
 		// Skipping already declared property Automatic
 		// Skipping already declared property Forever

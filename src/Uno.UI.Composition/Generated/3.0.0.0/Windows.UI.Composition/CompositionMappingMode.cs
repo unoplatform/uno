@@ -4,7 +4,7 @@
 namespace Windows.UI.Composition
 {
 #if false || false || false || false || false || false || false
-	public enum CompositionMappingMode 
+	public enum CompositionMappingMode
 	{
 		// Skipping already declared field Windows.UI.Composition.CompositionMappingMode.Absolute
 		// Skipping already declared field Windows.UI.Composition.CompositionMappingMode.Relative

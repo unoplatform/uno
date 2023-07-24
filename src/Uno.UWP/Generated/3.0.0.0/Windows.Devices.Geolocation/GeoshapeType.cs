@@ -4,7 +4,7 @@
 namespace Windows.Devices.Geolocation
 {
 #if false || false || false || false || false || false || false
-	public enum GeoshapeType 
+	public enum GeoshapeType
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.GeoshapeType.Geopoint
 		// Skipping already declared field Windows.Devices.Geolocation.GeoshapeType.Geocircle

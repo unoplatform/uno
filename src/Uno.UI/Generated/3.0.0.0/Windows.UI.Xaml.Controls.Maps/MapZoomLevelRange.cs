@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct MapZoomLevelRange 
+	public partial struct MapZoomLevelRange
 	{
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange.MapZoomLevelRange()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

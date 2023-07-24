@@ -4,7 +4,7 @@
 namespace Windows.Devices.Sensors
 {
 #if false || false || false || false || false || false || false
-	public enum MagnetometerAccuracy 
+	public enum MagnetometerAccuracy
 	{
 		// Skipping already declared field Windows.Devices.Sensors.MagnetometerAccuracy.Unknown
 		// Skipping already declared field Windows.Devices.Sensors.MagnetometerAccuracy.Unreliable

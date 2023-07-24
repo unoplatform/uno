@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Navigation
 {
 #if false || false || false || false || false || false || false
-	public enum NavigationMode 
+	public enum NavigationMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Navigation.NavigationMode.New
 		// Skipping already declared field Windows.UI.Xaml.Navigation.NavigationMode.Back

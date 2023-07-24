@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DragUI 
+	public partial class DragUI
 	{
 		// Skipping already declared method Windows.UI.Xaml.DragUI.SetContentFromBitmapImage(Windows.UI.Xaml.Media.Imaging.BitmapImage)
 		// Skipping already declared method Windows.UI.Xaml.DragUI.SetContentFromBitmapImage(Windows.UI.Xaml.Media.Imaging.BitmapImage, Windows.Foundation.Point)

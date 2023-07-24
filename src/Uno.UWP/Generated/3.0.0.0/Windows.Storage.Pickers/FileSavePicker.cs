@@ -6,7 +6,7 @@ namespace Windows.Storage.Pickers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FileSavePicker 
+	public partial class FileSavePicker
 	{
 		// Skipping already declared property SuggestedStartLocation
 		// Skipping already declared property SuggestedSaveFile

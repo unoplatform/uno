@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FindNextElementOptions 
+	public partial class FindNextElementOptions
 	{
 		// Skipping already declared property XYFocusNavigationStrategyOverride
 		// Skipping already declared property SearchRoot

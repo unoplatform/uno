@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum TwoPaneViewTallModeConfiguration 
+	public enum TwoPaneViewTallModeConfiguration
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration.SinglePane
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration.TopBottom

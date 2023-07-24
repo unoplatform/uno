@@ -4,7 +4,7 @@
 namespace Windows.Devices.Display.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum DisplayTaskSignalKind 
+	public enum DisplayTaskSignalKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		OnPresentFlipAway = 0,

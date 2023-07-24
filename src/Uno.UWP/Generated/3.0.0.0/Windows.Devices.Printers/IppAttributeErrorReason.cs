@@ -4,7 +4,7 @@
 namespace Windows.Devices.Printers
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum IppAttributeErrorReason 
+	public enum IppAttributeErrorReason
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		RequestEntityTooLarge = 0,

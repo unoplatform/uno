@@ -4,7 +4,7 @@
 namespace Windows.Devices.Geolocation.Geofencing
 {
 #if false || false || false || false || false || false || false
-	public enum GeofenceRemovalReason 
+	public enum GeofenceRemovalReason
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceRemovalReason.Used
 		// Skipping already declared field Windows.Devices.Geolocation.Geofencing.GeofenceRemovalReason.Expired

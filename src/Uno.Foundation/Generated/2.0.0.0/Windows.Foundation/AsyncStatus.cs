@@ -4,7 +4,7 @@
 namespace Windows.Foundation
 {
 #if false || false || false || false || false || false || false
-	public enum AsyncStatus 
+	public enum AsyncStatus
 	{
 		// Skipping already declared field Windows.Foundation.AsyncStatus.Canceled
 		// Skipping already declared field Windows.Foundation.AsyncStatus.Completed

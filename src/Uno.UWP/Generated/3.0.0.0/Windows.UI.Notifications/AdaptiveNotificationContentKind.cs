@@ -4,7 +4,7 @@
 namespace Windows.UI.Notifications
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum AdaptiveNotificationContentKind 
+	public enum AdaptiveNotificationContentKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Text = 0,

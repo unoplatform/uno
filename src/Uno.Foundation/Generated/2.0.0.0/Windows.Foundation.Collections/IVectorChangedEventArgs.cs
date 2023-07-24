@@ -6,7 +6,7 @@ namespace Windows.Foundation.Collections
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IVectorChangedEventArgs 
+	public partial interface IVectorChangedEventArgs
 	{
 		// Skipping already declared property CollectionChange
 		// Skipping already declared property Index

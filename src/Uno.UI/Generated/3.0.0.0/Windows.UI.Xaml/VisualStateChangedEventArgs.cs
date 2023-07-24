@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class VisualStateChangedEventArgs 
+	public partial class VisualStateChangedEventArgs
 	{
 		// Skipping already declared property OldState
 		// Skipping already declared property NewState

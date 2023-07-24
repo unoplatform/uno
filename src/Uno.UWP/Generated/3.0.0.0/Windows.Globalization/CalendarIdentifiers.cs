@@ -6,7 +6,7 @@ namespace Windows.Globalization
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class CalendarIdentifiers 
+	public static partial class CalendarIdentifiers
 	{
 		// Skipping already declared property Julian
 		// Skipping already declared property Gregorian

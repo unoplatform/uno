@@ -4,7 +4,7 @@
 namespace Windows.Networking.Connectivity
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum DataUsageGranularity 
+	public enum DataUsageGranularity
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		PerMinute = 0,

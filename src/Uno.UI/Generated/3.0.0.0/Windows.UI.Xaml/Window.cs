@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Window 
+	public partial class Window
 	{
 		// Skipping already declared property Content
 		// Skipping already declared property Bounds

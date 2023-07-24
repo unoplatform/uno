@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ShareTargetInfo 
+	public partial class ShareTargetInfo
 	{
 		// Skipping already declared property AppUserModelId
 		// Skipping already declared property ShareProvider

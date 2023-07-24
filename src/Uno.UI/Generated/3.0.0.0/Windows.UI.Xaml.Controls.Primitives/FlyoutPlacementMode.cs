@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public enum FlyoutPlacementMode 
+	public enum FlyoutPlacementMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Top
 		// Skipping already declared field Windows.UI.Xaml.Controls.Primitives.FlyoutPlacementMode.Bottom

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SvgImageSourceOpenedEventArgs 
+	public partial class SvgImageSourceOpenedEventArgs
 	{
 	}
 }

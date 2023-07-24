@@ -6,7 +6,7 @@ namespace Windows.Foundation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class GuidHelper 
+	public static partial class GuidHelper
 	{
 		// Skipping already declared property Empty
 		// Skipping already declared method Windows.Foundation.GuidHelper.CreateNewGuid()

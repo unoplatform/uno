@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FlyoutBaseClosingEventArgs 
+	public partial class FlyoutBaseClosingEventArgs
 	{
 		// Skipping already declared property Cancel
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBaseClosingEventArgs.Cancel.get

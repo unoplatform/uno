@@ -4,7 +4,7 @@
 namespace Microsoft.Web.WebView2.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum CoreWebView2HostResourceAccessKind 
+	public enum CoreWebView2HostResourceAccessKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Deny = 0,

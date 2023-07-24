@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum ContentDialogPlacement 
+	public enum ContentDialogPlacement
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogPlacement.Popup
 		// Skipping already declared field Windows.UI.Xaml.Controls.ContentDialogPlacement.InPlace

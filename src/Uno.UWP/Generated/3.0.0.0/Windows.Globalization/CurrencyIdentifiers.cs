@@ -6,7 +6,7 @@ namespace Windows.Globalization
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class CurrencyIdentifiers 
+	public static partial class CurrencyIdentifiers
 	{
 		// Skipping already declared property HNL
 		// Skipping already declared property AED

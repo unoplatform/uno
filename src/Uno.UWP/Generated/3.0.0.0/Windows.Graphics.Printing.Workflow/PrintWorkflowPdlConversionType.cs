@@ -4,7 +4,7 @@
 namespace Windows.Graphics.Printing.Workflow
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PrintWorkflowPdlConversionType 
+	public enum PrintWorkflowPdlConversionType
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		XpsToPdf = 0,

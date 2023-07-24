@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DispatcherTimer 
+	public partial class DispatcherTimer
 	{
 		// Skipping already declared property Interval
 		// Skipping already declared property IsEnabled

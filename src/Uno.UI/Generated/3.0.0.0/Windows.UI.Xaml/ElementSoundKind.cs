@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml
 {
 #if false || false || false || false || false || false || false
-	public enum ElementSoundKind 
+	public enum ElementSoundKind
 	{
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Focus
 		// Skipping already declared field Windows.UI.Xaml.ElementSoundKind.Invoke

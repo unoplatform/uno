@@ -6,7 +6,7 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GattCharacteristicsResult 
+	public partial class GattCharacteristicsResult
 	{
 		// Skipping already declared property Characteristics
 		// Skipping already declared property ProtocolError

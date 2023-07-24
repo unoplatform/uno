@@ -4,7 +4,7 @@
 namespace Windows.Graphics.Display
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum DisplayColorOverrideScenario 
+	public enum DisplayColorOverrideScenario
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Accurate = 0,

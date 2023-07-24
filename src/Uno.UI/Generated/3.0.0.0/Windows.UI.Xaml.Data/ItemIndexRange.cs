@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemIndexRange 
+	public partial class ItemIndexRange
 	{
 		// Skipping already declared property FirstIndex
 		// Skipping already declared property LastIndex

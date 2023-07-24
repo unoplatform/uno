@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface ICorePointerInputSource 
+	public partial interface ICorePointerInputSource
 	{
 		// Skipping already declared property HasCapture
 		// Skipping already declared property PointerCursor

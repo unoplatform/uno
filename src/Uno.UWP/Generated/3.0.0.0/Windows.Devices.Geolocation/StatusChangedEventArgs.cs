@@ -6,7 +6,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StatusChangedEventArgs 
+	public partial class StatusChangedEventArgs
 	{
 		// Skipping already declared property Status
 		// Forced skipping of method Windows.Devices.Geolocation.StatusChangedEventArgs.Status.get

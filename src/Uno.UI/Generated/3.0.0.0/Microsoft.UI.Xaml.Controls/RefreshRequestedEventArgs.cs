@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RefreshRequestedEventArgs 
+	public partial class RefreshRequestedEventArgs
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.RefreshRequestedEventArgs.GetDeferral()
 	}

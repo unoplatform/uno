@@ -6,7 +6,7 @@ namespace Windows.UI
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Colors 
+	public partial class Colors
 	{
 		// Skipping already declared property AliceBlue
 		// Skipping already declared property AntiqueWhite

@@ -4,7 +4,7 @@
 namespace Windows.Graphics.Printing.PrintSupport
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum SettingsLaunchKind 
+	public enum SettingsLaunchKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		JobPrintTicket = 0,

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TargetPropertyPath 
+	public partial class TargetPropertyPath
 	{
 		// Skipping already declared property Target
 		// Skipping already declared property Path

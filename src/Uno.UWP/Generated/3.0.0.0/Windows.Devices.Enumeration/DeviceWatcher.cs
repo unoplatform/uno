@@ -6,7 +6,7 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DeviceWatcher 
+	public partial class DeviceWatcher
 	{
 		// Skipping already declared property Status
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceWatcher.Added.add

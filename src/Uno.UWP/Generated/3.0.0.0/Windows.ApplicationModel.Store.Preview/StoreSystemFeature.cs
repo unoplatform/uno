@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Store.Preview
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum StoreSystemFeature 
+	public enum StoreSystemFeature
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		ArchitectureX86 = 0,

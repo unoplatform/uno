@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StyleSelector 
+	public partial class StyleSelector
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.StyleSelector.StyleSelector()
 		// Forced skipping of method Windows.UI.Xaml.Controls.StyleSelector.StyleSelector()

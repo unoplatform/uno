@@ -4,7 +4,7 @@
 namespace Windows.Devices.Bluetooth
 {
 #if false || false || false || false || false || false || false
-	public enum BluetoothConnectionStatus 
+	public enum BluetoothConnectionStatus
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothConnectionStatus.Disconnected
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothConnectionStatus.Connected

@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Media
 {
 #if false || false || false || false || false || false || false
-	public enum Stretch 
+	public enum Stretch
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Stretch.None
 		// Skipping already declared field Windows.UI.Xaml.Media.Stretch.Fill

@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Media
 {
 #if false || false || false || false || false || false || false
-	public enum AlignmentX 
+	public enum AlignmentX
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.AlignmentX.Left
 		// Skipping already declared field Windows.UI.Xaml.Media.AlignmentX.Center

@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Contacts
 {
 #if false || false || false || false || false || false || false
-	public enum ContactStoreAccessType 
+	public enum ContactStoreAccessType
 	{
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactStoreAccessType.AppContactsReadWrite
 		// Skipping already declared field Windows.ApplicationModel.Contacts.ContactStoreAccessType.AllContactsReadOnly

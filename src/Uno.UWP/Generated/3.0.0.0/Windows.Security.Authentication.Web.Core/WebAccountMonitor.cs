@@ -6,7 +6,7 @@ namespace Windows.Security.Authentication.Web.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class WebAccountMonitor 
+	public partial class WebAccountMonitor
 	{
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.add
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Updated.remove

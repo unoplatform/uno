@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreDragInfo 
+	public partial class CoreDragInfo
 	{
 		// Skipping already declared property Data
 		// Skipping already declared property Modifiers

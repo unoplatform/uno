@@ -6,7 +6,7 @@ namespace Windows.System.Profile
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AnalyticsVersionInfo 
+	public partial class AnalyticsVersionInfo
 	{
 		// Skipping already declared property DeviceFamily
 		// Skipping already declared property DeviceFamilyVersion

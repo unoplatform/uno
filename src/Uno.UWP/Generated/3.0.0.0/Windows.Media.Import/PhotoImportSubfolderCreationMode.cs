@@ -4,7 +4,7 @@
 namespace Windows.Media.Import
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PhotoImportSubfolderCreationMode 
+	public enum PhotoImportSubfolderCreationMode
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		DoNotCreateSubfolders = 0,

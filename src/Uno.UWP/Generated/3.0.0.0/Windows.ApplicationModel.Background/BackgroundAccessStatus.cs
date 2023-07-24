@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Background
 {
 #if false || false || false || false || false || false || false
-	public enum BackgroundAccessStatus 
+	public enum BackgroundAccessStatus
 	{
 		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.Unspecified
 		// Skipping already declared field Windows.ApplicationModel.Background.BackgroundAccessStatus.AllowedWithAlwaysOnRealTimeConnectivity

@@ -4,7 +4,7 @@
 namespace Windows.Data.Xml.Dom
 {
 #if false || false || false || false || false || false || false
-	public enum NodeType 
+	public enum NodeType
 	{
 		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.Invalid
 		// Skipping already declared field Windows.Data.Xml.Dom.NodeType.ElementNode

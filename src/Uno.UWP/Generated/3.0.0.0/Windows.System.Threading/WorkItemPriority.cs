@@ -4,7 +4,7 @@
 namespace Windows.System.Threading
 {
 #if false || false || false || false || false || false || false
-	public enum WorkItemPriority 
+	public enum WorkItemPriority
 	{
 		// Skipping already declared field Windows.System.Threading.WorkItemPriority.Low
 		// Skipping already declared field Windows.System.Threading.WorkItemPriority.Normal

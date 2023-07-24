@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Payments
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PaymentRequestCompletionStatus 
+	public enum PaymentRequestCompletionStatus
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Succeeded = 0,

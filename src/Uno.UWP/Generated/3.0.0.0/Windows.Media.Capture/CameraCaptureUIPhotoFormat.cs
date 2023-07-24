@@ -4,7 +4,7 @@
 namespace Windows.Media.Capture
 {
 #if false || false || false || false || false || false || false
-	public enum CameraCaptureUIPhotoFormat 
+	public enum CameraCaptureUIPhotoFormat
 	{
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIPhotoFormat.Jpeg
 		// Skipping already declared field Windows.Media.Capture.CameraCaptureUIPhotoFormat.Png

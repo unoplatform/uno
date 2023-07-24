@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreApplicationView 
+	public partial class CoreApplicationView
 	{
 		// Skipping already declared property CoreWindow
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

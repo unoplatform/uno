@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Media.Animation
 {
 #if false || false || false || false || false || false || false
-	public enum FillBehavior 
+	public enum FillBehavior
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.Animation.FillBehavior.HoldEnd
 		// Skipping already declared field Windows.UI.Xaml.Media.Animation.FillBehavior.Stop

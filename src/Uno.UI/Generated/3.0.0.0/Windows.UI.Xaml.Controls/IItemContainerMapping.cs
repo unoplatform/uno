@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IItemContainerMapping 
+	public partial interface IItemContainerMapping
 	{
 		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ItemFromContainer(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.IItemContainerMapping.ContainerFromItem(object)

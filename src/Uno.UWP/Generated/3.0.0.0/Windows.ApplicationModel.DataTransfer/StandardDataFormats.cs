@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 #endif
-	public static partial class StandardDataFormats 
+	public static partial class StandardDataFormats
 	{
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]

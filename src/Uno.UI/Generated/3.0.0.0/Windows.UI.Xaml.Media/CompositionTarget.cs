@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || IS_UNIT_TESTS || false || false || false || __MACOS__
 	[global::Uno.NotImplemented("IS_UNIT_TESTS", "__MACOS__")]
 #endif
-	public partial class CompositionTarget 
+	public partial class CompositionTarget
 	{
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositionTarget.Rendered.add
 		// Forced skipping of method Windows.UI.Xaml.Media.CompositionTarget.Rendered.remove

@@ -4,7 +4,7 @@
 namespace Windows.UI.Input
 {
 #if false || false || false || false || false || false || false
-	public enum PointerUpdateKind 
+	public enum PointerUpdateKind
 	{
 		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.Other
 		// Skipping already declared field Windows.UI.Input.PointerUpdateKind.LeftButtonPressed

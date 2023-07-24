@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Appointments
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Appointment 
+	public partial class Appointment
 	{
 		// Skipping already declared property Location
 		// Skipping already declared property AllDay

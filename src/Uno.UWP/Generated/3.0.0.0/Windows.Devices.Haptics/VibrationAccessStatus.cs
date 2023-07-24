@@ -4,7 +4,7 @@
 namespace Windows.Devices.Haptics
 {
 #if false || false || false || false || false || false || false
-	public enum VibrationAccessStatus 
+	public enum VibrationAccessStatus
 	{
 		// Skipping already declared field Windows.Devices.Haptics.VibrationAccessStatus.Allowed
 		// Skipping already declared field Windows.Devices.Haptics.VibrationAccessStatus.DeniedByUser

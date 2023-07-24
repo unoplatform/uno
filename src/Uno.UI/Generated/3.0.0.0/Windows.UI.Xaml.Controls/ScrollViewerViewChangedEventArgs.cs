@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ScrollViewerViewChangedEventArgs 
+	public partial class ScrollViewerViewChangedEventArgs
 	{
 		// Skipping already declared property IsIntermediate
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewerViewChangedEventArgs.ScrollViewerViewChangedEventArgs()

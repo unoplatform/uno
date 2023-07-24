@@ -4,7 +4,7 @@
 namespace Windows.Media.SpeechRecognition
 {
 #if false || false || false || false || false || false || false
-	public enum SpeechRecognitionResultStatus 
+	public enum SpeechRecognitionResultStatus
 	{
 		// Skipping already declared field Windows.Media.SpeechRecognition.SpeechRecognitionResultStatus.Success
 		// Skipping already declared field Windows.Media.SpeechRecognition.SpeechRecognitionResultStatus.TopicLanguageNotSupported

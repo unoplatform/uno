@@ -6,7 +6,7 @@ namespace Windows.UI.Input.Inking
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IInkPointFactory 
+	public partial interface IInkPointFactory
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		global::Windows.UI.Input.Inking.InkPoint CreateInkPoint(global::Windows.Foundation.Point position, float pressure);

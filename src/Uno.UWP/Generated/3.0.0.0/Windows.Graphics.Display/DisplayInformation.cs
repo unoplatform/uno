@@ -6,7 +6,7 @@ namespace Windows.Graphics.Display
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DisplayInformation 
+	public partial class DisplayInformation
 	{
 		// Skipping already declared property CurrentOrientation
 		// Skipping already declared property LogicalDpi

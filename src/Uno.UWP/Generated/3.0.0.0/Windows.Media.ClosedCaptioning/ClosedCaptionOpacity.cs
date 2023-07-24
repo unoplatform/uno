@@ -4,7 +4,7 @@
 namespace Windows.Media.ClosedCaptioning
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ClosedCaptionOpacity 
+	public enum ClosedCaptionOpacity
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Default = 0,

@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.ConversationalAgent
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ActivationSignalDetectionTrainingDataFormat 
+	public enum ActivationSignalDetectionTrainingDataFormat
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Voice8kHz8BitMono = 0,

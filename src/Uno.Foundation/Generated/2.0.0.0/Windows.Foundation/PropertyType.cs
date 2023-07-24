@@ -4,7 +4,7 @@
 namespace Windows.Foundation
 {
 #if false || false || false || false || false || false || false
-	public enum PropertyType 
+	public enum PropertyType
 	{
 		// Skipping already declared field Windows.Foundation.PropertyType.Empty
 		// Skipping already declared field Windows.Foundation.PropertyType.UInt8

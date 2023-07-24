@@ -4,7 +4,7 @@
 namespace Windows.Globalization.DateTimeFormatting
 {
 #if false || false || false || false || false || false || false
-	public enum HourFormat 
+	public enum HourFormat
 	{
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.HourFormat.None
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.HourFormat.Default

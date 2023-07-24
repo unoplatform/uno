@@ -4,7 +4,7 @@
 namespace Windows.Devices.WiFiDirect
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum WiFiDirectConfigurationMethod 
+	public enum WiFiDirectConfigurationMethod
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		ProvidePin = 0,

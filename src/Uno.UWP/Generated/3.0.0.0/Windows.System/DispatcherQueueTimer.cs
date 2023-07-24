@@ -6,7 +6,7 @@ namespace Windows.System
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DispatcherQueueTimer 
+	public partial class DispatcherQueueTimer
 	{
 		// Skipping already declared property IsRepeating
 		// Skipping already declared property Interval

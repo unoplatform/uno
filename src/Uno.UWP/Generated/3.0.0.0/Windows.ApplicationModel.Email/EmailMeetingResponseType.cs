@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Email
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum EmailMeetingResponseType 
+	public enum EmailMeetingResponseType
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Accept = 0,

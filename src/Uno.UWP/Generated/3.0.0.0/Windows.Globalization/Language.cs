@@ -6,7 +6,7 @@ namespace Windows.Globalization
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Language 
+	public partial class Language
 	{
 		// Skipping already declared property DisplayName
 		// Skipping already declared property LanguageTag

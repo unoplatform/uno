@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum NavigationViewBackButtonVisible 
+	public enum NavigationViewBackButtonVisible
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewBackButtonVisible.Collapsed
 		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewBackButtonVisible.Visible

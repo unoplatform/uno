@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls.Maps
 {
 #if false || false || false || false || false || false || false
-	public enum MapAnimationKind 
+	public enum MapAnimationKind
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.Default
 		// Skipping already declared field Windows.UI.Xaml.Controls.Maps.MapAnimationKind.None

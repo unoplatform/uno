@@ -6,7 +6,7 @@ namespace Windows.Perception.People
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct HandMeshVertex 
+	public partial struct HandMeshVertex
 	{
 		// Forced skipping of method Windows.Perception.People.HandMeshVertex.HandMeshVertex()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -4,7 +4,7 @@
 namespace Windows.Networking
 {
 #if false || false || false || false || false || false || false
-	public enum HostNameType 
+	public enum HostNameType
 	{
 		// Skipping already declared field Windows.Networking.HostNameType.DomainName
 		// Skipping already declared field Windows.Networking.HostNameType.Ipv4

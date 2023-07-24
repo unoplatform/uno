@@ -4,7 +4,7 @@
 namespace Windows.UI.Text.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum CoreTextInputPaneDisplayPolicy 
+	public enum CoreTextInputPaneDisplayPolicy
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Automatic = 0,

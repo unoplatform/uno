@@ -4,7 +4,7 @@
 namespace Windows.Storage
 {
 #if false || false || false || false || false || false || false
-	public enum StreamedFileFailureMode 
+	public enum StreamedFileFailureMode
 	{
 		// Skipping already declared field Windows.Storage.StreamedFileFailureMode.Failed
 		// Skipping already declared field Windows.Storage.StreamedFileFailureMode.CurrentlyUnavailable

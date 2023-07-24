@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DataProviderRequest 
+	public partial class DataProviderRequest
 	{
 		// Skipping already declared property Deadline
 		// Skipping already declared property FormatId

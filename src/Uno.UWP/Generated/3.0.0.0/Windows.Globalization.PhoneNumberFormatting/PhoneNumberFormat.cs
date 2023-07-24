@@ -4,7 +4,7 @@
 namespace Windows.Globalization.PhoneNumberFormatting
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum PhoneNumberFormat 
+	public enum PhoneNumberFormat
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		E164 = 0,

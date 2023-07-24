@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum ColorPickerHsvChannel 
+	public enum ColorPickerHsvChannel
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ColorPickerHsvChannel.Hue
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.ColorPickerHsvChannel.Saturation

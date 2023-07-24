@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Data
 {
 #if false || false || false || false || false || false || false
-	public enum RelativeSourceMode 
+	public enum RelativeSourceMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Data.RelativeSourceMode.None
 		// Skipping already declared field Windows.UI.Xaml.Data.RelativeSourceMode.TemplatedParent

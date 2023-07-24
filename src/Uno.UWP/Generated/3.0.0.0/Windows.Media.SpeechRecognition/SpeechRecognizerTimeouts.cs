@@ -6,7 +6,7 @@ namespace Windows.Media.SpeechRecognition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SpeechRecognizerTimeouts 
+	public partial class SpeechRecognizerTimeouts
 	{
 		// Skipping already declared property InitialSilenceTimeout
 		// Skipping already declared property EndSilenceTimeout

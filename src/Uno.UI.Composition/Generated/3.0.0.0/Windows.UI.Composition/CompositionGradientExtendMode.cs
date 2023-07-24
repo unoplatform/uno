@@ -4,7 +4,7 @@
 namespace Windows.UI.Composition
 {
 #if false || false || false || false || false || false || false
-	public enum CompositionGradientExtendMode 
+	public enum CompositionGradientExtendMode
 	{
 		// Skipping already declared field Windows.UI.Composition.CompositionGradientExtendMode.Clamp
 		// Skipping already declared field Windows.UI.Composition.CompositionGradientExtendMode.Wrap

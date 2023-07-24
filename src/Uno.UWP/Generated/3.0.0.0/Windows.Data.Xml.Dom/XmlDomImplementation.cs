@@ -6,7 +6,7 @@ namespace Windows.Data.Xml.Dom
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class XmlDomImplementation 
+	public partial class XmlDomImplementation
 	{
 		// Skipping already declared method Windows.Data.Xml.Dom.XmlDomImplementation.HasFeature(string, object)
 	}

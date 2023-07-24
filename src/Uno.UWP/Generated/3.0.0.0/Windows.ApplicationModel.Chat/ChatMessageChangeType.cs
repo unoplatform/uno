@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if false || false || false || false || false || false || false
-	public enum ChatMessageChangeType 
+	public enum ChatMessageChangeType
 	{
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageChangeType.MessageCreated
 		// Skipping already declared field Windows.ApplicationModel.Chat.ChatMessageChangeType.MessageModified

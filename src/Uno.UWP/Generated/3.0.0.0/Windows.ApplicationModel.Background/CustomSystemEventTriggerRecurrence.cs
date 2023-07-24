@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Background
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum CustomSystemEventTriggerRecurrence 
+	public enum CustomSystemEventTriggerRecurrence
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Once = 0,

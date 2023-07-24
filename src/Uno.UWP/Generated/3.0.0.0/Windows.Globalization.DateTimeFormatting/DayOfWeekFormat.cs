@@ -4,7 +4,7 @@
 namespace Windows.Globalization.DateTimeFormatting
 {
 #if false || false || false || false || false || false || false
-	public enum DayOfWeekFormat 
+	public enum DayOfWeekFormat
 	{
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.DayOfWeekFormat.None
 		// Skipping already declared field Windows.Globalization.DateTimeFormatting.DayOfWeekFormat.Default

@@ -6,7 +6,7 @@ namespace Windows.Networking.Connectivity
 #if false || false || IS_UNIT_TESTS || false || false || false || false
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 #endif
-	public static partial class NetworkInformation 
+	public static partial class NetworkInformation
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

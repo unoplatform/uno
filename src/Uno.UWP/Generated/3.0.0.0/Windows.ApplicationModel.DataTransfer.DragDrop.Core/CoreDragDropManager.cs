@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreDragDropManager 
+	public partial class CoreDragDropManager
 	{
 		// Skipping already declared property AreConcurrentOperationsEnabled
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DragDrop.Core.CoreDragDropManager.TargetRequested.add

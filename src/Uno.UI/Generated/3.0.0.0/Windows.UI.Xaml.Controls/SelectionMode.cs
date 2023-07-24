@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum SelectionMode 
+	public enum SelectionMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.SelectionMode.Single
 		// Skipping already declared field Windows.UI.Xaml.Controls.SelectionMode.Multiple

@@ -6,7 +6,7 @@ namespace Windows.Devices.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct MouseDelta 
+	public partial struct MouseDelta
 	{
 		// Forced skipping of method Windows.Devices.Input.MouseDelta.MouseDelta()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

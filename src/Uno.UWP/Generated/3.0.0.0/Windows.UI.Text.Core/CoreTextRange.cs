@@ -6,7 +6,7 @@ namespace Windows.UI.Text.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct CoreTextRange 
+	public partial struct CoreTextRange
 	{
 		// Forced skipping of method Windows.UI.Text.Core.CoreTextRange.CoreTextRange()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

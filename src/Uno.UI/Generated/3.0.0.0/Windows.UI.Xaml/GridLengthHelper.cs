@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class GridLengthHelper 
+	public partial class GridLengthHelper
 	{
 		// Skipping already declared property Auto
 		// Forced skipping of method Windows.UI.Xaml.GridLengthHelper.Auto.get

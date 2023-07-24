@@ -4,7 +4,7 @@
 namespace Windows.Devices.Sensors
 {
 #if false || false || false || false || false || false || false
-	public enum SimpleOrientation 
+	public enum SimpleOrientation
 	{
 		// Skipping already declared field Windows.Devices.Sensors.SimpleOrientation.NotRotated
 		// Skipping already declared field Windows.Devices.Sensors.SimpleOrientation.Rotated90DegreesCounterclockwise

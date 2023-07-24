@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public enum KeyboardNavigationMode 
+	public enum KeyboardNavigationMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyboardNavigationMode.Local
 		// Skipping already declared field Windows.UI.Xaml.Input.KeyboardNavigationMode.Cycle

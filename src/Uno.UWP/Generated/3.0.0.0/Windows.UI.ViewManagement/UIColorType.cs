@@ -4,7 +4,7 @@
 namespace Windows.UI.ViewManagement
 {
 #if false || false || false || false || false || false || false
-	public enum UIColorType 
+	public enum UIColorType
 	{
 		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Background
 		// Skipping already declared field Windows.UI.ViewManagement.UIColorType.Foreground

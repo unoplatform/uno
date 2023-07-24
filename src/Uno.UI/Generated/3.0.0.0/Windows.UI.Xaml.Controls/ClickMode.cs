@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum ClickMode 
+	public enum ClickMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.ClickMode.Release
 		// Skipping already declared field Windows.UI.Xaml.Controls.ClickMode.Press

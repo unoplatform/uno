@@ -4,7 +4,7 @@
 namespace Windows.Globalization
 {
 #if false || false || false || false || false || false || false
-	public enum DayOfWeek 
+	public enum DayOfWeek
 	{
 		// Skipping already declared field Windows.Globalization.DayOfWeek.Sunday
 		// Skipping already declared field Windows.Globalization.DayOfWeek.Monday

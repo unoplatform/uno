@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class InfoBarClosingEventArgs 
+	public partial class InfoBarClosingEventArgs
 	{
 		// Skipping already declared property Cancel
 		// Skipping already declared property Reason

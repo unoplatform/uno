@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Documents
 {
 #if false || false || false || false || false || false || false
-	public enum UnderlineStyle 
+	public enum UnderlineStyle
 	{
 		// Skipping already declared field Windows.UI.Xaml.Documents.UnderlineStyle.None
 		// Skipping already declared field Windows.UI.Xaml.Documents.UnderlineStyle.Single

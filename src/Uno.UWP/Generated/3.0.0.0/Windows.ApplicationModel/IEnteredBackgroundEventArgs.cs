@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IEnteredBackgroundEventArgs 
+	public partial interface IEnteredBackgroundEventArgs
 	{
 		// Skipping already declared method Windows.ApplicationModel.IEnteredBackgroundEventArgs.GetDeferral()
 	}

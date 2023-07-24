@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DataPackageView 
+	public partial class DataPackageView
 	{
 		// Skipping already declared property AvailableFormats
 		// Skipping already declared property Properties

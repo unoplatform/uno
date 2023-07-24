@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TreeViewDragItemsCompletedEventArgs 
+	public partial class TreeViewDragItemsCompletedEventArgs
 	{
 		// Skipping already declared property DropResult
 		// Skipping already declared property Items

@@ -4,7 +4,7 @@
 namespace Windows.Media.SpeechRecognition
 {
 #if false || false || false || false || false || false || false
-	public enum SpeechRecognitionConfidence 
+	public enum SpeechRecognitionConfidence
 	{
 		// Skipping already declared field Windows.Media.SpeechRecognition.SpeechRecognitionConfidence.High
 		// Skipping already declared field Windows.Media.SpeechRecognition.SpeechRecognitionConfidence.Medium

@@ -4,7 +4,7 @@
 namespace Windows.UI.Core
 {
 #if false || false || false || false || false || false || false
-	public enum CoreWindowActivationMode 
+	public enum CoreWindowActivationMode
 	{
 		// Skipping already declared field Windows.UI.Core.CoreWindowActivationMode.None
 		// Skipping already declared field Windows.UI.Core.CoreWindowActivationMode.Deactivated

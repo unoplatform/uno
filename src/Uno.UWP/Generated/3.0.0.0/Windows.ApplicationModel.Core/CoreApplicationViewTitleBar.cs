@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreApplicationViewTitleBar 
+	public partial class CoreApplicationViewTitleBar
 	{
 		// Skipping already declared property ExtendViewIntoTitleBar
 		// Skipping already declared property Height

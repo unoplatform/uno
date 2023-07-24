@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Data
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface ICustomProperty 
+	public partial interface ICustomProperty
 	{
 		// Skipping already declared property CanRead
 		// Skipping already declared property CanWrite

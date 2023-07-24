@@ -6,7 +6,7 @@ namespace Windows.UI.ViewManagement
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AccessibilitySettings 
+	public partial class AccessibilitySettings
 	{
 		// Skipping already declared property HighContrast
 		// Skipping already declared property HighContrastScheme

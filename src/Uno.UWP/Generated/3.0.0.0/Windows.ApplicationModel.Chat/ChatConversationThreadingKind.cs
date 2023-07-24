@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Chat
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum ChatConversationThreadingKind 
+	public enum ChatConversationThreadingKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Participants = 0,

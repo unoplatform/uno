@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.ConversationalAgent
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum SignalDetectorResourceKind 
+	public enum SignalDetectorResourceKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		ParallelModelSupport = 0,

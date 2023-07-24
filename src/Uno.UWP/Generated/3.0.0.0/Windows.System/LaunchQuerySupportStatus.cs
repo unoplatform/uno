@@ -4,7 +4,7 @@
 namespace Windows.System
 {
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum LaunchQuerySupportStatus 
+	public enum LaunchQuerySupportStatus
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Available = 0,

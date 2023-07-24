@@ -6,7 +6,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface INumberFormatterOptions 
+	public partial interface INumberFormatterOptions
 	{
 		// Skipping already declared property FractionDigits
 		// Skipping already declared property GeographicRegion

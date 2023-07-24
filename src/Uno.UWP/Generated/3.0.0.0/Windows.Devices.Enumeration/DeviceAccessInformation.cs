@@ -6,7 +6,7 @@ namespace Windows.Devices.Enumeration
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DeviceAccessInformation 
+	public partial class DeviceAccessInformation
 	{
 		// Skipping already declared property CurrentStatus
 		// Forced skipping of method Windows.Devices.Enumeration.DeviceAccessInformation.AccessChanged.add

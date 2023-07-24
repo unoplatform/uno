@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
 #if false || false || false || false || false || false || false
-	public enum CornerRadiusFilterKind 
+	public enum CornerRadiusFilterKind
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterKind.None
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.Primitives.CornerRadiusFilterKind.Top

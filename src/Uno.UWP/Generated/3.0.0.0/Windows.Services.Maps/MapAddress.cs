@@ -6,7 +6,7 @@ namespace Windows.Services.Maps
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MapAddress 
+	public partial class MapAddress
 	{
 		// Skipping already declared property BuildingFloor
 		// Skipping already declared property BuildingName

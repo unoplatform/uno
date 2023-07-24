@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreWebView2InitializedEventArgs 
+	public partial class CoreWebView2InitializedEventArgs
 	{
 		// Skipping already declared property Exception
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.CoreWebView2InitializedEventArgs.Exception.get

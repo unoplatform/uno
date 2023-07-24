@@ -4,7 +4,7 @@
 namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum GattProtectionLevel 
+	public enum GattProtectionLevel
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Plain = 0,

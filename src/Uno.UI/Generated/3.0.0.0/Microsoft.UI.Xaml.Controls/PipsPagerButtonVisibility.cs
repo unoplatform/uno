@@ -4,7 +4,7 @@
 namespace Microsoft.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum PipsPagerButtonVisibility 
+	public enum PipsPagerButtonVisibility
 	{
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility.Visible
 		// Skipping already declared field Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility.VisibleOnPointerOver

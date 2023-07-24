@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ElementFactoryRecycleArgs 
+	public partial class ElementFactoryRecycleArgs
 	{
 		// Skipping already declared property Parent
 		// Skipping already declared property Element

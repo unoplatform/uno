@@ -4,7 +4,7 @@
 namespace Windows.Devices.Sensors
 {
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum AccelerometerReadingType 
+	public enum AccelerometerReadingType
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Standard = 0,

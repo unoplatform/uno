@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public enum XYFocusNavigationStrategy 
+	public enum XYFocusNavigationStrategy
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Auto
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusNavigationStrategy.Projection

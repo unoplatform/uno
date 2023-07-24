@@ -4,7 +4,7 @@
 namespace Windows.Media.SpeechRecognition
 {
 #if false || false || false || false || false || false || false
-	public enum SpeechRecognizerState 
+	public enum SpeechRecognizerState
 	{
 		// Skipping already declared field Windows.Media.SpeechRecognition.SpeechRecognizerState.Idle
 		// Skipping already declared field Windows.Media.SpeechRecognition.SpeechRecognizerState.Capturing

@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Appointments
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FindAppointmentsOptions 
+	public partial class FindAppointmentsOptions
 	{
 		// Skipping already declared property MaxCount
 		// Skipping already declared property IncludeHidden

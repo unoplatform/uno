@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input.Custom
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface ICustomGameControllerFactory 
+	public partial interface ICustomGameControllerFactory
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		object CreateGameController(global::Windows.Gaming.Input.Custom.IGameControllerProvider provider);

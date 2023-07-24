@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum CommandBarLabelPosition 
+	public enum CommandBarLabelPosition
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarLabelPosition.Default
 		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarLabelPosition.Collapsed

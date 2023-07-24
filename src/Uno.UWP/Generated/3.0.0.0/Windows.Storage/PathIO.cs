@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class PathIO 
+	public static partial class PathIO
 	{
 		// Skipping already declared method Windows.Storage.PathIO.ReadTextAsync(string)
 		// Skipping already declared method Windows.Storage.PathIO.ReadTextAsync(string, Windows.Storage.Streams.UnicodeEncoding)

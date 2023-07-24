@@ -6,7 +6,7 @@ namespace Windows.Foundation.Collections
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IIterator<T> 
+	public partial interface IIterator<T>
 	{
 		// Skipping already declared property Current
 		// Skipping already declared property HasCurrent

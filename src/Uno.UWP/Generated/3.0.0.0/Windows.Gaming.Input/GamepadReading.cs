@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct GamepadReading 
+	public partial struct GamepadReading
 	{
 		// Forced skipping of method Windows.Gaming.Input.GamepadReading.GamepadReading()
 		// Skipping already declared field Windows.Gaming.Input.GamepadReading.Timestamp

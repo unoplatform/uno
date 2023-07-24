@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum SnapPointsType 
+	public enum SnapPointsType
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.SnapPointsType.None
 		// Skipping already declared field Windows.UI.Xaml.Controls.SnapPointsType.Optional

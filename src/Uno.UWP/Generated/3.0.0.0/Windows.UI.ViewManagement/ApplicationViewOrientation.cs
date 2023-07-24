@@ -4,7 +4,7 @@
 namespace Windows.UI.ViewManagement
 {
 #if false || false || false || false || false || false || false
-	public enum ApplicationViewOrientation 
+	public enum ApplicationViewOrientation
 	{
 		// Skipping already declared field Windows.UI.ViewManagement.ApplicationViewOrientation.Landscape
 		// Skipping already declared field Windows.UI.ViewManagement.ApplicationViewOrientation.Portrait

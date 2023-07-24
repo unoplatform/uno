@@ -6,7 +6,7 @@ namespace Windows.System
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DispatcherQueue 
+	public partial class DispatcherQueue
 	{
 		// Skipping already declared property HasThreadAccess
 		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()

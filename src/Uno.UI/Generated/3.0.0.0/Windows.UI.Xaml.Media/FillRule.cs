@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Media
 {
 #if false || false || false || false || false || false || false
-	public enum FillRule 
+	public enum FillRule
 	{
 		// Skipping already declared field Windows.UI.Xaml.Media.FillRule.EvenOdd
 		// Skipping already declared field Windows.UI.Xaml.Media.FillRule.Nonzero

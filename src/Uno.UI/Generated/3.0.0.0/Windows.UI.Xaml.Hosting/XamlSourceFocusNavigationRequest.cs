@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Hosting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class XamlSourceFocusNavigationRequest 
+	public partial class XamlSourceFocusNavigationRequest
 	{
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property HintRect

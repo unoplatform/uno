@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SystemNavigationManager 
+	public partial class SystemNavigationManager
 	{
 		// Skipping already declared property AppViewBackButtonVisibility
 		// Forced skipping of method Windows.UI.Core.SystemNavigationManager.BackRequested.add

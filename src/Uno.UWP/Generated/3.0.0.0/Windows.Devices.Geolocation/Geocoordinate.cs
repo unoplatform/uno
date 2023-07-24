@@ -6,7 +6,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Geocoordinate 
+	public partial class Geocoordinate
 	{
 		// Skipping already declared property Accuracy
 		// Skipping already declared property Altitude

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TimePickerFlyout 
+	public partial class TimePickerFlyout
 	{
 		// Skipping already declared property Time
 		// Skipping already declared property MinuteIncrement

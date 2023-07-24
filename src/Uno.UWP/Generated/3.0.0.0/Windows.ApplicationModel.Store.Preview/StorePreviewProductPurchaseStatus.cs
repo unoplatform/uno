@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Store.Preview
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum StorePreviewProductPurchaseStatus 
+	public enum StorePreviewProductPurchaseStatus
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Succeeded = 0,

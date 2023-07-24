@@ -4,7 +4,7 @@
 namespace Windows.Devices.Geolocation
 {
 #if false || false || false || false || false || false || false
-	public enum GeolocationAccessStatus 
+	public enum GeolocationAccessStatus
 	{
 		// Skipping already declared field Windows.Devices.Geolocation.GeolocationAccessStatus.Unspecified
 		// Skipping already declared field Windows.Devices.Geolocation.GeolocationAccessStatus.Allowed

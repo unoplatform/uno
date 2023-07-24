@@ -4,7 +4,7 @@
 namespace Microsoft.Web.WebView2.Core
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum CoreWebView2PointerEventKind 
+	public enum CoreWebView2PointerEventKind
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Activate = 587,

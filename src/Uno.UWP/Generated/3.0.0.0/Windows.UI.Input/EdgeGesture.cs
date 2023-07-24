@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class EdgeGesture 
+	public partial class EdgeGesture
 	{
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.add
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.remove

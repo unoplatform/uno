@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Markup
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IXamlMember 
+	public partial interface IXamlMember
 	{
 		// Skipping already declared property IsAttachable
 		// Skipping already declared property IsDependencyProperty

@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface ISelectionItemProvider 
+	public partial interface ISelectionItemProvider
 	{
 		// Skipping already declared property IsSelected
 		// Skipping already declared property SelectionContainer

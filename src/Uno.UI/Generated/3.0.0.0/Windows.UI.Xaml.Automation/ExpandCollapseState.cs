@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Automation
 {
 #if false || false || false || false || false || false || false
-	public enum ExpandCollapseState 
+	public enum ExpandCollapseState
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.Collapsed
 		// Skipping already declared field Windows.UI.Xaml.Automation.ExpandCollapseState.Expanded

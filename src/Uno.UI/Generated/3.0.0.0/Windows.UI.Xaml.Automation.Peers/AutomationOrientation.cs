@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Automation.Peers
 {
 #if false || false || false || false || false || false || false
-	public enum AutomationOrientation 
+	public enum AutomationOrientation
 	{
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.None
 		// Skipping already declared field Windows.UI.Xaml.Automation.Peers.AutomationOrientation.Horizontal

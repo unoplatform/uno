@@ -6,7 +6,7 @@ namespace Windows.UI.Text
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct FontWeight 
+	public partial struct FontWeight
 	{
 		// Forced skipping of method Windows.UI.Text.FontWeight.FontWeight()
 		// Skipping already declared field Windows.UI.Text.FontWeight.Weight

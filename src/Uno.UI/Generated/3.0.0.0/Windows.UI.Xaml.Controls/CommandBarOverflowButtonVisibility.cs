@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum CommandBarOverflowButtonVisibility 
+	public enum CommandBarOverflowButtonVisibility
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility.Auto
 		// Skipping already declared field Windows.UI.Xaml.Controls.CommandBarOverflowButtonVisibility.Visible

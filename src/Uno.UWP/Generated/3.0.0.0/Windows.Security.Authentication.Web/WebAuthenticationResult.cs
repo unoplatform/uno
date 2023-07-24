@@ -6,7 +6,7 @@ namespace Windows.Security.Authentication.Web
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class WebAuthenticationResult 
+	public partial class WebAuthenticationResult
 	{
 		// Skipping already declared property ResponseData
 		// Skipping already declared property ResponseErrorDetail

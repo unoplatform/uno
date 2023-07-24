@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CornerRadiusHelper 
+	public partial class CornerRadiusHelper
 	{
 		// Skipping already declared method Windows.UI.Xaml.CornerRadiusHelper.FromRadii(double, double, double, double)
 		// Skipping already declared method Windows.UI.Xaml.CornerRadiusHelper.FromUniformRadius(double)

@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Input
 {
 #if false || false || false || false || false || false || false
-	public enum XYFocusKeyboardNavigationMode 
+	public enum XYFocusKeyboardNavigationMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode.Auto
 		// Skipping already declared field Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode.Enabled

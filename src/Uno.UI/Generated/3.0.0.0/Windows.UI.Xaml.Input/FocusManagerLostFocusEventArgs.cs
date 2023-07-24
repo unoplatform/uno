@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FocusManagerLostFocusEventArgs 
+	public partial class FocusManagerLostFocusEventArgs
 	{
 		// Skipping already declared property CorrelationId
 		// Skipping already declared property OldFocusedElement

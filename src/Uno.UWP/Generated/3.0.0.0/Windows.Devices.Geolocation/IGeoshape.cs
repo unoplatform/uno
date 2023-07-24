@@ -6,7 +6,7 @@ namespace Windows.Devices.Geolocation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IGeoshape 
+	public partial interface IGeoshape
 	{
 		// Skipping already declared property AltitudeReferenceSystem
 		// Skipping already declared property GeoshapeType

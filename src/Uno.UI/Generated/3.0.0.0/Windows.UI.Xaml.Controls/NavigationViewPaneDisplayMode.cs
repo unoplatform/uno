@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum NavigationViewPaneDisplayMode 
+	public enum NavigationViewPaneDisplayMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Auto
 		// Skipping already declared field Windows.UI.Xaml.Controls.NavigationViewPaneDisplayMode.Left

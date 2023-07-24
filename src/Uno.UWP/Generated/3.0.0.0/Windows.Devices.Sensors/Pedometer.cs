@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || __SKIA__ || false || false
 	[global::Uno.NotImplemented("__SKIA__")]
 #endif
-	public partial class Pedometer 
+	public partial class Pedometer
 	{
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

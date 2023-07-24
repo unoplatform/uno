@@ -4,7 +4,7 @@
 namespace Windows.Devices.Bluetooth
 {
 #if false || false || false || false || false || false || false
-	public enum BluetoothMinorClass 
+	public enum BluetoothMinorClass
 	{
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.Uncategorized
 		// Skipping already declared field Windows.Devices.Bluetooth.BluetoothMinorClass.ComputerDesktop

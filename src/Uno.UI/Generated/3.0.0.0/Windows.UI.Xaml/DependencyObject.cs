@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface DependencyObject 
+	public partial interface DependencyObject
 	{
 		// Skipping already declared property Dispatcher
 		// Forced skipping of method Windows.UI.Xaml.DependencyObject.DependencyObject()

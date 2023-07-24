@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct ManipulationDelta 
+	public partial struct ManipulationDelta
 	{
 		// Forced skipping of method Windows.UI.Input.ManipulationDelta.ManipulationDelta()
 		// Skipping already declared field Windows.UI.Input.ManipulationDelta.Translation

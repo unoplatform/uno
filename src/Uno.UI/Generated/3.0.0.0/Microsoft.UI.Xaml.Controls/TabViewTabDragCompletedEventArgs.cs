@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TabViewTabDragCompletedEventArgs 
+	public partial class TabViewTabDragCompletedEventArgs
 	{
 		// Skipping already declared property DropResult
 		// Skipping already declared property Item

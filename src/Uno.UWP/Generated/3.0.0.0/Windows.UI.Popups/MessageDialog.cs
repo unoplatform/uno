@@ -6,7 +6,7 @@ namespace Windows.UI.Popups
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MessageDialog 
+	public partial class MessageDialog
 	{
 		// Skipping already declared property Title
 		// Skipping already declared property Options

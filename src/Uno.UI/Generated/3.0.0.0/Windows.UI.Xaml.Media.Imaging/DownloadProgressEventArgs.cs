@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DownloadProgressEventArgs 
+	public partial class DownloadProgressEventArgs
 	{
 		// Skipping already declared property Progress
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.DownloadProgressEventArgs.Progress.get

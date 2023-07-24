@@ -4,7 +4,7 @@
 namespace Windows.Foundation.Metadata
 {
 #if false || false || false || false || false || false || false
-	public enum GCPressureAmount 
+	public enum GCPressureAmount
 	{
 		// Skipping already declared field Windows.Foundation.Metadata.GCPressureAmount.Low
 		// Skipping already declared field Windows.Foundation.Metadata.GCPressureAmount.Medium

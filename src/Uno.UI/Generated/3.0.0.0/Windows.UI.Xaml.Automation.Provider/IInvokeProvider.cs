@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IInvokeProvider 
+	public partial interface IInvokeProvider
 	{
 		// Skipping already declared method Windows.UI.Xaml.Automation.Provider.IInvokeProvider.Invoke()
 	}

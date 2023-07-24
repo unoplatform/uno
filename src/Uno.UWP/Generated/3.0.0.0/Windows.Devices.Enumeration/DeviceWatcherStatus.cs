@@ -4,7 +4,7 @@
 namespace Windows.Devices.Enumeration
 {
 #if false || false || false || false || false || false || false
-	public enum DeviceWatcherStatus 
+	public enum DeviceWatcherStatus
 	{
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Created
 		// Skipping already declared field Windows.Devices.Enumeration.DeviceWatcherStatus.Started

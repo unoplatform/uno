@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Provider
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IExpandCollapseProvider 
+	public partial interface IExpandCollapseProvider
 	{
 		// Skipping already declared property ExpandCollapseState
 		// Forced skipping of method Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider.ExpandCollapseState.get

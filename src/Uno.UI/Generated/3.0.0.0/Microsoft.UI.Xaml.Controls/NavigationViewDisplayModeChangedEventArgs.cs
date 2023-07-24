@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class NavigationViewDisplayModeChangedEventArgs 
+	public partial class NavigationViewDisplayModeChangedEventArgs
 	{
 		// Skipping already declared property DisplayMode
 		// Forced skipping of method Microsoft.UI.Xaml.Controls.NavigationViewDisplayModeChangedEventArgs.DisplayMode.get

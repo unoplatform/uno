@@ -6,7 +6,7 @@ namespace Windows.UI.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial struct CrossSlideThresholds 
+	public partial struct CrossSlideThresholds
 	{
 		// Forced skipping of method Windows.UI.Input.CrossSlideThresholds.CrossSlideThresholds()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -6,7 +6,7 @@ namespace Windows.Devices.Sensors
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BarometerReading 
+	public partial class BarometerReading
 	{
 		// Skipping already declared property StationPressureInHectopascals
 		// Skipping already declared property Timestamp

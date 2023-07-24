@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DependencyPropertyChangedEventArgs 
+	public partial class DependencyPropertyChangedEventArgs
 	{
 		// Skipping already declared property NewValue
 		// Skipping already declared property OldValue

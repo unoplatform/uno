@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum AppBarClosedDisplayMode 
+	public enum AppBarClosedDisplayMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.AppBarClosedDisplayMode.Compact
 		// Skipping already declared field Windows.UI.Xaml.Controls.AppBarClosedDisplayMode.Minimal

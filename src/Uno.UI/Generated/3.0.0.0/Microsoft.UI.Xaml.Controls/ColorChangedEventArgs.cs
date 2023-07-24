@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ColorChangedEventArgs 
+	public partial class ColorChangedEventArgs
 	{
 		// Skipping already declared property NewColor
 		// Skipping already declared property OldColor

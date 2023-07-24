@@ -4,7 +4,7 @@
 namespace Windows.UI.Xaml.Controls
 {
 #if false || false || false || false || false || false || false
-	public enum CalendarViewDisplayMode 
+	public enum CalendarViewDisplayMode
 	{
 		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewDisplayMode.Month
 		// Skipping already declared field Windows.UI.Xaml.Controls.CalendarViewDisplayMode.Year

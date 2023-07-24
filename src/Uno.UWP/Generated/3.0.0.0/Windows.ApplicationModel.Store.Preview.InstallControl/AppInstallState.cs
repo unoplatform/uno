@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.Store.Preview.InstallControl
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum AppInstallState 
+	public enum AppInstallState
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		Pending = 0,

@@ -6,7 +6,7 @@ namespace Windows.Foundation.Metadata
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public static partial class ApiInformation 
+	public static partial class ApiInformation
 	{
 		// Skipping already declared method Windows.Foundation.Metadata.ApiInformation.IsTypePresent(string)
 		// Skipping already declared method Windows.Foundation.Metadata.ApiInformation.IsMethodPresent(string, string)

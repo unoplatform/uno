@@ -4,7 +4,7 @@
 namespace Windows.Media.Streaming.Adaptive
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum AdaptiveMediaSourceDownloadBitrateChangedReason 
+	public enum AdaptiveMediaSourceDownloadBitrateChangedReason
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		SufficientInboundBitsPerSecond = 0,

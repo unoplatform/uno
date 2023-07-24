@@ -4,7 +4,7 @@
 namespace Windows.ApplicationModel.UserDataTasks
 {
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-	public enum UserDataTaskStoreAccessType 
+	public enum UserDataTaskStoreAccessType
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		AppTasksReadWrite = 0,
