@@ -294,7 +294,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			{
 				case MediaPlaybackList playlist when playlist.Items.Count > 0:
 					SetPlaylistItems(playlist);
-					if (_playlistItems is not null)
+					if (_playlistItems is not null && _playlistItems.Any())
 					{
 						_uri = _playlistItems[0];
 					}
