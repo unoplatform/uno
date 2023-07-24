@@ -137,15 +137,19 @@ namespace Uno.UI.RemoteControl.HotReload
 				return;
 			}
 
-			if (newView.DataContext is null
-				&& oldView.DataContext is not null)
+			var commonProperties = from oldProp in DependencyProperty.GetPropertiesForType(oldView.GetType())
+								   from newProp in DependencyProperty.GetPropertiesForType(newView.GetType())
+								   where oldProp.Name == newProp.Name
+								   let oldValue = oldView.GetValue(oldProp)
+								   let newValue = newView.GetValue(newProp)
+								   where oldValue is not null && newValue is null
+								   select (oldProp, oldValue, newProp);
+			foreach (var p in commonProperties)
 			{
-				// If the DataContext is not provided by the page itself, it may
-				// have been provided by an external actor. Copy the value as is
-				// in the DataContext of the new element.
-
-				newView.DataContext = oldView.DataContext;
+				newView.SetValue(p.newProp, p.oldValue);
 			}
+
+
 		}
 	}
 }
