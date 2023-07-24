@@ -11,6 +11,10 @@ partial class DesktopWindowXamlSource
 	{
 		// Ensure the root element of the XamlIsland is loaded.
 		UIElement.LoadingRootElement(_root);
+
+		_root.XamlRoot.InvalidateMeasure();
+		_root.XamlRoot.InvalidateArrange();
+
 		UIElement.RootElementLoaded(_root);
 	}
 }

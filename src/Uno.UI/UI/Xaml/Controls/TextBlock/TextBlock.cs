@@ -23,6 +23,7 @@ using Uno;
 using Uno.Foundation.Logging;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
 
 #if __IOS__
 using UIKit;
@@ -35,10 +36,16 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private WeakBrushChangedProxy _foregroundChangedProxy;
+		private Action _foregroundChanged;
 
 		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
+
+		~TextBlock()
+		{
+			_foregroundChangedProxy?.Unsubscribe();
+		}
 
 #if !UNO_REFERENCE_API
 		public TextBlock()
@@ -235,7 +242,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		internal static object CoerceText(DependencyObject dependencyObject, object baseValue) =>
+		internal static object CoerceText(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _) =>
 			baseValue is string
 				? baseValue
 				: string.Empty;
@@ -409,47 +416,42 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: SolidColorBrushHelper.Black,
 					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnForegroundChanged()
+					propertyChangedCallback: (s, e) => ((TextBlock)s).Subscribe((Brush)e.NewValue)
 				)
 			);
 
+		private void Subscribe(Brush newValue)
+		{
+			_foregroundChangedProxy ??= new();
+			_foregroundChanged ??= () => OnForegroundChanged();
+			_foregroundChangedProxy.Subscribe(newValue, _foregroundChanged);
+		}
+
 		private void OnForegroundChanged()
 		{
-			void refreshForeground()
-			{
-				// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
-				// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
-				// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
-				// on the native side, but not yet collected on the managed side (for Xamarin targets).
+			// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
+			// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
+			// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
+			// on the native side, but not yet collected on the managed side (for Xamarin targets).
 
-				// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
-				// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
+			// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
+			// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
 #if !HAS_EXPENSIVE_TRYFINALLY
-				try
+			try
 #endif
-				{
-					OnForegroundChangedPartial();
-					InvalidateTextBlock();
-				}
-#if !HAS_EXPENSIVE_TRYFINALLY
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
-					}
-				}
-#endif
-			}
-
-			_foregroundChanged.Disposable = null;
-
-			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+				OnForegroundChangedPartial();
+				InvalidateTextBlock();
 			}
-
-			refreshForeground();
+#if !HAS_EXPENSIVE_TRYFINALLY
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
+				}
+			}
+#endif
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -655,8 +657,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
+				nameof(TextDecorations),
+				typeof(TextDecorations),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,

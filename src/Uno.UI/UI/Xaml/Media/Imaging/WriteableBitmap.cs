@@ -7,8 +7,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public partial class WriteableBitmap : BitmapSource
 	{
-		internal event EventHandler Invalidated;
-
 		private UwpBuffer _buffer;
 
 		public IBuffer PixelBuffer => _buffer;
@@ -34,7 +32,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if __WASM__ || __SKIA__
 			InvalidateSource();
 #endif
-			Invalidated?.Invoke(this, EventArgs.Empty);
+			InvalidateImageSource();
 		}
 
 		private protected

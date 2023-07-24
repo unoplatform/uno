@@ -7,8 +7,6 @@ using Android.Graphics;
 using Android.OS;
 using Android.Views;
 using Android.Views.InputMethods;
-using Uno.AuthenticationBroker;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
@@ -21,6 +19,7 @@ using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
@@ -102,41 +101,63 @@ namespace Windows.UI.Xaml
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
 			var handled = false;
-			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
+
+			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
-				if (focusHandler != null && e.Action == KeyEventActions.Down)
+				this.Log().Trace($"DispatchKeyEvent: {e.KeyCode} -> {virtualKey}");
+			}
+
+			try
+			{
+				if (FocusManager.GetFocusedElement() is not FrameworkElement element)
 				{
-					if (e.KeyCode == Keycode.Tab)
-					{
-						var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
-						handled = focusHandler.TryHandleTabFocus(shift);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadUp ||
-						e.KeyCode == Keycode.SystemNavigationUp)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Up);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadDown ||
-						e.KeyCode == Keycode.SystemNavigationDown)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Down);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadRight ||
-						e.KeyCode == Keycode.SystemNavigationRight)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Right);
-					}
-					else if (
-						e.KeyCode == Keycode.DpadLeft ||
-						e.KeyCode == Keycode.SystemNavigationLeft)
-					{
-						handled = focusHandler.TryHandleDirectionalFocus(VirtualKey.Left);
-					}
+					element = WinUICoreServices.Instance.MainRootVisual;
 				}
+
+				var routedArgs = new KeyRoutedEventArgs(this, virtualKey)
+				{
+					CanBubbleNatively = false,
+				};
+
+				RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
+					UIElement.KeyDownEvent :
+					UIElement.KeyUpEvent;
+
+				element?.RaiseEvent(routedEvent, routedArgs);
+
+				handled = routedArgs.Handled;
+
+				if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
+				{
+					var coreWindowArgs = new KeyEventArgs(
+						"keyboard",
+						virtualKey,
+						new CorePhysicalKeyStatus
+						{
+							ScanCode = (uint)e.KeyCode,
+							RepeatCount = 1,
+						})
+					{
+						Handled = handled
+					};
+
+					if (e.Action == KeyEventActions.Down)
+					{
+						ownerEvents.RaiseKeyDown(coreWindowArgs);
+					}
+					else if (e.Action == KeyEventActions.Up)
+					{
+						ownerEvents.RaiseKeyUp(coreWindowArgs);
+					}
+
+					handled = coreWindowArgs.Handled;
+				}
+			}
+			catch (Exception ex)
+			{
+				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(ex);
 			}
 
 			if (Gamepad.TryHandleKeyEvent(e))
@@ -354,9 +375,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-#if !NET6_0_OR_GREATER
-		[Android.Runtime.Preserve]
-#endif
 		[Java.Interop.Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;

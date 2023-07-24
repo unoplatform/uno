@@ -1,10 +1,7 @@
 ﻿using CoreGraphics;
 using System;
 using System.Drawing;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Extensions
 {

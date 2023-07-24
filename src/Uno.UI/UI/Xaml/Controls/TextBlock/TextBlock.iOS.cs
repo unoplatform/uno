@@ -12,10 +12,7 @@ using Windows.UI.Text;
 using Uno.UI;
 using Windows.UI;
 using CoreAnimation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -315,11 +312,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_textContainer.Size = size;
 
-#if NET6_0_OR_GREATER
 				return _layoutManager.GetUsedRect
-#else
-				return _layoutManager.GetUsedRectForTextContainer
-#endif
 
 				(_textContainer).Size;
 			}
@@ -345,15 +338,8 @@ namespace Windows.UI.Xaml.Controls
 			var partialFraction = (nfloat)0;
 			var pointInTextContainer = new CGPoint(point.X - _drawRect.X, point.Y - _drawRect.Y);
 
-#if NET6_0_OR_GREATER
 			var characterIndex = (int)_layoutManager.GetCharacterIndex
 			(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), out partialFraction);
-#else
-#pragma warning disable CS0618 // Type or member is obsolete (For VS2017 compatibility)
-			var characterIndex = (int)_layoutManager.CharacterIndexForPoint
-			(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
-#pragma warning restore CS0618 // Type or member is obsolete
-#endif
 
 
 			return characterIndex;

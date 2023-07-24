@@ -29,10 +29,6 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
-#if NET6_0_OR_GREATER && __ANDROID__
-	[Ignore("Disabled until https://github.com/dotnet/runtime/pull/55681 is released. See https://github.com/unoplatform/uno/issues/5873")]
-#endif
-
 	[TestClass]
 	[RunsOnUIThread]
 #if __MACOS__
@@ -212,7 +208,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if NET5_0 || __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 			if (activeControls != 0)
 			{
 				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
@@ -232,7 +228,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, activeControls, retainedMessage);
 #endif
 
-#if NET5_0 || __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if (p.Key is FrameworkElement fe)

@@ -19,10 +19,7 @@ using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using Windows.Foundation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 #if USE_CUSTOM_LAYOUT_ATTRIBUTES
 using _LayoutAttributes = Microsoft.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;

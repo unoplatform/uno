@@ -55,6 +55,12 @@ public sealed partial class XamlRoot
 
 	internal void ScheduleInvalidateMeasureOrArrange(bool invalidateMeasure)
 	{
+		if (VisualTree.RootElement is not UIElement rootElement || !(rootElement.IsLoading || rootElement.IsLoaded))
+		{
+			// The root element is not loaded, no need to schedule anything.
+			return;
+		}
+
 		if (invalidateMeasure)
 		{
 			if (_isMeasureWaiting)

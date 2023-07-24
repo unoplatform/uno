@@ -15,10 +15,6 @@ using ObjCRuntime;
 using Foundation;
 using UIKit;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 namespace Uno.UI.Controls
 {
 	public partial class BindableSearchBar : UISearchBar, DependencyObject, System.ComponentModel.INotifyPropertyChanged
