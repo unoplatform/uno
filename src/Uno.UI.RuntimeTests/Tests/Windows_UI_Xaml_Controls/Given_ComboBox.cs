@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Extensions;
 
 
@@ -548,6 +549,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_ComboBox_Multiple_Bindings_DataSource_Cleared()
+		{
+			var dc = new DisposableDataContext();
+			var SUT = new ComboBox()
+			{
+				DataContext = dc
+			};
+
+			SUT.SetBinding(ItemsControl.ItemsSourceProperty, new Binding() { Path = new("Items") });
+			SUT.SetBinding(Selector.SelectedItemProperty, new Binding() { Path = new("Item"), Mode = BindingMode.TwoWay });
+
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+
+				await WindowHelper.WaitForIdle();
+
+				dc.Dispose();
+				SUT.DataContext = null;
+
+				// ItemsSource's binding internally updates SelectedItem so this test is
+				// really about SelectedItem's binding updating first, otherwise SelectedItem
+				// will access DisposableDataContext.Item (because two-way binding) after
+				// it's disposed and throw an exception
+				await WindowHelper.WaitForIdle();
+				Assert.AreEqual(dc.AccessedAfterDispose, false);
+			}
+			finally
+			{
+				SUT.IsDropDownOpen = false;
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Binding_Change()
 		{
 			var SUT = new ComboBox();
@@ -931,6 +966,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			public TType GetAt(int index) => this[index];
 		}
 
+		public sealed class DisposableDataContext : IDisposable
+		{
+			public DisposableDataContext()
+			{
+				_item = Items[0];
+			}
+
+			public int[] Items { get; set; } = { 0, 1 };
+
+			private int _item;
+			private bool _isDisposed;
+			public bool AccessedAfterDispose { get; private set; }
+
+			public int Item
+			{
+				get
+				{
+					if (_isDisposed)
+					{
+						AccessedAfterDispose = true;
+					}
+
+					return _item;
+				}
+				set
+				{
+					if (_isDisposed)
+					{
+						AccessedAfterDispose = true;
+					}
+
+					_item = value;
+				}
+			}
+
+			public void Dispose()
+			{
+				_isDisposed = true;
+			}
+		}
 	}
 #if __IOS__
 	#region "Helper classes for the iOS Modal Page (UIModalPresentationStyle.pageSheet)"
