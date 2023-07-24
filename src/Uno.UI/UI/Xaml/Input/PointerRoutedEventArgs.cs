@@ -50,6 +50,12 @@ namespace Windows.UI.Xaml.Input
 
 		public bool Handled { get; set; }
 
+		internal bool TapAlreadyRaised { get; set; }
+
+		internal bool RightTapAlreadyRaised { get; set; }
+
+		internal bool HoldAlreadyRaised { get; set; }
+
 		public VirtualKeyModifiers KeyModifiers { get; }
 
 		public Pointer Pointer { get; }

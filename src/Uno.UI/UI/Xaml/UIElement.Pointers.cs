@@ -1041,6 +1041,8 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 			}
 
+			var (tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised) = CheckTapEventsRaised(args, currentPoint);
+
 			handledInManaged |= SetPressed(args, false, ctx);
 
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
@@ -1051,7 +1053,7 @@ namespace Windows.UI.Xaml
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
 				var isDragging = GestureRecognizer.IsDragging;
-				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
+				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured, tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised);
 				if (isDragging && !ctx.IsInternal)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
@@ -1069,6 +1071,18 @@ namespace Windows.UI.Xaml
 #endif
 
 			return handledInManaged;
+		}
+
+		private (bool tapAlreadyRaised, bool rightTapAlreadyRaised, bool holdAlreadyRaised) CheckTapEventsRaised(PointerRoutedEventArgs args, PointerPoint currentPoint)
+		{
+
+			var (tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised) = (args.TapAlreadyRaised, args.RightTapAlreadyRaised, args.HoldAlreadyRaised);
+			var (canRaiseTapped, canRaiseRightTapped, canRaiseHolding) = IsGestureRecognizerCreated ? GestureRecognizer.CanRaiseTapEvents(currentPoint) : (false, false, false);
+
+			args.TapAlreadyRaised |= canRaiseTapped;
+			args.RightTapAlreadyRaised |= canRaiseRightTapped;
+			args.HoldAlreadyRaised |= canRaiseHolding;
+			return (tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised);
 		}
 
 		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args);

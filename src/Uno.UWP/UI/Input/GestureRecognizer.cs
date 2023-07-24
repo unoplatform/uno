@@ -131,9 +131,9 @@ namespace Windows.UI.Input
 			_manipulation?.Remove(value);
 		}
 
-		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);
+		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true, false, false, false);
 
-		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
+		internal void ProcessUpEvent(PointerPoint value, bool isRelevant, bool tapAlreadyRaised, bool rightTapAlreadyRaised, bool holdAlreadyRaised)
 		{
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 			if (_gestures.TryGetValue(value.PointerId, out var gesture))
@@ -146,7 +146,7 @@ namespace Windows.UI.Input
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
 
-				gesture.ProcessUp(value);
+				gesture.ProcessUp(value, tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised);
 			}
 			else if (_log.IsEnabled(LogLevel.Debug))
 			{
@@ -276,6 +276,18 @@ namespace Windows.UI.Input
 			}
 
 			return identifier;
+		}
+
+		internal (bool, bool, bool) CanRaiseTapEvents(PointerPoint value)
+		{
+			if (_gestures.TryGetValue(value.PointerId, out var gesture))
+			{
+				return (Tapped is { } && gesture.Settings.HasFlag(GestureSettings.Tap),
+					RightTapped is { } && gesture.Settings.HasFlag(GestureSettings.RightTap),
+					Holding is { } && gesture.Settings.HasFlag(GestureSettings.Hold));
+			}
+
+			return (false, false, false);
 		}
 	}
 }
