@@ -18,6 +18,10 @@ namespace Windows.UI.Xaml.Controls
 					typeof(PageElementMetadataUpdateHandler).Log().Trace($"Instance of {oldPage.GetType().Name} replaced by instance of {newPage.GetType().Name}");
 				}
 
+				// Clear any local context, so that the new page can inherit the value coming
+				// from the parent Frame. It may happen if the old page set it explicitly.
+				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+
 				newPage.Frame = oldPage.Frame;
 
 				// If we've replaced the Page in its frame, we may need to
