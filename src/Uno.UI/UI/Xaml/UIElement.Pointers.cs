@@ -1083,28 +1083,28 @@ namespace Windows.UI.Xaml
 			}
 
 			var pointerId = args.GetCurrentPoint(this).PointerId;
-			var eventsRaised = args.EventsAlreadyRaised;
-			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.Tap))
+			var eventsRaised = args.GestureEventsAlreadyRaised;
+			if (eventsRaised.HasFlag(GestureSettings.Tap))
 			{
 				GestureRecognizer.PreventTap(pointerId);
 			}
 
-			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.RightTap))
+			if (eventsRaised.HasFlag(GestureSettings.RightTap))
 			{
 				GestureRecognizer.PreventRightTap(pointerId);
 			}
 
-			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.DoubleTap))
+			if (eventsRaised.HasFlag(GestureSettings.DoubleTap))
 			{
 				GestureRecognizer.PreventDoubleTap(pointerId);
 			}
 
-			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.Hold))
+			if (eventsRaised.HasFlag(GestureSettings.Hold))
 			{
 				GestureRecognizer.PreventHolding(pointerId);
 			}
 
-			args.EventsAlreadyRaised |= GestureRecognizer.CanRaiseGestureOrientedEvents(pointerId);
+			args.GestureEventsAlreadyRaised |= GestureRecognizer.GetGestureSettingsForId(pointerId);
 		}
 
 		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args);
