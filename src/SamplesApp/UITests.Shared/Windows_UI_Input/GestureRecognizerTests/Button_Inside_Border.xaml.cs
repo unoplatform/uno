@@ -6,7 +6,7 @@ using System.Collections.ObjectModel;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
-	[Sample("Gesture Recognizer", Name="Button_Inside_Border")]
+	[Sample("Gesture Recognizer", Name = "Button_Inside_Border")]
 	public sealed partial class Button_Inside_Border : UserControl
 	{
 		public ObservableCollection<DataRow> YourDataCollection { get; set; } = new ObservableCollection<DataRow>();
