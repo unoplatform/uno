@@ -27,23 +27,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ButtonBase : ContentControl
 	{
-<<<<<<< HEAD
-		static ButtonBase()
-		{
-			IsEnabledProperty.OverrideMetadata(
-				typeof(ButtonBase),
-				new FrameworkPropertyMetadata(
-					defaultValue: true,
-					propertyChangedCallback: null,
-					coerceValueCallback: CoerceIsEnabled
-				)
-			);
-		}
 
 		private readonly SerialDisposable _commandCanExecute = new SerialDisposable();
-
-=======
->>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
 		public
 #if XAMARIN_ANDROID
 			new

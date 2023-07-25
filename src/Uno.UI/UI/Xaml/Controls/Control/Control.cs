@@ -41,15 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _suspendStateChanges;
 		private View _templatedRoot;
 		private bool _updateTemplate;
-<<<<<<< HEAD
-=======
 		private bool _suppressIsEnabled;
-<<<<<<< HEAD
-		private bool _IsEnabledPropertyBackingFieldSet;
-		private bool _IsEnabledPropertyBackingField;
->>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
-=======
->>>>>>> bbfee4ed11 (chore: go back to generated Control.IsEnabledProperty)
 
 		private void InitializeControl()
 		{
@@ -108,8 +100,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void UnregisterSubView();
 		partial void RegisterSubView(View child);
 
-<<<<<<< HEAD
-=======
 		#region IsEnabled DependencyProperty
 
 		// Note: we keep the event args as a private field for perf consideration: This avoids creating a new instance each time.
@@ -208,8 +198,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return localValue;
 		}
-
->>>>>>> 86522f24d5 (chore: add explicit metadata property to handle IsEnable inheritance)
 
 		#region Template DependencyProperty
 
