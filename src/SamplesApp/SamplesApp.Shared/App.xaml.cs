@@ -35,6 +35,7 @@ using Uno;
 using Uno.UI.Xaml.Controls.Extensions;
 using Uno.Foundation.Extensibility;
 using MUXControlsTestApp.Utilities;
+using Windows.Storage;
 #endif
 
 #if !HAS_UNO
@@ -90,6 +91,7 @@ namespace SamplesApp
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
+			AssertApplicationDataFolders();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -673,6 +675,50 @@ namespace SamplesApp
 			var textBoxView = new TextBoxView(textBox);
 			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+#endif
+		}
+
+		public void AssertApplicationDataFolders()
+		{
+#if __SKIA__
+			var appName = Package.Current.Id.Name;
+			var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
+
+			AssertForFolder(ApplicationData.Current.LocalFolder);
+			AssertForFolder(ApplicationData.Current.RoamingFolder);
+			AssertForFolder(ApplicationData.Current.TemporaryFolder);
+			AssertForFolder(ApplicationData.Current.SharedLocalFolder);
+			AssertForFolder(ApplicationData.Current.LocalCacheFolder);
+
+			void AssertForFolder(StorageFolder folder)
+			{
+				AssertContainsIdProps(folder);
+				AssertCanCreateFile(folder);
+			}
+
+			void AssertContainsIdProps(StorageFolder folder)
+			{
+				Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal));
+				Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal));
+			}
+
+			void AssertCanCreateFile(StorageFolder folder)
+			{
+				var filename = Guid.NewGuid() + ".txt";
+				var path = Path.Combine(folder.Path, filename);
+				var expectedContent = "Test";
+				try
+				{
+					File.WriteAllText(path, expectedContent);
+					var actualContent = File.ReadAllText(path);
+
+					Assert.AreEqual(expectedContent, actualContent);
+				}
+				finally
+				{
+					File.Delete(path);
+				}
+			}
 #endif
 		}
 	}
