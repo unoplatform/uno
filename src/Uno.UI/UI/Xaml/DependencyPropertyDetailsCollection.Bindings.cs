@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
@@ -42,7 +41,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public void ApplyDataContext(object dataContext)
 		{
-			_bindings = new (_bindings.OrderBy(x => x, BindingExpressionComparer.Instance));
 			var bindings = _bindings.Data;
 
 			for (int i = 0; i < bindings.Length; i++)

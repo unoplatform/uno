@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml
 			DependentProperties = dependentProperties;
 		}
 
-		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached):
+		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached) :
 			this(name, propertyType, ownerType, defaultMetadata, attached, ImmutableArray<DependencyProperty>.Empty)
 		{
 		}
