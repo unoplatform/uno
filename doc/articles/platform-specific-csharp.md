@@ -12,37 +12,68 @@ This guide covers multiple approaches to managing per-platform code in C#. See [
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
 
-* Use [conditionals](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if) within a shared file
-* Place the code in a file which is only included in the desired platform head.
- 
-The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
- 
- 
- ## `#if` conditionals
- 
- The most basic means of authoring platform-specific code is to use `#if` conditionals:
- 
- ```csharp
- #if MY_SYMBOL
- Console.WriteLine("MY_SYMBOL is defined for this compilation");
- ```
- 
- If the supplied condition is not met, e.g. if `MY_SYMBOL` is not defined, then the enclosed code will be ignored by the compiler.
- 
- The following conditional symbols are predefined for each platform:
- 
- | Platform    | Symbol        |
- | ----------- | ------------- |
- | UWP         | `NETFX_CORE`  |
- | Android     | `__ANDROID__` |
- | iOS         | `__IOS__`     |
- | WebAssembly | `HAS_UNO_WASM`|
- | macOS       | `__MACOS__`   |
- | Skia        | `HAS_UNO_SKIA`|
- 
-Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 
+* Use [conditionals](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/preprocessor-directives/preprocessor-if) in a source file
+* Place the code in a separate file which is only included in the desired platform.
 
-You can define your own conditional compilation symbols per project in the 'Build' tab in the project's properties.
+The structure of an Uno app created with the default Visual Studio template is [explained in more detail here](uno-app-solution-structure.md).
+
+## `#if` conditionals
+ 
+The most basic means of authoring platform-specific code is to use `#if` conditionals:
+ 
+```csharp
+#if HAS_UNO
+Console.WriteLine("Uno Platform - Pixel-perfect WinUI apps that run everywhere");
+#else
+Console.WriteLine("Windows - Built with Microsoft's own tooling");
+#endif
+```
+ 
+If the supplied condition is not met, e.g. if `HAS_UNO` is not defined, then the enclosed code will be ignored by the compiler.
+
+The following conditional symbols are predefined for each Uno platform:
+
+| Platform        | Symbol         | Remarks |
+| --------------- | -------------- | ------- |
+| Android     | `__ANDROID__`      | |
+| iOS         | `__IOS__`          | |
+| Catalyst    | `__MACCATALYST__`  | |
+| macOS       | `__MACOS__`        | |
+| WebAssembly | `HAS_UNO_WASM`     | Only available in the `MyApp.WebAssembly` head, see [below](xref:Uno.Development.PlatformSpecificCSharp#webassembly-considerations) |
+| Skia        | `HAS_UNO_SKIA`     | |
+| _Non-Windows_ | `HAS_UNO`      | To learn about symbols available when `HAS_UNO` is not present, see [below](xref:Uno.Development.PlatformSpecificCSharp#windows-specific-code) |
+
+> [!TIP]
+> Conditionals can be combined with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. It is also possible to define custom conditional compilation symbols per project in the 'Build' tab in the project's properties.
+
+### Windows-specific code
+
+On Windows (the Windows head project), an Uno Platform application isn't using Uno.UI at all. It's compiled just like a single-platform desktop application, using Microsoft's own tooling. For that reason, the `HAS_UNO` symbol is not defined on Windows. This aspect can optionally be leveraged to write code specifically intended for Uno.
+
+Apps generated with the default `unoapp` solution template use **Windows App SDK** when targeting Windows. While this is the recommended path for new Windows apps, some solutions instead use **UWP** to target Windows. Both app models define a different conditional symbol:
+
+| App model   | Symbol        | Remarks       |
+| ----------- | ------------- | ------------- |
+| Windows App SDK | `WINDOWS10_0_18362_0_OR_GREATER`  | Depending on the `TargetFramework` value, the _18362_ part may need adjustment |
+| Universal Windows Platform         | `NETFX_CORE`  | No longer defined in new apps by default |
+
+### WebAssembly considerations
+
+The Uno Platform templates use a separate project library to share code between platforms. As of .NET 7, WebAssembly does not have its own `TargetFramework`, and Uno Platform uses the same value (e.g. `net7.0`) for both WebAssembly and Skia-based platforms. This means that `__WASM__` and `HAS_UNO_WASM` are not available in this project, but are available in C# code specified directly in the `MyApp.WebAssembly` head.
+
+In order to execute platform-specific code for WebAssembly, a runtime check needs to be included:
+
+```csharp
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER")))
+{
+   // Do something WebAssembly specific
+}
+```
+
+> [!NOTE]
+> [JSImport/JSExport](xref:Uno.Wasm.Bootstrap.JSInterop) are available on all platforms targeting .NET 7 and later, and this code does not need to be conditionally excluded.
+
+WebAssembly is currently a `net7.0` target, and cannot yet be discriminated at compile time until the inclusion of `net8.0-browser` in .NET 8. See the proposed design at [dotnet/designs#289](https://github.com/dotnet/designs/pull/289).
 
 ## Type aliases
 
@@ -64,11 +95,11 @@ public IEnumerable<_View> FindDescendants(FrameworkElement parent) => ...
  
 ## Partial class definitions
 
-Heavy usage of `#if` conditionals makes code hard to read and comprehend. A better approach is to use [partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code.
+Heavy usage of `#if` conditionals in shared code makes it hard to read and comprehend. A better approach is to use [partial class definitions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/classes-and-structs/partial-classes-and-methods) to split shared and platform-specific code. These partial classes need to exist in the shared project as it's compiled separately from each project head. This method still requires `#if` conditionals.
 
 ### A simple example
 
-Shared code in `PROJECTNAME.Shared/NativeWrapperControl.cs`:
+Shared code in `PROJECTNAME/NativeWrapperControl.cs`:
 
 ```csharp
 public partial class NativeWrapperControl : Control {
@@ -83,9 +114,10 @@ public partial class NativeWrapperControl : Control {
 		}
 ```
 
-Platform-specific code in `PROJECTNAME.Droid/NativeWrapperControl.Android.cs`:
+Platform-specific code in `PROJECTNAME/NativeWrapperControl.Android.cs`:
 
 ```csharp
+#if __ANDROID__
 public partial class NativeWrapperControl : Control {
 
 ...
@@ -95,9 +127,10 @@ public partial class NativeWrapperControl : Control {
 		}
 ```
 
-Platform-specific code in `PROJECTNAME.iOS/NativeWrapperControl.iOS.cs`:
+Platform-specific code in `PROJECTNAME/NativeWrapperControl.iOS.cs`:
 
 ```csharp
+#if __IOS__
 public partial class NativeWrapperControl : Control {
 
 ...
