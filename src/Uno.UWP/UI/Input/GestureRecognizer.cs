@@ -131,9 +131,9 @@ namespace Windows.UI.Input
 			_manipulation?.Remove(value);
 		}
 
-		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true, false, false, false);
+		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);
 
-		internal void ProcessUpEvent(PointerPoint value, bool isRelevant, bool tapAlreadyRaised, bool rightTapAlreadyRaised, bool holdAlreadyRaised)
+		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 			if (_gestures.TryGetValue(value.PointerId, out var gesture))
@@ -146,7 +146,7 @@ namespace Windows.UI.Input
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
 
-				gesture.ProcessUp(value, tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised);
+				gesture.ProcessUp(value);
 			}
 			else if (_log.IsEnabled(LogLevel.Debug))
 			{
@@ -182,6 +182,30 @@ namespace Windows.UI.Input
 			}
 
 			_manipulation?.Complete();
+		}
+
+		internal void PreventTap(uint pointerId)
+		{
+			if (_gestures.TryGetValue(pointerId, out var gesture))
+			{
+				gesture.PreventTap();
+			}
+		}
+
+		internal void PreventRightTap(uint pointerId)
+		{
+			if (_gestures.TryGetValue(pointerId, out var gesture))
+			{
+				gesture.PreventRightTap();
+			}
+		}
+
+		internal void PreventDoubleTap(uint pointerId)
+		{
+			if (_gestures.TryGetValue(pointerId, out var gesture))
+			{
+				gesture.PreventDoubleTap();
+			}
 		}
 
 		internal void PreventHolding(uint pointerId)
@@ -278,16 +302,33 @@ namespace Windows.UI.Input
 			return identifier;
 		}
 
-		internal (bool, bool, bool) CanRaiseTapEvents(PointerPoint value)
+		internal GestureOrientedPointerEvents CanRaiseGestureOrientedEvents(uint pointerId)
 		{
-			if (_gestures.TryGetValue(value.PointerId, out var gesture))
+			var flags = GestureOrientedPointerEvents.None;
+			if (_gestures.TryGetValue(pointerId, out _))
 			{
-				return (Tapped is { } && gesture.Settings.HasFlag(GestureSettings.Tap),
-					RightTapped is { } && gesture.Settings.HasFlag(GestureSettings.RightTap),
-					Holding is { } && gesture.Settings.HasFlag(GestureSettings.Hold));
+				if (_gestureSettings.HasFlag(GestureSettings.Tap))
+				{
+					flags |= GestureOrientedPointerEvents.Tap;
+				}
+
+				if (_gestureSettings.HasFlag(GestureSettings.RightTap))
+				{
+					flags |= GestureOrientedPointerEvents.RightTap;
+				}
+
+				if (_gestureSettings.HasFlag(GestureSettings.DoubleTap))
+				{
+					flags |= GestureOrientedPointerEvents.DoubleTap;
+				}
+
+				if (_gestureSettings.HasFlag(GestureSettings.Hold))
+				{
+					flags |= GestureOrientedPointerEvents.Hold;
+				}
 			}
 
-			return (false, false, false);
+			return flags;
 		}
 	}
 }
