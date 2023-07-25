@@ -242,11 +242,20 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void Press(Point position)
 		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetPress() }));
 
+	public void PressRight(Point position)
+		=> Inject(GetMoveTo(position.X, position.Y, null).Concat(new[] { GetRightPress() }));
+
 	public void Press()
 		=> Inject(GetPress());
 
 	public void Release()
 		=> Inject(GetRelease());
+
+	public void PressRight()
+		=> Inject(GetRightPress());
+
+	public void ReleaseRight()
+		=> Inject(GetRightRelease());
 
 	public void ReleaseAny()
 	{
@@ -347,6 +356,13 @@ public class Mouse : IInjectedPointer, IDisposable
 			MouseOptions = InjectedInputMouseOptions.LeftDown,
 		};
 
+	private static InjectedInputMouseInfo GetRightPress()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.RightDown,
+		};
+
 	private static InjectedInputMouseInfo GetMoveBy(double deltaX, double deltaY)
 		=> new()
 		{
@@ -361,6 +377,13 @@ public class Mouse : IInjectedPointer, IDisposable
 		{
 			TimeOffsetInMilliseconds = 1,
 			MouseOptions = InjectedInputMouseOptions.LeftUp,
+		};
+
+	private static InjectedInputMouseInfo GetRightRelease()
+		=> new()
+		{
+			TimeOffsetInMilliseconds = 1,
+			MouseOptions = InjectedInputMouseOptions.RightUp,
 		};
 
 	public static InjectedInputMouseInfo GetWheel(double delta, bool isHorizontal)

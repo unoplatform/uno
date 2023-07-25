@@ -63,6 +63,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			CanBubbleNatively = canBubbleNatively;
 			Handled = false;
+			EventsAlreadyRaised = GestureOrientedPointerEvents.None;
 
 			return this;
 		}
