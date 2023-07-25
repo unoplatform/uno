@@ -251,13 +251,14 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
 			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged to state {_player?.PlayerState.ToString()}");
+			this.Log().Debug($"MediaPlayerExtension owner PlaybackSession PlaybackState {_owner?.PlaybackSession?.PlaybackState.ToString()}");
 		}
 
-		if (_player?.PlayerState == HtmlMediaPlayerState.Paused && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_player?.PlayerState == HtmlMediaPlayerState.Paused && _owner?.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 		{
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
-		else if (_player?.PlayerState == HtmlMediaPlayerState.Playing && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+		else if (_player?.PlayerState == HtmlMediaPlayerState.Playing && _owner?.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 		{
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 		}
@@ -609,7 +610,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
 		if (IsLoopingEnabled && !IsLoopingAllEnabled)
 		{
-			//ReInitializeSource();
 			Play();
 		}
 		else

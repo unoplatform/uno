@@ -20,17 +20,18 @@ var Uno;
                     else {
                         return 0;
                     }
-                    //return document.getElementById(htmlId.toString()).currentTime;
                 }
                 static getPaused(htmlId) {
-                    return document.getElementById(htmlId.toString()).paused;
+                    const element = document.getElementById(htmlId);
+                    if (element !== null && element !== undefined) {
+                        return element.paused;
+                    }
                 }
                 static setCurrentPosition(htmlId, currentTime) {
                     const element = document.getElementById(htmlId);
                     if (element !== null && element !== undefined) {
                         element.currentTime = currentTime;
                     }
-                    //document.getElementById(htmlId.toString()).currentTime = currentTime;
                 }
                 static setAttribute(htmlId, name, value) {
                     document.getElementById(htmlId.toString()).setAttribute(name, value);

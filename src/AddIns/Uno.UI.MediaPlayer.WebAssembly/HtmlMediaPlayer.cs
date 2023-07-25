@@ -171,18 +171,13 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			if (_activeElement == null)
-			{
-				return;
-			}
-			_activeElement.RegisterHtmlEventHandler("timeupdate", value);
+			_htmlVideo.RegisterHtmlEventHandler("timeupdate", value);
+			_htmlAudio.RegisterHtmlEventHandler("timeupdate", value);
 		}
 		remove
 		{
-			if (_activeElement != null)
-			{
-				_activeElement.UnregisterHtmlEventHandler("timeupdate", value);
-			}
+			_htmlVideo.UnregisterHtmlEventHandler("timeupdate", value);
+			_htmlAudio.UnregisterHtmlEventHandler("timeupdate", value);
 		}
 	}
 
@@ -193,18 +188,13 @@ internal partial class HtmlMediaPlayer : Border
 	{
 		add
 		{
-			if (_activeElement == null)
-			{
-				return;
-			}
-			_activeElement.RegisterHtmlEventHandler("loadedmetadata", value);
+			_htmlVideo.RegisterHtmlEventHandler("loadedmetadata", value);
+			_htmlAudio.RegisterHtmlEventHandler("loadedmetadata", value);
 		}
 		remove
 		{
-			if (_activeElement != null)
-			{
-				_activeElement.UnregisterHtmlEventHandler("loadedmetadata", value);
-			}
+			_htmlVideo.UnregisterHtmlEventHandler("loadedmetadata", value);
+			_htmlAudio.UnregisterHtmlEventHandler("loadedmetadata", value);
 		}
 	}
 
@@ -465,7 +455,7 @@ internal partial class HtmlMediaPlayer : Border
 				}
 			}
 
-			player.TimeUpdated += player.OnHtmlTimeUpdated;
+			//player.TimeUpdated += player.OnHtmlTimeUpdated;
 		}
 	}
 
