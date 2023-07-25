@@ -777,6 +777,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
 			if (_mpe.MediaPlayer.IsLoopingEnabled
 				&& !_mpe.MediaPlayer.IsLoopingAllEnabled
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
@@ -788,10 +789,15 @@ namespace Windows.UI.Xaml.Controls
 				_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
 				_mpe.MediaPlayer.IsLoopingAllEnabled = false;
 			}
+#else
+			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+#endif
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
+
 			if (_mpe is not null
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
@@ -805,9 +811,17 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
 				}
 			}
+#else
+			if (_mediaPlayer is not null)
+			{
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+				_mediaPlayer.PlaybackSession.Position = TimeSpan.Zero;
+			}
+#endif
 		}
 		private void NextTrackButtonTapped(object sender, RoutedEventArgs e)
 		{
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
 			if (_mpe is not null
 				&& _mpe.MediaPlayer.Source is MediaPlaybackList)
 			{
@@ -821,6 +835,13 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
 				}
 			}
+#else
+			if (_mediaPlayer is not null)
+			{
+				_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
+				_mediaPlayer.PlaybackSession.Position = _mediaPlayer.PlaybackSession.NaturalDuration;
+			}
+#endif
 		}
 		private void ZoomButtonTapped(object sender, RoutedEventArgs e)
 		{
@@ -1179,7 +1200,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
-
+#if !(__ANDROID__ || __IOS__ || __MACOS__)
 			var state = _mpe.MediaPlayer.IsLoopingAllEnabled
 				? VisualState.RepeatStates.RepeatAllState
 				: _mpe.MediaPlayer.IsLoopingEnabled
@@ -1193,6 +1214,17 @@ namespace Windows.UI.Xaml.Controls
 					? UIAKeys.UIA_MEDIA_REPEAT_ONE
 					: UIAKeys.UIA_MEDIA_REPEAT_NONE;
 			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
+#else
+			var state = _mpe.MediaPlayer.IsLoopingEnabled
+					? VisualState.RepeatStates.RepeatAllState
+					: VisualState.RepeatStates.RepeatNoneState;
+			VisualStateManager.GoToState(this, state, useTransitions);
+
+			var uiaKey = _mpe.MediaPlayer.IsLoopingEnabled
+					? UIAKeys.UIA_MEDIA_REPEAT_ALL
+					: UIAKeys.UIA_MEDIA_REPEAT_NONE;
+			SetAutomationNameAndTooltip(m_tpRepeatButton, uiaKey);
+#endif
 		}
 	}
 
