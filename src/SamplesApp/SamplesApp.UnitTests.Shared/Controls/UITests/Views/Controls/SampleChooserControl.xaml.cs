@@ -7,7 +7,6 @@ using SampleControl.Presentation;
 using Windows.Foundation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if NETFX_CORE
-using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
