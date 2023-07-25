@@ -533,6 +533,23 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
+	private void SetPrepared(HtmlMediaPlayer _player)
+	{
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+		{
+			if (_isPlayRequested)
+			{
+				_player.Play();
+				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+			}
+			else
+			{
+				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+			}
+		}
+		_isPlayerPrepared = true;
+	}
+
 	public void OnPrepared(object? sender, object what)
 	{
 		if (sender is HtmlMediaPlayer mp && _player is not null)
@@ -559,21 +576,10 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				}
 				catch { }
 			}
-
-			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (NaturalDuration > TimeSpan.Zero)
 			{
-				if (_isPlayRequested)
-				{
-					_player.Play();
-					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-				}
-				else
-				{
-					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
-				}
+				SetPrepared(_player);
 			}
-
-			_isPlayerPrepared = true;
 		}
 
 		if (Events is not null)
