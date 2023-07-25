@@ -2838,6 +2838,145 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Fail("DataTemplateSelector.SelectTemplateCore is invoked during an INCC reset.");
 			}
 		}
+
+		public record When_Header_DataContext_Model(string MyText);
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Header_DataContext()
+		{
+			TextBlock header = new TextBlock { Text = "empty" };
+			TextBlock header2 = new TextBlock { Text = "empty" };
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				Header = new StackPanel
+				{
+					Background = new SolidColorBrush(Colors.Red),
+					Children = {
+						header,
+						header2,
+					}
+				}
+			};
+
+			header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+			header2.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(".") });
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+			Assert.AreEqual(SUT.DataContext, header2.DataContext);
+			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
+		}
+
+		[RunsOnUIThread]
+		[TestMethod]
+		public async Task When_Footer_DataContext()
+		{
+			TextBlock header = new TextBlock { Text = "empty" };
+			TextBlock header2 = new TextBlock { Text = "empty" };
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				Footer = new StackPanel
+				{
+					Background = new SolidColorBrush(Colors.Red),
+					Children = {
+						header,
+						header2,
+					}
+				}
+			};
+
+			header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+			header2.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath(".") });
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+			Assert.AreEqual(SUT.DataContext, header2.DataContext);
+			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if __WASM__ || __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/234")]
+#endif
+		public async Task When_HeaderTemplate_DataContext()
+		{
+			TextBlock header = null;
+
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				HeaderTemplate = new DataTemplate(() =>
+				{
+					var s = new StackPanel
+					{
+						Background = new SolidColorBrush(Colors.Red),
+						Children = {
+							(header = new TextBlock { Text = "empty" }),
+						}
+					};
+
+					header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+
+					return s;
+				})
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var source = new[] {
+				new ListViewItem(){ Content = "item 1" },
+			};
+
+			SUT.ItemsSource = source;
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNull(header.DataContext);
+
+			SUT.DataContext = new When_Header_DataContext_Model("test value");
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.DataContext, header.DataContext);
+			Assert.AreEqual("test value", header.Text);
+		}
+#endif
 	}
 
 	public partial class Given_ListViewBase // data class, data-context, view-model, template-selector
