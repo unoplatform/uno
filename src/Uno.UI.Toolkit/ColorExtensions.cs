@@ -21,4 +21,9 @@ internal static class ColorExtensions
 			(byte)(((byte.MaxValue - color.A) * background.G + color.A * color.G) / 255),
 			(byte)(((byte.MaxValue - color.A) * background.B + color.A * color.B) / 255)
 		);
+
+#if !HAS_UNO
+	internal static Color WithOpacity(this Color color, double opacity) 
+		=> Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
+#endif
 }

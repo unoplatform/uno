@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
 			canvas.Scale((float)dpi);
-			visual.Render(surface, ignoreLocation: true);
+			visual.RenderRootVisual(surface, ignoreLocation: true);
 
 			var img = surface.Snapshot();
 

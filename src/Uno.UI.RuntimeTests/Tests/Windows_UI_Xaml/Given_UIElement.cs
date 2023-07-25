@@ -660,10 +660,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var clip = new Rect(0, 0, 50, 50);
 
 			sut.ArrangeVisual(rect, clip);
-			Assert.IsNotNull(sut.Visual.Clip);
+			Assert.IsNotNull(sut.Visual.ViewBox);
 
 			sut.ArrangeVisual(rect, null);
-			Assert.IsNull(sut.Visual.Clip);
+			Assert.IsNull(sut.Visual.ViewBox);
 		}
 #endif
 	}

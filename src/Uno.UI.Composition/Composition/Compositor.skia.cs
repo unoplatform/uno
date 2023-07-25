@@ -27,7 +27,7 @@ public partial class Compositor
 		var children = rootVisual.GetChildrenInRenderOrder();
 		for (var i = 0; i < children.Count; i++)
 		{
-			children[i].Render(surface);
+			children[i].RenderRootVisual(surface);
 		}
 	}
 

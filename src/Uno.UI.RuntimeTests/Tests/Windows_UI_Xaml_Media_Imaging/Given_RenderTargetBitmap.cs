@@ -141,7 +141,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 #endif
 		public async Task When_RenderNotOpaqueContent_Then_ImageNotOpaque()
 		{
-			var nonOpaqueColor = new Color(0x80, 0xCC, 0x00, 0x00);
+			var nonOpaqueColor = Color.FromArgb(0x80, 0xCC, 0x00, 0x00);
 			var border = new Border()
 			{
 				Name = "TestBorder",

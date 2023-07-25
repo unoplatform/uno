@@ -1,5 +1,5 @@
 #nullable enable
-//#define TRACE_COMPOSITION
+#define TRACE_COMPOSITION
 
 using System;
 using System.Linq;
@@ -56,7 +56,7 @@ public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	/// </summary>
 	/// <param name="surface">The surface on which this visual should be rendered.</param>
 	/// <param name="ignoreLocation">A boolean which indicates if the location of the root visual should be ignored (so it will be rendered at 0,0).</param>
-	internal void Render(SKSurface surface, bool ignoreLocation = false)
+	internal void RenderRootVisual(SKSurface surface, bool ignoreLocation = false)
 	{
 		if (this is { Opacity: 0 } or { IsVisible: false })
 		{
@@ -88,7 +88,7 @@ public partial class Visual : global::Windows.UI.Composition.CompositionObject
 		var indent = int.TryParse(Comment?.Split(new char[] { '-' }, 2, StringSplitOptions.TrimEntries).FirstOrDefault(), out var depth)
 			? new string(' ', depth * 2)
 			: string.Empty;
-		Console.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Filters.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
+		global::System.Diagnostics.Debug.WriteLine($"{indent}{Comment} (Opacity:{parentSession.Filters.Opacity:F2}x{Opacity:F2} | IsVisible:{IsVisible})");
 #endif
 
 		if (this is { Opacity: 0 } or { IsVisible: false })
