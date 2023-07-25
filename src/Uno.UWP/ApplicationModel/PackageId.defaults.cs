@@ -37,7 +37,7 @@ partial class PackageId
 	public PackageVersion Version { get; internal set; } = new PackageVersion(Assembly.GetExecutingAssembly().GetVersionNumber());
 #endif
 
-#if !__WASM__ && !__SKIA__ && !__NETSTD_REFERENCE__
+#if !__WASM__ && !__SKIA__ && !__CROSSRUNTIME__
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__MACOS__")]
 	public string Publisher { get; internal set; } = "Unknown";
 #endif
