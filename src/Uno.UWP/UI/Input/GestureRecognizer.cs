@@ -302,35 +302,7 @@ namespace Windows.UI.Input
 			return identifier;
 		}
 
-		internal GestureOrientedPointerEvents CanRaiseGestureOrientedEvents(uint pointerId)
-		{
-			var flags = GestureOrientedPointerEvents.None;
-			if (_gestures.TryGetValue(pointerId, out var gesture))
-			{
-				// Gesture settings could be different from GestureRecognizer settings.
-				// Specifically, Tap is always set to true in Gesture itself
-				if (gesture.Settings.HasFlag(GestureSettings.Tap))
-				{
-					flags |= GestureOrientedPointerEvents.Tap;
-				}
-
-				if (gesture.Settings.HasFlag(GestureSettings.RightTap))
-				{
-					flags |= GestureOrientedPointerEvents.RightTap;
-				}
-
-				if (gesture.Settings.HasFlag(GestureSettings.DoubleTap))
-				{
-					flags |= GestureOrientedPointerEvents.DoubleTap;
-				}
-
-				if (gesture.Settings.HasFlag(GestureSettings.Hold))
-				{
-					flags |= GestureOrientedPointerEvents.Hold;
-				}
-			}
-
-			return flags;
-		}
+		internal GestureSettings GetGestureSettingsForId(uint pointerId)
+			=> _gestures.TryGetValue(pointerId, out var gesture) ? gesture.Settings : GestureSettings.None;
 	}
 }

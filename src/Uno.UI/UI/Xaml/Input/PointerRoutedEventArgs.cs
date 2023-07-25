@@ -50,7 +50,13 @@ namespace Windows.UI.Xaml.Input
 
 		public bool Handled { get; set; }
 
-		internal GestureOrientedPointerEvents EventsAlreadyRaised { get; set; }
+		/// <summary>
+		/// This signals that a child element with a gesture recognizer has already detected and
+		/// raised certain Gesture-related events, so parents shouldn't raise these events again.
+		/// This is a GestureSettings, but we're actually only interested in a few gesture event-related
+		/// flags like Tapped and Hold.
+		/// </summary>
+		internal GestureSettings GestureEventsAlreadyRaised { get; set; }
 
 		public VirtualKeyModifiers KeyModifiers { get; }
 
@@ -63,7 +69,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			CanBubbleNatively = canBubbleNatively;
 			Handled = false;
-			EventsAlreadyRaised = GestureOrientedPointerEvents.None;
+			GestureEventsAlreadyRaised = GestureSettings.None;
 
 			return this;
 		}
