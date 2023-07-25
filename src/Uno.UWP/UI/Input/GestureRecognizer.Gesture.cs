@@ -27,12 +27,7 @@ namespace Windows.UI.Input
 		{
 			private readonly GestureRecognizer _recognizer;
 			private DispatcherQueueTimer? _holdingTimer;
-			internal GestureSettings Settings
-			{
-				get;
-				private set;
-			}
-
+			private GestureSettings _settings;
 			private HoldingState? _holdingState;
 
 			public ulong PointerIdentifier { get; }
@@ -54,8 +49,8 @@ namespace Windows.UI.Input
 			public Gesture(GestureRecognizer recognizer, PointerPoint down)
 			{
 				_recognizer = recognizer;
-				Settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
-				Settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
+				_settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
+				_settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
@@ -89,7 +84,7 @@ namespace Windows.UI.Input
 				TryUpdateHolding(point);
 			}
 
-			public void ProcessUp(PointerPoint up, bool tapAlreadyRaised, bool rightTapAlreadyRaised, bool holdAlreadyRaised)
+			public void ProcessUp(PointerPoint up)
 			{
 				if (IsCompleted)
 				{
@@ -101,8 +96,8 @@ namespace Windows.UI.Input
 				Up = up;
 
 				// Process the pointer
-				TryEndHolding(HoldingState.Completed, holdAlreadyRaised);
-				TryRecognize(tapAlreadyRaised, rightTapAlreadyRaised);
+				TryEndHolding(HoldingState.Completed);
+				TryRecognize();
 			}
 
 			public void ProcessComplete()
@@ -116,14 +111,14 @@ namespace Windows.UI.Input
 				IsCompleted = true;
 
 				// Process the pointer
-				TryEndHolding(HoldingState.Canceled, false);
-				TryRecognize(false, false);
+				TryEndHolding(HoldingState.Canceled);
+				TryRecognize();
 			}
 
 			public void PreventTap()
 			{
-				Settings &= ~GestureSettings.Tap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
+				_settings &= ~GestureSettings.Tap;
+				if ((_settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{
 					IsCompleted = true;
 				}
@@ -131,8 +126,8 @@ namespace Windows.UI.Input
 
 			public void PreventDoubleTap()
 			{
-				Settings &= ~GestureSettings.DoubleTap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
+				_settings &= ~GestureSettings.DoubleTap;
+				if ((_settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{
 					IsCompleted = true;
 				}
@@ -140,8 +135,8 @@ namespace Windows.UI.Input
 
 			public void PreventRightTap()
 			{
-				Settings &= ~GestureSettings.RightTap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
+				_settings &= ~GestureSettings.RightTap;
+				if ((_settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{
 					IsCompleted = true;
 				}
@@ -150,17 +145,17 @@ namespace Windows.UI.Input
 			public void PreventHolding()
 			{
 				StopHoldingTimer();
-				Settings &= ~(GestureSettings.Hold | GestureSettings.HoldWithMouse);
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
+				_settings &= ~(GestureSettings.Hold | GestureSettings.HoldWithMouse);
+				if ((_settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{
 					IsCompleted = true;
 				}
 			}
 
-			private void TryRecognize(bool tapAlreadyRaised, bool rightTapAlreadyRaised)
+			private void TryRecognize()
 			{
-				var recognized = (!rightTapAlreadyRaised && TryRecognizeRightTap()) // We check right tap first as for touch a right tap is a press and hold of the finger :)
-					|| (!tapAlreadyRaised && TryRecognizeTap());
+				var recognized = TryRecognizeRightTap() // We check right tap first as for touch a right tap is a press and hold of the finger :)
+					|| TryRecognizeTap();
 
 				if (!recognized && _recognizer._log.IsEnabled(LogLevel.Debug))
 				{
@@ -170,7 +165,7 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeTap()
 			{
-				if (Settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this))
+				if (_settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this))
 				{
 					// Note: Up cannot be 'null' here!
 
@@ -187,7 +182,7 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeMultiTap()
 			{
-				if (Settings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_recognizer._lastSingleTap, Down))
+				if (_settings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_recognizer._lastSingleTap, Down))
 				{
 					_recognizer._lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
 					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(PointerType, Down.Position, tapCount: 2));
@@ -202,7 +197,7 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeRightTap()
 			{
-				if (Settings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(this, out var isLongPress))
+				if (_settings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(this, out var isLongPress))
 				{
 					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(PointerType, Down.Position));
 
@@ -242,7 +237,7 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private void TryEndHolding(HoldingState state, bool holdAlreadyRaised)
+			private void TryEndHolding(HoldingState state)
 			{
 				Debug.Assert(state != HoldingState.Started);
 
@@ -251,10 +246,7 @@ namespace Windows.UI.Input
 				if (_holdingState == HoldingState.Started)
 				{
 					_holdingState = state;
-					if (!holdAlreadyRaised)
-					{
-						_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, state));
-					}
+					_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, state));
 				}
 			}
 
@@ -262,8 +254,8 @@ namespace Windows.UI.Input
 			private bool SupportsHolding()
 				=> PointerType switch
 				{
-					PointerDeviceType.Mouse => Settings.HasFlag(GestureSettings.HoldWithMouse),
-					_ => Settings.HasFlag(GestureSettings.Hold)
+					PointerDeviceType.Mouse => _settings.HasFlag(GestureSettings.HoldWithMouse),
+					_ => _settings.HasFlag(GestureSettings.Hold)
 				};
 
 			private void StartHoldingTimer()

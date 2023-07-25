@@ -891,6 +891,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			var handledInManaged = SetOver(args, true, ctx);
 
 			return handledInManaged;
@@ -914,6 +915,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			var handledInManaged = SetPressed(args, true, ctx);
 
 			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !ctx.IsInternal && !isOverOrCaptured)
@@ -995,6 +997,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
+			UpdateRaisedEventFlags(args);
 			if (!ctx.IsInternal && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
@@ -1038,10 +1041,9 @@ namespace Windows.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				currentPoint = args.GetCurrentPoint(this);
+				UpdateRaisedEventFlags(args);
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 			}
-
-			var (tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised) = CheckTapEventsRaised(args, currentPoint);
 
 			handledInManaged |= SetPressed(args, false, ctx);
 
@@ -1053,7 +1055,7 @@ namespace Windows.UI.Xaml
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
 				var isDragging = GestureRecognizer.IsDragging;
-				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured, tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised);
+				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 				if (isDragging && !ctx.IsInternal)
 				{
 					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
@@ -1073,16 +1075,36 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
-		private (bool tapAlreadyRaised, bool rightTapAlreadyRaised, bool holdAlreadyRaised) CheckTapEventsRaised(PointerRoutedEventArgs args, PointerPoint currentPoint)
+		private void UpdateRaisedEventFlags(PointerRoutedEventArgs args)
 		{
+			if (!IsGestureRecognizerCreated)
+			{
+				return;
+			}
 
-			var (tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised) = (args.TapAlreadyRaised, args.RightTapAlreadyRaised, args.HoldAlreadyRaised);
-			var (canRaiseTapped, canRaiseRightTapped, canRaiseHolding) = IsGestureRecognizerCreated ? GestureRecognizer.CanRaiseTapEvents(currentPoint) : (false, false, false);
+			var pointerId = args.GetCurrentPoint(this).PointerId;
+			var eventsRaised = args.EventsAlreadyRaised;
+			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.Tap))
+			{
+				GestureRecognizer.PreventTap(pointerId);
+			}
 
-			args.TapAlreadyRaised |= canRaiseTapped;
-			args.RightTapAlreadyRaised |= canRaiseRightTapped;
-			args.HoldAlreadyRaised |= canRaiseHolding;
-			return (tapAlreadyRaised, rightTapAlreadyRaised, holdAlreadyRaised);
+			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.RightTap))
+			{
+				GestureRecognizer.PreventRightTap(pointerId);
+			}
+
+			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.DoubleTap))
+			{
+				GestureRecognizer.PreventDoubleTap(pointerId);
+			}
+
+			if (eventsRaised.HasFlag(GestureOrientedPointerEvents.Hold))
+			{
+				GestureRecognizer.PreventHolding(pointerId);
+			}
+
+			args.EventsAlreadyRaised |= GestureRecognizer.CanRaiseGestureOrientedEvents(pointerId);
 		}
 
 		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args);
@@ -1099,6 +1121,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			handledInManaged |= SetOver(args, false, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
@@ -1134,6 +1157,8 @@ namespace Windows.UI.Xaml
 		internal bool OnPointerCancel(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
+
+			UpdateRaisedEventFlags(args);
 
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			// We update only local state as the Cancel is bubbling itself
