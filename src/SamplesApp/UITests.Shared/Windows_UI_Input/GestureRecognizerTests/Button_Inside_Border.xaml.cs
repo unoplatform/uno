@@ -15,7 +15,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 		public Button_Inside_Border()
 		{
 			this.InitializeComponent();
-			gridView.ItemsSource = YourDataCollection;
+			listView.ItemsSource = YourDataCollection;
 		}
 
 		private void Border_Tapped(object sender, RoutedEventArgs e) => YourDataCollection.Add(new DataRow { RowNumber = _rows++, CallbackName = nameof(Border_Tapped), ElementName = sender.GetType().Name, EventArgsHashCode = e.GetHashCode().ToString("X8"), OriginalSource = e.OriginalSource.GetType().Name });
