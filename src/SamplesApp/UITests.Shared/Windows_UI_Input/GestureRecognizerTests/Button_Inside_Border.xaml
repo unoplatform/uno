@@ -12,7 +12,22 @@
 		<Border Background="Pink" Padding="16" Tapped="Border_Tapped" RightTapped="Border_RightTapped" Holding="Border_Holding">
 			<Button Content="asd" Tapped="Button_Tapped" RightTapped="Button_RightTapped" Holding="Button_Holding" />
 		</Border>
-		<ListView x:Name="gridView">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="50" />
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="200" />
+				<ColumnDefinition Width="100" />
+				<ColumnDefinition Width="200" />
+			</Grid.ColumnDefinitions>
+
+			<TextBlock Grid.Column="0" Text="No." />
+			<TextBlock Grid.Column="1" Text="Callback Name" />
+			<TextBlock Grid.Column="2" Text="Element Name" />
+			<TextBlock Grid.Column="3" Text="Event ID" />
+			<TextBlock Grid.Column="4" Text="Original Source" />
+		</Grid>
+		<ListView x:Name="listView">
 			<ListView.ItemTemplate>
 				<DataTemplate>
 					<Grid>
