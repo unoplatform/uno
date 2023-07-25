@@ -653,7 +653,7 @@ namespace SamplesApp
 		}
 
 		/// <summary>
-		/// Asserts that the App Title was found in manifest and load from resources.
+		/// Asserts that the App Title was found in manifest and loaded from resources.
 		/// </summary>
 		public void AssertIssue12936()
 		{
@@ -661,7 +661,7 @@ namespace SamplesApp
 
 			Assert.IsFalse(string.IsNullOrEmpty(title), "App Title is empty.");
 
-			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title["ms-resource:".Length..].Trim()}' wasn't found in resources. App Title contains 'ms-resource:'.");
+			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title}' wasn't found in resources.");
 		}
 
 		/// <summary>
