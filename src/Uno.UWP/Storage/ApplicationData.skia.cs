@@ -4,6 +4,8 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
+using Uno;
 using Windows.ApplicationModel;
 
 namespace Windows.Storage;
@@ -21,22 +23,22 @@ partial class ApplicationData
 
 	private static string? _appSpecificSubpath;
 
-	private string GetLocalCacheFolder() => EnsurePath(Path.Combine(Path.GetTempPath(), GetAppSpecificSubPath(), LocalCacheFolderName));
+	private string GetLocalCacheFolder() => EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), LocalCacheFolderName));
 
-	private string GetTemporaryFolder() => EnsurePath(Path.Combine(Path.GetTempPath(), GetAppSpecificSubPath(), TemporaryFolderName));
+	private string GetTemporaryFolder() => EnsurePath(Path.Combine(GetTemporaryFolderRootPath(), TemporaryFolderName));
 
 	private string GetLocalFolder() =>
 		// Uses XDG_DATA_HOME on Unix: https://github.com/dotnet/runtime/blob/b5705587347d29d79cec830dc22b389e1ad9a9e0/src/libraries/System.Private.CoreLib/src/System/Environment.GetFolderPathCore.Unix.cs#L105
-		EnsurePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GetAppSpecificSubPath(), LocalFolderName));
+		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), LocalFolderName));
 
 	private string GetRoamingFolder() =>
-		EnsurePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GetAppSpecificSubPath(), RoamingFolderName));
+		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), RoamingFolderName));
 
 	private string GetSharedLocalFolder() =>
-		EnsurePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GetAppSpecificSubPath(), SharedLocalFolderName));
+		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), SharedLocalFolderName));
 
 	internal string GetSettingsFolderPath() =>
-		EnsurePath(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), GetAppSpecificSubPath(), SettingsFolderName));
+		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), SettingsFolderName));
 
 	private string EnsurePath(string path)
 	{
@@ -87,6 +89,42 @@ partial class ApplicationData
 		}
 
 		return _appSpecificSubpath;
+	}
+
+	private string GetTemporaryFolderRootPath()
+	{
+		if (WinRTFeatureConfiguration.ApplicationData.TemporaryFolderPathOverride is { } path)
+		{
+			return path;
+		}
+
+		return Path.Combine(Path.GetTempPath(), GetAppSpecificSubPath());
+	}
+
+	private string GetApplicationDataFolderRootPath()
+	{
+		if (WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride is { } path)
+		{
+			return path;
+		}
+
+		string applicationDataRootFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		if (string.IsNullOrEmpty(applicationDataRootFolder))
+		{
+			var myDocumentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+			if (string.IsNullOrEmpty(myDocumentsFolder))
+			{
+				throw new InvalidOperationException(
+					"The current environment does not have a user application data nor user documents folder set up. " +
+					"Please use WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride to set your own.");
+			}
+			else
+			{
+				applicationDataRootFolder = Path.Combine(myDocumentsFolder, ".local", "share");
+			}
+		}
+
+		return Path.Combine(applicationDataRootFolder, GetAppSpecificSubPath());
 	}
 
 	private static string GetFileNameSafeString(string fileName)
