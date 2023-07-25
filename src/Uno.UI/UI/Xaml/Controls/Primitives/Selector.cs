@@ -2,6 +2,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
@@ -84,7 +85,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(object),
 			typeof(Selector),
 			new FrameworkPropertyMetadata(defaultValue: null),
-			new List<DependencyProperty> { ItemsControl.ItemsSourceProperty }
+			ImmutableArray.Create(ItemsSourceProperty)
 		);
 
 		public object SelectedItem

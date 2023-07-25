@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public void ApplyDataContext(object dataContext)
 		{
-			_bindings = new (_bindings.OrderBy(x => x, new BindingExpressionComparer()));
+			_bindings = new (_bindings.OrderBy(x => x, BindingExpressionComparer.Instance));
 			var bindings = _bindings.Data;
 
 			for (int i = 0; i < bindings.Length; i++)
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					var index = Array.BinarySearch(_bindings.Data, bindingExpression, new BindingExpressionComparer());
+					var index = Array.BinarySearch(_bindings.Data, bindingExpression, BindingExpressionComparer.Instance);
 					if (index < 0)
 					{
 						index = ~index;
@@ -227,8 +227,14 @@ namespace Windows.UI.Xaml
 			return null;
 		}
 
-		class BindingExpressionComparer : IComparer<BindingExpression>
+		private sealed class BindingExpressionComparer : IComparer<BindingExpression>
 		{
+			private BindingExpressionComparer()
+			{
+			}
+
+			public static BindingExpressionComparer Instance { get; } = new BindingExpressionComparer();
+
 			public int Compare(BindingExpression expression1, BindingExpression expression2)
 			{
 				var property1 = expression1.TargetPropertyDetails.Property;
