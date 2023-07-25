@@ -184,36 +184,35 @@ namespace Windows.UI.Input
 			_manipulation?.Complete();
 		}
 
-		internal void PreventTap(uint pointerId)
+		/// <returns>An updated set of events that are raised already and by this recognizer</returns>
+		internal GestureSettings PreventAlreadyRaisedEvents(uint pointerId, GestureSettings alreadyRaisedEvents)
 		{
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
-				gesture.PreventTap();
-			}
-		}
+				if (alreadyRaisedEvents.HasFlag(GestureSettings.Tap))
+				{
+					gesture.PreventTap();
+				}
 
-		internal void PreventRightTap(uint pointerId)
-		{
-			if (_gestures.TryGetValue(pointerId, out var gesture))
-			{
-				gesture.PreventRightTap();
-			}
-		}
+				if (alreadyRaisedEvents.HasFlag(GestureSettings.RightTap))
+				{
+					gesture.PreventRightTap();
+				}
 
-		internal void PreventDoubleTap(uint pointerId)
-		{
-			if (_gestures.TryGetValue(pointerId, out var gesture))
-			{
-				gesture.PreventDoubleTap();
-			}
-		}
+				if (alreadyRaisedEvents.HasFlag(GestureSettings.DoubleTap))
+				{
+					gesture.PreventDoubleTap();
+				}
 
-		internal void PreventHolding(uint pointerId)
-		{
-			if (_gestures.TryGetValue(pointerId, out var gesture))
-			{
-				gesture.PreventHolding();
+				if (alreadyRaisedEvents.HasFlag(GestureSettings.Hold))
+				{
+					gesture.PreventHolding();
+				}
+
+				alreadyRaisedEvents |= gesture.Settings;
 			}
+
+			return alreadyRaisedEvents;
 		}
 
 		#region Manipulations
@@ -301,8 +300,5 @@ namespace Windows.UI.Input
 
 			return identifier;
 		}
-
-		internal GestureSettings GetGestureSettingsForId(uint pointerId)
-			=> _gestures.TryGetValue(pointerId, out var gesture) ? gesture.Settings : GestureSettings.None;
 	}
 }

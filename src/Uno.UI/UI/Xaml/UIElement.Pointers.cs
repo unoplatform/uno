@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml
 			{
 				if (IsGestureRecognizerCreated)
 				{
-					GestureRecognizer.PreventHolding(((HoldingRoutedEventArgs)args).PointerId);
+					GestureRecognizer.PreventAlreadyRaisedEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
 				}
 			}
 			else
@@ -576,6 +576,17 @@ namespace Windows.UI.Xaml
 			{
 				GestureRecognizer.CompleteGesture();
 			}
+		}
+
+		private void UpdateRaisedEventFlags(PointerRoutedEventArgs args)
+		{
+			if (!IsGestureRecognizerCreated)
+			{
+				return;
+			}
+
+			var pointerId = args.GetCurrentPoint(this).PointerId;
+			args.GestureEventsAlreadyRaised = GestureRecognizer.PreventAlreadyRaisedEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
 		#endregion
 
@@ -1073,38 +1084,6 @@ namespace Windows.UI.Xaml
 #endif
 
 			return handledInManaged;
-		}
-
-		private void UpdateRaisedEventFlags(PointerRoutedEventArgs args)
-		{
-			if (!IsGestureRecognizerCreated)
-			{
-				return;
-			}
-
-			var pointerId = args.GetCurrentPoint(this).PointerId;
-			var eventsRaised = args.GestureEventsAlreadyRaised;
-			if (eventsRaised.HasFlag(GestureSettings.Tap))
-			{
-				GestureRecognizer.PreventTap(pointerId);
-			}
-
-			if (eventsRaised.HasFlag(GestureSettings.RightTap))
-			{
-				GestureRecognizer.PreventRightTap(pointerId);
-			}
-
-			if (eventsRaised.HasFlag(GestureSettings.DoubleTap))
-			{
-				GestureRecognizer.PreventDoubleTap(pointerId);
-			}
-
-			if (eventsRaised.HasFlag(GestureSettings.Hold))
-			{
-				GestureRecognizer.PreventHolding(pointerId);
-			}
-
-			args.GestureEventsAlreadyRaised |= GestureRecognizer.GetGestureSettingsForId(pointerId);
 		}
 
 		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args);
