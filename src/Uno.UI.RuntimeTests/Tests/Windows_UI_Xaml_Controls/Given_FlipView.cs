@@ -214,9 +214,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var border = (Border)VisualTreeHelper.GetChildren(scrollViewer).Single();
 			var grid = (Grid)VisualTreeHelper.GetChildren(border).Single();
 			var scrollContentPresenter = (ScrollContentPresenter)VisualTreeHelper.GetChildren(grid).First();
-			var classes = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({scrollContentPresenter.HtmlId}).classList").Split(' ');
-			Assert.IsTrue(classes.Contains("scroll-x-hidden"));
-			Assert.IsTrue(classes.Contains("scroll-y-hidden"));
+			var classes = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({scrollContentPresenter.HtmlId}).classList");
+			var classesArray = classes.Split(' ');
+			Assert.IsTrue(classesArray.Contains("scroll-x-hidden"), $"Classes found: {classes}");
+			Assert.IsTrue(classesArray.Contains("scroll-y-hidden"), $"Classes found: {classes}");
 		}
 #endif
 >>>>>>> c8c822eef9 (chore: Adjust test)
