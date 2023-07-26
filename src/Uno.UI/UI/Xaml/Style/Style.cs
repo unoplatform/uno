@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
+			IDisposable? localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
 
 			EnsureSetterMap();
 
@@ -91,15 +91,17 @@ namespace Windows.UI.Xaml
 					}
 				}
 
+				localPrecedenceDisposable?.Dispose();
+
 				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading);
+				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY
 			finally
 #endif
 			{
-				ResourceResolver.PopScope();
 				localPrecedenceDisposable?.Dispose();
+				ResourceResolver.PopScope();
 			}
 		}
 
