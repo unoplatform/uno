@@ -27,19 +27,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
 		{
-			PopupPanel.Children.Remove(oldChild);
-			PopupPanel.Children.Add(newChild);
+			var popupPanel = PopupPanel;
+			popupPanel.Children.Remove(oldChild);
+			popupPanel.Children.Add(newChild);
 		}
 
 		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
 		{
 			previousPanel?.Children.Clear();
 
-			if (PopupPanel != null)
+			if (PopupPanel is { } popupPanel)
 			{
 				if (Child != null)
 				{
-					PopupPanel.Children.Add(Child);
+					popupPanel.Children.Add(Child);
 				}
 			}
 		}
