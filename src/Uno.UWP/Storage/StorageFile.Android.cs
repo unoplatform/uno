@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Globalization;
 using System.IO;
@@ -15,12 +17,15 @@ using Windows.Storage.FileProperties;
 using Windows.Storage.Streams;
 using Windows.Storage.Helpers;
 using Uno.Helpers;
+using Windows.ApplicationModel.Background;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Windows.Storage
 {
 	partial class StorageFile
 	{
 		private static ConcurrentEntryManager _assetGate = new ConcurrentEntryManager();
+		private static string? _currentAppID;
 
 		private static async Task<StorageFile> GetFileFromApplicationUri(CancellationToken ct, Uri uri)
 		{
@@ -34,8 +39,10 @@ namespace Windows.Storage
 
 			var path = AndroidResourceNameEncoder.EncodeResourcePath(originalPath);
 
+			EnsureAppID();
+
 			// Read the contents of our asset
-			var outputCachePath = global::System.IO.Path.Combine(Android.App.Application.Context.CacheDir.AbsolutePath, path);
+			var outputCachePath = global::System.IO.Path.Combine(Android.App.Application.Context.CacheDir!.AbsolutePath, _currentAppID, path);
 
 			if (typeof(StorageFile).Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{
@@ -50,18 +57,18 @@ namespace Windows.Storage
 
 			if (!File.Exists(outputCachePath))
 			{
-				Directory.CreateDirectory(global::System.IO.Path.GetDirectoryName(outputCachePath));
+				Directory.CreateDirectory(global::System.IO.Path.GetDirectoryName(outputCachePath)!);
 
 				Stream GetAsset()
 				{
 					if (DrawableHelper.FindResourceIdFromPath(path) is { } resourceId)
 					{
-						return ContextHelper.Current.Resources.OpenRawResource(resourceId);
+						return ContextHelper.Current.Resources!.OpenRawResource(resourceId);
 					}
 					else
 					{
 						var assets = global::Android.App.Application.Context.Assets;
-						return assets.Open(path);
+						return assets!.Open(path);
 					}
 				}
 
@@ -72,6 +79,19 @@ namespace Windows.Storage
 			}
 
 			return await StorageFile.GetFileFromPathAsync(outputCachePath);
+		}
+
+		[MemberNotNull(nameof(_currentAppID))]
+		private static void EnsureAppID()
+		{
+			if (_currentAppID is null)
+			{
+				var packageVersion = ApplicationModel.Package.Current.Id.Version;
+
+				_currentAppID =
+					ContextHelper.Current.GetType().Assembly.GetModules().First().ModuleVersionId.ToString()
+					+ $"_{packageVersion.Major}.{packageVersion.Minor}.{packageVersion.Build}.{packageVersion.Revision}";
+			}
 		}
 	}
 }
