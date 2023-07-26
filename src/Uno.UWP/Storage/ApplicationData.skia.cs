@@ -119,21 +119,6 @@ partial class ApplicationData
 		return Path.Combine(localCacheRootFolder, GetAppSpecificSubPath());
 	}
 
-	private static string GetUserHomeFolderPath()
-	{
-		var myDocumentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-
-		if (string.IsNullOrEmpty(myDocumentsFolder))
-		{
-			throw new InvalidOperationException(
-				"The current environment does not have a user application data nor user documents folder set up. " +
-				"Please use WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride and " +
-				"WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride to override the default locations.");
-		}
-
-		return myDocumentsFolder;
-	}
-
 	private string GetApplicationDataFolderRootPath()
 	{
 		if (WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride is { } path)
@@ -156,6 +141,21 @@ partial class ApplicationData
 		}
 
 		return Path.Combine(applicationDataRootFolder, GetAppSpecificSubPath());
+	}
+
+	private static string GetUserHomeFolderPath()
+	{
+		var myDocumentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+
+		if (string.IsNullOrEmpty(myDocumentsFolder))
+		{
+			throw new InvalidOperationException(
+				"The current environment does not have a user application data nor user documents folder set up. " +
+				"Please use WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride and " +
+				"WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride to override the default locations.");
+		}
+
+		return myDocumentsFolder;
 	}
 
 	private static string GetFileNameSafeString(string fileName)
