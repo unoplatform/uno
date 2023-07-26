@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			IDisposable? localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
+			IDisposable? localPrecedenceDisposable = null;
 
 			EnsureSetterMap();
 
@@ -82,7 +82,8 @@ namespace Windows.UI.Xaml
 #endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
-
+				localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
+				
 				if (_flattenedSetters != null)
 				{
 					for (var i = 0; i < _flattenedSetters.Length; i++)
