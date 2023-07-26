@@ -867,7 +867,7 @@
 			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RootElement()" reason="Not needed" />			
 			<!-- End Skia lifecycle -->
 
-			<Member fullName="System.Nullable`1<Uno.UI.Skia.RenderSurfaceType> Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1607,8 +1607,8 @@
 			<Member fullName=".*\.remove_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<!-- END Android TV -->
 
-			<Member fullName="System.Nullable`1<Uno.UI.Skia.RenderSurfaceType> Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
-			<Member fullName="System.Void Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.set_RenderSurfaceType(System.Nullable`1<Uno.UI.Skia.RenderSurfaceType> value)" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+			<Member fullName="System.Void Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.set_RenderSurfaceType(System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; value)" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
