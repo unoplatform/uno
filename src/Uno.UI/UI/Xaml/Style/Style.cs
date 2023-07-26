@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Data;
@@ -83,7 +81,7 @@ namespace Windows.UI.Xaml
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 				localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
-				
+
 				if (_flattenedSetters != null)
 				{
 					for (var i = 0; i < _flattenedSetters.Length; i++)
