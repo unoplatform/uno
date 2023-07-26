@@ -460,19 +460,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
 			}
 
-<<<<<<< HEAD
-			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
-=======
 			var svgImageSource = new SvgImageSource(new Uri(imagePath));
->>>>>>> 57a48eb8f6 (fix(assets): Adjust assets caching by including assembly and package versions)
 			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
 		}
-<<<<<<< HEAD
-
-=======
->>>>>>> 57a48eb8f6 (fix(assets): Adjust assets caching by including assembly and package versions)
+		
 
 		[TestMethod]
 		[RunsOnUIThread]
