@@ -217,7 +217,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var classes = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({scrollContentPresenter.HtmlId}).classList");
 			var classesArray = classes.Split(' ');
 			Assert.IsTrue(classesArray.Contains("scroll-x-hidden"), $"Classes found: {classes}");
-			Assert.IsTrue(classesArray.Contains("scroll-y-hidden"), $"Classes found: {classes}");
+			Assert.IsTrue(classesArray.Contains("scroll-y-disabled"), $"Classes found: {classes}");
 		}
 #endif
 >>>>>>> c8c822eef9 (chore: Adjust test)
