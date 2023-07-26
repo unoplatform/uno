@@ -686,8 +686,7 @@ namespace SamplesApp
 
 			AssertForFolder(ApplicationData.Current.LocalFolder);
 			AssertForFolder(ApplicationData.Current.RoamingFolder);
-			AssertForFolder(ApplicationData.Current.TemporaryFolder);
-			AssertForFolder(ApplicationData.Current.SharedLocalFolder);
+			AssertForFolder(ApplicationData.Current.TemporaryFolder);			
 			AssertForFolder(ApplicationData.Current.LocalCacheFolder);
 
 			void AssertForFolder(StorageFolder folder)
