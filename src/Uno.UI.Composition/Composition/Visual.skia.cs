@@ -1,5 +1,5 @@
 #nullable enable
-#define TRACE_COMPOSITION
+//#define TRACE_COMPOSITION
 
 using System;
 using System.Linq;

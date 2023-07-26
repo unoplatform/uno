@@ -27,24 +27,7 @@ public partial class ShapeVisual
 
 			for (var i = 0; i < shapes.Count; i++)
 			{
-				var shape = shapes[i];
-				var shapeTransform = shape.GetTransform();
-
-				if (shapeTransform.IsIdentity)
-				{
-					shape.Draw(in session);
-				}
-				else
-				{
-					var shapeTransformMatrix = shapeTransform.ToSKMatrix();
-
-					session.Surface.Canvas.Save();
-					session.Surface.Canvas.Concat(ref shapeTransformMatrix);
-
-					shape.Draw(in session);
-
-					session.Surface.Canvas.Restore();
-				}
+				shapes[i].Render(in session);
 			}
 		}
 
