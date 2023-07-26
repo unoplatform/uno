@@ -369,11 +369,12 @@ public partial class ScrollContentPresenter
 
 		if (contentAsFE != null)
 		{
+			var contentAsFEMargin = contentAsFE.Margin;
 			contentMargin = new Thickness(
-				contentMargin.Left + contentAsFE.Margin.Left,
-				contentMargin.Top + contentAsFE.Margin.Top,
-				contentMargin.Right + contentAsFE.Margin.Right,
-				contentMargin.Bottom + contentAsFE.Margin.Bottom);
+				contentMargin.Left + contentAsFEMargin.Left,
+				contentMargin.Top + contentAsFEMargin.Top,
+				contentMargin.Right + contentAsFEMargin.Right,
+				contentMargin.Bottom + contentAsFEMargin.Bottom);
 		}
 
 		return transform.TransformBounds(

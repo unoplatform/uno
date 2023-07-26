@@ -84,10 +84,10 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			Content = _timeSelector;
-
-			this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
-			this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
-			this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
+			var content = Content;
+			this.Binding(nameof(Time), nameof(Time), content, BindingMode.TwoWay);
+			this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), content, BindingMode.TwoWay);
+			this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), content, BindingMode.TwoWay);
 		}
 
 		#region Content DependencyProperty

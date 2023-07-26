@@ -3,6 +3,7 @@
 // MUX reference InfoBarPanel.cpp, commit d67e625
 
 using System;
+using Uno.UI.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -35,7 +36,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			int nItems = 0;
 
 			var parent = this.Parent as FrameworkElement;
-			float minHeight = parent == null ? 0.0f : (float)(parent.MinHeight - (Margin.Top + Margin.Bottom));
+			float minHeight = parent == null ? 0.0f : (float)(parent.MinHeight - Margin.Vertical());
 
 			var children = Children;
 			var childCount = (int)children.Count;

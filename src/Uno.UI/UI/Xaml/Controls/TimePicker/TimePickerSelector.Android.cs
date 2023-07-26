@@ -23,10 +23,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				//By settings DescendantFocusability to BlockDescendnts it disables the possibility to use the keyboard to modify time which was causing issues in 4.4
 				_picker.DescendantFocusability = Android.Views.DescendantFocusability.BlockDescendants;
-
-				this.Binding(nameof(Time), nameof(Time), Content, BindingMode.TwoWay);
-				this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), Content, BindingMode.TwoWay);
-				this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), Content, BindingMode.TwoWay);
+				var content = Content;
+				this.Binding(nameof(Time), nameof(Time), content, BindingMode.TwoWay);
+				this.Binding(nameof(MinuteIncrement), nameof(MinuteIncrement), content, BindingMode.TwoWay);
+				this.Binding(nameof(ClockIdentifier), nameof(ClockIdentifier), content, BindingMode.TwoWay);
 			}
 			else if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 			{

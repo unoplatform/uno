@@ -320,13 +320,14 @@ namespace Windows.UI.Xaml.Controls
 					ClockIdentifier = this.ClockIdentifier
 				};
 
-				_flyoutButton.Flyout.Opening += Flyout_Opening;
-				((TimePickerFlyout)_flyoutButton.Flyout).TimePicked += TimePicker_TimePicked;
+				var flyout = _flyoutButton.Flyout;
+				flyout.Opening += Flyout_Opening;
+				((TimePickerFlyout)flyout).TimePicked += TimePicker_TimePicked;
 
 				BindToFlyout(nameof(MinuteIncrement));
 				BindToFlyout(nameof(ClockIdentifier));
-				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
-				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
+				flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 
 				void Flyout_Opening(object sender, object e)
 				{

@@ -205,13 +205,12 @@ namespace Windows.UI.Xaml.Controls
 		private DateTimeOffset ConvertFromNative(NSDate value)
 		{
 			var components = _picker.Calendar.Components(NSCalendarUnit.Year | NSCalendarUnit.Month | NSCalendarUnit.Day, value);
-			var date = new DateTimeOffset(
+			var date = Date;
+			return new DateTimeOffset(
 				(int)components.Year, (int)components.Month, (int)components.Day,
-				Date.Hour, Date.Minute, Date.Second, Date.Millisecond,
-				Date.Offset
+				date.Hour, date.Minute, date.Second, date.Millisecond,
+				date.Offset
 			);
-
-			return date;
 		}
 
 		private void UpdatePickerStyle()

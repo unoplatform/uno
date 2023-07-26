@@ -676,8 +676,9 @@ namespace Microsoft.UI.Xaml.Controls
 				m_badgingEllipse.Width = newSize * 0.5;
 				m_badgingBackgroundEllipse.Height = newSize * 0.5;
 				m_badgingBackgroundEllipse.Width = newSize * 0.5;
-				m_badgeNumberTextBlock.FontSize = Math.Max(1.0, m_badgingEllipse.Height * 0.6);
-				m_badgeGlyphIcon.FontSize = Math.Max(1.0, m_badgingEllipse.Height * 0.6);
+				var badgingEllipseHeight = m_badgingEllipse.Height;
+				m_badgeNumberTextBlock.FontSize = Math.Max(1.0, badgingEllipseHeight * 0.6);
+				m_badgeGlyphIcon.FontSize = Math.Max(1.0, badgingEllipseHeight * 0.6);
 			}
 		}
 

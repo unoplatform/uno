@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 		private void AdjustAndSaveTime(int hourOfDay, int minutes)
 		{
 			var oldTime = Time;
-			if (Time.Hours != hourOfDay || Time.Minutes != minutes)
+			if (oldTime.Hours != hourOfDay || oldTime.Minutes != minutes)
 			{
 				if (_dialog.IsInSpinnerMode)
 				{
@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var time = FeatureConfiguration.TimePickerFlyout.UseLegacyTimeSetting
-					? new TimeSpan(Time.Days, hourOfDay, minutes, Time.Seconds, Time.Milliseconds)
+					? new TimeSpan(oldTime.Days, hourOfDay, minutes, oldTime.Seconds, oldTime.Milliseconds)
 					: new TimeSpan(0, hourOfDay, minutes, 0);
 				SaveTime(time.RoundToMinuteInterval(MinuteIncrement));
 			}

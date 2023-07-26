@@ -36,13 +36,14 @@ partial class WriteableBitmap
 
 		const int bitsPerComponent = 8;
 		const int bytesPerPixel = 4;
-
+		var pixelWidth = PixelWidth;
+		var pixelHeight = PixelHeight;
 		var img = new CGImage(
-			PixelWidth,
-			PixelHeight,
+			pixelWidth,
+			pixelHeight,
 			bitsPerComponent: bitsPerComponent,
 			bitsPerPixel: bitsPerComponent * bytesPerPixel,
-			bytesPerRow: bytesPerPixel * PixelWidth,
+			bytesPerRow: bytesPerPixel * pixelWidth,
 			colorSpace,
 			CGImageAlphaInfo.Last,
 			dataProvider,
@@ -52,7 +53,7 @@ partial class WriteableBitmap
 
 		_NativeImage? nativeImage = null;
 #if __MACOS__
-		nativeImage = new _NativeImage(img, new CGSize(PixelWidth, PixelHeight));
+		nativeImage = new _NativeImage(img, new CGSize(pixelWidth, pixelHeight));
 #else
 		nativeImage = _NativeImage.FromImage(img);
 #endif

@@ -779,8 +779,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetCharacterIndexAtPoint(Point point)
 		{
-			point.X -= Padding.Left;
-			point.Y -= Padding.Top;
+			var padding = Padding;
+			point.X -= padding.Left;
+			point.Y -= padding.Top;
 
 			var physicalPoint = point.LogicalToPhysicalPixels();
 

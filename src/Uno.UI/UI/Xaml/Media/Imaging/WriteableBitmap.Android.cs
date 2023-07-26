@@ -44,14 +44,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 
 			var image = BitmapFactory.DecodeStream(Stream);
-
-			var pixels = new int[PixelWidth * PixelHeight];
-			image.GetPixels(pixels, 0, PixelWidth, 0, 0, PixelWidth, PixelHeight);
+			var pixelWidth = PixelWidth;
+			var pixelHeight = PixelHeight;
+			var pixels = new int[pixelWidth * pixelHeight];
+			image.GetPixels(pixels, 0, pixelWidth, 0, 0, pixelWidth, pixelHeight);
 
 			var pixelsBytes = MemoryMarshal.Cast<int, byte>(pixels.AsSpan());
 
 			pixelsBytes.CopyTo(_buffer.Span);
-			Debug.Assert(_buffer.Span.Length == PixelWidth * PixelHeight * 4);
+			Debug.Assert(_buffer.Span.Length == pixelWidth * pixelHeight * 4);
 		}
 	}
 }

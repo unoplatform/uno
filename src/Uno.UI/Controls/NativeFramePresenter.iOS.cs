@@ -630,8 +630,9 @@ namespace Uno.UI.Controls
 						BackStackPageTypes = backStackPageType;
 						break;
 					case NavigationMode.Back:
-						BackStackPageTypes = frame.BackStack
-							.Take(Math.Max(0, frame.BackStack.Count - 1))
+						var backStack = frame.BackStack;
+						BackStackPageTypes = backStack
+							.Take(Math.Max(0, backStack.Count - 1))
 							.Select(p => p.SourcePageType)
 							.ToList();
 						break;
@@ -670,8 +671,9 @@ namespace Uno.UI.Controls
 				NavigationMode = NavigationMode.Back;
 				PageType = requestThatCreatedTheController.PageType;
 				TransitionInfo = requestThatCreatedTheController.TransitionInfo;
-				BackStackPageTypes = frame.BackStack
-					.Take(Math.Max(0, frame.BackStack.Count - 1))
+				var backStack = frame.BackStack;
+				BackStackPageTypes = backStack
+					.Take(Math.Max(0, backStack.Count - 1))
 					.Select(p => p.SourcePageType)
 					.ToList();
 

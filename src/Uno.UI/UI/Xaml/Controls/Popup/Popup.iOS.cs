@@ -64,10 +64,11 @@ public partial class Popup
 			PopupPanel = new PopupPanel(this);
 		}
 
-		if (PopupPanel.Superview == null)
+		var popupPanel = PopupPanel;
+		if (popupPanel.Superview == null)
 		{
-			PopupPanel.IsVisualTreeRoot = true;
-			MainWindow.AddSubview(PopupPanel);
+			popupPanel.IsVisualTreeRoot = true;
+			MainWindow.AddSubview(popupPanel);
 		}
 	}
 
@@ -137,23 +138,24 @@ public partial class Popup
 
 	private void UpdateLightDismissLayer(bool newIsOpen)
 	{
-		if (PopupPanel != null)
+		var popupPanel = PopupPanel;
+		if (popupPanel != null)
 		{
 			if (newIsOpen)
 			{
-				if (PopupPanel.Bounds != MainWindow.Bounds)
+				if (popupPanel.Bounds != MainWindow.Bounds)
 				{
 					// If the Bounds are different, the screen has probably been rotated.
 					// We always want the light dismiss layer to have the same bounds (and frame) as the window.
-					PopupPanel.Bounds = MainWindow.Bounds;
-					PopupPanel.Frame = MainWindow.Frame;
+					popupPanel.Bounds = MainWindow.Bounds;
+					popupPanel.Frame = MainWindow.Frame;
 				}
 
-				PopupPanel.Visibility = Visibility.Visible;
+				popupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
-				PopupPanel.Visibility = Visibility.Collapsed;
+				popupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
 	}

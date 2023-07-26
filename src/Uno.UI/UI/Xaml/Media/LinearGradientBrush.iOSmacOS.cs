@@ -14,10 +14,11 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal override CALayer GetLayer(CGSize size)
 		{
+			var gradientStops = GradientStops;
 			var gradientLayer = new CAGradientLayer
 			{
-				Colors = GradientStops.SelectToArray(gs => (CGColor)GetColorWithOpacity(gs.Color)),
-				Locations = GradientStops.SelectToArray(gs => new NSNumber(gs.Offset))
+				Colors = gradientStops.SelectToArray(gs => (CGColor)GetColorWithOpacity(gs.Color)),
+				Locations = gradientStops.SelectToArray(gs => new NSNumber(gs.Offset))
 			};
 			var transform = RelativeTransform;
 

@@ -126,23 +126,24 @@ public partial class Popup
 
 	private void UpdateLightDismissLayer(bool newIsOpen)
 	{
-		if (PopupPanel != null && PopupPanel.Superview != null)
+		var popupPanel = PopupPanel;
+		if (popupPanel != null && popupPanel.Superview != null)
 		{
 			if (newIsOpen)
 			{
-				if (PopupPanel.Bounds != MainWindowContent.Bounds)
+				if (popupPanel.Bounds != MainWindowContent.Bounds)
 				{
 					// If the Bounds are different, the screen has probably been rotated.
 					// We always want the light dismiss layer to have the same bounds (and frame) as the window.
-					PopupPanel.Frame = MainWindowContent.Frame;
-					PopupPanel.Bounds = MainWindowContent.Bounds;
+					popupPanel.Frame = MainWindowContent.Frame;
+					popupPanel.Bounds = MainWindowContent.Bounds;
 				}
 
-				PopupPanel.Visibility = Visibility.Visible;
+				popupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
-				PopupPanel.Visibility = Visibility.Collapsed;
+				popupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
 	}
@@ -155,17 +156,16 @@ public partial class Popup
 	{
 		//macOS does not have BringSubviewToFront,
 		//solution based on https://stackoverflow.com/questions/4236304/os-x-version-of-bringsubviewtofront
-		if (PopupPanel.Layer.SuperLayer != null)
+		var popupPanel = PopupPanel;
+		if (popupPanel.Layer.SuperLayer is { } superlayer)
 		{
-			var superlayer = PopupPanel.Layer.SuperLayer;
-			PopupPanel.Layer.RemoveFromSuperLayer();
-			superlayer.AddSublayer(PopupPanel.Layer);
+			popupPanel.Layer.RemoveFromSuperLayer();
+			superlayer.AddSublayer(popupPanel.Layer);
 		}
-		else if (PopupPanel.Superview != null)
+		else if (popupPanel.Superview is { } superview)
 		{
-			var superview = PopupPanel.Superview;
-			PopupPanel.RemoveFromSuperview();
-			superview.AddSubview(PopupPanel);
+			popupPanel.RemoveFromSuperview();
+			superview.AddSubview(popupPanel);
 		}
 	}
 }

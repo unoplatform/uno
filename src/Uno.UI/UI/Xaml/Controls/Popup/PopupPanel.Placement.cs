@@ -171,11 +171,13 @@ partial class PopupPanel
 						y: anchorRect.Top + halfAnchorHeight - halfChildHeight + popup.VerticalOffset);
 					break;
 				case FlyoutBase.MajorPlacementMode.Full:
+					var actualWidth = ActualWidth;
+					var actualHeight = ActualHeight;
 #if __IOS__ || __ANDROID__
 					// The status bar should remain visible. On droid, this panel is placed beneath the status bar.
 					desiredSize = new Size(
-						ActualWidth,
-						ActualHeight
+						actualWidth,
+						actualHeight
 #if __IOS__
 						// On iOS, this panel will cover the status bar, so we have to substract it out.
 						- visibleBounds.Y
@@ -185,8 +187,8 @@ partial class PopupPanel
 					desiredSize = visibleBounds.Size.AtMost(maxSize);
 #endif
 					finalPosition = new Point(
-						x: FindOptimalOffset(desiredSize.Width, visibleBounds.X, visibleBounds.Width, ActualWidth),
-						y: FindOptimalOffset(desiredSize.Height, visibleBounds.Y, visibleBounds.Height, ActualHeight));
+						x: FindOptimalOffset(desiredSize.Width, visibleBounds.X, visibleBounds.Width, actualWidth),
+						y: FindOptimalOffset(desiredSize.Height, visibleBounds.Y, visibleBounds.Height, actualHeight));
 
 					double FindOptimalOffset(double length, double visibleOffset, double visibleLength, double constraint)
 					{

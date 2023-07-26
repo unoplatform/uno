@@ -740,12 +740,13 @@ namespace Windows.UI.Xaml.Controls
 					extentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
 				}
 
+				var margin = fe.Margin;
 #if __WASM__
 				// Issue needs to be fixed first for WASM for Bottom Margin missing
 				// Details here: https://github.com/unoplatform/uno/issues/7000
-				ExtentHeight = extentHeight + fe.Margin.Top;
+				ExtentHeight = extentHeight + margin.Top;
 #else
-				ExtentHeight = extentHeight + fe.Margin.Top + fe.Margin.Bottom;
+				ExtentHeight = extentHeight + margin.Top + margin.Bottom;
 #endif
 
 
@@ -766,9 +767,9 @@ namespace Windows.UI.Xaml.Controls
 #if __WASM__
 				// Issue needs to be fixed first for WASM for Right Margin missing
 				// Details here: https://github.com/unoplatform/uno/issues/7000
-				ExtentWidth = extentWidth + fe.Margin.Left;
+				ExtentWidth = extentWidth + margin.Left;
 #else
-				ExtentWidth = extentWidth + fe.Margin.Left + fe.Margin.Right;
+				ExtentWidth = extentWidth + margin.Left + margin.Right;
 #endif
 			}
 			else

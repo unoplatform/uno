@@ -52,7 +52,8 @@ public partial class Popup
 		{
 			_disposable.Dispose();
 			InitializeNativePartial();
-			OnPopupPanelChangedPartialNative(PopupPanel, PopupPanel);
+			var popupPanel = PopupPanel;
+			OnPopupPanelChangedPartialNative(popupPanel, popupPanel);
 		}
 	}
 

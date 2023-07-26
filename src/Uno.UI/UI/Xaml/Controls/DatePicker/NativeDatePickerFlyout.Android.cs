@@ -72,11 +72,13 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				var minYearCalendar = Calendar.Instance;
-				minYearCalendar.Set(MinYear.Year, MinYear.Month - 1, MinYear.Day, MinYear.Hour, MinYear.Minute, MinYear.Second);
+				var minYear = MinYear;
+				minYearCalendar.Set(minYear.Year, minYear.Month - 1, minYear.Day, minYear.Hour, minYear.Minute, minYear.Second);
 				_dialog.DatePicker.MinDate = minYearCalendar.TimeInMillis;
 
 				var maxYearCalendar = Calendar.Instance;
-				maxYearCalendar.Set(MaxYear.Year, MaxYear.Month - 1, MaxYear.Day, MaxYear.Hour, MaxYear.Minute, MaxYear.Second);
+				var maxYear = MaxYear;
+				maxYearCalendar.Set(maxYear.Year, maxYear.Month - 1, maxYear.Day, maxYear.Hour, maxYear.Minute, maxYear.Second);
 				_dialog.DatePicker.MaxDate = maxYearCalendar.TimeInMillis;
 			}
 
@@ -102,7 +104,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDateSet(object sender, DatePickerDialog.DateSetEventArgs e)
 		{
-			var newValue = new DateTimeOffset(e.Date + Date.TimeOfDay, Date.Offset);
+			var date = Date;
+			var newValue = new DateTimeOffset(e.Date + date.TimeOfDay, date.Offset);
 			var oldValue = Date;
 
 			Date = newValue;

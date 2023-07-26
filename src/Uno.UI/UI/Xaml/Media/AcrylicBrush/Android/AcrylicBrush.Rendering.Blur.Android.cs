@@ -56,14 +56,15 @@ namespace Windows.UI.Xaml.Media
 
 		private void UpdateTint(AcrylicState state, bool invalidate = true)
 		{
+			var tintColor = TintColor;
 			var tintColorWithOpacity =
 				Color.FromArgb(
-					(byte)(TintOpacity * TintColor.A),
-					TintColor.R,
-					TintColor.G,
-					TintColor.B);
-			Android.Graphics.Color tintColor = tintColorWithOpacity;
-			state.BlurView?.SetOverlayColor(tintColor, invalidate);
+					(byte)(TintOpacity * tintColor.A),
+					tintColor.R,
+					tintColor.G,
+					tintColor.B);
+			Android.Graphics.Color androidTintColor = tintColorWithOpacity;
+			state.BlurView?.SetOverlayColor(androidTintColor, invalidate);
 		}
 
 		private void EnableBlur(AcrylicState state)
