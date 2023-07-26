@@ -446,16 +446,16 @@ public class Finger : IInjectedPointer, IDisposable
 #if HAS_UNO
 		=> new() { PositionX = (int)x, PositionY = (int)y };
 #else
-{
-var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
-var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+	{
+		var bounds = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().VisibleBounds;
+		var scale = Windows.Graphics.Display.DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 
-return new()
-{
-	PositionX = (int)((bounds.X + x) * scale),
-	PositionY = (int)((bounds.Y + y) * scale),
-};
-}
+		return new()
+		{
+			PositionX = (int)((bounds.X + x) * scale),
+			PositionY = (int)((bounds.Y + y) * scale),
+		};
+	}
 #endif
 }
 
