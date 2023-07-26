@@ -512,9 +512,9 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
 
-			IsVideo = _player.IsVideo;
+			IsVideo = !_player.IsAudio;
 
-			if (mp.IsVideo && Events is not null)
+			if (!mp.IsAudio && Events is not null)
 			{
 				try
 				{

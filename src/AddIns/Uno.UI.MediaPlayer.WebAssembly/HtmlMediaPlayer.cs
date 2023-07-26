@@ -23,8 +23,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	private readonly ImmutableArray<string> audioTagAllowedFormats =
 		ImmutableArray.Create(new string[] { ".MP3", ".WAV" });
-	private readonly ImmutableArray<string> videoTagAllowedFormats =
-		ImmutableArray.Create(new string[] { ".MP4", ".WEBM", ".OGG" });
+
 	private UIElement _activeElement;
 	private string _activeElementName;
 	public HtmlMediaPlayerState PlayerState;
@@ -49,8 +48,8 @@ internal partial class HtmlMediaPlayer : Border
 		AddChild(_htmlVideo);
 		AddChild(_htmlAudio);
 
-		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		_activeElement = IsAudio ? _htmlAudio : _htmlVideo;
+		_activeElementName = IsAudio ? "Audio" : "Video";
 
 		Loaded += OnLoaded;
 		Unloaded += OnUnloaded;
@@ -63,8 +62,8 @@ internal partial class HtmlMediaPlayer : Border
 		{
 			this.Log().Debug($"HtmlMediaPlayer Loaded");
 		}
-		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		_activeElement = IsAudio ? _htmlAudio : _htmlVideo;
+		_activeElementName = IsAudio ? "Audio" : "Video";
 		Suspended += OnHtmlSuspended;
 		SourceLoaded += OnHtmlSourceLoaded;
 		StatusPlayChanged += OnHtmlStatusPlayChanged;
@@ -94,11 +93,6 @@ internal partial class HtmlMediaPlayer : Border
 	public bool IsAudio
 	{
 		get => audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
-	}
-
-	public bool IsVideo
-	{
-		get => !audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
 	}
 
 	public int VideoWidth
@@ -347,8 +341,8 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"Media Suspended [{Source}]");
 		}
 
-		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		_activeElement = IsAudio ? _htmlAudio : _htmlVideo;
+		_activeElementName = IsAudio ? "Audio" : "Video";
 		if (_activeElement != null)
 		{
 			PlayerState = NativeMethods.GetPaused(_activeElement.HtmlId) ? HtmlMediaPlayerState.Paused : HtmlMediaPlayerState.Playing;
@@ -364,8 +358,8 @@ internal partial class HtmlMediaPlayer : Border
 			this.Log().Debug($"Media opened [{Source}]");
 		}
 
-		_activeElement = IsVideo ? _htmlVideo : IsAudio ? _htmlAudio : default;
-		_activeElementName = IsVideo ? "Video" : IsAudio ? "Audio" : "";
+		_activeElement = IsAudio ? _htmlAudio : _htmlVideo;
+		_activeElementName = IsAudio ? "Audio" : "Video";
 		if (_activeElement != null)
 		{
 			_activeElement.SetCssStyle("visibility", "visible");
@@ -439,15 +433,11 @@ internal partial class HtmlMediaPlayer : Border
 
 			if (player.Log().IsEnabled(LogLevel.Debug))
 			{
-				player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{player.IsVideo} isAudio:{player.IsAudio}");
+				player.Log().Debug($"HtmlMediaPlayer.OnSourceChanged: {args.NewValue} isVideo:{!player.IsAudio} isAudio:{player.IsAudio}");
 			}
 
-			player._activeElement = player.IsVideo
-						? player._htmlVideo
-						: (player.IsAudio
-									? player._htmlAudio
-									: default);
-			player._activeElementName = player.IsVideo ? "Video" : player.IsAudio ? "Audio" : "";
+			player._activeElement = player.IsAudio ? player._htmlAudio : player._htmlVideo;
+			player._activeElementName = player.IsAudio ? "Audio" : "Video";
 
 			if (player._activeElement != null)
 			{
