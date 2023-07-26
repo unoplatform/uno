@@ -12,10 +12,6 @@ using ObjCRuntime;
 using Uno.Helpers.Theming;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 namespace Uno.UI.Controls
 {
 	public class RootViewController : UINavigationController, IRotationAwareViewController

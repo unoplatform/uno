@@ -11,6 +11,8 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
+using Uno;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -18,8 +20,16 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private const double DefaultStrokeThicknessWhenNoStrokeDefined = 0.0;
 
-		private readonly SerialDisposable _brushChanged = new SerialDisposable();
-		private readonly SerialDisposable _strokeBrushChanged = new SerialDisposable();
+		private WeakBrushChangedProxy _brushChangedProxy;
+		private WeakBrushChangedProxy _strokeBrushChangedProxy;
+		private Action _brushChanged;
+		private Action _strokeBrushChanged;
+
+		~Shape()
+		{
+			_brushChangedProxy?.Unsubscribe();
+			_strokeBrushChangedProxy?.Unsubscribe();
+		}
 
 		/// <summary>
 		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
@@ -52,16 +62,25 @@ namespace Windows.UI.Xaml.Shapes
 				defaultValue: SolidColorBrushHelper.Transparent,
 #if LEGACY_SHAPE_MEASURE
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext,
-				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
 #else
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild,
-				propertyChangedCallback: (s, e) => ((Shape)s)._brushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => ((Shape)s).InvalidateForBrushChanged(), imageBrushCallback: () => ((Shape)s).InvalidateForBrushChanged())
 #endif
+				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
 			)
 		);
+
+#if !LEGACY_SHAPE_MEASURE
+		private void OnFillChanged(Brush newValue)
+		{
+			_brushChangedProxy ??= new();
+			_brushChanged ??= () => InvalidateForBrushChanged();
+			_brushChangedProxy.Subscribe(newValue, _brushChanged);
+		}
+#endif
 		#endregion
 
 #if !LEGACY_SHAPE_MEASURE
+
 		private void InvalidateForBrushChanged()
 		{
 			// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
@@ -106,14 +125,22 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Shape),
 			new FrameworkPropertyMetadata(
 				defaultValue: null,
-#if LEGACY_SHAPE_MEASURE
-				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeUpdated((Brush)e.NewValue)
-#else
+#if !LEGACY_SHAPE_MEASURE
 				options: FrameworkPropertyMetadataOptions.AffectsArrange,
-				propertyChangedCallback: (s, e) => ((Shape)s)._strokeBrushChanged.Disposable = Brush.AssignAndObserveBrush((Brush)e.NewValue, _ => ((Shape)s).InvalidateForBrushChanged(), imageBrushCallback: () => ((Shape)s).InvalidateForBrushChanged())
 #endif
+				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.NewValue)
 			)
 		);
+
+#if !LEGACY_SHAPE_MEASURE
+		private void OnStrokeChanged(Brush newValue)
+		{
+			_strokeBrushChangedProxy ??= new();
+			_strokeBrushChanged ??= () => InvalidateForBrushChanged();
+			_strokeBrushChangedProxy.Subscribe(newValue, _strokeBrushChanged);
+		}
+#endif
+
 		#endregion
 
 		#region StrokeThickness Dependency Property
@@ -182,65 +209,47 @@ namespace Windows.UI.Xaml.Shapes
 		#endregion
 
 #if LEGACY_SHAPE_MEASURE
-		protected virtual void OnFillChanged(Brush newValue)
+		private void OnFillChanged(Brush newValue)
 		{
-			_brushChanged.Disposable = null;
-			if (newValue?.SupportsAssignAndObserveBrush ?? false)
+			_brushChangedProxy ??= new();
+			_brushChanged ??= () =>
 			{
-				_brushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ =>
-#if __WASM__
-					OnFillUpdatedPartial()
-#else
-					RefreshShape(true)
-#endif
-				);
-			}
+				OnFillUpdatedPartial();
+				RefreshShape();
+			};
 
-			OnFillUpdated(newValue);
+			_brushChangedProxy.Subscribe(newValue, _brushChanged);
 		}
 
-		protected virtual void OnFillUpdated(Brush newValue)
-		{
-			OnFillUpdatedPartial();
-			RefreshShape();
-		}
 		partial void OnFillUpdatedPartial();
 
-		protected virtual void OnStrokeUpdated(Brush newValue)
+		private void OnStrokeChanged(Brush newValue)
 		{
-			_strokeBrushChanged.Disposable = null;
-			if (newValue?.SupportsAssignAndObserveBrush ?? false)
+			_strokeBrushChangedProxy ??= new();
+			_strokeBrushChanged ??= () =>
 			{
-
-				_strokeBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ =>
-#if __WASM__
-					OnStrokeUpdatedPartial()
-#else
-					RefreshShape(true)
-#endif
-				);
-			}
-
-			OnStrokeUpdatedPartial();
-			RefreshShape();
+				OnStrokeUpdatedPartial();
+				RefreshShape();
+			};
+			_strokeBrushChangedProxy.Subscribe(newValue, _strokeBrushChanged);
 		}
 		partial void OnStrokeUpdatedPartial();
 
-		protected virtual void OnStrokeThicknessUpdated(double newValue)
+		private void OnStrokeThicknessUpdated(double newValue)
 		{
 			OnStrokeThicknessUpdatedPartial();
 			RefreshShape();
 		}
 		partial void OnStrokeThicknessUpdatedPartial();
 
-		protected virtual void OnStrokeDashArrayUpdated(DoubleCollection newValue)
+		private void OnStrokeDashArrayUpdated(DoubleCollection newValue)
 		{
 			OnStrokeDashArrayUpdatedPartial();
 			RefreshShape();
 		}
 		partial void OnStrokeDashArrayUpdatedPartial();
 
-		protected virtual void OnStretchUpdated(Stretch newValue)
+		private void OnStretchUpdated(Stretch newValue)
 		{
 			OnStretchUpdatedPartial();
 			RefreshShape();

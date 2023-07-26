@@ -336,6 +336,8 @@ namespace Windows.UI.Xaml
 					while (settersEnumerator.MoveNext())
 					{
 						settersEnumerator.Current.ApplyValue(DependencyPropertyValuePrecedences.Animations, element);
+
+
 					}
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY

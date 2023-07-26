@@ -10,16 +10,12 @@ using Uno.Extensions;
 #if __IOS__
 using UIKit;
 using Path = UIKit.UIBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using Path = AppKit.NSBezierPath;
 using CoreGraphics;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __ANDROID__
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;

@@ -13,10 +13,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.Foundation.Logging;
 using AppKit;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI
 {

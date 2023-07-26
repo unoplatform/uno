@@ -735,10 +735,11 @@ namespace Windows.UI.Xaml.Controls
 				childSize += childMarginSize;
 			}
 
-			return childSize
-				.Min(frameSize) // at most
-				.Min(max) // at most
-				.Max(min); // at least
+			return Math.Max(
+				Math.Min(
+					Math.Min(childSize, frameSize),
+					max),
+				min);
 		}
 
 		/// <summary>

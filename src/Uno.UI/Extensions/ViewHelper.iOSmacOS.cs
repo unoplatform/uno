@@ -10,10 +10,7 @@ using Windows.Graphics.Display;
 
 using Foundation;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 #if __IOS__
 using UIKit;

@@ -16,14 +16,15 @@ namespace Windows.UI.Xaml
 	/// Provides a template for a method that is called whenever a dependency property value is being re-evaluated, or coercion is specifically requested.
 	/// </summary>
 	/// <param name="dependencyObject">The object that the property exists on. When the callback is invoked, the property system will pass this value.</param>
-	/// <param name="args">The new value of the property, prior to any coercion attempt.</param>
-	internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue);
+	/// <param name="baseValue">The new value of the property, prior to any coercion attempt.</param>
+	/// <param name="precedence">The precedence at which the new value is being set.</param>
+	internal delegate object CoerceValueCallback(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences precedence);
 
 	/// <summary>
 	/// Provides a delegate for a method used to update backing fields of a dependency property
 	/// </summary>
 	/// <param name="dependencyObject">The object that the property exists on.</param>
-	/// <param name="args">The new value of the property</param>
+	/// <param name="newValue">The new value of the property</param>
 	internal delegate void BackingFieldUpdateCallback(DependencyObject dependencyObject, object newValue);
 
 	/// <summary>
@@ -37,11 +38,6 @@ namespace Windows.UI.Xaml
 		private bool _isCoerceValueCallbackSet;
 		private CoerceValueCallback _coerceValueCallback;
 
-		/// <summary>
-		/// Should <see cref="CoerceValueCallback"/> be raised even if value has not changed?
-		/// </summary>
-		internal bool CoerceWhenUnchanged { get; set; } = true;
-
 		internal PropertyMetadata() { }
 
 		public PropertyMetadata(
@@ -49,6 +45,15 @@ namespace Windows.UI.Xaml
 		)
 		{
 			DefaultValue = defaultValue;
+		}
+
+		internal PropertyMetadata(
+			object defaultValue,
+			CoerceValueCallback coerceValueCallback
+		)
+		{
+			DefaultValue = defaultValue;
+			CoerceValueCallback = coerceValueCallback;
 		}
 
 		internal PropertyMetadata(

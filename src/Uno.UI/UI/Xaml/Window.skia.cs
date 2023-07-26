@@ -7,6 +7,7 @@ using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
+using Windows.Security.Cryptography.Core;
 using Windows.UI.Composition;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
@@ -21,6 +22,7 @@ public sealed partial class Window
 	private Border? _rootBorder;
 
 	private bool _shown;
+	private bool _windowCreated;
 
 	partial void InitPlatform()
 	{
@@ -30,7 +32,7 @@ public sealed partial class Window
 		Compositor = new Compositor();
 	}
 
-	internal event EventHandler Shown;
+	internal event EventHandler Showing;
 
 	public Compositor Compositor { get; private set; }
 
@@ -101,22 +103,41 @@ public sealed partial class Window
 	partial void ShowPartial()
 	{
 		_shown = true;
-		Shown?.Invoke(this, EventArgs.Empty);
+		Showing?.Invoke(this, EventArgs.Empty);
 
 		TryLoadRootVisual();
 	}
 
-	private void TryLoadRootVisual()
+	internal void OnNativeWindowCreated()
 	{
-		if (!_shown)
+		_windowCreated = true;
+		TryLoadRootVisual();
+	}
+
+	private async void TryLoadRootVisual()
+	{
+		if (!_shown || !_windowCreated)
 		{
 			return;
 		}
 
-		UIElement.LoadingRootElement(_rootVisual);
+		void LoadRoot()
+		{
+			UIElement.LoadingRootElement(_rootVisual);
 
-		_rootVisual.XamlRoot!.InvalidateMeasure();
+			_rootVisual.XamlRoot!.InvalidateMeasure();
+			_rootVisual.XamlRoot!.InvalidateArrange();
 
-		UIElement.RootElementLoaded(_rootVisual);
+			UIElement.RootElementLoaded(_rootVisual);
+		}
+
+		if (Dispatcher.HasThreadAccess)
+		{
+			LoadRoot();
+		}
+		else
+		{
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, LoadRoot);
+		}
 	}
 }

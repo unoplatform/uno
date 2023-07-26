@@ -918,7 +918,7 @@ namespace Uno.UI {
 					? `${eventExtractor(event)}`
 					: "";
 
-				const result = this.dispatchEvent(element, eventName, eventPayload);
+				const result = this.dispatchEvent(element, eventName, eventPayload, onCapturePhase);
 				if (result & HtmlEventDispatchResult.StopPropagation) {
 					event.stopPropagation();
 				}
@@ -1695,7 +1695,7 @@ namespace Uno.UI {
 			WindowManager.focusInMethod(-1);
 		}
 
-		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): HtmlEventDispatchResult {
+		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null, onCapturePhase: boolean = false): HtmlEventDispatchResult {
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
 			// console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
@@ -1704,7 +1704,7 @@ namespace Uno.UI {
 				throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
 			}
 
-			return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
+			return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "", onCapturePhase);
 		}
 
 		private getIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {

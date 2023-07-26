@@ -4,8 +4,8 @@
 			 xmlns:local="using:UITests.Windows_UI_Xaml_Controls.CommandBar"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 xmlns:xamarin="http://uno.ui/xamarin"
-			 mc:Ignorable="d xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
+			 mc:Ignorable="d not_win"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
@@ -15,7 +15,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<Frame x:Name="hostFrame"
-			   xamarin:Style="{StaticResource NativeDefaultFrame}" />
+			   not_win:Style="{StaticResource NativeDefaultFrame}" />
 		<Button x:Name="NavigateInitialButton"
 				Grid.Row="1"
 				Content="Navigate to first page"

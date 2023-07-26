@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		internal bool IsInLiveTree => IsLoading || IsLoaded;
 #elif __ANDROID__
 		internal bool IsInLiveTree => base.IsAttachedToWindow;
@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml
 		internal bool IsInLiveTree => throw new NotSupportedException();
 #endif
 
-#if !__NETSTD__
+#if !__CROSSRUNTIME__
 		internal void RemoveChild(UIElement viewToRemove) => VisualTreeHelper.RemoveChild(this, viewToRemove);
 
 		internal void AddChild(UIElement viewToAdd) => VisualTreeHelper.AddChild(this, viewToAdd);

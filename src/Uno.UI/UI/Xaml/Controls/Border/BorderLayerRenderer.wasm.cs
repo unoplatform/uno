@@ -8,6 +8,8 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -17,7 +19,13 @@ namespace Windows.UI.Xaml.Shapes
 		private (Brush, Thickness) _border;
 		private CornerRadius _cornerRadius;
 
-		private SerialDisposable _backgroundSubscription;
+		private WeakBrushChangedProxy _backgroundSubscription;
+		private Action _backgroundChanged;
+
+		~BorderLayerRenderer()
+		{
+			_backgroundSubscription?.Unsubscribe();
+		}
 
 		public void UpdateLayer(
 			UIElement element,
@@ -31,10 +39,9 @@ namespace Windows.UI.Xaml.Shapes
 			if (_background != background && element is FrameworkElement fwElt)
 			{
 				_background = background;
-				var subscription = _backgroundSubscription ??= new SerialDisposable();
+				_backgroundSubscription ??= new();
 
-				subscription.Disposable = null;
-				subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, background);
+				SetAndObserveBackgroundBrush(fwElt, background, _backgroundSubscription, ref _backgroundChanged);
 			}
 
 			if (_border != (borderBrush, borderThickness))
@@ -120,15 +127,25 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		public static IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
+		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush, WeakBrushChangedProxy brushChangedProxy, ref Action brushChanged)
 		{
-			SetBackgroundBrush(element, brush);
+			if (brushChangedProxy.TryGetSource(out var oldValue) && oldValue is AcrylicBrush oldAcrylic)
+			{
+				AcrylicBrush.ResetStyle(element);
+			}
 
 			if (brush is ImageBrush imgBrush)
 			{
+				SetBackgroundBrush(element, brush);
+
 				RecalculateBrushOnSizeChanged(element, false);
-				return imgBrush.Subscribe(img =>
+				brushChanged = () =>
 				{
+					if (imgBrush.ImageDataCache is not { } img)
+					{
+						return;
+					}
+
 					switch (img.Kind)
 					{
 						case ImageDataKind.Empty:
@@ -149,15 +166,20 @@ namespace Windows.UI.Xaml.Shapes
 							);
 							break;
 					}
-				});
+				};
+				brushChangedProxy.Subscribe(imgBrush, brushChanged);
 			}
 			else if (brush is AcrylicBrush acrylicBrush)
 			{
-				return acrylicBrush.Subscribe(element);
+				SetBackgroundBrush(element, brush);
+
+				brushChanged = () => acrylicBrush.Apply(element);
+				brushChangedProxy.Subscribe(acrylicBrush, brushChanged);
 			}
 			else
 			{
-				return Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(element, brush));
+				brushChanged = () => SetBackgroundBrush(element, brush);
+				brushChangedProxy.Subscribe(brush, brushChanged);
 			}
 		}
 
@@ -207,6 +229,14 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				element.SizeChanged -= _onSizeChangedForBrushCalculation;
 			}
+		}
+
+		internal void Clear()
+		{
+			_backgroundSubscription?.Unsubscribe();
+			_background = null;
+			_border = default;
+
 		}
 	}
 }

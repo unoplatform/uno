@@ -33,16 +33,6 @@ partial class SvgImageSource
 	{
 		try
 		{
-			if (ResourceId.HasValue)
-			{
-				return await FetchSvgResource(ct, ResourceId.Value);
-			}
-
-			if (ResourceString is not null)
-			{
-				return await FetchSvgAssetAsync(ct, ResourceString);
-			}
-
 			if (Stream is not null)
 			{
 				return await ReadFromStreamAsync(Stream, ct);
@@ -65,6 +55,15 @@ partial class SvgImageSource
 					}
 
 					return await ReadFromStreamAsync(stream, ct);
+				}
+
+				if (AbsoluteUri.IsLocalResource())
+				{
+					var file = await StorageFile.GetFileFromApplicationUriAsync(AbsoluteUri);
+
+					using var fileStream = await file.OpenAsync(FileAccessMode.Read);
+					using var ioStream = fileStream.AsStream();
+					return await ReadFromStreamAsync(ioStream, ct);
 				}
 
 				if (Downloader is not null)
@@ -92,26 +91,6 @@ partial class SvgImageSource
 		{
 			return ImageData.FromError(ex);
 		}
-	}
 
-	private async Task<ImageData> FetchSvgResource(CancellationToken ct, int resourceId)
-	{
-		if (ContextHelper.Current.Resources?.OpenRawResource(resourceId) is not { } rawResourceStream)
-		{
-			return ImageData.Empty;
-		}
-
-		return await ReadFromStreamAsync(rawResourceStream, ct);
-	}
-
-	private async Task<ImageData> FetchSvgAssetAsync(CancellationToken ct, string assetPath)
-	{
-		if (ContextHelper.Current.Assets is not AssetManager assets)
-		{
-			return ImageData.Empty;
-		}
-
-		using var stream = assets.Open(assetPath);
-		return await ReadFromStreamAsync(stream, ct);
 	}
 }

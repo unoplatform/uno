@@ -13,6 +13,7 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml
 {
@@ -145,41 +146,45 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private SerialDisposable _brushSubscription;
+		private WeakBrushChangedProxy _brushSubscription;
+		private Action _brushChanged;
 
 		internal void SetForeground(object localValue)
 		{
-			if (_brushSubscription != null)
-			{
-				_brushSubscription.Disposable = null;
-			}
+			_brushSubscription ??= new();
 
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
-					WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
+					_brushChanged = () => WindowManagerInterop.SetElementColor(HtmlId, scb.ColorWithOpacity);
+					_brushSubscription.Subscribe(scb, _brushChanged);
 					break;
 				case GradientBrush gradient:
-					this.SetStyle(
+					_brushChanged = () => this.SetStyle(
 						("background", gradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
 						("background-clip", "text")
 					);
+					_brushSubscription.Subscribe(gradient, _brushChanged);
 					break;
 
 				case RadialGradientBrush radialGradient:
-					this.SetStyle(
+					_brushChanged = () => this.SetStyle(
 						("background", radialGradient.ToCssString(this.RenderSize)),
 						("color", "transparent"),
 						("background-clip", "text")
 					);
+					_brushSubscription.Subscribe(radialGradient, _brushChanged);
 					break;
 
 				case ImageBrush imageBrush:
-					_brushSubscription ??= new SerialDisposable();
-
-					_brushSubscription.Disposable = imageBrush.Subscribe(img =>
+					_brushChanged = () =>
 					{
+						if (imageBrush.ImageDataCache is not { } img)
+						{
+							return;
+						}
+
 						switch (img.Kind)
 						{
 							case ImageDataKind.Empty:
@@ -207,10 +212,12 @@ namespace Windows.UI.Xaml
 								);
 								break;
 						}
-					});
+					};
+					_brushSubscription.Subscribe(imageBrush, _brushChanged);
 					break;
 				case AcrylicBrush acrylic:
-					acrylic.Apply(this);
+					_brushChanged = () => acrylic.Apply(this);
+					_brushSubscription.Subscribe(acrylic, _brushChanged);
 					this.SetStyle("background-clip", "text");
 					break;
 
@@ -218,6 +225,7 @@ namespace Windows.UI.Xaml
 
 				// TODO: support other foreground types
 				default:
+					_brushSubscription.Unsubscribe();
 					this.ResetStyle("color", "background", "background-clip");
 					AcrylicBrush.ResetStyle(this);
 					break;

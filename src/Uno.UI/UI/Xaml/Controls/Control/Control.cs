@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
 
-		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits)]
+		[GeneratedDependencyProperty(DefaultValue = true, ChangedCallback = true, CoerceCallback = true, Options = FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals)]
 		public static DependencyProperty IsEnabledProperty { get; } = CreateIsEnabledProperty();
 
 		public bool IsEnabled
@@ -166,9 +166,37 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private object CoerceIsEnabled(object baseValue)
+		private protected virtual object CoerceIsEnabled(object baseValue, DependencyPropertyValuePrecedences precedence)
 		{
-			return _suppressIsEnabled ? false : baseValue;
+			if (_suppressIsEnabled)
+			{
+				return false;
+			}
+
+			// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
+			// reading soon-to-be-outdated values
+
+			var parentValue = precedence == DependencyPropertyValuePrecedences.Inheritance ?
+				baseValue :
+				this.GetValue(IsEnabledProperty, DependencyPropertyValuePrecedences.Inheritance);
+
+			// If the parent is disabled, this control must be disabled as well
+			if (parentValue is false)
+			{
+				return false;
+			}
+
+			// otherwise use the more local value
+			var (localValue, localPrecedence) = this.GetValueUnderPrecedence(IsEnabledProperty, DependencyPropertyValuePrecedences.Coercion);
+
+			if (localPrecedence >= precedence) // > means weaker precedence
+			{
+				// The baseValue hasn't been set inside PropertyDetails yet, so we need to make sure we're not
+				// using the old weaker value when a new stronger value is being set
+				localValue = baseValue;
+			}
+
+			return localValue;
 		}
 
 
@@ -243,7 +271,7 @@ namespace Windows.UI.Xaml.Controls
 						RegisterContentTemplateRoot();
 
 						if (
-#if __NETSTD__
+#if __CROSSRUNTIME__
 							!IsLoading &&
 #endif
 							!IsLoaded && FeatureConfiguration.Control.UseDeferredOnApplyTemplate)
@@ -565,7 +593,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
@@ -980,6 +1008,10 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnDragOver(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDragLeave(global::Windows.UI.Xaml.DragEventArgs e) { }
 		protected virtual void OnDrop(global::Windows.UI.Xaml.DragEventArgs e) { }
+#if __WASM__
+		protected virtual void OnPreviewKeyDown(KeyRoutedEventArgs e) { }
+		protected virtual void OnPreviewKeyUp(KeyRoutedEventArgs e) { }
+#endif
 		protected virtual void OnKeyDown(KeyRoutedEventArgs e) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs e) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -1047,6 +1079,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly DragEventHandler OnDropHandler =
 			(object sender, global::Windows.UI.Xaml.DragEventArgs args) => ((Control)sender).OnDrop(args);
+#if __WASM__
+		private static readonly KeyEventHandler OnPreviewKeyDownHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyDown(args);
+
+		private static readonly KeyEventHandler OnPreviewKeyUpHandler =
+			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnPreviewKeyUp(args);
+#endif
 
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
@@ -1182,7 +1221,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				result |= RoutedEventFlag.Drop;
 			}
+#if __WASM__
+			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyDown), _keyArgsType))
+			{
+				result |= RoutedEventFlag.PreviewKeyDown;
+			}
 
+			if (GetIsEventOverrideImplemented(type, nameof(OnPreviewKeyUp), _keyArgsType))
+			{
+				result |= RoutedEventFlag.PreviewKeyUp;
+			}
+#endif
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
 			{
 				result |= RoutedEventFlag.KeyDown;

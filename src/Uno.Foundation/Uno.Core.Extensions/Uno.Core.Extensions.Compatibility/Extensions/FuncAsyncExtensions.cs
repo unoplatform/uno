@@ -31,43 +31,6 @@ namespace Uno.Extensions
 	internal static class FuncAsyncExtensions
 	{
 		/// <summary>
-		/// Invoke the <paramref name="func"/> if not null.
-		/// </summary>
-		/// <param name="func">Func to invoke</param>
-		/// <param name="ct">A CanellationToken</param>
-		/// <returns>The result of func, or default(TResult) if the func was null.</returns>
-		public static async Task<TResult> SafeInvoke<TResult>(this FuncAsync<TResult> func, CancellationToken ct)
-		{
-			if (func == null)
-			{
-				return default(TResult);
-			}
-			else
-			{
-				return await func(ct);
-			}
-		}
-
-		/// <summary>
-		/// Invoke the <paramref name="func"/> if not null.
-		/// </summary>
-		/// <param name="func">Func to invoke</param>
-		/// <param name="ct">A CanellationToken</param>
-		/// <param name="param">Parameter of func</param>
-		/// <returns>The result of func, or default(TResult) if the func was null.</returns>
-		public static async Task<TResult> SafeInvoke<TParam, TResult>(this FuncAsync<TParam, TResult> func, CancellationToken ct, TParam param)
-		{
-			if (func == null)
-			{
-				return default(TResult);
-			}
-			else
-			{
-				return await func(ct, param);
-			}
-		}
-
-		/// <summary>
 		/// Prevents parallel execution of the FuncAsync
 		/// </summary>
 		/// <param name="func">Func to lock</param>
@@ -183,8 +146,4 @@ namespace Uno.Extensions
 			}
 		}
 	}
-}
-
-namespace Uno.Extensions
-{
 }

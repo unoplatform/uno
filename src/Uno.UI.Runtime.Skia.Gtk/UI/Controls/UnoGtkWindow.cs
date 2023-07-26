@@ -27,7 +27,7 @@ internal class UnoGtkWindow : Gtk.Window
 	public UnoGtkWindow(WinUIWindow winUIWindow) : base(WindowType.Toplevel)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Shown += OnShown;
+		_winUIWindow.Showing += OnShowing;
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
@@ -57,12 +57,19 @@ internal class UnoGtkWindow : Gtk.Window
 
 	internal UnoGtkWindowHost Host { get; }
 
-	private async void OnShown(object? sender, EventArgs e)
+	private async void OnShowing(object? sender, EventArgs e)
 	{
-		await Host.InitializeAsync();
-		ShowAll();
-		_wasShown = true;
-		ReplayPendingWindowStateChanges();
+		try
+		{
+			await Host.InitializeAsync();
+			ShowAll();
+			_wasShown = true;
+			ReplayPendingWindowStateChanges();
+		}
+		catch (Exception ex)
+		{
+			this.Log().Error("Failed to initialize the UnoGtkWindow", ex);
+		}
 	}
 
 	private void WindowClosing(object sender, DeleteEventArgs args)

@@ -7,6 +7,7 @@ using System.Linq;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Helpers;
 
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
@@ -17,11 +18,19 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
+		private WeakBrushChangedProxy _brushChangedProxy;
+		private Action _brushChanged;
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Border()
 		{
+		}
+
+		protected override void JavaFinalize()
+		{
+			_brushChangedProxy?.Unsubscribe();
+			_borderBrushChangedProxy?.Unsubscribe();
+			base.JavaFinalize();
 		}
 
 		private protected override void OnLoaded()
@@ -93,9 +102,9 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, c => UpdateBorder(), UpdateBorder);
-
-			UpdateBorder();
+			_brushChangedProxy ??= new();
+			_brushChanged ??= () => UpdateBorder();
+			_brushChangedProxy.Subscribe(e.NewValue as Brush, _brushChanged);
 		}
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)

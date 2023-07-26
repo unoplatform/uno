@@ -11,13 +11,15 @@ using Uno.Disposables;
 using Uno.Foundation;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private WeakBrushChangedProxy _foregroundChangedProxy;
+		private Action _foregroundChanged;
 
 		private bool _browserContextMenuEnabled = true;
 		private bool _isReadOnly;
@@ -40,13 +42,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_foregroundChanged.Disposable = null;
 			if (e.NewValue is SolidColorBrush scb)
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => this.SetForeground(e.NewValue));
+				_foregroundChangedProxy ??= new();
+				_foregroundChanged = () => SetForeground(e.NewValue);
+				_foregroundChangedProxy.Subscribe(scb, _foregroundChanged);
 			}
-
-			this.SetForeground(e.NewValue);
 		}
 
 		public TextBoxView(TextBox textBox, bool isMultiline)
@@ -65,6 +66,11 @@ namespace Windows.UI.Xaml.Controls
 
 			SetAttribute("tabindex", "0");
 			UpdateContextMenuEnabling();
+		}
+
+		~TextBoxView()
+		{
+			_foregroundChangedProxy?.Unsubscribe();
 		}
 
 		private event EventHandler HtmlInput

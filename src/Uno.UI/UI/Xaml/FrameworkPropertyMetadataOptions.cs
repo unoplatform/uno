@@ -60,6 +60,19 @@ namespace Windows.UI.Xaml
 		AffectsRender = 1 << 8, // 256
 
 		/// <summary>
+		/// Should <see cref="CoerceValueCallback"/> be raised only when value has changed?
+		/// </summary>
+		CoerceOnlyWhenChanged = 1 << 9, // 512
+
+		/// <summary>
+		/// Normally, when a property is updated and the coerced value is equal to
+		/// the value being updated to, the coerced value is thrown away. <seealso cref="DependencyObjectStore.ApplyCoercion"/>
+		/// This property is added specifically for Control.IsEnabledProperty in order
+		/// to override this behaviour.
+		/// </summary>
+		KeepCoercedWhenEquals = 1 << 10, // 1024
+
+		/// <summary>
 		/// The default options set when creating a <see cref="FrameworkPropertyMetadata"/>.
 		/// </summary>
 		/// <remarks>

@@ -6,10 +6,7 @@ using UIKit;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {

@@ -12,10 +12,6 @@ using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using ObjCRuntime;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 #if __IOS__
 using CoreGraphics;
 using _View = UIKit.UIView;

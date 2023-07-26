@@ -24,10 +24,6 @@ using Foundation;
 using UIKit;
 using CoreGraphics;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 namespace Uno.UI.Controls.Legacy
 {
 	[Bindable]

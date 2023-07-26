@@ -80,6 +80,8 @@ namespace Windows.UI.Xaml
 
 		~UIElement()
 		{
+			_brushSubscription?.Unsubscribe();
+
 			try
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -616,22 +618,32 @@ namespace Windows.UI.Xaml
 			_registeredRoutedEvents |= routedEvent.Flag;
 
 			string domEventName;
-			if (routedEvent.Flag == RoutedEventFlag.KeyDown)
+			bool onCapturePhase = false;
+			switch (routedEvent.Flag)
 			{
-				domEventName = "keydown";
-			}
-			else
-			{
-				domEventName = routedEvent.Flag == RoutedEventFlag.KeyUp
-					? "keyup"
-					: throw new ArgumentOutOfRangeException(nameof(routedEvent), "Not a keyboard event");
+				case RoutedEventFlag.PreviewKeyDown:
+					domEventName = "keydown";
+					onCapturePhase = true;
+					break;
+				case RoutedEventFlag.KeyDown:
+					domEventName = "keydown";
+					break;
+				case RoutedEventFlag.PreviewKeyUp:
+					domEventName = "keyup";
+					onCapturePhase = true;
+					break;
+				case RoutedEventFlag.KeyUp:
+					domEventName = "keyup";
+					break;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(routedEvent), "Not a keyboard event");
 			}
 
 			RegisterEventHandler(
 				domEventName,
 				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
 				invoker: GenericEventHandlers.RaiseRoutedEventHandlerWithHandled,
-				onCapturePhase: false,
+				onCapturePhase,
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
 			);
