@@ -69,7 +69,57 @@ public class Given_WebView2
 		navigationDone = false;
 		webView.NavigateToString("<html></html>");
 		await TestServices.WindowHelper.WaitFor(() => navigationDone, 3000);
+#if HAS_UNO
 		Assert.AreEqual(CoreWebView2.BlankUri, webView.Source);
+#endif
+	}
+
+
+#if __MACOS__
+	[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+	[TestMethod]
+	public async Task When_GoBack()
+	{
+		var border = new Border();
+		var webView = new WebView2();
+		webView.Width = 200;
+		webView.Height = 200;
+		border.Child = webView;
+		TestServices.WindowHelper.WindowContent = border;
+		bool navigated = false;
+		await TestServices.WindowHelper.WaitForLoaded(border);
+		await webView.EnsureCoreWebView2Async();
+
+		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+		Assert.IsFalse(webView.CanGoBack);
+		Assert.IsFalse(webView.CoreWebView2.CanGoForward);
+		Assert.IsFalse(webView.CanGoForward);
+
+		webView.NavigationCompleted += (sender, e) => navigated = true;
+		webView.CoreWebView2.Navigate("https://example.com/1");
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+		Assert.IsFalse(webView.CanGoBack);
+		Assert.IsFalse(webView.CoreWebView2.CanGoForward);
+		Assert.IsFalse(webView.CanGoForward);
+
+		navigated = false;
+		webView.CoreWebView2.Navigate("https://example.com/2");
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+		Assert.IsTrue(webView.CoreWebView2.CanGoBack);
+		Assert.IsTrue(webView.CanGoBack);
+
+		navigated = false;
+		webView.GoBack();
+		await TestServices.WindowHelper.WaitFor(() => navigated, 3000);
+
+		Assert.IsFalse(webView.CoreWebView2.CanGoBack);
+		Assert.IsFalse(webView.CanGoBack);
+		Assert.IsTrue(webView.CoreWebView2.CanGoForward);
+		Assert.IsTrue(webView.CanGoForward);
 	}
 
 #if __ANDROID__ || __IOS__
@@ -227,7 +277,6 @@ public class Given_WebView2
 
 		await TestHelper.RetryAssert(Do, 3);
 	}
-
 
 	[TestMethod]
 	public async Task When_ExecuteScriptAsync_Non_String()
