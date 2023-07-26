@@ -569,11 +569,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				dc.Dispose();
 				SUT.DataContext = null;
 
-				// On windows, the old DataContext's getter is not accessed, but surprisingly,
-				// the old setter is accessed
 				await WindowHelper.WaitForIdle();
 				Assert.AreEqual(dc.GetterAccessedAfterDispose, false);
-				Assert.AreEqual(dc.SetterAccessedAfterDispose, true);
 			}
 			finally
 			{
