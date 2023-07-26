@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Controls;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Common;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;

@@ -25,7 +25,9 @@ using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
 using BitmapIconSource = Microsoft.UI.Xaml.Controls.BitmapIconSource;
 using ImageIconSource = Microsoft.UI.Xaml.Controls.ImageIconSource;
 using PathIconSource = Microsoft.UI.Xaml.Controls.PathIconSource;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Windows.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 

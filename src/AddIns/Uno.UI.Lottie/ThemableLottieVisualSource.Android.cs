@@ -12,7 +12,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Uno.Extensions;
 using Uno.UI.Lottie;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 
 // **********************************************************
 // *                        ? WHY ?                         *
