@@ -23,7 +23,7 @@ partial class ApplicationData
 
 	private static string? _appSpecificSubpath;
 
-	private string GetLocalCacheFolder() => EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), LocalCacheFolderName));
+	private string GetLocalCacheFolder() => EnsurePath(Path.Combine(GetLocalCacheFolderRootPath(), LocalCacheFolderName));
 
 	private string GetTemporaryFolder() => EnsurePath(Path.Combine(GetTemporaryFolderRootPath(), TemporaryFolderName));
 
@@ -33,9 +33,6 @@ partial class ApplicationData
 
 	private string GetRoamingFolder() =>
 		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), RoamingFolderName));
-
-	private string GetSharedLocalFolder() =>
-		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), SharedLocalFolderName));
 
 	internal string GetSettingsFolderPath() =>
 		EnsurePath(Path.Combine(GetApplicationDataFolderRootPath(), SettingsFolderName));
@@ -101,6 +98,42 @@ partial class ApplicationData
 		return Path.Combine(Path.GetTempPath(), GetAppSpecificSubPath());
 	}
 
+	private string GetLocalCacheFolderRootPath()
+	{
+		if (WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride is { } path)
+		{
+			return path;
+		}
+
+		string? localCacheRootFolder = RuntimeInformation.IsOSPlatform(OSPlatform.Linux) ?
+			Environment.GetEnvironmentVariable("XDG_CACHE_HOME") :
+			Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+		if (string.IsNullOrEmpty(localCacheRootFolder))
+		{
+			var userHomeFolderPath = GetUserHomeFolderPath();
+
+			localCacheRootFolder = Path.Combine(userHomeFolderPath, ".cache");
+		}
+
+		return Path.Combine(localCacheRootFolder, GetAppSpecificSubPath());
+	}
+
+	private static string GetUserHomeFolderPath()
+	{
+		var myDocumentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+		if (string.IsNullOrEmpty(myDocumentsFolder))
+		{
+			throw new InvalidOperationException(
+				"The current environment does not have a user application data nor user documents folder set up. " +
+				"Please use WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride and " +
+				"WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride to override the default locations.");
+		}
+
+		return myDocumentsFolder;
+	}
+
 	private string GetApplicationDataFolderRootPath()
 	{
 		if (WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride is { } path)
@@ -108,20 +141,18 @@ partial class ApplicationData
 			return path;
 		}
 
-		string applicationDataRootFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+		string? applicationDataRootFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
 		if (string.IsNullOrEmpty(applicationDataRootFolder))
 		{
-			var myDocumentsFolder = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			if (string.IsNullOrEmpty(myDocumentsFolder))
-			{
-				throw new InvalidOperationException(
-					"The current environment does not have a user application data nor user documents folder set up. " +
-					"Please use WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride to set your own.");
-			}
-			else
-			{
-				applicationDataRootFolder = Path.Combine(myDocumentsFolder, ".local", "share");
-			}
+			applicationDataRootFolder = Environment.GetEnvironmentVariable("XDG_DATA_HOME");
+		}
+
+		if (string.IsNullOrEmpty(applicationDataRootFolder))
+		{
+			var userHomeFolderPath = GetUserHomeFolderPath();
+
+			applicationDataRootFolder = Path.Combine(userHomeFolderPath, ".local", "share");
 		}
 
 		return Path.Combine(applicationDataRootFolder, GetAppSpecificSubPath());

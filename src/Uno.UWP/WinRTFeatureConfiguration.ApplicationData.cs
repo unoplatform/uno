@@ -15,6 +15,13 @@ partial class WinRTFeatureConfiguration
 		public static string? TemporaryFolderPathOverride { get; set; }
 
 		/// <summary>
+		/// Allows overriding the root folder path that the application will use
+		/// to store its LocalCache folder.
+		/// </summary>
+		/// <remarks>Only applies to Skia targets.</remarks>
+		public static string? LocalCacheFolderPathOverride { get; set; }
+
+		/// <summary>
 		/// Allows overriding the root folder that the application will use
 		/// to store its application data folders (LocalFolder, RoamingFolder, etc.).
 		/// Only applies to Skia targets.
