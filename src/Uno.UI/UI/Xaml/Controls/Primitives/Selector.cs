@@ -2,7 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
@@ -84,8 +83,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			"SelectedItem",
 			typeof(object),
 			typeof(Selector),
-			new FrameworkPropertyMetadata(defaultValue: null),
-			ImmutableArray.Create(ItemsSourceProperty)
+			new FrameworkPropertyMetadata(defaultValue: null)
 		);
 
 		public object SelectedItem

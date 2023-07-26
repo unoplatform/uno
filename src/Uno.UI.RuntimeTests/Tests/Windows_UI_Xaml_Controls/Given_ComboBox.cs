@@ -569,12 +569,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				dc.Dispose();
 				SUT.DataContext = null;
 
-				// ItemsSource's binding internally updates SelectedItem so this test is
-				// really about SelectedItem's binding updating first, otherwise SelectedItem
-				// will access DisposableDataContext.Item (because two-way binding) after
-				// it's disposed and throw an exception
+				// On windows, the old DataContext's getter is not accessed, but surprisingly,
+				// the old setter is accessed
 				await WindowHelper.WaitForIdle();
-				Assert.AreEqual(dc.AccessedAfterDispose, false);
+				Assert.AreEqual(dc.GetterAccessedAfterDispose, false);
+				Assert.AreEqual(dc.SetterAccessedAfterDispose, true);
 			}
 			finally
 			{
@@ -977,7 +976,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			private int _item;
 			private bool _isDisposed;
-			public bool AccessedAfterDispose { get; private set; }
+			public bool GetterAccessedAfterDispose { get; private set; }
+			public bool SetterAccessedAfterDispose { get; private set; }
 
 			public int Item
 			{
@@ -985,7 +985,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					if (_isDisposed)
 					{
-						AccessedAfterDispose = true;
+						GetterAccessedAfterDispose = true;
 					}
 
 					return _item;
@@ -994,7 +994,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					if (_isDisposed)
 					{
-						AccessedAfterDispose = true;
+						SetterAccessedAfterDispose = true;
 					}
 
 					_item = value;

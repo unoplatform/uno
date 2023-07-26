@@ -194,9 +194,7 @@ namespace Uno.UI.DataBinding
 			set
 			{
 				if (!_disposed
-					&& _value != null
-					&& DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
-				)
+					&& _value != null)
 				{
 					_value.Value = value;
 				}
@@ -533,7 +531,6 @@ namespace Uno.UI.DataBinding
 			private readonly object? _fallbackValue;
 			private readonly bool _allowPrivateMembers;
 			private ValueGetterHandler? _valueGetter;
-			private ValueGetterHandler? _precedenceSpecificGetter;
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueSetterHandler? _localValueSetter;
@@ -651,13 +648,6 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			internal object? GetPrecedenceSpecificValue()
-			{
-				BuildPrecedenceSpecificValueGetter();
-
-				return GetSourceValue(_precedenceSpecificGetter!);
-			}
-
 			internal object? GetSubstituteValue()
 			{
 				BuildSubstituteValueGetter();
@@ -738,7 +728,6 @@ namespace Uno.UI.DataBinding
 				if (_dataContextType != currentType && _dataContextType != null)
 				{
 					_valueGetter = null;
-					_precedenceSpecificGetter = null;
 					_substituteValueGetter = null;
 					_localValueSetter = null;
 					_valueSetter = null;
@@ -824,14 +813,6 @@ namespace Uno.UI.DataBinding
 				if (_valueGetter == null && _dataContextType != null)
 				{
 					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
-				}
-			}
-
-			private void BuildPrecedenceSpecificValueGetter()
-			{
-				if (_precedenceSpecificGetter == null && _dataContextType != null)
-				{
-					_precedenceSpecificGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
 				}
 			}
 

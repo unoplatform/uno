@@ -146,12 +146,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					var index = Array.BinarySearch(_bindings.Data, bindingExpression, BindingExpressionComparer.Instance);
-					if (index < 0)
-					{
-						index = ~index;
-					}
-					_bindings = _bindings.Insert(index, bindingExpression);
+					_bindings = _bindings.Add(bindingExpression);
 
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
@@ -223,34 +218,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return null;
-		}
-
-		private sealed class BindingExpressionComparer : IComparer<BindingExpression>
-		{
-			private BindingExpressionComparer()
-			{
-			}
-
-			public static BindingExpressionComparer Instance { get; } = new BindingExpressionComparer();
-
-			public int Compare(BindingExpression expression1, BindingExpression expression2)
-			{
-				var property1 = expression1.TargetPropertyDetails.Property;
-				var property2 = expression2.TargetPropertyDetails.Property;
-
-				if (property1.DependentProperties.Contains(property2))
-				{
-					return -1;
-				}
-
-				if (property2.DependentProperties.Contains(property1))
-				{
-					return 1;
-				}
-
-				// make sure we define a total order
-				return string.Compare(property1.ToString(), property2.ToString(), StringComparison.OrdinalIgnoreCase);
-			}
 		}
 	}
 }
