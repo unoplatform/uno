@@ -240,8 +240,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private void Fill()
 		{
-			var lastTime = KeyFrames.Max(k => k.KeyTime.TimeSpan);
-			var lastKeyFrame = KeyFrames.First(k => k.KeyTime.TimeSpan.Equals(lastTime));
+			var keyFrames = KeyFrames;
+			var lastTime = keyFrames.Max(k => k.KeyTime.TimeSpan);
+			var lastKeyFrame = keyFrames.First(k => k.KeyTime.TimeSpan.Equals(lastTime));
 
 			_frameScheduler?.Dispose();
 			_frameScheduler = null;

@@ -134,8 +134,9 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			return;
 		}
 
-		var width = Math.Max(0, (int)(_contentElement.ActualWidth - _contentElement.Padding.Horizontal()));
-		var height = Math.Max(0, (int)(_contentElement.ActualHeight - _contentElement.Padding.Vertical()));
+		var padding = _contentElement.Padding;
+		var width = Math.Max(0, (int)(_contentElement.ActualWidth - padding.Horizontal()));
+		var height = Math.Max(0, (int)(_contentElement.ActualHeight - padding.Vertical()));
 
 		if (_lastSize.Width != width || _lastSize.Height != height)
 		{
@@ -152,7 +153,8 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 		}
 
 		var transformToRoot = _contentElement.TransformToVisual(Windows.UI.Xaml.Window.Current.Content);
-		var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
+		var padding = _contentElement.Padding;
+		var point = transformToRoot.TransformPoint(new Point(padding.Left, padding.Top));
 		var pointX = (int)point.X;
 		var pointY = (int)point.Y;
 

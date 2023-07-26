@@ -280,13 +280,14 @@ namespace Windows.UI.Xaml.Controls
 		internal void ComputeSize()
 		{
 			int index = 0;
-
-			m_lastVisitedDateAndIndex.first = Owner.MinDate;
+			var minDate = Owner.MinDate;
+			var maxDate = Owner.MaxDate;
+			m_lastVisitedDateAndIndex.first = minDate;
 			m_lastVisitedDateAndIndex.second = 0;
 
-			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(Owner.MaxDate, Owner.MinDate));
+			global::System.Diagnostics.Debug.Assert(!Owner.DateComparer.LessThan(maxDate, minDate));
 
-			index = CalculateOffsetFromMinDate(Owner.MaxDate);
+			index = CalculateOffsetFromMinDate(maxDate);
 
 			m_size = (uint)(index) + 1;
 

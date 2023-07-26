@@ -11,35 +11,44 @@ namespace Windows.UI.Xaml.Media
 
 			foreach (PathFigure figure in Figures)
 			{
-				path.MoveTo((float)figure.StartPoint.X, (float)figure.StartPoint.Y);
+				var startPoint = figure.StartPoint;
+				path.MoveTo((float)startPoint.X, (float)startPoint.Y);
 
 				foreach (PathSegment segment in figure.Segments)
 				{
 					if (segment is LineSegment lineSegment)
 					{
-						path.LineTo((float)lineSegment.Point.X, (float)lineSegment.Point.Y);
+						var point = lineSegment.Point;
+						path.LineTo((float)point.X, (float)point.Y);
 					}
 					else if (segment is BezierSegment bezierSegment)
 					{
+						var point1 = bezierSegment.Point1;
+						var point2 = bezierSegment.Point2;
+						var point3 = bezierSegment.Point3;
 						path.CubicTo(
-							 (float)bezierSegment.Point1.X, (float)bezierSegment.Point1.Y,
-							 (float)bezierSegment.Point2.X, (float)bezierSegment.Point2.Y,
-							 (float)bezierSegment.Point3.X, (float)bezierSegment.Point3.Y);
+							 (float)point1.X, (float)point1.Y,
+							 (float)point2.X, (float)point2.Y,
+							 (float)point3.X, (float)point3.Y);
 					}
 					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
 					{
+						var point1 = quadraticBezierSegment.Point1;
+						var point2 = quadraticBezierSegment.Point2;
 						path.QuadTo(
-							 (float)quadraticBezierSegment.Point1.X, (float)quadraticBezierSegment.Point1.Y,
-							 (float)quadraticBezierSegment.Point2.X, (float)quadraticBezierSegment.Point2.Y);
+							 (float)point1.X, (float)point1.Y,
+							 (float)point2.X, (float)point2.Y);
 					}
 					else if (segment is ArcSegment arcSegment)
 					{
+						var size = arcSegment.Size;
+						var point = arcSegment.Point;
 						path.ArcTo(
-							 (float)arcSegment.Size.Width, (float)arcSegment.Size.Height,
+							 (float)size.Width, (float)size.Height,
 							 (float)arcSegment.RotationAngle,
 							 arcSegment.IsLargeArc ? SkiaSharp.SKPathArcSize.Large : SkiaSharp.SKPathArcSize.Small,
 							 (arcSegment.SweepDirection == SweepDirection.Clockwise ? SkiaSharp.SKPathDirection.Clockwise : SkiaSharp.SKPathDirection.CounterClockwise),
-							 (float)arcSegment.Point.X, (float)arcSegment.Point.Y);
+							 (float)point.X, (float)point.Y);
 					}
 				}
 

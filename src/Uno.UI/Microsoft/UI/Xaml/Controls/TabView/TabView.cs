@@ -347,8 +347,9 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSelectedIndex();
 			SetTabSeparatorOpacity((int)args.OldValue);
 			SetTabSeparatorOpacity(((int)args.OldValue) - 1);
-			SetTabSeparatorOpacity(SelectedIndex - 1);
-			SetTabSeparatorOpacity(SelectedIndex);
+			var selectedIndex = SelectedIndex;
+			SetTabSeparatorOpacity(selectedIndex - 1);
+			SetTabSeparatorOpacity(selectedIndex);
 		}
 
 		private void OnSelectedItemPropertyChanged(DependencyPropertyChangedEventArgs args)

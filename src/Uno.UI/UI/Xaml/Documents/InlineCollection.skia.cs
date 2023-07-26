@@ -335,11 +335,12 @@ namespace Windows.UI.Xaml.Documents
 
 					if (inline.Foreground is SolidColorBrush scb)
 					{
+						var color = scb.Color;
 						paint.Color = new SKColor(
-							red: scb.Color.R,
-							green: scb.Color.G,
-							blue: scb.Color.B,
-							alpha: (byte)(scb.Color.A * scb.Opacity * compositor.CurrentOpacity));
+							red: color.R,
+							green: color.G,
+							blue: color.B,
+							alpha: (byte)(color.A * scb.Opacity * compositor.CurrentOpacity));
 					}
 
 					var decorations = inline.TextDecorations;

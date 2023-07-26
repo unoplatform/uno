@@ -21,14 +21,16 @@ namespace Windows.UI.Xaml.Media
 			// Translate(TranslateX, TranslateY)
 			// https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.media.compositetransform.aspx
 
-			var centerX = absoluteOrigin.X + CenterX;
-			var centerY = absoluteOrigin.Y + CenterY;
+			var transformCenterX = CenterX;
+			var transformCenterY = CenterY;
+			var centerX = absoluteOrigin.X + transformCenterX;
+			var centerY = absoluteOrigin.Y + transformCenterY;
 
 			var matrix = Matrix3x2.Identity;
 
 			matrix *= ScaleTransform.GetMatrix(centerX, centerY, ScaleX, ScaleY);
-			matrix *= SkewTransform.GetMatrix(CenterX, CenterY, SkewX, SkewY);
-			matrix *= RotateTransform.GetMatrix(CenterX, CenterY, Rotation);
+			matrix *= SkewTransform.GetMatrix(transformCenterX, transformCenterY, SkewX, SkewY);
+			matrix *= RotateTransform.GetMatrix(transformCenterX, transformCenterY, Rotation);
 			matrix *= TranslateTransform.GetMatrix(TranslateX, TranslateY);
 
 			return matrix;

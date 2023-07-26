@@ -360,19 +360,21 @@ namespace Microsoft.UI.Xaml.Controls
 				.TransformToVisual(scrollViewer.ContentTemplateRoot as UIElement)
 				.TransformBounds(new Rect(0, 0, layoutSlot.Width, layoutSlot.Height));
 
+			var viewportWidth = scrollViewer.ViewportWidth;
+			var viewportHeight = scrollViewer.ViewportHeight;
 			var scrollableArea = new Point(
-				(float)(scrollViewer.ViewportWidth - arrangeBounds.Width),
-				(float)(scrollViewer.ViewportHeight - arrangeBounds.Height));
+				(float)(viewportWidth - arrangeBounds.Width),
+				(float)(viewportHeight - arrangeBounds.Height));
 
 			// Calculate the target offset based on the alignment and offset parameters.
 			// Make sure that we are constrained to the ScrollViewer's extent.
 			var changeViewOffset = new Point(
 				Math.Max(0.0f, (float)(Math.Min(
 					arrangeBounds.X + bringIntoView.OffsetX - scrollableArea.X * bringIntoView.AlignmentX,
-					scrollViewer.ExtentWidth - scrollViewer.ViewportWidth))),
+					scrollViewer.ExtentWidth - viewportWidth))),
 				Math.Max(0.0f, (float)(Math.Min(
 					arrangeBounds.Y + bringIntoView.OffsetY - scrollableArea.Y * bringIntoView.AlignmentY,
-					scrollViewer.ExtentHeight - scrollViewer.ViewportHeight))));
+					scrollViewer.ExtentHeight - viewportHeight))));
 
 			bringIntoView.ChangeViewOffset = changeViewOffset;
 

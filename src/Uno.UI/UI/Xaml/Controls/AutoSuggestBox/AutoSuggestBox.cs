@@ -196,10 +196,12 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var popupTransform = (MatrixTransform)popup.TransformToVisual(XamlRoot.Content);
-				var popupRect = new Rect(popupTransform.Matrix.OffsetX, popupTransform.Matrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
+				var popupTransformMatrix = popupTransform.Matrix;
+				var popupRect = new Rect(popupTransformMatrix.OffsetX, popupTransformMatrix.OffsetY, popup.ActualWidth, popup.ActualHeight);
 
 				var containerTransform = (MatrixTransform)_layoutRoot.TransformToVisual(XamlRoot.Content);
-				var containerRect = new Rect(containerTransform.Matrix.OffsetX, containerTransform.Matrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
+				var containerTransformMatrix = containerTransform.Matrix;
+				var containerRect = new Rect(containerTransformMatrix.OffsetX, containerTransformMatrix.OffsetY, _layoutRoot.ActualWidth, _layoutRoot.ActualHeight);
 				var textBoxHeight = _layoutRoot.ActualHeight;
 
 				// Because Popup.Child is not part of the visual tree until Popup.IsOpen,

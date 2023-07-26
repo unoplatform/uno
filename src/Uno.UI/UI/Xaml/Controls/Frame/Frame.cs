@@ -391,18 +391,20 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			var sourcePageType = entry.SourcePageType;
+
 			// Navigated
 			var navigationEvent = new NavigationEventArgs(
 				CurrentEntry.Instance,
 				mode,
 				entry.NavigationTransitionInfo,
 				entry.Parameter,
-				entry.SourcePageType,
+				sourcePageType,
 				null
 			);
 
-			SetValue(SourcePageTypeProperty, entry.SourcePageType);
-			SetValue(CurrentSourcePageTypeProperty, entry.SourcePageType);
+			SetValue(SourcePageTypeProperty, sourcePageType);
+			SetValue(CurrentSourcePageTypeProperty, sourcePageType);
 
 			Navigated?.Invoke(this, navigationEvent);
 

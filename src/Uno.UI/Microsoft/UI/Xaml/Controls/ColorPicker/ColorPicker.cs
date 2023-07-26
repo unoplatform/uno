@@ -997,7 +997,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// We'll respond to the text change if the user has entered a valid value.
 				// Otherwise, we'll do nothing except mark the text box's contents as invalid.
-				string alphaString = alphaTextBox.Text.Substring(0, alphaTextBox.Text.Length - 1);
+				var alphaTextBoxText = alphaTextBox.Text;
+				string alphaString = alphaTextBoxText.Substring(0, alphaTextBoxText.Length - 1);
 				var alphaValue = ColorConversion.TryParseInt(alphaString);
 				if (!alphaValue.HasValue || alphaValue.Value < 0 || alphaValue.Value > 100)
 				{

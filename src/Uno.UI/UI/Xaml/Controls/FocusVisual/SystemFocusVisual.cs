@@ -89,9 +89,10 @@ internal partial class SystemFocusVisual : Control
 
 	private void SetLayoutProperties()
 	{
-		if (FocusedElement == null ||
-			FocusedElement.Visibility == Visibility.Collapsed ||
-			(FocusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
+		var focusedElement = FocusedElement;
+		if (focusedElement == null ||
+			focusedElement.Visibility == Visibility.Collapsed ||
+			(focusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
 		{
 			Visibility = Visibility.Collapsed;
 			return;
@@ -99,14 +100,14 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var transformToRoot = focusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
 		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
-		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
+		var newRect = new Rect(point.X, point.Y, focusedElement.ActualSize.X, focusedElement.ActualSize.Y);
 
 		if (newRect != _lastRect)
 		{
-			Width = FocusedElement.ActualSize.X;
-			Height = FocusedElement.ActualSize.Y;
+			Width = focusedElement.ActualSize.X;
+			Height = focusedElement.ActualSize.Y;
 
 			Canvas.SetLeft(this, point.X);
 			Canvas.SetTop(this, point.Y);

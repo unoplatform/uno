@@ -180,13 +180,14 @@ public partial class InfoBar : Control
 				{
 					if (notify && peer != null)
 					{
+						var severity = Severity;
 						var notificationString = StringUtil.FormatString(
 							ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_InfoBarOpenedNotification),
-							ResourceAccessor.GetLocalizedStringResource(GetIconSeverityLevelResourceName(Severity)),
+							ResourceAccessor.GetLocalizedStringResource(GetIconSeverityLevelResourceName(severity)),
 							Title,
 							Message);
 
-						peer.RaiseOpenedEvent(Severity, notificationString);
+						peer.RaiseOpenedEvent(severity, notificationString);
 					}
 
 					VisualStateManager.GoToState(this, "InfoBarVisible", false);

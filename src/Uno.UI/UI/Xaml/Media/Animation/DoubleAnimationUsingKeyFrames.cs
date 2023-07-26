@@ -245,7 +245,8 @@ namespace Windows.UI.Xaml.Media.Animation
 					_finalValue = toValue;
 				}
 				var animator = AnimatorFactory.Create(this, fromValue, toValue);
-				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
+				var keyTime = keyFrame.KeyTime.TimeSpan;
+				var duration = keyTime - previousKeyTime;
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
 				animator.DisposeWith(_subscriptions);
@@ -253,7 +254,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				// For next iteration
 				fromValue = toValue;
-				previousKeyTime = keyFrame.KeyTime.TimeSpan;
+				previousKeyTime = keyTime;
 
 				if (ReportEachFrame())
 				{

@@ -124,14 +124,15 @@ partial class PopupPanel
 		desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
 		// Try all placements...
-		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(popup.DesiredPlacement, FullPlacementRequested);
+		var desiredPlacement = popup.DesiredPlacement;
+		var preferredPlacement = FlyoutBase.GetMajorPlacementFromPlacement(desiredPlacement, FullPlacementRequested);
 		var placementsToTry = PlacementsToTry.TryGetValue(preferredPlacement, out var p)
 			? p
 			: new[] { preferredPlacement };
 
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={popup.DesiredPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
+			this.Log().LogDebug($"Calculating actual placement for preferredPlacement={preferredPlacement} with justification={FlyoutBase.GetJustificationFromPlacementMode(popup.DesiredPlacement, FullPlacementRequested)} from PopupPlacement={desiredPlacement}, for desiredSize={desiredSize}, maxSize={maxSize}");
 		}
 
 		var halfAnchorWidth = anchorRect.Width / 2;

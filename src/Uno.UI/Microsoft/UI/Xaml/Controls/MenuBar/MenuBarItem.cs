@@ -291,15 +291,16 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_menuBar != null)
 			{
-				int index = m_menuBar.Items.IndexOf(this);
+				var menuBarItems = m_menuBar.Items;
+				int index = menuBarItems.IndexOf(this);
 				CloseMenuFlyout();
 				if (location == FlyoutLocation.Left)
 				{
-					m_menuBar.Items[((index - 1) + m_menuBar.Items.Count) % m_menuBar.Items.Count].ShowMenuFlyout();
+					menuBarItems[((index - 1) + menuBarItems.Count) % menuBarItems.Count].ShowMenuFlyout();
 				}
 				else
 				{
-					m_menuBar.Items[(index + 1) % m_menuBar.Items.Count].ShowMenuFlyout();
+					menuBarItems[(index + 1) % menuBarItems.Count].ShowMenuFlyout();
 				}
 			}
 		}

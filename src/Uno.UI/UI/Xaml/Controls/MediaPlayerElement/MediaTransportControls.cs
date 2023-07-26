@@ -770,13 +770,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void RepeatButtonTapped(object sender, RoutedEventArgs e)
 		{
-			if (_mpe?.MediaPlayer is null ||
+			if (_mpe?.MediaPlayer is not { } mediaPlayer ||
 				!ApiInformation.IsPropertyPresent(typeof(_MediaPlayer), nameof(_MediaPlayer.IsLoopingEnabled)))
 			{
 				return;
 			}
 
-			_mpe.MediaPlayer.IsLoopingEnabled = !_mpe.MediaPlayer.IsLoopingEnabled;
+			mediaPlayer.IsLoopingEnabled = !mediaPlayer.IsLoopingEnabled;
 			UpdateRepeatStates();
 		}
 		private void PreviousTrackButtonTapped(object sender, RoutedEventArgs e)

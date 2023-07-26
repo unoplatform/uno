@@ -186,16 +186,17 @@ namespace Microsoft.UI.Xaml.Controls
 				c_previousPageButtonNotVisibleVisualState,
 				c_previousPageButtonHiddenVisualState,
 				0);
+			var numberOfPages = NumberOfPages;
 			OnButtonVisibilityChanged(NextButtonVisibility,
 				c_nextPageButtonVisibleVisualState,
 				c_nextPageButtonNotVisibleVisualState,
 				c_nextPageButtonHiddenVisualState,
-				NumberOfPages - 1);
+				numberOfPages - 1);
 			OnButtonVisibilityChanged(LastButtonVisibility,
 				c_lastPageButtonVisibleVisualState,
 				c_lastPageButtonNotVisibleVisualState,
 				c_lastPageButtonHiddenVisualState,
-				NumberOfPages - 1);
+				numberOfPages - 1);
 
 			OnSelectedPageIndexChange(-1);
 		}

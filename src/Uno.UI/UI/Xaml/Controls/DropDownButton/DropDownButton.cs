@@ -42,10 +42,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RegisterFlyoutEvents()
 		{
-			if (Flyout != null)
+			var flyout = Flyout;
+			if (flyout != null)
 			{
-				Flyout.Opened += OnFlyoutOpened;
-				Flyout.Closed += OnFlyoutClosed;
+				flyout.Opened += OnFlyoutOpened;
+				flyout.Closed += OnFlyoutClosed;
 			}
 		}
 

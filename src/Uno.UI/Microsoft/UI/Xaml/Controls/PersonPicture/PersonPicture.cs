@@ -398,10 +398,11 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
+					var badgeNumber = BadgeNumber;
 					automationName = StringUtil.FormatString(
-						GetLocalizedPluralBadgeItemStringResource(BadgeNumber),
+						GetLocalizedPluralBadgeItemStringResource(badgeNumber),
 						contactName,
-						BadgeNumber);
+						badgeNumber);
 				}
 			}
 			else if (!string.IsNullOrEmpty(BadgeGlyph) || BadgeImageSource != null)

@@ -136,11 +136,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void RegisterFlyoutEvents()
 		{
-			if (Flyout != null)
+			var flyout = Flyout;
+			if (flyout != null)
 			{
-				Flyout.Opened += OnFlyoutOpened;
-				Flyout.Closed += OnFlyoutClosed;
-				m_flyoutPlacementChangedRevoker = Flyout.RegisterPropertyChangedCallback(FlyoutBase.PlacementProperty, OnFlyoutPlacementChanged);
+				flyout.Opened += OnFlyoutOpened;
+				flyout.Closed += OnFlyoutClosed;
+				m_flyoutPlacementChangedRevoker = flyout.RegisterPropertyChangedCallback(FlyoutBase.PlacementProperty, OnFlyoutPlacementChanged);
 			}
 		}
 
