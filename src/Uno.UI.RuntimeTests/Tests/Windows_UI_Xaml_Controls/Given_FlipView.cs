@@ -190,6 +190,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+<<<<<<< HEAD
+=======
+#if __WASM__
+		[TestMethod]
+		public async Task When_Multiple_Items_Should_Not_Scroll()
+		{
+			var itemsSource = new ObservableCollection<string>();
+			AddItem(itemsSource);
+			AddItem(itemsSource);
+			AddItem(itemsSource);
+
+			var flipView = new FlipView
+			{
+				Width = 100,
+				Height = 100,
+				ItemsSource = itemsSource,
+			};
+
+			WindowHelper.WindowContent = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+			var scrollViewer = (ScrollViewer)flipView.GetTemplateChild("ScrollingHost");
+			var border = (Border)VisualTreeHelper.GetChildren(scrollViewer).Single();
+			var grid = (Grid)VisualTreeHelper.GetChildren(border).Single();
+			var scrollContentPresenter = (ScrollContentPresenter)VisualTreeHelper.GetChildren(grid).First();
+			var classes = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({scrollContentPresenter.HtmlId}).classList").Split(' ');
+			Assert.IsTrue(classes.Contains("scroll-x-hidden"));
+			Assert.IsTrue(classes.Contains("scroll-y-hidden"));
+		}
+#endif
+>>>>>>> c8c822eef9 (chore: Adjust test)
 	}
 
 #if __SKIA__ || __WASM__
