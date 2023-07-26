@@ -92,6 +92,7 @@ namespace Windows.UI.Xaml
 				}
 
 				localPrecedenceDisposable?.Dispose();
+				localPrecedenceDisposable = null;
 
 				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
 				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
