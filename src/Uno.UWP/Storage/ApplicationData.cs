@@ -27,7 +27,7 @@ public sealed partial class ApplicationData
 		_localFolderLazy = new(() => new StorageFolder(GetLocalFolder()));
 		_roamingFolderLazy = new(() => new StorageFolder(GetRoamingFolder()));
 #if !__SKIA__ // The concept of Shared Local folder is not implemented for Skia.
-		_sharedLocalFolderLazy = new StorageFolder(".shared", GetSharedLocalFolder());
+		_sharedLocalFolderLazy = new(() => new StorageFolder(".shared", GetSharedLocalFolder()));
 #else
 		_sharedLocalFolderLazy = new((StorageFolder?)null);
 #endif
