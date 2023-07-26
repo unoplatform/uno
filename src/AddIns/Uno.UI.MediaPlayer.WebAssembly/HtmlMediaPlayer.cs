@@ -98,7 +98,7 @@ internal partial class HtmlMediaPlayer : Border
 
 	public bool IsVideo
 	{
-		get => videoTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
+		get => !audioTagAllowedFormats.Contains(Path.GetExtension(Source), StringComparer.OrdinalIgnoreCase);
 	}
 
 	public int VideoWidth
