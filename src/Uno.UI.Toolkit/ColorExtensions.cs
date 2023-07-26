@@ -23,7 +23,7 @@ internal static class ColorExtensions
 		);
 
 #if !HAS_UNO
-	internal static Color WithOpacity(this Color color, double opacity) 
+	internal static Color WithOpacity(this Color color, double opacity)
 		=> Color.FromArgb((byte)(color.A * opacity), color.R, color.G, color.B);
 #endif
 }
