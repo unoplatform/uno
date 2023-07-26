@@ -9,12 +9,15 @@ namespace Windows.UI.Xaml.Media
 		{
 			// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#cubic_b%C3%A9zier_curve
 			yield return $"C";
-			yield return Point1.X;
-			yield return Point1.Y;
-			yield return Point2.X;
-			yield return Point2.Y;
-			yield return Point3.X;
-			yield return Point3.Y;
+			var point1 = Point1;
+			yield return point1.X;
+			yield return point1.Y;
+			var point2 = Point2;
+			yield return point2.X;
+			yield return point2.Y;
+			var point3 = Point3;
+			yield return point3.X;
+			yield return point3.Y;
 		}
 	}
 }

@@ -10,13 +10,15 @@ namespace Windows.UI.Xaml.Media
 			// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#elliptical_arc_curve
 
 			yield return $"A";
-			yield return Size.Width;
-			yield return Size.Height;
+			var size = Size;
+			yield return size.Width;
+			yield return size.Height;
 			yield return RotationAngle;
 			yield return IsLargeArc ? (IFormattable)$"1" : $"0";
 			yield return SweepDirection == SweepDirection.Clockwise ? (IFormattable)$"1" : $"0";
-			yield return Point.X;
-			yield return Point.Y;
+			var point = Point;
+			yield return point.X;
+			yield return point.Y;
 		}
 	}
 }

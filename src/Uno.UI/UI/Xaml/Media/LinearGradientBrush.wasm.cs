@@ -43,11 +43,13 @@ namespace Windows.UI.Xaml.Media
 				// Not supported yet
 			}
 
+			var startPoint = StartPoint;
+			var endPoint = EndPoint;
 			linearGradient.SetAttribute(
-				("x1", StartPoint.X.ToStringInvariant()),
-				("y1", StartPoint.Y.ToStringInvariant()),
-				("x2", EndPoint.X.ToStringInvariant()),
-				("y2", EndPoint.Y.ToStringInvariant())
+				("x1", startPoint.X.ToStringInvariant()),
+				("y1", startPoint.Y.ToStringInvariant()),
+				("x2", endPoint.X.ToStringInvariant()),
+				("y2", endPoint.Y.ToStringInvariant())
 			);
 
 			var stops = GradientStops.Select(stop => $"<stop offset=\"{stop.Offset.ToStringInvariant()}\" style=\"stop-color:{stop.Color.ToHexString()}\" />");

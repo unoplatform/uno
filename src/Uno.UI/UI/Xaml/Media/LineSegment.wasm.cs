@@ -9,8 +9,9 @@ namespace Windows.UI.Xaml.Media
 		{
 			// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#lineto_path_commands
 			yield return $"L";
-			yield return Point.X;
-			yield return Point.Y;
+			var point = Point;
+			yield return point.X;
+			yield return point.Y;
 		}
 	}
 }

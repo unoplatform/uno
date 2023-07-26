@@ -9,10 +9,12 @@ namespace Windows.UI.Xaml.Media
 		{
 			// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d#quadratic_b%C3%A9zier_curve
 			yield return $"Q";
-			yield return Point1.X;
-			yield return Point1.Y;
-			yield return Point2.X;
-			yield return Point2.Y;
+			var point1 = Point1;
+			yield return point1.X;
+			yield return point1.Y;
+			var point2 = Point2;
+			yield return point2.X;
+			yield return point2.Y;
 		}
 	}
 }

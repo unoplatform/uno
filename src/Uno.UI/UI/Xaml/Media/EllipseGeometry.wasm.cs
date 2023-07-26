@@ -63,8 +63,9 @@ namespace Windows.UI.Xaml.Media
 
 		internal override IFormattable ToPathData()
 		{
-			var cx = Center.X;
-			var cy = Center.Y;
+			var center = Center;
+			var cx = center.X;
+			var cy = center.Y;
 			var rx = RadiusX;
 			var ry = RadiusY;
 
