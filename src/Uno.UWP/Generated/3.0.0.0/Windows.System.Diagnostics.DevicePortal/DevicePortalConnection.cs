@@ -8,6 +8,11 @@ namespace Windows.System.Diagnostics.DevicePortal
 #endif
 	public partial class DevicePortalConnection
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal DevicePortalConnection()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Closed.add
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.Closed.remove
 		// Forced skipping of method Windows.System.Diagnostics.DevicePortal.DevicePortalConnection.RequestReceived.add

@@ -9,6 +9,11 @@ namespace Windows.Security.Cryptography.Certificates
 	public partial class UserCertificateEnrollmentManager
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal UserCertificateEnrollmentManager()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncOperation<string> CreateRequestAsync(global::Windows.Security.Cryptography.Certificates.CertificateRequestProperties request)
 		{

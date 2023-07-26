@@ -9,6 +9,11 @@ namespace Windows.UI.Xaml
 	public partial class TriggerCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.TriggerBase>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.TriggerBase>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal TriggerCollection()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint Size
 		{

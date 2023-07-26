@@ -8,6 +8,11 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class Barometer
 	{
+#if false || false || false || false || __SKIA__ || false || false
+		internal Barometer()
+		{
+		}
+#endif
 #if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint ReportInterval

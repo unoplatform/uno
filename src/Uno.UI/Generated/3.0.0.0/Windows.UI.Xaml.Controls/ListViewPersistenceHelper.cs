@@ -9,6 +9,11 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ListViewPersistenceHelper
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal ListViewPersistenceHelper()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static string GetRelativeScrollPosition(global::Windows.UI.Xaml.Controls.ListViewBase listViewBase, global::Windows.UI.Xaml.Controls.ListViewItemToKeyHandler itemToKeyHandler)
 		{

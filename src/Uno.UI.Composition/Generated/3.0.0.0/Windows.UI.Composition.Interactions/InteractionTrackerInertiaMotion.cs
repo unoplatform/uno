@@ -9,6 +9,11 @@ namespace Windows.UI.Composition.Interactions
 	public partial class InteractionTrackerInertiaMotion : global::Windows.UI.Composition.Interactions.InteractionTrackerInertiaModifier
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal InteractionTrackerInertiaMotion()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.ExpressionAnimation Motion
 		{

@@ -9,6 +9,11 @@ namespace Windows.Web.Http.Headers
 	public partial class HttpContentCodingHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpContentCodingHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpContentCodingHeaderValue>,global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal HttpContentCodingHeaderValueCollection()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint Size
 		{

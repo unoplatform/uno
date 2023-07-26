@@ -8,6 +8,11 @@ namespace Windows.Media.Core
 #endif
 	public partial class TimedTextSource
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal TimedTextSource()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.Resolved.add
 		// Forced skipping of method Windows.Media.Core.TimedTextSource.Resolved.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

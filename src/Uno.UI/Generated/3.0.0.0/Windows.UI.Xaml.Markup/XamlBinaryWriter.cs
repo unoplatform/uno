@@ -9,6 +9,11 @@ namespace Windows.UI.Xaml.Markup
 	public partial class XamlBinaryWriter
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal XamlBinaryWriter()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.Markup.XamlBinaryWriterErrorInformation Write(global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> inputStreams, global::System.Collections.Generic.IList<global::Windows.Storage.Streams.IRandomAccessStream> outputStreams, global::Windows.UI.Xaml.Markup.IXamlMetadataProvider xamlMetadataProvider)
 		{
