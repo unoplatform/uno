@@ -17,7 +17,6 @@ partial class ApplicationData
 	private const string LocalCacheFolderName = "LocalCache";
 	private const string TemporaryFolderName = "TempState";
 	private const string LocalFolderName = "LocalState";
-	private const string SharedLocalFolderName = "SharedLocalState";
 	private const string RoamingFolderName = "RoamingState";
 	private const string SettingsFolderName = "Settings";
 
