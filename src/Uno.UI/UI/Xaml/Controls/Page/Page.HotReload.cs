@@ -20,10 +20,13 @@ namespace Windows.UI.Xaml.Controls
 
 				newPage.Frame = oldPage.Frame;
 
-				// If we've replaced the Page in its frame, we may need to
-				// swap the content property as well. It may be required
-				// if the frame is handled by a (native) FramePresenter.
-				newPage.Frame.Content = newPage;
+				if (newPage.Frame is not null)
+				{
+					// If we've replaced the Page in its frame, we may need to
+					// swap the content property as well. It may be required
+					// if the frame is handled by a (native) FramePresenter.
+					newPage.Frame.Content = newPage;
+				}
 			}
 			else
 			{
