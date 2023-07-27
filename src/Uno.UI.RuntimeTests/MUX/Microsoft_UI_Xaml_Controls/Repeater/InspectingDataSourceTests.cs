@@ -10,7 +10,9 @@ using System.Collections.Specialized;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using MUXControlsTestApp.Utilities;
 using MUXControlsTestApp.Utils;
 using Private.Infrastructure;

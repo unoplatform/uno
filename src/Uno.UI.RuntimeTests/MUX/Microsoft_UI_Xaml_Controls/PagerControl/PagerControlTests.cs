@@ -8,12 +8,14 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Common;
-using Microsoft.UI.Xaml.Controls;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Provider;
+#if !HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Automation.Peers;
+#endif
 using Windows.UI.Xaml.Controls;
 using Private.Infrastructure;
 using System.Threading.Tasks;

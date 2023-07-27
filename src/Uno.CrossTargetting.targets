@@ -34,11 +34,6 @@
 		<Compile Remove="**\*.unittests.cs" Condition="!$(_IsUnitTests)" />
 	</ItemGroup>
 
-	<PropertyGroup Condition="'$(Configuration)'=='Release'">
-		<!-- Add 0105 - WinUI build step tends to introduce duplicate usings where there were none in authored code -->
-		<NoWarn>$(NoWarn);0105</NoWarn>
-	</PropertyGroup>
-
 	<!--
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
