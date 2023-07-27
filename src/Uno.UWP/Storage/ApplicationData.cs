@@ -39,8 +39,6 @@ public sealed partial class ApplicationData
 		_roamingSettingsLazy = new(() => new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming));
 
 		InitializePartial();
-
-		WinRTFeatureConfiguration.ApplicationData.IsApplicationDataInitialized = true;
 	}
 
 	partial void InitializePartial();
