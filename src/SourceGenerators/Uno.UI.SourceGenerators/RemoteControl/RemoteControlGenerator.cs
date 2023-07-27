@@ -87,7 +87,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			}
 		}
 
-		private static bool IsInsideUnoSolution(GeneratorExecutionContext context) 
+		private static bool IsInsideUnoSolution(GeneratorExecutionContext context)
 			=> context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 
 		private static void BuildGeneratedFileHeader(IndentedStringBuilder sb)
@@ -130,6 +130,8 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			sb.AppendLineIndented($"new string[]{{{distinctPaths}}},");
 
+			// Provide additional properties so that our hot reload workspace can properly
+			// replicate the original build environment that was used (e.g. VS or dotnet build)
 			var additionalPropertiesValue = string.Join(
 				", ",
 				AdditionalMSProperties.Select(p => $"@\"{p}={Convert.ToBase64String(Encoding.UTF8.GetBytes(context.GetMSBuildPropertyValue(p)))}\""));
@@ -225,6 +227,9 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			if (string.IsNullOrEmpty(unoRemoteControlHost))
 			{
+				// Inside the Uno Solution we do not start the remote control
+				// client, as the location of the RC server is not coming from 
+				// a nuget package.
 				if (!IsInsideUnoSolution(context))
 				{
 					var addresses = NetworkInterface.GetAllNetworkInterfaces()

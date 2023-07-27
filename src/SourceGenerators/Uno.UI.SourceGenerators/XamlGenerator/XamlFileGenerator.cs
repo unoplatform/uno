@@ -632,6 +632,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (IsInsideUnoSolution(_generatorContext))
 			{
+				// Inside the Uno Solution we do not start the remote control
+				// client, as the location of the RC server is not coming from 
+				// a nuget package.
 				writer.AppendLineIndented($"// Automatic remote control startup is disabled");
 			}
 			else if (_isDebug)

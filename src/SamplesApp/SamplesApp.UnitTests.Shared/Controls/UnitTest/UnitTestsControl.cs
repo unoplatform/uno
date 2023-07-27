@@ -784,29 +784,47 @@ namespace Uno.UI.Samples.Tests
 							object returnValue = null;
 							if (test.RunsOnUIThread)
 							{
-								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								var cts = new TaskCompletionSource<bool>();
+
+								_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 								{
-									if (instance is IInjectPointers pointersInjector)
+									try
 									{
-										pointersInjector.CleanupPointers();
-									}
-
-									if (testCase.Pointer is { } pt)
-									{
-										var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
-
-										cleanupActions.Add(() =>
+										if (instance is IInjectPointers pointersInjector)
 										{
-											ptSubscription.Dispose();
-											return Task.CompletedTask;
-										});
-									}
+											pointersInjector.CleanupPointers();
+										}
 
-									sw.Start();
-									testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
-									returnValue = test.Method.Invoke(instance, testCase.Parameters);
-									sw.Stop();
+										if (testCase.Pointer is { } pt)
+										{
+											var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
+
+											cleanupActions.Add(() =>
+											{
+												ptSubscription.Dispose();
+												return Task.CompletedTask;
+											});
+										}
+
+										sw.Start();
+										var initializeReturn = testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
+										if (initializeReturn is Task initializeReturnTask)
+										{
+											await initializeReturnTask;
+										}
+
+										returnValue = test.Method.Invoke(instance, testCase.Parameters);
+										sw.Stop();
+
+										cts.TrySetResult(true);
+									}
+									catch (Exception e)
+									{
+										cts.TrySetException(e);
+									}
 								});
+
+								await cts.Task;
 							}
 							else
 							{
@@ -835,7 +853,7 @@ namespace Uno.UI.Samples.Tests
 							if (test.Method.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+								var timeoutTask = Task.Delay(GetTestTimeout(test));
 
 								var resultingTask = await Task.WhenAny(task, timeoutTask);
 
@@ -950,6 +968,21 @@ namespace Uno.UI.Samples.Tests
 					Run();
 				}
 			}
+		}
+
+		private TimeSpan GetTestTimeout(UnitTestMethodInfo test)
+		{
+			if (test.Method.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute methodAttribute)
+			{
+				return TimeSpan.FromMilliseconds(methodAttribute.Timeout);
+			}
+
+			if (test.Method.DeclaringType.GetCustomAttribute(typeof(TimeoutAttribute)) is TimeoutAttribute typeAttribute)
+			{
+				return TimeSpan.FromMilliseconds(typeAttribute.Timeout);
+			}
+
+			return DefaultUnitTestTimeout;
 		}
 
 		private IEnumerable<UnitTestClassInfo> InitializeTests()
