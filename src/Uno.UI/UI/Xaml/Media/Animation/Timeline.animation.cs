@@ -284,38 +284,32 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				_animator?.Dispose();
 
-				if (Duration.HasTimeSpan && Duration.TimeSpan == TimeSpan.Zero)
-				{
-					State = TimelineState.Active;
-					SetValue(ComputeToValue());
-					State = TimelineState.Stopped;
-				}
-				else
-				{
-					InitializeAnimator(); // Create the animator
+				InitializeAnimator(); // Create the animator
 
-					if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
-					{ // Don't start the animator its a dependent animation
-						return;
-					}
-
-					UseHardware();//Ensure that the GPU is used for animations
-
-					if (BeginTime.HasValue)
-					{ // Set the start delay
-						_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
-					}
-
-					_animator.Start();
-					State = TimelineState.Active;
+				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
+				{ // Don't start the animator its a dependent animation
+					return;
 				}
 
+				UseHardware();//Ensure that the GPU is used for animations
+
+				if (BeginTime.HasValue)
+				{ // Set the start delay
+					_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
+				}
+
+<<<<<<< HEAD
 <<<<<<< HEAD
 				_animator.Start();
 				State = TimelineState.Active;
 
 #if XAMARIN_IOS
 =======
+=======
+				_animator.Start();
+				State = TimelineState.Active;
+
+>>>>>>> b587bcb51b (chore: Use ImmediateAnimator instead)
 #if __IOS__
 >>>>>>> 0b1215b2a2 (fix: Fix toggle switch knob translation)
 				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
