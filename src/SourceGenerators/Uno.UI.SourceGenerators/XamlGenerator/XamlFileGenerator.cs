@@ -630,7 +630,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void InitializeRemoteControlClient(IndentedStringBuilder writer)
 		{
-			if (_isDebug)
+			if (IsInsideUnoSolution(_generatorContext))
+			{
+				writer.AppendLineIndented($"// Automatic remote control startup is disabled");
+			}
+			else if (_isDebug)
 			{
 				if (_metadataHelper.FindTypeByFullName("Uno.UI.RemoteControl.RemoteControlClient") != null)
 				{
@@ -642,6 +646,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 		}
+		private static bool IsInsideUnoSolution(GeneratorExecutionContext context)
+			=> context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 
 		private void GenerateResourceLoader(IndentedStringBuilder writer)
 		{
