@@ -91,7 +91,7 @@ namespace SamplesApp
 			ConfigureFeatureFlags();
 
 			AssertIssue1790ApplicationSettingsUsable();
-			AssertApplicationDataFolders();
+			AssertApplicationData();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -678,7 +678,11 @@ namespace SamplesApp
 #endif
 		}
 
-		public void AssertApplicationDataFolders()
+		/// <summary>
+		/// Verifies that ApplicationData are available immediately after the application class is created
+		/// and the data are stored in proper application specific lcoations.
+		/// </summary>
+		public void AssertApplicationData()
 		{
 #if __SKIA__
 			var appName = Package.Current.Id.Name;
@@ -686,13 +690,26 @@ namespace SamplesApp
 
 			AssertForFolder(ApplicationData.Current.LocalFolder);
 			AssertForFolder(ApplicationData.Current.RoamingFolder);
-			AssertForFolder(ApplicationData.Current.TemporaryFolder);			
+			AssertForFolder(ApplicationData.Current.TemporaryFolder);
 			AssertForFolder(ApplicationData.Current.LocalCacheFolder);
+			AssertSettings(ApplicationData.Current.LocalSettings);
+			AssertSettings(ApplicationData.Current.RoamingSettings);
 
 			void AssertForFolder(StorageFolder folder)
 			{
 				AssertContainsIdProps(folder);
 				AssertCanCreateFile(folder);
+			}
+
+			void AssertSettings(ApplicationDataContainer container)
+			{
+				var key = Guid.NewGuid().ToString();
+				var value = Guid.NewGuid().ToString();
+
+				container.Values[key] = value;
+				Assert.IsTrue(container.Values.ContainsKey(key));
+				Assert.AreEqual(value, container.Values[key]);
+				container.Values.Remove(key);
 			}
 
 			void AssertContainsIdProps(StorageFolder folder)
