@@ -47,6 +47,7 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Internal\ContentManager\IContentHost.skia.cs" />
 	  <UpToDateCheckInput Remove="UI\Xaml\Internal\Islands\XamlIsland.cs" />
 	  <UpToDateCheckInput Remove="UI\Xaml\Internal\Islands\XamlIsland.Root.cs" />
 	  <UpToDateCheckInput Remove="UI\Xaml\Window\Implementations\DesktopXamlSourceWindow.skia.cs" />
