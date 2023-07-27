@@ -205,7 +205,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				var isCapturingState = true;
 				var treeIterator = EnumerateHotReloadInstances(
-						Window.Current.Content,
+						Window.Current!.Content,
 						(fe, key) =>
 						{
 							// Get the original type of the element, in case it's been replaced
