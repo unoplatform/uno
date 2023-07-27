@@ -222,7 +222,7 @@ namespace Windows.UI.Xaml
 			{
 				if (nextAnimation is null)
 				{
-					runningAnimation.Stop();
+					//runningAnimation.Stop();
 				}
 				else
 				{
