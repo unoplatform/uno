@@ -47,7 +47,14 @@ public partial class HotRestartGenerator : ISourceGenerator
 			}
 
 			var mauiAppDelegate = _context.Compilation.GetTypeByMetadataName("Microsoft.Maui.MauiUIApplicationDelegate");
-			var shouldDefineAppDelegate = (mauiAppDelegate is null).ToString().ToLowerInvariant();
+
+			if (mauiAppDelegate is not null)
+			{
+				// Support for hot restart is disabled, since the app cannot be started from
+				// the MauiUIApplicationDelegate as the CreateMaui override cannot be implemented
+				// in an Uno context.
+				return;
+			}
 
 			var appType = GetApplicationDefinitionType();
 
@@ -64,7 +71,6 @@ public partial class HotRestartGenerator : ISourceGenerator
 				// *************************************************************
 				// </auto-generated>
 
-				#if {{shouldDefineAppDelegate}}
 				namespace Microsoft.Maui
 				{
 					[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
@@ -72,7 +78,6 @@ public partial class HotRestartGenerator : ISourceGenerator
 					{
 					}
 				}
-				#endif
 
 				[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 				internal class __UnoHotRestartDelegate : global::Microsoft.Maui.MauiUIApplicationDelegate
