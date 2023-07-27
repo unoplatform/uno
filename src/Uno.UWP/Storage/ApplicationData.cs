@@ -5,6 +5,7 @@
 #pragma warning disable 114 // new keyword hiding
 #pragma warning disable 67 // new keyword hiding
 using System;
+using Uno;
 
 namespace Windows.Storage;
 
@@ -38,6 +39,8 @@ public sealed partial class ApplicationData
 		_roamingSettingsLazy = new(() => new ApplicationDataContainer(this, "Roaming", ApplicationDataLocality.Roaming));
 
 		InitializePartial();
+
+		WinRTFeatureConfiguration.ApplicationData.IsApplicationDataInitialized = true;
 	}
 
 	partial void InitializePartial();

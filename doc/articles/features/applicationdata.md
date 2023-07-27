@@ -85,8 +85,7 @@ In case of GTK and WPF targets the data are stored in application- and user-spec
 
 Where `<UserName>` is the name of the currently logged-in user and `<Publisher>` and `<ApplicationName>` are values coming from the `<Identity>` node of the `Package.appxmanifest` (note that the publisher value is prefixed by `CN=` in the manifest, but this is excluded from the folder name).
 
-
-The default paths above can be overriden using the following feature flags:
+The default paths above can be overridden using the following feature flags:
 
 - `WinRTFeatureConfiguration.ApplicationData.TemporaryFolderPathOverride` - affects `TemporaryFolder` location
 - `WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride` - affects `LocalCacheFolder` location
