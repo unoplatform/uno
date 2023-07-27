@@ -95,7 +95,7 @@ public partial class HotRestartGenerator : ISourceGenerator
 		}
 
 		private bool IsGenerationEnabled()
-			=> bool.TryParse(_context.GetMSBuildPropertyValue("UnoDisableHotRestartHelperGeneration", "false"), out var result) ? result : true;
+			=> bool.TryParse(_context.GetMSBuildPropertyValue("UnoDisableHotRestartHelperGeneration", "false"), out var result) ? !result : true;
 
 		private string? GetApplicationDefinitionType()
 		{
