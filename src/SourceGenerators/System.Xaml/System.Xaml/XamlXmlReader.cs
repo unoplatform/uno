@@ -41,12 +41,22 @@ namespace Uno.Xaml
 
 		public bool? IsIncluded { get; }
 		public bool DisableCaching { get; }
+		public string UpdatedNamespace { get; }
 
 		private IsIncludedResult(bool? isIncluded, bool disableCaching)
 		{
 			IsIncluded = isIncluded;
 			DisableCaching = disableCaching;
 		}
+
+		private IsIncludedResult(bool? isIncluded, bool disableCaching, string updatedNamespace)
+		{
+			IsIncluded = isIncluded;
+			DisableCaching = disableCaching;
+			UpdatedNamespace = updatedNamespace;
+		}
+
+		public IsIncludedResult WithUpdatedNamespace(string updatedNamespace) => new(IsIncluded, DisableCaching, updatedNamespace);
 
 		public override bool Equals(object obj) => obj is IsIncludedResult result && Equals(result);
 		public bool Equals(IsIncludedResult other) => IsIncluded == other.IsIncluded && DisableCaching == other.DisableCaching;
@@ -561,16 +571,16 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix, r.NamespaceURI, out var shouldTreatAsDefaultNamespace))
+						if (IsIgnored(r.Prefix, r.NamespaceURI, out var updatedNamespace))
 						{
 							continue;
 						}
 
-						if (r.NamespaceURI == string.Empty  || r.NamespaceURI == r.LookupNamespace("") || shouldTreatAsDefaultNamespace) {
+						if (updatedNamespace == string.Empty  || updatedNamespace == r.LookupNamespace("")) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
-						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal) || r.NamespaceURI.Contains("#using:")) {
+						if (updatedNamespace.StartsWith("using:", StringComparison.Ordinal) || updatedNamespace.Contains("#using:")) {
 							atts.Add (r.Name, r.Value);
 							continue;
 						}
@@ -963,18 +973,17 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
+		private bool IsIgnored(string localName, string namespaceUri, out string updatedNamespace)
 		{
 			var result = _isIncluded(localName, namespaceUri);
+			updatedNamespace = result.UpdatedNamespace ?? namespaceUri;
 			var isIncluded = result.IsIncluded;
 			DisableCaching |= result.DisableCaching;
 			if (isIncluded == true)
 			{
-				shouldTreatAsDefaultNamespace = true;
 				return false;
 			}
 
-			shouldTreatAsDefaultNamespace = false;
 			if (isIncluded == false)
 			{
 				return true;

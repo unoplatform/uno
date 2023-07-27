@@ -271,10 +271,11 @@
 			</group>
 
 			<!--
-	  This group must not be present for nuget to fallback on net7.0 target when running on Skia+Wpf.
-	  The references list is adjusted only when WinAppSDK is detected.
-	  <group targetFramework="net7.0-windows10.0.19041.0">
-	  </group>-->
+			This group must not be present for nuget to fallback on net7.0 target when running on Skia+Wpf.
+			The references list is adjusted only when WinAppSDK is detected.
+			<group targetFramework="net7.0-windows10.0.19041.0">
+			</group>
+			-->
 		</references>
 	</metadata>
 	<files>

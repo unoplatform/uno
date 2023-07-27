@@ -13,9 +13,8 @@ using AppKit;
 using _BezierPath = AppKit.NSBezierPath;
 #endif
 
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
+
 
 namespace Windows.UI.Xaml.Shapes
 {

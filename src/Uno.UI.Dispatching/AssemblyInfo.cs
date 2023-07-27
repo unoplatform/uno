@@ -18,13 +18,4 @@ using System.Runtime.InteropServices;
 
 [assembly: InternalsVisibleTo("Uno")]
 
-#if NET6_0_OR_GREATER
 [assembly: System.Reflection.AssemblyMetadata("IsTrimmable", "True")]
-#elif __IOS__
-#pragma warning disable CS0618 // Type or member is obsolete
-[assembly: Foundation.LinkerSafe]
-#pragma warning restore CS0618 // Type or member is obsolete
-[assembly: AssemblyMetadata("IsTrimmable", "True")]
-#elif __ANDROID__
-[assembly: Android.LinkerSafe]
-#endif

@@ -28,6 +28,7 @@ using View = Windows.UI.Xaml.UIElement;
 using _Debug = System.Diagnostics.Debug;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -52,6 +53,15 @@ namespace Windows.UI.Xaml.Controls
 			void Add(View view)
 		{
 			Child = VisualTreeHelper.TryAdaptNative(view);
+		}
+
+		~Border()
+		{
+			_borderBrushChangedProxy?.Unsubscribe();
+
+#if __ANDROID__
+			_brushChangedProxy?.Unsubscribe();
+#endif
 		}
 
 		protected override bool IsSimpleLayout => true;
@@ -222,8 +232,8 @@ namespace Windows.UI.Xaml.Controls
 		#region BorderBrush Dependency Property
 
 
-		private SerialDisposable _borderBrushColorChanged = new SerialDisposable();
-		private SerialDisposable _borderBrushOpacityChanged = new SerialDisposable();
+		private WeakBrushChangedProxy _borderBrushChangedProxy;
+		private Action _borderBrushChanged;
 
 #if __ANDROID__
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
@@ -250,53 +260,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			if (newValue is SolidColorBrush colorBrush)
-			{
-				_borderBrushColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.ColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
-				);
-				_borderBrushOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
-				);
-			}
-			else if (newValue is GradientBrush gb)
-			{
-				_borderBrushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
-				);
-				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
-				);
-			}
-			else if (newValue is RadialGradientBrush rgb)
-			{
-				_borderBrushColorChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
-					RadialGradientBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
-				);
-				_borderBrushOpacityChanged.Disposable = rgb.RegisterDisposablePropertyChangedCallback(
-					RadialGradientBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
-				);
-			}
-			else if (newValue is AcrylicBrush ab)
-			{
-				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial());
-				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.OpacityProperty,
-					(s, arg) => OnBorderBrushChangedPartial());
-			}
-			else
-			{
-				_borderBrushColorChanged.Disposable = null;
-				_borderBrushOpacityChanged.Disposable = null;
-			}
+			_borderBrushChangedProxy ??= new();
+			_borderBrushChanged ??= () => OnBorderBrushChangedPartial();
+			_borderBrushChangedProxy.Subscribe(newValue, _borderBrushChanged);
 
 #if __WASM__
 			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
@@ -305,8 +271,6 @@ namespace Windows.UI.Xaml.Controls
 				Child?.InvalidateArrange();
 			}
 #endif
-
-			OnBorderBrushChangedPartial();
 		}
 
 		partial void OnBorderBrushChangedPartial();

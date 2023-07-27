@@ -291,8 +291,12 @@ namespace Windows.UI.Xaml.Shapes
 
 		private static Rect CreateImageLayer(Compositor compositor, CompositeDisposable disposables, Thickness borderThickness, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
 		{
-			imgBackground.Subscribe(imageData =>
+			Action onInvalidateRender = () =>
 			{
+				if (imgBackground.ImageDataCache is not { } imageData)
+				{
+					return;
+				}
 
 				if (imageData.Error is null)
 				{
@@ -322,7 +326,11 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					backgroundShape.FillBrush = null;
 				}
-			}).DisposeWith(disposables);
+			};
+
+			onInvalidateRender();
+			imgBackground.InvalidateRender += onInvalidateRender;
+			new DisposableAction(() => imgBackground.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 			return backgroundArea;
 		}
 

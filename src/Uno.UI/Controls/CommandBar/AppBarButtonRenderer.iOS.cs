@@ -14,9 +14,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls
 {

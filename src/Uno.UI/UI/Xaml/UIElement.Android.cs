@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 
 			ViewCompat.SetClipBounds(this, physicalRect);
 
-			SetClipChildren(NeedsClipToSlot);
+			SetClipToPadding(NeedsClipToSlot);
 		}
 
 		/// <summary>

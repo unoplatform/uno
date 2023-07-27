@@ -2,11 +2,6 @@
 <Project>
 
 	<PropertyGroup>
-		<IsCatalyst>false</IsCatalyst>
-		<IsCatalyst Condition="'$(TargetFramework)'=='net8.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">true</IsCatalyst>
-
-		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
-		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
 		<_T4ToolVersion>2.3.1</_T4ToolVersion>
 	</PropertyGroup>
 

@@ -3,8 +3,8 @@
 	<ItemGroup>
 		<AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
 
-		<None Include="**\*.netstd.cs" Exclude="bin\**\*.netstd.cs;obj\**\*.netstd.cs" Condition="!$(_IsNetStd)" />
-		<Compile Remove="**\*.netstd.cs" Condition="!$(_IsNetStd)" />
+		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(_IsNetStd)" />
+		<Compile Remove="**\*.crossruntime.cs" Condition="!$(_IsNetStd)" />
 
 		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
 		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
@@ -59,7 +59,7 @@
   -->
 
 	<PropertyGroup Condition="$(_IsNetStd)">
-		<DefineConstants>$(DefineConstants);__NETSTD__</DefineConstants>
+		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">

@@ -638,6 +638,8 @@
 			<!-- BEGIN OnWindowCreated -->
 			<Member fullName="Microsoft.UI.Xaml.WindowCreatedEventArgs" reason="Does not exist in WinAppSDK" />
 			<!-- END OnWindowCreated -->
+
+			<Member fullName="Uno.UI.Extensions.KeycodeExtensions" reason="Does not exist in WinAppSDK" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -652,6 +654,11 @@
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; Windows.UI.Xaml.Controls.CalendarDatePicker::_dateChanged" reason="Not in Windows" />
 			<Member fullName="Windows.UI.Xaml.DependencyPropertyChangedEventHandler Windows.UI.Xaml.FrameworkElement::IsEnabledChanged" reason="Api alignments" />
 			<Member fullName="Windows.Foundation.Collections.VectorChangedEventHandler`1&lt;Windows.UI.Xaml.Controls.SwipeItem&gt; Windows.UI.Xaml.Controls.SwipeItems::VectorChanged" reason="Api alignments" />
+
+			<!-- BEGIN Android TV -->
+			<Member fullName=".*KeyUp" isRegex="true" reason="KeyUp should be defined on UIElement only" />
+			<Member fullName=".*KeyDown" isRegex="true" reason="KeyDown should be defined on UIElement only" />
+			<!-- END Android TV -->
 		</Events>
 		<Fields>
 			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
@@ -1574,6 +1581,22 @@
 			<Member fullName="System.Void Windows.Devices.Haptics.VibrationDevice..ctor()" reason="Does not exist in WinAppSDK" />
 			<Member fullName="System.Void Windows.UI.Xaml.Media.ImageSource..ctor()" reason="Does not exist in WinAppSDK" />
 			<!-- END Align ref members -->
+
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillChanged(Windows.UI.Xaml.Media.Brush newValue)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnFillUpdated(Windows.UI.Xaml.Media.Brush newValue)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeUpdated(Windows.UI.Xaml.Media.Brush newValue)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeThicknessUpdated(System.Double newValue)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStrokeDashArrayUpdated(Windows.UI.Xaml.Media.DoubleCollection newValue)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.OnStretchUpdated(Windows.UI.Xaml.Media.Stretch newValue)" reason="Does not exist in WinAppSDK" />
+
+			<!-- BEGIN Android TV -->
+			<Member fullName=".*\.OnKeyPress\(.*" isRegex="true" reason="OnKeyPress is Android specific and should not be public" />
+			<Member fullName=".*\.add_KeyUp\(.*" isRegex="true" reason="KeyUp should be defined on UIElement only" />
+			<Member fullName=".*\.remove_KeyUp\(.*" isRegex="true" reason="KeyUp should be defined on UIElement only" />
+			<Member fullName=".*\.add_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
+			<Member fullName=".*\.remove_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
+			<!-- END Android TV -->
+
 		</Methods>
 	</IgnoreSet>
 	  <!--

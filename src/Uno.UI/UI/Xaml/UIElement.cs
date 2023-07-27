@@ -673,7 +673,7 @@ namespace Windows.UI.Xaml
 		private static bool _isLayoutingVisualTreeRoot; // Currently in Measure or Arrange of the element flagged with IsVisualTreeRoot (layout requested by the system)
 #pragma warning restore CS0649
 
-#if !__NETSTD__ // We need an internal accessor for the Layouter
+#if !__CROSSRUNTIME__ // We need an internal accessor for the Layouter
 		internal static bool IsLayoutingVisualTreeRoot
 		{
 			get => _isLayoutingVisualTreeRoot;

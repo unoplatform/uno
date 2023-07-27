@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 
-		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? UIReturnKeyType.Search
