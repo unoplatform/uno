@@ -266,7 +266,7 @@ namespace Uno.UI.RemoteControl.VS
 				var sb = new StringBuilder();
 
 				var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort}";
+				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{
 					UseShellExecute = false,
