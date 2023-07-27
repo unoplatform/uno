@@ -29,8 +29,7 @@ namespace Windows.UI.Xaml
 		{
 			get
 			{
-				return this.Type == DurationType.TimeSpan &&
-					this.TimeSpan.CompareTo(TimeSpan.Zero) > 0;
+				return this.Type == DurationType.TimeSpan;
 			}
 		}
 

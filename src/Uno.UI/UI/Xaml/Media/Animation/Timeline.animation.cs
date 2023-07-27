@@ -283,24 +283,41 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void Play()
 			{
 				_animator?.Dispose();
-				InitializeAnimator(); // Create the animator
 
-				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
-				{ // Don't start the animator its a dependent animation
-					return;
+				if (Duration.HasTimeSpan && Duration.TimeSpan == TimeSpan.Zero)
+				{
+					State = TimelineState.Active;
+					SetValue(ComputeToValue());
+					State = TimelineState.Stopped;
+				}
+				else
+				{
+					InitializeAnimator(); // Create the animator
+
+					if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
+					{ // Don't start the animator its a dependent animation
+						return;
+					}
+
+					UseHardware();//Ensure that the GPU is used for animations
+
+					if (BeginTime.HasValue)
+					{ // Set the start delay
+						_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
+					}
+
+					_animator.Start();
+					State = TimelineState.Active;
 				}
 
-				UseHardware();//Ensure that the GPU is used for animations
-
-				if (BeginTime.HasValue)
-				{ // Set the start delay
-					_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
-				}
-
+<<<<<<< HEAD
 				_animator.Start();
 				State = TimelineState.Active;
 
 #if XAMARIN_IOS
+=======
+#if __IOS__
+>>>>>>> 0b1215b2a2 (fix: Fix toggle switch knob translation)
 				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
 				// values out of syc with native presented values and Xaml values). As a workaround we fast-forward the animation to its final
 				// state. (The ideal would probably be to restart the animation when the app resumes.)
