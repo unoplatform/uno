@@ -821,7 +821,13 @@ namespace Uno.UI.Samples.Tests
 								}
 
 								sw.Start();
-								testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
+
+								var initializeReturn = testClassInfo.Initialize?.Invoke(instance, Array.Empty<object>());
+								if (initializeReturn is Task initializeReturnTask)
+								{
+									await initializeReturnTask;
+								}
+
 								returnValue = test.Method.Invoke(instance, testCase.Parameters);
 								sw.Stop();
 							}
