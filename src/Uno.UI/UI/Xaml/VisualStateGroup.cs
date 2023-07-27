@@ -223,9 +223,9 @@ namespace Windows.UI.Xaml
 				if (nextAnimation is null)
 				{
 					if (runningAnimation == current.transition)
-	 				{
-	  					runningAnimation.Stop();
-  					}
+					{
+						runningAnimation.Stop();
+					}
 				}
 				else
 				{
