@@ -243,6 +243,8 @@
               href: features/app-close-handler.md
             - name: App Suspension
               href: features/windows-ui-xaml-application.md
+            - name: Application Data and Settings
+              href: features/applicationdata.md
             - name: Badge Notifications
               href: features/windows-ui-notifications.md
             - name: Barometer

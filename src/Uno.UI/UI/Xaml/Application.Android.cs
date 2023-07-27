@@ -6,6 +6,7 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.Globalization;
 using Windows.UI.Xaml.Controls.Primitives;
 
 #if HAS_UNO_WINUI
@@ -18,11 +19,9 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
-		public Application()
+		partial void InitializePartial()
 		{
 			Window.Current.ToString();
-			Current = this;
-			InitializeSystemTheme();
 			PermissionsHelper.Initialize();
 		}
 
