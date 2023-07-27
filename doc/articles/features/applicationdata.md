@@ -69,9 +69,9 @@ In case of GTK and WPF targets the data are stored in application- and user-spec
 
 - `LocalFolder` - `C:\Users\UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalState`
 - `RoamingFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
-- `LocalCahe` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalCache`
-- `TemporaryFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
-- `LocalSettings` - `C:\Users\<UserName>\AppData\Local\Temp\<Publisher>\<ApplicationName>\TempState`
+- `LocalCaheFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalCache`
+- `TemporaryFolder` - `C:\Users\<UserName>\AppData\Local\Temp\<Publisher>\<ApplicationName>\TempState`
+- `LocalSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Local.dat`
 - `RoamingSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Roaming.dat`
 
 **Unix-based systems**
@@ -84,3 +84,14 @@ In case of GTK and WPF targets the data are stored in application- and user-spec
 - `RoamingSettings` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/Settings/Roaming.dat`
 
 Where `<UserName>` is the name of the currently logged-in user and `<Publisher>` and `<ApplicationName>` are values coming from the `<Identity>` node of the `Package.appxmanifest` (note that the publisher value is prefixed by `CN=` in the manifest, but this is excluded from the folder name).
+
+
+The default paths above can be overriden using the following feature flags:
+
+- `WinRTFeatureConfiguration.ApplicationData.TemporaryFolderPathOverride` - affects `TemporaryFolder` location
+- `WinRTFeatureConfiguration.ApplicationData.LocalCacheFolderPathOverride` - affects `LocalCacheFolder` location
+- `WinRTFeatureConfiguration.ApplicationData.ApplicationDataPathOverride` - affects `LocalFolder`, `RoamingFolder`, `LocalCaheFolder`, `LocalSettings` and `RoamingSettings`
+
+These properties need to be set before the application is initialized. The best place for this is `Program.cs`, before the `WpfHost` or `GtkHost` instance is created.
+
+If you intend to support both Windows and Unix-based systems for GTK target, make the path conditional utilizing `RuntimeInformation.IsOSPlatform(OSPlatform.Windows)`.
