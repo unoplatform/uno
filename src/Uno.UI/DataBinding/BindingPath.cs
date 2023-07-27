@@ -195,7 +195,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (!_disposed
 					&& _value != null
-					&& DependencyObjectStore.AreDifferent(value, _value.Value)
+					&& DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
 				)
 				{
 					_value.Value = value;
@@ -533,6 +533,7 @@ namespace Uno.UI.DataBinding
 			private readonly object? _fallbackValue;
 			private readonly bool _allowPrivateMembers;
 			private ValueGetterHandler? _valueGetter;
+			private ValueGetterHandler? _precedenceSpecificGetter;
 			private ValueGetterHandler? _substituteValueGetter;
 			private ValueSetterHandler? _valueSetter;
 			private ValueSetterHandler? _localValueSetter;
@@ -650,6 +651,13 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
+			internal object? GetPrecedenceSpecificValue()
+			{
+				BuildPrecedenceSpecificValueGetter();
+
+				return GetSourceValue(_precedenceSpecificGetter!);
+			}
+
 			internal object? GetSubstituteValue()
 			{
 				BuildSubstituteValueGetter();
@@ -730,6 +738,7 @@ namespace Uno.UI.DataBinding
 				if (_dataContextType != currentType && _dataContextType != null)
 				{
 					_valueGetter = null;
+					_precedenceSpecificGetter = null;
 					_substituteValueGetter = null;
 					_localValueSetter = null;
 					_valueSetter = null;
@@ -815,6 +824,21 @@ namespace Uno.UI.DataBinding
 				if (_valueGetter == null && _dataContextType != null)
 				{
 					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
+				}
+			}
+
+			private void BuildPrecedenceSpecificValueGetter()
+			{
+				if (_precedenceSpecificGetter == null && _dataContextType != null)
+				{
+					if (DependencyProperty.GetProperty(_dataContextType, PropertyName) is not null)
+					{
+						_precedenceSpecificGetter = BindingPropertyHelper.GetPrecedenceSpecificValueGetter(_dataContextType, PropertyName, (DependencyPropertyValuePrecedences)_precedence!);
+					}
+					else
+					{
+						_precedenceSpecificGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
+					}
 				}
 			}
 
