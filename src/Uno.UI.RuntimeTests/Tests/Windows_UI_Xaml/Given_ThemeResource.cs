@@ -85,58 +85,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
-<<<<<<< HEAD
-=======
-		[TestMethod]
-		public async Task When_AppLevel_Resource_CheckBox_Override()
-		{
-			// Use fluent styles to rely on known Theme Resources
-			using (StyleHelper.UseFluentStyles())
-			{
-				var SUT = new When_AppLevel_Resource_CheckBox_Override();
-
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
-
-				var normalRectangle = SUT.cb01.FindName("NormalRectangle") as Rectangle;
-
-				Assert.IsNotNull(normalRectangle);
-
-				// Validation for early ThemeResource resolution in Storyboard timeline
-				Assert.AreEqual(Colors.Yellow, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
-
-				SUT.cb01.IsChecked = true;
-
-				// Validation for late (OnLoaded) ThemeResource resolution in Storyboard timeline
-				Assert.AreEqual(Colors.Red, normalRectangle.Fill.GetValue(SolidColorBrush.ColorProperty));
-			}
-		}
-
-		[TestMethod]
-		public async Task When_AppLevel_Resource_SplitButton_Override()
-		{
-			// Use fluent styles to rely on known Theme Resources
-			using (StyleHelper.UseFluentStyles())
-			{
-				var SUT = new When_AppLevel_Resource_SplitButton_Override();
-
-				WindowHelper.WindowContent = SUT;
-				await WindowHelper.WaitForLoaded(SUT);
-
-				var contentPresenter = SUT.sb01.FindName("ContentPresenter") as ContentPresenter;
-
-				Assert.IsNotNull(contentPresenter);
-
-				var color = contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty);
-
-				SUT.sb01.IsEnabled = false;
-
-				// Validation for late (OnLoaded) ThemeResource resolution in Setter value
-				Assert.AreEqual(Colors.Yellow, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
-				Assert.AreNotEqual(color, contentPresenter.Foreground.GetValue(SolidColorBrush.ColorProperty));
-			}
-		}
-
 		[TestMethod]
 		public async Task When_ThemeResource_Style_Switch()
 		{
@@ -160,7 +108,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
->>>>>>> e51e120709 (test: ThemeResource style switch)
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{
 			var run = new Run()
