@@ -19,18 +19,14 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
 #elif __MACOS__
 using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
@@ -246,8 +242,8 @@ namespace Windows.UI.Xaml.Documents
 
 		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
+				nameof(TextDecorations),
+				typeof(TextDecorations),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,

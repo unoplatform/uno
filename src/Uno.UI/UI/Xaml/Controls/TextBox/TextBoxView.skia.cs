@@ -33,6 +33,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public (int start, int length) SelectionBeforeKeyDown =>
+			(_textBoxExtension!.GetSelectionStartBeforeKeyDown(), _textBoxExtension.GetSelectionLengthBeforeKeyDown());
+
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
 		public TextBox? TextBox

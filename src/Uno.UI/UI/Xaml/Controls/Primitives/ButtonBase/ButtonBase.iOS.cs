@@ -4,12 +4,7 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Input;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {

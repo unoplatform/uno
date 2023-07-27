@@ -247,13 +247,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void SetDrawableAlpha(Drawable drawable, int alpha)
 		{
-#if __ANDROID_18__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
 				drawable.Alpha = alpha;
 			}
 			else
-#endif
 			{
 				// Do nothing, not supported by this API Level
 			}
@@ -261,14 +259,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void SetOverlay(BindableView view, CompositeDisposable disposables, Drawable overlay)
 		{
-#if __ANDROID_18__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
 				ExecuteWithNoRelayout(view, v => v.Overlay.Add(overlay));
 				disposables.Add(() => ExecuteWithNoRelayout(view, v => v.Overlay.Remove(overlay)));
 			}
 			else
-#endif
 			{
 				// Set overlay is not supported by this platform, set the background instead
 				// and merge with the existing background.

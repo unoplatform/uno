@@ -31,7 +31,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True /p:UnoTargetFrameworkOverride=net7.0 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True /p:UnoTargetFrameworkOverride=net7.0 "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)/generate-docs.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -39,6 +39,7 @@ jobs:
       createLogFile: false
 
   - task: PublishBuildArtifacts@1
+    condition: always()
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)

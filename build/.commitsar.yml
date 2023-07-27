@@ -3,4 +3,4 @@ commits:
   # strict: false
   # limit: 100
   # all: true
-  upstreamBranch: origin/feature/breaking-changes
+  upstreamBranch: origin/master

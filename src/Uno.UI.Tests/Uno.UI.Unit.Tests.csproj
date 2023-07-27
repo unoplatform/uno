@@ -1,6 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>net7.0</TargetFrameworks>
+		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
 		<IsPackable>false</IsPackable>
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<UseUnoXamlParser>true</UseUnoXamlParser>
@@ -34,12 +34,11 @@
 		<PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.2" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.3" />
 		<PackageReference Include="MSTest.TestAdapter" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
-		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 
@@ -121,8 +120,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
-			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
-			<UndefineProperties>TargetFramework</UndefineProperties>
+			<OutputItemType>Analyzer</OutputItemType>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators.Internal\Uno.UI.SourceGenerators.Internal.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>

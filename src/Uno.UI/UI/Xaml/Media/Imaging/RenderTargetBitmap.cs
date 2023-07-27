@@ -79,6 +79,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			}
 
 			image = Open(_buffer, _bufferSize, width, height);
+			InvalidateImageSource();
 			return image.HasData;
 		}
 

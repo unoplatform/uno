@@ -6,14 +6,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using Path = UIKit.UIBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using CoreGraphics;
@@ -21,10 +19,8 @@ using UIImage = AppKit.NSImage;
 using UIColor = AppKit.NSColor;
 using UIGraphics = AppKit.NSGraphics;
 using Path = AppKit.NSBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Graphics;
 #elif __SKIA__
 using Path = Windows.UI.Composition.SkiaGeometrySource2D;
@@ -61,7 +57,7 @@ namespace Uno.Media
 		internal override SKPath GetSKPath() => bezierPath.Geometry;
 #endif
 
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 		public override UIImage ToNativeImage()
 		{
 			return (bezierPath == null) ? null : ToNativeImage(bezierPath.Bounds.Size);

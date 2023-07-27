@@ -34,39 +34,50 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private static IEnumerable<UIElement> EnumerateInstances(object instance, Func<FrameworkElement, bool> predicate)
+		private static IEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
+			object instance,
+			Func<FrameworkElement, TMatch?> predicate,
+			bool enumerateChildrenAfterMatch = false)
 		{
-			if (instance is FrameworkElement fe && predicate(fe))
+			if (instance is FrameworkElement fe)
 			{
-				yield return fe;
-			}
-			else if (instance != null)
-			{
-				IEnumerable<IEnumerable<UIElement>> Dig()
+				var match = predicate(fe);
+				if (match is not null)
+				{
+					yield return match;
+
+					// If we found a match, we don't need to enumerate the children
+					if (!enumerateChildrenAfterMatch)
+					{
+						yield break;
+					}
+				}
+
+				IEnumerable<IEnumerable<TMatch>> Dig()
 				{
 					switch (instance)
 					{
 						case Panel panel:
 							foreach (var child in panel.Children)
 							{
-								yield return EnumerateInstances(child, predicate);
+								yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch);
 							}
 							break;
 
 						case Border border:
-							yield return EnumerateInstances(border.Child, predicate);
+							yield return EnumerateHotReloadInstances(border.Child, predicate, enumerateChildrenAfterMatch);
 							break;
 
 						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
-							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, predicate);
+							yield return EnumerateHotReloadInstances(control.ContentTemplateRoot ?? control.Content, predicate, enumerateChildrenAfterMatch);
 							break;
 
 						case Control control:
-							yield return EnumerateInstances(control.TemplatedRoot, predicate);
+							yield return EnumerateHotReloadInstances(control.TemplatedRoot, predicate, enumerateChildrenAfterMatch);
 							break;
 
 						case ContentPresenter presenter:
-							yield return EnumerateInstances(presenter.Content, predicate);
+							yield return EnumerateHotReloadInstances(presenter.Content, predicate, enumerateChildrenAfterMatch);
 							break;
 					}
 				}
@@ -124,22 +135,6 @@ namespace Uno.UI.RemoteControl.HotReload
 			if (oldView == null || newView == null)
 			{
 				return;
-			}
-
-			newView.SetBaseUri(
-				oldView.BaseUri.OriginalString,
-				oldView.DebugParseContext?.LocalFileUri ?? "",
-				oldView.DebugParseContext?.LineNumber ?? -1,
-				oldView.DebugParseContext?.LinePosition ?? -1);
-
-			if (oldView is Page oldPage && newView is Page newPage)
-			{
-				newPage.Frame = oldPage.Frame;
-
-				// If we've replaced the Page in its frame, we may need to
-				// swap the content property as well. If may be required
-				// if the frame is handled by a (native) FramePresenter.
-				newPage.Frame.Content = newPage;
 			}
 
 			if (newView.DataContext is null

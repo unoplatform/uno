@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -242,4 +241,3 @@ namespace SamplesApp.UnitTests.TSBindings
 		public string Value;
 	}
 }
-#endif

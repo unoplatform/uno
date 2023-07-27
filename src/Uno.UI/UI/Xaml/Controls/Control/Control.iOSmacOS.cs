@@ -6,7 +6,7 @@ using Uno.UI.DataBinding;
 using System.Linq;
 using Windows.UI.Xaml.Input;
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;

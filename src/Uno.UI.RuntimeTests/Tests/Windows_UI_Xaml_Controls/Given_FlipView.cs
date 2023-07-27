@@ -6,10 +6,16 @@ using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.RuntimeTests.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.FlipViewPages;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -49,6 +55,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(1, flipView.SelectedIndex);
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS, will be handled on #12780")]
+#endif
+		public async Task When_Background_Color()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.
+			}
+			var parent = new Border()
+			{
+				Width = 300,
+				Height = 300,
+				Background = new SolidColorBrush(Colors.Green)
+			};
+
+			var SUT = new FlipView
+			{
+				Background = new SolidColorBrush(Colors.Red),
+				Width = 200,
+				Height = 200
+			};
+
+			parent.Child = SUT;
+
+			WindowHelper.WindowContent = parent;
+
+			await WindowHelper.WaitForLoaded(parent);
+
+			var snapshot = await TakeScreenshot(parent);
+
+			var sample = parent.GetRelativeCoords(SUT);
+			var centerX = sample.X + sample.Width / 2;
+			var centerY = sample.Y + sample.Height / 2;
+
+			ImageAssert.HasPixels(
+				snapshot,
+				ExpectedPixels.At(centerX, centerY).Named("center with color").Pixel(Colors.Red));
 		}
 
 		[TestMethod]
@@ -127,6 +176,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		}
 
+		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+		{
+			var renderer = new RenderTargetBitmap();
+			await WindowHelper.WaitForIdle();
+			await renderer.RenderAsync(SUT);
+			var result = await RawBitmap.From(renderer, SUT);
+			await WindowHelper.WaitForIdle();
+			return result;
+		}
+
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -196,6 +255,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
+#if __WASM__
+		[TestMethod]
+		public async Task When_Multiple_Items_Should_Not_Scroll()
+		{
+			var itemsSource = new ObservableCollection<string>();
+			AddItem(itemsSource);
+			AddItem(itemsSource);
+			AddItem(itemsSource);
+
+			var flipView = new FlipView
+			{
+				Width = 100,
+				Height = 100,
+				ItemsSource = itemsSource,
+			};
+
+			WindowHelper.WindowContent = flipView;
+			await WindowHelper.WaitForLoaded(flipView);
+			var scrollViewer = (ScrollViewer)flipView.GetTemplateChild("ScrollingHost");
+			var border = (Border)VisualTreeHelper.GetChildren(scrollViewer).Single();
+			var grid = (Grid)VisualTreeHelper.GetChildren(border).Single();
+			var scrollContentPresenter = (ScrollContentPresenter)VisualTreeHelper.GetChildren(grid).First();
+			var classes = Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({scrollContentPresenter.HtmlId}).classList").Split(' ');
+			Assert.IsTrue(classes.Contains("scroll-x-disabled"));
+			Assert.IsTrue(classes.Contains("scroll-y-disabled"));
+		}
+#endif
 	}
 
 #if __SKIA__ || __WASM__

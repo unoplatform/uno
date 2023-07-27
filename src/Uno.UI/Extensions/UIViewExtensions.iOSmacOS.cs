@@ -12,11 +12,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Controls;
 using ObjCRuntime;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using CoreGraphics;
 using _View = UIKit.UIView;
 using _Controller = UIKit.UIViewController;
@@ -35,7 +31,7 @@ using _Color = AppKit.NSColor;
 using _Event = AppKit.NSEvent;
 #endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 namespace UIKit
 #elif __MACOS__
 namespace AppKit

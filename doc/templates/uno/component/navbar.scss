@@ -13,14 +13,15 @@
  * This causes relative units (em, rem) to behave differently.
  */
 
+ $navbar-breakpoint: 1113px;
+
 .visibility-opacity-transition {
-  @include media-breakpoint-up(lg) {
+  @media (min-width: $navbar-breakpoint) {
     visibility: hidden;
+    opacity: 0;
+    transition: visibility 100ms, opacity 100ms ease-in-out;
 
     list-style: none;
-
-    transition: visibility 100ms, opacity 100ms ease-in-out;
-    opacity: 0;
   }
 }
 
@@ -29,19 +30,18 @@
 }
 
 #header-container {
-  display: flex;
-  position: fixed;
+  padding: 16px 32px;
+  z-index: 9999;
   background: #fff;
 
+  display: flex;
+  position: fixed;
   width: 100%;
-  min-height: 75px;
-
-  padding: 24px 32px;
+  min-height: 67px;
+  max-height: 67px;
   border-bottom: 1px solid #f4f2f3;
-
   justify-content: space-between;
 
-  z-index: 9999;
 
   &::after,
   &::before {
@@ -51,13 +51,16 @@
   #menu-menu-principal {
     float: right;
     list-style: none;
-    margin-bottom:0px;
-  
-    @include media-breakpoint-down(lg) {
+    padding-left: 0;
+
+    @media (max-width: $navbar-breakpoint) {
       width: 100%;
+      // 70vh is a magic value found by trial and error.
+      max-height: 70vh;
+      overflow-y: auto;
     }
 
-    @include media-breakpoint-up(lg) {
+    @media (min-width: $navbar-breakpoint) {
       display: flex;
     }
   }
@@ -66,13 +69,15 @@
   #header-logo-container {
     height: 48px;
     vertical-align: middle;
+    z-index: 9;
+
 
     img {
       width: 100%;
     }
 
-    @include media-breakpoint-up(lg) {
-      height: 48px;
+    @media (min-width: $navbar-breakpoint) {
+      min-width: 120px;
     }
   }
 
@@ -80,6 +85,7 @@
     padding: 0;
     margin: 10px 0;
     display: none !important;
+    z-index: 9;
 
     .icon-bar {
       background: $darkgray;
@@ -90,7 +96,7 @@
       margin-top: 3px;
     }
 
-    @media (max-width: 1024px) {
+    @media (max-width: $navbar-breakpoint) {
       display: block !important;
     }
   }
@@ -102,20 +108,23 @@
   nav {
     a {
       padding: 10px;
-
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
-      line-height: 24px;
-      letter-spacing: 0.1px;
+      line-height: 14px;
+      letter-spacing: normal;
       text-transform: uppercase;
       color: $black;
 
       &:hover,
       &:focus {
-        border-radius: 4px;
-        background-color: transparentize($turquoise, 0.8);
+        color: $purple;
+      }
+
+      @media (min-width: $navbar-breakpoint) {
+        font-size: 19px;
+        line-height: 17px;
       }
     }
 
@@ -123,8 +132,12 @@
      * Top level menu items
      */
     & > ul > li {
-      margin: 0 16px;
-      align-self: center;
+
+      @media (min-width: $navbar-breakpoint) {
+        margin: 0 16px;
+        align-self: center;
+        min-width: max-content;
+      }
 
       /**
        * has-children means there is a submenu
@@ -133,26 +146,54 @@
         // actual submenu
         position: relative;
 
+        & > a {
+
+
+          &::after {
+            display: inline-block;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            font: normal normal normal 10px/1 FontAwesome;
+            content: "\f078";
+            line-height: 12px;
+            margin-left: 12px;
+            vertical-align: top;
+
+            @media (min-width: $navbar-breakpoint) {
+              line-height: 21px;
+              font: normal normal normal 15px/1 FontAwesome;
+            }
+          }
+        }
+
         & > ul {
           @extend .visibility-opacity-transition;
-          width: inherit;
+          width: 100%;
 
-          @include media-breakpoint-up(lg) {
+          @media (min-width: $navbar-breakpoint) {
+            width: max-content;
             display: flex;
             position: absolute;
-            padding: 24px 48px;
+            padding: 20px;
             top: 170% !important;
-            left: -100% !important;
+            left: -25% !important;
 
             flex-direction: column;
 
-            border-radius: 4px;
+            //border-radius: 4px;
             box-shadow: 0 0 20px 2px rgba(36, 36, 36, 0.2);
             background-color: $white;
           }
 
           li {
             display: flex;
+            border-bottom: 1px solid $lightblue;
+            background: $white;
+
+            @media (min-width: $navbar-breakpoint) {
+              border: none;
+            }
+
           }
 
           a {
@@ -168,16 +209,8 @@
             flex-direction: column;
 
             & > a {
-              cursor: default;
-
               font-weight: 700;
               line-height: normal !important;
-              color: $black;
-
-              &:hover,
-              &:focus {
-                background-color: transparent;
-              }
             }
 
             ul {
@@ -242,7 +275,7 @@
       padding: 16px 43px;
 
       font-size: 16px;
-      line-height: 16px;
+      line-height: 24px;
       font-weight: 700;
       min-width: 125px;
       text-align: center;
@@ -252,39 +285,47 @@
       background-color: $turquoise;
       background: linear-gradient(to top, $blue 50%, $turquoise 50%);
       background-size: 100% 200%;
-      background-position:left top;
-      transition:all 0.5s cubic-bezier(.69,.04,.9,.65);
+      background-position: left top;
+      transition: all 0.5s cubic-bezier(.69, .04, .9, .65);
 
       &:hover {
         color: $white;
-        background-position:bottom left;
+        background-position: bottom left;
       }
     }
   }
 }
 
 #navbar {
-  @media (max-width: 1023px) {
+  @media (max-width: $navbar-breakpoint) {
 
     overflow: auto !important;
-    
+
     position: fixed;
     width: 100%;
-    margin: 0;
+    margin: -16px 0 0 0;
     padding: 0;
 
-    top: 75px;
+    padding-top: 67px;
     left: 0;
 
     text-align: left;
 
-    background: #fff;
+    background: $lightblue;
+
+    transition: height .4s ease .1s, opacity .6s ease;
+    opacity: 0;
 
     &.collapse {
-      display: none!important;
+      height: 67px !important;
+      display: none !important;
     }
+
+
     &.collapse.in {
-      display: block!important;
+      display: block !important;
+      height: 100vh !important;
+      opacity: 1;
     }
 
     .menu {
@@ -295,6 +336,13 @@
       li {
         display: block;
         padding: 0;
+
+        &.get-started-btn {
+          position: absolute;
+          padding: 0 16px;
+          bottom: 10%;
+          width: 100%;
+        }
 
         &.has-children {
           position: relative;
@@ -319,9 +367,6 @@
       a {
         display: block;
         padding: 10px 25px;
-
-        line-height: 1.4;
-        font-weight: 700;
       }
     }
   }
@@ -329,7 +374,7 @@
 
 .subnav {
   position: fixed;
-  top: 96px;
+  top: 67px;
   width: 100%;
   z-index: 999;
   background-color: #f8f8f8;

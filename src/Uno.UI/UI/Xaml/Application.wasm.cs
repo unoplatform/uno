@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if __WASM__
 using System;
 using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
@@ -8,6 +7,7 @@ using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation;
@@ -37,16 +37,12 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked;
 
-		public Application()
+		partial void InitializePartial()
 		{
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
-
-			Current = this;
-			InitializeSystemTheme();
-			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
@@ -150,4 +146,3 @@ namespace Windows.UI.Xaml
 		}
 	}
 }
-#endif

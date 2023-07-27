@@ -6,10 +6,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.Storage;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace SampleControl.Presentation
 {

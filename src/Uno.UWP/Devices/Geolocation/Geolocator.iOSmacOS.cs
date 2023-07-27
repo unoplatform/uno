@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -203,4 +202,3 @@ namespace Windows.Devices.Geolocation
 #endif
 	}
 }
-#endif

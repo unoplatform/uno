@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Linq;
 using Android.App;
 using Android.Content;
@@ -50,4 +49,3 @@ namespace Windows.UI.StartScreen
 		}
 	}
 }
-#endif

@@ -1,3 +1,4 @@
+//#define USE_CUSTOM_LAYOUT_ATTRIBUTES (cf. VirtualizingPanelLayout.iOS.cs for more info)
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -24,23 +25,14 @@ using ObjCRuntime;
 
 using Uno.UI.UI.Xaml.Controls.Layouter;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-using nint = System.Int32;
-using CGSize = System.Drawing.SizeF;
+
+#if USE_CUSTOM_LAYOUT_ATTRIBUTES
+using _LayoutAttributes = Windows.UI.Xaml.Controls.UnoUICollectionViewLayoutAttributes;
+#else
+using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -170,6 +162,10 @@ namespace Windows.UI.Xaml.Controls
 			if (cell is ListViewBaseInternalContainer key)
 			{
 				key.IsDisplayed = false;
+
+				// Reset the parent that may have been set by
+				// GetBindableSupplementaryView for header and footer content
+				key.Content.SetParent(null);
 
 				if (_onRecycled.TryGetValue(key, out var actions))
 				{
@@ -396,8 +392,28 @@ namespace Windows.UI.Xaml.Controls
 					supplementaryView.Content = content
 						.Binding("Content", "");
 				}
+
 				supplementaryView.Content.ContentTemplate = template;
-				supplementaryView.Content.DataContext = context;
+
+				if (elementKind == NativeListViewBase.ListViewFooterElementKindNS || elementKind == NativeListViewBase.ListViewHeaderElementKindNS)
+				{
+					supplementaryView.Content.SetParent(Owner.XamlParent);
+
+					if (context is not null)
+					{
+						supplementaryView.Content.Content = context;
+					}
+
+					// We need to reset the DataContext as it may have been forced to null as a local value
+					// during ItemsControl.CleanUpContainer
+					// See https://github.com/unoplatform/uno/blob/54041db0bd6d5049d8efab90b097eaca936bfca1/src/Uno.UI/UI/Xaml/Controls/ItemsControl/ItemsControl.cs#L1200
+					supplementaryView.Content.ClearValue(ContentControl.DataContextProperty);
+				}
+				else
+				{
+					supplementaryView.Content.DataContext = context;
+				}
+
 				if (style != null)
 				{
 					supplementaryView.Content.Style = style;
@@ -853,9 +869,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void ClearMeasuredSize() => _measuredContentSize = null;
 
-		public override UICollectionViewLayoutAttributes PreferredLayoutAttributesFittingAttributes(UICollectionViewLayoutAttributes layoutAttributes)
+		public override UICollectionViewLayoutAttributes PreferredLayoutAttributesFittingAttributes(UICollectionViewLayoutAttributes nativeLayoutAttributes)
 		{
-			if (!(((object)layoutAttributes) is UICollectionViewLayoutAttributes))
+			if (((object)nativeLayoutAttributes) is not _LayoutAttributes layoutAttributes)
 			{
 				// This case happens for a yet unknown GC issue, where the layoutAttribute instance passed the current
 				// method maps to another object. The repro steps are not clear, and it may be related to ListView/GridView
@@ -927,6 +943,7 @@ namespace Windows.UI.Xaml.Controls
 							//to use stale layoutAttributes for deciding if items should be visible, leading to them popping out of view mid-viewport.
 							Owner?.NativeLayout?.RefreshLayout();
 						}
+
 						layoutAttributes.Frame = frame;
 						if (sizesAreDifferent)
 						{

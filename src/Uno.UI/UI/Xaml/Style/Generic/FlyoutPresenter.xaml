@@ -7,8 +7,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:ios="http://uno.ui/ios"
 	xmlns:android="http://uno.ui/android"
-	xmlns:xamarin="http://uno.ui/xamarin"
-	mc:Ignorable="d xamarin ios android">
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win ios android">
 	
 	<!-- Resources for Windows.UI.Xaml.Controls.FlyoutPresenter -->
 	<StaticResource x:Key="FlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
@@ -52,7 +52,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{ThemeResource FlyoutBorderThemePadding}">
 						<ScrollViewer x:Name="ScrollViewer"
-                            xamarin:ZoomMode="Disabled"
+                            not_win:ZoomMode="Disabled"
                             win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"

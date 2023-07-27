@@ -22,6 +22,13 @@
         href: external/uno.check/doc/using-uno-check.md
       - name: Visual Studio 2019
         href: get-started-vs.md
+    - name: Create Your First App
+      topicHref: getting-started-tutorial-1.md
+      items:
+      - name: Tutorial 1
+        href: getting-started-tutorial-1.md
+      - name: Tutorial 2
+        href: getting-started-tutorial-2.md
     - name: Common Issues
       href: get-started-wizard.md
 
@@ -51,14 +58,6 @@
           items:
             - name: Overview
               href: tutorials-intro.md
-
-            - name: Create Your First App
-              topicHref: getting-started-tutorial-1.md
-              items:
-              - name: Tutorial 1
-                href: getting-started-tutorial-1.md
-              - name: Tutorial 2
-                href: getting-started-tutorial-2.md
             - name: How to deploy a WebAssembly app on Azure Static Web Apps
               href: guides/azure-static-webapps.md
             - name: How to integrate Uno.Material
@@ -244,6 +243,8 @@
               href: features/app-close-handler.md
             - name: App Suspension
               href: features/windows-ui-xaml-application.md
+            - name: Application Data and Settings
+              href: features/applicationdata.md
             - name: Badge Notifications
               href: features/windows-ui-notifications.md
             - name: Barometer

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.OS;
+﻿using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Java.Lang;
@@ -22,11 +21,10 @@ namespace Uno.UI.Dispatching
 		private Choreographer _choreographer;
 		private CoreDispatcherImplementor _implementor;
 		private FrameCallbackImplementor _animationImplementor;
-		private object _animationGate = new object();
 		private ImmutableQueue<UIAsyncOperation> _animationQueue = ImmutableQueue<UIAsyncOperation>.Empty;
 
 		/// <summary>
-		/// Defines the maximum time for which the queue can be processed. We're assuming 2/3rd 
+		/// Defines the maximum time for which the queue can be processed. We're assuming 2/3rd
 		/// of 60fps, to leave room for other operartions to be computed.
 		/// </summary>
 		private readonly TimeSpan MaxRenderSpan = TimeSpan.FromSeconds((1 / 60f) * (2 / 3f));
@@ -117,7 +115,7 @@ namespace Uno.UI.Dispatching
 		}
 
 		/// <summary>
-		/// An internal implementation of an IRunnable. Used to avoid creating new Java objects for every single action 
+		/// An internal implementation of an IRunnable. Used to avoid creating new Java objects for every single action
 		/// performed on the UI Thread.
 		/// </summary>
 		[Register("mono/java/lang/CoreDispatcherImplementor")]
@@ -161,4 +159,3 @@ namespace Uno.UI.Dispatching
 		}
 	}
 }
-#endif

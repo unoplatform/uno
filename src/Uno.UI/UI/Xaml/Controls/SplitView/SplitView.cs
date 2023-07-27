@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 			DefaultStyleKey = typeof(SplitView);
 		}
 
-#if XAMARIN_IOS
+#if __IOS__
 		public override void LayoutSubviews()
 		{
 			base.LayoutSubviews();

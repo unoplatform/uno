@@ -16,6 +16,8 @@ using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Xaml.Core;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
@@ -146,7 +148,11 @@ namespace Windows.UI.Xaml
 
 		/* ** */
 		internal /* ** */  static RoutedEvent DropCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.DropCompleted);
+#if __WASM__
+		public static RoutedEvent PreviewKeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyDown);
 
+		public static RoutedEvent PreviewKeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.PreviewKeyUp);
+#endif
 		public static RoutedEvent KeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyDown);
 
 		public static RoutedEvent KeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyUp);
@@ -189,7 +195,7 @@ namespace Windows.UI.Xaml
 				RoutedEventFlag.None,
 				FrameworkPropertyMetadataOptions.Inherits)
 			{
-				CoerceValueCallback = CoerceRoutedEventFlag
+				CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
 			}
 		);
 
@@ -212,7 +218,7 @@ namespace Windows.UI.Xaml
 					RoutedEventFlag.None,
 					FrameworkPropertyMetadataOptions.Inherits)
 				{
-					CoerceValueCallback = CoerceRoutedEventFlag
+					CoerceValueCallback = (dependencyObject, value, _) => CoerceRoutedEventFlag(dependencyObject, value)
 				}
 			);
 
@@ -433,6 +439,20 @@ namespace Windows.UI.Xaml
 			add => AddHandler(DropCompletedEvent, value, false);
 			remove => RemoveHandler(DropCompletedEvent, value);
 		}
+
+#if __WASM__
+		public event KeyEventHandler PreviewKeyDown
+		{
+			add => AddHandler(PreviewKeyDownEvent, value, false);
+			remove => RemoveHandler(PreviewKeyDownEvent, value);
+		}
+
+		public event KeyEventHandler PreviewKeyUp
+		{
+			add => AddHandler(PreviewKeyUpEvent, value, false);
+			remove => RemoveHandler(PreviewKeyUpEvent, value);
+		}
+#endif
 
 #if __MACOS__
 		public new event KeyEventHandler KeyDown
@@ -699,7 +719,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
+			if (routedEvent.IsTunnelingEvent || ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
 			{
 				return isHandled;
 			}
@@ -719,15 +739,20 @@ namespace Windows.UI.Xaml
 				args.CanBubbleNatively = false;
 			}
 
-			var parent = this.GetParent() as UIElement;
+			UIElement parent = null;
+			if (this is not PopupPanel)
+			{
+				parent = this.GetParent() as UIElement;
+
 #if __IOS__ || __ANDROID__
-			// This is for safety (legacy support) and should be removed.
-			// A common issue is the managed parent being cleared before unload event raised.
-			parent ??= this.FindFirstParent<UIElement>();
+				// This is for safety (legacy support) and should be removed.
+				// A common issue is the managed parent being cleared before unload event raised.
+				parent ??= this.FindFirstParent<UIElement>();
 #endif
+			}
 
 			// [11] A parent is defined?
-			if (parent == null)
+			if (parent is null)
 			{
 				return isHandled; // [12] processing finished
 			}
@@ -745,6 +770,14 @@ namespace Windows.UI.Xaml
 					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
 				}
 				else if (routedEvent == KeyUpEvent)
+				{
+					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
+				}
+				else if (routedEvent == PreviewKeyDownEvent)
+				{
+					KeyboardStateTracker.OnKeyDown(keyArgs.OriginalKey);
+				}
+				else if (routedEvent == PreviewKeyUpEvent)
 				{
 					KeyboardStateTracker.OnKeyUp(keyArgs.OriginalKey);
 				}

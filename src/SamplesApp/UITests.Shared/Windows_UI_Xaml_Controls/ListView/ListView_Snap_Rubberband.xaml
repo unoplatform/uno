@@ -3,8 +3,8 @@
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	  xmlns:xamarin="http://uno.ui/xamarin"
-	  mc:Ignorable="d xamarin"
+	  xmlns:not_win="http://uno.ui/not_win"
+	  mc:Ignorable="d not_win"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<UserControl.Resources>
@@ -42,7 +42,7 @@
 				<Setter.Value>
 					<ControlTemplate TargetType="ListView">
 						<ScrollViewer x:Name="ScrollViewer"
-										xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
+										not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 										HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
 										HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
 										VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
@@ -77,7 +77,7 @@
 					<ControlTemplate TargetType="ListViewItem">
 						<ContentPresenter Content="{TemplateBinding Content}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
-										  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+										  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>

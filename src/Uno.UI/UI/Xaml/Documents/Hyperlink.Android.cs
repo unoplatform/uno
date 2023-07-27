@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.Util;
+﻿using Android.Util;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,4 +18,3 @@ namespace Windows.UI.Xaml.Documents
 		}
 	}
 }
-#endif

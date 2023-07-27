@@ -5,17 +5,16 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:xamarin="urn:xamarin"
 	xmlns:ios="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:android="http://uno.ui/android"
-	mc:Ignorable="d xamarin android"
+	mc:Ignorable="d android"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
 	<controls:SampleControl SampleDescription="AppBarButtonWithIcon">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<ios:StackPanel >
+				<ios:StackPanel>
 					<TextBlock Text="AppBarButton with PathIcon and no Content"/>
 					<AppBarButton Label="AppBarButton - Label" Command="{Binding [SampleCommand]}">
 						<AppBarButton.Icon>

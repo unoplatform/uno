@@ -26,13 +26,13 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
@@ -48,6 +48,9 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
+	/// <summary>
+	/// Encapsulates the app and its available services.
+	/// </summary>
 	public partial class Application
 	{
 		private bool _initializationComplete;
@@ -76,6 +79,23 @@ namespace Windows.UI.Xaml
 
 			InitializePartialStatic();
 		}
+
+		/// <summary>
+		/// Initializes a new instance of the Application class.
+		/// </summary>
+		public Application()
+		{
+#if __SKIA__ || __WASM__
+			Package.SetEntryAssembly(this.GetType().Assembly);
+#endif
+			Current = this;
+			ApplicationLanguages.ApplyCulture();
+			InitializeSystemTheme();
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		private static void RegisterExtensions()
 		{
@@ -231,7 +251,6 @@ namespace Windows.UI.Xaml
 
 		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			ApplicationLanguages.ApplyCulture();
 			StartPartial(callback);
 		}
 

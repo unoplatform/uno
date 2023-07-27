@@ -1,0 +1,3 @@
+[*.cs]
+# CA1823: Avoid unused private fields
+dotnet_diagnostic.CA1823.severity = none

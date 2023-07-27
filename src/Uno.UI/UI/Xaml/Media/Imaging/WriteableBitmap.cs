@@ -1,6 +1,5 @@
 using System;
-using System.IO;
-using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using UwpBuffer = Windows.Storage.Streams.Buffer;
 
@@ -8,8 +7,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 {
 	public partial class WriteableBitmap : BitmapSource
 	{
-		internal event EventHandler Invalidated;
-
 		private UwpBuffer _buffer;
 
 		public IBuffer PixelBuffer => _buffer;
@@ -35,17 +32,19 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if __WASM__ || __SKIA__
 			InvalidateSource();
 #endif
-			Invalidated?.Invoke(this, EventArgs.Empty);
+			InvalidateImageSource();
 		}
 
-		private protected override void OnSetSource()
+		private protected
+#if __SKIA__
+			unsafe
+#endif
+			override void OnSetSource()
 		{
 			UpdateBuffer();
-#if __NETSTD__
-			_stream.AsStream().CopyTo(_buffer.AsStream());
-#else
-			Stream.CopyTo(_buffer.AsStream());
-			Stream.Position = 0;
+
+#if __ANDROID__ || __SKIA__ // TODO: Other platforms.
+			DecodeStreamIntoBuffer();
 #endif
 		}
 	}

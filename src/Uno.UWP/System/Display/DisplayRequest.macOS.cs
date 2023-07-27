@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-using Uno.Helpers;
+﻿using Uno.Helpers;
 
 namespace Windows.System.Display
 {
@@ -18,4 +17,3 @@ namespace Windows.System.Display
 		}
 	}
 }
-#endif

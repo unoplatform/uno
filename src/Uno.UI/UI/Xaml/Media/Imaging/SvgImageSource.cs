@@ -20,7 +20,7 @@ public partial class SvgImageSource : ImageSource
 {
 	private SvgImageSourceLoadStatus? _lastStatus;
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 	private IRandomAccessStream? _stream;
 #endif
 
@@ -60,9 +60,10 @@ public partial class SvgImageSource : ImageSource
 
 		InitFromUri(e.NewValue as Uri);
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		InvalidateSource();
 #endif
+		InvalidateImageSource();
 	}
 
 	/// <summary>
@@ -77,7 +78,7 @@ public partial class SvgImageSource : ImageSource
 	{
 		UnloadImageData();
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		async
 #endif
 		Task<SvgImageSourceLoadStatus> SetSourceAsync(CancellationToken ct)
@@ -90,7 +91,7 @@ public partial class SvgImageSource : ImageSource
 
 			_lastStatus = null;
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			_stream = streamSource.CloneStream();
 
 			var tcs = new TaskCompletionSource<SvgImageSourceLoadStatus>();
@@ -117,7 +118,7 @@ public partial class SvgImageSource : ImageSource
 		return AsyncOperation.FromTask(SetSourceAsync);
 	}
 
-#if !__NETSTD__
+#if !__CROSSRUNTIME__
 	internal event EventHandler? StreamLoaded;
 #endif
 

@@ -25,5 +25,17 @@
 		<TextBlock x:Name="tb4"
 				   x:FieldModifier="public"
 				   Tag="{x:Bind sys:String.Format('Formatted {0}', tb2.(local:CustomDO.Tag))}" />
+
+		<Grid x:Name="RootPanel"
+          local:AttachedProps.MyString="Hello World!!!">
+
+			<StackPanel x:Name="TheStackPanel"
+                    local:AttachedProps.MyElement="{Binding ElementName=RootPanel}">
+
+				<TextBlock x:Name="tb5"
+						   x:FieldModifier="public"
+						   Text="{x:Bind TheStackPanel.(local:AttachedProps.MyElement).(local:AttachedProps.MyString), Mode=OneWay}"/>
+			</StackPanel>
+		</Grid>
 	</Grid>
 </UserControl>

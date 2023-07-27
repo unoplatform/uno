@@ -13,7 +13,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 				wb.Invalidated += OnInvalidated;
 				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
 
-				void OnInvalidated(object sdn, EventArgs args)
+				void OnInvalidated()
 				{
 					_openedSource = null;
 					TryOpenImage();

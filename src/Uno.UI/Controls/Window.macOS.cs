@@ -22,11 +22,8 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Core.Preview;
 using System.Threading.Tasks;
 using Uno.UI.Runtime.MacOS;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
 using NSDraggingInfo = AppKit.INSDraggingInfo;
-#endif
 
 namespace Uno.UI.Controls
 {

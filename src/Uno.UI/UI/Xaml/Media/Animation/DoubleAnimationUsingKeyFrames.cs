@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				var i = index;
 
-#if __ANDROID_19__
+#if __ANDROID__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);

@@ -13,7 +13,7 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;

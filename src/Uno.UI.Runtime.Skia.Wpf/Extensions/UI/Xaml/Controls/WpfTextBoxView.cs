@@ -26,6 +26,8 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 
 	public abstract (int start, int length) Selection { get; set; }
 
+	public abstract (int start, int length) SelectionBeforeKeyDown { get; protected set; }
+
 	/// <summary>
 	/// Represents the root element of the input layout.
 	/// </summary>

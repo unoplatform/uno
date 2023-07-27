@@ -9,9 +9,9 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls;
 
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Views;
 #else
 using View = Windows.UI.Xaml.UIElement;

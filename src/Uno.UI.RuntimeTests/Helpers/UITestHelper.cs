@@ -9,6 +9,7 @@ using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Markup;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 
@@ -39,6 +40,76 @@ public static class UITestHelper
 		return bitmap;
 	}
 }
+
+public class DynamicDataTemplate : IDisposable
+{
+	private static readonly Dictionary<Guid, Func<FrameworkElement>> _templates = new();
+
+	public static FrameworkElement GetElement(string id)
+		=> Guid.TryParse(id, out var guid) && _templates.TryGetValue(guid, out var factory)
+			? factory()
+			: new TextBlock { Text = $"Template '{id}' not found" };
+
+	public DynamicDataTemplate(Func<FrameworkElement> factory)
+	{
+		_templates.Add(Id, factory);
+
+#if HAS_UNO
+		Value = new DataTemplate(factory);
+#else
+		Value = (DataTemplate)XamlReader.Load($@"
+			<DataTemplate 
+				xmlns=""http://schemas.microsoft.com/winfx/2006/xaml/presentation""
+				xmlns:local=""using:{typeof(DynamicDataTemplatePresenter).Namespace}"">
+				<local:DynamicDataTemplatePresenter TemplateId=""{Id}"" />
+			</DataTemplate>");
+#endif
+	}
+
+	public Guid Id { get; } = Guid.NewGuid();
+
+	public DataTemplate Value { get; }
+
+	public void Dispose()
+		=> _templates.Remove(Id);
+
+	~DynamicDataTemplate()
+		=> Dispose();
+}
+
+public partial class DynamicDataTemplatePresenter : ContentPresenter
+{
+	public DynamicDataTemplatePresenter()
+	{
+		HorizontalAlignment = HorizontalAlignment.Stretch;
+		VerticalAlignment = VerticalAlignment.Stretch;
+		HorizontalContentAlignment = HorizontalAlignment.Stretch;
+		VerticalContentAlignment = VerticalAlignment.Stretch;
+	}
+
+	public static readonly DependencyProperty TemplateIdProperty = DependencyProperty.Register(
+		nameof(TemplateId),
+		typeof(string),
+		typeof(DynamicDataTemplatePresenter),
+		new PropertyMetadata(default(string), OnTemplateIdChanged));
+
+	private static void OnTemplateIdChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
+	{
+		if (snd is DynamicDataTemplatePresenter that)
+		{
+			that.Content = args.NewValue is string id
+				? DynamicDataTemplate.GetElement(id)
+				: null;
+		}
+	}
+
+	public string TemplateId
+	{
+		get => (string)this.GetValue(TemplateIdProperty);
+		set => this.SetValue(TemplateIdProperty, value);
+	}
+}
+
 
 public static class InputInjectorExtensions
 {

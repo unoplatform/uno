@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
 		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
 #endif
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if !XAMARIN_IOS
+#if !__IOS__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
 			}

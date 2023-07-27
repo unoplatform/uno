@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 				else
 				{
-#if __ANDROID_19__
+#if __ANDROID__
 					if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 					{
 						_animator.AnimationPause += OnAnimatorAnimationPause;
@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_animator.Start();
 				State = TimelineState.Active;
 
-#if XAMARIN_IOS
+#if __IOS__
 				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
 				// values out of syc with native presented values and Xaml values). As a workaround we fast-forward the animation to its final
 				// state. (The ideal would probably be to restart the animation when the app resumes.)
@@ -402,7 +402,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				// value in order to support deactivation scenarios.
 				State = TimelineState.Stopped;
 
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 				_startingValue = null;
 
 				// On Android, AnimationEnd is always called after AnimationCancel. We don't unset _startingValue yet to be able to calculate

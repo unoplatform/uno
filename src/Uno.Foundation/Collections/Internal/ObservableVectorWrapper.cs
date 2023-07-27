@@ -4,13 +4,6 @@ using Uno.Extensions;
 
 namespace Windows.Foundation.Collections;
 
-#if !NET6_0_OR_GREATER // moved to linker file
-#if __IOS__
-[global::Foundation.Preserve(AllMembers = true)]
-#elif __ANDROID__
-[Android.Runtime.Preserve(AllMembers = true)]
-#endif
-#endif
 internal abstract class ObservableVectorWrapper
 {
 	public event VectorChangedEventHandler<object> VectorChanged;

@@ -17,11 +17,11 @@ using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Graphics;
 
 using View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 
 using View = UIKit.UIView;
@@ -391,6 +391,14 @@ namespace Windows.UI.Xaml.Controls
 				typeof(WeakReference<ItemsControl>),
 				typeof(ItemsControl),
 				new FrameworkPropertyMetadata(DependencyProperty.UnsetValue)
+			);
+
+		internal static DependencyProperty ItemHasManualBindingExpressionProperty { get; } =
+			DependencyProperty.RegisterAttached(
+				"ItemHasManualBindingExpression",
+				typeof(bool),
+				typeof(ItemsControl),
+				new FrameworkPropertyMetadata(false)
 			);
 
 		#endregion
@@ -1171,7 +1179,7 @@ namespace Windows.UI.Xaml.Controls
 						// We must not clear the properties of the container if a binding expression
 						// is defined. This is a use-case present for TreeView, which generally uses TreeViewItem
 						// at the root of hierarchical templates.
-						if (target.GetBindingExpression(property) is null)
+						if (target.GetBindingExpression(property) is null || (bool)target.GetValue(ItemHasManualBindingExpressionProperty) == true)
 						{
 							target.ClearValue(property);
 						}
@@ -1193,9 +1201,11 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				// We are clearing the DataContext last. Because if there is a binding set on any of the above properties, Content(Template(Selector)?)?,
-				// clearing the DC can cause the data-bound property to be unnecessarily re-evaluated with an inherited DC from the visual parent.
-				contentControl.ClearValue(DataContextProperty);
+				// We are changing the DataContext last. Because if there is a binding set on any of the above properties, Content(Template(Selector)?)?,
+				// changing the DC can cause the data-bound property to be unnecessarily re-evaluated with an inherited DC from the visual parent.
+				// We also need to set value to null explicitly, because just unsetting would cause the DataContext to be inherited from the visual parent,
+				// which then causes issues like #12845.
+				contentControl.SetValue(DataContextProperty, null);
 			}
 		}
 
@@ -1244,6 +1254,8 @@ namespace Windows.UI.Xaml.Controls
 						Path = displayMemberPath,
 						Source = item
 					});
+
+					container.SetValue(ItemHasManualBindingExpressionProperty, true);
 				}
 			}
 
@@ -1282,6 +1294,7 @@ namespace Windows.UI.Xaml.Controls
 					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
 					{
 						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+						containerAsContentControl.SetValue(ItemHasManualBindingExpressionProperty, true);
 					}
 				}
 			}

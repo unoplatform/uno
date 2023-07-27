@@ -1,4 +1,4 @@
-﻿#if XAMARIN_ANDROID
+﻿#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -127,9 +127,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="type">A type full name</param>
 		/// <returns>The assembly that contains the specified type</returns>
-#if !NET6_0_OR_GREATER
-		[Android.Runtime.Preserve]
-#endif
 		[Export]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public static string GetTypeAssemblyFullName(string type) => Type.GetType(type)?.Assembly.FullName;

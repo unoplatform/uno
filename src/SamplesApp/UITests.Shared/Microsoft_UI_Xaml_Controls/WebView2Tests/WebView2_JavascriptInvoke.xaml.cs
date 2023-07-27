@@ -34,7 +34,7 @@ namespace SamplesApp.Microsoft_UI_Xaml_Controls.WebView2Tests
 
 		//		private static string GetReloadJavascript()
 		//		{
-		//#if XAMARIN_IOS
+		//#if __IOS__
 		//			return "location.reload(true);";
 		//#else
 		//			return "window.location.reload()";

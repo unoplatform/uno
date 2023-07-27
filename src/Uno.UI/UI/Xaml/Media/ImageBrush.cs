@@ -97,6 +97,28 @@ namespace Windows.UI.Xaml.Media
 		partial void OnSourceChangedPartial(ImageSource newValue, ImageSource oldValue);
 		#endregion
 
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == ImageSourceProperty)
+			{
+				OnImageSourceChanged(this, args);
+			}
+		}
+
+		private static void OnImageSourceChanged(ImageBrush brush, DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is ImageSource oldSource)
+			{
+				oldSource.Invalidated -= brush.OnInvalidateRender;
+			}
+
+			if (args.NewValue is ImageSource newSource)
+			{
+				newSource.Invalidated += brush.OnInvalidateRender;
+			}
+		}
+
 		internal Rect GetArrangedImageRect(Size sourceSize, Rect targetRect)
 		{
 			var size = GetArrangedImageSize(sourceSize, targetRect.Size);
@@ -169,7 +191,7 @@ namespace Windows.UI.Xaml.Media
 			return location;
 		}
 
-#if __ANDROID__ || __IOS__ || __MACOS__ || __NETSTD__
+#if __ANDROID__ || __IOS__ || __MACOS__ || __CROSSRUNTIME__
 		private void OnImageOpened()
 		{
 			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

@@ -12,10 +12,7 @@ using Uno.UI.Extensions;
 using AppKit;
 using CoreAnimation;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -119,11 +116,7 @@ namespace Windows.UI.Xaml
 
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
-#if __IOS__
-			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
-#elif __MACOS__
 			throw new NotImplementedException();
-#endif
 		}
 
 		/// <inheritdoc />

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Content.PM;
@@ -33,4 +32,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

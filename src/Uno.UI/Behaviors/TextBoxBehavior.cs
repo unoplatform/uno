@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Input;
 using Windows.System;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 #elif __IOS__
 using View = UIKit.UIView;
@@ -38,7 +38,7 @@ namespace Uno.UI.Behaviors
 			if (textBox == null)
 				return;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			if (textBox.IsLoaded())
 #else
 			if (textBox.Window != null)
@@ -76,7 +76,7 @@ namespace Uno.UI.Behaviors
 			{
 				var textBox = sender as TextBox;
 				var nextControl = GetNextControl(textBox) as View;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				nextControl?.RequestFocus();
 #elif __IOS__ || __MACOS__
 				nextControl?.BecomeFirstResponder();

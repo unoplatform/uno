@@ -15,13 +15,13 @@ namespace GenericApp.Views.Content.UITests.TextBoxControl
 			textbox.Loaded += RequestTextboxFocus;
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		private void RequestTextboxFocus(object sender, RoutedEventArgs e)
 		{
 			var textbox = sender as TextBox;
 			textbox.RequestFocus(Android.Views.FocusSearchDirection.Up, null);
 		}
-#elif XAMARIN_IOS
+#elif __IOS__
 		private void RequestTextboxFocus(object sender, RoutedEventArgs e)
 		{
 			var textbox = sender as TextBox;

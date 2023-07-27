@@ -1,7 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'=='true'">uap10.0.19041</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UNO_UWP_BUILD)'!='true'">net7.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -26,31 +25,7 @@
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" $(IsAndroid) or $(IsIOS) or $(IsMacOS) ">
-		<Reference Include="System.Numerics" />
-		<Reference Include="System.Numerics.Vectors" />
-	</ItemGroup>
-
-	<ItemGroup Condition="$(IsAndroid) or $(IsIOS) or '$(TargetFrameworkIdentifier)'=='.NETStandard' or $(IsMacOS)">
-		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj">
-			<Name>Uno.UI</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\Uno.UWP\Uno.csproj">
-			<Name>Uno</Name>
-		</ProjectReference>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj">
-			<Name>Uno.Foundation</Name>
-		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup Condition="$(IsAndroid)">
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj">
-			<Project>{58332380-4302-4259-8f36-af572c53827f}</Project>
-			<Name>Uno.UI.BindingHelper.Android</Name>
-		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net7.0-windows10.0.19041.0' or '$(TargetFramework)'=='uap10.0.19041'">
+	<ItemGroup>
 		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 

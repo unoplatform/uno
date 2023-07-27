@@ -1,24 +1,9 @@
 using System;
 using System.Drawing;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
-
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using CGPoint = System.Drawing.PointF;
-using nint = System.Int32;
-using CGSize = System.Drawing.SizeF;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {

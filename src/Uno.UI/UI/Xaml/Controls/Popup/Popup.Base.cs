@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
-#if XAMARIN_IOS
+#if __IOS__
 using CoreGraphics;
 using UIKit;
 #elif __MACOS__

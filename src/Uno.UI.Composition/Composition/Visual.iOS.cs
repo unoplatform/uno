@@ -1,15 +1,11 @@
 #nullable enable
 
-#if __IOS__
 using CoreAnimation;
 using System.Numerics;
 using UIKit;
 using System;
 using CoreGraphics;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI.Composition
 {
@@ -90,4 +86,3 @@ namespace Windows.UI.Composition
 		}
 	}
 }
-#endif

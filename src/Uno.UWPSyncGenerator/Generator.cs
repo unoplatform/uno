@@ -175,6 +175,7 @@ namespace Uno.UWPSyncGenerator
 						  || fileNameWithoutExtension.StartsWith("Windows.Phone.PhoneContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.Networking.Connectivity.WwanContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract", StringComparison.Ordinal)
+						  || fileNameWithoutExtension.StartsWith("Windows.Services.Store.StoreContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Windows.UI.Xaml.Hosting.HostingContract", StringComparison.Ordinal)
 						  || fileNameWithoutExtension.StartsWith("Microsoft.Web.WebView2.Core", StringComparison.Ordinal)
 						  let asm = s_referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
@@ -426,7 +427,10 @@ namespace Uno.UWPSyncGenerator
 					MacOSSymbol == null ? MacDefine : "false",
 				};
 
-				b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#if {defines.JoinBy(" || ")}");
+				}
 			}
 
 			public string GenerateNotImplementedList()
@@ -715,7 +719,7 @@ namespace Uno.UWPSyncGenerator
 				if (allMethods.HasUndefined)
 				{
 					allMethods.AppendIf(b);
-					var parms = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {TransformType(p.Type)} {SanitizeParameter(p.Name)}"));
+					var parms = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)}{TransformType(p.Type)} {SanitizeParameter(p.Name)}"));
 					var returnTypeName = TransformType(method.ReturnType);
 					var typeAccessibility = GetMethodAccessibility(method);
 					var explicitImplementation = typeAccessibility == "" ? $"global::{ifaceSymbol}." : "";
@@ -728,7 +732,10 @@ namespace Uno.UWPSyncGenerator
 						b.AppendLineInvariant($"throw new global::System.NotSupportedException();");
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 			}
 
@@ -771,7 +778,10 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
@@ -840,7 +850,7 @@ namespace Uno.UWPSyncGenerator
 
 			if (ifaces.Any())
 			{
-				return $": {string.Join(",", ifaces)}";
+				return $" : {string.Join(",", ifaces)}";
 			}
 
 			return "";
@@ -861,7 +871,10 @@ namespace Uno.UWPSyncGenerator
 
 				b.AppendLineInvariant($"public delegate {SanitizeType(IMethodSymbol.ReturnType)} {type.ToDisplayString(SymbolDisplayFormat.MinimallyQualifiedFormat)}({members});");
 
-				b.AppendLineInvariant($"#endif");
+				using (b.Indent(-b.CurrentLevel))
+				{
+					b.AppendLineInvariant($"#endif");
+				}
 			}
 			else
 			{
@@ -879,7 +892,7 @@ namespace Uno.UWPSyncGenerator
 				{
 					allmembers.AppendIf(b);
 
-					var staticQualifier = field.IsStatic ? "static" : "";
+					var staticQualifier = field.IsStatic ? "static " : "";
 
 					if (type.TypeKind == TypeKind.Enum)
 					{
@@ -889,10 +902,13 @@ namespace Uno.UWPSyncGenerator
 					}
 					else
 					{
-						b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(field.Type)} {field.Name};");
+						b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(field.Type)} {field.Name};");
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
@@ -916,8 +932,8 @@ namespace Uno.UWPSyncGenerator
 				{
 					allMembers.AppendIf(b);
 
-					var staticQualifier = eventMember.AddMethod.IsStatic ? "static" : "";
-					var declaration = $"{staticQualifier} event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
+					var staticQualifier = eventMember.AddMethod.IsStatic ? "static " : "";
+					var declaration = $"{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
@@ -942,7 +958,10 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{
@@ -976,10 +995,10 @@ namespace Uno.UWPSyncGenerator
 			{
 				var methods = GetAllMatchingMethods(types, method);
 
-				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
-				var staticQualifier = method.IsStatic ? "static" : "";
-				var overrideQualifier = method.Name == "ToString" ? "override" : "";
-				var virtualQualifier = method.IsVirtual ? "virtual" : "";
+				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)}{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
+				var staticQualifier = method.IsStatic ? "static " : "";
+				var overrideQualifier = method.Name == "ToString" ? "override " : "";
+				var virtualQualifier = method.IsVirtual ? "virtual " : "";
 				var visiblity = method.DeclaredAccessibility.ToString().ToLowerInvariant();
 
 				if (IsObjectCtor(methods.AndroidSymbol))
@@ -1032,7 +1051,11 @@ namespace Uno.UWPSyncGenerator
 							BuildNotImplementedException(b, method, false);
 						}
 
-						b.AppendLineInvariant($"#endif");
+						using (b.Indent(-b.CurrentLevel))
+						{
+							b.AppendLineInvariant($"#endif");
+						}
+
 						writtenMethods.Add(method);
 					}
 					else
@@ -1064,7 +1087,7 @@ namespace Uno.UWPSyncGenerator
 						else
 						{
 							b.AppendLineInvariant($"[global::Uno.NotImplemented({methods.GenerateNotImplementedList()})]");
-							using (b.BlockInvariant($"{visiblity} {staticQualifier}{overrideQualifier}{virtualQualifier} {declaration}"))
+							using (b.BlockInvariant($"{visiblity} {staticQualifier}{overrideQualifier}{virtualQualifier}{declaration}"))
 							{
 								var filteredName = method.Name.TrimStart("Get", StringComparison.Ordinal).TrimStart("Set", StringComparison.Ordinal);
 								var isAttachedPropertyMethod =
@@ -1102,7 +1125,10 @@ namespace Uno.UWPSyncGenerator
 							}
 						}
 
-						b.AppendLineInvariant($"#endif");
+						using (b.Indent(-b.CurrentLevel))
+						{
+							b.AppendLineInvariant($"#endif");
+						}
 
 						writtenMethods.Add(method);
 					}
@@ -1253,7 +1279,7 @@ namespace Uno.UWPSyncGenerator
 			=> androidMember?.Name == ".ctor" && androidMember.OriginalDefinition.ContainingType.SpecialType == SpecialType.System_Object;
 
 		private static string GetParameterRefKind(IParameterSymbol p)
-			=> p.RefKind != RefKind.None ? p.RefKind.ToString().ToLowerInvariant() : "";
+			=> p.RefKind != RefKind.None ? $"{p.RefKind.ToString().ToLowerInvariant()} " : "";
 
 		private bool IsNotUWPMapping(INamedTypeSymbol type, IEventSymbol eventMember)
 		{
@@ -1410,7 +1436,7 @@ namespace Uno.UWPSyncGenerator
 			{
 				var allMembers = GetAllGetNonGeneratedMembers(types, property.Name, q => q?.FirstOrDefault(p => SymbolMatchingHelpers.AreMatching(property, p)));
 
-				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static" : "";
+				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static " : "";
 
 				if (SkipProperty(property))
 				{
@@ -1456,21 +1482,21 @@ namespace Uno.UWPSyncGenerator
 								var attachedModifier = getAttached != null ? "Attached" : "";
 								var propertyDisplayType = MapUWPTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
-								b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} = ");
+								b.AppendLineInvariant($"public {staticQualifier}{SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} =");
 
 								b.AppendLineInvariant($"{BaseXamlNamespace}.DependencyProperty.Register{attachedModifier}(");
 
 								if (getAttached == null)
 								{
-									b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}), ");
+									b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}),");
 								}
 								else
 								{
 									//attached properties do not have a corresponding property
-									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}), ");
+									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}),");
 								}
 
-								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
+								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}),");
 								b.AppendLineInvariant($"\tnew {BaseXamlNamespace}.FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
 							else
@@ -1484,7 +1510,7 @@ namespace Uno.UWPSyncGenerator
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
 						{
-							using (b.BlockInvariant($"public {staticQualifier} {MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -1505,7 +1531,7 @@ namespace Uno.UWPSyncGenerator
 						}
 						else
 						{
-							using (b.BlockInvariant($"public {staticQualifier} {MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -1526,7 +1552,10 @@ namespace Uno.UWPSyncGenerator
 						}
 					}
 
-					b.AppendLineInvariant($"#endif");
+					using (b.Indent(-b.CurrentLevel))
+					{
+						b.AppendLineInvariant($"#endif");
+					}
 				}
 				else
 				{

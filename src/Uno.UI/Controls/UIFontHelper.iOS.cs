@@ -17,10 +17,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 using CoreText;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI
 {

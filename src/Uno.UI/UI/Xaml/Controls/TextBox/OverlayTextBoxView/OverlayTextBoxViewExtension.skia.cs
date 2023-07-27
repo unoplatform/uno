@@ -216,6 +216,11 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			_selectionLengthCache ?? 0 :
 			_textBoxView?.Selection.length ?? 0;
 	}
+
+	public int GetSelectionStartBeforeKeyDown() => _textBoxView!.SelectionBeforeKeyDown.start;
+
+	public int GetSelectionLengthBeforeKeyDown() => _textBoxView!.SelectionBeforeKeyDown.length;
+
 	private void EnsureTextBoxView(TextBox textBox)
 	{
 		if (_textBoxView is null ||
