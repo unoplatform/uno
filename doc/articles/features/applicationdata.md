@@ -6,7 +6,7 @@ uid: Uno.Features.ApplicationData
 
 ![Application Data and Preferences](../Assets/features/applicationdata/appdata.jpeg)
 
-To store persistent application-specifc data and user preferences, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
+To store persistent application data and user settings, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
 
 Legend
   - ✔️  Supported
@@ -63,7 +63,7 @@ string value = (string)localSettings.Values["name"];
 
 ## Data location on GTK and WPF
 
-In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders dependes on the runtime operating system:
+In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders depends on the runtime operating system:
 
 **Windows**
 
@@ -83,4 +83,4 @@ In case of GTK and WPF targets the data are stored in application- and user-spec
 - `LocalSettings` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/Settings/Local.dat`
 - `RoamingSettings` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/Settings/Roaming.dat`
 
-Where `<UserName>` is the name of the currently logged-in user and `<Publisher>` and `ApplicationName` are values coming from `Package.appxmanifest` (note that the publisher value is prefixed by `CN=` in the manifest, but this is excluded from the folder name).
+Where `<UserName>` is the name of the currently logged-in user and `<Publisher>` and `<ApplicationName>` are values coming from the `<Identity>` node of the `Package.appxmanifest` (note that the publisher value is prefixed by `CN=` in the manifest, but this is excluded from the folder name).
