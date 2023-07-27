@@ -657,11 +657,14 @@ namespace SamplesApp
 		/// </summary>
 		public void AssertIssue12936()
 		{
+			//ApplicationView Title is currently not supported on iOS
+#if !__IOS__
 			var title = ApplicationView.GetForCurrentView().Title;
 
 			Assert.IsFalse(string.IsNullOrEmpty(title), "App Title is empty.");
 
 			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title}' wasn't found in resources.");
+#endif
 		}
 
 		/// <summary>
