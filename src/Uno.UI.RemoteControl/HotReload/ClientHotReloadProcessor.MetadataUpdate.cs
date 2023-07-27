@@ -179,7 +179,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			foreach (
 				var (element, elementHandler, elementMappedType) in
 				EnumerateHotReloadInstances(
-					Window.Current.Content,
+					Window.Current.Content!, // TODO:MZ: Adjust for multiple windows
 					fe =>
 						{
 							// Get the original type of the element, in case it's been replaced

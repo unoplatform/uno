@@ -1,7 +1,5 @@
-﻿using System;
-using Uno.UI.Xaml.Core;
+﻿using Windows.UI.Core;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -11,8 +9,8 @@ partial class ContentManager
 	{
 		//if (_rootVisual is null)
 		//{
-			//_rootBorder = new Border();
-			//CoreServices.Instance.PutVisualRoot(_rootBorder);
+		//_rootBorder = new Border();
+		//CoreServices.Instance.PutVisualRoot(_rootBorder);
 		//	//_rootVisual = CoreServices.Instance.MainRootVisual;
 
 		//	if (_rootVisual?.XamlRoot is null)
@@ -31,16 +29,31 @@ partial class ContentManager
 
 	private void TryLoadRootVisual()
 	{
-		//if (!_shown)
+		//if (!_shown || !_windowCreated)
 		//{
 		//	return;
 		//}
 
-		UIElement.LoadingRootElement(_rootVisual);
+		void LoadRoot()
+		{
+			UIElement.LoadingRootElement(_rootVisual);
 
-		_rootVisual.XamlRoot!.InvalidateMeasure();
+			_rootVisual.XamlRoot!.InvalidateMeasure();
+			_rootVisual.XamlRoot!.InvalidateArrange();
 
-		UIElement.RootElementLoaded(_rootVisual);
+			UIElement.RootElementLoaded(_rootVisual);
+		}
+
+		var dispatcher = _rootVisual.Dispatcher;
+
+		if (dispatcher.HasThreadAccess)
+		{
+			LoadRoot();
+		}
+		else
+		{
+			_ = dispatcher.RunAsync(CoreDispatcherPriority.High, LoadRoot);
+		}
 	}
 
 	//partial void OnContentChangedPartial(XamlIslandRoot xamlIslandRoot)
