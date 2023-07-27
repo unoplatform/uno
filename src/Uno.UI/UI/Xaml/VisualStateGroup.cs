@@ -222,7 +222,10 @@ namespace Windows.UI.Xaml
 			{
 				if (nextAnimation is null)
 				{
-					//runningAnimation.Stop();
+					if (runningAnimation == current.transition)
+	 				{
+	  					runningAnimation.Stop();
+  					}
 				}
 				else
 				{
