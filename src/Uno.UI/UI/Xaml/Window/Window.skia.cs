@@ -1,27 +1,20 @@
 ﻿#nullable enable
 
 using System;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Core;
 using Windows.Foundation;
-using Windows.Security.Cryptography.Core;
 using Microsoft.UI.Composition;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
+using Microsoft.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml;
 
 public sealed partial class Window
 {
-	// private ScrollViewer _rootScrollViewer;
-	private Border? _rootBorder;
-
+#pragma warning disable CS0067 // The field is never used
+#pragma warning disable CS0414 // The field is never used
 	private bool _shown;
 	private bool _windowCreated;
 
@@ -30,9 +23,7 @@ public sealed partial class Window
 		Compositor = new Compositor();
 	}
 
-	internal object NativeWindow { get; set; }
-
-	internal event EventHandler Showing;
+	internal event EventHandler? Showing;
 
 	public Compositor Compositor { get; private set; }
 
@@ -96,33 +87,6 @@ public sealed partial class Window
 	internal void OnNativeWindowCreated()
 	{
 		_windowCreated = true;
-		TryLoadRootVisual();
-	}
-
-	private async void TryLoadRootVisual()
-	{
-		if (!_shown || !_windowCreated)
-		{
-			return;
-		}
-
-		void LoadRoot()
-		{
-			UIElement.LoadingRootElement(_rootVisual);
-
-			_rootVisual.XamlRoot!.InvalidateMeasure();
-			_rootVisual.XamlRoot!.InvalidateArrange();
-
-			UIElement.RootElementLoaded(_rootVisual);
-		}
-
-		if (Dispatcher.HasThreadAccess)
-		{
-			LoadRoot();
-		}
-		else
-		{
-			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, LoadRoot);
-		}
+		//TryLoadRootVisual();
 	}
 }
