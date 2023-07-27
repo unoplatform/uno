@@ -258,6 +258,7 @@
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<WarningsNotAsErrors Condition="'$(Configuration)' == 'Debug'">$(WarningsNotAsErrors);IDE0051;IDE0055</WarningsNotAsErrors>
 		<NoWarn>$(NoWarn);CA1416</NoWarn>
+		<NoWarn Condition="'$(IsTestProject)'=='true'">$(NoWarn);UnoMultipleGetValue</NoWarn>
 		<!-- Disable warning about cross platform call sites -->
 		<NoWarn>$(NoWarn);MSB4011</NoWarn>
 		<!-- Disable duplicate msbuild files imports message -->
