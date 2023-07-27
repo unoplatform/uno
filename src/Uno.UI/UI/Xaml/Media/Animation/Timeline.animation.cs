@@ -284,31 +284,22 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				_animator?.Dispose();
 
-				if (Duration.HasTimeSpan && Duration.TimeSpan == TimeSpan.Zero)
-				{
-					State = TimelineState.Active;
-					SetValue(ComputeToValue());
-					State = TimelineState.Stopped;
+				InitializeAnimator(); // Create the animator
+
+				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
+				{ // Don't start the animator its a dependent animation
+					return;
 				}
-				else
-				{
-					InitializeAnimator(); // Create the animator
 
-					if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
-					{ // Don't start the animator its a dependent animation
-						return;
-					}
+				UseHardware();//Ensure that the GPU is used for animations
 
-					UseHardware();//Ensure that the GPU is used for animations
-
-					if (BeginTime.HasValue)
-					{ // Set the start delay
-						_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
-					}
-
-					_animator.Start();
-					State = TimelineState.Active;
+				if (BeginTime.HasValue)
+				{ // Set the start delay
+					_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
 				}
+
+				_animator.Start();
+				State = TimelineState.Active;
 
 #if __IOS__
 				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static

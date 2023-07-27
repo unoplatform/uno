@@ -17,6 +17,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			=> new DispatcherDoubleAnimator(startingValue, targetValue);
 
 		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
-			=> new ImmediateAnimator<ColorOffset>(startingValue, targetValue);
+			=> new ImmediateAnimator<ColorOffset>(targetValue);
 	}
 }
