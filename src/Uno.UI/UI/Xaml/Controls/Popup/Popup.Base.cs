@@ -125,12 +125,15 @@ public partial class Popup : FrameworkElement, IPopup
 
 	partial void OnChildChangedPartial(UIElement oldChild, UIElement newChild)
 	{
-		if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
+		if (oldChild is IDependencyObjectStoreProvider provider)
 		{
-			provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
-			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
-			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
+			provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Popup);
+			if (!_childHasOwnDataContext)
+			{
+				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
+			}
 		}
 
 		UpdateDataContext(null);
@@ -154,26 +157,23 @@ public partial class Popup : FrameworkElement, IPopup
 
 	private void UpdateDataContext(DependencyPropertyChangedEventArgs e)
 	{
-		_childHasOwnDataContext = false;
 		if (PropagatesDataContextToChild && Child is IDependencyObjectStoreProvider provider)
 		{
-			var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
+			var childLocalValue = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
+			_childHasOwnDataContext = childLocalValue != null && childLocalValue != DependencyProperty.UnsetValue;
 
-			var shouldClearValue = e != null && e.NewValue == null && dataContextProperty == e.OldValue;
+			var childPopupValue = provider.Store.GetValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Popup);
+
+			var shouldClearValue = e != null && e.NewValue == null && childPopupValue == e.OldValue;
 			if (shouldClearValue)
 			{
 				//In this case we are clearing the DataContext that was previously set by the Popup
 				//This usually occurs when the owner of the Popup is removed from the Visual Tree
-				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
-			}
-			else if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
-			{
-				// Child already has locally set DataContext, we shouldn't overwrite it.
-				_childHasOwnDataContext = true;
+				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Popup);
 			}
 			else
 			{
-				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Popup);
 			}
 		}
 	}
