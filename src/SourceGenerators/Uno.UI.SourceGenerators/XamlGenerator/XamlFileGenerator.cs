@@ -1762,7 +1762,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							GetGlobalizedTypeName(fullTargetType),
 							property,
 							propertyType,
-							BuildLiteralValue(valueNode, isTemplateBindingAttachedProperty: false, propertyType)
+							BuildLiteralValue(valueNode, propertyType)
 						);
 					}
 					else
@@ -1772,7 +1772,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							"new global::Windows.UI.Xaml.Setter<{0}>(\"{1}\", o => {3}.{1} = {2})" + lineEnding,
 							GetGlobalizedTypeName(fullTargetType),
 							property,
-							BuildLiteralValue(valueNode, isTemplateBindingAttachedProperty: false, propertyType),
+							BuildLiteralValue(valueNode, propertyType),
 							targetInstance
 						);
 					}
@@ -3923,7 +3923,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			var literalValue = isCustomMarkupExtension
 					? GetCustomMarkupExtensionValue(member)
-					: BuildLiteralValue(member, isTemplateBindingAttachedProperty: false, propertyType: propertyType, owner: member, objectUid: objectUid);
+					: BuildLiteralValue(member, propertyType: propertyType, owner: member, objectUid: objectUid);
 
 			var memberGlobalizedType = FindType(member.Member.DeclaringType)?.GetFullyQualifiedTypeIncludingGlobal() ?? GetGlobalizedTypeName(member.Member.DeclaringType.Name);
 			writer.AppendLineInvariantIndented(
@@ -4524,7 +4524,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var propertyType = markupType.GetPropertyWithName(m.Member.Name)?.Type as INamedTypeSymbol;
 					var resourceName = GetSimpleStaticResourceRetrieval(m, propertyType);
-					var value = resourceName ?? BuildLiteralValue(m, isTemplateBindingAttachedProperty: false, propertyType: propertyType, owner: member);
+					var value = resourceName ?? BuildLiteralValue(m, propertyType: propertyType, owner: member);
 
 					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
 				})
@@ -5049,7 +5049,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return $"new global::{XamlConstants.Types.GridLength}({gridLength.Value.ToStringInvariant()}f, global::{XamlConstants.Types.GridUnitType}.{gridLength.GridUnitType})";
 		}
 
-		private string BuildLiteralValue(XamlMemberDefinition member, bool isTemplateBindingAttachedProperty, INamedTypeSymbol? propertyType = null, XamlMemberDefinition? owner = null, string objectUid = "")
+		private string BuildLiteralValue(XamlMemberDefinition member, INamedTypeSymbol? propertyType = null, XamlMemberDefinition? owner = null, string objectUid = "", bool isTemplateBindingAttachedProperty = false)
 		{
 			var literal = Inner();
 			TryAnnotateWithGeneratorSource(ref literal);
@@ -5269,7 +5269,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (memberName == "Path")
 			{
-				var value = BuildLiteralValue(m, isTemplateBindingAttachedProperty, GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName));
+				var value = BuildLiteralValue(m, GetPropertyTypeByOwnerSymbol(Generation.DataBindingSymbol.Value, memberName), isTemplateBindingAttachedProperty: isTemplateBindingAttachedProperty);
 				value = RewriteAttachedPropertyPath(value);
 				return value;
 			}
@@ -5335,7 +5335,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				var value = BuildLiteralValue(m, isTemplateBindingAttachedProperty: false, targetValueType);
+				var value = BuildLiteralValue(m, targetValueType);
 				value = explicitCast + value;
 
 				return value;
@@ -5483,7 +5483,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							{
 								if (FindPropertyType(member.Member) != null)
 								{
-									writer.AppendLineInvariantIndented("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, isTemplateBindingAttachedProperty: false, objectUid: objectUid ?? ""), closingPunctuation);
+									writer.AppendLineInvariantIndented("{0} = {1}{2}", fullValueSetter, BuildLiteralValue(member, objectUid: objectUid ?? ""), closingPunctuation);
 								}
 								else
 								{
@@ -5819,7 +5819,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (property != null)
 					{
-						var value = BuildLiteralValue(valueNode, isTemplateBindingAttachedProperty: false);
+						var value = BuildLiteralValue(valueNode);
 
 						// This builds property setters for the owner of the setter.
 						writer.AppendLineIndented($"new Windows.UI.Xaml.Setter(new Windows.UI.Xaml.TargetPropertyPath(this, \"{property}\"), {value})");
@@ -5848,7 +5848,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								if (valueNode.Objects.None())
 								{
-									string value = BuildLiteralValue(valueNode, isTemplateBindingAttachedProperty: false);
+									string value = BuildLiteralValue(valueNode);
 									writer.AppendLineIndented(value + ")");
 								}
 								else
@@ -5911,7 +5911,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							throw new InvalidOperationException($"Unable to find content value on {xamlObjectDefinition}");
 						}
 
-						writer.AppendIndented(BuildLiteralValue(implicitContent, isTemplateBindingAttachedProperty: false, knownType, owner));
+						writer.AppendIndented(BuildLiteralValue(implicitContent, knownType, owner));
 					}
 					else
 					{
@@ -6304,7 +6304,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									innerWriter.AppendLineInvariantIndented(
 										"{0}.Visibility = {1};",
 										closureName,
-										BuildLiteralValue(visibilityMember, isTemplateBindingAttachedProperty: false)
+										BuildLiteralValue(visibilityMember)
 									);
 								}
 							}
