@@ -423,3 +423,77 @@ h5 {
 .DocSearch-Hit-content-wrapper {
   height: 100%;
 }
+
+// Easy-copy-code
+.code-header {
+  box-sizing: content-box;
+  background-color: #f2f2f2;
+  color: #171717;
+  display: flex;
+  flex-direction: row;
+  border: 1px solid #e3e3e3;
+  border-bottom: 0;
+  margin-top: 16px;
+  min-height: 30px;
+}
+
+.tabGroup section[role="tabpanel"] .code-header {
+  margin-left: -16px;
+  margin-right: -16px;
+}
+
+.tabGroup section[role="tabpanel"] .code-header:first-child {
+  margin-top: -16px;
+}
+
+.code-header > .language {
+  padding: 2px 16px;
+  flex-grow: 1;
+  text-transform: uppercase;
+  line-height: 26px;
+}
+
+.code-header > .action {
+  position: relative;
+  padding: 2px 10px;
+  background-color: transparent;
+  border: 0 solid #e3e3e3;
+  border-left-width: 1px;
+  color: #171717;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  line-height: normal;
+}
+
+.code-header .glyphicon {
+  margin-right: 0.25em;
+}
+
+.code-header > .action:hover {
+  background-color: #fafafa;
+}
+
+.code-header + pre {
+  margin-top: 0;
+  border: 1px solid #e3e3e3;
+}
+
+.code-header > .action .successful-copy-alert {
+  justify-content: center;
+  align-items: center;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  top: 0;
+  position: absolute;
+  display: flex;
+  background-color: #128712;
+  outline-color: #fff;
+  color: #fff;
+}
+
+.code-header > .action .successful-copy-alert.is-transparent {
+  opacity: 0;
+  transition: 500ms opacity ease-in-out;
+}
