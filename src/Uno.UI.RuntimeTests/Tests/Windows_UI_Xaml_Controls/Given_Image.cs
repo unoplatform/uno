@@ -465,7 +465,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = image;
 			await WindowHelper.WaitForLoaded(image);
 		}
-		
 
 		[TestMethod]
 		[RunsOnUIThread]
