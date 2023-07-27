@@ -85,6 +85,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[TestMethod]
+		public async Task When_ThemeResource_Style_Switch()
+		{
+			using (StyleHelper.UseFluentStyles())
+			{
+				var SUT = new When_ThemeResource_Style_Switch_Page();
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+				var color = ((SolidColorBrush)SUT.TestButton.Background).Color;
+
+				Assert.AreEqual(Colors.Blue, color);
+
+				SUT.TestButton.Style = (Style)SUT.Resources["SecondButtonStyle"];
+
+				await WindowHelper.WaitForIdle();
+
+				color = ((SolidColorBrush)SUT.TestButton.Background).Color;
+
+				Assert.AreEqual(Colors.Red, color);
+			}
+		}
+
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{
 			var run = new Run()
