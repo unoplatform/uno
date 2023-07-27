@@ -21,7 +21,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Uno.UI.DataBinding
 {
-	[DebuggerDisplay("Path={_path} DataContext={_dataContext}")]
+	[DebuggerDisplay("Path={_path} DataContext={_dataContextWeakStorage}")]
 	internal class BindingPath : IDisposable, IValueChangedListener
 	{
 		private static List<IPropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<IPropertyChangedRegistrationHandler>(2);
@@ -194,7 +194,9 @@ namespace Uno.UI.DataBinding
 			set
 			{
 				if (!_disposed
-					&& _value != null)
+					&& _value != null
+					&& DependencyObjectStore.AreDifferent(value, _value.Value)
+				)
 				{
 					_value.Value = value;
 				}
