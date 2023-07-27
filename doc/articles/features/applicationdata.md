@@ -1,0 +1,86 @@
+---
+uid: Uno.Features.ApplicationData
+---
+
+# Application Data and Settings
+
+![Application Data and Preferences](../Assets/features/applicationdata/appdata.jpeg)
+
+To store persistent application-specifc data and user preferences, you can utilize the `Windows.Storage.ApplicationData` class in Uno Platform.
+
+Legend
+  - ✔️  Supported
+
+| Picker         | WinUI/UWP   | WebAssembly | Android | iOS/Mac Catalyst   | macOS | WPF | GTK |
+|----------------|-------|-------------|---------|-------|-------|-----|-----|
+| `LocalFolder` | ✔️   | ✔️   | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
+| `RoamingFolder` | ✔️   | ✔️  | ✔️     | ✔️    | ✔️   | ✔️  | ✔️  |
+| `LocalCacheFolder`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
+| `TemporaryFolder`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
+| `LocalSettings`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
+| `RoamingSettings`   | ✔️   | ✔️          | ✔️     | ✔️| ✔️   | ✔️  | ✔️  |
+
+Please note that `RoamingFolder` and `RoamingSettings` are not roamed automatically across devices, they only provide a logical separation between data that you intend to roam and that you intend to keep local.
+
+## Storing application data
+
+There are several folders where persistent application data can be stored:
+
+- `LocalFolder/RoamingFolder` - general-use application files
+- `TemporaryFolder` - files with limited lifetime
+- `LocalCacheFolder` - cached files retrieved from external services
+
+In the case of `TemporaryFolder` and `LocalCacheFolder` it is crucial to remember that the user or operating system may purge files stored in these locations to reclaim storage space. To store persistent files prefer the `LocalFolder` or `RoamingFolder`.
+
+The following example shows how you can create a file in `LocalFolder` and then read the contents back:
+
+```csharp
+StorageFolder folder = ApplicationData.Current.LocalFolder;
+
+// Create a file in the root of LocalFolder.
+StorageFile file = await folder.CreateFileAsync("file.txt", CreationCollisionOption.ReplaceExisting);
+
+// Write text in the newly created file.
+await FileIO.WriteTextAsync(file, "Hello, Uno Platform!");
+
+// Read the text from file.
+string text = await FileIO.ReadTextAsync(file);
+```
+
+## Storing settings
+
+The `LocalSettings` and `RoamingSettings` properties provide access to simple key-value containers that allow storage of lightweight user and application preferences. The values stored in settings should be simple serializable types. To store more complex data structures, it is preferred to serialize them first into a string (for example using a JSON serializer).
+
+``` csharp
+ApplicationDataContainer localSettings = ApplicationData.Current.LocalSettings;
+
+// Save a setting.
+localSettings.Values["name"] = "Martin";
+
+// Read a setting.
+string value = (string)localSettings.Values["name"];
+```
+
+## Data location on GTK and WPF
+
+In case of GTK and WPF targets the data are stored in application- and user-specific locations on the hard drive. The default path to the various folders dependes on the runtime operating system:
+
+**Windows**
+
+- `LocalFolder` - `C:\Users\UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalState`
+- `RoamingFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
+- `LocalCahe` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\LocalCache`
+- `TemporaryFolder` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\RoamingState`
+- `LocalSettings` - `C:\Users\<UserName>\AppData\Local\Temp\<Publisher>\<ApplicationName>\TempState`
+- `RoamingSettings` - `C:\Users\<UserName>\AppData\Local\<Publisher>\<ApplicationName>\Settings\Roaming.dat`
+
+**Unix-based systems**
+
+- `LocalFolder` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/LocalState`
+- `RoamingFolder` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/RoamingState`
+- `TemporaryFolder` - `/tmp/<Publisher>/<ApplicationName>/TempState`
+- `LocalCache` - `/home/<UserName>/.cache/<Publisher>/<ApplicationName>/LocalCache`
+- `LocalSettings` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/Settings/Local.dat`
+- `RoamingSettings` - `/home/<UserName>/.local/share/<Publisher>/<ApplicationName>/Settings/Roaming.dat`
+
+Where `<UserName>` is the name of the currently logged-in user and `<Publisher>` and `ApplicationName` are values coming from `Package.appxmanifest` (note that the publisher value is prefixed by `CN=` in the manifest, but this is excluded from the folder name).
