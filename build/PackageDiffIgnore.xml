@@ -1597,6 +1597,7 @@
 			<Member fullName=".*\.remove_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<!-- END Android TV -->
 
+			<Member fullName=".+?\.\.ctor()" isRegex="true" reason="Matching constructors visibility with Windows" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
