@@ -1598,6 +1598,14 @@
 			<!-- END Android TV -->
 
 			<Member fullName=".+?\.\.ctor\(\)" isRegex="true" reason="Matching constructors visibility with Windows" />
+			
+			<!-- BEGIN Android PDFDocument -->
+			<Member fullName="System.Void Windows.Data.Pdf.PdfDocument..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member fullName="System.Void Windows.Data.Pdf.PdfPage..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<!-- END Android PDFDocument -->
+			
 		</Methods>
 	</IgnoreSet>
 	  <!--
