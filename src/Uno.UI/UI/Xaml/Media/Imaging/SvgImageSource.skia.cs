@@ -19,7 +19,8 @@ partial class SvgImageSource
 			if (AbsoluteUri != null && AbsoluteUri.IsAbsoluteUri)
 			{
 				if (AbsoluteUri.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
-					AbsoluteUri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
+					AbsoluteUri.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
+					AbsoluteUri.Isfile)
 				{
 					using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
 					return await ReadFromStreamAsync(imageStream, ct);
