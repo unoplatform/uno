@@ -19,6 +19,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Data;
