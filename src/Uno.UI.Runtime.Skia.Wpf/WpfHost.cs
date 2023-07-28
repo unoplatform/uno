@@ -71,14 +71,14 @@ public class WpfHost : IWpfApplicationHost
 
 	private void SetupMainWindow()
 	{
-		var unoWpfWindow = NativeWindowFactory.CreateWindow(WinUI.Window.Current) as System.Windows.Window;
+		var unoWpfWindow = NativeWindowFactory.CreateWindow(WinUI.Window.Current) as WpfWindowWrapper;
 		if (unoWpfWindow is null)
 		{
 			throw new InvalidOperationException("Window is not valid");
 		}
 
-		WpfApplication.Current.MainWindow = unoWpfWindow;
-		unoWpfWindow.Activated += MainWindow_Activated;
+		WpfApplication.Current.MainWindow = unoWpfWindow.NativeWindow;
+		unoWpfWindow.NativeWindow.Activated += MainWindow_Activated;
 	}
 
 	internal event EventHandler? MainWindowShown;
