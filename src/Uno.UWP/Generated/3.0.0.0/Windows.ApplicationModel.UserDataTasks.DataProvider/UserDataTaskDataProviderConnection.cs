@@ -8,6 +8,11 @@ namespace Windows.ApplicationModel.UserDataTasks.DataProvider
 #endif
 	public partial class UserDataTaskDataProviderConnection
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal UserDataTaskDataProviderConnection()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskDataProviderConnection.CreateOrUpdateTaskRequested.add
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskDataProviderConnection.CreateOrUpdateTaskRequested.remove
 		// Forced skipping of method Windows.ApplicationModel.UserDataTasks.DataProvider.UserDataTaskDataProviderConnection.SyncRequested.add

@@ -8,6 +8,11 @@ namespace Windows.Media.SpeechRecognition
 #endif
 	public partial class SpeechRecognitionResult
 	{
+#if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal SpeechRecognitionResult()
+		{
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Media.SpeechRecognition.SpeechRecognitionConfidence Confidence

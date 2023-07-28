@@ -3,6 +3,7 @@ using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using System.Globalization;
 using Uno.Foundation.Logging;
 using System.Linq;
@@ -32,11 +33,9 @@ namespace Windows.UI.Xaml
 			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)((Windows.UI.Xaml.Window)host).NativeWindow));
 		}
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
 			SetCurrentLanguage();
-			InitializeSystemTheme();
 
 			SubscribeBackgroundNotifications();
 		}

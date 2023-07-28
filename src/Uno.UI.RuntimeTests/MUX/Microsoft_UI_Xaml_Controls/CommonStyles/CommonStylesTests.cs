@@ -18,7 +18,9 @@ using System.Collections.Generic;
 using XamlControlsResources = Microsoft.UI.Xaml.Controls.XamlControlsResources;
 using Windows.UI.Xaml.Markup;
 using System;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using System.Text;
 
 #if USING_TAEF

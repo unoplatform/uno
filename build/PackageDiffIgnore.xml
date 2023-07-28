@@ -1609,6 +1609,16 @@
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 			<Member fullName="System.Void Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.set_RenderSurfaceType(System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; value)" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+
+			<Member fullName=".+?\.\.ctor\(\)" isRegex="true" reason="Matching constructors visibility with Windows" />
+			
+			<!-- BEGIN Android PDFDocument -->
+			<Member fullName="System.Void Windows.Data.Pdf.PdfDocument..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member fullName="System.Void Windows.Data.Pdf.PdfPage..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<!-- END Android PDFDocument -->
+
 		</Methods>
 	</IgnoreSet>
 	  <!--

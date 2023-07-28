@@ -66,6 +66,12 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 		}
 
+		public bool IsNativeElementAttached(object owner, object nativeElement) =>
+			nativeElement is Widget widget
+				&& owner is XamlRoot xamlRoot
+				&& GetOverlayLayer(xamlRoot) is { } overlay
+				&& widget.Parent == overlay;
+
 		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
 		{
 			if (content is Widget widget

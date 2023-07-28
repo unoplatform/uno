@@ -21,6 +21,9 @@ Uno Platform 5.0 continues to supports both UWP and WinUI API sets.
 #### Migrating from Xamarin to net7.0-* targets
 If your current project is built on Xamarin.* targets, you can upgrade by [following this guide](xref:Uno.Development.MigratingFromXamarinToNet6).
 
+#### Migrating `ApplicationData` on Skia targets
+Previously, `ApplicationData` were stored directly in `Environment.SpecialFolder.LocalApplicationData` folder, and all Uno Platform apps shared this single location. Starting with Uno Platform 5.0, application data are stored in application specific folders under the `LocalApplicationData` root. For more details see the [docs](features/applicationdata.md). To perform the initial migration of existing data you need to make sure to copy the files from the root of the `LocalApplicationData` folder to `ApplicationData.Current.LocalFolder` manually using `System.IO`.
+
 #### `ShouldWriteErrorOnInvalidXaml` now defaults to true.
 Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
 

@@ -10,6 +10,11 @@ namespace Windows.ApplicationModel.Preview.Holographic
 	public partial class HolographicKeyboardPlacementOverridePreview
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal HolographicKeyboardPlacementOverridePreview()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetPlacementOverride(global::Windows.Perception.Spatial.SpatialCoordinateSystem coordinateSystem, global::System.Numerics.Vector3 topCenterPosition, global::System.Numerics.Vector3 normal)
 		{

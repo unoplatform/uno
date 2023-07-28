@@ -37,6 +37,9 @@ namespace Windows.UI.Core
 		internal Size MeasureNativeElement(object owner, object content, Size size)
 			=> _coreWindowExtension.MeasureNativeElement(owner, content, size);
 
+		internal bool IsNativeElementAttached(object owner, object nativeElement)
+			=> _coreWindowExtension.IsNativeElementAttached(owner, nativeElement);
+
 		internal void RaiseNativeKeyDownReceived(KeyEventArgs args)
 		{
 			NativeKeyDownReceived?.Invoke(this, args);

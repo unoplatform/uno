@@ -9,6 +9,11 @@ namespace Windows.Storage
 	public partial class ApplicationData : global::System.IDisposable
 	{
 #if false || false || IS_UNIT_TESTS || false || false || false || false
+		internal ApplicationData()
+		{
+		}
+#endif
+#if false || false || IS_UNIT_TESTS || false || false || false || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 		public global::Windows.Storage.StorageFolder LocalFolder
 		{

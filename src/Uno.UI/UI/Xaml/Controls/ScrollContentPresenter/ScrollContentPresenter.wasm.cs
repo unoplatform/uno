@@ -19,8 +19,14 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
-		private ScrollBarVisibility _verticalScrollBarVisibility;
-		private ScrollBarVisibility _horizontalScrollBarVisibility;
+		// On wasm, the default of "overflow" property is "visible".
+		// This doesn't match any of our scroll-[x|y]-[auto|disabled|hidden|visible] defined in Uno.UI.css
+		// (see https://github.com/unoplatform/uno/blob/dca49dadd6feaf0b3addd2ec2195c3af1b6ac9f4/src/Uno.UI/WasmCSS/Uno.UI.css#L183-L223)
+		// So, we want the first setter call to be executed, regardless of the value being set.
+		// The logic in the setter is done under "if (_[vertical|horizontal]ScrollBarVisibility != value)"
+		// So, to make sure this condition is always true for the first call of the setter, we set the initial value to -1, which isn't a valid value for ScrollBarVisibility.
+		private ScrollBarVisibility _verticalScrollBarVisibility = (ScrollBarVisibility)(-1);
+		private ScrollBarVisibility _horizontalScrollBarVisibility = (ScrollBarVisibility)(-1);
 		private bool _eventsRegistered;
 
 		private (double? horizontal, double? vertical)? _pendingScrollTo;
@@ -112,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-auto", "scroll-y-disabled", "scroll-y-hidden", "scroll-y-visible" };
+		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-disabled", "scroll-y-auto", "scroll-y-hidden", "scroll-y-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeVerticalScrollBarVisibility { set => VerticalScrollBarVisibility = value; }
 		internal ScrollBarVisibility VerticalScrollBarVisibility
@@ -130,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
+		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-disabled", "scroll-x-auto", "scroll-x-hidden", "scroll-x-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeHorizontalScrollBarVisibility { set => HorizontalScrollBarVisibility = value; }
 		internal ScrollBarVisibility HorizontalScrollBarVisibility

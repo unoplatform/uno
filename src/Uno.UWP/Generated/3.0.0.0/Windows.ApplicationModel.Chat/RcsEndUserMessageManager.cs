@@ -8,6 +8,11 @@ namespace Windows.ApplicationModel.Chat
 #endif
 	public partial class RcsEndUserMessageManager
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal RcsEndUserMessageManager()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.MessageAvailableChanged.add
 		// Forced skipping of method Windows.ApplicationModel.Chat.RcsEndUserMessageManager.MessageAvailableChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

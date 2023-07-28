@@ -134,6 +134,7 @@ unsafe internal partial class CoreWindowExtension : ICoreWindowExtension, IDispo
 	public void ArrangeNativeElement(object owner, object content, Rect arrangeRect) { }
 	public Size MeasureNativeElement(object owner, object content, Size size)
 		=> size;
+	public bool IsNativeElementAttached(object owner, object nativeElement) => false;
 
 	private bool TryGetPointers(/*[NotNullWhen(true)] */out FrameBufferPointerInputSource? pointers)
 	{

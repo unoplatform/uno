@@ -283,6 +283,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void Play()
 			{
 				_animator?.Dispose();
+
 				InitializeAnimator(); // Create the animator
 
 				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())

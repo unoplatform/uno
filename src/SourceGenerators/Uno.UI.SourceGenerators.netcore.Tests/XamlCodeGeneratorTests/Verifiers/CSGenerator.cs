@@ -76,6 +76,10 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 			private readonly string _testMethodName;
 			private const string TestOutputFolderName = "Out";
 
+			public bool EnableFuzzyMatching { get; set; } = true;
+			public bool DisableBuildReferences { get; set; }
+			public string? XamlIncludedNamespaces { get; set; }
+
 			protected TestBase(XamlFile xamlFile, [CallerFilePath] string testFilePath = "", [CallerMemberName] string testMethodName = "")
 				: this(new[] { xamlFile }, testFilePath, testMethodName)
 			{
@@ -92,6 +96,8 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
 					build_property.RootNamespace = MyProject
 					build_property.UnoForceHotReloadCodeGen = false
+					build_property.UnoEnableXamlFuzzyMatching = false
+					build_property.IncludeXamlNamespacesProperty = android
 					""").AppendLine();
 
 				foreach (var xamlFile in xamlFiles)
@@ -120,9 +126,12 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 
 			protected override Project ApplyCompilationOptions(Project project)
 			{
-				var p = project.AddMetadataReferences(BuildUnoReferences());
+				if (!DisableBuildReferences)
+				{
+					project = project.AddMetadataReferences(BuildUnoReferences());
+				}
 
-				return base.ApplyCompilationOptions(p);
+				return base.ApplyCompilationOptions(project);
 			}
 
 			protected override async Task<(Compilation compilation, ImmutableArray<Diagnostic> generatorDiagnostics)> GetProjectCompilationAsync(Project project, IVerifier verifier, CancellationToken cancellationToken)

@@ -635,6 +635,8 @@ namespace Uno.UI
 					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
 					.Append(u != null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
 					.Append(u != null && u.NeedsClipToSlot ? " CLIPPED_TO_SLOT" : "")
+					.Append(vg?.ClipChildren is true ? " vg.CLIP_CHILDREN" : "")
+					.Append(vg?.ClipToPadding is true ? " vg.CLIP_TO_PADDING" : "")
 					.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
 					.Append(u == null && vg != null ? $" ClipChildren={vg.ClipChildren}" : "")
 					.Append(fe?.Background != null ? $" Background={fe.Background}" : "")

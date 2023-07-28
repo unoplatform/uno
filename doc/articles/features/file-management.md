@@ -11,12 +11,10 @@ uid: Uno.Features.FileManagement
 
 ## Supported features
 
-| Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
+| Feature        |  WinUI/UWP | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | WPF (Skia) | 
 |---------------|-------|-------|-------|-------|-------|-------|-|
 | `StorageFile` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `StorageFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
-| `ApplicationData.Current.LocalFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
-| `ApplicationData.Current.RoamingFolder` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 | `CachedFileManager` | ✔ | partial | partial | partial | partial | partial | partial |
 | `StorageFileHelper` | ✔ | ✔ | ✔| ✔ | ✔| ✔ |✔ |
 
