@@ -12,6 +12,7 @@ using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI;
+using System.Net;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -247,9 +248,20 @@ namespace Windows.UI.Xaml.Media
 
 		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
 		{
-			_httpClient ??= new HttpClient();
-			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-			return await response.Content.ReadAsStreamAsync();
+			if (uri.IsFile)
+			{
+#pragma warning disable SYSLIB0014 // Type or member is obsolete - It suggests to use HttpClient, which doesn't work for file Uri scheme.
+				var request = WebRequest.Create(uri);
+#pragma warning restore SYSLIB0014 // Type or member is obsolete
+				var response = await request.GetResponseAsync();
+				return response.GetResponseStream();
+			}
+			else
+			{
+				_httpClient ??= new HttpClient();
+				var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
+				return await response.Content.ReadAsStreamAsync();
+			}
 		}
 
 		internal void UnloadImageData()
