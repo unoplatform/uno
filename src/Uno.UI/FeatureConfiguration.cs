@@ -583,12 +583,13 @@ namespace Uno.UI
 			/// </summary>
 			public static bool UseInvalidateArrangePath { get; set; } = true;
 
+#if __ANDROID__
 			/// <summary>
-			/// [DEPRECATED]
-			/// Not used anymore, does nothing.
+			/// On Android, rollback the clipping to the previous behavior, which was to apply the clipping
+			/// on the assigned children bounds instead of the parent bounds. 
 			/// </summary>
-			[NotImplemented]
-			public static bool UseLegacyClipping { get; set; } = true;
+			public static bool UseLegacyClipping { get; set; }
+#endif
 
 			/// <summary>
 			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).

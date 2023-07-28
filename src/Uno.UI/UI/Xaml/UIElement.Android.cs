@@ -170,7 +170,18 @@ namespace Windows.UI.Xaml
 
 			ViewCompat.SetClipBounds(this, physicalRect);
 
-			SetClipToPadding(NeedsClipToSlot);
+			if (FeatureConfiguration.UIElement.UseLegacyClipping)
+			{
+				// Old way: apply the clipping for each child on their assigned slot
+				SetClipChildren(NeedsClipToSlot);
+			}
+			else
+			{
+				// "New" correct way: apply the clipping on the parent,
+				// and let the children overflow inside the parent's bounds
+				// This is closer to the XAML way of doing clipping.
+				SetClipToPadding(NeedsClipToSlot);
+			}
 		}
 
 		/// <summary>
