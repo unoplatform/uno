@@ -119,12 +119,12 @@ public sealed partial class XamlRoot
 
 			if (forMeasure)
 			{
-				rootElement.Measure(Bounds.Size);
+				rootElement.Measure(VisualTree.Size);
 			}
 
 			if (forArrange)
 			{
-				rootElement.Arrange(Bounds);
+				rootElement.Arrange(VisualTree.VisibleBounds);
 				InvalidateRender();
 			}
 
