@@ -33,10 +33,10 @@ If your existing libraries or UWP/WinAppSDK projects are targeting the Windows S
 #### Xaml generator now always uses strict search
 This change ensures that the XAML parser will only look for types in an explicit way, and avoids fuzzy matching that could lead to incorrect type resolution.
 
+In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+
 #### `IsEnabled` property is moved from `FrameworkElement` to `Control`
 This property was incorrectly located on `FrameworkElement` but its behavior has not changed.
-
-In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
 
 #### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace.
 These controls were present in both the `Windows.UI.Xaml` and `Microsoft.UI.Xaml`. Those are now located in the `Microsoft.UI.Xaml` namespace for the UWP version of Uno (Uno.UI).
