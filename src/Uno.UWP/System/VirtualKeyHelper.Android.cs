@@ -166,17 +166,17 @@ internal static class VirtualKeyHelper
 	{
 		var modifiers = VirtualKeyModifiers.None;
 
-		if (nativeKeys.HasFlag(MetaKeyStates.ShiftMask))
+		if (flags.HasFlag(MetaKeyStates.ShiftMask))
 		{
 			modifiers |= VirtualKeyModifiers.Shift;
 		}
 
-		if (nativeKeys.HasFlag(MetaKeyStates.CtrlMask))
+		if (flags.HasFlag(MetaKeyStates.CtrlMask))
 		{
 			modifiers |= VirtualKeyModifiers.Control;
 		}
 
-		if (nativeKeys.HasFlag(MetaKeyStates.MetaMask))
+		if (flags.HasFlag(MetaKeyStates.MetaMask))
 		{
 			modifiers |= VirtualKeyModifiers.Windows;
 		}

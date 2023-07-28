@@ -120,7 +120,7 @@ namespace Windows.UI.Xaml
 					element = WinUICoreServices.Instance.MainRootVisual;
 				}
 
-				var routedArgs = new KeyRoutedEventArgs(this, virtualKey)
+				var routedArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 				{
 					CanBubbleNatively = false,
 				};
