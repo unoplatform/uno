@@ -510,7 +510,7 @@ namespace Uno.UWPSyncGenerator
 			  );
 		}
 
-		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
+		protected PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
 		{
 			var android = GetNonGeneratedMembers(types.AndroidSymbol, name);
 			var ios = GetNonGeneratedMembers(types.IOSSymbol, name);

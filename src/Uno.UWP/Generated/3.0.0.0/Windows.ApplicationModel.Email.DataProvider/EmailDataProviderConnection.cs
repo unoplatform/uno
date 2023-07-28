@@ -8,6 +8,11 @@ namespace Windows.ApplicationModel.Email.DataProvider
 #endif
 	public partial class EmailDataProviderConnection
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal EmailDataProviderConnection()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.add
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.MailboxSyncRequested.remove
 		// Forced skipping of method Windows.ApplicationModel.Email.DataProvider.EmailDataProviderConnection.DownloadMessageRequested.add

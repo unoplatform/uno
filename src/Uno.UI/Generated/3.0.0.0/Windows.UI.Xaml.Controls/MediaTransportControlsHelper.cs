@@ -9,6 +9,11 @@ namespace Windows.UI.Xaml.Controls
 	public partial class MediaTransportControlsHelper
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
+		internal MediaTransportControlsHelper()
+		{
+		}
+#endif
+#if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty DropoutOrderProperty { get; } =
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(

@@ -9,6 +9,11 @@ namespace Windows.Media.Audio
 	public partial class AudioFileInputNode : global::Windows.Media.Audio.IAudioInputNode,global::Windows.Media.Audio.IAudioNode,global::System.IDisposable,global::Windows.Media.Audio.IAudioInputNode2
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal AudioFileInputNode()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public double PlaybackSpeedFactor
 		{

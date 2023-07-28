@@ -8,6 +8,11 @@ namespace Windows.Devices.Sensors
 #endif
 	public partial class Pedometer
 	{
+#if false || false || false || false || __SKIA__ || false || false
+		internal Pedometer()
+		{
+		}
+#endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint ReportInterval
