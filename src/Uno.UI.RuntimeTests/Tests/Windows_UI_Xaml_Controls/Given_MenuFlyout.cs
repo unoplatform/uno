@@ -325,5 +325,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_MenuFlyout_DataContext_Changes_In_Opening()
+		{
+			var SUT = new When_MenuFlyout_DataContext_Changes_In_Opening();
+
+
+			MenuFlyout flyout = null;
+			try
+			{
+				WindowHelper.WindowContent = SUT;
+				await WindowHelper.WaitForLoaded(SUT);
+
+
+				var button = SUT.FindFirstChild<Button>();
+				flyout = (MenuFlyout)button.Flyout;
+
+				flyout.ShowAt(button);
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual((flyout.Items[0] as MenuFlyoutItem)!.Text, "1");
+			}
+			finally
+			{
+				if (flyout?.IsOpen == true)
+				{
+					flyout.Hide();
+				}
+			}
+		}
 	}
 }
