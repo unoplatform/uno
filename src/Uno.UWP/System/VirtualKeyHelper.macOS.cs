@@ -179,7 +179,7 @@ namespace Windows.System
 				modifiers |= VirtualKeyModifiers.Shift;
 			}
 
-			if (flags.HasFlag(UIKeyModifierFlags.ControlKeyMask))
+			if (flags.HasFlag(NSEventModifierMask.ControlKeyMask))
 			{
 				modifiers |= VirtualKeyModifiers.Control;
 			}
