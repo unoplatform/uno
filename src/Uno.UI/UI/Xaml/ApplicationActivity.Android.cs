@@ -103,6 +103,7 @@ namespace Windows.UI.Xaml
 			var handled = false;
 
 			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
+			var modifiers = VirtualKeyHelper.FromModifiers(e.Modifiers);
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
@@ -134,6 +135,7 @@ namespace Windows.UI.Xaml
 					var coreWindowArgs = new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						modifiers,
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)e.KeyCode,
