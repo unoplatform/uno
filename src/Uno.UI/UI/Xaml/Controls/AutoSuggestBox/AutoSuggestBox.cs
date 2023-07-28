@@ -181,7 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 				Rect windowRect;
 				if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
 				{
-					windowRect = XamlRoot.Bounds;
+					windowRect = XamlRoot.VisualTree.VisibleBounds;
 				}
 				else
 				{

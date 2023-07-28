@@ -1160,7 +1160,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 					{
-						layoutBounds = XamlRoot?.Bounds ?? new();
+						layoutBounds = XamlRoot?.VisualTree.VisibleBounds ?? new();
 					}
 
 					shouldOpenUp = offsetFromRootOpenedUp.Y >= layoutBounds.Y;

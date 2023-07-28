@@ -2,7 +2,9 @@
 
 using System;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Microsoft.UI.Composition;
 using Microsoft.UI.ViewManagement;
@@ -40,7 +42,19 @@ public sealed partial class Window
 
 			Bounds = newBounds;
 
-			WinUICoreServices.Instance.MainRootVisual?.XamlRoot?.InvalidateMeasure();
+			if (_windowImplementation is CoreWindowWindow)
+			{
+				WinUICoreServices.Instance.MainRootVisual?.XamlRoot?.InvalidateMeasure();
+			}
+			else
+			{
+				if (Content?.XamlRoot is { } xamlRoot && xamlRoot.VisualTree.RootElement is XamlIsland xamlIsland)
+				{
+					xamlIsland.SetActualSize(newBounds.Size);
+					xamlRoot.InvalidateMeasure();
+				}
+			}
+
 			RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 			ApplicationView.GetForCurrentView().SetVisibleBounds(newBounds);

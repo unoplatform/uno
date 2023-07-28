@@ -5,6 +5,7 @@ using DirectUI;
 using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -270,7 +271,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			var bounds = XamlRoot?.Bounds ?? Target?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.Current.Bounds;
 			screenWidth = bounds.Width;
 			screenHeight = bounds.Height;
 
@@ -442,10 +443,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.Current.Bounds;
 			var constraint = visibleRect;
 
-			var windowRect = XamlRoot?.Bounds ?? spTarget?.XamlRoot?.Bounds ?? Xaml.Window.Current.Bounds;
+			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.Current.Bounds;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 

@@ -79,7 +79,7 @@ internal partial class PopupPanel : Panel
 			}
 			else
 			{
-				visibleBounds = xamlRoot.Bounds;
+				visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 			}
 			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
@@ -214,7 +214,7 @@ internal partial class PopupPanel : Panel
 			Rect visibleBounds;
 			if (XamlRoot is { } xamlRoot && xamlRoot.VisualTree.ContentRoot.Type != ContentRootType.CoreWindow)
 			{
-				visibleBounds = xamlRoot.Bounds;
+				visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 			}
 			else
 			{
