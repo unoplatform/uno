@@ -153,7 +153,7 @@ namespace Private.Infrastructure
 						var key = keyInstruction.Substring(4, keyInstruction.Length - 4);
 						if (m_vKeyMapping.TryGetValue(key, out var vKey))
 						{
-							element.SafeRaiseEvent(keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey));
+							element.SafeRaiseEvent(keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, VirtualKeyModifiers.None));
 						}
 					}
 					else
@@ -169,22 +169,22 @@ namespace Private.Infrastructure
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey));
+									element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
 								}
 							}
 
 							if (m_vKeyMapping.TryGetValue(key, out var vKey))
 							{
 								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
-								element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers: modifiers));
-								element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers: modifiers));
+								element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
+								element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
 							}
 
 							if (shouldShift)
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey));
+									element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
 								}
 							}
 						}

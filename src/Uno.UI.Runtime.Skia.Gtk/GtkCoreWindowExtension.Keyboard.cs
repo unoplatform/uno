@@ -59,12 +59,12 @@ namespace Uno.UI.Runtime.Skia
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(evt.State),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = evt.HardwareKeycode,
 							RepeatCount = 1,
-						}),
-					GetKeyModifiers(evt.State));
+						}));
 			}
 			catch (Exception e)
 			{
@@ -87,12 +87,12 @@ namespace Uno.UI.Runtime.Skia
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(evt.State),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = evt.HardwareKeycode,
 							RepeatCount = 1,
-						}),
-					GetKeyModifiers(evt.State));
+						}));
 			}
 			catch (Exception e)
 			{

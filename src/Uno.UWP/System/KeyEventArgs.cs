@@ -8,10 +8,11 @@ namespace Windows.UI.Core
 {
 	public partial class KeyEventArgs : ICoreWindowEventArgs
 	{
-		internal KeyEventArgs(string deviceId, VirtualKey virtualKey, CorePhysicalKeyStatus keyStatus)
+		internal KeyEventArgs(string deviceId, VirtualKey virtualKey, VirtualKeyModifiers modifiers, CorePhysicalKeyStatus keyStatus)
 		{
 			DeviceId = deviceId;
 			VirtualKey = virtualKey;
+			KeyboardModifiers = modifiers;
 			KeyStatus = keyStatus;
 		}
 
@@ -22,5 +23,7 @@ namespace Windows.UI.Core
 		public VirtualKey VirtualKey { get; }
 
 		public string DeviceId { get; }
+
+		public VirtualKeyModifiers KeyboardModifiers { get; }
 	}
 }

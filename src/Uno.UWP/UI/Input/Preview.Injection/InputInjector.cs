@@ -93,7 +93,7 @@ public partial class InputInjector
 	{
 		foreach (var info in input)
 		{
-			var args = info.ToEventArgs(_mouse!);
+			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
 			_mouse!.Update(args);
 
 			_target.InjectPointerUpdated(args);

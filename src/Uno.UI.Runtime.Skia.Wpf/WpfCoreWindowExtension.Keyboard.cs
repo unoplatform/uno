@@ -42,12 +42,12 @@ namespace Uno.UI.Skia.Platform
 					new Windows.UI.Core.KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(args.KeyboardDevice.Modifiers),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)args.SystemKey,
 							RepeatCount = 1,
-						}),
-					GetKeyModifiers(args.KeyboardDevice.Modifiers));
+						}));
 			}
 			catch (Exception e)
 			{
@@ -70,12 +70,12 @@ namespace Uno.UI.Skia.Platform
 					new Windows.UI.Core.KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(args.KeyboardDevice.Modifiers),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)args.SystemKey,
 							RepeatCount = 1,
-						}),
-					GetKeyModifiers(args.KeyboardDevice.Modifiers));
+						}));
 			}
 			catch (Exception e)
 			{

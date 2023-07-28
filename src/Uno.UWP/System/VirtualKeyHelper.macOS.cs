@@ -145,7 +145,7 @@ namespace Windows.System
 				_ => VirtualKey.None,
 			};
 
-		public static VirtualKey? FromFlags(NSEventModifierMask flags)
+		public static VirtualKey? FromFlagsToKey(NSEventModifierMask flags)
 		{
 			switch (flags)
 			{
@@ -168,6 +168,23 @@ namespace Windows.System
 				default:
 					return null;
 			}
+		}
+
+		public static VirtualKeyModifiers FromFlagsToVirtualModifiers(NSEventModifierMask flags)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+
+			if (flags.HasFlag(NSEventModifierMask.ShiftKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+
+			if (flags.HasFlag(UIKeyModifierFlags.ControlKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+
+			return modifiers;
 		}
 	}
 }
