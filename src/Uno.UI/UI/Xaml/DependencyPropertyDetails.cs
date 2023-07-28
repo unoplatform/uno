@@ -30,15 +30,6 @@ namespace Windows.UI.Xaml
 
 		private const int MaxIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
 		private const int _stackLength = MaxIndex + 1;
-		private static readonly object[] _unsetStack;
-		static DependencyPropertyDetails()
-		{
-			_unsetStack = new object[_stackLength];
-			for (var i = 0; i < _stackLength; i++)
-			{
-				_unsetStack[i] = DependencyProperty.UnsetValue;
-			}
-		}
 
 		public void Dispose()
 		{
@@ -75,7 +66,7 @@ namespace Windows.UI.Xaml
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Property.GetMetadata(_dependencyObjectType).DefaultValue;
+				_defaultValue = Metadata.DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
@@ -358,7 +349,7 @@ namespace Windows.UI.Xaml
 				{
 					_stack = _pool.Rent(_stackLength);
 
-					Array.Copy(_unsetStack, _stack, _stackLength);
+					Array.Fill(_stack, DependencyProperty.UnsetValue);
 
 					var defaultValue = GetDefaultValue();
 

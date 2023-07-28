@@ -67,15 +67,15 @@ namespace Windows.UI.Xaml
 
 		private bool _isDisposed;
 
-		private readonly DependencyPropertyDetailsCollection _properties;
+		private DependencyPropertyDetailsCollection? _properties;
 		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
-		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
-		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
-		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
+		private List<ExplicitPropertyChangedCallback>? _genericCallbacks;
+		private List<DependencyObjectStore>? _childrenStores;
+		private List<ParentChangedCallback>? _parentChangedCallbacks;
 
 		private readonly ManagedWeakReference _originalObjectRef;
 		private DependencyObject? _hardOriginalObjectRef;
@@ -113,6 +113,8 @@ namespace Windows.UI.Xaml
 		private SpecializedResourceDictionary.ResourceKey? _themeLastUsed;
 
 		private static readonly bool _validatePropertyOwner = Debugger.IsAttached;
+
+		private DependencyPropertyDetailsCollection Properties => _properties ??= new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, _dataContextProperty, _templatedParentProperty);
 
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
@@ -174,8 +176,6 @@ namespace Windows.UI.Xaml
 
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
-
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
 
 			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
@@ -265,14 +265,14 @@ namespace Windows.UI.Xaml
 
 			ValidatePropertyOwner(property);
 
-			propertyDetails ??= _properties.GetPropertyDetails(property);
+			propertyDetails ??= Properties.GetPropertyDetails(property);
 
 			return GetValue(propertyDetails, precedence, isPrecedenceSpecific);
 		}
 
 		private object? GetValue(DependencyPropertyDetails propertyDetails, DependencyPropertyValuePrecedences? precedence = null, bool isPrecedenceSpecific = false)
 		{
-			if (propertyDetails == _properties.DataContextPropertyDetails || propertyDetails == _properties.TemplatedParentPropertyDetails)
+			if (propertyDetails == Properties.DataContextPropertyDetails || propertyDetails == Properties.TemplatedParentPropertyDetails)
 			{
 				TryRegisterInheritedProperties(force: true);
 			}
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
+			return Properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
 		}
 
 		/// <summary>
@@ -461,7 +461,7 @@ namespace Windows.UI.Xaml
 					ValidatePropertyOwner(property);
 
 					// Resolve the stack once for the instance, for performance.
-					propertyDetails ??= _properties.GetPropertyDetails(property);
+					propertyDetails ??= Properties.GetPropertyDetails(property);
 
 					TryClearBinding(value, propertyDetails);
 
@@ -555,7 +555,7 @@ namespace Windows.UI.Xaml
 						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderClearNewValue.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+						childProviderClearNewValue.Store.RestoreInheritedDataContext(Properties.DataContextPropertyDetails.GetValue());
 					}
 				}
 
@@ -566,7 +566,7 @@ namespace Windows.UI.Xaml
 						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
-						childProviderSet.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
+						childProviderSet.Store.RestoreInheritedDataContext(Properties.DataContextPropertyDetails.GetValue());
 					}
 
 					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
@@ -777,7 +777,7 @@ namespace Windows.UI.Xaml
 
 		internal IDisposable RegisterPropertyChangedCallback(DependencyProperty property, PropertyChangedCallback callback, DependencyPropertyDetails? propertyDetails = null)
 		{
-			propertyDetails ??= _properties.GetPropertyDetails(property);
+			propertyDetails ??= Properties.GetPropertyDetails(property);
 
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
@@ -846,16 +846,16 @@ namespace Windows.UI.Xaml
 		{
 			if (ReferenceEquals(handler.Target, ActualInstance))
 			{
-				_genericCallbacks = _genericCallbacks.Add(handler);
+				(_genericCallbacks ??= new()).Add(handler);
 
-				return Disposable.Create(() => _genericCallbacks = _genericCallbacks.Remove(handler));
+				return Disposable.Create(() => _genericCallbacks.Remove(handler));
 			}
 			else
 			{
 				CreateWeakDelegate(handler, out var weakHandler, out var weakHandlerRelease);
 
 				// Delegates integrate a null check when adding new delegates.
-				_genericCallbacks = _genericCallbacks.Add(weakHandler);
+				(_genericCallbacks ??= new()).Add(weakHandler);
 
 				return new RegisterPropertyChangedCallbackConditionalDisposable(
 					weakHandler,
@@ -900,7 +900,7 @@ namespace Windows.UI.Xaml
 				if (_instanceRef.Target is DependencyObjectStore that)
 				{
 					// Delegates integrate a null check when removing new delegates.
-					that._genericCallbacks = that._genericCallbacks.Remove(_weakCallback);
+					that._genericCallbacks?.Remove(_weakCallback);
 				}
 
 				_weakCallbackRelease.Dispose();
@@ -920,7 +920,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal void RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback handler)
 		{
-			_genericCallbacks = _genericCallbacks.Add(handler);
+			(_genericCallbacks ??= new()).Add(handler);
 		}
 
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
@@ -946,7 +946,7 @@ namespace Windows.UI.Xaml
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
 		private InheritedPropertyChangedCallbackDisposable RegisterInheritedPropertyChangedCallback(DependencyObjectStore childStore)
 		{
-			_childrenStores = _childrenStores.Add(childStore);
+			(_childrenStores ??= new()).Add(childStore);
 
 			PropagateInheritedProperties(childStore);
 
@@ -963,7 +963,7 @@ namespace Windows.UI.Xaml
 			if (objectStoreWeak.Target is DependencyObjectStore that)
 			{
 				// Delegates integrate a null check when removing new delegates.
-				that._childrenStores = that._childrenStores.Remove(childStore);
+				that._childrenStores?.Remove(childStore);
 			}
 		}
 
@@ -974,7 +974,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>The <see cref="ParentChangedCallback"/> key parameter will always be null</remarks>
 		internal void RegisterSelfParentChangedCallback(ParentChangedCallback callback)
 		{
-			_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
+			(_parentChangedCallbacks ??= new()).Add(callback);
 		}
 
 		/// <summary>
@@ -986,9 +986,9 @@ namespace Windows.UI.Xaml
 		{
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
+				(_parentChangedCallbacks ??= new()).Add(callback);
 
-				return Disposable.Create(() => _parentChangedCallbacks = _parentChangedCallbacks.Remove(callback));
+				return Disposable.Create(() => _parentChangedCallbacks.Remove(callback));
 			}
 			else
 			{
@@ -997,7 +997,7 @@ namespace Windows.UI.Xaml
 				ParentChangedCallback weakCallback =
 					(s, _, e) => (!weakCallbackRef.IsDisposed ? weakCallbackRef.Target as ParentChangedCallback : null)?.Invoke(s, key, e);
 
-				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
+				(_parentChangedCallbacks ??= new()).Add(weakCallback);
 
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
@@ -1047,7 +1047,7 @@ namespace Windows.UI.Xaml
 				if (that != null)
 				{
 					// Delegates integrate a null check when removing new delegates.
-					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(_weakCallback);
+					that._parentChangedCallbacks?.Remove(_weakCallback);
 				}
 
 				WeakReferencePool.ReturnWeakReference(that, _weakCallbackRef);
@@ -1064,18 +1064,18 @@ namespace Windows.UI.Xaml
 		/// <param name="key">A key to be passed to the callback parameter.</param>
 		/// <param name="callback">A callback to be called</param>
 		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
-			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
+			=> (_parentChangedCallbacks ??= new()).Add((s, _, e) => callback(s, key, e));
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
-			var stack = _properties.GetPropertyDetails(property);
+			var stack = Properties.GetPropertyDetails(property);
 
 			return stack.GetValueUnderPrecedence(precedence);
 		}
 
 		internal DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property);
+			return Properties.GetPropertyDetails(property);
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
@@ -1108,10 +1108,13 @@ namespace Windows.UI.Xaml
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
-				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+				if (localChildrenStores is not null)
 				{
-					var child = localChildrenStores[storeIndex];
-					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
+					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+					{
+						var child = localChildrenStores[storeIndex];
+						child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
+					}
 				}
 			}
 		}
@@ -1129,8 +1132,8 @@ namespace Windows.UI.Xaml
 					// these cases may be required in case the
 					// graph is built in reverse (such as with the
 					// XamlReader)
-					|| _properties.HasBindings
-					|| _childrenStores.Count != 0
+					|| _properties?.HasBindings == true
+					|| _childrenStores is { Count: > 0 }
 				)
 			)
 			{
@@ -1242,11 +1245,11 @@ namespace Windows.UI.Xaml
 		{
 			if (_parentDataContextProperty.UniqueId == property.UniqueId)
 			{
-				return (_dataContextProperty, _properties.DataContextPropertyDetails);
+				return (_dataContextProperty, Properties.DataContextPropertyDetails);
 			}
 			else if (_parentTemplatedParentProperty == property)
 			{
-				return (_templatedParentProperty, _properties.TemplatedParentPropertyDetails);
+				return (_templatedParentProperty, Properties.TemplatedParentPropertyDetails);
 			}
 			else
 			{
@@ -1255,7 +1258,7 @@ namespace Windows.UI.Xaml
 
 				if (localProperty != null)
 				{
-					var propertyDetails = _properties.GetPropertyDetails(localProperty);
+					var propertyDetails = Properties.GetPropertyDetails(localProperty);
 
 					if (propertyDetails.HasInherits)
 					{
@@ -1269,7 +1272,7 @@ namespace Windows.UI.Xaml
 				// attached to a child.
 				else if (
 					property.IsAttached
-					&& _properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
+					&& Properties.FindPropertyDetails(property) is DependencyPropertyDetails attachedDetails
 					&& attachedDetails.HasInherits)
 				{
 					return (property, attachedDetails);
@@ -1443,11 +1446,11 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
 		{
-			foreach (var propertyDetail in _properties.GetAllDetails())
+			foreach (var propertyDetail in Properties.GetAllDetails())
 			{
 				if (propertyDetail == null
-					|| propertyDetail == _properties.DataContextPropertyDetails
-					|| propertyDetail == _properties.TemplatedParentPropertyDetails)
+					|| propertyDetail == Properties.DataContextPropertyDetails
+					|| propertyDetail == Properties.TemplatedParentPropertyDetails)
 				{
 					continue;
 				}
@@ -1572,10 +1575,13 @@ namespace Windows.UI.Xaml
 			else
 			{
 				var localChildrenStores = _childrenStores;
-				for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
+				if (localChildrenStores is not null)
 				{
-					var child = localChildrenStores[childStoreIndex];
-					Propagate(child);
+					for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
+					{
+						var child = localChildrenStores[childStoreIndex];
+						Propagate(child);
+					}
 				}
 			}
 
@@ -1629,9 +1635,12 @@ namespace Windows.UI.Xaml
 					else
 					{
 						var localChildrenStores = _childrenStores;
-						for (var i = 0; i < localChildrenStores.Count; i++)
+						if (localChildrenStores is not null)
 						{
-							Propagate(localChildrenStores[i]);
+							for (var i = 0; i < localChildrenStores.Count; i++)
+							{
+								Propagate(localChildrenStores[i]);
+							}
 						}
 					}
 				}
@@ -1669,11 +1678,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 					if (instance != null)
 					{
-						if (!hashSet.Contains(instance!))
-						{
-							hashSet.Add(instance);
-						}
-						else
+						if (!hashSet.Add(instance))
 						{
 							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}
@@ -1872,9 +1877,12 @@ namespace Windows.UI.Xaml
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
 					var localChildrenStores = _childrenStores;
-					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+					if (localChildrenStores is not null)
 					{
-						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
+						for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+						{
+							CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
+						}
 					}
 				}
 			}
@@ -1914,11 +1922,14 @@ namespace Windows.UI.Xaml
 			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Raise the property change for generic handlers
-			var currentCallbacks = _genericCallbacks.Data;
-			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+			var currentCallbacks = _genericCallbacks;
+			if (currentCallbacks is not null)
 			{
-				var callback = currentCallbacks[callbackIndex];
-				callback.Invoke(instanceRef, property, eventArgs);
+				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Count; callbackIndex++)
+				{
+					var callback = currentCallbacks[callbackIndex];
+					callback.Invoke(instanceRef, property, eventArgs);
+				}
 			}
 		}
 
@@ -2016,7 +2027,7 @@ namespace Windows.UI.Xaml
 
 		private void OnParentChanged(object? previousParent, object? value)
 		{
-			if (_parentChangedCallbacks.Data.Length != 0)
+			if (_parentChangedCallbacks is not null && _parentChangedCallbacks.Count != 0)
 			{
 				var actualInstanceAlias = ActualInstance;
 
@@ -2024,8 +2035,8 @@ namespace Windows.UI.Xaml
 				{
 					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-					var currentCallbacks = _parentChangedCallbacks.Data;
-					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
+					var currentCallbacks = _parentChangedCallbacks;
+					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Count; parentCallbackIndex++)
 					{
 						var handler = currentCallbacks[parentCallbackIndex];
 						handler.Invoke(actualInstanceAlias, null, args);
@@ -2087,7 +2098,7 @@ namespace Windows.UI.Xaml
 				_hardParentRef = Parent;
 				_hardOriginalObjectRef = ActualInstance;
 
-				_properties.TryEnableHardReferences();
+				Properties.TryEnableHardReferences();
 			}
 		}
 
@@ -2101,7 +2112,7 @@ namespace Windows.UI.Xaml
 				_hardParentRef = null;
 				_hardOriginalObjectRef = null;
 
-				_properties.DisableHardReferences();
+				Properties.DisableHardReferences();
 			}
 		}
 

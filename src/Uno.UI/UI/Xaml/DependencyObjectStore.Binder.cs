@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 					);
 				}
 
-				_properties.ApplyTemplatedParent(templatedParent);
+				_properties?.ApplyTemplatedParent(templatedParent);
 
 				ApplyChildrenBindable(templatedParent, isTemplatedParent: true);
 			}
@@ -168,22 +168,22 @@ namespace Windows.UI.Xaml
 		}
 
 		private void SetInheritedTemplatedParent(object? templatedParent)
-			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _properties.TemplatedParentPropertyDetails);
+			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, Properties.TemplatedParentPropertyDetails);
 
 		private void SetInheritedDataContext(object? dataContext)
-			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
+			=> SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, Properties.DataContextPropertyDetails);
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		public void ApplyCompiledBindings()
-			=> _properties.ApplyCompiledBindings();
+			=> _properties?.ApplyCompiledBindings();
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
 		/// </summary>
 		internal void ApplyElementNameBindings()
-			=> _properties.ApplyElementNameBindings();
+			=> _properties?.ApplyElementNameBindings();
 
 		static void InitializeStaticBinder()
 		{
@@ -191,8 +191,8 @@ namespace Windows.UI.Xaml
 			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
-		internal DependencyProperty DataContextProperty => _dataContextProperty!;
-		internal DependencyProperty TemplatedParentProperty => _templatedParentProperty!;
+		internal DependencyProperty DataContextProperty => _dataContextProperty;
+		internal DependencyProperty TemplatedParentProperty => _templatedParentProperty;
 
 		/// <summary>
 		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
@@ -228,7 +228,7 @@ namespace Windows.UI.Xaml
 		public void SuspendBindings()
 		{
 			_bindingsSuspended = true;
-			_properties.SuspendBindings();
+			Properties.SuspendBindings();
 		}
 
 		/// <summary>
@@ -237,7 +237,7 @@ namespace Windows.UI.Xaml
 		public void ResumeBindings()
 		{
 			_bindingsSuspended = false;
-			_properties.ResumeBindings();
+			Properties.ResumeBindings();
 		}
 
 		private void BinderDispose()
@@ -253,15 +253,13 @@ namespace Windows.UI.Xaml
 				_isDisposed = true;
 			}
 
-			_properties.Dispose();
+			_properties?.Dispose();
 			_childrenBindableMap.Dispose();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
-			var dataContextBinding = _properties.FindDataContextBinding();
-
-			if (dataContextBinding != null && precedence == DependencyPropertyValuePrecedences.Inheritance)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && Properties.FindDataContextBinding() is { } dataContextBinding)
 			{
 				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.
@@ -329,7 +327,7 @@ namespace Windows.UI.Xaml
 
 		private void ApplyDataContext(object? actualDataContext)
 		{
-			_properties.ApplyDataContext(actualDataContext);
+			_properties?.ApplyDataContext(actualDataContext);
 			ApplyChildrenBindable(actualDataContext, isTemplatedParent: false);
 		}
 
@@ -384,7 +382,7 @@ namespace Windows.UI.Xaml
 
 			if (binding is Binding fullBinding)
 			{
-				_properties.SetBinding(dependencyProperty, fullBinding, _originalObjectRef);
+				Properties.SetBinding(dependencyProperty, fullBinding, _originalObjectRef);
 			}
 			else if (binding is ResourceBinding resourceBinding)
 			{
@@ -431,7 +429,7 @@ namespace Windows.UI.Xaml
 
 				if (boundProperty != null)
 				{
-					_properties.SetBinding(boundProperty, fullBinding, _originalObjectRef);
+					Properties.SetBinding(boundProperty, fullBinding, _originalObjectRef);
 				}
 			}
 			else
@@ -500,7 +498,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public void SetBindingValue(object value, DependencyProperty property)
 		{
-			_properties.SetSourceValue(property, value);
+			Properties.SetSourceValue(property, value);
 		}
 
 		/// <summary>
@@ -519,7 +517,7 @@ namespace Windows.UI.Xaml
 				}
 				return;
 			}
-			_properties.SetSourceValue(propertyDetails, value);
+			Properties.SetSourceValue(propertyDetails, value);
 		}
 
 		/// <summary>
@@ -618,7 +616,7 @@ namespace Windows.UI.Xaml
 
 
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
-			=> _properties.GetBindingExpression(dependencyProperty);
+			=> Properties.GetBindingExpression(dependencyProperty);
 
 		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;

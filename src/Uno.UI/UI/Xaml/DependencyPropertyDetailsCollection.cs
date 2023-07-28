@@ -36,11 +36,12 @@ namespace Windows.UI.Xaml
 		private readonly static ArrayPool<DependencyPropertyDetails?> _pool = ArrayPool<DependencyPropertyDetails?>.Shared;
 
 		private DependencyPropertyDetails?[]? _entries;
-		private int _entriesLength;
 		private int _minId;
 		private int _maxId;
 
 		private object? Owner => _hardOwnerReference ?? _ownerReference.Target;
+
+		private int EntriesLength => _entries?.Length ?? 0;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
@@ -79,7 +80,7 @@ namespace Windows.UI.Xaml
 					var entries = _pool.Rent(entriesLength);
 
 					// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
-					AssignEntries(entries, entriesLength);
+					AssignEntries(entries);
 				}
 				else
 				{
@@ -90,7 +91,8 @@ namespace Windows.UI.Xaml
 
 		public void Dispose()
 		{
-			for (var i = 0; i < _entriesLength; i++)
+			var entriesLength = EntriesLength;
+			for (var i = 0; i < entriesLength; i++)
 			{
 				Entries![i]?.Dispose();
 			}
@@ -165,20 +167,20 @@ namespace Windows.UI.Xaml
 					{
 						newEntriesSize = _maxId - propertyId + 1;
 						newEntries = _pool.Rent(newEntriesSize);
-						Array.Copy(Entries, 0, newEntries, _minId - propertyId, _entriesLength);
+						Array.Copy(Entries, 0, newEntries, _minId - propertyId, EntriesLength);
 
 						_minId = propertyId;
 
-						AssignEntries(newEntries, newEntriesSize);
+						AssignEntries(newEntries);
 					}
 					else
 					{
 						newEntriesSize = propertyId - _minId + 1;
 
 						newEntries = _pool.Rent(newEntriesSize);
-						Array.Copy(Entries, 0, newEntries, 0, _entriesLength);
+						Array.Copy(Entries, 0, newEntries, 0, EntriesLength);
 
-						AssignEntries(newEntries, newEntriesSize);
+						AssignEntries(newEntries);
 					}
 
 					ref var propertyEntry = ref Entries![property.UniqueId - _minId];
@@ -238,16 +240,15 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private void AssignEntries(DependencyPropertyDetails?[] newEntries, int newSize)
+		private void AssignEntries(DependencyPropertyDetails?[] newEntries)
 		{
 			ReturnEntriesToPool();
 
 			_entries = newEntries;
-			_entriesLength = newEntries.Length;
 
 			// Array size returned by Rend may be larger than the requested size
 			// Adjust the max to that new value.
-			_maxId = _entriesLength + _minId - 1;
+			_maxId = newEntries.Length + _minId - 1;
 		}
 
 		private void ReturnEntriesToPool()

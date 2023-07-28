@@ -14,8 +14,8 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection
 	{
-		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
-		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
+		private List<BindingExpression> _bindings;
+		private List<BindingExpression> _templateBindings;
 
 		private bool _bindingsSuspended;
 
@@ -25,27 +25,32 @@ namespace Windows.UI.Xaml
 		/// <param name="templatedParent"></param>
 		internal void ApplyTemplatedParent(FrameworkElement templatedParent)
 		{
-			var templateBindings = _templateBindings.Data;
-
-			for (int i = 0; i < templateBindings.Length; i++)
+			var templateBindings = _templateBindings;
+			if (templateBindings is not null)
 			{
-				ApplyBinding(templateBindings[i], templatedParent);
+				for (int i = 0; i < templateBindings.Count; i++)
+				{
+					ApplyBinding(templateBindings[i], templatedParent);
+				}
 			}
 		}
 
 		public bool HasBindings =>
-			_bindings != ImmutableList<BindingExpression>.Empty || _templateBindings != ImmutableList<BindingExpression>.Empty;
+			_bindings is { Count: > 0 } || _templateBindings is { Count: > 0 };
 
 		/// <summary>
 		/// Applies the specified datacontext on the current <see cref="Binding"/> instances
 		/// </summary>
 		public void ApplyDataContext(object dataContext)
 		{
-			var bindings = _bindings.Data;
+			var bindings = _bindings;
 
-			for (int i = 0; i < bindings.Length; i++)
+			if (bindings is not null)
 			{
-				ApplyBinding(bindings[i], dataContext);
+				for (int i = 0; i < bindings.Count; i++)
+				{
+					ApplyBinding(bindings[i], dataContext);
+				}
 			}
 		}
 
@@ -54,11 +59,13 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void ApplyCompiledBindings()
 		{
-			var bindings = _bindings.Data;
-
-			for (int i = 0; i < bindings.Length; i++)
+			var bindings = _bindings;
+			if (bindings is not null)
 			{
-				bindings[i].ApplyCompiledSource();
+				for (int i = 0; i < bindings.Count; i++)
+				{
+					bindings[i].ApplyCompiledSource();
+				}
 			}
 		}
 
@@ -67,11 +74,13 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void ApplyElementNameBindings()
 		{
-			var bindings = _bindings.Data;
-
-			for (int i = 0; i < bindings.Length; i++)
+			var bindings = _bindings;
+			if (bindings is not null)
 			{
-				bindings[i].ApplyElementName();
+				for (int i = 0; i < bindings.Count; i++)
+				{
+					bindings[i].ApplyElementName();
+				}
 			}
 		}
 
@@ -84,11 +93,13 @@ namespace Windows.UI.Xaml
 			{
 				_bindingsSuspended = true;
 
-				var bindings = _bindings.Data;
-
-				for (int i = 0; i < bindings.Length; i++)
+				var bindings = _bindings;
+				if (bindings is not null)
 				{
-					bindings[i].SuspendBinding();
+					for (int i = 0; i < bindings.Count; i++)
+					{
+						bindings[i].SuspendBinding();
+					}
 				}
 			}
 		}
@@ -102,11 +113,14 @@ namespace Windows.UI.Xaml
 			{
 				_bindingsSuspended = false;
 
-				var bindings = _bindings.Data;
+				var bindings = _bindings;
 
-				for (int i = 0; i < bindings.Length; i++)
+				if (bindings is not null)
 				{
-					bindings[i].ResumeBinding();
+					for (int i = 0; i < bindings.Count; i++)
+					{
+						bindings[i].ResumeBinding();
+					}
 				}
 
 				ApplyDataContext(DataContextPropertyDetails.GetValue());
@@ -140,13 +154,13 @@ namespace Windows.UI.Xaml
 
 				if (Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
-					_templateBindings = _templateBindings.Add(bindingExpression);
+					(_templateBindings ??= new()).Add(bindingExpression);
 
 					ApplyBinding(bindingExpression, TemplatedParentPropertyDetails.GetValue());
 				}
 				else
 				{
-					_bindings = _bindings.Add(bindingExpression);
+					(_bindings ??= new()).Add(bindingExpression);
 
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{

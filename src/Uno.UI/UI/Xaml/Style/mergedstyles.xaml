@@ -11795,7 +11795,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <FontIcon x:Name="CheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE001;" FontSize="16" not_win:Glyph="&#xE10B;" Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}" Opacity="0" Width="16" Margin="0,0,12,0" />
+              <FontIcon x:Name="CheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE001;" not_win:Glyph="&#xE10B;" FontSize="16" Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}" Opacity="0" Width="16" Margin="0,0,12,0" />
               <Viewbox x:Name="IconRoot" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="16" Height="16" Visibility="Collapsed">
                 <ContentPresenter x:Name="IconContent" Content="{TemplateBinding Icon}" />
               </Viewbox>
@@ -14544,7 +14544,7 @@
       <Setter.Value>
         <ControlTemplate TargetType="FlyoutPresenter">
           <Border Background="{TemplateBinding Background}" BackgroundSizing="OuterBorderEdge" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{ThemeResource FlyoutBorderThemePadding}">
-            <ScrollViewer x:Name="ScrollViewer" win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" not_win:ZoomMode="Disabled" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" AutomationProperties.AccessibilityView="Raw">
+            <ScrollViewer x:Name="ScrollViewer" not_win:ZoomMode="Disabled" win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}" HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}" VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}" VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}" AutomationProperties.AccessibilityView="Raw">
               <ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTransitions="{TemplateBinding ContentTransitions}" Margin="{TemplateBinding Padding}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
             </ScrollViewer>
           </Border>
@@ -15325,7 +15325,7 @@
               <Grid.RenderTransform>
                 <TranslateTransform x:Name="ContentPresenterTranslateTransform" />
               </Grid.RenderTransform>
-              <ContentPresenter x:Name="ContentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
+              <ContentPresenter x:Name="ContentPresenter" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" Content="{TemplateBinding Content}" HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="{TemplateBinding VerticalContentAlignment}" Margin="{TemplateBinding Padding}" />
             </Grid>
             <!-- The 'Xg' text simulates the amount of space one line of text will occupy.
 						  In the DataPlaceholder state, the Content is not loaded yet so we
@@ -15344,7 +15344,7 @@
               <Border.RenderTransform>
                 <TranslateTransform x:Name="MultiSelectCheckBoxTransform" />
               </Border.RenderTransform>
-              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" FontSize="16" not_win:Glyph="&#xE081;" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Visibility="Collapsed" Opacity="0" />
+              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" not_win:Glyph="&#xE081;" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Visibility="Collapsed" Opacity="0" />
             </Border>
             <TextBlock x:Name="MultiArrangeOverlayText" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.DragItemsCount}" Foreground="{ThemeResource ListViewItemDragForegroundThemeBrush}" FontFamily="{ThemeResource ContentControlThemeFontFamily}" FontSize="26.667" IsHitTestVisible="False" Opacity="0" TextWrapping="Wrap" TextTrimming="WordEllipsis" Margin="18,9,0,0" AutomationProperties.AccessibilityView="Raw" Grid.ColumnSpan="2" />
           </Grid>
@@ -15588,7 +15588,7 @@
             <Rectangle x:Name="MultiArrangeOverlayBackground" IsHitTestVisible="False" Opacity="0" Fill="{ThemeResource ListViewItemDragBackgroundThemeBrush}" Grid.ColumnSpan="2" />
             <Rectangle x:Name="BorderRectangle" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlHighlightListAccentLowBrush}" StrokeThickness="2" Opacity="0" />
             <Border x:Name="MultiSelectSquare" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Width="20" Height="20" Margin="0,2,2,0" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed">
-              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" FontSize="16" not_win:Glyph="&#xE081;" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Opacity="0" />
+              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" not_win:Glyph="&#xE081;" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Opacity="0" />
             </Border>
             <Rectangle x:Name="FocusVisualWhite" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundAltHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="1.5" StrokeThickness="2" Opacity="0" />
             <Rectangle x:Name="FocusVisualBlack" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundBaseHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="0.5" StrokeThickness="2" Opacity="0" />
@@ -17157,7 +17157,7 @@
                             </VisualState>
                           </VisualStateGroup>
                         </VisualStateManager.VisualStateGroups>
-                        <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" FontFamily="{ThemeResource SymbolThemeFontFamily}" not_win:Text="&#xE18B;" AutomationProperties.AccessibilityView="Raw" />
+                        <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" not_win:Text="&#xE18B;" FontFamily="{ThemeResource SymbolThemeFontFamily}" AutomationProperties.AccessibilityView="Raw" />
                       </Grid>
                     </ControlTemplate>
                   </Setter.Value>
@@ -17281,7 +17281,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" FontFamily="{ThemeResource SymbolThemeFontFamily}" not_win:Text="&#xE18B;" AutomationProperties.AccessibilityView="Raw" />
+            <TextBlock x:Name="GlyphElement" Foreground="{ThemeResource SystemControlForegroundChromeBlackMediumBrush}" VerticalAlignment="Center" HorizontalAlignment="Center" FontStyle="Normal" FontSize="16" win:Text="&#xE052;" not_win:Text="&#xE18B;" FontFamily="{ThemeResource SymbolThemeFontFamily}" AutomationProperties.AccessibilityView="Raw" />
           </Grid>
         </ControlTemplate>
       </Setter.Value>
