@@ -63,6 +63,7 @@ namespace Uno.UI.Runtime.Skia
 			var args = new KeyEventArgs(
 				"keyboard",
 				virtualKey,
+				GetCurrentModifiersState(),
 				new CorePhysicalKeyStatus
 				{
 					ScanCode = (uint)key,
@@ -86,6 +87,7 @@ namespace Uno.UI.Runtime.Skia
 			var args = new KeyEventArgs(
 				"keyboard",
 				virtualKey,
+				GetCurrentModifiersState(),
 				new CorePhysicalKeyStatus
 				{
 					ScanCode = (uint)key,
@@ -95,12 +97,11 @@ namespace Uno.UI.Runtime.Skia
 			RaiseKeyEvent(_owner.RaiseNativeKeyUpReceived, args);
 		}
 
-		private void RaiseKeyEvent(Action<KeyEventArgs, VirtualKeyModifiers> raisePointerEvent, KeyEventArgs args)
+		private void RaiseKeyEvent(Action<KeyEventArgs> raisePointerEvent, KeyEventArgs args)
 		{
-			var modifiers = GetCurrentModifiersState();
 			_ = _owner.Dispatcher.RunAsync(
 				CoreDispatcherPriority.High,
-				() => raisePointerEvent(args, modifiers));
+				() => raisePointerEvent(args));
 		}
 
 		private VirtualKeyModifiers GetCurrentModifiersState()

@@ -9,13 +9,13 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly CorePhysicalKeyStatus? _keyStatus;
 
-		internal KeyRoutedEventArgs(object originalSource, VirtualKey key, CorePhysicalKeyStatus? keyStatus = null, VirtualKeyModifiers modifiers = default)
+		internal KeyRoutedEventArgs(object originalSource, VirtualKey key, VirtualKeyModifiers modifiers, CorePhysicalKeyStatus? keyStatus = null)
 			: base(originalSource)
 		{
 			Key = key;
 			OriginalKey = key;
-			_keyStatus = keyStatus;
 			KeyboardModifiers = modifiers;
+			_keyStatus = keyStatus;
 		}
 
 		public bool Handled { get; set; }

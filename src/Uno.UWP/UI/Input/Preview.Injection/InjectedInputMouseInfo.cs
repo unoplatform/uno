@@ -19,7 +19,7 @@ public partial class InjectedInputMouseInfo
 
 	public int DeltaX { get; set; }
 
-	internal PointerEventArgs ToEventArgs(InjectedInputState state, VirtualKeyModifiers modifiers = default)
+	internal PointerEventArgs ToEventArgs(InjectedInputState state, VirtualKeyModifiers modifiers)
 	{
 		var update = default(PointerUpdateKind);
 		var position = state.Position;
