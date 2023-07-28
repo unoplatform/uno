@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml
 			{
 				if (IsGestureRecognizerCreated)
 				{
-					GestureRecognizer.PreventAlreadyRaisedEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
+					GestureRecognizer.PreventEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
 				}
 			}
 			else
@@ -586,7 +586,7 @@ namespace Windows.UI.Xaml
 			}
 
 			var pointerId = args.GetCurrentPoint(this).PointerId;
-			args.GestureEventsAlreadyRaised = GestureRecognizer.PreventAlreadyRaisedEvents(pointerId, args.GestureEventsAlreadyRaised);
+			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
 		#endregion
 
