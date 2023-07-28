@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
+using Windows.Foundation;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -774,6 +775,47 @@ namespace Uno.UI.Xaml.Core
 			return XamlRoot;
 		}
 
+		internal Size Size
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIsland)
+				{
+					var actualSize = xamlIsland.ActualSize;
+					return new Size(actualSize.X, actualSize.Y);
+				}
+				else if (RootElement is RootVisual rootVisual)
+				{
+					// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
+					return Window.Current.Bounds.Size;
+				}
+				else
+				{
+					throw new InvalidOperationException("Invalid VisualTree root type");
+				}
+			}
+		}
+
+		internal Rect VisibleBounds
+		{
+			get
+			{
+				if (RootElement is XamlIsland xamlIsland)
+				{
+					var size = Size;
+					return new Rect(0, 0, size.Width, size.Height);
+				}
+				else if (RootElement is RootVisual rootVisual)
+				{
+					// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
+					return Window.Current.Bounds;
+				}
+				else
+				{
+					throw new InvalidOperationException("Invalid VisualTree root type");
+				}
+			}
+		}
 
 		private static void VisualTreeNotFoundWarning()
 		{

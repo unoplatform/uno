@@ -29,6 +29,11 @@ partial class ContentManager
 
 	private void TryLoadRootVisual()
 	{
+		if (PublicRootElement?.XamlRoot?.VisualTree?.RootElement is not { } rootElement)
+		{
+			// TODO:MZ: Indicate failure!
+			return;
+		}
 		//if (!_shown || !_windowCreated)
 		//{
 		//	return;
@@ -36,15 +41,15 @@ partial class ContentManager
 
 		void LoadRoot()
 		{
-			UIElement.LoadingRootElement(_rootVisual);
+			UIElement.LoadingRootElement(rootElement);
 
-			_rootVisual.XamlRoot!.InvalidateMeasure();
-			_rootVisual.XamlRoot!.InvalidateArrange();
+			rootElement.XamlRoot!.InvalidateMeasure();
+			rootElement.XamlRoot!.InvalidateArrange();
 
-			UIElement.RootElementLoaded(_rootVisual);
+			UIElement.RootElementLoaded(rootElement);
 		}
 
-		var dispatcher = _rootVisual.Dispatcher;
+		var dispatcher = rootElement.Dispatcher;
 
 		if (dispatcher.HasThreadAccess)
 		{

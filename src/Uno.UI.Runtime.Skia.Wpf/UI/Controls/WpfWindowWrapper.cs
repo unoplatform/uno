@@ -1,4 +1,6 @@
-﻿using Uno.UI.Xaml.Controls;
+﻿#nullable enable
+
+using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -9,14 +11,16 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 
 	public WpfWindowWrapper(UnoWpfWindow wpfWindow)
 	{
-		_wpfWindow = wpfWindow;
+		_wpfWindow = wpfWindow ?? throw new System.ArgumentNullException(nameof(wpfWindow));
 		_wpfWindow.SizeChanged += OnSizeChanged;
 	}
 
-	private void OnSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => 
-		SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height)));
+	public UnoWpfWindow NativeWindow => _wpfWindow;
 
 	public bool Visible => _wpfWindow.IsVisible;
 
-	public event SizeChangedEventHandler SizeChanged;
+	public event SizeChangedEventHandler? SizeChanged;
+
+	private void OnSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) =>
+		SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height)));
 }

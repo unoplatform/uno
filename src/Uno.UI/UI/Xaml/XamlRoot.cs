@@ -35,57 +35,12 @@ public sealed partial class XamlRoot
 		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
 			Microsoft.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
 
-	//TODO Uno specific: This logic is most likely not implemented here in MUX:
 	/// <summary>
 	/// Gets the width and height of the content area.
 	/// </summary>
-	public Size Size
-	{
-		get
-		{
-			if (VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				return Content?.RenderSize ?? Size.Empty;
-			}
+	public Size Size => VisualTree.Size;
 
-			var rootElement = VisualTree.RootElement;
-			if (rootElement is RootVisual)
-			{
-				// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
-				return Window.Current.Bounds.Size;
-			}
-			else if (rootElement is XamlIsland xamlIslandRoot)
-			{
-				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
-				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
-				return new Size(width, height);
-			}
-
-			return default;
-		}
-	}
-
-	//TODO Uno specific: This logic is most likely not implemented here in MUX:
-	internal Rect Bounds
-	{
-		get
-		{
-			var rootElement = VisualTree.RootElement;
-			if (rootElement is RootVisual rootVisual)
-			{
-				//TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
-				return Window.Current.Bounds;
-			}
-			else if (rootElement is XamlIsland xamlIslandRoot)
-			{
-				var width = !double.IsNaN(xamlIslandRoot.Width) ? xamlIslandRoot.Width : 0;
-				var height = !double.IsNaN(xamlIslandRoot.Height) ? xamlIslandRoot.Height : 0;
-				return new Rect(0, 0, width, height);
-			}
-
-			return default;
-		}
-	}
+	internal Rect Bounds => VisualTree.VisibleBounds;
 
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.

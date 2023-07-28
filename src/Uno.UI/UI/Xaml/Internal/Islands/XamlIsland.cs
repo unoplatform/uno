@@ -22,14 +22,14 @@ internal partial class XamlIsland : Panel
 		{
 			_contentManager.Content = value;
 
-			var rootElement = _contentManager.RootElement;
-			SetPublicRootVisual(rootElement, null, null);
+			SetPublicRootVisual(value, null, null);
 
-			UIElement.LoadingRootElement(_contentRoot.VisualTree.PublicRootVisual!);
+			UIElement.LoadingRootElement(_contentRoot.VisualTree.RootElement!);
 
-			_contentRoot.VisualTree.PublicRootVisual!.XamlRoot!.InvalidateMeasure();
+			_contentRoot.VisualTree.RootElement!.XamlRoot!.InvalidateMeasure();
+			_contentRoot.VisualTree.RootElement!.XamlRoot!.InvalidateArrange();
 
-			UIElement.RootElementLoaded(_contentRoot.VisualTree.PublicRootVisual!);
+			UIElement.RootElementLoaded(_contentRoot.VisualTree.RootElement!);
 		}
 	}
 }

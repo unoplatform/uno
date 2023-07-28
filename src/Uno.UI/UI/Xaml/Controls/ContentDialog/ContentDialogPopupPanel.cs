@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Rect visibleBounds;
 			if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
 			{
-				visibleBounds = XamlRoot?.Bounds ?? new Rect(0, 0, finalSize.Width, finalSize.Height);
+				visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? new Rect(0, 0, finalSize.Width, finalSize.Height);
 			}
 			else
 			{

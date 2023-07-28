@@ -14,7 +14,7 @@ internal partial class ContentManager
 	private readonly bool _isCoreWindowContent;
 
 	private UIElement? _content;
-	private UIElement? _rootElement;
+	private UIElement? _publicRootElement;
 	private RootVisual? _rootVisual;
 	private Border? _rootBorder;
 
@@ -30,7 +30,7 @@ internal partial class ContentManager
 		set => InternalSetContent(value);
 	}
 
-	public UIElement? RootElement => _rootElement;
+	public UIElement? PublicRootElement => _publicRootElement;
 
 	private void InternalSetContent(UIElement? content)
 	{
@@ -86,7 +86,7 @@ internal partial class ContentManager
 		if (_rootVisual is null)
 		{
 			_rootBorder = new Border();
-			_rootElement = _rootBorder;
+			_publicRootElement = _rootBorder;
 #if __WASM__ // Only WASM currently has a root scroll viewer.
 			_rootScrollViewer = new ScrollViewer()
 			{
@@ -102,7 +102,7 @@ internal partial class ContentManager
 
 			if (_isCoreWindowContent)
 			{
-				WinUICoreServices.Instance.PutVisualRoot(_rootElement);
+				WinUICoreServices.Instance.PutVisualRoot(_publicRootElement);
 				_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
 				if (_rootVisual?.XamlRoot is null)

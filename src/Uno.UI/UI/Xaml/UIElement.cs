@@ -762,7 +762,7 @@ namespace Microsoft.UI.Xaml
 				return;
 			}
 
-			var bounds = root.XamlRoot.Bounds;
+			var bounds = root.XamlRoot.VisualTree.VisibleBounds;
 
 #if __MACOS__ || __IOS__ // IsMeasureDirty and IsArrangeDirty are not available on iOS / macOS
 			root.Measure(bounds.Size);
