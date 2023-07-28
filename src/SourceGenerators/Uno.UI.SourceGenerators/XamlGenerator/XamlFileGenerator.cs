@@ -5725,7 +5725,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						var resourceOwner = CurrentResourceOwnerName;
 
-						// fixme@xy?: do we need to branch here to skip templated-parent for the invalid types (DataTemplate and ListViewBaseLayoutTemplate)
 						writer.Append($"{resourceOwner}, (__owner, __templatedParent) => ");
 						// This case is to support the layout switching for the ListViewBaseLayout, which is not
 						// a FrameworkTemplate. This will need to be removed when this custom list view is removed.

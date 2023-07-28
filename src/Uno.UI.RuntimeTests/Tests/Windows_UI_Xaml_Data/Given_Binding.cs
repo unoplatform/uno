@@ -17,6 +17,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 	[RunsOnUIThread]
 	public class Given_Binding
 	{
+		// todo@xy: add xamlreader tests for tp propagation with: ControlTemplate\
+		//		- Border\Border
+		//		- StackPanel\( Child1 + Child2 )
+		//		- ContentControl\[explicit path: ]ContentControl.Content\Border
+		//		- ItemsControl[ItemsSource=012345]  // validate both ItemsPanel & CC/CP templated-parent
+		//	^ check against uwp for source of truth
+
 		[TestMethod]
 		public async Task When_DoublyNested_TemplateBinding_XamlReader()
 		{
@@ -141,11 +148,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 			WindowHelper.WindowContent = setup;
 			await WindowHelper.WaitFor(() => setup.IsLoaded, message: $"Timeout waiting for {control} to be loaded");
 
-			var sut = setup.FindFirstDescendant<ContentPresenter>();
-			var cpContentBinding = setup.GetBindingExpression(ContentPresenter.ContentProperty);
-
-			var itb = sut.FindFirstDescendant<ImplicitTextBlock>();
+#if DEBUG
 			var tree = setup.TreeGraph();
+#endif
+			var sut = setup.FindFirstDescendant<ContentPresenter>();
+			var itb = sut?.FindFirstDescendant<ImplicitTextBlock>();
+
+			Assert.IsNotNull(itb, "ImplicitTextBlock not found");
+			Assert.AreEqual(itb?.Text, "asd");
 		}
 
 		// todo@xy: add test case against uno#7497

@@ -393,10 +393,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			});
 		}
 
-		private void SynchronizeContentTemplatedParent() // todo@xy: remove
-		{
-		}
-
 		private void SetTargetPosition(Point targetPoint)
 		{
 			m_isTargetPositionSet = true;

@@ -287,14 +287,6 @@ namespace Windows.UI.Xaml.Controls
 			SetNeedsUpdateVisualStates();
 		}
 
-		// todo@xy: verify FrameworkElement.FindName still works?
-		//protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
-		//{
-		//	// This is required to ensure that FrameworkElement.FindName can dig through the tree after
-		//	// the control has been created.
-		//	SynchronizeContentTemplatedParent();
-		//}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

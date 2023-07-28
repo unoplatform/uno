@@ -1024,31 +1024,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ApplyScrollContentPresenterContent(object? content)
 		{
-			// todo@xy: review this
-			// Stop the automatic propagation of the templated parent on the Content
-			// This prevents issues when the a ScrollViewer is hosted in a control template
-			// and its content is a ContentControl or ContentPresenter, which has a TemplateBinding
-			// on the Content property. This can make the Content added twice in the visual tree.
-			// cf. https://github.com/unoplatform/uno/issues/3762
-			// if (content is IDependencyObjectStoreProvider provider)
-			// {
-			// 	var contentTemplatedParent = provider.Store.GetValue(provider.Store.TemplatedParentProperty);
-			// 	if (contentTemplatedParent == null || contentTemplatedParent != TemplatedParent)
-			// 	{
-			// 		// Note: Even if the TemplatedParent is already null, we make sure to set it with the local precedence
-			// 		provider.Store.SetValue(provider.Store.TemplatedParentProperty, null, DependencyPropertyValuePrecedences.Local);
-			// 	}
-			// }
-
 			// Then explicitly propagate the Content to the _presenter
 			if (_presenter != null)
 			{
 				_presenter.Content = content as View;
 			}
-
-			// Propagate the ScrollViewer's own templated parent, instead of
-			// the scrollviewer itself (through ScrollContentPresenter)
-			//SynchronizeContentTemplatedParent(TemplatedParent);
 		}
 
 		private void UpdateSizeChangedSubscription(bool isCleanupRequired = false)

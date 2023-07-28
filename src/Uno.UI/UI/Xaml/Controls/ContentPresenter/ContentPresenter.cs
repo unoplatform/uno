@@ -699,7 +699,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_contentTemplateRoot = value;
 
-				SynchronizeContentTemplatedParent();
+				SetImplicitContent(); // fixme@xy: is this needed? potential inf-loop
 
 				if (_contentTemplateRoot != null)
 				{
@@ -752,17 +752,6 @@ namespace Windows.UI.Xaml.Controls
 			//	}
 			//}
 		}
-		private void SynchronizeContentTemplatedParent()
-		{
-			// fixme@xy: rename this method to something more appropriate
-			// fixme@xy: can CP be used outside the scope of a ContentControl template?
-			//		^ what do?
-			// fixme@xy: given a generic/common template-parent type like ContentControl,
-			//		we are almost guaranteed to get false positives with naive FindFirstAncestor<ContentControl>...
-			//		ex: ContentControl\.Template\ScrollViewer\ContentPresenter;  CP here should associate with the CC, and not SV which is also a CC...
-
-			SetImplicitContent();
-		}
 
 		private void UpdateContentTransitions(TransitionCollection oldValue, TransitionCollection newValue)
 		{
@@ -811,9 +800,7 @@ namespace Windows.UI.Xaml.Controls
 				SetUpdateTemplate();
 			}
 
-			// When the control is loaded, set the TemplatedParent
-			// as it may have been reset during the last unload.
-			SynchronizeContentTemplatedParent();
+			SetImplicitContent();
 
 			UpdateBorder();
 
@@ -924,56 +911,52 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var textBlock = new ImplicitTextBlock(this);
+			textBlock.SetTemplatedParent(this);
 
-			void setBinding(DependencyProperty property, string path)
+			if (!IsNativeHost)
+			{
+				TemplateBind(TextBlock.TextProperty, nameof(Content));
+				TemplateBind(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
+				TemplateBind(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
+				TemplateBind(TextBlock.TextWrappingProperty, nameof(TextWrapping));
+				TemplateBind(TextBlock.MaxLinesProperty, nameof(MaxLines));
+				TemplateBind(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
+			}
+
+			ContentTemplateRoot = textBlock;
+			IsUsingDefaultTemplate = true;
+
+			void TemplateBind(DependencyProperty property, string path)
 				=> textBlock.SetBinding(
 					property,
 					new Binding
 					{
 						Path = new PropertyPath(path),
-						Source = this,
-						Mode = BindingMode.OneWay
+						RelativeSource = RelativeSource.TemplatedParent
 					}
 				);
-
-			if (!IsNativeHost)
-			{
-				setBinding(TextBlock.TextProperty, nameof(Content));
-				setBinding(TextBlock.HorizontalAlignmentProperty, nameof(HorizontalContentAlignment));
-				setBinding(TextBlock.VerticalAlignmentProperty, nameof(VerticalContentAlignment));
-				setBinding(TextBlock.TextWrappingProperty, nameof(TextWrapping));
-				setBinding(TextBlock.MaxLinesProperty, nameof(MaxLines));
-				setBinding(TextBlock.TextAlignmentProperty, nameof(TextAlignment));
-			}
-
-			ContentTemplateRoot = textBlock;
-			IsUsingDefaultTemplate = true;
 		}
 
 		private bool _isBoundImplicitelyToContent;
 
-		private void SetImplicitContent2()
+		private void SetImplicitContent()
 		{
-			var binding = new Binding(new PropertyPath("Content"), null)
-			{
-				RelativeSource = RelativeSource.TemplatedParent,
-			};
-			SetBinding(ContentProperty, binding);
-			_isBoundImplicitelyToContent = true;
-		}
+			// fixme@xy: can CP be used outside the scope of a ContentControl template?
+			//		^ such as with the case on ios/android, where we are presenting native control?
+			//		^ what do?
 
-		private void SetImplicitContent() // todo@xy: only called by OnTemplatedParentChanged; verify this is still needed?
-		{
-			if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
-			{
-				return;
-			}
 
-			//if (!(TemplatedParent is ContentControl))
+			// fixme@xy: this flag was disabled in #1464, figure why this is?
+			//if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
 			//{
-			//	ClearImplicitBindinds();
-			//	return; // Not applicable: no TemplatedParent or it's not a ContentControl
+			//	return;
 			//}
+
+			if (GetTemplatedParent() is not ContentControl)
+			{
+				ClearImplicitBindinds();
+				return; // Not applicable: no TemplatedParent or it's not a ContentControl
+			}
 
 			// Check if the Content is set to something
 			var v = this.GetValueUnderPrecedence(ContentProperty, DependencyPropertyValuePrecedences.DefaultValue);
@@ -992,11 +975,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Create an implicit binding of Content to Content property of the TemplatedParent (which is a ContentControl)
-			var binding =
-				new Binding(new PropertyPath("Content"), null)
-				{
-					RelativeSource = RelativeSource.TemplatedParent,
-				};
+			var binding = new Binding("Content") { RelativeSource = RelativeSource.TemplatedParent };
 			SetBinding(ContentProperty, binding);
 			_isBoundImplicitelyToContent = true;
 
