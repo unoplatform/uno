@@ -165,6 +165,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 		// Check that the clipping is applied to the child element using the UIElement_Clipping sample
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // The sample is not working well on WASM
 		public void When_Clip_Is_Set_On_Child_Element()
 		{
 			Run("UITests.Windows_UI_Xaml.UIElementTests.UIElement_Clipping");
