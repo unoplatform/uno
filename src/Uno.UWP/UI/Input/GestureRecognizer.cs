@@ -184,35 +184,35 @@ namespace Windows.UI.Input
 			_manipulation?.Complete();
 		}
 
-		/// <returns>An updated set of events that are raised already and by this recognizer</returns>
-		internal GestureSettings PreventAlreadyRaisedEvents(uint pointerId, GestureSettings alreadyRaisedEvents)
+		/// <returns>The set of events that can be raised by this recognizer for this pointer ID</returns>
+		internal GestureSettings PreventEvents(uint pointerId, GestureSettings events)
 		{
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
-				if (alreadyRaisedEvents.HasFlag(GestureSettings.Tap))
+				if (events.HasFlag(GestureSettings.Tap))
 				{
 					gesture.PreventTap();
 				}
 
-				if (alreadyRaisedEvents.HasFlag(GestureSettings.RightTap))
+				if (events.HasFlag(GestureSettings.RightTap))
 				{
 					gesture.PreventRightTap();
 				}
 
-				if (alreadyRaisedEvents.HasFlag(GestureSettings.DoubleTap))
+				if (events.HasFlag(GestureSettings.DoubleTap))
 				{
 					gesture.PreventDoubleTap();
 				}
 
-				if (alreadyRaisedEvents.HasFlag(GestureSettings.Hold))
+				if (events.HasFlag(GestureSettings.Hold))
 				{
 					gesture.PreventHolding();
 				}
 
-				alreadyRaisedEvents |= gesture.Settings;
+				return gesture.Settings;
 			}
 
-			return alreadyRaisedEvents;
+			return GestureSettings.None;
 		}
 
 		#region Manipulations

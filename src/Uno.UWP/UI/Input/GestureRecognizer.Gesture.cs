@@ -55,10 +55,7 @@ namespace Windows.UI.Input
 			{
 				_recognizer = recognizer;
 				Settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
-				if (recognizer.Owner is null)
-				{
-					Settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
-				}
+				Settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
