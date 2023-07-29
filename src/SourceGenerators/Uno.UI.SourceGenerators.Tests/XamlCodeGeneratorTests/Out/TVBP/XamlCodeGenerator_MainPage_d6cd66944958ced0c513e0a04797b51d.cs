@@ -50,7 +50,7 @@ namespace TestRepro
 			new global::Windows.UI.Xaml.Controls.Grid
 			{
 				IsParsing = true,
-				// Source 0\MainPage.xaml (Line 9:3)
+				// Source 0\MainPage.xaml (Line 8:3)
 				Children = 
 				{
 					new global::Windows.UI.Xaml.Controls.TextBlock
@@ -59,7 +59,7 @@ namespace TestRepro
 						Text = "Hello, world!",
 						Margin = new global::Windows.UI.Xaml.Thickness(20),
 						FontSize = 30d,
-						// Source 0\MainPage.xaml (Line 11:4)
+						// Source 0\MainPage.xaml (Line 9:4)
 					}
 					.MainPage_d6cd66944958ced0c513e0a04797b51d_XamlApply((MainPage_d6cd66944958ced0c513e0a04797b51dXamlApplyExtensions.XamlApplyHandler0)(c0 => 
 					{

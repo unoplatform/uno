@@ -11,7 +11,7 @@ public class Given_Grid
 	[TestMethod]
 	public async Task When_Grid_Uses_Both_Syntaxes()
 	{
-		var test = new TestSetup(xamlFileName: "Grid_Uses_Both_Syntaxes.xaml", subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.netcore.Tests", "XamlCodeGeneratorTests", "TestCases"))
+		var test = new TestSetup(xamlFileName: "Grid_Uses_Both_Syntaxes.xaml", subFolder: Path.Combine("SourceGenerators", "Uno.UI.SourceGenerators.Tests", "XamlCodeGeneratorTests", "TestCases"))
 		{
 			ExpectedDiagnostics =
 			{
