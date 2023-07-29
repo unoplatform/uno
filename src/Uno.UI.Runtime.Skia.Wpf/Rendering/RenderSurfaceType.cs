@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Skia;
+﻿namespace Uno.UI.Runtime.Skia.Wpf;
 
 public enum RenderSurfaceType
 {

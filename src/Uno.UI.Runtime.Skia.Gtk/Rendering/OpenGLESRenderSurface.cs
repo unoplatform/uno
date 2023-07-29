@@ -11,8 +11,8 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using Uno.UI.Runtime.Skia.Helpers.Windows;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Windows;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
 using Gdk;
 using System.Reflection;
@@ -22,7 +22,7 @@ using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
 using Uno.UI.Hosting;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	internal class OpenGLESRenderSurface : GLRenderSurfaceBase
 	{

@@ -12,7 +12,7 @@ using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	internal abstract partial class GLRenderSurfaceBase : GLArea, IGtkRenderer
 	{

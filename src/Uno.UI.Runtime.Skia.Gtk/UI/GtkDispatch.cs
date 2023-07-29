@@ -1,7 +1,7 @@
 ﻿using System;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.GTK.UI;
+namespace Uno.UI.Runtime.Skia.Gtk.UI;
 
 internal static class GtkDispatch
 {

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Gdk;
 using Gtk;
-using Uno.UI.Runtime.Skia.GTK.Extensions;
+using Uno.UI.Runtime.Skia.Gtk.Extensions;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;
@@ -15,10 +15,10 @@ using Uno.Foundation.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
 using Exception = System.Exception;
 using Windows.Foundation;
-using Uno.UI.Runtime.Skia.GTK.UI.Controls;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 {
@@ -111,7 +111,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -124,7 +124,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			Gtk.Device.GrabAdd(_window, entry.dev, block_others: false);
+			global::Gtk.Device.GrabAdd(_window, entry.dev, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -137,7 +137,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -150,7 +150,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			Gtk.Device.GrabRemove(_window, entry.dev);
+			global::Gtk.Device.GrabRemove(_window, entry.dev);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{

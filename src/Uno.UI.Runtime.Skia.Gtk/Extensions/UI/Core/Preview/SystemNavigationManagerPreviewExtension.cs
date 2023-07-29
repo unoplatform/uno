@@ -2,7 +2,7 @@
 
 using Gtk;
 using Uno.UI.Core.Preview;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Gtk;
 
 namespace Uno.Extensions.UI.Core.Preview;
 

@@ -12,9 +12,9 @@ using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
-internal class SoftwareRenderSurface : Gtk.DrawingArea, IGtkRenderer
+internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 {
 	private readonly DisplayInformation _displayInformation;
 	private SKSurface? _surface;

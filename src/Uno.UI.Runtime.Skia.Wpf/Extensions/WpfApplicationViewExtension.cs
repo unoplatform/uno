@@ -6,7 +6,7 @@ using Windows.UI.ViewManagement;
 using WpfApplication = System.Windows.Application;
 using WpfWindow = System.Windows.Window;
 
-namespace Uno.UI.Skia.Platform;
+namespace Uno.UI.Runtime.Skia.Wpf;
 
 internal class WpfApplicationViewExtension : IApplicationViewExtension
 {

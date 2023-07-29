@@ -2,15 +2,14 @@
 
 using System.Windows.Input;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf;
-using Uno.UI.Skia.Platform.Extensions;
+using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfUIElement = System.Windows.UIElement;
 
-namespace Uno.UI.Skia.Platform
+namespace Uno.UI.Runtime.Skia.Wpf
 {
 	internal partial class WpfCoreWindowExtension : ICoreWindowExtension
 	{

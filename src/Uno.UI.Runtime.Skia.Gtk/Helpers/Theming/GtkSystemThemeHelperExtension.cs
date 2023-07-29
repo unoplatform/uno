@@ -2,10 +2,11 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Gtk;
 using Microsoft.Win32;
 using Uno.Helpers.Theming;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming
 {
 	internal class GtkSystemThemeHelperExtension : ISystemThemeHelperExtension, IDisposable
 	{
@@ -26,7 +27,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
 			}
 			else
 			{
-				var settings = Gtk.Settings.Default;
+				var settings = Settings.Default;
 				settings.AddNotification(nameof(settings.ApplicationPreferDarkTheme), ApplicationPreferDarkThemeHandler);
 			}
 		}
@@ -39,7 +40,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
 			}
 			else
 			{
-				var settings = Gtk.Settings.Default;
+				var settings = Settings.Default;
 				settings.RemoveNotification(nameof(settings.ApplicationPreferDarkTheme), ApplicationPreferDarkThemeHandler);
 			}
 		}
@@ -55,7 +56,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
 			}
 			else
 			{
-				return Gtk.Settings.Default.ApplicationPreferDarkTheme ? SystemTheme.Dark : SystemTheme.Light;
+				return Settings.Default.ApplicationPreferDarkTheme ? SystemTheme.Dark : SystemTheme.Light;
 			}
 		}
 

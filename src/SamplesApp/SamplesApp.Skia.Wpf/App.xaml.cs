@@ -1,6 +1,6 @@
-﻿using Uno.UI.Skia.Platform;
+﻿using Uno.UI.Runtime.Skia.Wpf;
 
-namespace SamplesApp.WPF
+namespace SamplesApp.Wpf
 {
 	/// <summary>
 	/// Interaction logic for App.xaml
