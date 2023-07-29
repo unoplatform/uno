@@ -142,7 +142,7 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
 		{
-			provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+			provider.Store.ClearValue(FrameworkElement.DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusOnInteractionProperty, DependencyPropertyValuePrecedences.Local);
 			provider.Store.ClearValue(AllowFocusWhenDisabledProperty, DependencyPropertyValuePrecedences.Local);
@@ -172,14 +172,14 @@ public partial class Popup : FrameworkElement, IPopup
 		_childHasOwnDataContext = false;
 		if (PropagatesDataContextToChild && Child is IDependencyObjectStoreProvider provider)
 		{
-			var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
+			var dataContextProperty = provider.Store.ReadLocalValue(FrameworkElement.DataContextProperty);
 
 			var shouldClearValue = e != null && e.NewValue == null && dataContextProperty == e.OldValue;
 			if (shouldClearValue)
 			{
 				//In this case we are clearing the DataContext that was previously set by the Popup
 				//This usually occurs when the owner of the Popup is removed from the Visual Tree
-				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(FrameworkElement.DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 			else if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
 			{
@@ -188,7 +188,7 @@ public partial class Popup : FrameworkElement, IPopup
 			}
 			else
 			{
-				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				provider.Store.SetValue(FrameworkElement.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 	}

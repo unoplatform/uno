@@ -71,7 +71,6 @@ namespace Windows.UI.Xaml
 		private ResourceBindingCollection? _resourceBindings;
 
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
-		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
 		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
 		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
@@ -168,16 +167,15 @@ namespace Windows.UI.Xaml
 		/// Creates a delegated dependency object instance for the specified <paramref name="originalObject"/>
 		/// </summary>
 		/// <param name="originalObject"></param>
-		public DependencyObjectStore(object originalObject, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyObjectStore(object originalObject, DependencyProperty templatedParentProperty)
 		{
 			ObjectId = Interlocked.Increment(ref _objectIdCounter);
 
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
 
-			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
+			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, templatedParentProperty);
 
-			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
 
 			if (_trace.IsEnabled)
@@ -211,7 +209,7 @@ namespace Windows.UI.Xaml
 
 		/// <summary>
 		/// Determines if the dependency object automatically registers for inherited
-		/// properties such as <see cref="DataContextProperty"/> or <see cref="TemplatedParentProperty"/>.
+		/// properties such as <see cref="FrameworkElement.DataContextProperty"/> or <see cref="TemplatedParentProperty"/>.
 		/// </summary>
 		/// <remarks>
 		/// This is used to avoid propagating the DataContext and TemplatedParent properties
@@ -484,7 +482,7 @@ namespace Windows.UI.Xaml
 					var newValue = GetValue(propertyDetails);
 					var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
-					if (property == _dataContextProperty)
+					if (property == FrameworkElement.DataContextProperty)
 					{
 						OnDataContextChanged(value, newValue, precedence);
 					}
@@ -545,13 +543,13 @@ namespace Windows.UI.Xaml
 				// If a value is set with a higher precedence, the lower precedence DataContext must be cleared
 				if (newPrecedence < previousPrecedence)
 				{
-					if (previousValue is IDependencyObjectStoreProvider childProviderClear)
+					if (previousValue is IDependencyObjectStoreProvider childProviderClear && childProviderClear.Store.ActualInstance is FrameworkElement)
 					{
 						// Clears the DataContext of the previous precedence value
 						childProviderClear.Store.ClearInheritedDataContext();
 					}
 
-					if (newValue is IDependencyObjectStoreProvider childProviderClearNewValue
+					if (newValue is IDependencyObjectStoreProvider childProviderClearNewValue && childProviderClearNewValue.Store.ActualInstance is FrameworkElement
 						&& !ReferenceEquals(childProviderClearNewValue.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
@@ -562,14 +560,14 @@ namespace Windows.UI.Xaml
 				// If a value is set with a lower precedence, the higher precedence DataContext must be set to the current DataContext
 				if (newPrecedence > previousPrecedence)
 				{
-					if (newValue is IDependencyObjectStoreProvider childProviderSet
+					if (newValue is IDependencyObjectStoreProvider childProviderSet && childProviderSet.Store.ActualInstance is FrameworkElement
 						&& !ReferenceEquals(childProviderSet.Store.Parent, ActualInstance))
 					{
 						// Sets the DataContext of the new precedence value
 						childProviderSet.Store.RestoreInheritedDataContext(_properties.DataContextPropertyDetails.GetValue());
 					}
 
-					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue)
+					if (previousValue is IDependencyObjectStoreProvider childProviderSetNewValue && childProviderSetNewValue.Store.ActualInstance is FrameworkElement)
 					{
 						// Clears the DataContext of the previous precedence value
 						childProviderSetNewValue.Store.ClearInheritedDataContext();
@@ -581,13 +579,13 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ClearInheritedDataContext()
 		{
-			ClearValue(_dataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
+			ClearValue(FrameworkElement.DataContextProperty, DependencyPropertyValuePrecedences.Inheritance);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void RestoreInheritedDataContext(object? dataContext)
 		{
-			SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
+			SetValue(FrameworkElement.DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance);
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1090,7 +1088,7 @@ namespace Windows.UI.Xaml
 				// If the property is available on the current DependencyObject, update it.
 				// This will allow for it to be reset to is previous lower precedence.
 				if (
-					localProperty != _dataContextProperty &&
+					localProperty != FrameworkElement.DataContextProperty &&
 					localProperty != _templatedParentProperty &&
 					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
 				)
@@ -1182,7 +1180,6 @@ namespace Windows.UI.Xaml
 		private InheritedPropertiesDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
 		{
 			_parentTemplatedParentProperty = parentProvider.Store.TemplatedParentProperty;
-			_parentDataContextProperty = parentProvider.Store.DataContextProperty;
 
 			// The propagation of the inherited properties is performed by setting the
 			// Inherited precedence level value of each control of the visual tree.
@@ -1228,8 +1225,7 @@ namespace Windows.UI.Xaml
 						}
 					}
 
-
-					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					SetValue(FrameworkElement.DataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
@@ -1244,9 +1240,9 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private (DependencyProperty? localProperty, DependencyPropertyDetails? propertyDetails) GetLocalPropertyDetails(DependencyProperty property)
 		{
-			if (_parentDataContextProperty.UniqueId == property.UniqueId)
+			if (ActualInstance is FrameworkElement && FrameworkElement.DataContextProperty.UniqueId == property.UniqueId)
 			{
-				return (_dataContextProperty, _properties.DataContextPropertyDetails);
+				return (FrameworkElement.DataContextProperty, _properties.DataContextPropertyDetails);
 			}
 			else if (_parentTemplatedParentProperty == property)
 			{
@@ -1928,7 +1924,7 @@ namespace Windows.UI.Xaml
 
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
 		{
-			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
+			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == FrameworkElement.DataContextProperty;
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
 #endif

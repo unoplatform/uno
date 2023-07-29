@@ -82,11 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void SetFlyoutDataContext()
 		{
 			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
-			m_flyout?.SetValue(
-				MenuFlyout.DataContextProperty,
-				this.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
+			m_flyout.SetFlyoutItemsDataContext(DataContext);
 		}
 
 		private void PopulateContent()

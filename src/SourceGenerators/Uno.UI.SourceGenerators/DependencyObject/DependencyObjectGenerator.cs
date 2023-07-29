@@ -499,8 +499,6 @@ partial void UpdateBinderDetails()
 private readonly static IEventProvider _binderTrace = Tracing.Get(DependencyObjectStore.TraceProvider.Id);
 private BinderReferenceHolder _refHolder;
 
-public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
-
 partial void InitializeBinder();
 
 private void __InitializeBinder()
@@ -629,56 +627,8 @@ global::Uno.UI.DataBinding.ManagedWeakReference IWeakReferenceProvider.WeakRefer
 			{
 				var virtualModifier = typeSymbol.IsSealed ? "" : "virtual";
 				var protectedModifier = typeSymbol.IsSealed ? "private" : "internal protected";
-				string dataContextChangedInvokeArgument;
-				if (typeSymbol.Is(_frameworkElementSymbol))
-				{
-					// We can pass 'this' safely to a parameter of type FrameworkElement.
-					dataContextChangedInvokeArgument = "this";
-				}
-				else if (_frameworkElementSymbol.Is(typeSymbol))
-				{
-					// Example: Border -> FrameworkElement -> BindableView
-					// If we have a BindableView, it may or may not be FrameworkElement.
-					dataContextChangedInvokeArgument = "this as FrameworkElement";
-				}
-				else
-				{
-					// This can't be a FrameworkElement. Just pass null.
-					// Passing `this as FrameworkElement` will produce a compile-time error.
-					// error CS0039: Cannot convert type '{0}' to '{1}' via a reference conversion, boxing conversion, unboxing conversion, wrapping conversion, or null type conversion
-					dataContextChangedInvokeArgument = "null";
-				}
 
 				builder.AppendMultiLineIndented($@"
-
-#region DataContext DependencyProperty
-
-public object DataContext
-{{
-	get => GetValue(DataContextProperty);
-	set => SetValue(DataContextProperty, value);
-}}
-
-// Using a DependencyProperty as the backing store for DataContext.  This enables animation, styling, binding, etc...
-public static DependencyProperty DataContextProperty {{ get ; }} =
-	DependencyProperty.Register(
-		name: nameof(DataContext),
-		propertyType: typeof(object),
-		ownerType: typeof({typeSymbol.Name}),
-		typeMetadata: new FrameworkPropertyMetadata(
-			defaultValue: null,
-			options: FrameworkPropertyMetadataOptions.Inherits,
-			propertyChangedCallback: (s, e) => (({typeSymbol.Name})s).OnDataContextChanged(e)
-		)
-);
-
-{protectedModifier} {virtualModifier} void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-{{
-	OnDataContextChangedPartial(e);
-	DataContextChanged?.Invoke({dataContextChangedInvokeArgument}, new DataContextChangedEventArgs(DataContext));
-}}
-
-#endregion
 
 #region TemplatedParent DependencyProperty
 
@@ -732,8 +682,6 @@ public void SetBindingValue(object value, [CallerMemberName] string propertyName
 
 [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 internal bool IsAutoPropertyInheritanceEnabled {{ get => __Store.IsAutoPropertyInheritanceEnabled; set => __Store.IsAutoPropertyInheritanceEnabled = value; }}
-
-partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e);
 
 partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -795,7 +743,7 @@ public override bool Equals(object other)
 					{
 						using (builder.BlockInvariant($"if(__storeBackingField == null)"))
 						{
-							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, DataContextProperty, TemplatedParentProperty);");
+							builder.AppendLineIndented("__storeBackingField = new DependencyObjectStore(this, TemplatedParentProperty);");
 							builder.AppendLineIndented("__InitializeBinder();");
 						}
 

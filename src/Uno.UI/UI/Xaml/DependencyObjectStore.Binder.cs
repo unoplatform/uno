@@ -41,7 +41,6 @@ namespace Windows.UI.Xaml
 		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
-		private readonly DependencyProperty _dataContextProperty;
 		private readonly DependencyProperty _templatedParentProperty;
 
 		/// <summary>
@@ -102,7 +101,7 @@ namespace Windows.UI.Xaml
 				{
 					provider.Store.SetInheritedTemplatedParent(inheritedValue);
 				}
-				else
+				else if (provider.Store.ActualInstance is FrameworkElement)
 				{
 					provider.Store.SetInheritedDataContext(inheritedValue);
 				}
@@ -171,7 +170,7 @@ namespace Windows.UI.Xaml
 			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _properties.TemplatedParentPropertyDetails);
 
 		private void SetInheritedDataContext(object? dataContext)
-			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
+			=> SetValue(FrameworkElement.DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _properties.DataContextPropertyDetails);
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
@@ -191,7 +190,6 @@ namespace Windows.UI.Xaml
 			BindingPath.RegisterPropertyChangedRegistrationHandler(new BindingPathPropertyChangedRegistrationHandler());
 		}
 
-		internal DependencyProperty DataContextProperty => _dataContextProperty!;
 		internal DependencyProperty TemplatedParentProperty => _templatedParentProperty!;
 
 		/// <summary>

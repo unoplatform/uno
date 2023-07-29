@@ -27,7 +27,6 @@ namespace Windows.UI.Xaml
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
 		private object? _hardOwnerReference;
-		private readonly DependencyProperty _dataContextProperty;
 		private readonly DependencyProperty _templatedParentProperty;
 
 		private DependencyPropertyDetails? _dataContextPropertyDetails;
@@ -46,12 +45,11 @@ namespace Windows.UI.Xaml
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
 		/// </summary>
 		/// <param name="ownerType">The owner type</param>
-		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
+		public DependencyPropertyDetailsCollection(Type ownerType, ManagedWeakReference ownerReference, DependencyProperty templatedParentProperty)
 		{
 			_ownerType = ownerType;
 			_ownerReference = ownerReference;
 
-			_dataContextProperty = dataContextProperty;
 			_templatedParentProperty = templatedParentProperty;
 		}
 
@@ -99,7 +97,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public DependencyPropertyDetails DataContextPropertyDetails
-			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
+			=> _dataContextPropertyDetails ??= GetPropertyDetails(FrameworkElement.DataContextProperty);
 
 		public DependencyPropertyDetails TemplatedParentPropertyDetails
 			=> _templatedParentPropertyDetails ??= GetPropertyDetails(_templatedParentProperty);
@@ -204,7 +202,7 @@ namespace Windows.UI.Xaml
 			out bool hasValueDoesNotInherit)
 		{
 			if (property == _templatedParentProperty
-				|| property == _dataContextProperty)
+				|| property == FrameworkElement.DataContextProperty)
 			{
 				// TemplatedParent is a DependencyObject but does not propagate datacontext
 				hasValueInherits = false;

@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 		}
 
-		private void EnsurePopupCreated()
+		private void EnsurePopupCreated(object dataContext)
 		{
 			if (_popup == null)
 			{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
-				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
+				SynchronizePropertyToPopup(Popup.DataContextProperty, dataContext);
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
@@ -312,7 +312,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
 		{
-			EnsurePopupCreated();
+			EnsurePopupCreated(placementTarget.DataContext);
 
 			m_hasPlacementOverride = false;
 
@@ -492,7 +492,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Open()
 		{
-			EnsurePopupCreated();
+			EnsurePopupCreated(Target.DataContext);
 
 			SetPopupPosition(Target, PopupPositionInTarget);
 			ApplyTargetPosition();
@@ -515,9 +515,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_popup.VerticalOffset = position.Y;
 			}
 		}
-
-		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e) =>
-			SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
 
 		private void SynchronizePropertyToPopup(DependencyProperty property, object value)
 		{
@@ -549,12 +546,17 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public static void ShowAttachedFlyout(FrameworkElement flyoutOwner)
 		{
 			var flyout = GetAttachedFlyout(flyoutOwner);
+			var dataContext = flyoutOwner.DataContext;
+			flyout?.SynchronizePropertyToPopup(Popup.DataContextProperty, dataContext);
 
-			flyout?.SetValue(
-				FlyoutBase.DataContextProperty,
-				flyoutOwner.DataContext,
-				precedence: DependencyPropertyValuePrecedences.Inheritance
-			);
+			if (flyout is Flyout { Content: IDependencyObjectStoreProvider binder })
+			{
+				binder.Store.SetValue(FrameworkElement.DataContextProperty, dataContext, DependencyPropertyValuePrecedences.Local);
+			}
+			else if (flyout is MenuFlyout menuFlyout)
+			{
+				menuFlyout.SetFlyoutItemsDataContext(dataContext);
+			}
 
 			flyout?.ShowAt(flyoutOwner);
 		}

@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media
 
 		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty)
+			if (args.Property == TemplatedParentProperty)
 			{
 				return;
 			}

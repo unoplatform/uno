@@ -47,19 +47,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal FocusInputDeviceKind InputDeviceTypeUsedToOpen { get; set; }
 
-		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
-		{
-			base.OnDataContextChanged(e);
-
-			SetFlyoutItemsDataContext();
-		}
-
-		private void SetFlyoutItemsDataContext()
+		internal void SetFlyoutItemsDataContext(object dataContext)
 		{
 			// This is present to force the dataContext to be passed to the popup of the flyout since it is not directly a child in the visual tree of the flyout.
 			Items?.ForEach(item => item?.SetValue(
-				UIElement.DataContextProperty,
-				this.DataContext,
+				FrameworkElement.DataContextProperty,
+				dataContext,
 				precedence: DependencyPropertyValuePrecedences.Inheritance
 			));
 		}

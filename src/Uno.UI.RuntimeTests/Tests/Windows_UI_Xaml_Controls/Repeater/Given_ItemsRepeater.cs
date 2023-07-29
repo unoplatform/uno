@@ -172,10 +172,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 				sv.ChangeView(null, sv.ExtentHeight / 2, null, disableAnimation: true);
 				await TestServices.WindowHelper.WaitForIdle();
 
-				var groupView = sut.Children.Single(g => g.DataContext as string == "Group #05");
+				var groupView = sut.Children.Single(g => ((FrameworkElement)g).DataContext as string == "Group #05");
 				var groupIr = (ItemsRepeater)((StackPanel)groupView).Children[1];
 
-				var beforeVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
+				var beforeVisibleItems = groupIr.Children.Select(i => ((FrameworkElement)i).DataContext?.ToString()).OrderBy(i => i).ToArray();
 
 				// Scroll by baby step to not be above the threshold which would cause a complete redraw
 				const int step = 10;
@@ -185,7 +185,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 					await TestServices.WindowHelper.WaitForIdle();
 				}
 
-				var afterVisibleItems = groupIr.Children.Select(i => i.DataContext?.ToString()).OrderBy(i => i).ToArray();
+				var afterVisibleItems = groupIr.Children.Select(i => ((FrameworkElement)i).DataContext?.ToString()).OrderBy(i => i).ToArray();
 
 				afterVisibleItems.Should().NotContain(beforeVisibleItems);
 			}

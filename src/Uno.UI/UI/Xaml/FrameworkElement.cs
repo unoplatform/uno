@@ -147,6 +147,35 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		#region DataContext DependencyProperty
+
+		public event Windows.Foundation.TypedEventHandler<FrameworkElement, DataContextChangedEventArgs> DataContextChanged;
+
+		public object DataContext
+		{
+			get => GetValue(DataContextProperty);
+			set => SetValue(DataContextProperty, value);
+		}
+
+		public static DependencyProperty DataContextProperty { get; } =
+			DependencyProperty.Register(
+				name: nameof(DataContext),
+				propertyType: typeof(object),
+				ownerType: typeof(FrameworkElement),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => ((FrameworkElement)s).OnDataContextChanged(e)
+		)
+);
+
+
+		internal protected virtual void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
+		{
+			DataContextChanged?.Invoke(this, new DataContextChangedEventArgs(DataContext));
+		}
+
+		#endregion
 
 		partial void Initialize()
 		{

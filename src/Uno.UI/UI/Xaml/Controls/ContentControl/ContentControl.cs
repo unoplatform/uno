@@ -417,11 +417,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if ((ContentTemplateRoot is IDependencyObjectStoreProvider provider) &&
 						// The DataContext may be set directly on the template root
-						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(provider.Store.DataContextProperty))
+						(_localContentDataContextOverride || !(provider as DependencyObject).IsDependencyPropertyLocallySet(FrameworkElement.DataContextProperty))
 					)
 					{
 						_localContentDataContextOverride = true;
-						provider.Store.SetValue(provider.Store.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
+						provider.Store.SetValue(FrameworkElement.DataContextProperty, Content, DependencyPropertyValuePrecedences.Local);
 					}
 				}
 			}
@@ -436,7 +436,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_localContentDataContextOverride && ContentTemplateRoot is IDependencyObjectStoreProvider provider)
 			{
 				_localContentDataContextOverride = false;
-				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+				provider.Store.ClearValue(FrameworkElement.DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
 
