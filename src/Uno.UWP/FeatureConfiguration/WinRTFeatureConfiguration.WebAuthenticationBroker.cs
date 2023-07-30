@@ -1,4 +1,5 @@
 ﻿#nullable enable
+
 using System;
 
 namespace Uno
@@ -20,21 +21,23 @@ namespace Uno
 			/// </summary>
 			public static Uri? DefaultReturnUri { get; set; }
 
-#if __WASM__
-
+#if __CROSSRUNTIME__
 			/// <summary>
 			/// This is the initial name of the opened window, when this mode is used.
 			/// </summary>
+			/// <remarks>Applies to WebAssembly only.</remarks>
 			public static string? WindowTitle { get; set; } = "Sign In";
 
 			/// <summary>
 			/// Width of the opened window
 			/// </summary>
+			/// <remarks>Applies to WebAssembly only.</remarks>
 			public static ushort WindowWidth { get; set; } = 483;
 
 			/// <summary>
 			/// Height of the opened window
 			/// </summary>
+			/// <remarks>Applies to WebAssembly only.</remarks>
 			public static ushort WindowHeight { get; set; } = 600;
 
 			/// <summary>
@@ -45,14 +48,15 @@ namespace Uno
 			/// Using an iframe works only if you control the server and set
 			/// appropriate http headers.
 			/// </remarks>
+			/// <remarks>Applies to WebAssembly only.</remarks>
 			public static string? IFrameHtmlId { get; set; }
 
 #elif __IOS__ || __MACOS__
-			/// <summary>
-			/// (iOS 13+, MacOS 10.15+) If Ephemeral Web Browser Session should be used.
-			/// That means no cookies is preserved between sessions.
-			/// </summary>
-			public static bool PrefersEphemeralWebBrowserSession { get; set; }
+		/// <summary>
+		/// (iOS 13+, MacOS 10.15+) If Ephemeral Web Browser Session should be used.
+		/// That means no cookies is preserved between sessions.
+		/// </summary>
+		public static bool PrefersEphemeralWebBrowserSession { get; set; }
 #endif
 		}
 	}

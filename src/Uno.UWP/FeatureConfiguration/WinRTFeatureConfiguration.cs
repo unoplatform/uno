@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Text;
-
-namespace Uno
+﻿namespace Uno
 {
 	public static partial class WinRTFeatureConfiguration
 	{

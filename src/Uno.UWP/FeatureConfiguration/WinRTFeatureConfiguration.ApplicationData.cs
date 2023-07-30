@@ -8,7 +8,7 @@ partial class WinRTFeatureConfiguration
 {
 	public static class ApplicationData
 	{
-#if __SKIA__
+#if __CROSSRUNTIME__
 		private static string? _temporaryFolderPathOverride;
 		private static string? _localCacheFolderPathOverride;
 		private static string? _applicationDataPathOverride;
@@ -17,7 +17,7 @@ partial class WinRTFeatureConfiguration
 		/// Allows overriding the root folder path that the application will use
 		/// to store its TempState folder.
 		/// </summary>
-		/// <remarks>Only applies to Skia targets.</remarks>
+		/// <remarks>Applies to GTK and WPF only.</remarks>
 		public static string? TemporaryFolderPathOverride
 		{
 			get => _temporaryFolderPathOverride;
@@ -32,7 +32,7 @@ partial class WinRTFeatureConfiguration
 		/// Allows overriding the root folder path that the application will use
 		/// to store its LocalCache folder.
 		/// </summary>
-		/// <remarks>Only applies to Skia targets.</remarks>
+		/// <remarks>Applies to GTK and WPF only.</remarks>
 		public static string? LocalCacheFolderPathOverride
 		{
 			get => _localCacheFolderPathOverride;
@@ -48,7 +48,7 @@ partial class WinRTFeatureConfiguration
 		/// to store its application data folders (LocalFolder, RoamingFolder, etc.).
 		/// Only applies to Skia targets.
 		/// </summary>
-		/// <remarks>Only applies to Skia targets.</remarks>
+		/// <remarks>Applies to GTK and WPF only.</remarks>
 		public static string? ApplicationDataPathOverride
 		{
 			get => _applicationDataPathOverride;
