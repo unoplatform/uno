@@ -1,6 +1,7 @@
 ﻿using System;
 using Uno.UI;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -12,6 +13,24 @@ namespace Windows.UI.Xaml.Controls
 		public FlyoutPresenter()
 		{
 			DefaultStyleKey = typeof(FlyoutPresenter);
+
+			KeyDown += OnKeyDown;
+		}
+
+		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		{
+			if (args.Handled)
+			{
+				return;
+			}
+
+			if (args.Key == VirtualKey.Escape)
+			{
+				if (Parent is FlyoutBasePopupPanel fbpp && fbpp.Popup is { } popup)
+				{
+					popup.AssociatedFlyout.Close();
+				}
+			}
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
@@ -37,5 +56,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;
+
 	}
 }

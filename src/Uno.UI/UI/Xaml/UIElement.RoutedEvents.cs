@@ -15,6 +15,8 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
 using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -740,7 +742,11 @@ namespace Windows.UI.Xaml
 			}
 
 			UIElement parent = null;
-			if (this is not PopupPanel)
+			if (this is Popup popup)
+			{
+				parent = popup.Child;
+			}
+			else if (this is not PopupPanel)
 			{
 				parent = this.GetParent() as UIElement;
 
