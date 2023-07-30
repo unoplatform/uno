@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-
-namespace Uno;
+﻿namespace Uno;
 
 partial class WinRTFeatureConfiguration
 {
@@ -13,7 +11,7 @@ partial class WinRTFeatureConfiguration
 		/// </summary>
 		public static bool UseNativeDialog { get; set; }
 #if __ANDROID__ || __IOS__ || __MACOS__
-				= true;
+			= true;
 #endif
 
 		/// <summary>
