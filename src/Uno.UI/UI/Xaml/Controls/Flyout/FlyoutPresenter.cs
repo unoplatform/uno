@@ -14,11 +14,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(FlyoutPresenter);
 
-			KeyDown += OnKeyDown;
 		}
 
-		private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
+			base.OnKeyDown(args);
+
 			if (args.Handled)
 			{
 				return;
@@ -56,6 +57,5 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;
-
 	}
 }
