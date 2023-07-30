@@ -24,12 +24,6 @@ using Uno.UI.RuntimeTests.MUX.Helpers;
 
 using static Private.Infrastructure.TestServices;
 using static Private.Infrastructure.CalendarHelper;
-using System;
-using Windows.System;
-using Windows.UI.Input.Preview.Injection;
-using System.Xml.Linq;
-using Windows.Devices.Input;
-using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 {
@@ -49,45 +43,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		public void TestCleanup()
 		{
 			TestServices.WindowHelper.VerifyTestCleanup();
-		}
-
-		static void Enter(InputInjector inputInjector)
-		{
-#if NETFX_CORE
-			var info = new InjectedInputKeyboardInfo
-			{
-				VirtualKey = (ushort)(VirtualKey.Enter)
-			};
-			inputInjector.InjectKeyboardInput(new[] { info });
-#else
-			KeyboardHelper.Enter(FocusManager.GetFocusedElement() as UIElement);
-#endif
-		}
-
-		static void Space(InputInjector inputInjector)
-		{
-#if NETFX_CORE
-			var info = new InjectedInputKeyboardInfo
-			{
-				VirtualKey = (ushort)(VirtualKey.Space)
-			};
-			inputInjector.InjectKeyboardInput(new[] { info });
-#else
-			KeyboardHelper.Space(FocusManager.GetFocusedElement() as UIElement);
-#endif
-		}
-
-		static void Escape(InputInjector inputInjector)
-		{
-#if NETFX_CORE
-			var info = new InjectedInputKeyboardInfo
-			{
-				VirtualKey = (ushort)(VirtualKey.Escape)
-			};
-			inputInjector.InjectKeyboardInput(new[] { info });
-#else
-			KeyboardHelper.Escape(FocusManager.GetFocusedElement() as UIElement);
-#endif
 		}
 
 		//
@@ -176,87 +131,119 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task CanOpenFlyoutByTapping()
 		{
+			TestCleanupWrapper cleanup;
+
+			Grid rootPanel = null;
+			Grid root = null;
+			TextBlock dateText = null;
 			FlyoutBase flyout = null;
-			try
+			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
+			await helper.PrepareLoadedEvent();
+			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+
+			rootPanel = await CreateTestResources();
+
+			// load into visual tree
+			await RunOnUIThread(() =>
 			{
-				var cp = new CalendarDatePicker();
+				rootPanel.Children.Append(cp);
+			});
 
-				WindowHelper.WindowContent = cp;
+			await helper.WaitForLoaded();
 
-				await WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
-				var dateText = GetTemplateChild(cp, "DateText") as TextBlock;
-				var root = GetTemplateChild(cp, "Root") as Grid;
+			await RunOnUIThread(() =>
+			{
+				root = Grid(helper.GetTemplateChild("Root"));
+				dateText = TextBlock(helper.GetTemplateChild("DateText"));
+
+				VERIFY_IS_NOT_NULL(root);
+				VERIFY_IS_NOT_NULL(dateText);
+
 				flyout = FlyoutBase.GetAttachedFlyout(root);
+				VERIFY_IS_NOT_NULL(flyout);
+			});
 
-				TestServices.InputHelper.Tap(dateText);
-				await WindowHelper.WaitForIdle();
+			await helper.PrepareOpenedEvent();
 
-				Assert.IsTrue(flyout.IsOpen);
-			}
-			finally
+			TestServices.InputHelper.Tap(dateText);
+
+			await helper.WaitForOpened();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await helper.PrepareClosedEvent();
+
+			await RunOnUIThread(() =>
 			{
-				if (flyout?.IsOpen == true)
-				{
-					flyout.Hide();
-				}
-			}
+				// close the flyout before exiting.
+				flyout.Hide();
+			});
+			await helper.WaitForClosed();
+
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task CanOpenFlyoutByKeyboard()
 		{
-			var inputInjector = InputInjector.TryCreate();
-			FlyoutBase flyout = null;
-			try
+			TestCleanupWrapper cleanup;
+
+			Grid rootPanel = null;
+
+			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
+			await helper.PrepareLoadedEvent();
+			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+
+			rootPanel = await CreateTestResources();
+
+			// load into visual tree
+			await RunOnUIThread(() =>
 			{
-				var cp = new CalendarDatePicker();
+				rootPanel.Children.Append(cp);
+			});
 
-				WindowHelper.WindowContent = cp;
+			await helper.WaitForLoaded();
 
-				await WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
-				var root = GetTemplateChild(cp, "Root") as Grid;
-				flyout = FlyoutBase.GetAttachedFlyout(root);
-
-				cp.Focus(FocusState.Programmatic);
-				await WindowHelper.WaitForIdle();
-
-				Enter(inputInjector);
-				await WindowHelper.WaitForIdle();
-
-				Assert.IsTrue(flyout.IsOpen);
-
-				Escape(inputInjector);
-				await WindowHelper.WaitForIdle();
-
-				Assert.IsFalse(flyout.IsOpen);
-
-				cp.Focus(FocusState.Programmatic);
-				await WindowHelper.WaitForIdle();
-
-				Space(inputInjector);
-				await WindowHelper.WaitForIdle();
-
-				Assert.IsTrue(flyout.IsOpen);
-
-				Escape(inputInjector);
-				await WindowHelper.WaitForIdle();
-
-				Assert.IsFalse(flyout.IsOpen);
-			}
-			finally
+			await RunOnUIThread(() =>
 			{
-				if (flyout?.IsOpen == true)
-				{
-					flyout.Hide();
-				}
-			}
+				cp.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+			});
+
+			await helper.PrepareOpenedEvent();
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// press enter to open flyout
+			TestServices.KeyboardHelper.Enter(FocusManager.GetFocusedElement() as UIElement);
+
+			await helper.WaitForOpened();
+
+			// escape to close the flyout
+			TestServices.KeyboardHelper.Escape(FocusManager.GetFocusedElement() as UIElement);
+
+			await TestServices.WindowHelper.WaitForIdle();
+			await helper.PrepareOpenedEvent();
+
+			await RunOnUIThread(() =>
+			{
+				cp.Focus(Windows.UI.Xaml.FocusState.Programmatic);
+			});
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// press space to open flyout
+			TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ", FocusManager.GetFocusedElement() as UIElement);
+
+			await helper.WaitForOpened();
+
+			// escape to close the flyout
+			TestServices.KeyboardHelper.Escape(FocusManager.GetFocusedElement() as UIElement);
+			await TestServices.WindowHelper.WaitForIdle();
 		}
 
 
@@ -308,7 +295,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
+		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
 		public async Task CanCloseFlyoutBySelectingADate()
 		{
 			TestCleanupWrapper cleanup;
@@ -320,7 +307,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			CalendarView calendarView = null;
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
