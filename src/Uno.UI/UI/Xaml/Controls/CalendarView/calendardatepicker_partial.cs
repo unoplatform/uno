@@ -78,8 +78,6 @@ namespace Windows.UI.Xaml.Controls
 			m_shouldPerformActions = false;
 			m_isSelectedDatesChangingInternally = false;
 
-			Tapped += OnTap;
-
 			PrepareState();
 		}
 
@@ -698,15 +696,16 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		protected void OnTap(object sender, TappedRoutedEventArgs args)
+		protected override void OnTapped(TappedRoutedEventArgs args)
 		{
-			if (!IsEnabled || args.Handled)
+			base.OnTapped(args);
+
+			if (!IsEnabled)
 			{
 				return;
 			}
 
 			IsCalendarOpen = true;
-			args.Handled = true;
 			UpdateVisualState();
 		}
 
