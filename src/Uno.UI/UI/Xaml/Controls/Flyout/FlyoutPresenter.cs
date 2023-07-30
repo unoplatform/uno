@@ -32,6 +32,8 @@ namespace Windows.UI.Xaml.Controls
 					popup.AssociatedFlyout.Close();
 				}
 			}
+
+			args.Handled = true;
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)

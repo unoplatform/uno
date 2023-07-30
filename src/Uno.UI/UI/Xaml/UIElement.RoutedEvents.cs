@@ -656,6 +656,15 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"Flag not defined for routed event {routedEvent.Name}.");
 			}
 
+			if (this is Popup popup)
+			{
+				// When an open flyout receives an event, the event propagation starts at
+				// the popup itself, and not it's (logical) child, so we need to
+				// handle this case explicitly. Note that the logical child isn't
+				// actually a child, so the event won't propagate back to the popup.
+				return popup.Child.RaiseEvent(routedEvent, args, ctx);
+			}
+
 			// TODO: This is just temporary workaround before proper
 			// keyboard event infrastructure is implemented everywhere
 			// (issue #6074)
@@ -722,15 +731,7 @@ namespace Windows.UI.Xaml
 			}
 
 			UIElement parent = null;
-			if (this is Popup popup)
-			{
-				// When a popup is clicked, the event propagation starts at
-				// the popup itself, and not it's (logical) child, so we need to
-				// handle this case explicitly. Note that the logical child isn't
-				// actually a child, so the event won't propagate back to the popup.
-				parent = popup.Child;
-			}
-			else if (this is not PopupPanel)
+			if (this is not PopupPanel)
 			{
 				parent = this.GetParent() as UIElement;
 

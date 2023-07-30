@@ -18,7 +18,6 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.MUX.Helpers;
 
@@ -220,12 +219,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// press enter to open flyout
-			TestServices.KeyboardHelper.Enter(FocusManager.GetFocusedElement() as UIElement);
+			TestServices.KeyboardHelper.Enter();
 
 			await helper.WaitForOpened();
 
 			// escape to close the flyout
-			TestServices.KeyboardHelper.Escape(FocusManager.GetFocusedElement() as UIElement);
+			TestServices.KeyboardHelper.Escape();
 
 			await TestServices.WindowHelper.WaitForIdle();
 			await helper.PrepareOpenedEvent();
@@ -237,12 +236,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			await TestServices.WindowHelper.WaitForIdle();
 
 			// press space to open flyout
-			TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ", FocusManager.GetFocusedElement() as UIElement);
+			TestServices.KeyboardHelper.PressKeySequence("$d$_ #$u$_ ");
 
 			await helper.WaitForOpened();
 
 			// escape to close the flyout
-			TestServices.KeyboardHelper.Escape(FocusManager.GetFocusedElement() as UIElement);
+			TestServices.KeyboardHelper.Escape();
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
