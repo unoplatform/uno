@@ -3,8 +3,6 @@
 
 #pragma warning disable 168 // for cleanup imported member
 
-#if !WINDOWS_UWP
-
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -184,29 +182,18 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			{
 				var cp = new CalendarDatePicker();
 
-				var rootPanel = XamlReader.Load(
-						"<Grid xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml' " +
-						"      Width='400' Height='400' VerticalAlignment='Top' HorizontalAlignment='Left' Background='Navy'/>")
-					as Grid;
+				WindowHelper.WindowContent = cp;
 
-				WindowHelper.WindowContent = rootPanel;
-
-				rootPanel!.Children.Append(cp);
-
-				await WindowHelper.WaitForLoaded(cp);
 				await WindowHelper.WaitForIdle();
 
-				var root = GetTemplateChild(cp, "Root") as Grid;
 				var dateText = GetTemplateChild(cp, "DateText") as TextBlock;
-
-				Assert.IsNotNull(root);
-				Assert.IsNotNull(dateText);
-
+				var root = GetTemplateChild(cp, "Root") as Grid;
 				flyout = FlyoutBase.GetAttachedFlyout(root);
-				Assert.IsNotNull(flyout);
 
 				TestServices.InputHelper.Tap(dateText);
 				await WindowHelper.WaitForIdle();
+
+				Assert.IsTrue(flyout.IsOpen);
 			}
 			finally
 			{
@@ -319,7 +306,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
+		[RunsOnUIThread]
 		public async Task CanCloseFlyoutBySelectingADate()
 		{
 			TestCleanupWrapper cleanup;
@@ -331,7 +318,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			CalendarView calendarView = null;
 			CalendarDatePickerHelper helper = new CalendarDatePickerHelper();
 			await helper.PrepareLoadedEvent();
-			Windows.UI.Xaml.Controls.CalendarDatePicker cp = await helper.GetCalendarDatePicker();
+			CalendarDatePicker cp = await helper.GetCalendarDatePicker();
 
 			rootPanel = await CreateTestResources();
 
@@ -1000,4 +987,3 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 	}
 }
 
-#endif
