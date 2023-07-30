@@ -3,6 +3,8 @@
 
 #pragma warning disable 168 // for cleanup imported member
 
+#if !WINDOWS_UWP
+
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -987,3 +989,4 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 	}
 }
 
+#endif
