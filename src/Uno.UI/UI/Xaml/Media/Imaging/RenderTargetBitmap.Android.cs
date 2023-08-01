@@ -119,5 +119,20 @@ namespace Windows.UI.Xaml.Media.Imaging
 				SetSoftwareRendering(element, false);
 			}
 		}
+
+		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		private static void SwapRB(ref byte[] buffer, int byteCount)
+		{
+			for (var i = 0; i < byteCount; i += 4)
+			{
+				//Swap R and B chanal
+				Swap(ref buffer![i], ref buffer![i + 2]);
+			}
+		}
+
+		private static void Swap(ref byte a, ref byte b)
+		{
+			(a, b) = (b, a);
+		}
 	}
 }
