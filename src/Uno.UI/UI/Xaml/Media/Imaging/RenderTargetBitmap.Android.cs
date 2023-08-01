@@ -41,7 +41,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			return ImageData.FromBitmap(BitmapFactory.DecodeByteArray(buffer, 0, bufferLength));
+			var bitmap = Bitmap.CreateBitmap(width, height, Bitmap.Config.Argb8888!)!;
+			int current = 0;
+			for (int x = 0; x < width; x++)
+			{
+				for (int y = 0; y < height; y++)
+				{
+					var b = buffer[current++];
+					var g = buffer[current++];
+					var r = buffer[current++];
+					var a = buffer[current++];
+					bitmap.SetPixel(x, y, new Android.Graphics.Color(r, g, b, a));
+				}
+			}
+
+			return ImageData.FromBitmap(bitmap);
 		}
 
 		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
