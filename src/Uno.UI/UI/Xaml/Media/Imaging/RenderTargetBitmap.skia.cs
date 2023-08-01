@@ -14,8 +14,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private const int _bitsPerComponent = 8;
 		private const int _bytesPerPixel = _bitsPerPixel / _bitsPerComponent;
 
-		delegate void SwapColor(ref byte[] buffer, int byteCount);
-
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
 			var bufferHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
