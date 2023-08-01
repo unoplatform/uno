@@ -17,13 +17,24 @@ namespace SamplesApp.Droid
 			ConfigurationChanges = ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
+	// Ensure ActionMain intent filter is first in order, otherwise the app won't launch for debugging.
+	[IntentFilter(
+		new[] { Android.Content.Intent.ActionMain },
+		Categories = new[] {
+			Android.Content.Intent.CategoryLauncher,
+			Android.Content.Intent.CategoryLeanbackLauncher
+		})]
 	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
+<<<<<<< HEAD
 			Android.Content.Intent.CategoryBrowsable
+=======
+			Android.Content.Intent.CategoryBrowsable,
+>>>>>>> d44bd5392e (fix: Ensure Android apps can launch for debugging)
 		},
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
