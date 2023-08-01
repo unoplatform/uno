@@ -294,7 +294,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
 		public async Task CanCloseFlyoutBySelectingADate()
 		{
 			TestCleanupWrapper cleanup;
@@ -515,7 +514,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
 		public async Task PressingDoesNotOpenMenuFlyout()
 		{
 			TestCleanupWrapper cleanup;
@@ -588,7 +586,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("Asserts")]
 		public async Task ValidateUIElementTree()
 		{
 			TestCleanupWrapper cleanup;
@@ -631,7 +628,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("Assert errors in tests")]
 		public async Task ValidateVisualStates()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -752,7 +748,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 #endif
 
 		[TestMethod]
-		[Ignore("Asserts")]
+		[Ignore("Calendar formatting is still not properly implemented")]
 		public async Task CanPresetDate()
 		{
 			TestCleanupWrapper cleanup;
