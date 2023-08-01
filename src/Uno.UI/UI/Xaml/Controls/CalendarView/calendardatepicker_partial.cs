@@ -706,7 +706,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			IsCalendarOpen = true;
-			UpdateVisualState();
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
