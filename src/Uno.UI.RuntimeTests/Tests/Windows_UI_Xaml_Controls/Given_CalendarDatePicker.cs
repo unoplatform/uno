@@ -54,7 +54,7 @@ public class Given_CalendarDatePicker
 		try
 		{
 			bool opened = false;
-			flyout.Opened += async (sender, args) =>
+			flyout.Opened += (_, _) =>
 			{
 				opened = true;
 			};
@@ -116,9 +116,6 @@ public class Given_CalendarDatePicker
 					Assert.IsTrue(background.Luminance < 0.5);
 				}
 			}
-		}
-		catch(Exception)
-		{
 		}
 		finally
 		{
