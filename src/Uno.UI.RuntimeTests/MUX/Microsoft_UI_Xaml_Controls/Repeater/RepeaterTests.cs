@@ -268,6 +268,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
 
+				Content = scrollhost;
+
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("rootRepeater");
 				scrollViewer = (ScrollViewer)scrollhost.FindName("scrollviewer");
 				scrollViewer.ViewChanged += (sender, args) =>
@@ -279,7 +281,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 
 				rootRepeater.ItemsSource = Enumerable.Range(0, 500);
-				Content = scrollhost;
 			});
 
 			// scroll down several times and validate current anchor
@@ -313,8 +314,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#else
-		[Ignore("Currently fails on all platforms https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void NestedRepeaterWithDataTemplateScenario()
 		{
@@ -325,7 +324,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__ || __SKIA__
+#elif __IOS__
 		[Ignore("Currently fails on iOS/Skia https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyFocusedItemIsRecycledOnCollectionReset()
@@ -680,8 +679,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#else
-		[Ignore("Currently fails on all targets https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{
