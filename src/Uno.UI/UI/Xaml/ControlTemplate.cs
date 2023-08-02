@@ -2,6 +2,7 @@
 
 using System;
 using Uno.UI;
+using Windows.UI.Xaml.Media;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ControlTemplate() : base(null) { }
 
-		public ControlTemplate(Func<View?>? factory)
+		internal ControlTemplate(Func<View?>? factory)
 			: base(factory)
 		{
 			_shouldInjectTemplatedParent = true;
@@ -42,12 +43,24 @@ namespace Windows.UI.Xaml.Controls
 		internal View? LoadContentCached(Control templatedParent)
 		{
 			var root = base.LoadContentCachedCore(templatedParent);
-			if (_shouldInjectTemplatedParent)
+			if (_shouldInjectTemplatedParent && root is DependencyObject rootAsDO)
 			{
-				// here we are in an alternative path,
-				// where custom factory method is provided possibly without TemplatedParent propagation
-				// so we have to correct here.
-				// todo@xy: ^
+				// Here we are in an alternative path,
+				// where custom factory method is provided without TemplatedParent propagation.
+				// So we have to correct here.
+				SetTemplatedParentRecursively(rootAsDO, templatedParent);
+
+				void SetTemplatedParentRecursively(DependencyObject view, Control templatedParent)
+				{
+					if (view is FrameworkElement fe)
+					{
+						fe.SetTemplatedParent(templatedParent);
+					}
+					foreach (var child in VisualTreeHelper.GetChildren(view))
+					{
+						SetTemplatedParentRecursively(child, templatedParent);
+					}
+				}
 			}
 
 			return root;

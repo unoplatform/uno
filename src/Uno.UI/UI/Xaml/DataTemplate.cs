@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.ComponentModel;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -42,6 +43,9 @@ namespace Windows.UI.Xaml
 
 		public View? LoadContent() => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent: null);
 
-		internal View? LoadContentCached() => base.LoadContentCachedCore(templatedParent: null);
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public View? LoadContent(DependencyObject templatedParent) => ((IFrameworkTemplateInternal)this).LoadContent(templatedParent);
+
+		internal View? LoadContentCached(DependencyObject? templatedParent = null) => base.LoadContentCachedCore(templatedParent);
 	}
 }

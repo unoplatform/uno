@@ -27,12 +27,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public ItemsPresenter()
 		{
-			// A content presenter does not propagate its own templated
-			// parent. The content's TemplatedParent has already been set by the
-			// content presenter to its own templated parent.
-
-			//TODO TEMPLATED PARENT
-			// PropagateTemplatedParent = false;
 		}
 
 		private protected override void OnLoaded()
@@ -124,7 +118,9 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			_itemsPanel?.SetTemplatedParent(null);
 			_itemsPanel = panel;
+			_itemsPanel?.SetTemplatedParent(this);
 
 			RemoveChildViews();
 

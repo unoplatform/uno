@@ -699,8 +699,6 @@ namespace Windows.UI.Xaml.Controls
 
 				_contentTemplateRoot = value;
 
-				SetImplicitContent(); // fixme@xy: is this needed? potential inf-loop
-
 				if (_contentTemplateRoot != null)
 				{
 					RegisterContentTemplateRoot();
@@ -878,16 +876,15 @@ namespace Windows.UI.Xaml.Controls
 			if (!object.Equals(dataTemplate, _dataTemplateUsedLastUpdate))
 			{
 				_dataTemplateUsedLastUpdate = dataTemplate;
-				ContentTemplateRoot = dataTemplate?.LoadContentCached() ?? Content as View;
+				ContentTemplateRoot = dataTemplate?.LoadContentCached(this) ?? Content as View;
 				if (ContentTemplateRoot != null)
 				{
 					IsUsingDefaultTemplate = false;
 				}
 			}
 
-			if (Content != null
-				&& !(Content is View)
-				&& ContentTemplateRoot == null
+			if (Content != null && !(Content is View) &&
+				ContentTemplateRoot == null
 			)
 			{
 				// Use basic default root for non-View Content if no template is supplied
@@ -944,13 +941,6 @@ namespace Windows.UI.Xaml.Controls
 			// fixme@xy: can CP be used outside the scope of a ContentControl template?
 			//		^ such as with the case on ios/android, where we are presenting native control?
 			//		^ what do?
-
-
-			// fixme@xy: this flag was disabled in #1464, figure why this is?
-			//if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
-			//{
-			//	return;
-			//}
 
 			if (GetTemplatedParent() is not ContentControl)
 			{

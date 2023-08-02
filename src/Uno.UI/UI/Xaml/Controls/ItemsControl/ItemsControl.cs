@@ -971,7 +971,7 @@ namespace Windows.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(default) ?? new StackPanel(); // fixme@xy: probably ok
+			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent(default) ?? new StackPanel();
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 

@@ -68,8 +68,7 @@ public static partial class ViewExtensions // tree-graph
 	private static string DescribeVTNode(object x)
 	{
 		return new StringBuilder()
-			.Append(x.GetType().Name)
-			.Append((x as FrameworkElement)?.Name is string { Length: > 0 } xname ? $"#{xname}" : string.Empty)
+			.Append(DescribeElementOrContext(x))
 			.Append($" // {string.Join(", ", GetDetails())}")
 			.ToString();
 
@@ -92,6 +91,7 @@ public static partial class ViewExtensions // tree-graph
 				yield return $"Actual={fe.ActualWidth:0.#}x{fe.ActualHeight:0.#}";
 				// yield return $"Constraints=[{fe.MinWidth:0.#},{fe.Width:0.#},{fe.MaxWidth:0.#}]x[{fe.MinHeight:0.#},{fe.Height:0.#},{fe.MaxHeight:0.#}]";
 				yield return $"HV={fe.HorizontalAlignment}/{fe.VerticalAlignment}";
+				yield return $"TP={DescribeElementOrContext(fe.GetTemplatedParent())}";
 			}
 			if (x is ContentControl cc)
 			{
@@ -130,9 +130,16 @@ public static partial class ViewExtensions // tree-graph
 			//if (TryGetDpValue<Thickness>(x, "Margin", out var margin)) yield return $"Margin={FormatThickness(margin)}";
 			//if (TryGetDpValue<Thickness>(x, "Padding", out var padding)) yield return $"Padding={FormatThickness(padding)}";
 			//if (TryGetDpValue<double>(x, "Opacity", out var opacity)) yield return $"Opacity={opacity}";
-			//if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
+			if (TryGetDpValue<Visibility>(x, "Visibility", out var visibility)) yield return $"Visibility={visibility}";
 			//if (GetActiveVisualStates(x as Control) is { } states) yield return $"VisualStates={states}";
 		}
+	}
+
+	private static string? DescribeElementOrContext(object? o)
+	{
+		return (o is FrameworkElement fe && !string.IsNullOrEmpty(fe.Name))
+			? $"{fe.GetType().Name}#{fe.Name}"
+			: o?.GetType().Name;
 	}
 
 	internal static string? GetActiveVisualStates(Control? control)
