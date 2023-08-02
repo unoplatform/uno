@@ -12,6 +12,10 @@ using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
+using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.RuntimeTests.TextBoxPages;
+
+
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -676,6 +680,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.SelectAll();
 
 			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Recycled_Text()
+		{
+			using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+			var page = new RecyclingTextBoxPage();
+			var textBox = page.FindFirstChild<TextBox>();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			await WindowHelper.WaitForIdle();
+
+			var vm = page.DataContext as RecyclingTextBoxPageItemViewModel;
+
+			Assert.IsFalse(string.IsNullOrEmpty(vm.Text));
+
+			textBox.OnTemplateRecycled();
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(string.IsNullOrEmpty(vm.Text));
 		}
 	}
 }
