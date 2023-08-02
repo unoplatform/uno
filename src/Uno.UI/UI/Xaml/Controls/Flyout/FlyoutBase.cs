@@ -15,6 +15,7 @@ using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if XAMARIN_IOS
@@ -79,6 +80,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
+				child.Loaded += OnPresenterLoaded;
 
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
@@ -89,6 +91,35 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);
 			}
+		}
+
+		private void OnPresenterLoaded(object sender, RoutedEventArgs args)
+		{
+			var allowFocusOnInteraction = AllowFocusOnInteraction;
+			DependencyObject target = this;
+
+			if (allowFocusOnInteraction && Target is { } t)
+			{
+				allowFocusOnInteraction = t.AllowFocusOnInteraction;
+				target = t;
+			}
+
+			var contentRoot = VisualTree.GetContentRootForElement(target);
+
+			var focusState = contentRoot.FocusManager.GetRealFocusStateForFocusedElement();
+
+			var presenter = GetPresenter();
+			if (presenter.AllowFocusOnInteraction && _popup?.AssociatedFlyout.AllowFocusOnInteraction is true)
+			{
+				var childFocused = presenter.Focus(focusState);
+
+				if (!childFocused)
+				{
+					_popup.Focus(focusState);
+				}
+			}
+
+			OnOpened();
 		}
 
 		/// <summary>

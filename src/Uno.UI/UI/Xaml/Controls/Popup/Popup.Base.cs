@@ -86,7 +86,7 @@ public partial class Popup : FrameworkElement, IPopup
 				_openPopupRegistration = xamlRoot.VisualTree.PopupRoot.RegisterOpenPopup(this);
 			}
 
-			if (IsLightDismissEnabled)
+			if (IsLightDismissEnabled || AssociatedFlyout is { })
 			{
 				// Store last focused element
 				var focusManager = VisualTree.GetFocusManagerForElement(this);

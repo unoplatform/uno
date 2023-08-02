@@ -48,29 +48,28 @@ internal partial class PopupRoot
 		//return null;
 	}
 
-	[NotImplemented]
 	internal Popup? GetTopmostPopup(PopupFilter filter)
 	{
-		// TODO Uno: Implement
-		return null;
-		//if (m_pOpenPopups)
-		//{
-		//	// Find the most recently opened Popup that has light dismiss enabled.
-		//	// Unloading popups don't count.
-		//	for (CXcpList<Popup>::XCPListNode* pNode = m_pOpenPopups.GetHead(); pNode != null; pNode = pNode.m_pNext)
-		//	{
-		//		Popup pPopup = pNode.m_pData;
-		//		if (!pPopup.IsUnloading())
-		//		{
-		//			if (filter == PopupFilter.All || (filter == PopupFilter.LightDismissOrFlyout && pPopup.IsFlyout()) || pPopup.m_fIsLightDismiss)
-		//			{
-		//				return pPopup;
-		//			}
-		//		}
-		//	}
-		//}
+		if (_openPopups is { })
+		{
+			foreach (var popupRef in _openPopups)
+			{
+				if (popupRef.Target is not Popup popup)
+				{
+					continue;
+				}
 
-		//return null;
+				// there be should be a check for !popup.IsUnloading
+				{
+					if (filter == PopupFilter.All || (filter == PopupFilter.LightDismissOrFlyout && popup.AssociatedFlyout is { }) || popup.IsLightDismissEnabled)
+					{
+						return popup;
+					}
+				}
+			}
+		}
+
+		return null;
 	}
 
 	[NotImplemented]
