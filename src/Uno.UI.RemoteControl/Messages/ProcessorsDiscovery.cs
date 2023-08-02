@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Runtime.Remoting.Messaging;
 
 namespace Uno.UI.RemoteControl.Messages
 {
@@ -8,9 +6,10 @@ namespace Uno.UI.RemoteControl.Messages
 	{
 		public const string Name = nameof(ProcessorsDiscovery);
 
-		public ProcessorsDiscovery(string basePath)
+		public ProcessorsDiscovery(string basePath, string appInstanceId = "")
 		{
 			BasePath = basePath;
+			AppInstanceId = appInstanceId;
 		}
 
 		public string Scope => "RemoteControlServer";
@@ -18,5 +17,7 @@ namespace Uno.UI.RemoteControl.Messages
 		string IMessage.Name => Name;
 
 		public string BasePath { get; }
+
+		public string AppInstanceId { get; }
 	}
 }
