@@ -24,6 +24,6 @@ namespace Windows.UI.Core
 
 		public string DeviceId { get; }
 
-		public VirtualKeyModifiers KeyboardModifiers { get; }
+		internal VirtualKeyModifiers KeyboardModifiers { get; }
 	}
 }

@@ -100,7 +100,6 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	internal void InjectMouseInput(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> input)
 	{
 		foreach (var (info, modifiers) in input)
