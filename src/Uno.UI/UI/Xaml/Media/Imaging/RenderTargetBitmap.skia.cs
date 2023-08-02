@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			var img = surface.Snapshot();
 
-			var bitmap = SKBitmap.FromImage(img);
+			var bitmap = img.ToSKBitmap();
 			if (scaledSize.HasValue)
 			{
 				var scaledBitmap = bitmap.Resize(
