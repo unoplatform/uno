@@ -42,7 +42,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 #if __ANDROID__ || __WASM__
 	[Ignore] // TODO: Android and WASM tests are failing
 #endif
-	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RepeaterTests : MUXApiTestBase
 	{
 		[TestMethod]
@@ -559,7 +558,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
-		[Ignore("Currently fails on all targets https://github.com/unoplatform/uno/issues/9080")]
 		public void VerifyStoreScenarioCache()
 		{
 			ItemsRepeater rootRepeater = null;
@@ -625,7 +623,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 
 		[TestMethod]
-		[Ignore("Currently fails on all targets https://github.com/unoplatform/uno/issues/9080")]
 		public void VerifyUIElementsInItemsSource()
 		{
 			ItemsRepeater repeater = null;
