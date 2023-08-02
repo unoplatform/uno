@@ -19,22 +19,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[RunsOnUIThread]
 	public class Given_ImageBrushStretch
 	{
-		// Support is failing for some platforms, where RenderTargetBitmap is not rendering properly
-		// https://github.com/unoplatform/uno/issues/9080
+		[DataRow(Stretch.Fill)]
+		[DataRow(Stretch.UniformToFill)]
+#if !__ANDROID__
+		// Stretch.None is broken on Android.
+		// See https://github.com/unoplatform/uno/pull/7238#issuecomment-937667565
+		[DataRow(Stretch.None)]
+#endif
 #if __SKIA__
-		[DataRow(Stretch.Fill)]
-		[DataRow(Stretch.UniformToFill)]
-		[DataRow(Stretch.None)]
-#elif __IOS__
-		[DataRow(Stretch.Fill)]
-		[DataRow(Stretch.None)]
-#elif __ANDROID__
-		[DataRow(Stretch.Fill)]
-#else
-		[DataRow(Stretch.Fill)]
-		[DataRow(Stretch.UniformToFill)]
+		// Stretch.Uniform is broken on Skia.
 		[DataRow(Stretch.Uniform)]
-		[DataRow(Stretch.None)]
 #endif
 		[TestMethod]
 		public async Task When_Stretch(Stretch stretch)
@@ -42,10 +36,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			const string Redish = "#FFEB1C24";
 			const string Yellowish = "#FFFEF200";
 			const string Greenish = "#FF0ED145";
-			const string White = "#FFFFFFFF";
-#if __MACOS__
-			Assert.Inconclusive(); // Colors are not interpreted the same way on MacOS
-#endif
+			const string Transparent = "#00000000";
+
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
@@ -69,7 +61,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			await WindowHelper.WaitForLoaded(SUT);
 
 			var renderer = new RenderTargetBitmap();
-			const float BorderOffset = 8;
+			const float BorderOffset =
+#if __SKIA__
+				7;
+#else
+				3;
+#endif
 			float width = (float)SUT.Width, height = (float)SUT.Height;
 			float centerX = width / 2, centerY = height / 2;
 			var expectations = stretch switch
@@ -79,7 +76,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				// Top and bottom are red-ish. Left and right are yellow-ish
 				Stretch.UniformToFill => (Top: Redish, Bottom: Redish, Left: Yellowish, Right: Yellowish),
 				// Top and bottom are same as backround. Left and right are red-ish
-				Stretch.Uniform => (Top: White, Bottom: White, Left: Redish, Right: Redish),
+				Stretch.Uniform => (Top: Transparent, Bottom: Transparent, Left: Redish, Right: Redish),
 				// Everything is green-ish
 				Stretch.None => (Top: Greenish, Bottom: Greenish, Left: Greenish, Right: Greenish),
 
