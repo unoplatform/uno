@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		// See https://github.com/unoplatform/uno/pull/7238#issuecomment-937667565
 		[DataRow(Stretch.None)]
 #endif
-#if __SKIA__
+#if !__SKIA__
 		// Stretch.Uniform is broken on Skia.
 		[DataRow(Stretch.Uniform)]
 #endif
