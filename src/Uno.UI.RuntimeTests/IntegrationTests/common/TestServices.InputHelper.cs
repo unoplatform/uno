@@ -48,15 +48,24 @@ namespace Private.Infrastructure
 			public static void Tap(UIElement element)
 			{
 #if NETFX_CORE || __SKIA__
+				Finger finger = null;
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
-					using Finger finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
+					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
 					var topLeft = element.TransformToVisual(Window.Current.Content).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
-					finger.MoveTo(center);
 					finger.Press(center);
+				});
+
+#if NETFX_CORE
+				// On Windows, We need to wait atleast (exactly) over half a second before releasing for the popup to open.
+				Thread.Sleep(501);
+#endif
+				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
+				{
 					finger.Release();
 				});
+
 #else
 				// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
 				// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
