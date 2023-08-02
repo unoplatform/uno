@@ -12,40 +12,24 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Messages;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
+using System.Reflection;
+using System.Runtime.Remoting.Messaging;
 
 namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		private readonly Dictionary<string, IServerProcessor> _processors = new Dictionary<string, IServerProcessor>();
+		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private System.Reflection.Assembly? _loopAssembly;
 		private WebSocket? _socket;
+		private string? _appInstanceId;
 		private readonly IConfiguration _configuration;
-		private readonly AssemblyLoadContext _loadContext;
+		private readonly static Dictionary<string, AssemblyLoadContext> _loadContexts = new();
 
 		public RemoteControlServer(IConfiguration configuration)
 		{
 			_configuration = configuration;
-			_loadContext = new AssemblyLoadContext(null, isCollectible: true);
-			_loadContext.Unloading += (e) =>
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug("Unloading assembly context");
-				}
-			};
-			_loadContext.Resolving += (context, assemblyName) =>
-			{
-				if (_loopAssembly is not null)
-				{
-					return context.LoadFromAssemblyPath(Path.Combine(Path.GetDirectoryName(_loopAssembly.Location)!, assemblyName.Name + ".dll"));
-				}
-				else
-				{
-					return context.LoadFromAssemblyName(assemblyName);
-				}
-			};
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -56,10 +40,74 @@ namespace Uno.UI.RemoteControl.Host
 		string IRemoteControlServer.GetServerConfiguration(string key)
 			=> _configuration[key] ?? "";
 
-		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
+		private void EnsureLoadContextForApplicationId(string applicationId)
 		{
-			_processors[hotReloadProcessor.Scope] = hotReloadProcessor;
+			if (_loadContexts.ContainsKey(applicationId))
+			{
+				return;
+			}
+
+			var loadContext = new AssemblyLoadContext(null, isCollectible: true);
+			loadContext.Unloading += (e) =>
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug("Unloading assembly context");
+				}
+			};
+
+			// Add custom resolving so we can find dependencies even when the processor assembly
+			// is built for a different .net version than the host process.
+			loadContext.Resolving += (context, assemblyName) =>
+			{
+				if (_loopAssembly is not null)
+				{
+					try
+					{
+						var loc = _loopAssembly.Location;
+						if (!string.IsNullOrWhiteSpace(loc))
+						{
+							var dir = Path.GetDirectoryName(loc);
+							if (!string.IsNullOrEmpty(dir))
+							{
+								var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
+								if (File.Exists(relPath))
+								{
+									return context.LoadFromAssemblyPath(relPath);
+								}
+							}
+						}
+						else
+						{
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().LogDebug("Failed for identify location of dependency: {assemblyName}", assemblyName);
+							}
+						}
+					}
+					catch (Exception exc)
+					{
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().LogError(exc, "Failed for load dependency: {assemblyName}", assemblyName);
+						}
+					}
+				}
+				return context.LoadFromAssemblyName(assemblyName);
+			};
+
+			_loadContexts.Add(applicationId, loadContext);
 		}
+
+		private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
+		{
+			EnsureLoadContextForApplicationId(applicationId);
+
+			return _loadContexts[applicationId];
+		}
+
+		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
+			=> _processors[hotReloadProcessor.Scope] = hotReloadProcessor;
 
 		public async Task Run(WebSocket socket, CancellationToken ct)
 		{
@@ -87,18 +135,18 @@ namespace Uno.UI.RemoteControl.Host
 
 				if (_processors.TryGetValue(frame.Scope, out var processor))
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogTrace($"Received Frame [{frame.Scope} / {frame.Name}]");
+						this.Log().LogDebug("Received Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 					}
 
 					await processor.ProcessFrame(frame);
 				}
 				else
 				{
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogTrace($"Unknown Frame [{frame.Scope} / {frame.Name}]");
+						this.Log().LogDebug("Unknown Frame [{Scope} / {Name}]", frame.Scope, frame.Name);
 					}
 				}
 			}
@@ -111,18 +159,20 @@ namespace Uno.UI.RemoteControl.Host
 
 			var assemblies = new List<System.Reflection.Assembly>();
 
+			_appInstanceId = msg.AppInstanceId;
+
 			// If BasePath is a specific file, try and load that
 			if (File.Exists(msg.BasePath))
 			{
 				try
 				{
-					assemblies.Add(_loadContext.LoadFromAssemblyPath(msg.BasePath));
+					assemblies.Add(GetAssemblyLoadContext(msg.AppInstanceId).LoadFromAssemblyPath(msg.BasePath));
 				}
 				catch (Exception exc)
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().LogDebug($"Failed to load assembly {msg.BasePath} : {exc}");
+						this.Log().LogError("Failed to load assembly {BasePath} : {Exc}", msg.BasePath, exc);
 					}
 				}
 			}
@@ -152,19 +202,19 @@ namespace Uno.UI.RemoteControl.Host
 
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Discovery: Loading {file}");
+						this.Log().LogDebug("Discovery: Loading {File}", file);
 					}
 
 					try
 					{
-						assemblies.Add(_loadContext.LoadFromAssemblyPath(file));
+						assemblies.Add(GetAssemblyLoadContext(msg.AppInstanceId).LoadFromAssemblyPath(file));
 					}
 					catch (Exception exc)
 					{
 						// With additional processors there may be duplicates of assemblies already loaded
-						if (this.Log().IsEnabled(LogLevel.Debug))
+						if (this.Log().IsEnabled(LogLevel.Error))
 						{
-							this.Log().LogDebug($"Failed to load assembly {file} : {exc}");
+							this.Log().LogError("Failed to load assembly {File} : {Exc}", file, exc);
 						}
 					}
 				}
@@ -184,10 +234,10 @@ namespace Uno.UI.RemoteControl.Host
 						{
 							if (this.Log().IsEnabled(LogLevel.Debug))
 							{
-								this.Log().LogDebug($"Discovery: Registering {processor.ProcessorType}");
+								this.Log().LogDebug("Discovery: Registering {ProcessorType}", processor.ProcessorType);
 							}
 
-							if (Activator.CreateInstance(processor.ProcessorType, this) is IServerProcessor serverProcessor)
+							if (asm.CreateInstance(processor.ProcessorType.FullName!, ignoreCase: false, bindingAttr: BindingFlags.Instance | BindingFlags.Public, binder: null, args: new[] { this }, culture: null, activationAttributes: null) is IServerProcessor serverProcessor)
 							{
 								RegisterProcessor(serverProcessor);
 							}
@@ -195,7 +245,7 @@ namespace Uno.UI.RemoteControl.Host
 							{
 								if (this.Log().IsEnabled(LogLevel.Debug))
 								{
-									this.Log().LogDebug($"Failed to create server processor {processor.ProcessorType}");
+									this.Log().LogDebug("Failed to create server processor {ProcessorType}", processor.ProcessorType);
 								}
 							}
 						}
@@ -203,9 +253,9 @@ namespace Uno.UI.RemoteControl.Host
 				}
 				catch (Exception exc)
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().LogDebug($"Failed to create instace of server processor in  {asm} : {exc}");
+						this.Log().LogError("Failed to create instace of server processor in  {Asm} : {Exc}", asm, exc);
 					}
 				}
 			}
