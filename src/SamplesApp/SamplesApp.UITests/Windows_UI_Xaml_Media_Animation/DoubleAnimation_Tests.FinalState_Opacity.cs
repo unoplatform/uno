@@ -14,6 +14,8 @@ using Uno.UITest.Helpers.Queries;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 {
 	[TestFixture]
+	// Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
+	[ActivePlatforms(Platform.Browser, Platform.Android)]
 	public partial class DoubleAnimation_Tests : SampleControlUITestBase
 	{
 		private const string _finalStateOpacityTestControl = "UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_FinalState_Opacity";
