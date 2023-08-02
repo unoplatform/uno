@@ -1073,6 +1073,7 @@ namespace Windows.UI.Xaml.Controls
 		public void OnTemplateRecycled()
 		{
 			_suppressTextChanged = true;
+			ClearValue(TextProperty);
 			Text = string.Empty;
 		}
 
