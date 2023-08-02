@@ -19,13 +19,13 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
+		private readonly static Dictionary<string, AssemblyLoadContext> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private System.Reflection.Assembly? _loopAssembly;
 		private WebSocket? _socket;
 		private string? _appInstanceId;
 		private readonly IConfiguration _configuration;
-		private readonly static Dictionary<string, AssemblyLoadContext> _loadContexts = new();
 
 		public RemoteControlServer(IConfiguration configuration)
 		{
@@ -40,14 +40,14 @@ namespace Uno.UI.RemoteControl.Host
 		string IRemoteControlServer.GetServerConfiguration(string key)
 			=> _configuration[key] ?? "";
 
-		private void EnsureLoadContextForApplicationId(string applicationId)
+		private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
 		{
-			if (_loadContexts.ContainsKey(applicationId))
+			if (_loadContexts.TryGetValue(applicationId, out var context))
 			{
-				return;
+				return context;
 			}
 
-			var loadContext = new AssemblyLoadContext(null, isCollectible: true);
+			var loadContext = new AssemblyLoadContext(applicationId, isCollectible: true);
 			loadContext.Unloading += (e) =>
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -73,6 +73,11 @@ namespace Uno.UI.RemoteControl.Host
 								var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
 								if (File.Exists(relPath))
 								{
+									if (this.Log().IsEnabled(LogLevel.Trace))
+									{
+										this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
+									}
+
 									return context.LoadFromAssemblyPath(relPath);
 								}
 							}
@@ -97,13 +102,8 @@ namespace Uno.UI.RemoteControl.Host
 			};
 
 			_loadContexts.Add(applicationId, loadContext);
-		}
 
-		private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
-		{
-			EnsureLoadContextForApplicationId(applicationId);
-
-			return _loadContexts[applicationId];
+			return loadContext;
 		}
 
 		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
@@ -160,13 +160,14 @@ namespace Uno.UI.RemoteControl.Host
 			var assemblies = new List<System.Reflection.Assembly>();
 
 			_appInstanceId = msg.AppInstanceId;
+			var asmblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
 
 			// If BasePath is a specific file, try and load that
 			if (File.Exists(msg.BasePath))
 			{
 				try
 				{
-					assemblies.Add(GetAssemblyLoadContext(msg.AppInstanceId).LoadFromAssemblyPath(msg.BasePath));
+					assemblies.Add(asmblyLoadContext.LoadFromAssemblyPath(msg.BasePath));
 				}
 				catch (Exception exc)
 				{
@@ -207,14 +208,14 @@ namespace Uno.UI.RemoteControl.Host
 
 					try
 					{
-						assemblies.Add(GetAssemblyLoadContext(msg.AppInstanceId).LoadFromAssemblyPath(file));
+						assemblies.Add(asmblyLoadContext.LoadFromAssemblyPath(file));
 					}
 					catch (Exception exc)
 					{
 						// With additional processors there may be duplicates of assemblies already loaded
-						if (this.Log().IsEnabled(LogLevel.Error))
+						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().LogError("Failed to load assembly {File} : {Exc}", file, exc);
+							this.Log().LogDebug("Failed to load assembly {File} : {Exc}", file, exc);
 						}
 					}
 				}
