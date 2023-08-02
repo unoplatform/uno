@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Java.Nio;
 using Android.Views;
 using Uno.UI.Xaml.Media;
+using System.Runtime.InteropServices;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -39,22 +40,26 @@ namespace Windows.UI.Xaml.Media.Imaging
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
+		[StructLayout(LayoutKind.Explicit)]
+		private struct ByteArrayToIntArrayBridge
+		{
+			[FieldOffset(0)]
+			public byte[] ByteArray;
+
+			[FieldOffset(0)]
+			public int[] IntArray;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+			public ByteArrayToIntArrayBridge(byte[] bytes)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+			{
+				ByteArray = bytes;
+			}
+		}
+
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			var bitmap = Bitmap.CreateBitmap(width, height, Bitmap.Config.Argb8888!)!;
-			int current = 0;
-			for (int x = 0; x < width; x++)
-			{
-				for (int y = 0; y < height; y++)
-				{
-					var b = buffer[current++];
-					var g = buffer[current++];
-					var r = buffer[current++];
-					var a = buffer[current++];
-					bitmap.SetPixel(x, y, new Android.Graphics.Color(r, g, b, a));
-				}
-			}
-
+			var bitmap = Bitmap.CreateBitmap(new ByteArrayToIntArrayBridge(buffer).IntArray, width, height, Bitmap.Config.Argb8888!);
 			return ImageData.FromBitmap(bitmap);
 		}
 
