@@ -696,18 +696,6 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-		protected override void OnTapped(TappedRoutedEventArgs args)
-		{
-			base.OnTapped(args);
-
-			if (!IsEnabled)
-			{
-				return;
-			}
-
-			IsCalendarOpen = true;
-		}
-
 		protected override void OnPointerPressed(PointerRoutedEventArgs pArgs)
 		{
 			//CalendarDatePickerGenerated.OnPointerPressed(pArgs);

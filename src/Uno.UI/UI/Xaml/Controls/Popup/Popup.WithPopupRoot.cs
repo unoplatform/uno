@@ -92,10 +92,12 @@ public partial class Popup
 				}
 #endif
 
+				// panel must be visible before the popup is opened, to set focus
+				// inside the popup correctly
+				PopupPanel.Visibility = Visibility.Visible;
+
 				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
-
-				PopupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
