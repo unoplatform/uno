@@ -1,5 +1,3 @@
-using System.Runtime.Remoting.Messaging;
-
 namespace Uno.UI.RemoteControl.Messages
 {
 	public class ProcessorsDiscovery : IMessage
