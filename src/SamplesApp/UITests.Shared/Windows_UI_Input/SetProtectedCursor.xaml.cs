@@ -1,5 +1,7 @@
 ﻿using Microsoft.UI.Xaml;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Uno.UI.Samples.Controls;
 using System.Collections.Generic;
 using System;

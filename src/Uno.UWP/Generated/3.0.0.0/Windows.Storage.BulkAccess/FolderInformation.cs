@@ -9,6 +9,11 @@ namespace Windows.Storage.BulkAccess
 	public partial class FolderInformation : global::Windows.Storage.BulkAccess.IStorageItemInformation,global::Windows.Storage.IStorageFolder,global::Windows.Storage.IStorageItem,global::Windows.Storage.IStorageItemProperties,global::Windows.Storage.Search.IStorageFolderQueryOperations,global::Windows.Storage.IStorageItem2,global::Windows.Storage.IStorageFolder2,global::Windows.Storage.IStorageItemPropertiesWithProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal FolderInformation()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Storage.FileProperties.BasicProperties BasicProperties
 		{

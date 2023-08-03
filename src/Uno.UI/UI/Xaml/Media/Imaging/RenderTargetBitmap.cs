@@ -172,23 +172,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 				buffer = ArrayPool<byte>.Shared.Rent(length);
 			}
 		}
-
-#if !__IOS__ && !__MACOS__
-		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		private static void SwapRB(ref byte[] buffer, int byteCount)
-		{
-			for (var i = 0; i < byteCount; i += 4)
-			{
-				//Swap R and B chanal
-				Swap(ref buffer![i], ref buffer![i + 2]);
-			}
-		}
-
-		private static void Swap(ref byte a, ref byte b)
-		{
-			(a, b) = (b, a);
-		}
-#endif
 #endif
 		#endregion
 	}

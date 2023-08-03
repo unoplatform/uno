@@ -64,6 +64,7 @@
 	<ItemGroup>
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.netcore.Tests" />
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
+		<InternalsVisibleTo Include="Uno.UI.Unit.Tests" />
 	</ItemGroup>
 
 	<ItemGroup>

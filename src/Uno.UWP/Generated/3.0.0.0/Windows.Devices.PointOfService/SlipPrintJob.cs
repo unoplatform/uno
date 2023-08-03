@@ -9,6 +9,11 @@ namespace Windows.Devices.PointOfService
 	public partial class SlipPrintJob : global::Windows.Devices.PointOfService.IReceiptOrSlipJob,global::Windows.Devices.PointOfService.IPosPrinterJob
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal SlipPrintJob()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Print(string data, global::Windows.Devices.PointOfService.PosPrinterPrintOptions printOptions)
 		{

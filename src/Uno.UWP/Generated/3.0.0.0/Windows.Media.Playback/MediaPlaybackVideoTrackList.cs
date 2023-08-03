@@ -9,6 +9,11 @@ namespace Windows.Media.Playback
 	public partial class MediaPlaybackVideoTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.VideoTrack>,global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.VideoTrack>,global::Windows.Media.Core.ISingleSelectMediaTrackList
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal MediaPlaybackVideoTrackList()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint Size
 		{

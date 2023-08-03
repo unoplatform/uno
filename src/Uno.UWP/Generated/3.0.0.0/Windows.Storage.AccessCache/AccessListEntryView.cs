@@ -9,6 +9,11 @@ namespace Windows.Storage.AccessCache
 	public partial class AccessListEntryView : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.AccessCache.AccessListEntry>,global::System.Collections.Generic.IEnumerable<global::Windows.Storage.AccessCache.AccessListEntry>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal AccessListEntryView()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint Size
 		{

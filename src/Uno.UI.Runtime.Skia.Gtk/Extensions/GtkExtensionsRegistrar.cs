@@ -6,17 +6,17 @@ using Uno.Extensions.UI.Core.Preview;
 using Uno.Foundation.Extensibility;
 using Uno.Helpers.Theming;
 using Uno.UI.Core.Preview;
-using Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer;
-using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming;
-using Uno.UI.Runtime.Skia.GTK.Extensions.System;
-using Uno.UI.Runtime.Skia.GTK.Extensions.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.GTK.System.Profile;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.System;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.Gtk.System.Profile;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Xaml.Controls;
 #pragma warning disable CS0649
-namespace Uno.UI.Runtime.Skia.GTK.Extensions;
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions;
 
 internal static class GtkExtensionsRegistrar
 {

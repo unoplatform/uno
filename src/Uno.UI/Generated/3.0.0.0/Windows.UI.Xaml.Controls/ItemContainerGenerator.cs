@@ -8,6 +8,11 @@ namespace Windows.UI.Xaml.Controls
 #endif
 	public partial class ItemContainerGenerator
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal ItemContainerGenerator()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemContainerGenerator.ItemsChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemContainerGenerator.ItemsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

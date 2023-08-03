@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
@@ -31,10 +33,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 	[RequiresFullWindow]
 	public class BreadcrumbTests : MUXApiTestBase
 	{
-
-#if __ANDROID__
-		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		[TestMethod]
 		public void VerifyBreadcrumbDefaultAPIValues()
 		{
@@ -339,9 +337,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 		}
 
 		[TestMethod]
-#if __ANDROID__
-		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
-#endif
 		public async Task VerifyDropdownItemTemplateWithNoControl()
 		{
 			try

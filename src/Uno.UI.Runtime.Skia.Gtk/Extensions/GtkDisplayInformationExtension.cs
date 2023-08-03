@@ -3,16 +3,16 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Gtk;
-using Uno.UI.Runtime.Skia.Helpers.Dpi;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 using Windows.Graphics.Display;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 {
 	private readonly DisplayInformation _displayInformation;
 	private readonly DpiHelper _dpiHelper;
-	private Gtk.Window? _window;
+	private Window? _window;
 	private float? _dpi;
 
 	public GtkDisplayInformationExtension(object owner)
@@ -27,7 +27,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 		_dpiHelper.DpiChanged += OnDpiChanged;
 	}
 
-	private Gtk.Window GetWindow()
+	private Window GetWindow()
 	{
 		_window ??= GtkHost.Current?.MainWindow;
 		if (_window is null)

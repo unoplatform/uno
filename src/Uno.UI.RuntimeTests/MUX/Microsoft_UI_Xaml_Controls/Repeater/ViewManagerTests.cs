@@ -16,7 +16,9 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Common;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 #if USING_TAEF
 using WEX.TestExecution;
 using WEX.TestExecution.Markup;

@@ -138,7 +138,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia", "SamplesA
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.Gtk", "SamplesApp\SamplesApp.Skia.Gtk\SamplesApp.Skia.Gtk.csproj", "{4A03CFBB-4D4E-4589-BD51-69B7251A2A0A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.WPF", "SamplesApp\SamplesApp.Skia.WPF\SamplesApp.Skia.WPF.csproj", "{27B81C58-B74E-4BC9-BD17-1811C82D0507}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SamplesApp.Skia.Wpf", "SamplesApp\SamplesApp.Skia.Wpf\SamplesApp.Skia.Wpf.csproj", "{27B81C58-B74E-4BC9-BD17-1811C82D0507}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Toolkit.Skia", "Uno.UI.Toolkit\Uno.UI.Toolkit.Skia.csproj", "{F61C6C86-F6B4-44B3-9821-72E7EBD2A3E4}"
 EndProject
@@ -308,9 +308,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.MediaPlayer.WebAssem
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia", "SamplesApp\UnoIslandsSamplesApp.Skia\UnoIslandsSamplesApp.Skia.csproj", "{FA0E451F-69EB-4E90-BC77-696B16391C02}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia.Wpf", "SamplesApp\UnoIslandsSamplesApp.Skia.WPF\UnoIslandsSamplesApp.Skia.Wpf.csproj", "{A45B2F54-81EB-48F5-957E-05961722F3FA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslandsSamplesApp.Skia.Wpf", "SamplesApp\UnoIslandsSamplesApp.Skia.Wpf\UnoIslandsSamplesApp.Skia.Wpf.csproj", "{A45B2F54-81EB-48F5-957E-05961722F3FA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslands.Skia.Wpf", "SamplesApp\UnoIslands.Skia.WPF\UnoIslands.Skia.Wpf.csproj", "{5C410BB6-E631-49E0-B610-E3D1C078E147}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnoIslands.Skia.Wpf", "SamplesApp\UnoIslands.Skia.Wpf\UnoIslands.Skia.Wpf.csproj", "{5C410BB6-E631-49E0-B610-E3D1C078E147}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Lottie.Tests", "AddIns\Uno.UI.Lottie\Uno.UI.Lottie.Tests.csproj", "{939A14CA-02D2-4B27-A1C2-CA4AFDE9D3C6}"
 EndProject

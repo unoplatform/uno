@@ -1,18 +1,15 @@
 ﻿#nullable enable
 
 using System.ComponentModel;
-using System.Windows;
 using System.Windows.Media;
 using WinUI = Windows.UI.Xaml;
 using WpfCanvas = global::System.Windows.Controls.Canvas;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
 using Uno.UI.XamlHost.Extensions;
-using System;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Hosting;
-using Uno.UI.Skia;
-using Uno.UI.Rendering;
+using Uno.UI.Runtime.Skia.Wpf;
 
 namespace Uno.UI.XamlHost.Skia.Wpf;
 
@@ -31,7 +28,7 @@ partial class UnoXamlHostBase : IWpfXamlRootHost
 	/// Gets or sets the current Skia Render surface type.
 	/// </summary>
 	/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
-	public Uno.UI.Skia.RenderSurfaceType? RenderSurfaceType { get; set; }
+	public RenderSurfaceType? RenderSurfaceType { get; set; }
 
 	public bool IgnorePixelScaling
 	{

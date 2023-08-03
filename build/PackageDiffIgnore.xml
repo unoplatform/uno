@@ -639,7 +639,15 @@
 			<Member fullName="Microsoft.UI.Xaml.WindowCreatedEventArgs" reason="Does not exist in WinAppSDK" />
 			<!-- END OnWindowCreated -->
 
+			<Member fullName="Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
+			<Member fullName="Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
+			<Member fullName="Uno.UI.Runtime.Skia.GtkHost" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.GtkHost" />
+			<Member fullName="Uno.UI.Skia.Platform.WpfHost" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.WpfHost" />
+			<Member fullName="Uno.UI.Runtime.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType" />
+			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
+
 			<Member fullName="Uno.UI.Extensions.KeycodeExtensions" reason="Does not exist in WinAppSDK" />
+
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -858,6 +866,8 @@
 			<Member fullName="System.Boolean Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::IsIsland()" reason="Not needed" />
 			<Member fullName="Windows.UI.Xaml.UIElement Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RootElement()" reason="Not needed" />			
 			<!-- End Skia lifecycle -->
+
+			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1596,6 +1606,18 @@
 			<Member fullName=".*\.add_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<Member fullName=".*\.remove_KeyDown\(.*" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<!-- END Android TV -->
+
+			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.get_RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+			<Member fullName="System.Void Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase.set_RenderSurfaceType(System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; value)" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+
+			<Member fullName=".+?\.\.ctor\(\)" isRegex="true" reason="Matching constructors visibility with Windows" />
+			
+			<!-- BEGIN Android PDFDocument -->
+			<Member fullName="System.Void Windows.Data.Pdf.PdfDocument..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<Member fullName="System.Void Windows.Data.Pdf.PdfPage..ctor()"
+				reason="Parameter-less ctor does not exist in UWP"/>
+			<!-- END Android PDFDocument -->
 
 		</Methods>
 	</IgnoreSet>

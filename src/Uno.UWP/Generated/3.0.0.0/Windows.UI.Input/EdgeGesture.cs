@@ -8,6 +8,11 @@ namespace Windows.UI.Input
 #endif
 	public partial class EdgeGesture
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal EdgeGesture()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.add
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Starting.remove
 		// Forced skipping of method Windows.UI.Input.EdgeGesture.Completed.add

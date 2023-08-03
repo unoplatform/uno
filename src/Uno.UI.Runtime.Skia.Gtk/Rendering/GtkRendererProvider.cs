@@ -2,10 +2,10 @@
 using System.Threading.Tasks;
 using Gtk;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Runtime.Skia.GTK.UI;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.UI;
 
-namespace Uno.UI.Runtime.Skia.GTK.Rendering;
+namespace Uno.UI.Runtime.Skia.Gtk.Rendering;
 
 internal static class GtkRendererProvider
 {
@@ -28,7 +28,7 @@ internal static class GtkRendererProvider
 				typeof(GtkRendererProvider).Log().Debug($"Neither OpenGL or OpenGL ES are supporting, using software rendering");
 			}
 
-			renderSurfaceType = Skia.RenderSurfaceType.Software;
+			renderSurfaceType = RenderSurfaceType.Software;
 		}
 
 		if (renderSurfaceType is null)
@@ -89,9 +89,9 @@ internal static class GtkRendererProvider
 	private static IGtkRenderer BuildRenderSurfaceType(RenderSurfaceType renderSurfaceType, IGtkXamlRootHost host)
 		=> renderSurfaceType switch
 		{
-			Skia.RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(host),
-			Skia.RenderSurfaceType.OpenGL => new OpenGLRenderSurface(host),
-			Skia.RenderSurfaceType.Software => new SoftwareRenderSurface(host),
+			RenderSurfaceType.OpenGLES => new OpenGLESRenderSurface(host),
+			RenderSurfaceType.OpenGL => new OpenGLRenderSurface(host),
+			RenderSurfaceType.Software => new SoftwareRenderSurface(host),
 			_ => throw new InvalidOperationException($"Unsupported RenderSurfaceType {GtkHost.Current!.RenderSurfaceType}")
 		};
 

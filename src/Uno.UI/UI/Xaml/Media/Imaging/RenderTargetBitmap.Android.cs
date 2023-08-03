@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Java.Nio;
 using Android.Views;
 using Uno.UI.Xaml.Media;
+using System.Runtime.InteropServices;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -39,9 +40,27 @@ namespace Windows.UI.Xaml.Media.Imaging
 		/// <inheritdoc />
 		private protected override bool IsSourceReady => _buffer != null;
 
+		[StructLayout(LayoutKind.Explicit)]
+		private struct ByteArrayToIntArrayBridge
+		{
+			[FieldOffset(0)]
+			public byte[] ByteArray;
+
+			[FieldOffset(0)]
+			public int[] IntArray;
+
+#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+			public ByteArrayToIntArrayBridge(byte[] bytes)
+#pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
+			{
+				ByteArray = bytes;
+			}
+		}
+
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			return ImageData.FromBitmap(BitmapFactory.DecodeByteArray(buffer, 0, bufferLength));
+			var bitmap = Bitmap.CreateBitmap(new ByteArrayToIntArrayBridge(buffer).IntArray, width, height, Bitmap.Config.Argb8888!);
+			return ImageData.FromBitmap(bitmap);
 		}
 
 		private (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
@@ -104,6 +123,21 @@ namespace Windows.UI.Xaml.Media.Imaging
 				bitmap?.Dispose();
 				SetSoftwareRendering(element, false);
 			}
+		}
+
+		[global::System.Runtime.CompilerServices.MethodImpl(global::System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
+		private static void SwapRB(ref byte[] buffer, int byteCount)
+		{
+			for (var i = 0; i < byteCount; i += 4)
+			{
+				//Swap R and B chanal
+				Swap(ref buffer![i], ref buffer![i + 2]);
+			}
+		}
+
+		private static void Swap(ref byte a, ref byte b)
+		{
+			(a, b) = (b, a);
 		}
 	}
 }
