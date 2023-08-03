@@ -140,9 +140,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Windows_UI_Xaml_Markup\XamlReaderTests\When_ResourceDictionary_Nested_Colors.xamltest" />
-	</ItemGroup>
-	<ItemGroup>
 		<None Update="ResourceLoader\Controls\When_Collection_And_InlineProperty.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</None>

@@ -628,8 +628,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 					)
 				)
 				{
-					var methods = propertyInfo.PropertyType.GetMethods(BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
-					var addMethod2 = propertyInfo.PropertyType.GetMethod("Add", BindingFlags.Instance | BindingFlags.FlattenHierarchy | BindingFlags.Public);
+					var methods = propertyInfo.PropertyType.GetMethods();
 					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
 						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
 
