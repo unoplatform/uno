@@ -13,7 +13,6 @@ using Uno.UI.RemoteControl.Messages;
 using System.Runtime.Loader;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
-using System.Runtime.Remoting.Messaging;
 
 namespace Uno.UI.RemoteControl.Host
 {
