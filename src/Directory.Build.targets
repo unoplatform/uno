@@ -11,6 +11,7 @@
 
 	<ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
 		<Page Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
+		<UpToDateCheckInput Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
 		<None Remove="**/*.xaml" />
 	</ItemGroup>
 
