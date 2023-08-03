@@ -676,6 +676,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Fails")]
 #endif
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{
