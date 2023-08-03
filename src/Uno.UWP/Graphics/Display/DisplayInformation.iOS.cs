@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -162,30 +162,45 @@ namespace Windows.Graphics.Display
 
 		static partial void SetOrientationPartial(DisplayOrientations orientations)
 		{
-			var currentOrientationMask = UIApplication.SharedApplication
-			   .StatusBarOrientation
-			   .ToUIInterfaceOrientationMask();
-
 			var toOrientationMask = orientations.ToUIInterfaceOrientationMask();
 
-			//If we are not already in one of the requested orientations, we need to force the application to rotate.
-			if (!toOrientationMask.HasFlag(currentOrientationMask))
+			//Rotate to the most preferred orientation that is requested
+			//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to initially rotate to Portrait rather than PortraitUpsideDown
+			var toPreferredOrientationMask = _preferredOrientations.FirstOrDefault(ori => toOrientationMask.HasFlag(ori));
+
+			if (UIDevice.CurrentDevice.CheckSystemVersion(16, 0))
 			{
-				//Rotate to the most preferred orientation that is requested
-				//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to initially rotate to Portrait rather than PortraitUpsideDown
-				var toOrientation = _preferredOrientations.FirstOrDefault(ori => toOrientationMask.HasFlag(ori)).ToUIInterfaceOrientation();
-
-				UIDevice.CurrentDevice
-					.SetValueForKey(
-						new NSNumber((int)toOrientation),
-						new NSString("orientation")
-					);
-
-				UIApplication.SharedApplication.SetStatusBarOrientation(toOrientation, false);
+				if (UIApplication.SharedApplication.KeyWindow is { } keyWindow
+					&& keyWindow.RootViewController is { } rootViewController
+					&& UIApplication.SharedApplication.ConnectedScenes.ToArray().FirstOrDefault() is UIWindowScene windowScene)
+				{
+					rootViewController.SetNeedsUpdateOfSupportedInterfaceOrientations();
+					windowScene.RequestGeometryUpdate(new UIWindowSceneGeometryPreferencesIOS(toPreferredOrientationMask), null);
+				}
 			}
+			else
+			{
+				var currentOrientationMask = UIApplication.SharedApplication
+				   .StatusBarOrientation
+				   .ToUIInterfaceOrientationMask();
 
-			//Forces the rotation if the physical device is being held in an orientation that has now become supported
-			UIViewController.AttemptRotationToDeviceOrientation();
+				//If we are not already in one of the requested orientations, we need to force the application to rotate.
+				if (!toOrientationMask.HasFlag(currentOrientationMask))
+				{
+					var toOrientation = toPreferredOrientationMask.ToUIInterfaceOrientation();
+
+					UIDevice.CurrentDevice
+						.SetValueForKey(
+							new NSNumber((int)toOrientation),
+							new NSString("orientation")
+						);
+
+					UIApplication.SharedApplication.SetStatusBarOrientation(toOrientation, false);
+				}
+
+				//Forces the rotation if the physical device is being held in an orientation that has now become supported
+				UIViewController.AttemptRotationToDeviceOrientation();
+			}
 		}
 	}
 }
