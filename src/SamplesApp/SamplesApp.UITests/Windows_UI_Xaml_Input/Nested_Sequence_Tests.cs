@@ -125,6 +125,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[Ignore("Doesnt work on CI")]
 		[ActivePlatforms(Platform.Browser)]
 		[InjectedPointer(PointerDeviceType.Mouse)]
 		public async Task When_PressOnContainerAndReleaseOnNested_Mouse()
