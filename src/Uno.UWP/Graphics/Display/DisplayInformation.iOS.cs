@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -73,16 +73,12 @@ namespace Windows.Graphics.Display
 		/// </summary>
 		private DisplayOrientations GetNativeOrientation()
 		{
-			switch (UIDevice.CurrentDevice.UserInterfaceIdiom)
+			return UIDevice.CurrentDevice.UserInterfaceIdiom switch
 			{
-				case UIUserInterfaceIdiom.Phone:
-					return DisplayOrientations.Portrait;
-				case UIUserInterfaceIdiom.TV:
-					return DisplayOrientations.Landscape;
-				default:
-					//in case of Pad, CarPlay and Unidentified there is no "native" orientation
-					return DisplayOrientations.None;
-			}
+				UIUserInterfaceIdiom.Phone => DisplayOrientations.Portrait,
+				UIUserInterfaceIdiom.TV => DisplayOrientations.Landscape,
+				_ => DisplayOrientations.None,//in case of Pad, CarPlay and Unidentified there is no "native" orientation
+			};
 		}
 
 		private DisplayOrientations GetCurrentOrientation()
@@ -90,19 +86,14 @@ namespace Windows.Graphics.Display
 			var currentOrientationMask = UIApplication.SharedApplication
 			   .StatusBarOrientation;
 
-			switch (currentOrientationMask)
+			return currentOrientationMask switch
 			{
-				case UIInterfaceOrientation.LandscapeLeft:
-					return DisplayOrientations.LandscapeFlipped;
-				case UIInterfaceOrientation.LandscapeRight:
-					return DisplayOrientations.Landscape;
-				case UIInterfaceOrientation.Portrait:
-					return DisplayOrientations.Portrait;
-				case UIInterfaceOrientation.PortraitUpsideDown:
-					return DisplayOrientations.PortraitFlipped;
-				default:
-					return DisplayOrientations.None;
-			}
+				UIInterfaceOrientation.LandscapeLeft => DisplayOrientations.LandscapeFlipped,
+				UIInterfaceOrientation.LandscapeRight => DisplayOrientations.Landscape,
+				UIInterfaceOrientation.Portrait => DisplayOrientations.Portrait,
+				UIInterfaceOrientation.PortraitUpsideDown => DisplayOrientations.PortraitFlipped,
+				_ => DisplayOrientations.None,
+			};
 		}
 
 		private void Update()
