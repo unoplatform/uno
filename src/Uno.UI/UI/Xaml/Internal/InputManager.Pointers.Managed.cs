@@ -103,7 +103,7 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
-			var (originalSource, _) = HitTest(args);
+			var (originalSource, staleBranch) = HitTest(args, _isOver);
 
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -129,7 +129,19 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			// Second raise the event, either on the OriginalSource or on the capture owners if any
+			// First raise the PointerExited events on the stale branch
+			if (staleBranch.HasValue)
+			{
+				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
+				{
+					// The visual tree has been modified in a way that requires performing a new hit test.
+					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager._contentRoot.VisualTree.RootElement;
+				}
+				// Second raise the PointerEntered events on the OriginalSource
+				RaiseUsingCaptures(Enter, originalSource, routedArgs);
+			}
+
+			// Third raise the event, either on the OriginalSource or on the capture owners if any
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 		}
 
