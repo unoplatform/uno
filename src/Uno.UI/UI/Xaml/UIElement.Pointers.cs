@@ -585,7 +585,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var pointerId = args.GetCurrentPoint(this).PointerId;
+			var pointerId = args.Pointer.PointerId;
 			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
 		#endregion
