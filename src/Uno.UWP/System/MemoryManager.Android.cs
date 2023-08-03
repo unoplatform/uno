@@ -19,11 +19,6 @@ namespace Windows.System
 
 		private readonly static TimeSpan _updateInterval = TimeSpan.FromSeconds(10);
 
-		static MemoryManager()
-		{
-			IsAvailable = true;
-		}
-
 		public static ulong AppMemoryUsage
 		{
 			get
