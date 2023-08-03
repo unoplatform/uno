@@ -65,7 +65,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 #if __SKIA__
 				7;
 #elif __IOS__
-				5;
+				6;
 #else
 				3;
 #endif
