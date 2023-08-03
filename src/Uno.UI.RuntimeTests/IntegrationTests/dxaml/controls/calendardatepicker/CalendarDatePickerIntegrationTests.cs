@@ -3,8 +3,6 @@
 
 #pragma warning disable 168 // for cleanup imported member
 
-#if !WINDOWS_UWP
-
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -188,6 +186,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 		[TestMethod]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
 		public async Task CanOpenFlyoutByKeyboard()
 		{
 			TestCleanupWrapper cleanup;
@@ -700,7 +701,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 		}
 
-#if !WINDOWS_UWP
 		[TestMethod]
 		[Ignore("Causing bugs in asserts")]
 		public async Task DonotResizeCalendarView()
@@ -745,7 +745,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 		}
-#endif
 
 		[TestMethod]
 		[Ignore("Calendar formatting is still not properly implemented")]
@@ -884,6 +883,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// we can't test the scenario that cdp1.Date is null
 				CalendarHelper.DumpDate(cdp1.Date.Value, "Changing cdp1.Date to");
 				CalendarHelper.DumpDate(cdp2.Date.Value, "Now cdp2.Date is");
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(() =>
+			{
 				VERIFY_DATES_ARE_EQUAL(cdp1.Date.Value.UniversalTime(), cdp2.Date.Value.UniversalTime());
 
 				cdp2.Date = date2;
@@ -970,5 +975,3 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 	}
 }
-
-#endif
