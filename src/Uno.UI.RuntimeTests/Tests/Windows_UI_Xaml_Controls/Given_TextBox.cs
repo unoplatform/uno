@@ -703,5 +703,26 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(string.IsNullOrEmpty(vm.Text));
 		}
+
+#if HAS_UNO
+		[TestMethod]
+		public async Task When_Recycling()
+		{
+			using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+			var text = "Hello";
+			var textBox = new TextBox() { Text = text };
+			textBox.OnTemplateRecycled();
+
+			Assert.IsTrue(string.IsNullOrEmpty(textBox.Text));
+
+			textBox.IsTemplateRecyclingEnabled = false;
+
+			textBox.Text = "Hello";
+			textBox.OnTemplateRecycled();
+
+			Assert.AreEqual(text, textBox.Text);
+		}
+#endif
 	}
 }
