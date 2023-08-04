@@ -2,15 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Windows.UI.Xaml;
-using Uno.Extensions;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Uno;
-using System.Threading;
-using Uno.Collections;
 using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml
@@ -19,17 +10,13 @@ namespace Windows.UI.Xaml
 	{
 		private class DependencyPropertyRegistry
 		{
-			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
+			private readonly Dictionary<Type, Dictionary<string, DependencyProperty>> _entries = new(FastTypeComparer.Default);
 
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
-					if (typeTable!.TryGetValue(name, out var propertyObject))
-					{
-						result = (DependencyProperty)propertyObject!;
-						return true;
-					}
+					return typeTable!.TryGetValue(name, out result);
 				}
 
 				result = null;
@@ -42,7 +29,7 @@ namespace Windows.UI.Xaml
 			{
 				if (!TryGetTypeTable(type, out var typeTable))
 				{
-					typeTable = new HashtableEx();
+					typeTable = new();
 					_entries[type] = typeTable;
 				}
 
@@ -55,25 +42,15 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var value in typeTable!.Values)
 					{
-						properties.Add((DependencyProperty)value);
+						properties.Add(value);
 					}
 				}
 			}
 
-			private bool TryGetTypeTable(Type type, out HashtableEx? table)
+			private bool TryGetTypeTable(Type type, out Dictionary<string, DependencyProperty>? table)
 			{
-				if (_entries.TryGetValue(type, out var dictionaryObject))
-				{
-					table = (HashtableEx)dictionaryObject!;
-					return true;
-				}
-
-				table = null;
-				return false;
+				return _entries.TryGetValue(type, out table);
 			}
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }

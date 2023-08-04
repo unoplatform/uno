@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Uno;
 using System.Threading;
+using Uno.Core.Comparison;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -28,8 +29,8 @@ namespace Windows.UI.Xaml
 	{
 		private readonly static DependencyPropertyRegistry _registry = new DependencyPropertyRegistry();
 
-		private readonly static TypeToPropertiesDictionary _getPropertiesForType = new TypeToPropertiesDictionary();
-		private readonly static NameToPropertyDictionary _getPropertyCache = new NameToPropertyDictionary();
+		private readonly static Dictionary<Type, DependencyProperty[]> _getPropertiesForType = new(FastTypeComparer.Default);
+		private readonly static Dictionary<PropertyCacheEntry, DependencyProperty> _getPropertyCache = new(PropertyCacheEntry.DefaultComparer);
 
 		/// <summary>
 		/// A static <see cref="PropertyCacheEntry"/> used for lookups and avoid creating new instances. This assumes that uses are non-reentrant.
@@ -37,7 +38,7 @@ namespace Windows.UI.Xaml
 		private readonly static PropertyCacheEntry _searchPropertyCacheEntry = new();
 
 
-		private readonly static FrameworkPropertiesForTypeDictionary _getFrameworkPropertiesForType = new FrameworkPropertiesForTypeDictionary();
+		private readonly static Dictionary<Uno.CachedTuple<Type, Windows.UI.Xaml.FrameworkPropertyMetadataOptions>, DependencyProperty[]> _getFrameworkPropertiesForType = new();
 
 		private readonly PropertyMetadata _ownerTypeMetadata; // For perf consideration, we keep direct ref the metadata for the owner type
 		private readonly PropertyMetadataDictionary _metadata = new PropertyMetadataDictionary();

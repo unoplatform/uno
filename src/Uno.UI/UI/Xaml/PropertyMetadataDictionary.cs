@@ -1,41 +1,20 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections;
-using System.Linq;
-using System.Text;
-using Windows.UI.Xaml;
-using Uno.Extensions;
-using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using Uno;
-using System.Threading;
-using Uno.Collections;
+using System.Collections.Generic;
 
 namespace Windows.UI.Xaml
 {
 	internal class PropertyMetadataDictionary
 	{
-		/// <summary>
-		/// This implementation of PropertyMetadataDictionary uses HashTable because it's generally faster than
-		/// Dictionary`ref/ref. 
-		/// </summary>
-		private readonly HashtableEx _table = new HashtableEx();
+		private readonly Dictionary<Type, PropertyMetadata> _table = new();
 
 		internal void Add(Type ownerType, PropertyMetadata ownerTypeMetadata)
 			=> _table.Add(ownerType, ownerTypeMetadata);
 
 		internal bool TryGetValue(Type ownerType, out PropertyMetadata? metadata)
 		{
-			if (_table.TryGetValue(ownerType, out var value))
-			{
-				metadata = (PropertyMetadata)value!;
-
-				return true;
-			}
-
-			metadata = null;
-			return false;
+			return _table.TryGetValue(ownerType, out metadata);
 		}
 
 		internal bool ContainsKey(Type ownerType)
@@ -48,7 +27,7 @@ namespace Windows.UI.Xaml
 		{
 			if (_table.TryGetValue(ownerType, out var value))
 			{
-				return (PropertyMetadata)value!;
+				return value;
 			}
 
 			var metadata = property.GetMetadata(baseType);
@@ -57,8 +36,5 @@ namespace Windows.UI.Xaml
 
 			return metadata;
 		}
-
-		internal void Dispose()
-			=> _table.Dispose();
 	}
 }

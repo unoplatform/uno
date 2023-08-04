@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml
 
 		private readonly object _gate = new object();
 
-		private readonly HashtableEx _childrenBindableMap = new HashtableEx(DependencyPropertyComparer.Default);
+		private readonly Dictionary<DependencyProperty, int> _childrenBindableMap = new(DependencyPropertyComparer.Default);
 		private readonly List<object?> _childrenBindable = new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
@@ -254,7 +254,6 @@ namespace Windows.UI.Xaml
 			}
 
 			_properties.Dispose();
-			_childrenBindableMap.Dispose();
 		}
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
@@ -601,16 +600,10 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private int GetOrCreateChildBindablePropertyIndex(DependencyProperty property)
 		{
-			int index;
-
-			if (!_childrenBindableMap.TryGetValue(property, out var indexRaw))
+			if (!_childrenBindableMap.TryGetValue(property, out int index))
 			{
 				_childrenBindableMap[property] = index = _childrenBindableMap.Count;
 				_childrenBindable.Add(null);
-			}
-			else
-			{
-				index = (int)indexRaw!;
 			}
 
 			return index;

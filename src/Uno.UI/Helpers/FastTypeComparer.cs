@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -14,11 +15,11 @@ namespace Uno.UI.Helpers
 	/// A fast type comparer for dictionaries, to avoid going through object.Equals type checking. 
 	/// To be used along with <see cref="Hashtable"/> when <see cref="Type"/> is the key.
 	/// </summary>
-	internal class FastTypeComparer : IEqualityComparer
+	internal class FastTypeComparer : IEqualityComparer<Type>
 	{
-		public new bool Equals(object? x, object? y) => object.ReferenceEquals(x, y);
+		public bool Equals(Type? x, Type? y) => object.ReferenceEquals(x, y);
 
-		public int GetHashCode(object? obj) => RuntimeHelpers.GetHashCode(obj);
+		public int GetHashCode(Type obj) => RuntimeHelpers.GetHashCode(obj);
 
 		/// <summary>
 		/// Provides a single instance

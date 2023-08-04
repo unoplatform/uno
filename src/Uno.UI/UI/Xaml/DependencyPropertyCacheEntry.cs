@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Text;
-using Uno.Core.Comparison;
 
 namespace Windows.UI.Xaml
 {
@@ -43,28 +41,17 @@ namespace Windows.UI.Xaml
 
 		public static readonly Comparer DefaultComparer = new Comparer();
 
-		internal class Comparer : IEqualityComparer
+		internal class Comparer : IEqualityComparer<PropertyCacheEntry>
 		{
-			bool IEqualityComparer.Equals(object? x, object? y)
+			bool IEqualityComparer<PropertyCacheEntry>.Equals(PropertyCacheEntry? x, PropertyCacheEntry? y)
 			{
-				if (x is PropertyCacheEntry left && y is PropertyCacheEntry right)
-				{
-					// This method assumes that there will never be null parameters, and that the Type and Name fields 
-					// are never null.
-					return left.Type == right.Type
-					&& (
-							object.ReferenceEquals(left.Name, right.Name)
-							|| string.CompareOrdinal(left.Name, right.Name) == 0
-						);
-				}
-				else
-				{
-					return false;
-				}
+				// This method assumes that there will never be null parameters, and that the Type and Name fields 
+				// are never null.
+				return x!.Type == y!.Type && string.CompareOrdinal(x.Name, y.Name) == 0;
 			}
 
-			int IEqualityComparer.GetHashCode(object? obj)
-				=> obj is PropertyCacheEntry entry ? entry.CachedHashCode : 0;
+			int IEqualityComparer<PropertyCacheEntry>.GetHashCode(PropertyCacheEntry? obj)
+				=> obj?.CachedHashCode ?? 0;
 		}
 	}
 
