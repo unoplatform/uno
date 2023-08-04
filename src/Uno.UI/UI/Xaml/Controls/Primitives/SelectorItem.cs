@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_canRaiseClickOnPointerRelease = false;
 
 				update = ManipulationUpdateKind.Clicked;
-				Selector?.OnItemClicked(this);
+				Selector?.OnItemClicked(this, args.KeyModifiers);
 
 				// This should be automatically done by the pointers due to release, but if for any reason
 				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
