@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
-			if (!IsTemplateRecyclingEnabled)
+			if (!IsResetOnTemplateRecycle)
 			{
 
 				return;
@@ -252,7 +252,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets or sets a value that indicates whether ToggleSwitch should reset its IsOn value when its template is recycled.
 		/// </summary>
-		public bool IsTemplateRecyclingEnabled { get; set; } = true;
+		public bool IsResetOnTemplateRecycle { get; set; } = true;
 
 		internal void AutomationPeerToggle() => IsOn = !IsOn;
 	}

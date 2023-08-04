@@ -1088,7 +1088,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
-			if (!IsTemplateRecyclingEnabled)
+			if (!IsResetOnTemplateRecycle)
 			{
 				return;
 			}
@@ -1100,7 +1100,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Gets or sets a value that indicates whether TextBox should reset its Text value when its template is recycled.
 		/// </summary>
-		public bool IsTemplateRecyclingEnabled { get; set; } = true;
+		public bool IsResetOnTemplateRecycle { get; set; } = true;
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
 

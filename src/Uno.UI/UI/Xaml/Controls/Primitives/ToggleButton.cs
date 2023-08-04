@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public void OnTemplateRecycled()
 		{
-			if (!IsTemplateRecyclingEnabled)
+			if (!IsResetOnTemplateRecycle)
 			{
 				return;
 			}
@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// <summary>
 		/// Gets or sets a value that indicates whether ToggleButton should reset its IsChecked value when its template is recycled.
 		/// </summary>
-		public bool IsTemplateRecyclingEnabled { get; set; } = true;
+		public bool IsResetOnTemplateRecycle { get; set; } = true;
 
 		internal void AutomationPeerToggle() => OnClick();
 	}
