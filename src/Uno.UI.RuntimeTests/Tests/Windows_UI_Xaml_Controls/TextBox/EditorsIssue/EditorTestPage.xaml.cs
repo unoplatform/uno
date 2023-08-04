@@ -1,7 +1,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 
-namespace MobileTemplateSelectorIssue
+namespace TextBoxEditorRecycling
 {
 	public sealed partial class EditorTestPage : Page
 	{
@@ -12,11 +12,6 @@ namespace MobileTemplateSelectorIssue
 			ViewModel = new EditorTestViewModel();
 
 			this.InitializeComponent();
-		}
-
-		public void SwitchEditors()
-		{
-			ViewModel.CurrentEditor = ViewModel.Editors.FirstOrDefault(e => e != ViewModel.CurrentEditor);
 		}
 	}
 }

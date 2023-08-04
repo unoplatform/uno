@@ -1,11 +1,18 @@
 ﻿#nullable enable
 
+using System;
 using System.ComponentModel;
 
-namespace MobileTemplateSelectorIssue.Editors
+namespace TextBoxEditorRecycling.Editors
 {
-	public sealed class Editor2 : IEditor
+	public sealed class EditorViewModel
 	{
+		public EditorViewModel(Type editorViewType)
+		{
+			EditorViewType = editorViewType;
+			_text = editorViewType.Name;
+		}
+
 		public string Text
 		{
 			get { return _text; }
@@ -18,7 +25,10 @@ namespace MobileTemplateSelectorIssue.Editors
 				}
 			}
 		}
-		private string _text = "Editor2";
+
+		public Type EditorViewType { get; }
+
+		private string _text = "Editor";
 
 		public event PropertyChangedEventHandler? PropertyChanged = null;
 	}
