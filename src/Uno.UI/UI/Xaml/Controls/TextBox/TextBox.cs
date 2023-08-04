@@ -7,18 +7,15 @@ using System;
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
-using Uno.UI.Xaml.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
-using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
@@ -1072,10 +1069,19 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnTemplateRecycled()
 		{
+			if (!IsTemplateRecyclingEnabled)
+			{
+				return;
+			}
+
 			_suppressTextChanged = true;
-			ClearValue(TextProperty);
 			Text = string.Empty;
 		}
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether TextBox should reset its Text value when its template is recycled.
+		/// </summary>
+		public bool IsTemplateRecyclingEnabled { get; set; } = true;
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
 
