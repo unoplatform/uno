@@ -24,8 +24,6 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject
 	{
 		private ContainerVisual _visual;
-		internal double _canvasTop;
-		internal double _canvasLeft;
 		private Rect _currentFinalRect;
 		private Rect? _currentClippedFrame;
 
@@ -36,8 +34,6 @@ namespace Windows.UI.Xaml
 			Initialize();
 			InitializePointers();
 			InitializeKeyboard();
-
-			this.RegisterPropertyChangedCallbackStrong(OnPropertyChanged);
 
 			UpdateHitTest();
 		}
@@ -58,18 +54,6 @@ namespace Windows.UI.Xaml
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
 		partial void InitializeKeyboard();
-
-		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
-		{
-			if (property == Controls.Canvas.TopProperty)
-			{
-				_canvasTop = (double)args.NewValue;
-			}
-			else if (property == Controls.Canvas.LeftProperty)
-			{
-				_canvasLeft = (double)args.NewValue;
-			}
-		}
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
