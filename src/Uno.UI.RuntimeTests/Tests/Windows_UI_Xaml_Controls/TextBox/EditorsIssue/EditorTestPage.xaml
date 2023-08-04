@@ -1,0 +1,38 @@
+<Page
+    x:Class="MobileTemplateSelectorIssue.EditorTestPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:editors="using:MobileTemplateSelectorIssue.Editors"
+    xmlns:local="using:MobileTemplateSelectorIssue"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    mc:Ignorable="d">
+	<ScrollViewer VerticalScrollBarVisibility="Auto">
+		<Grid UseLayoutRounding="True">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="*" />
+			</Grid.RowDefinitions>
+			<TextBlock Margin="5" Text="{x:Bind ViewModel.FirstEditor.Text, Mode=OneWay}" />
+			<TextBlock Margin="5" Grid.Row="1" Text="{x:Bind ViewModel.CurrentEditor.Text, Mode=OneWay}" />
+			<ContentControl Grid.Row="2" Content="{x:Bind ViewModel.CurrentEditor, Mode=OneWay}">
+				<ContentControl.ContentTemplateSelector>
+					<editors:TypedDataTemplateSelector>
+						<editors:TypedDataTemplate DataType="editors:Editor1" TypeName="Editor1">
+							<DataTemplate>
+								<editors:Editor1View />
+							</DataTemplate>
+						</editors:TypedDataTemplate>
+						<editors:TypedDataTemplate DataType="editors:Editor2" TypeName="Editor2">
+							<DataTemplate>
+								<editors:Editor2View />
+							</DataTemplate>
+						</editors:TypedDataTemplate>
+					</editors:TypedDataTemplateSelector>
+				</ContentControl.ContentTemplateSelector>
+			</ContentControl>
+		</Grid>
+	</ScrollViewer>
+</Page>
