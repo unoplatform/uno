@@ -41,6 +41,10 @@ namespace TextBoxEditorRecycling
 				new (typeof(EditorBindingView)),
 				new (typeof(EditorBindingPropertyChangedView)),
 				new (typeof(EditorXBindView)),
+				new (typeof(EditorXBindPropertyChangedView)),
+				new (typeof(EditorBindingView)),
+				new (typeof(EditorBindingPropertyChangedView)),
+				new (typeof(EditorXBindView)),
 				new (typeof(EditorXBindPropertyChangedView))
 			};
 			_currentEditor = Editors.First();
