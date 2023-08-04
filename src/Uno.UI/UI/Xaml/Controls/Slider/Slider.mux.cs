@@ -431,8 +431,12 @@ public partial class Slider
 	}
 
 	// PointerMoved event handler.
-	private void OnPointerMoved(object sender, PointerRoutedEventArgs args)
+	private void OnPointerMoved(object sender, PointerRoutedEventArgs args) => OnPointerMoved(args);
+
+	protected override void OnPointerMoved(PointerRoutedEventArgs args)
 	{
+		base.OnPointerMoved(args);
+
 		var thumb = Thumb;
 		if (thumb != null)
 		{
