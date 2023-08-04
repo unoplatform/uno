@@ -1,7 +1,5 @@
-﻿using SampleControl.Presentation;
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp
 {
@@ -11,7 +9,16 @@ namespace SamplesApp
 		{
 			this.InitializeComponent();
 
-			sampleControl.DataContext = new SampleChooserViewModel(sampleControl);
+			//sampleControl.DataContext = new SampleChooserViewModel(sampleControl);
+		}
+
+		private void myButton_Click(object sender, RoutedEventArgs e)
+		{
+			myButton.Content = "Clicked";
+
+			var newWindow = new Window();
+			newWindow.Content = new Button() { Content = "New window!" };
+			newWindow.Activate();
 		}
 	}
 }
