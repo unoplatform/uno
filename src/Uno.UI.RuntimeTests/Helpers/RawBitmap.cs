@@ -66,6 +66,9 @@ namespace Uno.UI.RuntimeTests.Helpers
 			return Color.FromArgb(a, r, g, b);
 		}
 
+		public Color this[int x, int y] =>
+			GetPixel(x, y);
+
 		/// <summary>
 		/// Enables the <see cref="GetPixel(int, int)"/> method.
 		/// </summary>

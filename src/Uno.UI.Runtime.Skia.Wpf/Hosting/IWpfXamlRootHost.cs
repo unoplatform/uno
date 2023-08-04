@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using Uno.UI.Hosting;
-using Uno.UI.Skia;
 using WpfCanvas = System.Windows.Controls.Canvas;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Hosting;

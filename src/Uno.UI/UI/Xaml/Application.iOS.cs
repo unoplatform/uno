@@ -5,6 +5,7 @@ using UIKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
 using ObjCRuntime;
+using Windows.Globalization;
 using Windows.Graphics.Display;
 using Uno.Extensions;
 using Windows.UI.Core;
@@ -28,11 +29,9 @@ namespace Windows.UI.Xaml
 
 		private bool _preventSecondaryActivationHandling;
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
 			SetCurrentLanguage();
-			InitializeSystemTheme();
 
 			SubscribeBackgroundNotifications();
 		}

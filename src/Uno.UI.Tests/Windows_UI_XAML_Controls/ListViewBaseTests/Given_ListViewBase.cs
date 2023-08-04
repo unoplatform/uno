@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -48,11 +49,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.SelectionMode = ListViewSelectionMode.Multiple;
 
-			SUT.OnItemClicked(0);
+			SUT.OnItemClicked(0, VirtualKeyModifiers.None);
 
 			Assert.AreEqual(1, SUT.SelectedItems.Count);
 
-			SUT.OnItemClicked(1);
+			SUT.OnItemClicked(1, VirtualKeyModifiers.None);
 
 			Assert.AreEqual(2, SUT.SelectedItems.Count);
 		}
@@ -130,7 +131,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			SUT.ItemsSource = new int[] { 1, 2, 3 };
 
-			SUT.OnItemClicked(0);
+			SUT.OnItemClicked(0, VirtualKeyModifiers.None);
 
 			SUT.ItemsSource = null;
 		}
@@ -613,7 +614,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			if (SUT.ContainerFromItem(source[1]) is SelectorItem si)
 			{
-				SUT?.OnItemClicked(si);
+				SUT?.OnItemClicked(si, VirtualKeyModifiers.None);
 			}
 
 			Assert.AreEqual(source[1], SUT.SelectedValue);

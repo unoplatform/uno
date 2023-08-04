@@ -3,7 +3,7 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Uno.UI.Runtime.Skia.Helpers.Windows;
+namespace Uno.UI.Runtime.Skia.Gtk.Helpers.Windows;
 
 // note this class considers dpix = dpiy
 internal static class DpiUtilities

@@ -8,6 +8,11 @@ namespace Windows.Phone.Devices.Notification
 #endif
 	public partial class VibrationDevice
 	{
+#if false || false || IS_UNIT_TESTS || false || __SKIA__ || false || __MACOS__
+		internal VibrationDevice()
+		{
+		}
+#endif
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void Vibrate(global::System.TimeSpan duration)

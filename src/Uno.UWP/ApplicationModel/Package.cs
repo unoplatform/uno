@@ -8,13 +8,13 @@ namespace Windows.ApplicationModel
 	{
 		private StorageFolder _installedLocation;
 
-		internal Package()
-		{
-		}
+		internal Package() => InitializePlatform();
+
+		partial void InitializePlatform();
 
 		public bool IsDevelopmentMode => GetInnerIsDevelopmentMode();
 
-		public PackageId Id => new PackageId();
+		public PackageId Id { get; } = new();
 
 		public DateTimeOffset InstallDate => GetInstallDate();
 

@@ -3,24 +3,23 @@
 using System;
 using Gtk;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.GTK.Extensions.Helpers;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers;
 using Windows.UI.Xaml;
 using WinUIApplication = Windows.UI.Xaml.Application;
 using WUX = Windows.UI.Xaml;
 using GtkApplication = Gtk.Application;
 using WinUIWindow = Windows.UI.Xaml.Window;
-using Uno.UI.Runtime.Skia.GTK.Extensions;
-using Uno.UI.Runtime.Skia.UI.Xaml.Controls;
-using Uno.UI.Runtime.Skia.GTK.UI.Controls;
-using Uno.UI.Runtime.Skia.GTK.UI;
+using Uno.UI.Runtime.Skia.Gtk.Extensions;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
+using Uno.UI.Runtime.Skia.Gtk.UI;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	public partial class GtkHost : ISkiaApplicationHost
 	{
 		private const int UnoThemePriority = 800;
 
-		private readonly Func<WUX.Application> _appBuilder;
+		private readonly Func<WinUIApplication> _appBuilder;
 
 		[ThreadStatic] private static bool _isDispatcherThread;
 		[ThreadStatic] private static GtkHost? _current;
@@ -50,7 +49,7 @@ namespace Uno.UI.Runtime.Skia
 		/// <remarks>If <c>null</c>, the host will try to determine the most compatible mode.</remarks>
 		public RenderSurfaceType? RenderSurfaceType { get; set; }
 
-		public Gtk.Window? Window => MainWindow;
+		public global::Gtk.Window? Window => MainWindow;
 
 		public void Run()
 		{
@@ -113,7 +112,7 @@ namespace Uno.UI.Runtime.Skia
 		{
 			try
 			{
-				Gtk.Application.Init();
+				global::Gtk.Application.Init();
 				return true;
 			}
 			catch (TypeInitializationException e)

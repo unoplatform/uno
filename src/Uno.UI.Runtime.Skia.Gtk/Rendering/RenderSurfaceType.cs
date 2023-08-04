@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.Runtime.Skia
+﻿namespace Uno.UI.Runtime.Skia.Gtk
 {
 	public enum RenderSurfaceType
 	{

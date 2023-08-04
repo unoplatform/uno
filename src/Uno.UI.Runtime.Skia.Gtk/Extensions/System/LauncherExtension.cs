@@ -3,11 +3,11 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Extensions.System;
-using Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers;
 using Windows.System;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.System
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System
 {
 	internal class LauncherExtension : ILauncherExtension
 	{

@@ -7,13 +7,13 @@ using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		partial void InitializeKeyboard()
 		{
-			Gtk.Key.SnooperInstall(OnKeySnoop);
+			global::Gtk.Key.SnooperInstall(OnKeySnoop);
 		}
 
 		private int OnKeySnoop(Widget grab_widget, EventKey e)
@@ -45,6 +45,7 @@ namespace Uno.UI.Runtime.Skia
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(evt.State),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = evt.HardwareKeycode,
@@ -72,6 +73,7 @@ namespace Uno.UI.Runtime.Skia
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(evt.State),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = evt.HardwareKeycode,

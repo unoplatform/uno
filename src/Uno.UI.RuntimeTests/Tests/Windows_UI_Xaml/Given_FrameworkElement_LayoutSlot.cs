@@ -1,5 +1,7 @@
 ﻿using System.Threading.Tasks;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Private.Infrastructure;
 using Windows.Foundation;
 using Windows.UI;

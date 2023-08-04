@@ -9,8 +9,21 @@
 		<CommunityToolkitMvvmVersion>8.2.1</CommunityToolkitMvvmVersion>
 	</PropertyGroup>
 
+	<PropertyGroup>
+		<!-- 
+ 		Ensures that AssignLinkMetadata runs before AssignTargetPaths. 
+ 		Otherwise, AssignTargetPath will generate a rooted path and will break embedded sources 
+ 		LogicalName metadata's behavior. 
+ 		-->
+		<!-- NOTE: This code already exists in Uno.UI.Tasks.targets, but inside of uno this targets file is imported very early -->
+		<!-- and then AssignTargetPathsDependsOn gets cleared by msbuild -->
+		<!-- This shouldn't be happening outside of Uno where Uno.UI.Tasks.targets is imported from NuGet package at the correct time -->
+		<AssignTargetPathsDependsOn>$(AssignTargetPathsDependsOn);AssignLinkMetadata</AssignTargetPathsDependsOn>
+	</PropertyGroup>
+
 	<ItemGroup Condition="$(EnableAutomaticXamlPageInclusion)">
 		<Page Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
+		<UpToDateCheckInput Include="**/*.xaml" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder);$(PageExclusions)" />
 		<None Remove="**/*.xaml" />
 	</ItemGroup>
 
@@ -70,7 +83,7 @@
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.59" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.59" />
 		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.59" />
-		<PackageReference Update="Uno.Fonts.Fluent" Version="2.2.2" />
+		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0-dev.6" />
 		<PackageReference Update="System.ValueTuple" Version="4.5.0" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 		<PackageReference Update="Xamarin.UITest" Version="4.1.4" />
