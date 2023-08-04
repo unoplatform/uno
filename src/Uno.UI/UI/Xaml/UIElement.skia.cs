@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿//#define ENABLE_CONTAINER_VISUAL_TRACKING
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System;
@@ -94,7 +96,9 @@ namespace Windows.UI.Xaml
 				if (_visual == null)
 				{
 					_visual = Window.Current.Compositor.CreateContainerVisual();
+#if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"Owner:{GetType()}/{(this as FrameworkElement)?.Name}";
+#endif
 				}
 
 				return _visual;
