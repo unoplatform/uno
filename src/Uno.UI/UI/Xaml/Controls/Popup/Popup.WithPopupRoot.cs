@@ -92,14 +92,15 @@ public partial class Popup
 				}
 #endif
 
+				PopupPanel.Visibility = Visibility.Visible;
+				Visibility = Visibility.Visible;
 				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
-
-				PopupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
 				_closePopup.Disposable = null;
+				Visibility = Visibility.Collapsed;
 				PopupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
