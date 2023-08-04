@@ -114,3 +114,17 @@ The framework template pool manages the pooling of ControlTemplates and DataTemp
 - `ReleaseTemplate` is raised when a pooled template instance has not been used for a while.
 
 If the `ReuseTemplate` occurrences is low, this usually means that there is a memory leak to investigate.
+
+#### Control recycling
+
+Some controls reset their state when their container is recycled. These include `TextBox`, `ToggleButton` (and its derived types) and `ToggleSwitch`. In the cases where this behavior is not helpful, you can set their `IsResetOnTemplateRecycle` property to `false`. You can do so in XAML (the `not_win` is XAML platform specific namespace, see [docs](platform-specific-xaml.md))
+
+```xml
+<TextBox not_win:IsResetOnTemplateRecycle="False" />
+```
+
+As well as in C#:
+
+```csharp
+textBox.IsResetOnTemplateRecycle = false;
+```
