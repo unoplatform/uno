@@ -10,7 +10,10 @@ namespace SamplesApp
 		public MainPage()
 		{
 			this.InitializeComponent();
+			if (Windows.UI.Xaml.Window.Current.Bounds != default)
+			{
 
+			}
 			sampleControl.DataContext = new SampleChooserViewModel(sampleControl);
 		}
 	}

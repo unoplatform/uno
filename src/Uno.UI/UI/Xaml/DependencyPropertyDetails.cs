@@ -9,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml
@@ -18,7 +19,20 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	internal class DependencyPropertyDetails : IEnumerable<object?>, IEnumerable, IDisposable
 	{
-		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
+		private DependencyPropertyValuePrecedences __highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
+
+		private DependencyPropertyValuePrecedences _highestPrecedence
+		{
+			get => __highestPrecedence;
+			set
+			{
+				__highestPrecedence = value;
+				if (Property == TextBox.TextProperty)
+				{
+
+				}
+			}
+		}
 		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
@@ -108,7 +122,16 @@ namespace Windows.UI.Xaml
 			var valueIsUnsetValue = value is UnsetValue;
 
 			var stackAlias = Stack;
+			if ((value as string) == "Editor1")
+			{
 
+			}
+
+			var currentValue = stackAlias[(int)precedence];
+			if (currentValue is string s && s == "Editor1")
+			{
+
+			}
 			if (HasWeakStorage)
 			{
 				if (stackAlias[(int)precedence] is ManagedWeakReference mwr)
@@ -178,6 +201,16 @@ namespace Windows.UI.Xaml
 			if (_stack == null && precedence == DependencyPropertyValuePrecedences.Local)
 			{
 				var valueIsUnsetValue = value is UnsetValue;
+				if ((value as string) == "Editor1")
+				{
+
+				}
+
+				var fastLocalValue = _fastLocalValue;
+				if (fastLocalValue is string s && s == "Editor1")
+				{
+
+				}
 
 				if (HasWeakStorage)
 				{

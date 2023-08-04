@@ -98,7 +98,7 @@ namespace SampleControl.Presentation
 
 #if HAS_UNO
 			// Disable all pooling so that controls get collected quickly.
-			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = false;
+			Windows.UI.Xaml.FrameworkTemplatePool.IsPoolingEnabled = true;
 #endif
 #if NETFX_CORE
 			UseFluentStyles = true;
