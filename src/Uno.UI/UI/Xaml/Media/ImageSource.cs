@@ -250,18 +250,12 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (uri.IsFile)
 			{
-#pragma warning disable SYSLIB0014 // Type or member is obsolete - It suggests to use HttpClient, which doesn't work for file Uri scheme.
-				var request = WebRequest.Create(uri);
-#pragma warning restore SYSLIB0014 // Type or member is obsolete
-				var response = await request.GetResponseAsync();
-				return response.GetResponseStream();
+				return File.Open(uri.LocalPath, FileMode.Open);
 			}
-			else
-			{
-				_httpClient ??= new HttpClient();
-				var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
-				return await response.Content.ReadAsStreamAsync();
-			}
+
+			_httpClient ??= new HttpClient();
+			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
+			return await response.Content.ReadAsStreamAsync();
 		}
 
 		internal void UnloadImageData()
