@@ -1,10 +1,10 @@
 <Page
-    x:Class="MobileTemplateSelectorIssue.EditorTestPage"
+    x:Class="TextBoxEditorRecycling.EditorTestPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:editors="using:MobileTemplateSelectorIssue.Editors"
-    xmlns:local="using:MobileTemplateSelectorIssue"
+    xmlns:editors="using:TextBoxEditorRecycling.Editors"
+    xmlns:local="using:TextBoxEditorRecycling"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
@@ -19,18 +19,28 @@
 			<TextBlock Margin="5" Grid.Row="1" Text="{x:Bind ViewModel.CurrentEditor.Text, Mode=OneWay}" />
 			<ContentControl Grid.Row="2" Content="{x:Bind ViewModel.CurrentEditor, Mode=OneWay}">
 				<ContentControl.ContentTemplateSelector>
-					<editors:TypedDataTemplateSelector>
-						<editors:TypedDataTemplate DataType="editors:Editor1" TypeName="Editor1">
+					<editors:EditorTemplateSelector>
+						<editors:TypedDataTemplate TypeName="EditorBindingView">
 							<DataTemplate>
-								<editors:Editor1View />
+								<editors:EditorBindingView />
 							</DataTemplate>
 						</editors:TypedDataTemplate>
-						<editors:TypedDataTemplate DataType="editors:Editor2" TypeName="Editor2">
+						<editors:TypedDataTemplate TypeName="EditorBindingPropertyChangedView">
 							<DataTemplate>
-								<editors:Editor2View />
+								<editors:EditorBindingPropertyChangedView />
 							</DataTemplate>
 						</editors:TypedDataTemplate>
-					</editors:TypedDataTemplateSelector>
+						<editors:TypedDataTemplate TypeName="EditorXBindView">
+							<DataTemplate>
+								<editors:EditorXBindView />
+							</DataTemplate>
+						</editors:TypedDataTemplate>
+						<editors:TypedDataTemplate TypeName="EditorXBindPropertyChangedView">
+							<DataTemplate>
+								<editors:EditorXBindPropertyChangedView />
+							</DataTemplate>
+						</editors:TypedDataTemplate>
+					</editors:EditorTemplateSelector>
 				</ContentControl.ContentTemplateSelector>
 			</ContentControl>
 		</Grid>

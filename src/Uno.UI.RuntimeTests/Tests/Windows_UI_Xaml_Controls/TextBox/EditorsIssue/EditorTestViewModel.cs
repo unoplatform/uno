@@ -1,17 +1,18 @@
 ﻿#nullable enable
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using MobileTemplateSelectorIssue.Editors;
+using TextBoxEditorRecycling.Editors;
 
-namespace MobileTemplateSelectorIssue
+namespace TextBoxEditorRecycling
 {
 	public sealed class EditorTestViewModel : INotifyPropertyChanged
 	{
-		public IEnumerable<IEditor> Editors { get; private set; }
+		public EditorViewModel[] Editors { get; private set; }
 
-		public IEditor CurrentEditor
+		public EditorViewModel CurrentEditor
 		{
 			get => _currentEditor;
 			set
@@ -23,13 +24,25 @@ namespace MobileTemplateSelectorIssue
 				}
 			}
 		}
-		IEditor _currentEditor;
 
-		public IEditor FirstEditor { get; }
+		public void SetNextEditor()
+		{
+			CurrentEditor = Editors[(Array.IndexOf(Editors, CurrentEditor) + 1) % Editors.Length];
+		}
+
+		EditorViewModel _currentEditor;
+
+		public EditorViewModel FirstEditor { get; }
 
 		public EditorTestViewModel()
 		{
-			Editors = new IEditor[] { new Editor1(), new Editor2() };
+			Editors = new EditorViewModel[]
+			{
+				new (typeof(EditorBindingView)),
+				new (typeof(EditorBindingPropertyChangedView)),
+				new (typeof(EditorXBindView)),
+				new (typeof(EditorXBindPropertyChangedView))
+			};
 			_currentEditor = Editors.First();
 			FirstEditor = _currentEditor;
 		}

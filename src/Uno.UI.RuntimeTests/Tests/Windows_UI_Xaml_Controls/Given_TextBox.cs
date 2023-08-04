@@ -1,19 +1,16 @@
 ﻿
 using System;
+using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using TextBoxEditorRecycling;
+using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml;
-using Windows.UI;
-using FluentAssertions;
-using MUXControlsTestApp.Utilities;
-using System.Runtime.InteropServices;
-using Uno.UI.RuntimeTests.ListViewPages;
-using Uno.UI.RuntimeTests.TextBoxPages;
 
 
 #if NETFX_CORE
@@ -699,19 +696,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			{
 				var textBox = page.FindFirstChild<TextBox>();
 				Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
+				Assert.IsTrue(!string.IsNullOrEmpty(textBox.Text));
 				Assert.AreEqual(vm.CurrentEditor.Text, textBox.Text);
 			}
 
 			// Verify initial state
 			AssertEditorContents();
 
-			// Switch 1 -> 2 -> 1 -> 2
-			for (int i = 0; i < 3; i++)
+			TextBox textBox = null;
+			// Cycle twice - once without focus, once with focus			
+			for (int i = 0; i < vm.Editors.Length * 2; i++)
 			{
-				page.SwitchEditors();
+				vm.SetNextEditor();
 
 				await WindowHelper.WaitForIdle();
-				await WindowHelper.WaitFor(() => page.FindFirstChild<TextBox>() is not null);
+				await WindowHelper.WaitFor(() => (textBox = page.FindFirstChild<TextBox>()) is not null);
+				if (i > vm.Editors.Length - 1)
+				{
+					textBox.Focus(FocusState.Programmatic);
+					await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
+				}
+				await Task.Delay(500);
 
 				AssertEditorContents();
 			}
