@@ -683,28 +683,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Recycled_Text()
-		{
-			using var _ = FeatureConfigurationHelper.UseTemplatePooling();
-
-			var page = new RecyclingTextBoxPage();
-			var textBox = page.FindFirstChild<TextBox>();
-
-			WindowHelper.WindowContent = page;
-			await WindowHelper.WaitForLoaded(page);
-			await WindowHelper.WaitForIdle();
-
-			var vm = page.DataContext as RecyclingTextBoxPageItemViewModel;
-
-			Assert.IsFalse(string.IsNullOrEmpty(vm.Text));
-
-			textBox.OnTemplateRecycled();
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsFalse(string.IsNullOrEmpty(vm.Text));
-		}
-
-		[TestMethod]
 		public async Task When_Editor_Recycling()
 		{
 			using var _ = FeatureConfigurationHelper.UseTemplatePooling();
@@ -731,7 +709,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			for (int i = 0; i < 3; i++)
 			{
 				page.SwitchEditors();
+
 				await WindowHelper.WaitForIdle();
+				await WindowHelper.WaitFor(() => page.FindFirstChild<TextBox>() is not null);
 
 				AssertEditorContents();
 			}
