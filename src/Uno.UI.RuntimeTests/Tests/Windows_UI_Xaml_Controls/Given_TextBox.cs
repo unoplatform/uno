@@ -703,5 +703,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(string.IsNullOrEmpty(vm.Text));
 		}
+
+		[TestMethod]
+		public async Task When_Editor_Recycling()
+		{
+			using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+			var page = new EditorTestPage();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+			await WindowHelper.WaitForIdle();
+
+			var vm = page.ViewModel;
+
+			void AssertEditorContents()
+			{
+				var textBox = page.FindFirstChild<TextBox>();
+				Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
+				Assert.AreEqual(vm.CurrentEditor.Text, textBox.Text);
+			}
+
+			// Verify initial state
+			AssertEditorContents();
+
+			// Switch 1 -> 2 -> 1 -> 2
+			for (int i = 0; i < 3; i++)
+			{
+				page.SwitchEditors();
+				await WindowHelper.WaitForIdle();
+
+				AssertEditorContents();
+			}
+		}
 	}
 }
