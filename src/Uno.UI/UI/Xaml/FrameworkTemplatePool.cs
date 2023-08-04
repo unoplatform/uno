@@ -116,6 +116,11 @@ namespace Windows.UI.Xaml
 		public static bool IsPoolingEnabled { get; set; } = true;
 
 		/// <summary>
+		/// Gets a value indicating whether the pool is currently recycling a template.
+		/// </summary>
+		internal static bool IsRecycling { get; private set; }
+
+		/// <summary>
 		/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views.
 		/// </summary>
 		internal static float HighMemoryThreshold { get; set; } = .8f;
@@ -346,7 +351,9 @@ namespace Windows.UI.Xaml
 			// If DataContext is not null, it means it has been explicitly set (not inherited). Resetting the view could push an invalid value through 2-way binding in this case.
 			if (instance is IFrameworkTemplatePoolAware templateAwareElement && (instance as IFrameworkElement)!.DataContext == null)
 			{
+				IsRecycling = true;
 				templateAwareElement.OnTemplateRecycled();
+				IsRecycling = false;
 			}
 
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations

@@ -220,6 +220,11 @@ namespace Windows.UI.Xaml.Data
 		{
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				ParentBinding.XBindBack(DataContext, value);
 			}
 			catch (Exception exception)
@@ -244,6 +249,11 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				if (ParentBinding.Mode == BindingMode.TwoWay
 					&& ResolveUpdateSourceTrigger() == UpdateSourceTrigger.PropertyChanged)
 				{
