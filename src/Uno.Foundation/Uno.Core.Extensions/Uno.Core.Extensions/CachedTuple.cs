@@ -95,8 +95,8 @@ namespace Uno
 		private static bool InternalEquals(CachedTuple<T1, T2> t1, CachedTuple<T1, T2> t2)
 		{
 			return ReferenceEquals(t1, t2) || (
-				Equals(t1.Item1, t2.Item1)
-				&& Equals(t1.Item2, t2.Item2)
+				EqualityComparer<T1>.Default(t1.Item1, t2.Item1)
+				&& EqualityComparer<T2>.Default(t1.Item2, t2.Item2)
 			);
 		}
 
