@@ -295,7 +295,7 @@ namespace Uno.Collections
 		{
 			var newData = new T[_data.Length + 1];
 			Span<T> newDataSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(newData), newData.Length);
-			Span<T> dataSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_data), _data.Length); ;
+			Span<T> dataSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_data), _data.Length);
 			dataSpan.CopyTo(newDataSpan);
 			newDataSpan[_data.Length] = value;
 			return new ImmutableList<T>(newData, copyData: false);
