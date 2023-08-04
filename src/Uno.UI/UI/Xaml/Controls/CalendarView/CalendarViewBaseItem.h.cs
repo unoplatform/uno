@@ -25,13 +25,19 @@ namespace Windows.UI.Xaml.Controls
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 #if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
+=======
+>>>>>>> 3e9698d5f3 (chore: Adjust for Reference build)
 			this.Loaded += (_, _) =>
 			{
+#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
 				_borderRenderer ??= new();
+#endif
 				EnterImpl();
 			};
+#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
 			this.Unloaded += (_, _) => _borderRenderer.Clear();
 #endif
 >>>>>>> 00f85827b8 (fix: Ensure CalendarView item styles are updated properly on reload)
