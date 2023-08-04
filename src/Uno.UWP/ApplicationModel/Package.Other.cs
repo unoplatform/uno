@@ -12,6 +12,7 @@ public partial class Package
 	private const string PackageManifestName = "Package.appxmanifest";
 
 	private static Assembly? _entryAssembly;
+	private string _displayName = "";
 
 	partial void InitializePlatform()
 	{
@@ -37,7 +38,11 @@ public partial class Package
 		return Environment.CurrentDirectory;
 	}
 
-	public string DisplayName { get; private set; } = "";
+	public string DisplayName
+	{
+		get => EnsureLocalized(_displayName);
+		private set => _displayName = value;
+	}
 
 	public Uri? Logo { get; set; }
 
@@ -47,6 +52,22 @@ public partial class Package
 		Current.Id.Name = entryAssembly.GetName().Name; // Set the package name to the entry assembly name by default.
 		Current.ParsePackageManifest();
 		IsManifestInitialized = true;
+	}
+
+	internal static string EnsureLocalized(string stringToLocalize)
+	{
+		if (stringToLocalize.StartsWith("ms-resource:", StringComparison.OrdinalIgnoreCase))
+		{
+			var resourceKey = stringToLocalize["ms-resource:".Length..].Trim();
+			var resourceString = Resources.ResourceLoader.GetForViewIndependentUse().GetString(resourceKey);
+
+			if (!string.IsNullOrEmpty(resourceString))
+			{
+				stringToLocalize = resourceString;
+			}
+		}
+
+		return stringToLocalize;
 	}
 
 	private void ParsePackageManifest()
