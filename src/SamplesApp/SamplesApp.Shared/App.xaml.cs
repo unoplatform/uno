@@ -142,6 +142,8 @@ namespace SamplesApp
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
+			AssertInitialWindowSize();
+
 			InitializeFrame(e.Arguments);
 
 			AssertIssue8641NativeOverlayInitialized();
@@ -693,6 +695,12 @@ namespace SamplesApp
 			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
 #endif
+		}
+
+		public void AssertInitialWindowSize()
+		{
+			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Width > 0);
+			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
 		}
 
 		/// <summary>
