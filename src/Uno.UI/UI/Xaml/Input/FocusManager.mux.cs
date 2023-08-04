@@ -755,6 +755,56 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		/// <summary>
+		/// Returns the last focusable uielement from the root.
+		/// </summary>
+		/// <returns>Last focusable element.</returns>
+		/// <remarks>
+		/// Special handling for popup, otherwise uses other method to do the work.
+		/// </remarks>
+		internal UIElement? GetLastFocusableElement()
+		{
+			DependencyObject? pFirstFocus = null;
+			UIElement? pFirstFocusElement = null;
+
+			if (_contentRoot.VisualTree != null)
+			{
+				// First give focus to the topmost light-dismiss-enabled popup or a Flyout if any is open.
+				var pPopupRoot = _contentRoot.VisualTree.PopupRoot;
+				if (pPopupRoot != null)
+				{
+					Popup? pTopmostLightDismissPopup = pPopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOrFlyout);
+					if (pTopmostLightDismissPopup != null)
+					{
+						pFirstFocusElement = pTopmostLightDismissPopup as UIElement;
+					}
+				}
+
+				if (pFirstFocusElement == null)
+				{
+					pFirstFocus = GetFirstFocusableElementFromRoot(true /* bReverse */);
+
+					if (pFirstFocus != null)
+					{
+						if (pFirstFocus is UIElement pFirstFocusAsUIE)
+						{
+							pFirstFocusElement = pFirstFocusAsUIE;
+						}
+
+						else
+						{
+							// When the first focusable element is not a Control, look for an
+							// appropriate reference to return to the caller who wants a Control.
+							// Example: Hyperlink -. Text control hosting the hyperlink
+							pFirstFocusElement = GetParentElement(pFirstFocus);
+						}
+					}
+				}
+			}
+
+			return pFirstFocusElement;
+		}
+
+		/// <summary>
 		/// Returns the next focusable element if it is available.
 		/// </summary>
 		/// <returns>Focusable element or null.</returns>
@@ -2214,8 +2264,8 @@ namespace Windows.UI.Xaml.Input
 			DependencyObject? nextFocusableElement = GetNextFocusableElement();
 			if (nextFocusableElement == null)
 			{
-				// Find the first focusable element from the root
-				nextFocusableElement = GetFirstFocusableElement();
+				// Find the last focusable element from the root
+				nextFocusableElement = GetLastFocusableElement();
 			}
 
 			//On Xbox, we want to give them the power dictate where the focus should go when the currently focused element is
