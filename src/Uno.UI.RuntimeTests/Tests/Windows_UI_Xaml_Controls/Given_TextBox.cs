@@ -12,6 +12,7 @@ using Windows.UI;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using System.Runtime.InteropServices;
+using Uno.UI.RuntimeTests.TextBoxPages;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -676,6 +677,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.SelectAll();
 
 			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_XBind_TwoWay_PropertyChanged_Null()
+		{
+			var page = new TextBoxXBindPropertyChangedNullPage();
+
+			WindowHelper.WindowContent = page;
+			await WindowHelper.WaitForLoaded(page);
+
+			Assert.IsNotNull(page.ViewModel);
+
+			var testString = "Something";
+			page.TextBox.Text = testString;
+
+			Assert.AreEqual(testString, page.TextBox.Text);
+			Assert.AreEqual(testString, page.ViewModel.Text);
+
+			var cachedViewModel = page.ViewModel;
+			page.ViewModel = null;
+
+			var updatedTestString = "Something else";
+			page.TextBox.Text = updatedTestString;
+
+			Assert.AreEqual(updatedTestString, page.TextBox.Text);
+			Assert.AreEqual(testString, cachedViewModel.Text);
 		}
 	}
 }
