@@ -116,4 +116,144 @@ public class Given_Binding
 		);
 		await test.RunAsync();
 	}
+<<<<<<< HEAD
+=======
+
+	[TestMethod]
+	public async Task TestAccessingArray()
+	{
+		var xamlFiles = new[]
+		{
+			new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+		Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+		<Grid>
+			<TextBlock Text="{x:Bind MyArray.Length}" />
+		</Grid>
+	</Page>
+	"""),
+		};
+
+		var test = new Verify.Test(xamlFiles)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Windows.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public sealed partial class MainPage : Page
+						{
+							public string[] MyArray { get; set; }
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+
+	[TestMethod]
+	public async Task TestInheritedMethod()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+	<Page
+		x:Class="TestRepro.MainPage"
+		xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:local="using:TestRepro"
+		xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		mc:Ignorable="d"
+		Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+		<Grid>
+			<Button Click="{x:Bind P1.Button_Click, Mode=OneWay}" />
+			<Button Click="{x:Bind P2.Button_Click, Mode=OneWay}" />
+			<Button Click="{x:Bind P3.Button_Click, Mode=OneWay}" />
+		</Grid>
+	</Page>
+	""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Windows.UI.Xaml;
+					using Windows.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public class C1
+						{
+							public void Button_Click(object sender, RoutedEventArgs e)
+							{
+
+							}
+						}
+
+						public class C2 : C1 { }
+
+						public interface I
+						{
+							void Button_Click(object sender, RoutedEventArgs e);
+						}
+
+						public class ImplicitImpl : I
+						{
+							public void Button_Click(object sender, RoutedEventArgs e)
+							{
+					
+							}	
+						}
+
+						public class ExplicitImpl : I
+						{
+							void I.Button_Click(object sender, RoutedEventArgs e)
+							{
+					
+							}	
+						}
+
+						public sealed partial class MainPage : Page
+						{
+							public C2 P1 { get; } = new C2();
+							public ImplicitImpl P2 { get; } = new ImplicitImpl();
+							public I P3 { get; } = new ExplicitImpl();
+
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
+>>>>>>> b94c449d66 (fix: Fix x:Bind not considering inherited methods for events)
 }
