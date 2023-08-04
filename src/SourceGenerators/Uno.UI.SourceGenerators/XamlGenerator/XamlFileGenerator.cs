@@ -4920,7 +4920,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					return $"\"{rawValue}\"";
+					return $"@\"{rawValue}\"";
 				}
 			}
 		}
