@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
+using Windows.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -59,7 +60,7 @@ namespace Private.Infrastructure
 				});
 
 #if NETFX_CORE
-				// On Windows, We need to wait atleast (exactly) over half a second before releasing for the popup to open.
+				// On Windows, We need to wait a bit before releasing for the popup to open.
 				Thread.Sleep(600);
 #endif
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
