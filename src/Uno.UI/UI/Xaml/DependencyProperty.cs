@@ -484,6 +484,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			// TODO: Lazily allocate the list and return empty array.
 			return output.ToArray();
 		}
 
