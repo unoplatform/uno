@@ -893,7 +893,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// No focused control here, so try to check the control is
 					// the first focusable control
-					var focusable = focusManager.GetFirstFocusableElement();
+					var focusable = focusManager.GetFirstFocusableElement(false);
 					if (this == focusable)
 					{
 						// If we are trying to set focus in a changing focus event handler, we will end up leaving focus on the disabled control.

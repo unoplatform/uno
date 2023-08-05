@@ -72,12 +72,12 @@ namespace <#= @namespace.Name #>
 
         protected virtual void On<#= dp.Name #>Changed(<#= dp.PropertyType #> old<#= dp.Name #>, <#= dp.PropertyType #> new<#= dp.Name #>)
         {
-            On<#= dp.Name #>ChangedPartialNative(old<#= dp.Name #>, new<#= dp.Name #>);
             On<#= dp.Name #>ChangedPartial(old<#= dp.Name #>, new<#= dp.Name #>);
+            On<#= dp.Name #>ChangedPartialNative(old<#= dp.Name #>, new<#= dp.Name #>);
         }
 
-        partial void On<#= dp.Name #>ChangedPartialNative(<#= dp.PropertyType #> old<#= dp.Name #>, <#= dp.PropertyType #> new<#= dp.Name #>);
         partial void On<#= dp.Name #>ChangedPartial(<#= dp.PropertyType #> old<#= dp.Name #>, <#= dp.PropertyType #> new<#= dp.Name #>);
+        partial void On<#= dp.Name #>ChangedPartialNative(<#= dp.PropertyType #> old<#= dp.Name #>, <#= dp.PropertyType #> new<#= dp.Name #>);
 
 		#endregion
 #endif
