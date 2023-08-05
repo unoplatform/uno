@@ -28,12 +28,20 @@ namespace Windows.UI.Xaml
 		private class NameToPropertyDictionary
 		{
 			private readonly Hashtable _entries = new Hashtable(PropertyCacheEntry.DefaultComparer);
+			private static readonly object _nullSentinel = new();
 
 			internal bool TryGetValue(PropertyCacheEntry key, out DependencyProperty? result)
 			{
 				if (_entries[key] is { } value)
 				{
-					result = (DependencyProperty)value!;
+					if (object.ReferenceEquals(value, _nullSentinel))
+					{
+						result = null;
+					}
+					else
+					{
+						result = (DependencyProperty?)value;
+					}
 
 					return true;
 				}
@@ -42,8 +50,8 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			internal void Add(PropertyCacheEntry key, DependencyProperty dependencyProperty)
-				=> _entries.Add(key, dependencyProperty);
+			internal void Add(PropertyCacheEntry key, DependencyProperty? dependencyProperty)
+				=> _entries.Add(key, dependencyProperty ?? _nullSentinel);
 
 			internal void Remove(PropertyCacheEntry propertyCacheEntry)
 				=> _entries.Remove(propertyCacheEntry);
