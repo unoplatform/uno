@@ -20,17 +20,16 @@ namespace Windows.UI.Xaml
 		/// This implementation of PropertyMetadataDictionary uses HashTable because it's generally faster than
 		/// Dictionary`ref/ref. 
 		/// </summary>
-		private readonly HashtableEx _table = new HashtableEx();
+		private readonly Hashtable _table = new Hashtable();
 
 		internal void Add(Type ownerType, PropertyMetadata ownerTypeMetadata)
 			=> _table.Add(ownerType, ownerTypeMetadata);
 
 		internal bool TryGetValue(Type ownerType, out PropertyMetadata? metadata)
 		{
-			if (_table.TryGetValue(ownerType, out var value))
+			if (_table[ownerType] is { } value)
 			{
-				metadata = (PropertyMetadata)value!;
-
+				metadata = (PropertyMetadata)value;
 				return true;
 			}
 
@@ -46,9 +45,9 @@ namespace Windows.UI.Xaml
 
 		internal PropertyMetadata FindOrCreate(Type ownerType, Type baseType, DependencyProperty property)
 		{
-			if (_table.TryGetValue(ownerType, out var value))
+			if (_table[ownerType] is { } value)
 			{
-				return (PropertyMetadata)value!;
+				return (PropertyMetadata)value;
 			}
 
 			var metadata = property.GetMetadata(baseType);
@@ -57,8 +56,5 @@ namespace Windows.UI.Xaml
 
 			return metadata;
 		}
-
-		internal void Dispose()
-			=> _table.Dispose();
 	}
 }
