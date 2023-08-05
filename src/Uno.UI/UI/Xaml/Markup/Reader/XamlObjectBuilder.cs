@@ -136,32 +136,20 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				return created;
 			}
-			else if (type.Is<ResourceDictionary>() && unknownContent != null)
+			else if (type.Is<ResourceDictionary>())
 			{
 				var contentOwner = unknownContent;
 
 				if (Activator.CreateInstance(type) is ResourceDictionary rd)
 				{
-					foreach (var xamlObjectDefinition in contentOwner.Objects)
+					if (unknownContent is { })
 					{
-						var key = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "Key")?.Value;
-
-						var instance = LoadObject(xamlObjectDefinition, rootInstance: rootInstance);
-
-						if (key != null)
-						{
-							rd.Add(key, instance);
-						}
+						ProcessResourceDictionaryContent(rd, unknownContent, rootInstance);
 					}
 
-					if (rootInstance is null)
+					foreach (var member in control.Members.Where(m => m != unknownContent))
 					{
-						// This is a top level dictionary, where explicit members need to
-						// be process explicitly (other types are processed below).
-						foreach (var member in control.Members.Where(m => m != unknownContent))
-						{
-							ProcessNamedMember(control, rd, member, rd);
-						}
+						ProcessNamedMember(control, rd, member, rd);
 					}
 
 					return rd;
@@ -586,6 +574,29 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
+		private void ProcessResourceDictionaryContent(ResourceDictionary rd, XamlMemberDefinition unknownContent, object? rootInstance)
+		{
+			foreach (var child in unknownContent.Objects)
+			{
+				var childInstance = LoadObject(child, rootInstance);
+				var resourceKey = GetResourceKey(child);
+				var styleTargetType = childInstance is Style
+					? GetResourceTargetType(child) ?? throw new InvalidOperationException($"No target type was specified (Line {child.LineNumber}:{child.LinePosition}")
+					: default;
+
+				if ((resourceKey ?? styleTargetType) is { } key)
+				{
+					rd.Add(key, childInstance);
+				}
+
+				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
+				{
+					// Delay resolve static resources
+					provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, rd);
+				}
+			}
+		}
+
 		private void ProcessMemberElements(DependencyObject instance, XamlMemberDefinition member, DependencyProperty property, object rootInstance)
 		{
 			if (TypeResolver.IsCollectionOrListType(property.Type))
@@ -618,96 +629,69 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType == typeof(ResourceDictionary)
-					|| (
-						propertyInfo.DeclaringType == typeof(ResourceDictionary)
-						&& (
-							propertyInfo.Name == nameof(ResourceDictionary.ThemeDictionaries)
-							|| propertyInfo.Name == nameof(ResourceDictionary.MergedDictionaries)
-						)
-					)
-				)
+				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
 				{
-					var methods = propertyInfo.PropertyType.GetMethods();
-					var addMethod = propertyInfo.PropertyType.GetMethod("Add", new[] { typeof(object), typeof(object) })
-						?? throw new InvalidOperationException($"The property {propertyInfo} type does not provide an Add method (Line {member.LineNumber}:{member.LinePosition}");
+					// A resource-dictionary property (typically FE.Resources) can only have two types of nested scenarios:
+					// 1. a single res-dict
+					// 2. zero-to-many non-res-dict resources
+					// Nesting multiple res-dict or a mix of (res-dict(s) + resource(s)) will throw:
+					// > Xaml Internal Error error WMC9999: This Member 'Resources' has more than one item, use the Items property
+					// It is also illegal to nested Page.Resources\ResourceDictionary.MergedDictionary without a ResourceDictionary node in between.
+					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.' Line number '13' and line position '5'.
 
-					if (propertyInfo.GetMethod == null)
+					// Case 1: a single res-dict
+					if (member.Objects is [var singleChild] &&
+						TypeResolver.FindType(singleChild.Type)?.IsAssignableTo(typeof(ResourceDictionary)) == true)
 					{
-						throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
-					}
-
-					var targetDictionary = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
-
-					var dictionaryObjects = member.Objects;
-
-					if (member.Objects.Count == 1
-						&& member.Objects.First() is { } innerDictionary
-						&& TypeResolver.FindType(innerDictionary.Type) == typeof(ResourceDictionary))
-					{
-						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries") is { } themeDictionaries)
+						if (propertyInfo.SetMethod == null)
 						{
-							foreach (var themeDictionary in themeDictionaries.Objects)
-							{
-								targetDictionary.ThemeDictionaries.Add(
-									GetResourceKey(themeDictionary),
-									LoadObject(themeDictionary, rootInstance));
-							}
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a setter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries") is { } mergedDictionaries)
+						var rd = (ResourceDictionary)LoadObject(singleChild, rootInstance)!;
+						if (IsFrameworkElementResources(propertyInfo))
 						{
-							foreach (var mergedDictionary in mergedDictionaries.Objects)
-							{
-								var newInstance = LoadObject(mergedDictionary, rootInstance);
-								if (newInstance is ResourceDictionary instanceAsDictionary)
-								{
-									targetDictionary.MergedDictionaries.Add(instanceAsDictionary);
-								}
-								else
-								{
-									throw new InvalidOperationException($"An object of type {newInstance?.GetType()} is not supported on MergedDictionaries");
-								}
-							}
+							((FrameworkElement)instance).Resources = rd;
 						}
-
-						if (innerDictionary.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent") is { } unknownContent)
+						else
 						{
-							dictionaryObjects = unknownContent.Objects;
+							propertyInfo.SetMethod.Invoke(instance, new[] { rd });
 						}
 					}
-
-					List<IDependencyObjectStoreProvider> delayResolutionList = new();
-					foreach (var child in dictionaryObjects)
+					// Case 2: zero-to-many non-res-dict resources
+					else if (member.Objects.All(x => TypeResolver.FindType(x.Type)?.IsAssignableTo(typeof(ResourceDictionary)) != true))
 					{
-						var item = LoadObject(child, rootInstance: rootInstance);
-
-						var resourceKey = GetResourceKey(child);
-						var resourceTargetType = GetResourceTargetType(child);
-
-						if (
-							item?.GetType() == typeof(Style)
-							&& resourceTargetType == null
-						)
+						if (propertyInfo.GetMethod == null)
 						{
-							throw new InvalidOperationException($"No target type was specified (Line {member.LineNumber}:{member.LinePosition}");
+							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						if ((resourceKey ?? resourceTargetType) is { } key)
-						{
-							targetDictionary.Add(key, item);
-						}
-
-						if (HasAnyResourceMarkup(child) && item is IDependencyObjectStoreProvider provider)
-						{
-							delayResolutionList.Add(provider);
-						}
+						var rd = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
+						ProcessResourceDictionaryContent(rd, member, rootInstance);
+					}
+					else
+					{
+						throw new XamlParseException($"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property");
 					}
 
-					// Delay resolve static resources
-					foreach (var delayedItem in delayResolutionList)
+					bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
+						propertyInfo.DeclaringType == typeof(FrameworkElement) &&
+						propertyInfo.Name == nameof(FrameworkElement.Resources);
+				}
+				else if (propertyInfo.DeclaringType == typeof(ResourceDictionary) &&
+					propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries) or nameof(ResourceDictionary.MergedDictionaries))
+				{
+					foreach (var child in member.Objects)
 					{
-						delayedItem.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, targetDictionary);
+						var rd = (ResourceDictionary)LoadObject(child, rootInstance)!;
+						if (propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries))
+						{
+							((ResourceDictionary)instance).ThemeDictionaries.Add(GetResourceKey(child), rd);
+						}
+						else
+						{
+							((ResourceDictionary)instance).MergedDictionaries.Add(rd);
+						}
 					}
 				}
 				else if (propertyInfo.SetMethod?.IsPublic == true &&
@@ -1159,19 +1143,19 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private object? GetResourceKey(XamlObjectDefinition child) =>
 			child.Members.FirstOrDefault(m =>
-				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase)
-				|| string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
+				string.Equals(m.Member.Name, "Name", StringComparison.OrdinalIgnoreCase) ||
+				string.Equals(m.Member.Name, "Key", StringComparison.OrdinalIgnoreCase)
 			)
 			?.Value
 			?.ToString();
 
-		private Type? GetResourceTargetType(XamlObjectDefinition child) =>
-				TypeResolver.FindType(child.Members.FirstOrDefault(m =>
-					string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase)
-				)
+		private Type? GetResourceTargetType(XamlObjectDefinition child) => TypeResolver.FindType(
+			child.Members
+				.FirstOrDefault(m => string.Equals(m.Member.Name, "TargetType", StringComparison.OrdinalIgnoreCase))
 				?.Value
-				?.ToString() ?? ""
-			);
+				?.ToString() ??
+			""
+		);
 
 		private PropertyInfo? GetMemberProperty(XamlObjectDefinition control, XamlMemberDefinition member)
 		{
