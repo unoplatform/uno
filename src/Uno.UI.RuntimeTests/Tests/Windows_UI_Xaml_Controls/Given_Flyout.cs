@@ -583,11 +583,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			flyoutButton.Focus(FocusState.Pointer);
 			await TestServices.WindowHelper.WaitForIdle();
 
+			var popup = VisualTreeHelper.GetOpenPopupsForXamlRoot(flyoutButton.XamlRoot)[0];
+
+			Assert.AreEqual(popup.Visibility, Visibility.Visible);
 			Assert.AreNotEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
 
+			// The visibility of the popup remains on, but it's closed.
+			Assert.AreEqual(popup.Visibility, Visibility.Visible);
 			Assert.AreEqual(button, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			TestServices.WindowHelper.WindowContent = null;

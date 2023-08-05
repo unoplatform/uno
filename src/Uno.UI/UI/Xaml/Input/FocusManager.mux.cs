@@ -711,7 +711,7 @@ namespace Windows.UI.Xaml.Input
 		/// <remarks>
 		/// Special handling for popup, otherwise uses other method to do the work.
 		/// </remarks>
-		internal UIElement? GetFirstFocusableElement()
+		internal UIElement? GetFirstFocusableElement(bool useReverseDirection)
 		{
 			DependencyObject? pFirstFocus = null;
 			UIElement? pFirstFocusElement = null;
@@ -731,57 +731,7 @@ namespace Windows.UI.Xaml.Input
 
 				if (pFirstFocusElement == null)
 				{
-					pFirstFocus = GetFirstFocusableElementFromRoot(false /* bReverse */);
-
-					if (pFirstFocus != null)
-					{
-						if (pFirstFocus is UIElement pFirstFocusAsUIE)
-						{
-							pFirstFocusElement = pFirstFocusAsUIE;
-						}
-
-						else
-						{
-							// When the first focusable element is not a Control, look for an
-							// appropriate reference to return to the caller who wants a Control.
-							// Example: Hyperlink -. Text control hosting the hyperlink
-							pFirstFocusElement = GetParentElement(pFirstFocus);
-						}
-					}
-				}
-			}
-
-			return pFirstFocusElement;
-		}
-
-		/// <summary>
-		/// Returns the last focusable uielement from the root.
-		/// </summary>
-		/// <returns>Last focusable element.</returns>
-		/// <remarks>
-		/// Special handling for popup, otherwise uses other method to do the work.
-		/// </remarks>
-		internal UIElement? GetLastFocusableElement()
-		{
-			DependencyObject? pFirstFocus = null;
-			UIElement? pFirstFocusElement = null;
-
-			if (_contentRoot.VisualTree != null)
-			{
-				// First give focus to the topmost light-dismiss-enabled popup or a Flyout if any is open.
-				var pPopupRoot = _contentRoot.VisualTree.PopupRoot;
-				if (pPopupRoot != null)
-				{
-					Popup? pTopmostLightDismissPopup = pPopupRoot.GetTopmostPopup(PopupRoot.PopupFilter.LightDismissOrFlyout);
-					if (pTopmostLightDismissPopup != null)
-					{
-						pFirstFocusElement = pTopmostLightDismissPopup as UIElement;
-					}
-				}
-
-				if (pFirstFocusElement == null)
-				{
-					pFirstFocus = GetFirstFocusableElementFromRoot(true /* bReverse */);
+					pFirstFocus = GetFirstFocusableElementFromRoot(useReverseDirection);
 
 					if (pFirstFocus != null)
 					{
@@ -2265,7 +2215,7 @@ namespace Windows.UI.Xaml.Input
 			if (nextFocusableElement == null)
 			{
 				// Find the last focusable element from the root
-				nextFocusableElement = GetLastFocusableElement();
+				nextFocusableElement = GetFirstFocusableElement(true);
 			}
 
 			//On Xbox, we want to give them the power dictate where the focus should go when the currently focused element is
