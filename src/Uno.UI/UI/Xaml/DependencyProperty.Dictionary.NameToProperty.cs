@@ -11,6 +11,7 @@ using System.Runtime.CompilerServices;
 using Uno;
 using System.Threading;
 using Uno.Collections;
+using System.Collections;
 
 #if __ANDROID__
 using _View = Android.Views.View;
@@ -26,11 +27,11 @@ namespace Windows.UI.Xaml
 	{
 		private class NameToPropertyDictionary
 		{
-			private readonly HashtableEx _entries = new HashtableEx(PropertyCacheEntry.DefaultComparer);
+			private readonly Hashtable _entries = new Hashtable(PropertyCacheEntry.DefaultComparer);
 
 			internal bool TryGetValue(PropertyCacheEntry key, out DependencyProperty? result)
 			{
-				if (_entries.TryGetValue(key, out var value))
+				if (_entries[key] is { } value)
 				{
 					result = (DependencyProperty)value!;
 
@@ -50,9 +51,6 @@ namespace Windows.UI.Xaml
 			internal int Count => _entries.Count;
 
 			internal void Clear() => _entries.Clear();
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }
