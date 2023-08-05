@@ -12,6 +12,7 @@ using Uno;
 using System.Threading;
 using Uno.Collections;
 using Uno.UI.Helpers;
+using System.Collections;
 
 namespace Windows.UI.Xaml
 {
@@ -19,13 +20,13 @@ namespace Windows.UI.Xaml
 	{
 		private class DependencyPropertyRegistry
 		{
-			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
+			private readonly Hashtable _entries = new Hashtable(FastTypeComparer.Default);
 
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
-					if (typeTable!.TryGetValue(name, out var propertyObject))
+					if (typeTable![name] is { } propertyObject)
 					{
 						result = (DependencyProperty)propertyObject!;
 						return true;
@@ -42,7 +43,7 @@ namespace Windows.UI.Xaml
 			{
 				if (!TryGetTypeTable(type, out var typeTable))
 				{
-					typeTable = new HashtableEx();
+					typeTable = new Hashtable();
 					_entries[type] = typeTable;
 				}
 
@@ -60,20 +61,17 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			private bool TryGetTypeTable(Type type, out HashtableEx? table)
+			private bool TryGetTypeTable(Type type, out Hashtable? table)
 			{
-				if (_entries.TryGetValue(type, out var dictionaryObject))
+				if (_entries[type] is { } dictionaryObject)
 				{
-					table = (HashtableEx)dictionaryObject!;
+					table = (Hashtable)dictionaryObject!;
 					return true;
 				}
 
 				table = null;
 				return false;
 			}
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }

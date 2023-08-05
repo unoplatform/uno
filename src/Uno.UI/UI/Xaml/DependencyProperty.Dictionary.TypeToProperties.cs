@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections;
 using Uno.Collections;
 using Uno.UI.Helpers;
 
@@ -10,11 +11,11 @@ namespace Windows.UI.Xaml
 	{
 		private class TypeToPropertiesDictionary
 		{
-			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
+			private readonly Hashtable _entries = new Hashtable(FastTypeComparer.Default);
 
 			internal bool TryGetValue(Type key, out DependencyProperty[]? result)
 			{
-				if (_entries.TryGetValue(key, out var value))
+				if (_entries[key] is { } value)
 				{
 					result = (DependencyProperty[])value!;
 
@@ -30,9 +31,6 @@ namespace Windows.UI.Xaml
 
 			internal void Clear()
 				=> _entries.Clear();
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }

@@ -13,6 +13,7 @@ using System.Threading;
 using Uno.Collections;
 
 using _Key = Uno.CachedTuple<System.Type, Windows.UI.Xaml.FrameworkPropertyMetadataOptions>;
+using System.Collections;
 
 namespace Windows.UI.Xaml
 {
@@ -20,11 +21,11 @@ namespace Windows.UI.Xaml
 	{
 		private class FrameworkPropertiesForTypeDictionary
 		{
-			private readonly HashtableEx _entries = new HashtableEx();
+			private readonly Hashtable _entries = new Hashtable();
 
 			internal bool TryGetValue(_Key key, out DependencyProperty[]? result)
 			{
-				if (_entries.TryGetValue(key, out var value))
+				if (_entries[key] is { } value)
 				{
 					result = (DependencyProperty[])value!;
 
@@ -39,9 +40,6 @@ namespace Windows.UI.Xaml
 				=> _entries.Add(key, value);
 
 			internal void Clear() => _entries.Clear();
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }

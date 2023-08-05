@@ -4,6 +4,7 @@ using System;
 using Uno.Collections;
 using Uno.UI.Helpers;
 using Uno.Extensions;
+using System.Collections;
 
 namespace Windows.UI.Xaml
 {
@@ -23,11 +24,11 @@ namespace Windows.UI.Xaml
 
 		private class TypeNullableDictionary
 		{
-			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default);
+			private readonly Hashtable _entries = new Hashtable(FastTypeComparer.Default);
 
 			internal bool TryGetValue(Type key, out bool result)
 			{
-				if (_entries.TryGetValue(key, out var value))
+				if (_entries[key] is { } value)
 				{
 					result = (bool)value!;
 					return true;
@@ -42,9 +43,6 @@ namespace Windows.UI.Xaml
 
 			internal void Clear()
 				=> _entries.Clear();
-
-			internal void Dispose()
-				=> _entries.Dispose();
 		}
 	}
 }
