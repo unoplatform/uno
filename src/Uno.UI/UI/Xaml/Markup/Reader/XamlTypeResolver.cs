@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		public DependencyProperty? FindDependencyProperty(Type propertyOwner, string? propertyName)
+		public DependencyProperty? FindDependencyProperty(Type? propertyOwner, string? propertyName)
 		{
 			var propertyDependencyPropertyQuery = GetAllProperties(propertyOwner)
 								.Where(p => p.Name == propertyName + "Property")
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			) as DependencyProperty;
 		}
 
-		private static IEnumerable<PropertyInfo> GetAllProperties(Type type)
+		private static IEnumerable<PropertyInfo> GetAllProperties(Type? type)
 		{
 			Type? currentType = type;
 
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-		private static IEnumerable<FieldInfo> GetAllFields(Type type)
+		private static IEnumerable<FieldInfo> GetAllFields(Type? type)
 		{
 			Type? currentType = type;
 

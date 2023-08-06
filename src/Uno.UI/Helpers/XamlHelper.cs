@@ -14,7 +14,7 @@ internal static partial class XamlHelper
 	/// It will match an opening or closing or self-closing tag.
 	/// </remarks>
 #if DISABLE_GENERATED_REGEX
-	private static Regex EndOfTagRegex() = new Regex(@"(?=( ?/)?>)");
+	private static Regex EndOfTagRegex() => new Regex(@"(?=( ?/)?>)");
 #else
 	[GeneratedRegex(@"(?=( ?/)?>)")]
 	private static partial Regex EndOfTagRegex();
@@ -24,7 +24,7 @@ internal static partial class XamlHelper
 	/// Matches any tag without xmlns prefix.
 	/// </summary>
 #if DISABLE_GENERATED_REGEX
-	private static Regex NonXmlnsTagRegex() = new Regex(@"<\w+[ />]");
+	private static Regex NonXmlnsTagRegex() => new Regex(@"<\w+[ />]");
 #else
 	[GeneratedRegex(@"<\w+[ />]")]
 	private static partial Regex NonXmlnsTagRegex();

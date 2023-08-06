@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿#if HAS_UNO
+using System.Linq;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.Xaml;
 using Windows.UI.Xaml;
@@ -199,10 +201,86 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 
 			Assert.IsTrue(sut.MemberDict?.ContainsKey("Asd"), "Failed to resolve key: Asd");
 		}
+
+		[TestMethod]
+		public void When_CustomResDict_NormalProperty_NestedRD() // uno#13099
+		{
+			var sut = XamlHelper.LoadXaml<Given_XamlReader_CustomResDict>("""
+				<local:Given_XamlReader_CustomResDict xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+
+					<local:Given_XamlReader_CustomResDict.MemberDict2>
+						<local:Given_XamlReader_CustomResDict2>
+							<Color x:Key="Asd">SkyBlue</Color>
+						</local:Given_XamlReader_CustomResDict2>
+					</local:Given_XamlReader_CustomResDict.MemberDict2>
+
+				</local:Given_XamlReader_CustomResDict>
+			""");
+
+			Assert.IsTrue(sut.MemberDict2?.ContainsKey("Asd"), "Failed to resolve key: Asd");
+		}
+
+		[TestMethod]
+		public void When_CustomResDict_NormalProperty_DirectRes() // uno#13099
+		{
+			var sut = XamlHelper.LoadXaml<Given_XamlReader_CustomResDict>("""
+				<local:Given_XamlReader_CustomResDict xmlns:local="Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup">
+
+					<local:Given_XamlReader_CustomResDict.MemberDict2>
+						<Color x:Key="Asd">SkyBlue</Color>
+					</local:Given_XamlReader_CustomResDict.MemberDict2>
+
+				</local:Given_XamlReader_CustomResDict>
+			""");
+
+			Assert.IsTrue(sut.MemberDict2?.ContainsKey("Asd"), "Failed to resolve key: Asd");
+		}
+
+		[TestMethod]
+		public void When_TemplateBinding_AttachedProperty()
+		{
+			var setup = new ContentControl
+			{
+				Content = "asd",
+				Style = XamlHelper.LoadXaml<Style>("""
+					<Style TargetType="ContentControl">
+						<Setter Property="ScrollViewer.HorizontalScrollMode" Value="Disabled" />
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="ContentControl">
+									<ScrollViewer x:Name="SUT" HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}">
+										<ContentPresenter />
+									</ScrollViewer>
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+					"""),
+			};
+			setup.ApplyTemplate();
+
+			Assert.IsTrue(setup.Style.Setters.OfType<Setter>().Any(x => x.Property == ScrollViewer.HorizontalScrollModeProperty), "Style.Setter[ScrollViewer.HorizontalScrollMode] missing");
+
+			var sut = setup.FindFirstDescendant<ScrollViewer>(x => x.Name == "SUT");
+			var expr = sut.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty);
+
+			Assert.AreEqual(expr.ParentBinding.Path.Path, "ScrollViewer.HorizontalScrollMode");
+
+			// disabled due to https://github.com/unoplatform/uno/issues/13121#issuecomment-1666666795 (point 2)
+			//Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
+			//ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
+			//Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
+		}
 	}
 
 	public class Given_XamlReader_CustomResDict : ResourceDictionary
 	{
-		public ResourceDictionary MemberDict { get; set; }
+		public ResourceDictionary MemberDict { get; set; } = new();
+		public Given_XamlReader_CustomResDict2 MemberDict2 { get; set; } = new();
+	}
+
+	public class Given_XamlReader_CustomResDict2 : ResourceDictionary
+	{
 	}
 }
+#endif
