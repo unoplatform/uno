@@ -127,6 +127,8 @@ namespace SamplesApp
 				AssertIssue8356();
 
 				AssertIssue12936();
+
+				AssertIssue12937();
 			}
 
 			var sw = Stopwatch.StartNew();
@@ -653,7 +655,7 @@ namespace SamplesApp
 		}
 
 		/// <summary>
-		/// Asserts that the App Title was found in manifest and loaded from resources.
+		/// Assert that the App Title was found in manifest and loaded from resources
 		/// </summary>
 		public void AssertIssue12936()
 		{
@@ -664,6 +666,26 @@ namespace SamplesApp
 			Assert.IsFalse(string.IsNullOrEmpty(title), "App Title is empty.");
 
 			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title}' wasn't found in resources.");
+#endif
+		}
+
+		/// <summary>
+		/// Assert that ApplicationModel Package properties were found in the manifest and loaded from resources 
+		/// </summary>
+		public void AssertIssue12937()
+		{
+			//The ApplicationModel properties are currently not supported there
+#if !(__IOS__ || __ANDROID__ || __MACOS__)
+			var description = Package.Current.Description;
+			var publisherName = Package.Current.PublisherDisplayName;
+
+			Assert.IsFalse(string.IsNullOrEmpty(description), "Description isn't in manifest.");
+
+			Assert.IsFalse(string.IsNullOrEmpty(publisherName), "PublisherDisplayName isn't in manifest.");
+
+			Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");			
+
+			Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
 #endif
 		}
 

@@ -17,7 +17,8 @@
 
   <Properties>
     <DisplayName>ms-resource:ApplicationName</DisplayName>
-    <PublisherDisplayName>Uno Platform</PublisherDisplayName>
+	<Description>ms-resource:ApplicationDescription</Description>
+	<PublisherDisplayName>ms-resource:PublisherDisplayName</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
