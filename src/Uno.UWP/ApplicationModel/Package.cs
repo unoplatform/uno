@@ -44,8 +44,10 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public bool IsFramework => false;
 
+#if (__IOS__ || __ANDROID__ || __MACOS__)
 		[Uno.NotImplemented]
 		public string Description => "";
+#endif
 
 		[Uno.NotImplemented]
 		public bool IsBundle => false;
@@ -53,14 +55,15 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public bool IsResourcePackage => false;
 
-
 #if (__IOS__ || __ANDROID__ || __MACOS__)
 		[global::Uno.NotImplemented]
 		public global::System.Uri Logo => default;
 #endif
 
+#if (__IOS__ || __ANDROID__ || __MACOS__)
 		[Uno.NotImplemented]
 		public string PublisherDisplayName => "";
+#endif
 
 		[Uno.NotImplemented]
 		public PackageStatus Status => new PackageStatus();
