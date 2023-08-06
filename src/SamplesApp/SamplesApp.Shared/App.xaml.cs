@@ -111,6 +111,8 @@ namespace SamplesApp
 				AssertIssue8356();
 
 				AssertIssue12936();
+
+				AssertIssue12937();
 			}
 
 			var sw = Stopwatch.StartNew();
@@ -447,5 +449,241 @@ namespace SamplesApp
 
 		public static string GetDisplayScreenScaling(string displayId)
 			=> (DisplayInformation.GetForCurrentView().LogicalDpi * 100f / 96f).ToString(CultureInfo.InvariantCulture);
+
+		public static string RunTest(string metadataName)
+		{
+			try
+			{
+				Console.WriteLine($"Initiate Running Test {metadataName}");
+
+				var testId = Interlocked.Increment(ref _testIdCounter);
+
+				_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+					CoreDispatcherPriority.Normal,
+					async () =>
+					{
+						try
+						{
+#if __IOS__ || __ANDROID__
+							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+							if (statusBar != null)
+							{
+								_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+									Windows.UI.Core.CoreDispatcherPriority.Normal,
+									async () => await statusBar.HideAsync()
+								);
+							}
+#endif
+
+#if __ANDROID__
+							Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+							Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
+#endif
+
+#if HAS_UNO
+							// Disable the TextBox caret for new instances
+							Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
+#endif
+
+							var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+							var timeout = Task.Delay(30000);
+
+							await Task.WhenAny(t, timeout);
+
+							if (!(t.IsCompleted && !t.IsFaulted))
+							{
+								throw new TimeoutException();
+							}
+
+							ImmutableInterlocked.Update(ref _doneTests, lst => lst.Add(testId));
+						}
+						catch (Exception e)
+						{
+							Console.WriteLine($"Failed to run test {metadataName}, {e}");
+						}
+						finally
+						{
+#if HAS_UNO
+							// Restore the caret for new instances
+							Uno.UI.FeatureConfiguration.TextBox.HideCaret = false;
+#endif
+						}
+					}
+				);
+
+				return testId.ToString();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine($"Failed Running Test {metadataName}, {e}");
+				return "";
+			}
+		}
+
+#if __IOS__
+		[Foundation.Export("runTest:")] // notice the colon at the end of the method name
+		public Foundation.NSString RunTestBackdoor(Foundation.NSString value) => new Foundation.NSString(RunTest(value));
+
+		[Foundation.Export("isTestDone:")] // notice the colon at the end of the method name
+		public Foundation.NSString IsTestDoneBackdoor(Foundation.NSString value) => new Foundation.NSString(IsTestDone(value).ToString());
+
+		[Foundation.Export("getDisplayScreenScaling:")] // notice the colon at the end of the method name
+		public Foundation.NSString GetDisplayScreenScalingBackdoor(Foundation.NSString value) => new Foundation.NSString(GetDisplayScreenScaling(value).ToString());
+#endif
+
+		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
+
+		/// <summary>
+		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
+		/// </summary>
+		/// <seealso href="https://github.com/unoplatform/uno/issues/1741"/>
+		public void AssertIssue1790ApplicationSettingsUsable()
+		{
+			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
+			{
+				const string issue1790 = nameof(issue1790);
+
+				container.Values.Remove(issue1790);
+				container.Values.Add(issue1790, "ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on this platform.");
+
+				Assert.IsTrue(container.Values.ContainsKey(issue1790));
+			}
+
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+		}
+
+		/// <summary>
+		/// Assert that the App Title was found in manifest and loaded from resources
+		/// </summary>
+		public void AssertIssue12936()
+		{
+			//ApplicationView Title is currently not supported on iOS
+#if !__IOS__
+			var title = ApplicationView.GetForCurrentView().Title;
+
+			Assert.IsFalse(string.IsNullOrEmpty(title), "App Title is empty.");
+
+			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title}' wasn't found in resources.");
+#endif
+		}
+
+		/// <summary>
+		/// Assert that ApplicationModel Package properties were found in the manifest and loaded from resources 
+		/// </summary>
+		public void AssertIssue12937()
+		{
+			//The ApplicationModel properties are currently not supported there
+#if !(__IOS__ || __ANDROID__ || __MACOS__)
+			var description = Package.Current.Description;
+			var publisherName = Package.Current.PublisherDisplayName;
+
+			Assert.IsFalse(string.IsNullOrEmpty(description), "Description isn't in manifest.");
+
+			Assert.IsFalse(string.IsNullOrEmpty(publisherName), "PublisherDisplayName isn't in manifest.");
+
+			Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");			
+
+			Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
+#endif
+		}
+
+		/// <summary>
+		/// Assert that Application Title is getting its value from manifest
+		/// </summary>
+		public void AssertIssue8356()
+		{
+#if __SKIA__
+			Uno.UI.RuntimeTests.Tests.Windows_UI_ViewManagement_ApplicationView.Given_ApplicationView.StartupTitle = Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().Title;
+#endif
+		}
+
+		/// <summary>
+		/// Assert that the native overlay layer for Skia targets is initialized in time for UI to appear.
+		/// </summary>
+		public void AssertIssue8641NativeOverlayInitialized()
+		{
+#if __SKIA__
+			if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+			{
+				return;
+			}
+			// Temporarily add a TextBox to the current page's content to verify native overlay is available
+			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+			var textBox = new TextBox();
+			textBox.XamlRoot = rootFrame.XamlRoot;
+			var textBoxView = new TextBoxView(textBox);
+			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
+			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+#endif
+		}
+
+		public void AssertInitialWindowSize()
+		{
+#if !__SKIA__ // Will be fixed as part of #8341
+			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Width > 0);
+			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
+#endif
+		}
+
+		/// <summary>
+		/// Verifies that ApplicationData are available immediately after the application class is created
+		/// and the data are stored in proper application specific lcoations.
+		/// </summary>
+		public void AssertApplicationData()
+		{
+#if __SKIA__
+			var appName = Package.Current.Id.Name;
+			var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
+
+			AssertForFolder(ApplicationData.Current.LocalFolder);
+			AssertForFolder(ApplicationData.Current.RoamingFolder);
+			AssertForFolder(ApplicationData.Current.TemporaryFolder);
+			AssertForFolder(ApplicationData.Current.LocalCacheFolder);
+			AssertSettings(ApplicationData.Current.LocalSettings);
+			AssertSettings(ApplicationData.Current.RoamingSettings);
+
+			void AssertForFolder(StorageFolder folder)
+			{
+				AssertContainsIdProps(folder);
+				AssertCanCreateFile(folder);
+			}
+
+			void AssertSettings(ApplicationDataContainer container)
+			{
+				var key = Guid.NewGuid().ToString();
+				var value = Guid.NewGuid().ToString();
+
+				container.Values[key] = value;
+				Assert.IsTrue(container.Values.ContainsKey(key));
+				Assert.AreEqual(value, container.Values[key]);
+				container.Values.Remove(key);
+			}
+
+			void AssertContainsIdProps(StorageFolder folder)
+			{
+				Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal));
+				Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal));
+			}
+
+			void AssertCanCreateFile(StorageFolder folder)
+			{
+				var filename = Guid.NewGuid() + ".txt";
+				var path = Path.Combine(folder.Path, filename);
+				var expectedContent = "Test";
+				try
+				{
+					File.WriteAllText(path, expectedContent);
+					var actualContent = File.ReadAllText(path);
+
+					Assert.AreEqual(expectedContent, actualContent);
+				}
+				finally
+				{
+					File.Delete(path);
+				}
+			}
+#endif
+		}
 	}
 }
