@@ -629,7 +629,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType == typeof(ResourceDictionary))
+				if (propertyInfo.PropertyType.IsAssignableTo(typeof(ResourceDictionary)))
 				{
 					// A resource-dictionary property (typically FE.Resources) can only have two types of nested scenarios:
 					// 1. a single res-dict
@@ -666,19 +666,27 @@ namespace Windows.UI.Xaml.Markup.Reader
 							throw new InvalidOperationException($"The property {propertyInfo} does not provide a getter (Line {member.LineNumber}:{member.LinePosition}");
 						}
 
-						var rd = (ResourceDictionary)propertyInfo.GetMethod.Invoke(instance, null)!;
-						ProcessResourceDictionaryContent(rd, member, rootInstance);
+						if (propertyInfo.GetMethod.Invoke(instance, null) is ResourceDictionary rd)
+						{
+							ProcessResourceDictionaryContent(rd, member, rootInstance);
+						}
+						else
+						{
+							throw new ArgumentNullException(
+								$"The property {propertyInfo} is not initialized (Line {member.LineNumber}:{member.LinePosition}). " +
+								$"Make sure the property is instanced from the constructor, or nest the resources under '{propertyInfo.PropertyType}'.");
+						}
 					}
 					else
 					{
 						throw new XamlParseException($"This Member '{propertyInfo.DeclaringType}.{propertyInfo.Name}' has more than one item, use the Items property");
 					}
 
-					bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
+					static bool IsFrameworkElementResources(PropertyInfo propertyInfo) =>
 						propertyInfo.DeclaringType == typeof(FrameworkElement) &&
 						propertyInfo.Name == nameof(FrameworkElement.Resources);
 				}
-				else if (propertyInfo.DeclaringType == typeof(ResourceDictionary) &&
+				else if (propertyInfo.DeclaringType?.IsAssignableTo(typeof(ResourceDictionary)) == true &&
 					propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries) or nameof(ResourceDictionary.MergedDictionaries))
 				{
 					foreach (var child in member.Objects)
@@ -1196,15 +1204,24 @@ namespace Windows.UI.Xaml.Markup.Reader
 					}
 					else if (propertyType == typeof(DependencyProperty) && member.Owner.Type.Name == "Setter")
 					{
-						var propertyOwner = _styleTargetTypeStack.Peek();
-
-						if (TypeResolver.FindDependencyProperty(propertyOwner, memberValue) is DependencyProperty property)
+						if (memberValue is { Length: > 0 } &&
+							PropertyPathPattern().Match(memberValue) is { Success: true, Groups: var g })
 						{
-							return property;
+							var declaringType = g["type"].Success ? TypeResolver.FindType(g["type"].Value) : _styleTargetTypeStack.Peek();
+							var propertyName = g["property"].Value;
+
+							if (TypeResolver.FindDependencyProperty(declaringType, propertyName) is DependencyProperty property)
+							{
+								return property;
+							}
+							else
+							{
+								throw new Exception($"The property {declaringType?.ToString() ?? g["type"].Name}.{propertyName} does not exist");
+							}
 						}
 						else
 						{
-							throw new Exception($"The property {propertyOwner}.{memberValue} does not exist");
+							throw new Exception($"Invalid property path: {memberValue}");
 						}
 					}
 					else
@@ -1313,6 +1330,23 @@ namespace Windows.UI.Xaml.Markup.Reader
 #if DISABLE_GENERATED_REGEX
 		private static partial Regex AttachedPropertyMatching()
 			=> new Regex(@"(\(.*?\))");
+#endif
+
+		/// <summary>
+		/// Matches non-nested path like string: (xmlns:type.property)
+		/// where 'xmlns', 'type' and the parentheses are optional.
+		/// </summary>
+		/// <remarks>
+		/// The presence of both 'type' and 'property', doesnt automatically imply an attached property:
+		/// "The XAML parser also accepts dependency property names that include a qualifying class.
+		/// For example the parser interprets either "Button.Background" or "Control.Background"
+		/// as being a reference to the Background property in a style for a Button."
+		/// </remarks>
+#if DISABLE_GENERATED_REGEX
+		private static Regex PropertyPathPattern() => new Regex(@"^\(?((?<xmlns>\w+):)?((?<type>\w+)\.)?(?<property>\w+)\)?$", RegexOptions.ExplicitCapture);
+#else
+		[GeneratedRegex(@"^\(?((?<xmlns>\w+):)?((?<type>\w+)\.)?(?<property>\w+)\)?$", RegexOptions.ExplicitCapture)]
+		private static partial Regex PropertyPathPattern();
 #endif
 	}
 }
