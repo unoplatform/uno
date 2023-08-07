@@ -15,5 +15,17 @@ uid: Uno.Features.WSPower
 **iOS**
 - `RemainingDischargeTime` and `RemainingDischargeTimeChanged` events not supported (platform does not offer appropriate APIs)
 
+**WASM**
+
+Before any of the properties/events of `PowerManager` can be accessed, the class needs to be initialized via a platform-specific `InitializeAsync` method:
+
+```csharp
+#if __WASM__
+var isAvailable = await PowerManager.InitializeAsync();
+#endif
+```
+
+If the returned value is `false`, refrain from using `PowerManager` in your code, as it is not available in the browser the user is using.
+
 **Other platforms**
 - Not implemented
