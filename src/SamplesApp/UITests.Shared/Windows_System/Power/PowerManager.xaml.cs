@@ -21,13 +21,21 @@ public sealed partial class PowerManager : UserControl
 		DataContextChanged += PowerManager_DataContextChanged;
 	}
 
-	private void PowerManager_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args) => Model = args.NewValue as PowerManagerTestsViewModel;
+	private async void PowerManager_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+	{
+		Model = args.NewValue as PowerManagerTestsViewModel;
+		if (Model is { } viewModel)
+		{
+			await viewModel.InitializeAsync();
+		}
+	}
 
 	internal PowerManagerTestsViewModel Model { get; private set; }
 }
 
 internal class PowerManagerTestsViewModel : ViewModelBase
 {
+	private bool _isInitialized;
 	private string _batteryStatus = "";
 	private string _energySaverStatus = "";
 	private string _powerSupplyStatus = "";
@@ -49,11 +57,30 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 		Disposables.Add(_remainingDischargeTimeChangedSubscription);
 	}
 
+	public async Task InitializeAsync()
+	{
+#if __CROSSRUNTIME__
+		IsInitialized = await UwpPowerManager.InitializeAsync();
+#else
+		IsInitialized = await Task.FromResult(true);
+#endif
+	}
+
 	public Command RefreshValuesCommand => GetOrCreateCommand(() => RefreshValues());
 
 	public Command ClearEventLogCommand => GetOrCreateCommand(() => EventLog.Clear());
 
 	public ObservableCollection<string> EventLog { get; } = new();
+
+	public bool IsInitialized
+	{
+		get => _isInitialized;
+		set
+		{
+			_isInitialized = value;
+			RaisePropertyChanged();
+		}
+	}
 
 	public string BatteryStatus
 	{

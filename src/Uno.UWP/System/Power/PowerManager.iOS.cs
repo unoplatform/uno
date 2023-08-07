@@ -16,8 +16,8 @@ namespace Windows.System.Power
 		private static NSObject _batteryStateChangeSubscription;
 		private static NSObject _powerStateChangeSubscription;
 
-		private static readonly UIDevice _device;
-		private static readonly bool _isSimulator;
+		private static UIDevice _device;
+		private static bool _isSimulator;
 
 		static partial void InitializePlatform()
 		{
