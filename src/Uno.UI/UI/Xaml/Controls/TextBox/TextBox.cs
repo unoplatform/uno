@@ -56,8 +56,6 @@ namespace Windows.UI.Xaml.Controls
 		private ContentControl _contentElement;
 		private WeakReference<Button> _deleteButton;
 
-		private WeakBrushChangedProxy _selectionHighlightColorSubscription;
-		private WeakBrushChangedProxy _foregroundBrushSubscription;
 		private Action _selectionHighlightColorChanged;
 		private Action _foregroundBrushChanged;
 #pragma warning restore CS0067, CS0649
@@ -106,21 +104,6 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 		}
 
-		~TextBox()
-		{
-			_selectionHighlightColorSubscription?.Unsubscribe();
-			_foregroundBrushSubscription?.Unsubscribe();
-		}
-
-#if __ANDROID__
-		protected override void JavaFinalize()
-		{
-			_selectionHighlightColorSubscription?.Unsubscribe();
-			_foregroundBrushSubscription?.Unsubscribe();
-			base.JavaFinalize();
-		}
-#endif
-
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
@@ -142,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(IsTextPredictionEnabled);
-			OnSelectionHighlightColorChanged(SelectionHighlightColor);
+			OnSelectionHighlightColorChanged(null, SelectionHighlightColor);
 			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
 			OnTextAlignmentChanged(TextAlignment);
 			OnTextWrappingChanged();
@@ -422,9 +405,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundBrushSubscription ??= new();
-			_foregroundBrushChanged = () => OnForegroundColorChangedPartial(newValue);
-			_foregroundBrushSubscription.Subscribe(newValue, _foregroundBrushChanged);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
@@ -468,14 +449,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					DefaultBrushes.SelectionHighlightColor,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.NewValue)));
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
 
-		private void OnSelectionHighlightColorChanged(SolidColorBrush brush)
+		private void OnSelectionHighlightColorChanged(SolidColorBrush oldBrush, SolidColorBrush newBrush)
 		{
-			_selectionHighlightColorSubscription ??= new();
-			brush ??= DefaultBrushes.SelectionHighlightColor;
-			_selectionHighlightColorChanged = () => OnSelectionHighlightColorChangedPartial(brush);
-			_selectionHighlightColorSubscription.Subscribe(brush, _selectionHighlightColorChanged);
+			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
+			newBrush ??= DefaultBrushes.SelectionHighlightColor;
+			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);

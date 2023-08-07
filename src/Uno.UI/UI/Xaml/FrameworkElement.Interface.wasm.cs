@@ -21,14 +21,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		private WeakBrushChangedProxy _backgroundSubscription;
 		private Action _backgroundChanged;
-
-		~FrameworkElement()
-		{
-			_backgroundSubscription?.Unsubscribe();
-		}
-
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
 
 		public T FindFirstParent<T>(bool includeCurrent) where T : class
@@ -119,12 +112,11 @@ namespace Windows.UI.Xaml
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 			// Warning some controls (eg. CalendarViewBaseItem) takes ownership of the background rendering.
 			// They override the OnBackgroundChanged and explicitly do not invokes that base method.
-			=> SetAndObserveBackgroundBrush(e.NewValue as Brush);
+			=> SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
 
-		private protected void SetAndObserveBackgroundBrush(Brush brush)
+		private protected void SetAndObserveBackgroundBrush(Brush oldValue, Brush newValue)
 		{
-			_backgroundSubscription ??= new();
-			BorderLayerRenderer.SetAndObserveBackgroundBrush(this, brush, _backgroundSubscription, ref _backgroundChanged);
+			BorderLayerRenderer.SetAndObserveBackgroundBrush(this, oldValue, newValue, ref _backgroundChanged);
 		}
 		#endregion
 

@@ -4,6 +4,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
 
 #if HAS_UNO_WINUI
@@ -15,7 +16,13 @@ namespace Windows.UI.Xaml.Media
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
 	{
-		internal event Action? InvalidateRender;
+		private readonly WeakEventManager _weakEventManager = new();
+
+		internal event Action? InvalidateRender
+		{
+			add => _weakEventManager.AddEventHandler(value);
+			remove => _weakEventManager.RemoveEventHandler(value);
+		}
 
 		protected Brush()
 		{
@@ -39,7 +46,26 @@ namespace Windows.UI.Xaml.Media
 
 		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
 
-		private protected void OnInvalidateRender() => InvalidateRender?.Invoke();
+		internal static void SetupBrushChanged(Brush? oldValue, Brush? newValue, ref Action? onInvalidateRender, Action newOnInvalidateRender)
+		{
+			if (oldValue is not null && onInvalidateRender is not null)
+			{
+				oldValue.InvalidateRender -= onInvalidateRender;
+			}
+
+			newOnInvalidateRender();
+			if (newValue is not null)
+			{
+				onInvalidateRender = newOnInvalidateRender;
+				newValue.InvalidateRender += onInvalidateRender;
+			}
+			else
+			{
+				onInvalidateRender = null;
+			}
+		}
+
+		private protected void OnInvalidateRender() => _weakEventManager.HandleEvent(nameof(InvalidateRender));
 
 		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{

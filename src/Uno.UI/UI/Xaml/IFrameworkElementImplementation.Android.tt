@@ -169,21 +169,6 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 
-		~<#= mixin.ClassName #>()
-		{
-			_brushChangedProxy?.Unsubscribe();
-			FinalizerPartial();
-		}
-
-		protected override void JavaFinalize()
-		{
-			_brushChangedProxy?.Unsubscribe();
-			FinalizerPartial();
-			base.JavaFinalize();
-		}
-
-		partial void FinalizerPartial();
-
 		#region Background Dependency Property
 
 		[GeneratedDependencyProperty(DefaultValue = null, Options=FrameworkPropertyMetadataOptions.ValueInheritsDataContext, ChangedCallback = true)]
@@ -195,15 +180,18 @@ namespace <#= mixin.NamespaceName #>
 			set => SetBackgroundValue(value);
 		}
 
-		WeakBrushChangedProxy _brushChangedProxy;
 		Action _brushChanged;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var brush = e.NewValue as Brush;
-			_brushChangedProxy ??= new();
-			_brushChanged = () => SetBackgroundColor(Brush.GetFallbackColor(brush));
-			_brushChangedProxy.Subscribe(brush, _brushChanged);
+			var oldValue = e.OldValue as Brush;
+			var newValue = e.NewValue as Brush;
+			if (newValue is not null)
+			{
+				WantsLayer = true;
+			}
+
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => SetBackgroundColor(Brush.GetFallbackColor(brush)));
 		}
 		#endregion
 

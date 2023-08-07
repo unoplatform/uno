@@ -20,16 +20,8 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private const double DefaultStrokeThicknessWhenNoStrokeDefined = 0.0;
 
-		private WeakBrushChangedProxy _brushChangedProxy;
-		private WeakBrushChangedProxy _strokeBrushChangedProxy;
 		private Action _brushChanged;
 		private Action _strokeBrushChanged;
-
-		~Shape()
-		{
-			_brushChangedProxy?.Unsubscribe();
-			_strokeBrushChangedProxy?.Unsubscribe();
-		}
 
 		/// <summary>
 		/// Returns 0.0 if Stroke is <c>null</c>, otherwise, StrokeThickness
@@ -65,16 +57,14 @@ namespace Windows.UI.Xaml.Shapes
 #else
 				options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild,
 #endif
-				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.NewValue)
+				propertyChangedCallback: (s, e) => ((Shape)s).OnFillChanged((Brush)e.OldValue, (Brush)e.NewValue)
 			)
 		);
 
 #if !LEGACY_SHAPE_MEASURE
-		private void OnFillChanged(Brush newValue)
+		private void OnFillChanged(Brush oldValue, Brush newValue)
 		{
-			_brushChangedProxy ??= new();
-			_brushChanged ??= () => InvalidateForBrushChanged();
-			_brushChangedProxy.Subscribe(newValue, _brushChanged);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => InvalidateForBrushChanged());
 		}
 #endif
 		#endregion
@@ -128,16 +118,14 @@ namespace Windows.UI.Xaml.Shapes
 #if !LEGACY_SHAPE_MEASURE
 				options: FrameworkPropertyMetadataOptions.AffectsArrange,
 #endif
-				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.NewValue)
+				propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeChanged((Brush)e.OldValue, (Brush)e.NewValue)
 			)
 		);
 
 #if !LEGACY_SHAPE_MEASURE
-		private void OnStrokeChanged(Brush newValue)
+		private void OnStrokeChanged(Brush oldValue, Brush newValue)
 		{
-			_strokeBrushChangedProxy ??= new();
-			_strokeBrushChanged ??= () => InvalidateForBrushChanged();
-			_strokeBrushChangedProxy.Subscribe(newValue, _strokeBrushChanged);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _strokeBrushChanged, () => InvalidateForBrushChanged());
 		}
 #endif
 
@@ -209,29 +197,28 @@ namespace Windows.UI.Xaml.Shapes
 		#endregion
 
 #if LEGACY_SHAPE_MEASURE
-		private void OnFillChanged(Brush newValue)
+		private void OnFillChanged(Brush oldValue, Brush newValue)
 		{
-			_brushChangedProxy ??= new();
-			_brushChanged ??= () =>
+			var newOnInvalidateRender = _brushChanged ?? (() =>
 			{
 				OnFillUpdatedPartial();
 				RefreshShape();
-			};
+			});
 
-			_brushChangedProxy.Subscribe(newValue, _brushChanged);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnFillUpdatedPartial();
 
-		private void OnStrokeChanged(Brush newValue)
+		private void OnStrokeChanged(Brush oldValue, Brush newValue)
 		{
-			_strokeBrushChangedProxy ??= new();
-			_strokeBrushChanged ??= () =>
+			var newInvalidateRender = _strokeBrushChanged ?? (() =>
 			{
 				OnStrokeUpdatedPartial();
 				RefreshShape();
-			};
-			_strokeBrushChangedProxy.Subscribe(newValue, _strokeBrushChanged);
+			});
+
+			Brush.SetupBrushChanged(oldValue, newValue, ref _strokeBrushChanged, newInvalidateRender);
 		}
 		partial void OnStrokeUpdatedPartial();
 
