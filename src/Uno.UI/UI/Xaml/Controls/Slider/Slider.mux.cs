@@ -431,12 +431,8 @@ public partial class Slider
 	}
 
 	// PointerMoved event handler.
-	private void OnPointerMoved(object sender, PointerRoutedEventArgs args) => OnPointerMoved(args);
-
-	protected override void OnPointerMoved(PointerRoutedEventArgs args)
+	private void OnPointerMoved(object sender, PointerRoutedEventArgs args)
 	{
-		base.OnPointerMoved(args);
-
 		var thumb = Thumb;
 		if (thumb != null)
 		{
@@ -819,12 +815,14 @@ public partial class Slider
 		//TODO MZ: Should include handled too?
 		spSliderContainer.PointerPressed += OnPointerPressed;
 		spSliderContainer.PointerReleased += OnPointerReleased;
+		spSliderContainer.PointerMoved += OnPointerMoved;
 		spSliderContainer.PointerCaptureLost += OnPointerCaptureLost;
 		spSliderContainer.SizeChanged += OnSizeChanged;
 		_sliderContainerToken.Disposable = Disposable.Create(() =>
 		{
 			spSliderContainer.PointerPressed -= OnPointerPressed;
 			spSliderContainer.PointerReleased -= OnPointerReleased;
+			spSliderContainer.PointerMoved += OnPointerMoved;
 			spSliderContainer.PointerCaptureLost -= OnPointerCaptureLost;
 			spSliderContainer.SizeChanged -= OnSizeChanged;
 		});
