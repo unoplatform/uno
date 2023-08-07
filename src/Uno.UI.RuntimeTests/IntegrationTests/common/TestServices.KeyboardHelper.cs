@@ -126,7 +126,6 @@ namespace Private.Infrastructure
 					return;
 				}
 
-
 				element ??= FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as UIElement;
 				if (element is null)
 				{

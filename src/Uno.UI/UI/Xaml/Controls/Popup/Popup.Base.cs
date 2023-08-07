@@ -79,7 +79,18 @@ public partial class Popup : FrameworkElement, IPopup
 	{
 		if (newIsOpen)
 		{
-			var xamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator?.CoreWindowContentRoot?.XamlRoot;
+			var xamlRoot = XamlRoot ?? Child?.XamlRoot ??
+#if !HAS_UNO_WINUI
+			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.XamlRoot
+#else
+			WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot?.XamlRoot
+#endif
+			;
+
+			if (xamlRoot != XamlRoot)
+			{
+				XamlRoot = xamlRoot;
+			}
 
 			if (xamlRoot is not null)
 			{
@@ -98,6 +109,8 @@ public partial class Popup : FrameworkElement, IPopup
 					_lastFocusState = focusState;
 				}
 
+				// Usually, FrameworkElements handle focus management inside OnLoaded/OnUnloaded,
+				// but since popups are (un)loaded, we have to do it here.
 				// Give the child focus if allowed
 				if (Child is FrameworkElement fw && fw.AllowFocusOnInteraction)
 				{
@@ -117,6 +130,14 @@ public partial class Popup : FrameworkElement, IPopup
 					target.Focus(_lastFocusState);
 					_lastFocusedElement = null;
 				}
+			}
+
+			if (FocusManager.GetFocusedElement() == this &&
+				VisualTree.GetFocusManagerForElement(this) is { } focusManager &&
+				VisualTree.GetRootForElement(this) is { } root &&
+				focusManager.GetLastFocusableElement(root) is UIElement elementToFocus)
+			{
+				elementToFocus.Focus(FocusState.Programmatic);
 			}
 
 			Closed?.Invoke(this, newIsOpen);
