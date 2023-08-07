@@ -80,10 +80,22 @@ public static class UITestHelper
 
 	public enum ScreenShotScalingMode
 	{
+		/// <summary>
+		/// Screen-shot is made at full resolution, then the returned RawBitmap is configured to implicitly apply screen scaling
+		/// to requested pixel coordinates in <see cref="RawBitmap.GetPixel"/> method.
+		///
+		/// This is best / common option has it avoids artifacts due image scaling while still allowing to use logical pixels.
+		/// </summary>
 		UsePhysicalPixelsWithImplicitScaling,
 
+		/// <summary>
+		/// Screen-shot is made at full resolution, and access to the returned <see cref="RawBitmap"/> are assumed to be in physical pixels.
+		/// </summary>
 		UsePhysicalPixels,
 
+		/// <summary>
+		/// Screen-shot is forcefully scaled down to logical pixels.
+		/// </summary>
 		UseLogicalPixels
 	}
 
