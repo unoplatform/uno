@@ -1,11 +1,7 @@
 ﻿#nullable enable
 
 using System;
-<<<<<<< HEAD:src/Uno.UI.Runtime.Skia.Wpf/WpfCoreWindowExtension.Keyboard.cs
 using Windows.Devices.Input;
-=======
-using System.Windows.Input;
->>>>>>> ff40a66573 (chore: add keyboard modifier support for skia runtime):src/Uno.UI.Runtime.Skia.Wpf/Extensions/WpfCoreWindowExtension.Keyboard.cs
 using Windows.UI.Core;
 using Uno.Extensions;
 using MouseEventArgs = System.Windows.Input.MouseEventArgs;

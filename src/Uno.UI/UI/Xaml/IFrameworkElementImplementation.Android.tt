@@ -367,7 +367,7 @@ namespace <#= mixin.NamespaceName #>
 				return;
 			}
 
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, e.Event.KeyCode.ToVirtualKey());
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, e.Event.KeyCode.ToVirtualKey(), Windows.System.VirtualKeyHelper.FromModifiers(e.Event.Modifiers));
 			if (e.Event.Action == KeyEventActions.Up)
 			{
 				_keyUpHandlers?.Invoke(this, keyRoutedEventArgs);

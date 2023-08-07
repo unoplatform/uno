@@ -101,50 +101,12 @@ namespace Windows.UI.Xaml
 		public override bool DispatchKeyEvent(KeyEvent e)
 		{
 			var handled = false;
-<<<<<<< HEAD
 			if (Uno.WinRTFeatureConfiguration.Focus.EnableExperimentalKeyboardFocus)
-=======
-
-			var virtualKey = VirtualKeyHelper.FromKeyCode(e.KeyCode);
-			var modifiers = VirtualKeyHelper.FromModifiers(e.Modifiers);
-
-			if (this.Log().IsEnabled(LogLevel.Trace))
->>>>>>> ff2663de88 (chore: fix missed modifier arguments)
 			{
 				var focusHandler = Uno.UI.Xaml.Core.CoreServices.Instance.MainRootVisual.AssociatedVisualTree.UnoFocusInputHandler;
 				if (focusHandler != null && e.Action == KeyEventActions.Down)
 				{
-<<<<<<< HEAD
 					if (e.KeyCode == Keycode.Tab)
-=======
-					element = WinUICoreServices.Instance.MainRootVisual;
-				}
-
-				var routedArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
-				{
-					CanBubbleNatively = false,
-				};
-
-				RoutedEvent routedEvent = e.Action == KeyEventActions.Down ?
-					UIElement.KeyDownEvent :
-					UIElement.KeyUpEvent;
-
-				element?.RaiseEvent(routedEvent, routedArgs);
-
-				handled = routedArgs.Handled;
-
-				if (CoreWindow.GetForCurrentThread() is ICoreWindowEvents ownerEvents)
-				{
-					var coreWindowArgs = new KeyEventArgs(
-						"keyboard",
-						virtualKey,
-						modifiers,
-						new CorePhysicalKeyStatus
-						{
-							ScanCode = (uint)e.KeyCode,
-							RepeatCount = 1,
-						})
->>>>>>> ff2663de88 (chore: fix missed modifier arguments)
 					{
 						var shift = e.Modifiers.HasFlag(MetaKeyStates.ShiftLeftOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftRightOn) || e.Modifiers.HasFlag(MetaKeyStates.ShiftOn);
 						handled = focusHandler.TryHandleTabFocus(shift);
