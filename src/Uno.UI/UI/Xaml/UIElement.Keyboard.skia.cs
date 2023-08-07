@@ -14,6 +14,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -37,7 +38,7 @@ namespace Windows.UI.Xaml
 
 				originalSource.RaiseEvent(
 					KeyDownEvent,
-					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
+					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus)
 					{
 						CanBubbleNatively = false
 					}
@@ -62,7 +63,7 @@ namespace Windows.UI.Xaml
 
 				originalSource.RaiseEvent(
 					KeyUpEvent,
-					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyStatus)
+					new KeyRoutedEventArgs(originalSource, args.VirtualKey, args.KeyboardModifiers, args.KeyStatus)
 					{
 						CanBubbleNatively = false
 					}

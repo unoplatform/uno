@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Windows.System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
@@ -194,20 +195,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			eventRaised = false;
 			textBox.ProcessTextInput("a");
 			await WindowHelper.WaitFor(() => eventRaised);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a1", SUT.Text);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a2", SUT.Text);
 
 			eventRaised = false;
 			textBox.ProcessTextInput("b");
 			await WindowHelper.WaitFor(() => eventRaised);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b1", SUT.Text);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b2", SUT.Text);
 		}
