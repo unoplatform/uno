@@ -711,7 +711,7 @@ namespace Windows.UI.Xaml.Input
 		/// <remarks>
 		/// Special handling for popup, otherwise uses other method to do the work.
 		/// </remarks>
-		internal UIElement? GetFirstFocusableElement(bool useReverseDirection)
+		internal UIElement? GetFirstFocusableElement()
 		{
 			DependencyObject? pFirstFocus = null;
 			UIElement? pFirstFocusElement = null;
@@ -731,7 +731,7 @@ namespace Windows.UI.Xaml.Input
 
 				if (pFirstFocusElement == null)
 				{
-					pFirstFocus = GetFirstFocusableElementFromRoot(useReverseDirection);
+					pFirstFocus = GetFirstFocusableElementFromRoot(false /* bReverse */);
 
 					if (pFirstFocus != null)
 					{
@@ -2214,8 +2214,8 @@ namespace Windows.UI.Xaml.Input
 			DependencyObject? nextFocusableElement = GetNextFocusableElement();
 			if (nextFocusableElement == null)
 			{
-				// Find the last focusable element from the root
-				nextFocusableElement = GetFirstFocusableElement(true);
+				// Find the first focusable element from the root
+				nextFocusableElement = GetFirstFocusableElement();
 			}
 
 			//On Xbox, we want to give them the power dictate where the focus should go when the currently focused element is
