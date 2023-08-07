@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			var newOnInvalidateRender = _borderBrushChanged ?? () => UpdateBorder();
+			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
 			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _borderBrushChanged, newOnInvalidateRender);
 		}
 
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			var newOnInvalidateRender = _backgroundBrushChanged ?? () => UpdateBorder();
+			var newOnInvalidateRender = _backgroundBrushChanged ?? (() => UpdateBorder());
 			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _backgroundBrushChanged, newOnInvalidateRender);
 		}
 
