@@ -1,16 +1,16 @@
 ﻿#nullable enable
 
 using System;
-using System.Threading.Tasks;
 using Uno;
 using Uno.Foundation;
-using Uno.Foundation.Logging;
 
 namespace Windows.System.Power;
 
-public partial class PowerManager
+partial class PowerManager
 {
 	private const string JsType = "Windows.System.Power.PowerManager";
+
+	private static bool _isInitialized;
 
 	[Preserve]
 	public static int DispatchChargingChanged()
@@ -36,25 +36,25 @@ public partial class PowerManager
 
 	private static BatteryStatus GetBatteryStatus()
 	{
-		InitializeAsync(); // TODO
+		EnsureInitialized();
 
 		var batteryStatusString = WebAssemblyRuntime.InvokeJS($"{JsType}.getBatteryStatus()");
 		return Enum.TryParse<BatteryStatus>(batteryStatusString, out var batteryStatus) ?
-			batteryStatus : BatteryStatus.NotPresent;
+			batteryStatus : Power.BatteryStatus.NotPresent;
 	}
 
 	private static PowerSupplyStatus GetPowerSupplyStatus()
 	{
-		InitializeAsync(); // TODO
+		EnsureInitialized();
 
 		var powerSupplyStatusString = WebAssemblyRuntime.InvokeJS($"{JsType}.getPowerSupplyStatus()");
 		return Enum.TryParse<PowerSupplyStatus>(powerSupplyStatusString, out var powerSupplyStatus) ?
-			powerSupplyStatus : PowerSupplyStatus.NotPresent;
+			powerSupplyStatus : Power.PowerSupplyStatus.NotPresent;
 	}
 
 	private static int GetRemainingChargePercent()
 	{
-		InitializeAsync(); // TODO
+		EnsureInitialized();
 
 		var remainingChargeString = WebAssemblyRuntime.InvokeJS($"{JsType}.getRemainingChargePercent()");
 		if (double.TryParse(remainingChargeString, out var remainingCharge) &&
@@ -68,7 +68,7 @@ public partial class PowerManager
 
 	private static TimeSpan GetRemainingDischargeTime()
 	{
-		InitializeAsync(); // TODO
+		EnsureInitialized();
 
 		var remainingDischargeTimeString = WebAssemblyRuntime.InvokeJS($"{JsType}.getRemainingDischargeTime()");
 		if (double.TryParse(remainingDischargeTimeString, out var remainingDischargeTimeInSeconds) &&
@@ -81,18 +81,11 @@ public partial class PowerManager
 		return TimeSpan.MaxValue;
 	}
 
-	private static async Task InitializeAsync()
+	private static void EnsureInitialized()
 	{
-		try
+		if (!_isInitialized)
 		{
-			await WebAssemblyRuntime.InvokeAsync($"{JsType}.initializeAsync()");
-		}
-		catch (Exception ex)
-		{
-			if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
-			{
-				typeof(PowerManager).Log().LogError("Could not initialize PowerManager", ex);
-			}
+			throw new InvalidOperationException("You must call the InitializeAsync method of PowerManager before using any of its properties.");
 		}
 	}
 }
