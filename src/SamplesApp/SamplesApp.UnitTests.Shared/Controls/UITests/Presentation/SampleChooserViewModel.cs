@@ -1075,7 +1075,7 @@ description: {sample.Description}";
 				}
 				catch (IOException e)
 				{
-					_log.Error(e.Message);
+					_log.LogWarning(e.Message);
 				}
 			}
 #else
@@ -1103,7 +1103,7 @@ description: {sample.Description}";
 				}
 				catch (IOException e)
 				{
-					_log.Error(e.Message);
+					_log.LogWarning(e.Message);
 				}
 			}
 
