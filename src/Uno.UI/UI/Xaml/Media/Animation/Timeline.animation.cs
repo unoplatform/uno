@@ -298,20 +298,10 @@ namespace Windows.UI.Xaml.Media.Animation
 					_animator.StartDelay = (long)BeginTime.Value.TotalMilliseconds;
 				}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
 				_animator.Start();
 				State = TimelineState.Active;
 
-#if XAMARIN_IOS
-=======
-=======
-				_animator.Start();
-				State = TimelineState.Active;
-
->>>>>>> b587bcb51b (chore: Use ImmediateAnimator instead)
 #if __IOS__
->>>>>>> 0b1215b2a2 (fix: Fix toggle switch knob translation)
 				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
 				// values out of syc with native presented values and Xaml values). As a workaround we fast-forward the animation to its final
 				// state. (The ideal would probably be to restart the animation when the app resumes.)
