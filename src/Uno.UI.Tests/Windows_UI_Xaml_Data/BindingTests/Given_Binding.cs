@@ -198,8 +198,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			binding.RelativeSource.Mode.Should().Be(RelativeSourceMode.None);
 			binding.Source.Should().Be("Source");
 		}
-<<<<<<< HEAD
-=======
 
 		[TestMethod]
 		public void When_Binding_Empty_Quotes()
@@ -223,6 +221,5 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			Assert.AreEqual(ScrollBarVisibility.Auto, (ScrollBarVisibility)tb.GetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty));
 			Assert.AreEqual(ScrollBarVisibility.Hidden, (ScrollBarVisibility)tb.GetValue(ScrollViewer.VerticalScrollBarVisibilityProperty));
 		}
->>>>>>> 96e2283611 (fix: Fix TemplateBinding not working with attached DPs)
 	}
 }

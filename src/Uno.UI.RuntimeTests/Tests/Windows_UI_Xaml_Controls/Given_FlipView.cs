@@ -190,8 +190,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 		}
 
-<<<<<<< HEAD
-=======
 #if __WASM__
 		[TestMethod]
 		public async Task When_Multiple_Items_Should_Not_Scroll()
@@ -220,7 +218,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(classesArray.Contains("scroll-y-disabled"), $"Classes found: {classes}");
 		}
 #endif
->>>>>>> c8c822eef9 (chore: Adjust test)
 	}
 
 #if __SKIA__ || __WASM__
