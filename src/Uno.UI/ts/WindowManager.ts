@@ -194,7 +194,9 @@ namespace Uno.UI {
 			* Reads the window's search parameters
 			* 
 			*/
-		static findLaunchArguments(): string {
+		static beforeLaunch(): string {
+			WindowManager.resize();
+
 			if (typeof URLSearchParams === "function") {
 				return new URLSearchParams(window.location.search).toString();
 			}
@@ -1056,8 +1058,6 @@ namespace Uno.UI {
 				this.dispatchEvent(this.rootElement, "loaded");
 			}
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
-
-			this.resize();
 		}
 
 		/**
@@ -1656,7 +1656,7 @@ namespace Uno.UI {
 			document.body.addEventListener("focusin", this.onfocusin);
 			document.body.appendChild(this.containerElement);
 
-			window.addEventListener("resize", x => this.resize());
+			window.addEventListener("resize", x => WindowManager.resize());
 			window.addEventListener("contextmenu", x => {
 				if (!(x.target instanceof HTMLInputElement) ||
 					x.target.classList.contains("context-menu-disabled")) {
@@ -1679,7 +1679,7 @@ namespace Uno.UI {
 			}
 		}
 
-		private resize() {
+		private static resize() {
 			WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
 		}
 

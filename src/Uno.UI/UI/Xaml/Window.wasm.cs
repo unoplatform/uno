@@ -102,17 +102,7 @@ namespace Windows.UI.Xaml
 		[JSExport]
 #endif
 		[Preserve]
-		public static void Resize(double width, double height)
-		{
-			var window = Current?._rootVisual;
-			if (window == null)
-			{
-				typeof(Window).Log().Error($"Resize ignore, no current window defined");
-				return; // nothing to measure
-			}
-
-			Current.OnNativeSizeChanged(new Size(width, height));
-		}
+		public static void Resize(double width, double height) => Current.OnNativeSizeChanged(new Size(width, height));
 
 		private void OnNativeSizeChanged(Size size)
 		{
@@ -173,6 +163,7 @@ namespace Windows.UI.Xaml
 				}
 
 				WindowManagerInterop.SetRootElement(_rootVisual.HtmlId);
+				DispatchInvalidateMeasure();
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{

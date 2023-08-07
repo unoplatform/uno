@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
-				var arguments = WindowManagerInterop.FindLaunchArguments();
+				var arguments = WindowManagerInterop.BeforeLaunch();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
