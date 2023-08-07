@@ -22,18 +22,7 @@ namespace Windows.UI.Xaml
 		public static implicit operator Duration(string timeSpan)
 			=> timeSpan != null ? new Duration(TimeSpan.Parse(timeSpan, CultureInfo.InvariantCulture)) : new Duration(TimeSpan.Zero);
 
-<<<<<<< HEAD
-		public bool HasTimeSpan
-		{
-			get
-			{
-				return this.Type == DurationType.TimeSpan &&
-					this.TimeSpan.CompareTo(TimeSpan.Zero) > 0;
-			}
-		}
-=======
 		public bool HasTimeSpan => Type == DurationType.TimeSpan;
->>>>>>> 4ba972b660 (fix: Align Duration behavior with WinUI)
 
 		public static Duration Forever => new Duration() { Type = DurationType.Forever };
 
