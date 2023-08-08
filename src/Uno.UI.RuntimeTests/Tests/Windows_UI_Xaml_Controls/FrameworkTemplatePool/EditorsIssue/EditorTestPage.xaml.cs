@@ -1,7 +1,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 
-namespace TextBoxEditorRecycling
+namespace FrameworkPoolEditorRecycling
 {
 	public sealed partial class EditorTestPage : Page
 	{

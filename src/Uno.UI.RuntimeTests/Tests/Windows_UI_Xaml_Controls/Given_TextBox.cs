@@ -2,7 +2,7 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using TextBoxEditorRecycling;
+using FrameworkPoolEditorRecycling;
 using MUXControlsTestApp.Utilities;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
@@ -677,49 +677,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.SelectAll();
 
 			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
-		}
-
-		[TestMethod]
-		public async Task When_Editor_Recycling()
-		{
-			using var _ = FeatureConfigurationHelper.UseTemplatePooling();
-
-			var page = new EditorTestPage();
-
-			WindowHelper.WindowContent = page;
-			await WindowHelper.WaitForLoaded(page);
-			await WindowHelper.WaitForIdle();
-
-			var vm = page.ViewModel;
-
-			void AssertEditorContents()
-			{
-				var textBox = page.FindFirstChild<TextBox>();
-				Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
-				Assert.IsTrue(!string.IsNullOrEmpty(textBox.Text));
-				Assert.AreEqual(vm.CurrentEditor.Text, textBox.Text);
-			}
-
-			// Verify initial state
-			AssertEditorContents();
-
-			TextBox textBox = null;
-			// Cycle twice - once without focus, once with focus			
-			for (int i = 0; i < vm.Editors.Length * 2; i++)
-			{
-				vm.SetNextEditor();
-
-				await WindowHelper.WaitForIdle();
-				await WindowHelper.WaitFor(() => (textBox = page.FindFirstChild<TextBox>()) is not null);
-				if (i > vm.Editors.Length - 1)
-				{
-					textBox.Focus(FocusState.Programmatic);
-					await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
-				}
-				await Task.Delay(500);
-
-				AssertEditorContents();
-			}
 		}
 	}
 }

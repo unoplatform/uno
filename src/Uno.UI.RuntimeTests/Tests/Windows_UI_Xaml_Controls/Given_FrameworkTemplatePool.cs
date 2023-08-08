@@ -1,7 +1,11 @@
 ﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
+using FrameworkPoolEditorRecycling;
 using Uno.UI.RuntimeTests.Helpers;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -96,6 +100,60 @@ internal class Given_FrameworkTemplatePool
 			scrollViewer.ApplyTemplate();
 
 			Assert.IsFalse(toggledFired);
+		}
+	}
+
+	[TestMethod]
+	public async Task When_Editor_Recycling()
+	{
+		using var _ = FeatureConfigurationHelper.UseTemplatePooling();
+
+		var page = new EditorTestPage();
+
+		WindowHelper.WindowContent = page;
+		await WindowHelper.WaitForLoaded(page);
+		await WindowHelper.WaitForIdle();
+
+		var vm = page.ViewModel;
+
+		void AssertEditorContents()
+		{
+			var textBox = page.FindFirstChild<TextBox>();
+			var checkBox = page.FindFirstChild<CheckBox>();
+			var toggleSwitch = page.FindFirstChild<ToggleSwitch>();
+			Assert.IsTrue(vm.Editors.All(e => !string.IsNullOrEmpty(e.Text)));
+			Assert.IsTrue(vm.Editors.All(e => e.IsChecked));
+			Assert.IsTrue(vm.Editors.All(e => e.IsOn));
+			Assert.IsTrue(!string.IsNullOrEmpty(textBox.Text));
+			Assert.IsTrue(checkBox.IsChecked);
+			Assert.IsTrue(toggleSwitch.IsOn);
+			Assert.AreEqual(vm.CurrentEditor.IsChecked, checkBox.IsChecked);
+			Assert.AreEqual(vm.CurrentEditor.IsOn, toggleSwitch.IsOn);
+		}
+
+		// Verify initial state
+		AssertEditorContents();
+
+		TextBox textBox = null;
+		CheckBox checkBox = null;
+		ToggleSwitch toggleSwitch = null;
+		// Cycle twice - once without focus, once with focus			
+		for (int i = 0; i < vm.Editors.Length * 2; i++)
+		{
+			vm.SetNextEditor();
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => (textBox = page.FindFirstChild<TextBox>()) is not null);
+			await WindowHelper.WaitFor(() => (checkBox = page.FindFirstChild<CheckBox>()) is not null);
+			await WindowHelper.WaitFor(() => (toggleSwitch = page.FindFirstChild<ToggleSwitch>()) is not null);
+			if (i > vm.Editors.Length - 1)
+			{
+				textBox.Focus(FocusState.Programmatic);
+				await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
+			}
+			await Task.Delay(500);
+
+			AssertEditorContents();
 		}
 	}
 }

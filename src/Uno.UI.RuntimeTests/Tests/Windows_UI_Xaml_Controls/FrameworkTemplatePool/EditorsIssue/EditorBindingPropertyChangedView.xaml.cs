@@ -1,6 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 
-namespace TextBoxEditorRecycling.Editors;
+namespace FrameworkPoolEditorRecycling.Editors;
 
 public sealed partial class EditorBindingPropertyChangedView : Page
 {

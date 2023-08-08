@@ -3,7 +3,7 @@
 using System;
 using System.ComponentModel;
 
-namespace TextBoxEditorRecycling.Editors
+namespace FrameworkPoolEditorRecycling.Editors
 {
 	public sealed class EditorViewModel
 	{
@@ -15,7 +15,7 @@ namespace TextBoxEditorRecycling.Editors
 
 		public string Text
 		{
-			get { return _text; }
+			get => _text;
 			set
 			{
 				if (_text != value)
@@ -26,9 +26,37 @@ namespace TextBoxEditorRecycling.Editors
 			}
 		}
 
+		public bool IsChecked
+		{
+			get => _isChecked;
+			set
+			{
+				if (_isChecked != value)
+				{
+					_isChecked = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsChecked)));
+				}
+			}
+		}
+
+		public bool IsOn
+		{
+			get => _isOn;
+			set
+			{
+				if (_isOn != value)
+				{
+					_isOn = value;
+					PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsOn)));
+				}
+			}
+		}
+
 		public Type EditorViewType { get; }
 
 		private string _text = "Editor";
+		private bool _isChecked = true;
+		private bool _isOn = true;
 
 		public event PropertyChangedEventHandler? PropertyChanged = null;
 	}
