@@ -47,6 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 		/// </summary>
 		private bool _suppressTextChanged;
+		private bool _wasTemplateRecycled;
 
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
@@ -864,9 +865,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
-				// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
-				var bindingExpression = GetBindingExpression(TextProperty);
-				bindingExpression?.UpdateSource(Text);
+				if (!_wasTemplateRecycled)
+				{
+					// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
+					var bindingExpression = GetBindingExpression(TextProperty);
+					bindingExpression?.UpdateSource(Text);
+				}
+
+				_wasTemplateRecycled = false;
 			}
 
 			UpdateButtonStates();
@@ -1082,7 +1088,6 @@ namespace Windows.UI.Xaml.Controls
 			SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 		}
 
-
 		public void OnTemplateRecycled()
 		{
 			if (!IsTemplateRecyclingEnabled)
@@ -1092,6 +1097,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_suppressTextChanged = true;
 			Text = string.Empty;
+			_wasTemplateRecycled = true;
 		}
 
 		/// <summary>
