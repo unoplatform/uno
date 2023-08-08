@@ -7,6 +7,7 @@
 	<PropertyGroup>
 		<_UnoDirectorySeparator Condition="'$(OS)' == 'Unix'">/</_UnoDirectorySeparator>
 		<_UnoDirectorySeparator Condition="'$(OS)' == 'Windows_NT'">\</_UnoDirectorySeparator>
+		<_WasUnoAssetsGetCopyToPublishDirectoryRun>false</_WasUnoAssetsGetCopyToPublishDirectoryRun>
 	</PropertyGroup>
 
 	<Target Name="_DefineUnoPriProperties">
@@ -43,8 +44,14 @@
 	<Target Name="_UnoGeneratePriMarker"
 			Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(SDKIdentifier)' != 'Windows'"
 			BeforeTargets="PrepareForRun"
-			DependsOnTargets="_DefineUnoPriProperties;_UnoAssetsGetCopyToPublishDirectory">
-		
+			DependsOnTargets="_DefineUnoPriProperties">
+
+		<ItemGroup Condition="'$(_WasUnoAssetsGetCopyToPublishDirectoryRun)'!='true'">
+			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
+				<TargetPath>%(TargetPath)</TargetPath>
+				<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+			</ContentWithTargetPath>
+		</ItemGroup>
 		<WriteLinesToFile File="$(ProjectUnoPriFullPath)"
 						  Lines="@(ContentWithTargetPath)"
 						  Condition="'@(ContentWithTargetPath)'!=''"
@@ -198,7 +205,10 @@
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
-	BeforeTargets="GetCopyToPublishDirectoryItems">
+			BeforeTargets="GetCopyToPublishDirectoryItems">
+		<PropertyGroup>
+			<_WasUnoAssetsGetCopyToPublishDirectoryRun>true</_WasUnoAssetsGetCopyToPublishDirectoryRun>
+		</PropertyGroup>
 		<ItemGroup>
 			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
 				<TargetPath>%(TargetPath)</TargetPath>
