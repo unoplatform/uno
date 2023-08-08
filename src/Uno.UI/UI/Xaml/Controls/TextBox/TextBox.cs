@@ -184,6 +184,22 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+#else
+				// The template of TextBox contains the following:
+				/*
+					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+				 */
+				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
+				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
+				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
+				// before the support for TemplateBinding for attached DPs.
+				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
 			}
 
