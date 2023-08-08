@@ -26,6 +26,7 @@ namespace Uno.UI.Runtime.Skia
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						VirtualKeyModifiers.None,
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)keyCode,
@@ -53,6 +54,7 @@ namespace Uno.UI.Runtime.Skia
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						VirtualKeyModifiers.None,
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)keyCode,

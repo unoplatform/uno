@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml
 
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
-			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode), VirtualKeyHelper.FromFlagsToVirtualModifiers(evt.ModifierFlags))
 			{
 				CanBubbleNatively = false // Only the first responder gets the event
 			};
@@ -153,11 +153,12 @@ namespace Windows.UI.Xaml
 		private protected override void OnNativeFlagsChanged(NSEvent evt)
 		{
 			var newFlags = evt.ModifierFlags;
+			var modifiers = VirtualKeyHelper.FromFlagsToVirtualModifiers(newFlags);
 
 			var flags = Enum.GetValues(typeof(NSEventModifierMask)).OfType<NSEventModifierMask>();
 			foreach (var flag in flags)
 			{
-				var key = VirtualKeyHelper.FromFlags(flag);
+				var key = VirtualKeyHelper.FromFlagsToKey(flag);
 				if (key == null)
 				{
 					continue;
@@ -168,7 +169,7 @@ namespace Windows.UI.Xaml
 
 				if (raiseKeyDown || raiseKeyUp)
 				{
-					var args = new KeyRoutedEventArgs(this, key.Value)
+					var args = new KeyRoutedEventArgs(this, key.Value, modifiers)
 					{
 						CanBubbleNatively = false // Only the first responder gets the event
 					};
@@ -242,7 +243,7 @@ namespace Windows.UI.Xaml
 
 		private protected override void OnNativeKeyUp(NSEvent evt)
 		{
-			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode), VirtualKeyHelper.FromFlagsToVirtualModifiers(evt.ModifierFlags))
 			{
 				CanBubbleNatively = false // Only the first responder gets the event
 			};
