@@ -44,7 +44,7 @@ namespace Uno.UI.Xaml
 		/// </summary>
 		/// <returns>App launch arguments.</returns>
 		internal static string BeforeLaunch()
-			=> 
+			=>
 #if NET7_0_OR_GREATER
 				NativeMethods.BeforeLaunch();
 #else
