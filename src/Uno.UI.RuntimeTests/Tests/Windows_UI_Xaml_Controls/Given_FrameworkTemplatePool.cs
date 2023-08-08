@@ -151,7 +151,6 @@ internal class Given_FrameworkTemplatePool
 				textBox.Focus(FocusState.Programmatic);
 				await WindowHelper.WaitFor(() => FocusManager.GetFocusedElement(WindowHelper.XamlRoot) == textBox);
 			}
-			await Task.Delay(500);
 
 			AssertEditorContents();
 		}
