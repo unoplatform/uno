@@ -177,12 +177,16 @@ public static partial class PowerManager
 
 	static partial void EndBatteryStatus();
 
+#if __WASM__
 	static partial void StartRemainingDischargeTime();
 
 	static partial void EndRemainingDischargedTime();
+#endif
 
+#if !__WASM__
 	static partial void StartEnergySaverStatus();
 
 	static partial void EndEnergySaverStatus();
+#endif
 }
 #endif
