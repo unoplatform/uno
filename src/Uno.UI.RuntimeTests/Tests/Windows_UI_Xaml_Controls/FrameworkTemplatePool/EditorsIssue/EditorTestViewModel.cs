@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using TextBoxEditorRecycling.Editors;
+using FrameworkPoolEditorRecycling.Editors;
 
-namespace TextBoxEditorRecycling
+namespace FrameworkPoolEditorRecycling
 {
 	public sealed class EditorTestViewModel : INotifyPropertyChanged
 	{

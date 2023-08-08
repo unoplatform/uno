@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Markup;
 
 #nullable disable
 
-namespace TextBoxEditorRecycling.Editors;
+namespace FrameworkPoolEditorRecycling.Editors;
 
 [ContentProperty(Name = nameof(Templates))]
 public class EditorTemplateSelector : DataTemplateSelector
