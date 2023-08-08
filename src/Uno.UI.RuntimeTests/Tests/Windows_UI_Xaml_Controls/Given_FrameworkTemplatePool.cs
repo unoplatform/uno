@@ -7,6 +7,20 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using static Private.Infrastructure.TestServices;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml.Media;
+using Windows.UI;
+using FluentAssertions;
+using MUXControlsTestApp.Utilities;
+using System.Runtime.InteropServices;
+
+#if NETFX_CORE
+using Uno.UI.Extensions;
+#elif __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#else
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
