@@ -338,9 +338,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		internal override void OnItemClicked(int clickedIndex)
+		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
-			base.OnItemClicked(clickedIndex);
+			base.OnItemClicked(clickedIndex, modifiers);
 			IsDropDownOpen = false;
 		}
 

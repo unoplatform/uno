@@ -133,5 +133,23 @@ namespace Uno.UI.Runtime.Skia
 
 			return new(0, 0);
 		}
+
+		public static VirtualKeyModifiers GetKeyModifiers(Gdk.ModifierType state)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+			if (state.HasFlag(Gdk.ModifierType.ShiftMask))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+			if (state.HasFlag(Gdk.ModifierType.ControlMask))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+			if (state.HasFlag(Gdk.ModifierType.Mod1Mask))
+			{
+				modifiers |= VirtualKeyModifiers.Menu;
+			}
+			return modifiers;
+		}
 	}
 }
