@@ -283,6 +283,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private void Play()
 			{
 				_animator?.Dispose();
+
 				InitializeAnimator(); // Create the animator
 
 				if (!EnableDependentAnimation && _owner.GetIsDependantAnimation())
@@ -300,7 +301,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_animator.Start();
 				State = TimelineState.Active;
 
-#if XAMARIN_IOS
+#if __IOS__
 				// On iOS, animations started while the app is in the background will lead to properties in an incoherent state (native static
 				// values out of syc with native presented values and Xaml values). As a workaround we fast-forward the animation to its final
 				// state. (The ideal would probably be to restart the animation when the app resumes.)
