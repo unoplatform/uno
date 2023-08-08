@@ -35,15 +35,6 @@ namespace Uno.UI.Xaml
 				WebAssemblyRuntime.InvokeAsync($"Uno.UI.WindowManager.init({(isLoadEventsEnabled ? "true" : "false")})");
 #endif
 
-<<<<<<< HEAD
-		internal static string FindLaunchArguments()
-			=>
-#if NET7_0_OR_GREATER
-				NativeMethods.FindLaunchArguments();
-#else
-				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
-#endif
-=======
 		/// <summary>
 		/// This method has two purposes:
 		/// - Initializes the window size before launch
@@ -53,8 +44,12 @@ namespace Uno.UI.Xaml
 		/// </summary>
 		/// <returns>App launch arguments.</returns>
 		internal static string BeforeLaunch()
-			=> NativeMethods.BeforeLaunch();
->>>>>>> 7e139e85ea (fix: Set initial Window size earlier on WASM)
+			=> 
+#if NET7_0_OR_GREATER
+				NativeMethods.BeforeLaunch();
+#else
+				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.beforeLaunch()");
+#endif
 
 		internal static double GetBootTime()
 			=>

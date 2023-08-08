@@ -677,8 +677,6 @@ namespace SamplesApp
 			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
 #endif
 		}
-<<<<<<< HEAD
-=======
 
 		public void AssertInitialWindowSize()
 		{
@@ -687,66 +685,5 @@ namespace SamplesApp
 			Assert.IsTrue(global::Windows.UI.Xaml.Window.Current.Bounds.Height > 0);
 #endif
 		}
-
-		/// <summary>
-		/// Verifies that ApplicationData are available immediately after the application class is created
-		/// and the data are stored in proper application specific lcoations.
-		/// </summary>
-		public void AssertApplicationData()
-		{
-#if __SKIA__
-			var appName = Package.Current.Id.Name;
-			var publisher = string.IsNullOrEmpty(Package.Current.Id.Publisher) ? "" : "Uno Platform";
-
-			AssertForFolder(ApplicationData.Current.LocalFolder);
-			AssertForFolder(ApplicationData.Current.RoamingFolder);
-			AssertForFolder(ApplicationData.Current.TemporaryFolder);
-			AssertForFolder(ApplicationData.Current.LocalCacheFolder);
-			AssertSettings(ApplicationData.Current.LocalSettings);
-			AssertSettings(ApplicationData.Current.RoamingSettings);
-
-			void AssertForFolder(StorageFolder folder)
-			{
-				AssertContainsIdProps(folder);
-				AssertCanCreateFile(folder);
-			}
-
-			void AssertSettings(ApplicationDataContainer container)
-			{
-				var key = Guid.NewGuid().ToString();
-				var value = Guid.NewGuid().ToString();
-
-				container.Values[key] = value;
-				Assert.IsTrue(container.Values.ContainsKey(key));
-				Assert.AreEqual(value, container.Values[key]);
-				container.Values.Remove(key);
-			}
-
-			void AssertContainsIdProps(StorageFolder folder)
-			{
-				Assert.IsTrue(folder.Path.Contains(appName, StringComparison.Ordinal));
-				Assert.IsTrue(folder.Path.Contains(publisher, StringComparison.Ordinal));
-			}
-
-			void AssertCanCreateFile(StorageFolder folder)
-			{
-				var filename = Guid.NewGuid() + ".txt";
-				var path = Path.Combine(folder.Path, filename);
-				var expectedContent = "Test";
-				try
-				{
-					File.WriteAllText(path, expectedContent);
-					var actualContent = File.ReadAllText(path);
-
-					Assert.AreEqual(expectedContent, actualContent);
-				}
-				finally
-				{
-					File.Delete(path);
-				}
-			}
-#endif
-		}
->>>>>>> 0a6754232f (test: Assert initial window size)
 	}
 }
