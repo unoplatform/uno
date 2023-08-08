@@ -7,6 +7,8 @@ namespace Windows.ApplicationModel
 	public partial class Package
 	{
 		private StorageFolder _installedLocation;
+		private string _description = "";
+		private string _publisherDisplayName = "";
 
 		internal Package() => InitializePlatform();
 
@@ -44,10 +46,14 @@ namespace Windows.ApplicationModel
 		[Uno.NotImplemented]
 		public bool IsFramework => false;
 
-#if (__IOS__ || __ANDROID__ || __MACOS__)
+#if !__SKIA__
 		[Uno.NotImplemented]
-		public string Description => "";
 #endif
+		public string Description
+		{
+			get => EnsureLocalized(_description);
+			private set => _description = value;
+		}
 
 		[Uno.NotImplemented]
 		public bool IsBundle => false;
@@ -60,10 +66,14 @@ namespace Windows.ApplicationModel
 		public global::System.Uri Logo => default;
 #endif
 
-#if (__IOS__ || __ANDROID__ || __MACOS__)
+#if !__SKIA__
 		[Uno.NotImplemented]
-		public string PublisherDisplayName => "";
 #endif
+		public string PublisherDisplayName
+		{
+			get => EnsureLocalized(_publisherDisplayName);
+			private set => _publisherDisplayName = value;
+		}
 
 		[Uno.NotImplemented]
 		public PackageStatus Status => new PackageStatus();

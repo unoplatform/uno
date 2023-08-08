@@ -13,8 +13,6 @@ public partial class Package
 
 	private static Assembly? _entryAssembly;
 	private string _displayName = "";
-	private string _description = "";
-	private string _publisherDisplayName = "";
 
 	partial void InitializePlatform()
 	{
@@ -44,18 +42,6 @@ public partial class Package
 	{
 		get => EnsureLocalized(_displayName);
 		private set => _displayName = value;
-	}
-
-	public string Description
-	{
-		get => EnsureLocalized(_description);
-		private set => _description = value;
-	}
-
-	public string PublisherDisplayName
-	{
-		get => EnsureLocalized(_publisherDisplayName);
-		private set => _publisherDisplayName = value;
 	}
 
 	public Uri? Logo { get; set; }
@@ -110,8 +96,11 @@ public partial class Package
 			nsmgr.AddNamespace("d", "http://schemas.microsoft.com/appx/manifest/foundation/windows10");
 
 			DisplayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
+
+#if __SKIA__
 			Description = doc.SelectSingleNode("/d:Package/d:Properties/d:Description", nsmgr)?.InnerText ?? "";
 			PublisherDisplayName = doc.SelectSingleNode("/d:Package/d:Properties/d:PublisherDisplayName", nsmgr)?.InnerText ?? "";
+#endif
 
 			var logoUri = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
 			if (Uri.TryCreate(logoUri, UriKind.RelativeOrAbsolute, out var logo))

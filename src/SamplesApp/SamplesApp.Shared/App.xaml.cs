@@ -674,8 +674,8 @@ namespace SamplesApp
 		/// </summary>
 		public void AssertIssue12937()
 		{
-			//The ApplicationModel properties are currently not supported there
-#if !(__IOS__ || __ANDROID__ || __MACOS__)
+			//The ApplicationModel Package properties are currently are currently supported on Skia
+#if __SKIA__
 			var description = Package.Current.Description;
 			var publisherName = Package.Current.PublisherDisplayName;
 
