@@ -1599,18 +1599,6 @@ namespace Windows.UI.Xaml.Controls
 				if (m_tpCommandBar as FrameworkElement is { } cmElementy)
 				{
 					cmElementy.HorizontalAlignment = HorizontalAlignment.Stretch;
-					//var spPrimaryCommandObsVec = m_tpCommandBar.PrimaryCommands;
-					//var spPrimaryButtons = spPrimaryCommandObsVec.ToArray();
-					//for (int i = 0; i < spPrimaryButtons.Length; i++)
-					//{
-					//	var spCommandElement = spPrimaryButtons[i];
-					//	if (spCommandElement as FrameworkElement is { } spElement && spElement.Margin.Right > 0)
-					//	{
-					//		var extraMargin = new Thickness(0, 0, spElement.Margin.Right, 0);
-					//		cmElementy.Margin = extraMargin;
-					//		return;
-					//	}
-					//}
 				}
 			}
 		}
