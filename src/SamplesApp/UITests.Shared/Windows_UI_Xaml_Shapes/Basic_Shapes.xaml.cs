@@ -299,11 +299,20 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				{
 					var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
 					var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
+					var loaded = new TaskCompletionSource<object>();
+					grid.SizeChanged += (snd, e) =>
+					{
+						if (e.NewSize != default)
+						{
+							loaded.SetResult(default);
+						}
+					};
 					_testZone.Child = grid;
+					await loaded.Task;
 					await Task.Yield();
 
 					var renderer = new RenderTargetBitmap();
-					await renderer.RenderAsync(grid);
+					await renderer.RenderAsync(grid, (int)grid.ActualWidth, (int)grid.ActualHeight); // We explicitly set the size to ignore the screen scaling
 
 					var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
@@ -344,7 +353,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					try
 					{
 						var elt = await RenderById(test);
-						await renderer.RenderAsync(elt); ;
+						await renderer.RenderAsync(elt, (int)elt.ActualWidth, (int)elt.ActualHeight); // We explicitly set the size to ignore the screen scaling
 						var pixels = await renderer.GetPixelsAsync();
 						byte[] testResult = default;
 

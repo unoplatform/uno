@@ -47,8 +47,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 		{
 			var size = new Size(element.ActualSize.X, element.ActualSize.Y);
-
-			if (size.IsEmpty)
+			if (size == default)
 			{
 				return (0, 0, 0);
 			}
