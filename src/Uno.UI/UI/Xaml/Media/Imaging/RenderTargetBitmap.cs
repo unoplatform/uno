@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		void IDisposable.Dispose()
 		{
-			if (_buffer is { })
+			if (_buffer is not null)
 			{
 				ArrayPool<byte>.Shared.Return(_buffer);
 			}

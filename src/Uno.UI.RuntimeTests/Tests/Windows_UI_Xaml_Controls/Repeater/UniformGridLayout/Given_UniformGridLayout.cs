@@ -11,7 +11,7 @@ using FluentAssertions;
 using Microsoft.UI.Xaml.Controls;
 #endif
 using Private.Infrastructure;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater;
 

@@ -60,7 +60,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			var renderer = new RenderTargetBitmap();
 			const float BorderOffset =
 #if __SKIA__
 				7;
@@ -85,8 +84,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				_ => throw new ArgumentOutOfRangeException($"unexpected stretch: {stretch}"),
 			};
 
-			await renderer.RenderAsync(SUT);
-			var bitmap = await RawBitmap.From(renderer, SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
 
 			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 5);
 			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 5);

@@ -70,7 +70,7 @@ namespace Windows.UI.Composition
 			Update();
 		}
 
-		partial void OnRotationAngleInDegreesChanged(float value)
+		partial void OnRotationAngleChanged(float value)
 		{
 			UpdateTransform();
 		}
