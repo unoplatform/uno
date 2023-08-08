@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
 
   <PropertyGroup>
+	<!-- TODO: Figure out if we really need to multi-target this or if net48 is enough -->
     <TargetFrameworks>net461;net48</TargetFrameworks>
   </PropertyGroup>
 
