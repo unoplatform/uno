@@ -198,7 +198,7 @@
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
-	BeforeTargets="GetCopyToPublishDirectoryItems">
+			BeforeTargets="GetCopyToPublishDirectoryItems;_UnoGeneratePriMarker">
 		<ItemGroup>
 			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
 				<TargetPath>%(TargetPath)</TargetPath>
