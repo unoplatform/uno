@@ -1,8 +1,5 @@
 ﻿#nullable enable
 
-using System;
-using Uno;
-using Uno.Foundation;
 
 namespace Windows.System.Power;
 
@@ -11,6 +8,35 @@ partial class PowerManager
 	private const string JsType = "Windows.System.Power.PowerManager";
 
 	private static bool _isInitialized;
+
+
+	static partial void StartPowerSupplyStatus() => StartChargingChanged();
+
+	static partial void StopPowerSupplyStatus() => EndChargingChanged();
+
+	private static void StartChargingChanged()
+	{
+
+	}
+
+	static partial void StartRemainingChargePercent()
+
+
+
+	static partial void EndRemainingChargePercent();
+
+	static partial void StartBatteryStatus();
+
+	static partial void EndBatteryStatus();
+
+	static partial void StartRemainingDischargeTime()
+	{
+
+	}
+
+	static partial void EndRemainingDischargedTime()
+	{
+	}
 
 	[Preserve]
 	public static int DispatchChargingChanged()

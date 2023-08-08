@@ -19,4 +19,4 @@ public enum PowerSupplyStatus
 	/// The device has an adequate power supply.
 	/// </summary>
 	Adequate
-} 
+}
