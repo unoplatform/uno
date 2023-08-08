@@ -7,6 +7,11 @@
 		type: "chargingchange" | "dischargingtimechange" | "levelchange",
 		listener: (this: this, ev: Event) => any,
 		useCapture?: boolean): void;
+
+	removeEventListener(
+		type: "chargingchange" | "dischargingtimechange" | "levelchange",
+		listener: (this: this, ev: Event) => any,
+		useCapture?: boolean): void;
 }
 
 interface Navigator {
@@ -26,14 +31,33 @@ namespace Windows.System.Power {
 		public static async initializeAsync(): Promise<string> {
 			if (!PowerManager.battery) {
 				PowerManager.battery = await navigator.getBattery();
-
-				// TODO: Subscribe only when requested
-				PowerManager.battery.addEventListener("chargingchange", PowerManager.onChargingChange);
-				PowerManager.battery.addEventListener("dischargingtimechange", PowerManager.onDischargingTimeChange);
-				PowerManager.battery.addEventListener("levelchange", PowerManager.onLevelChange);
 			}
 
 			return null;
+		}
+
+		public static startChargingChange() {
+			PowerManager.battery.addEventListener("chargingchange", PowerManager.onChargingChange);
+		}
+
+		public static endChargingChange() {
+			PowerManager.battery.removeEventListener("chargingchange", PowerManager.onChargingChange);
+		}
+
+		public static startRemainingChargePercentChange() {
+			PowerManager.battery.addEventListener("levelchange", PowerManager.onLevelChange);
+		}
+
+		public static endRemainingChargePercentChange() {
+			PowerManager.battery.removeEventListener("levelchange", PowerManager.onLevelChange);
+		}
+
+		public static startRemainingDischargeTimeChange() {
+			PowerManager.battery.addEventListener("dischargingtimechange", PowerManager.onDischargingTimeChange);
+		}
+
+		public static endRemainingDischargeTimeChange() {
+			PowerManager.battery.removeEventListener("dischargingtimechange", PowerManager.onDischargingTimeChange);
 		}
 
 		public static getBatteryStatus(): string {

@@ -1,6 +1,10 @@
 ﻿#nullable enable
 
 
+using System;
+using Uno;
+using Uno.Foundation;
+
 namespace Windows.System.Power;
 
 partial class PowerManager
@@ -8,35 +12,46 @@ partial class PowerManager
 	private const string JsType = "Windows.System.Power.PowerManager";
 
 	private static bool _isInitialized;
+	private static bool _isChargingChangedSubscribed;
 
+	static partial void StartPowerSupplyStatus() => StartOnChargingChange();
 
-	static partial void StartPowerSupplyStatus() => StartChargingChanged();
+	static partial void EndPowerSupplyStatus() => EndOnChargingChange();
 
-	static partial void StopPowerSupplyStatus() => EndChargingChanged();
+	static partial void StartBatteryStatus() => StartOnChargingChange();
 
-	private static void StartChargingChanged()
+	static partial void EndBatteryStatus() => EndOnChargingChange();
+
+	private static void StartOnChargingChange()
 	{
+		if (_isChargingChangedSubscribed)
+		{
+			return;
+		}
 
+		WebAssemblyRuntime.InvokeJS($"{JsType}.startChargingChange()");
+		_isChargingChangedSubscribed = true;
 	}
 
-	static partial void StartRemainingChargePercent()
-
-
-
-	static partial void EndRemainingChargePercent();
-
-	static partial void StartBatteryStatus();
-
-	static partial void EndBatteryStatus();
-
-	static partial void StartRemainingDischargeTime()
+	private static void EndOnChargingChange()
 	{
+		if (_powerSupplyStatusChanged.IsActive || _batteryStatusChanged.IsActive)
+		{
+			// One of the related events is still active.
+			return;
+		}
 
+		WebAssemblyRuntime.InvokeJS($"{JsType}.endChargingChange()");
+		_isChargingChangedSubscribed = false;
 	}
 
-	static partial void EndRemainingDischargedTime()
-	{
-	}
+	static partial void StartRemainingChargePercent() => WebAssemblyRuntime.InvokeJS($"{JsType}.startRemainingChargePercentChange()");
+
+	static partial void EndRemainingChargePercent() => WebAssemblyRuntime.InvokeJS($"{JsType}.endRemainingChargePercentChange()");
+
+	static partial void StartRemainingDischargeTime() => WebAssemblyRuntime.InvokeJS($"{JsType}.startRemainingDischargeTimeChange()");
+
+	static partial void EndRemainingDischargedTime() => WebAssemblyRuntime.InvokeJS($"{JsType}.endRemainingDischargeTimeChange()");
 
 	[Preserve]
 	public static int DispatchChargingChanged()
