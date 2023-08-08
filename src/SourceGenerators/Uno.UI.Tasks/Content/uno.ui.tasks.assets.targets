@@ -43,7 +43,7 @@
 	<Target Name="_UnoGeneratePriMarker"
 			Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(SDKIdentifier)' != 'Windows'"
 			BeforeTargets="PrepareForRun"
-			DependsOnTargets="_DefineUnoPriProperties">
+			DependsOnTargets="_DefineUnoPriProperties;_UnoAssetsGetCopyToPublishDirectory">
 		
 		<WriteLinesToFile File="$(ProjectUnoPriFullPath)"
 						  Lines="@(ContentWithTargetPath)"
