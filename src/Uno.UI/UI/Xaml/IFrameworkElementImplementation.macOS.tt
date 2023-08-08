@@ -874,7 +874,7 @@ namespace <#= mixin.NamespaceName #>
 				WantsLayer = true;
 			}
 
-			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(brush));
+			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(brush));
 		}
 
 		~<#= mixin.ClassName #>()
