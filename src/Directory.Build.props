@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0">
+<Project>
 
 	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
