@@ -85,11 +85,12 @@ namespace Windows.UI.Xaml
 
 		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
 		{
-			if (ContextHelper.Current is not Activity activity ||
-				ViewCompat.GetRootWindowInsets(activity.Window.DecorView) is not { } windowInsets)
+			if (ContextHelper.Current is not Activity activity)
 			{
 				return default;
 			}
+
+			var windowInsets = ViewCompat.GetRootWindowInsets(activity.Window.DecorView);
 
 			var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 
@@ -103,8 +104,8 @@ namespace Windows.UI.Xaml
 				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
 			}
 
-			var insets = windowInsets.GetInsets(insetsTypes).ToThickness();
-			var opaqueInsets = windowInsets.GetInsets(opaqueInsetsTypes).ToThickness();
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
 			var translucentInsets = insets.Minus(opaqueInsets);
 
 			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything

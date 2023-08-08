@@ -35,12 +35,20 @@ namespace Uno.UI.Xaml
 				WebAssemblyRuntime.InvokeAsync($"Uno.UI.WindowManager.init({(isLoadEventsEnabled ? "true" : "false")})");
 #endif
 
-		internal static string FindLaunchArguments()
+		/// <summary>
+		/// This method has two purposes:
+		/// - Initializes the window size before launch
+		/// - Returns the app arguments
+		/// The reason for having two concerns in one method 
+		/// is to avoid unnecessary roundtrip between JS and C#.
+		/// </summary>
+		/// <returns>App launch arguments.</returns>
+		internal static string BeforeLaunch()
 			=>
 #if NET7_0_OR_GREATER
-				NativeMethods.FindLaunchArguments();
+				NativeMethods.BeforeLaunch();
 #else
-				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
+				WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.beforeLaunch()");
 #endif
 
 		internal static double GetBootTime()
@@ -1323,8 +1331,8 @@ namespace Uno.UI.Xaml
 			[JSImport("globalThis.Uno.UI.WindowManager.current.destroyViewNativeFast")]
 			internal static partial void DestroyView(IntPtr htmlId);
 
-			[JSImport("globalThis.Uno.UI.WindowManager.findLaunchArguments")]
-			internal static partial string FindLaunchArguments();
+			[JSImport("globalThis.Uno.UI.WindowManager.beforeLaunch")]
+			internal static partial string BeforeLaunch();
 
 			[JSImport("globalThis.Uno.UI.WindowManager.getBootTime")]
 			internal static partial double GetBootTime();
