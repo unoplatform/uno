@@ -76,6 +76,8 @@ namespace Uno.UI.RemoteControl
 			_ = StartConnection();
 		}
 
+		public bool IsConnected => _webSocket is not null;
+
 		private void RegisterProcessor(IRemoteControlProcessor processor)
 		{
 			_processors[processor.Scope] = processor;
