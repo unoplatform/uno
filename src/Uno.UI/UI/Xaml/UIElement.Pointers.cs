@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml
 			{
 				if (IsGestureRecognizerCreated)
 				{
-					GestureRecognizer.PreventHolding(((HoldingRoutedEventArgs)args).PointerId);
+					GestureRecognizer.PreventEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
 				}
 			}
 			else
@@ -576,6 +576,17 @@ namespace Windows.UI.Xaml
 			{
 				GestureRecognizer.CompleteGesture();
 			}
+		}
+
+		private void UpdateRaisedEventFlags(PointerRoutedEventArgs args)
+		{
+			if (!IsGestureRecognizerCreated)
+			{
+				return;
+			}
+
+			var pointerId = args.Pointer.PointerId;
+			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
 		#endregion
 
@@ -891,6 +902,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			var handledInManaged = SetOver(args, true, ctx);
 
 			return handledInManaged;
@@ -914,6 +926,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			var handledInManaged = SetPressed(args, true, ctx);
 
 			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !ctx.IsInternal && !isOverOrCaptured)
@@ -995,6 +1008,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
+			UpdateRaisedEventFlags(args);
 			if (!ctx.IsInternal && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
@@ -1038,6 +1052,7 @@ namespace Windows.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				currentPoint = args.GetCurrentPoint(this);
+				UpdateRaisedEventFlags(args);
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 			}
 
@@ -1085,6 +1100,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			handledInManaged |= SetOver(args, false, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
@@ -1120,6 +1136,8 @@ namespace Windows.UI.Xaml
 		internal bool OnPointerCancel(PointerRoutedEventArgs args, BubblingContext ctx = default)
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
+
+			UpdateRaisedEventFlags(args);
 
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			// We update only local state as the Cancel is bubbling itself

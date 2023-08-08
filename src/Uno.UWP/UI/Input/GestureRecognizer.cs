@@ -184,12 +184,35 @@ namespace Windows.UI.Input
 			_manipulation?.Complete();
 		}
 
-		internal void PreventHolding(uint pointerId)
+		/// <returns>The set of events that can be raised by this recognizer for this pointer ID</returns>
+		internal GestureSettings PreventEvents(uint pointerId, GestureSettings events)
 		{
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
-				gesture.PreventHolding();
+				if (events.HasFlag(GestureSettings.Tap))
+				{
+					gesture.PreventTap();
+				}
+
+				if (events.HasFlag(GestureSettings.RightTap))
+				{
+					gesture.PreventRightTap();
+				}
+
+				if (events.HasFlag(GestureSettings.DoubleTap))
+				{
+					gesture.PreventDoubleTap();
+				}
+
+				if (events.HasFlag(GestureSettings.Hold))
+				{
+					gesture.PreventHolding();
+				}
+
+				return gesture.Settings;
 			}
+
+			return GestureSettings.None;
 		}
 
 		#region Manipulations
