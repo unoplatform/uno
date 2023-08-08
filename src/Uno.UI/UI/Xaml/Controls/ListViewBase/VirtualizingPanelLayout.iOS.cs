@@ -591,13 +591,13 @@ namespace Windows.UI.Xaml.Controls
 				// We are layouting after an INotifyCollectionChanged operation(s). Cache the previous element sizes, under their new index 
 				// paths, so we can reuse them in order not to have to lay out elements with different databound sizes with their static size.
 				oldItemSizes = _itemLayoutInfos.SelectMany(kvp => kvp.Value)
-					.ToDictionary(
+					.ToDictionaryKeepLast(
 						kvp => OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewItemElementKind),
 						kvp => (CGSize?)kvp.Value.Size
 					);
 				oldGroupHeaderSizes = _supplementaryLayoutInfos
 					.UnoGetValueOrDefault(NativeListViewBase.ListViewSectionHeaderElementKind)?
-					.ToDictionary(
+					.ToDictionaryKeepLast(
 						kvp => OffsetIndexForPendingChanges(kvp.Key, NativeListViewBase.ListViewSectionHeaderElementKind).Section,
 						kvp => (CGSize?)kvp.Value.Size
 					);
