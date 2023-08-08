@@ -23,6 +23,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Uno.UI.Xaml.Core;
+using System.Threading;
 
 #endif
 #if __IOS__
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private MediaPlayerElement? _mpe;
 		private readonly SerialDisposable _subscriptions = new();
+		private bool _isMeasureCommandBarRunning;
 
 #pragma warning disable CS0649
 		private bool m_transportControlsEnabled = true; // not-implemented
@@ -527,17 +529,25 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
+				m_tpCommandBar.SizeChanged += Container_SizeChanged;
+				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
+
 			}
 			if (_timelineContainer is not null)
 			{
-				_timelineContainer.SizeChanged += TimelineContainer_SizeChanged;
+				_timelineContainer.SizeChanged += Container_SizeChanged;
 			}
 
 			HideMoreButtonIfNecessary();
 			HideCastButtonIfNecessary();
 		}
 
-		private void TimelineContainer_SizeChanged(object sender, SizeChangedEventArgs args)
+		private void M_tpCommandBar_DynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
+		{
+			SetMeasureCommandBar();
+		}
+
+		private void Container_SizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			SetMeasureCommandBar();
 		}
@@ -1442,45 +1452,56 @@ namespace Windows.UI.Xaml.Controls
 		private void SetMeasureCommandBar()
 		{
 			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
+			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Low, MeasureCommandBar);
+			Thread.Yield();
 		}
 		/// <summary>
 		/// Measure CommandBar to fit the buttons in given width.
 		/// </summary>
 		private void MeasureCommandBar()
 		{
-			if (m_tpCommandBar is { })
+			if (!_isMeasureCommandBarRunning && m_tpCommandBar is { })
 			{
-				ResetMargins();
-
-				var availableSize = this.ActualWidth;
-				if (IsCompact && m_tpTHLeftSidePlayPauseButton as FrameworkElement is { } ppElementy && ppElementy.Visibility == Visibility.Visible)
+				try
 				{
-					if (_timelineContainer as FrameworkElement is { } tlElement
-						&& tlElement.Visibility == Visibility.Visible)
+					_isMeasureCommandBarRunning = true;
+					ResetMargins();
+					AddMarginsBetweenGroups();
+					var desiredSize = m_tpCommandBar.DesiredSize;
+
+					var availableSize = this.ActualWidth;
+					if (IsCompact && m_tpTHLeftSidePlayPauseButton as FrameworkElement is { } ppElementy && ppElementy.Visibility == Visibility.Visible)
 					{
-						tlElement.HorizontalAlignment = HorizontalAlignment.Stretch;
+						availableSize -= ppElementy.ActualWidth;
+						if (_timelineContainer as FrameworkElement is { } tlElement)
+						{
+							if (tlElement.Visibility == Visibility.Visible && tlElement.DesiredSize.Width <= ppElementy.ActualWidth)
+							{
+								tlElement.Visibility = Visibility.Collapsed;
+							}
+							if (tlElement.Visibility == Visibility.Collapsed && (availableSize - desiredSize.Width) >= ppElementy.ActualWidth)
+							{
+								tlElement.Visibility = Visibility.Visible;
+							}
+						}
 					}
-					availableSize -= ppElementy.ActualWidth;
-				}
-				m_tpCommandBar.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-				if (m_tpCommandBar as FrameworkElement is { } cmElementy)
-				{
-					cmElementy.HorizontalAlignment = HorizontalAlignment.Stretch;
-				}
-				var desiredSize = m_tpCommandBar.DesiredSize;
 
-				DropoutOrder(availableSize, desiredSize);
-				AddMarginsBetweenGroups();
-				
+					DropoutOrder(availableSize, desiredSize);
+					AddMarginsBetweenGroups();
 #if !HAS_UNO
-				// Remove this code to disable and hide only after Deliverable 19012797: Fullscreen media works in ApplicationWindow and Win32 XAML Islands is complete
-				// since Expand or Dropout can make the full window button visible again, this code is used to hide it again
-				CContentRoot* contentRoot = VisualTree::GetContentRootForElement(GetHandle());
-				if (contentRoot->GetType() == CContentRoot::Type::XamlIsland)
-				{
-					IFC(m_tpFullWindowButton.Cast<ButtonBase>()->put_Visibility(xaml::Visibility_Collapsed));
-				}
+					// Remove this code to disable and hide only after Deliverable 19012797: Fullscreen media works in ApplicationWindow and Win32 XAML Islands is complete
+					// since Expand or Dropout can make the full window button visible again, this code is used to hide it again
+					CContentRoot* contentRoot = VisualTree::GetContentRootForElement(GetHandle());
+					if (contentRoot->GetType() == CContentRoot::Type::XamlIsland)
+					{
+						IFC(m_tpFullWindowButton.Cast<ButtonBase>()->put_Visibility(xaml::Visibility_Collapsed));
+					}
 #endif
+				}
+				finally
+				{
+					_isMeasureCommandBarRunning = false;
+				}
 			}
 		}
 		private void AddMarginsBetweenGroups()
@@ -1573,6 +1594,25 @@ namespace Windows.UI.Xaml.Controls
 					m_tpRightAppBarSeparator.Margin(extraMargin);
 				}
 			}
+			else
+			{
+				if (m_tpCommandBar as FrameworkElement is { } cmElementy)
+				{
+					cmElementy.HorizontalAlignment = HorizontalAlignment.Stretch;
+					//var spPrimaryCommandObsVec = m_tpCommandBar.PrimaryCommands;
+					//var spPrimaryButtons = spPrimaryCommandObsVec.ToArray();
+					//for (int i = 0; i < spPrimaryButtons.Length; i++)
+					//{
+					//	var spCommandElement = spPrimaryButtons[i];
+					//	if (spCommandElement as FrameworkElement is { } spElement && spElement.Margin.Right > 0)
+					//	{
+					//		var extraMargin = new Thickness(0, 0, spElement.Margin.Right, 0);
+					//		cmElementy.Margin = extraMargin;
+					//		return;
+					//	}
+					//}
+				}
+			}
 		}
 		private void ResetMargins()
 		{
@@ -1656,6 +1696,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 					}
 				}
+			}
+			//if the difference is negative, we need to reprocess
+			if (difference < 0)
+			{
+				_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
 			}
 		}
 
