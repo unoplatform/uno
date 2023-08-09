@@ -17,6 +17,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
+using Windows.Storage;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,17 +32,16 @@ namespace UITests.Windows_Media
 			this.InitializeComponent();
 		}
 
-		public string SoundToPlay => "ms-appx:///sound.mp3";
+		public string TestSource => "ms-appx:///Assets/test.mp4";
 
-		private MediaPlaybackItem ToMediaPlaybackItem(object value)
+
+		private async void Button_Click(object sender, RoutedEventArgs e)
 		{
-			if (value is string uriString && Uri.TryCreate(uriString, UriKind.Absolute, out var uri))
-			{
-				var source = MediaSource.CreateFromUri(uri);
-				return new MediaPlaybackItem(source);
-			}
+			StorageFile file = await StorageFile.GetFileFromApplicationUriAsync(new Uri(TestSource));
 
-			return null;
+			var stream = await file.OpenAsync(FileAccessMode.Read);
+
+			mediaPlayer.Source = MediaSource.CreateFromStream(stream, "mp4");
 		}
 	}
 }

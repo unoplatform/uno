@@ -101,7 +101,8 @@
 		<AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
 		<AndroidAsset Include="Assets\Lottie\uno.json" />
 		<AndroidAsset Include="Assets\Lottie\LightBulb.json" />
-		<AndroidEnvironment Include="Android\environment.conf" />
+		<AndroidAsset Include="Assets\test.mp4" />
+			<AndroidEnvironment Include="Android\environment.conf" />
 	</ItemGroup>
 
 	<ItemGroup>

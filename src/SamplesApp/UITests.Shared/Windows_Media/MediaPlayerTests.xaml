@@ -22,9 +22,8 @@
 				</MediaPlayerElement.TransportControls>
 			</MediaPlayerElement>
 
-			<MediaPlayerElement x:Name="MediaPlayerElementSample2"
-									Source="https://uno-assets.platform.uno/tests/videos/Mobile_Development_in_VS_Code_with_Uno_Platform_orDotNetMAUI.mp4"
-									AreTransportControlsEnabled="True"
+			<MediaPlayerElement x:Name="mediaPlayer"								
+								AreTransportControlsEnabled="True"
 									AutoPlay="False"
 									MaxWidth="720">
 				<MediaPlayerElement.TransportControls>
@@ -32,7 +31,9 @@
 											ShowAndHideAutomatically="False"/>
 				</MediaPlayerElement.TransportControls>
 			</MediaPlayerElement>
-
+			<Button Content="Get video from stream"
+                    Click="Button_Click"
+                    />
 		</StackPanel>
 	</ScrollViewer>
 </Page>
