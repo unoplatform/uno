@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using DirectUI;
 using Uno.Disposables;
 using Uno.Extensions;
+using System.Threading;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -23,7 +24,6 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Uno.UI.Xaml.Core;
-using System.Threading;
 
 #endif
 #if __IOS__
