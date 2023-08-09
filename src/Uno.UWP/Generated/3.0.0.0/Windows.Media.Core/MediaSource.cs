@@ -201,7 +201,7 @@ namespace Windows.Media.Core
 			throw new global::System.NotImplementedException("The member MediaSource MediaSource.CreateFromStorageFile(IStorageFile file) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=MediaSource%20MediaSource.CreateFromStorageFile%28IStorageFile%20file%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if else || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.Media.Core.MediaSource CreateFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream, string contentType)
 		{

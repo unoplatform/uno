@@ -3,6 +3,7 @@ using Android.App;
 using Android.Widget;
 using Uno.Media.Playback;
 using Windows.Media.Core;
+using Windows.Storage.Streams;
 using Android.Media;
 using Android.OS;
 using Java.Lang;
@@ -135,24 +136,21 @@ namespace Windows.Media.Playback
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
 
-				Uri uri;
 				switch (Source)
 				{
 					case MediaPlaybackList playlist when playlist.Items.Count > 0:
 						SetPlaylistItems(playlist);
-						uri = _playlistItems[0];
+						SetVideoSource(_playlistItems[0]);
 						break;
 					case MediaPlaybackItem item:
-						uri = item.Source.Uri;
+						SetSource(item.Source);
 						break;
 					case MediaSource source:
-						uri = source.Uri;
+						SetSource(source);
 						break;
 					default:
 						throw new InvalidOperationException("Unsupported media source type");
 				}
-
-				SetVideoSource(uri);
 
 				_player.PrepareAsync();
 			}
@@ -167,6 +165,27 @@ namespace Windows.Media.Playback
 			_playlistItems = playlist.Items
 				.Select(i => i.Source.Uri)
 				.ToList();
+		}
+
+		private void SetSource(MediaSource source)
+		{
+			if (source.Stream is { } stream)
+			{
+				SetVideoSource(stream);
+			}
+			else if (source.Uri is { } uri)
+			{
+				SetVideoSource(uri);
+			}
+			else
+			{
+				throw new InvalidOperationException("Unsupported media source type");
+			}
+		}
+
+		private void SetVideoSource(IRandomAccessStream stream)
+		{
+			_player.SetDataSource(new UnoMediaDataSource(stream));
 		}
 
 		private void SetVideoSource(Uri uri)
