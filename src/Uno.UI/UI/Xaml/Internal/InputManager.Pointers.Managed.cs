@@ -135,10 +135,16 @@ internal partial class InputManager
 				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
 				{
 					// The visual tree has been modified in a way that requires performing a new hit test.
-					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager._contentRoot.VisualTree.RootElement;
+					originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_leave").element ?? _inputManager._contentRoot.VisualTree.RootElement;
 				}
-				// Second raise the PointerEntered events on the OriginalSource
-				RaiseUsingCaptures(Enter, originalSource, routedArgs);
+			}
+
+			// Second (try to) raise the PointerEnter on the OriginalSource
+			// Note: This won't do anything if already over.
+			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
+			{
+				// The visual tree has been modified in a way that requires performing a new hit test.
+				originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_enter").element ?? _inputManager._contentRoot.VisualTree.RootElement;
 			}
 
 			// Third raise the event, either on the OriginalSource or on the capture owners if any
@@ -332,7 +338,7 @@ internal partial class InputManager
 				}
 			}
 
-			// Second (try to) raise the PointerEnter on the OriginalSource
+				// Second (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
 			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
 			{
