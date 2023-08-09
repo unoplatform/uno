@@ -34,5 +34,50 @@ namespace Uno.UI.Extensions
 
 			return output;
 		}
+
+		/// <summary>
+		/// ToDictionary that doesn't throw on duplicated key. The first value is kept per key.
+		/// </summary>
+		public static Dictionary<TKey, TElement> ToDictionaryKeepFirst<TSource, TKey, TElement>(
+			this IEnumerable<TSource> source,
+			Func<TSource, TKey> keySelector,
+			Func<TSource, TElement> elementSelector
+		) where TKey : notnull
+		{
+			var result = new Dictionary<TKey, TElement>();
+
+			foreach (var item in source)
+			{
+#if NET
+				result.TryAdd(keySelector(item), elementSelector(item));
+#else
+				if (keySelector(item) is var key && result.ContainsKey(key))
+				{
+					result[key] = elementSelector(item);
+				}
+#endif
+			}
+
+			return result;
+		}
+
+		/// <summary>
+		/// ToDictionary that doesn't throw on duplicated key. The last value is kept per key.
+		/// </summary>
+		public static Dictionary<TKey, TElement> ToDictionaryKeepLast<TSource, TKey, TElement>(
+			this IEnumerable<TSource> source,
+			Func<TSource, TKey> keySelector,
+			Func<TSource, TElement> elementSelector
+		) where TKey : notnull
+		{
+			var result = new Dictionary<TKey, TElement>();
+
+			foreach (var item in source)
+			{
+				result[keySelector(item)] = elementSelector(item);
+			}
+
+			return result;
+		}
 	}
 }
