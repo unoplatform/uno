@@ -20,7 +20,7 @@ using Uno.UI.Extensions;
 using UIKit;
 #elif __MACOS__
 using AppKit;
-#else
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
