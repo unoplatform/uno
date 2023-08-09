@@ -3744,7 +3744,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							IMethodSymbol FindTargetMethodSymbol(INamedTypeSymbol? sourceType)
 							{
-								if (eventTarget?.Contains(".") ?? false)
+								if (eventTarget.Contains("."))
 								{
 									ITypeSymbol? currentType = sourceType;
 
@@ -3769,14 +3769,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										};
 									}
 
-									var method = currentType?.GetFirstMethodWithName(parts.Last())
+									var method = currentType?.GetFirstMethodWithName(parts.Last(), includeBaseTypes: true)
 										?? throw new InvalidOperationException($"Failed to find {parts.Last()} on {currentType}");
 
 									return method;
 								}
 								else
 								{
-									return sourceType?.GetFirstMethodWithName(eventTarget ?? "")
+									return sourceType?.GetFirstMethodWithName(eventTarget, includeBaseTypes: true)
 										?? throw new InvalidOperationException($"Failed to find {eventTarget} on {sourceType}");
 								}
 							}
