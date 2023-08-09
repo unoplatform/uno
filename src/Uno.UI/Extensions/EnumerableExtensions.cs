@@ -48,7 +48,14 @@ namespace Uno.UI.Extensions
 
 			foreach (var item in source)
 			{
+#if NET
 				result.TryAdd(keySelector(item), elementSelector(item));
+#else
+				if (keySelector(item) is var key && result.ContainsKey(key))
+				{
+					result[key] = elementSelector(item);
+				}
+#endif
 			}
 
 			return result;
