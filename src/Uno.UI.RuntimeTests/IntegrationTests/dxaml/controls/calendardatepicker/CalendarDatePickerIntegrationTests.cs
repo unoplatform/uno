@@ -3,8 +3,6 @@
 
 #pragma warning disable 168 // for cleanup imported member
 
-#if !WINDOWS_UWP
-
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -130,7 +128,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
+#if !__SKIA__ && !NETFX_CORE
+		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
+#endif
 		public async Task CanOpenFlyoutByTapping()
 		{
 			TestCleanupWrapper cleanup;
@@ -189,7 +189,11 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 
 		[TestMethod]
-		[Ignore("UNO TODO - TestServices.KeyboardHelper not implemented yet.")]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#elif !__SKIA__
+		[Ignore("Fails")]
+#endif
 		public async Task CanOpenFlyoutByKeyboard()
 		{
 			TestCleanupWrapper cleanup;
@@ -296,7 +300,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
+#if !__SKIA__ && !NETFX_CORE
+		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
+#endif
 		public async Task CanCloseFlyoutBySelectingADate()
 		{
 			TestCleanupWrapper cleanup;
@@ -517,7 +523,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("https://github.com/unoplatform/uno/issues/10165")]
+#if !__SKIA__ && !NETFX_CORE
+		[Ignore("Tapping is not implemented correctly on platforms that don't implement InputInjector")]
+#endif
 		public async Task PressingDoesNotOpenMenuFlyout()
 		{
 			TestCleanupWrapper cleanup;
@@ -590,7 +598,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("Asserts")]
 		public async Task ValidateUIElementTree()
 		{
 			TestCleanupWrapper cleanup;
@@ -633,7 +640,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 		}
 
 		[TestMethod]
-		[Ignore("Assert errors in tests")]
 		public async Task ValidateVisualStates()
 		{
 			//WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /* resizeWindow */);
@@ -706,7 +712,6 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			TestServices.Utilities.VerifyMockDCompOutput(MockDComp.SurfaceComparison.NoComparison);
 		}
 
-#if !WINDOWS_UWP
 		[TestMethod]
 		[Ignore("Causing bugs in asserts")]
 		public async Task DonotResizeCalendarView()
@@ -751,10 +756,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			});
 			await TestServices.WindowHelper.WaitForIdle();
 		}
-#endif
 
 		[TestMethod]
-		[Ignore("Asserts")]
+		[Ignore("Calendar formatting is still not properly implemented")]
 		public async Task CanPresetDate()
 		{
 			TestCleanupWrapper cleanup;
@@ -890,6 +894,12 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 				// we can't test the scenario that cdp1.Date is null
 				CalendarHelper.DumpDate(cdp1.Date.Value, "Changing cdp1.Date to");
 				CalendarHelper.DumpDate(cdp2.Date.Value, "Now cdp2.Date is");
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await RunOnUIThread(() =>
+			{
 				VERIFY_DATES_ARE_EQUAL(cdp1.Date.Value.UniversalTime(), cdp2.Date.Value.UniversalTime());
 
 				cdp2.Date = date2;
@@ -976,5 +986,3 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 	}
 }
-
-#endif
