@@ -347,10 +347,22 @@ namespace Windows.UI.Xaml.Documents
 
 		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
 
+		private protected virtual Brush DefaultTextForegroundBrush => DefaultBrushes.TextForegroundBrush;
+
 #if !__WASM__
 		private void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			if (this is Hyperlink)
+			{
+				// Hyperlink doesn't appear to inherit foreground from the parent.
+				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
+				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.ImplicitStyle);
+			}
+			else
+			{
+				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			}
+
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
 #endif
