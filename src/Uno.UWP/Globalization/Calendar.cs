@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using Uno;
@@ -85,7 +86,28 @@ namespace Windows.Globalization
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
-		private DateTimeOffset _time;
+
+		private DateTimeOffset __time;
+		private DateTimeOffset _time
+		{
+			get => __time;
+			set
+			{
+				__time = value;
+				if (__time.Year != 1972)
+				{
+
+				}
+				if (__time.Year <= 2000)
+				{
+
+				}
+				//global::System.Diagnostics.Debug.WriteLine(value);
+				//global::System.Diagnostics.Debug.WriteLine(new StackTrace().ToString());
+				//global::System.Diagnostics.Debug.WriteLine(" ");
+				//global::System.Diagnostics.Debug.WriteLine(" ");
+			}
+		}
 
 		public Calendar()
 		{
