@@ -317,8 +317,8 @@ public class Mouse : IInjectedPointer, IDisposable
 	public void WheelRight() => Wheel(ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
 	public void WheelLeft() => Wheel(-ScrollContentPresenter.ScrollViewerDefaultMouseWheelDelta, isHorizontal: true);
 
-	public void Wheel(double delta, bool isHorizontal = false)
-		=> Inject(GetWheel(delta, isHorizontal));
+	public void Wheel(double delta, bool isHorizontal = false, uint steps = 1)
+		=> Inject(GetWheel(delta, isHorizontal, steps));
 
 	private IEnumerable<InjectedInputMouseInfo> GetMoveTo(double x, double y, uint? steps)
 	{
@@ -397,6 +397,7 @@ public class Mouse : IInjectedPointer, IDisposable
 			MouseOptions = InjectedInputMouseOptions.LeftUp,
 		};
 
+<<<<<<< HEAD
 	private static InjectedInputMouseInfo GetRightRelease()
 		=> new()
 		{
@@ -408,5 +409,29 @@ public class Mouse : IInjectedPointer, IDisposable
 		=> isHorizontal
 			? new() { TimeOffsetInMilliseconds = 1, DeltaX = (int)delta, MouseOptions = InjectedInputMouseOptions.HWheel }
 			: new() { TimeOffsetInMilliseconds = 1, DeltaY = (int)delta, MouseOptions = InjectedInputMouseOptions.Wheel };
+=======
+	public static IEnumerable<InjectedInputMouseInfo> GetWheel(double delta, bool isHorizontal, uint steps = 1)
+	{
+		if (steps is 0)
+		{
+			yield break;
+		}
+
+		var stepSize = delta / steps;
+
+		var prev = 0;
+
+		for (var i = 1; i <= steps; i++)
+		{
+			var current = (int)Math.Round(i * stepSize);
+
+			yield return isHorizontal
+				? new() { TimeOffsetInMilliseconds = 1, DeltaX = current - prev, MouseOptions = InjectedInputMouseOptions.HWheel }
+				: new() { TimeOffsetInMilliseconds = 1, DeltaY = current - prev, MouseOptions = InjectedInputMouseOptions.Wheel };
+
+			prev = current;
+		}
+	}
+>>>>>>> e8a7fd2b0f (test: add a test for updating visual states when mouse is scrolled)
 }
 #endif
