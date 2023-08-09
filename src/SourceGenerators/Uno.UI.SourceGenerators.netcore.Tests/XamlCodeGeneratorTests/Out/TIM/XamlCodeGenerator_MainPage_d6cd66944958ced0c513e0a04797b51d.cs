@@ -27,7 +27,7 @@ using _View = Android.Views.View;
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+#elif UNO_REFERENCE_API || NET461
 using _View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -39,8 +39,12 @@ namespace TestRepro
 		private const string __baseUri_prefix_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d = "ms-appx:///TestProject/";
-		global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+				global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
+		{
+			InitializeComponent_F812745D();
+		}
+		private void InitializeComponent_F812745D()
 		{
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
@@ -285,6 +289,7 @@ namespace TestRepro
 			{
 			}
 		}
+
 	}
 }
 namespace MyProject
