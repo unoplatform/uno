@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Media
 		};
 
 		/// <summary>
-		/// Notifies that a value of this transform changed (usually this means that the <see cref="Matrix"/> has been updated).
+		/// Notifies that a value of this transform changed (usually this means that the <see cref="MatrixCore"/> has been updated).
 		/// </summary>
 		internal event EventHandler Changed;
 
@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// The matrix used by this transformation
 		/// </summary>
-		/// <remarks>This matrix does not include any center point</remarks>
+		/// <remarks>This matrix does not include any origin point (i.e. equivalent to `.ToMatrix(default(Point))`)</remarks>
 		internal Matrix3x2 MatrixCore { get; private set; } = Matrix3x2.Identity;
 
 		/// <summary>

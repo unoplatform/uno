@@ -6,7 +6,9 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -20,6 +22,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -637,6 +640,312 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(list.SelectedIndex, -1);
 		}
+
+#if HAS_UNO
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#else
+		[TestMethod]
+		[RunsOnUIThread]
+#endif
+		public async Task When_Multiple_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var centers = items.Select(item => item.GetAbsoluteBounds().GetCenter()).ToList();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(centers[1]);
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(centers[3], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[6]);
+			mouse.Release();
+
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			mouse.Press(centers[8], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 6 and <= 8));
+			await AssertSelected();
+
+			mouse.Press(centers[8]);
+			mouse.Release();
+
+			selected.Remove(items[8]);
+			await AssertSelected();
+
+			mouse.Press(centers[0], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i < 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#else
+		[TestMethod]
+		[RunsOnUIThread]
+#endif
+		public async Task When_Multiple_Selection_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(items[1].GetAbsoluteBounds().GetCenter());
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+			KeyboardHelper.Down(list);
+
+			await AssertSelected();
+
+			KeyboardHelper.Space(list);
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is >= 5 and <= 8).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+
+			items.Where((_, i) => i is >= 7 and <= 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#else
+		[TestMethod]
+		[RunsOnUIThread]
+#endif
+		public async Task When_Extended_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var centers = items.Select(item => item.GetAbsoluteBounds().GetCenter()).ToList();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(centers[1]);
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(centers[3]);
+			mouse.Release();
+
+			selected.Remove(items[1]);
+			selected.Add(items[3]);
+			await AssertSelected();
+
+			mouse.Press(centers[5], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 3 and <= 5).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[7], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 5 and <= 7).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[1], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is > 3 and <= 7).ForEach(item => selected.Remove(item));
+			selected.AddRange(items.Where((_, i) => i is >= 1 and < 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[8], VirtualKeyModifiers.Control);
+			mouse.Release(VirtualKeyModifiers.Control);
+
+			selected.Add(items[8]);
+			await AssertSelected();
+
+			mouse.Press(centers[4], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.AddRange(items.Where((_, i) => i is >= 4 and < 8).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#else
+		[TestMethod]
+		[RunsOnUIThread]
+#endif
+		public async Task When_Extended_Selection_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(items[1].GetAbsoluteBounds().GetCenter());
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[4]);
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+
+			selected.Remove(items[4]);
+			selected.Add(items[5]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Control));
+
+			selected.Add(items[7]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is >= 4 and < 7 && i != 5).ToList());
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+
+			items.Where((_, i) => i is >= 4 and < 7).ForEach(item => selected.Remove(item));
+			selected.Add(items[8]);
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
 
 		[TestMethod]
 		public async Task When_IsItsOwnItemContainer_Recycling()

@@ -1,4 +1,6 @@
-﻿using Windows.Foundation;
+﻿//#define ENABLE_CONTAINER_VISUAL_TRACKING
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System;
@@ -23,9 +25,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private ContainerVisual _visual;
-		internal double _canvasTop;
-		internal double _canvasLeft;
+		private ShapeVisual _visual;
 		private Rect _currentFinalRect;
 		private Rect? _currentClippedFrame;
 
@@ -36,8 +36,6 @@ namespace Windows.UI.Xaml
 			Initialize();
 			InitializePointers();
 			InitializeKeyboard();
-
-			this.RegisterPropertyChangedCallbackStrong(OnPropertyChanged);
 
 			UpdateHitTest();
 		}
@@ -59,18 +57,6 @@ namespace Windows.UI.Xaml
 
 		partial void InitializeKeyboard();
 
-		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
-		{
-			if (property == Controls.Canvas.TopProperty)
-			{
-				_canvasTop = (double)args.NewValue;
-			}
-			else if (property == Controls.Canvas.LeftProperty)
-			{
-				_canvasLeft = (double)args.NewValue;
-			}
-		}
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
@@ -86,20 +72,32 @@ namespace Windows.UI.Xaml
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
-		internal ContainerVisual Visual
+		internal ShapeVisual Visual
 		{
 			get
 			{
 
-				if (_visual == null)
+				if (_visual is null)
 				{
-					_visual = Window.Current.Compositor.CreateContainerVisual();
-					_visual.Comment = $"Owner:{GetType()}/{(this as FrameworkElement)?.Name}";
+					_visual = Window.Current.Compositor.CreateShapeVisual();
+#if ENABLE_CONTAINER_VISUAL_TRACKING
+					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+#endif
 				}
 
 				return _visual;
 			}
 		}
+
+#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
+		partial void OnLoading()
+		{
+			if (_visual is not null)
+			{
+				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+			}
+		}
+#endif
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
@@ -318,7 +316,20 @@ namespace Windows.UI.Xaml
 			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
 
-			ApplyNativeClip(clip ?? Rect.Empty);
+			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
+			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
+			if (clip is null)
+			{
+				visual.ViewBox = null;
+			}
+			else
+			{
+				var viewBox = visual.Compositor.CreateViewBox();
+				viewBox.Offset = clip.Value.Location.ToVector2();
+				viewBox.Size = clip.Value.Size.ToVector2();
+
+				visual.ViewBox = viewBox;
+			}
 		}
 
 		partial void ApplyNativeClip(Rect rect)

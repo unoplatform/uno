@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -43,7 +44,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 					}
 
 					if (UriSource.Scheme.Equals("http", StringComparison.OrdinalIgnoreCase) ||
-						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase))
+						UriSource.Scheme.Equals("https", StringComparison.OrdinalIgnoreCase) ||
+						UriSource.IsFile)
 					{
 						using var imageStream = await OpenStreamFromUriAsync(UriSource, ct);
 

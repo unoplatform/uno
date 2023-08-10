@@ -63,6 +63,7 @@ namespace Uno.UI.Runtime.Skia
 			var args = new KeyEventArgs(
 				"keyboard",
 				virtualKey,
+				GetCurrentModifiersState(),
 				new CorePhysicalKeyStatus
 				{
 					ScanCode = (uint)key,
@@ -86,6 +87,7 @@ namespace Uno.UI.Runtime.Skia
 			var args = new KeyEventArgs(
 				"keyboard",
 				virtualKey,
+				GetCurrentModifiersState(),
 				new CorePhysicalKeyStatus
 				{
 					ScanCode = (uint)key,

@@ -12,10 +12,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
 
-		private void UpdateZoomedContentAlignment()
-		{
-		}
-
 		// Disable clipping for Scrollviewer (edge seems to disable scrolling if
 		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;

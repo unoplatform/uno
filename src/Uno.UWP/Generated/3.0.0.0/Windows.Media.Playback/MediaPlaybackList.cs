@@ -55,10 +55,10 @@ namespace Windows.Media.Playback
 				throw new global::System.NotImplementedException("The member uint MediaPlaybackList.CurrentItemIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=uint%20MediaPlaybackList.CurrentItemIndex");
 			}
 		}
-#endif
-#if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Playback.MediaPlaybackItem> Items
+		#endif
+		#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
+		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Playback.MediaPlaybackItem> Items
 		{
 			get
 			{

@@ -31,7 +31,7 @@ namespace Windows.UI.Composition
 		public CompositionStrokeCap StrokeStartCap
 		{
 			get => _strokeStartCap;
-			set => SetProperty(ref _strokeStartCap, value);
+			set => SetEnumProperty(ref _strokeStartCap, value);
 		}
 
 		public float StrokeMiterLimit
@@ -43,13 +43,13 @@ namespace Windows.UI.Composition
 		public CompositionStrokeLineJoin StrokeLineJoin
 		{
 			get => _strokeLineJoin;
-			set => SetProperty(ref _strokeLineJoin, value);
+			set => SetEnumProperty(ref _strokeLineJoin, value);
 		}
 
 		public CompositionStrokeCap StrokeEndCap
 		{
 			get => _strokeEndCap;
-			set => SetProperty(ref _strokeEndCap, value);
+			set => SetEnumProperty(ref _strokeEndCap, value);
 		}
 
 		public float StrokeDashOffset
@@ -61,7 +61,7 @@ namespace Windows.UI.Composition
 		public CompositionStrokeCap StrokeDashCap
 		{
 			get => _strokeDashCap;
-			set => SetProperty(ref _strokeDashCap, value);
+			set => SetEnumProperty(ref _strokeDashCap, value);
 		}
 
 		public CompositionBrush? StrokeBrush

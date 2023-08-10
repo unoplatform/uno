@@ -607,14 +607,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height - 5, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
 		}
 
-		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
-		{
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			await WindowHelper.WaitForIdle();
-			return result;
-		}
+		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+			=> UITestHelper.ScreenShot(SUT);
 	}
 }

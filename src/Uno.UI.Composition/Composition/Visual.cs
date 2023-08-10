@@ -1,16 +1,19 @@
 #nullable enable
 
 using System.Numerics;
+using Uno.Extensions;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
-	public partial class Visual : CompositionObject
+	public partial class Visual : CompositionObject, I3DTransformableObject
 	{
 		private Vector2 _size;
 		private Vector3 _offset;
 		private Vector3 _scale = new Vector3(1, 1, 1);
 		private Vector3 _centerPoint;
-		private float _rotationAngleInDegrees;
+		private Quaternion _orientation = Quaternion.Identity;
+		private float _rotationAngle;
 		private Vector3 _rotationAxis = new Vector3(0, 0, 1);
 		private Matrix4x4 _transformMatrix = Matrix4x4.Identity;
 		private bool _isVisible = true;
@@ -47,7 +50,7 @@ namespace Windows.UI.Composition
 		public CompositionCompositeMode CompositeMode
 		{
 			get => _compositeMode;
-			set => SetProperty(ref _compositeMode, value);
+			set => SetEnumProperty(ref _compositeMode, value);
 		}
 
 		public Vector3 CenterPoint
@@ -66,13 +69,27 @@ namespace Windows.UI.Composition
 
 		partial void OnScaleChanged(Vector3 value);
 
-		public float RotationAngleInDegrees
+		public Quaternion Orientation
 		{
-			get => _rotationAngleInDegrees;
-			set { SetProperty(ref _rotationAngleInDegrees, value); OnRotationAngleInDegreesChanged(value); }
+			get => _orientation;
+			set { SetProperty(ref _orientation, value); OnOrientationChanged(value); }
 		}
 
-		partial void OnRotationAngleInDegreesChanged(float value);
+		partial void OnOrientationChanged(Quaternion value);
+
+		public float RotationAngleInDegrees
+		{
+			get => (float)MathEx.ToDegree(_rotationAngle);
+			set => RotationAngle = (float)MathEx.ToRadians(value);
+		}
+
+		public float RotationAngle
+		{
+			get => _rotationAngle;
+			set { SetProperty(ref _rotationAngle, value); OnRotationAngleChanged(value); }
+		}
+
+		partial void OnRotationAngleChanged(float value);
 
 		public Vector2 Size
 		{

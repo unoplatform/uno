@@ -8,11 +8,6 @@ namespace Windows.System
 {
 	public partial class MemoryManager
 	{
-		static MemoryManager()
-		{
-			IsAvailable = true;
-		}
-
 		public static ulong AppMemoryUsage
 		{
 			get

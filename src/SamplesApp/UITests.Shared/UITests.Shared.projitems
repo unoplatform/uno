@@ -2750,6 +2750,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\Button_Inside_Border.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_IsEnabled_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3302,6 +3306,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Playlist.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>	
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Minimal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7209,6 +7217,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Full.xaml.cs">
       <DependentUpon>MediaPlayerElement_Full.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Playlist.xaml.cs">
+      <DependentUpon>MediaPlayerElement_Playlist.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MediaPlayerElement\MediaPlayerElement_Minimal.xaml.cs">
       <DependentUpon>MediaPlayerElement_Minimal.xaml</DependentUpon>
     </Compile>
@@ -8396,6 +8407,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ControlTests\Button_Enabled_Control_Disabled.xaml.cs">
       <DependentUpon>Button_Enabled_Control_Disabled.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\Button_Inside_Border.xaml.cs">
+      <DependentUpon>Button_Inside_Border.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\CheckBox_Button.xaml.cs">
       <DependentUpon>CheckBox_Button.xaml</DependentUpon>
     </Compile>
@@ -9196,6 +9210,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Data\Pdf\PdfDocumentRenderTest.xaml.cs">
       <DependentUpon>PdfDocumentRenderTest.xaml</DependentUpon>
     </Compile>
-  </ItemGroup>  
+  </ItemGroup>
   <Import Project="ItemExclusions.props" />
 </Project>

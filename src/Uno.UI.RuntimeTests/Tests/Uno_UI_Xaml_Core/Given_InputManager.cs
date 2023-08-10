@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 

@@ -259,9 +259,7 @@ namespace Windows.UI.Xaml
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
-			var dataContextBinding = _properties.FindDataContextBinding();
-
-			if (dataContextBinding != null && precedence == DependencyPropertyValuePrecedences.Inheritance)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && _properties.FindDataContextBinding() is { } dataContextBinding)
 			{
 				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.

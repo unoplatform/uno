@@ -566,8 +566,11 @@ namespace Uno.Media
 			{
 				throw new InvalidDataException("Invalid double value");
 			}
-
+#if NET7_0_OR_GREATER
+			return double.Parse(doubleValue, CultureInfo.InvariantCulture);
+#else
 			return double.Parse(doubleValue.ToString(), CultureInfo.InvariantCulture);
+#endif
 		}
 
 		private Size ReadSize(ref ReadOnlySpan<char> span)

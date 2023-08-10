@@ -149,7 +149,7 @@ public partial class ApiInformation
 		}
 	}
 
-	internal static void TryRaiseNotImplemented(string type, string memberName)
+	internal static void TryRaiseNotImplemented(string type, string memberName, LogLevel errorLogLevelOverride = LogLevel.Error)
 	{
 		var message = $"The member {memberName} is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m={Uri.EscapeDataString(type + "." + memberName)}";
 
@@ -165,7 +165,9 @@ public partial class ApiInformation
 				{
 					_notImplementedOnce.Add(memberName);
 
-					LogExtensionPoint.Factory.CreateLogger(type).Log(NotImplementedLogLevel, message);
+					var logLevel = NotImplementedLogLevel == LogLevel.Error ? errorLogLevelOverride : NotImplementedLogLevel;
+
+					LogExtensionPoint.Factory.CreateLogger(type).Log(logLevel, message);
 				}
 			}
 		}

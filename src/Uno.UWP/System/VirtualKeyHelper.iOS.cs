@@ -134,6 +134,22 @@ namespace Windows.System
 				_ => VirtualKey.None,
 			};
 
+		public static VirtualKeyModifiers FromModifierFlags(UIKeyModifierFlags modifierFlags)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+
+			if (modifierFlags.HasFlag(UIKeyModifierFlags.Shift))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+
+			if (modifierFlags.HasFlag(UIKeyModifierFlags.Control))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+
+			return modifiers;
+		}
 	}
 }
 

@@ -18,7 +18,6 @@ using Windows.UI.Xaml;
 using MUXControlsTestApp;
 using Windows.Foundation.Metadata;
 
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -59,13 +58,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new Canvas_With_Outer_Clip();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var clippedLocation = canvas.Get_LocatorBorder1();
 			await WindowHelper.WaitForIdle();
@@ -95,13 +89,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new CanvasZIndex();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var redBorderRect1 = canvas.Get_CanvasBorderRed1();
 			ImageAssert.HasColorAtChild(bitmap, redBorderRect1, (float)redBorderRect1.Width / 2, (float)redBorderRect1.Height / 2, Green);
@@ -138,13 +127,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new Canvas_In_Canvas();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 			var clippedLocation = canvas.Get_CanvasBorderBlue1();
 
 			ImageAssert.HasColorAtChild(bitmap, clippedLocation, (float)clippedLocation.Width / 2, clippedLocation.Height / 2, Blue);
