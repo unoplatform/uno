@@ -16,8 +16,6 @@ namespace Windows.UI.Xaml.Documents
 			PointerPressed += TextBlock.OnPointerPressed;
 			PointerReleased += TextBlock.OnPointerReleased;
 			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
-			ResourceResolver.ApplyResource(this, Hyperlink.ForegroundProperty, "SystemControlHyperlinkTextBrush", isThemeResourceExtension: true, isHotReloadSupported: false);
-
 		}
 
 		#region NavigationTarget DependencyProperty
