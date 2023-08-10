@@ -103,7 +103,7 @@ internal partial class InputManager
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
-			var (originalSource, staleBranch) = HitTest(args, _isOver);
+			var (originalSource, _) = HitTest(args);
 
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
@@ -129,7 +129,14 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			// First raise the PointerExited events on the stale branch
+			// First raise the event, either on the OriginalSource or on the capture owners if any
+			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
+
+			// Scrolling can change the element underneath the pointer, so we need to update
+			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_leave", isStale: _isOver);
+			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+
+			// Second raise the PointerExited events on the stale branch
 			if (staleBranch.HasValue)
 			{
 				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
@@ -139,16 +146,9 @@ internal partial class InputManager
 				}
 			}
 
-			// Second (try to) raise the PointerEnter on the OriginalSource
+			// Third (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
-			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
-			{
-				// The visual tree has been modified in a way that requires performing a new hit test.
-				originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_enter").element ?? _inputManager._contentRoot.VisualTree.RootElement;
-			}
-
-			// Third raise the event, either on the OriginalSource or on the capture owners if any
-			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
+			Raise(Enter, originalSource!, routedArgs);
 		}
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
