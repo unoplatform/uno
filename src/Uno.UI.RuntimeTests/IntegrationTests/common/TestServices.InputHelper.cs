@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Input;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using System.Threading;
 using Windows.UI.Xaml.Media;
+using Uno.UI.RuntimeTests.Helpers;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
