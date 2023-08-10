@@ -2,27 +2,27 @@
 
 using Windows.UI.Xaml.Controls;
 
-namespace FrameworkPoolEditorRecycling.Editors
+namespace FrameworkPoolEditorRecycling.Editors;
+
+/// <summary>
+/// An empty page that can be used on its own or navigated to within a Frame.
+/// </summary>
+public sealed partial class EditorXBindPropertyChangedView : Page
 {
-	/// <summary>
-	/// An empty page that can be used on its own or navigated to within a Frame.
-	/// </summary>
-	public sealed partial class EditorXBindPropertyChangedView : Page
+	public EditorViewModel ViewModel { get; private set; }
+
+	public EditorXBindPropertyChangedView()
 	{
-		public EditorViewModel ViewModel { get; private set; }
+		this.InitializeComponent();
+		this.DataContextChanged += Editor2View_DataContextChanged;
+	}
 
-		public EditorXBindPropertyChangedView()
+	private void Editor2View_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+	{
+		if (DataContext is EditorViewModel editor)
 		{
-			this.InitializeComponent();
-			this.DataContextChanged += Editor2View_DataContextChanged;
-		}
-
-		private void Editor2View_DataContextChanged(Windows.UI.Xaml.FrameworkElement sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
-		{
-			if (DataContext is EditorViewModel editor)
-			{
-				ViewModel = editor;
-			}
+			ViewModel = editor;
+			Bindings.Update();
 		}
 	}
 }
