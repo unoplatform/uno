@@ -121,7 +121,13 @@ namespace Private.Infrastructure
 			public static void PressKeySequence(string keys, UIElement element = null)
 			{
 #if !NETFX_CORE
-				if (string.IsNullOrEmpty(keys) || element == null)
+				if (string.IsNullOrEmpty(keys))
+				{
+					return;
+				}
+
+				element ??= FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as UIElement;
+				if (element is null)
 				{
 					return;
 				}

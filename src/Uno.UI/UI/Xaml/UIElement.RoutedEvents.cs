@@ -722,8 +722,10 @@ namespace Windows.UI.Xaml
 			}
 
 			UIElement parent = null;
-			if (this is not PopupPanel)
+			if (this is not PopupPanel || this.GetParent() is PopupRoot)
 			{
+				// Sometimes, a PopupPanel will be a parent of an element's template (e.g. ComboBox)
+				// and the parent will not be PopupRoot. In that case, we shouldn't propagate to the element
 				parent = this.GetParent() as UIElement;
 
 #if __IOS__ || __ANDROID__
