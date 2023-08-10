@@ -63,6 +63,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool _wasPlaying;
 		private bool _isTemplateApplied; // indicates if the template parts have been resolved
+		private double? _isVolumeRewindRequestedAndAudioIsPlaying; // indicate the volume when the Play/Pause/Stop/Forward need to restart the audio
+		private bool _isRewindForewardRequested; // indicates that the Pause need to pause the playback and not the video
 
 		public MediaTransportControls()
 		{
