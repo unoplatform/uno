@@ -44,13 +44,13 @@ namespace Windows.UI.Xaml.Documents
 {
 	public abstract partial class TextElement : BaseClass, IThemeChangeAware
 	{
-#if !__WASM__
 		public TextElement()
 		{
 			SetDefaultForeground(ForegroundProperty);
+#if !__WASM__
 			InitializeBinder();
-		}
 #endif
+		}
 
 		#region FontFamily Dependency Property
 		public FontFamily FontFamily
@@ -349,8 +349,12 @@ namespace Windows.UI.Xaml.Documents
 
 		private protected virtual Brush DefaultTextForegroundBrush => DefaultBrushes.TextForegroundBrush;
 
-#if !__WASM__
-		private void SetDefaultForeground(DependencyProperty foregroundProperty)
+#if __WASM__ // On Wasm, we inherit UIElement, and so we need to shadow UIElement.SetDefaultForeground.
+		private protected new
+#else
+		private
+#endif
+		void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
 			if (this is Hyperlink)
 			{
@@ -365,6 +369,5 @@ namespace Windows.UI.Xaml.Documents
 
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
-#endif
 	}
 }
