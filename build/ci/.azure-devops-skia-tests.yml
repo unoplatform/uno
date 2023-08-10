@@ -20,8 +20,8 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
     # Only build for net7
-    UnoDisableNet8Mobile: true
-    UnoDisableNet8: true
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
    

@@ -10,8 +10,8 @@ export UNO_UITEST_IOSBUNDLE_PATH="$BUILD_SOURCESDIRECTORY/src/SamplesApp/Samples
 
 mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY
 
-export UnoDisableNet8Mobile=true
-export UnoDisableNet8=true
+export UnoDisableNetCurrentMobile=true
+export UnoDisableNetCurrent=true
 
 # Comment out the following line to avoid full rebuild for subsequent runs
 ./ios-uitest-build.sh

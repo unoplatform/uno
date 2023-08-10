@@ -54,8 +54,8 @@ jobs:
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
     # Only build for net7
-    UnoDisableNet8Mobile: true
-    UnoDisableNet8: true
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
   - checkout: self

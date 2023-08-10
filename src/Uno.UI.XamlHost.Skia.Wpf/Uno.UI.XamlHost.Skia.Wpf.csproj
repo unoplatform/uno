@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetPrevious)-windows;$(NetCurrent)-windows</TargetFrameworks>
+		<TargetFrameworks>NetWpfPreviousAndCurrent</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-windows.props"/>

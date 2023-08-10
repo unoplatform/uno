@@ -60,10 +60,15 @@
 		<NetCurrentNetCoreMobile>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst;$(NetCurrent)-macos</NetCurrentNetCoreMobile>
 		<NetPreviousNetCoreMobile>$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst;$(NetPrevious)-macos</NetPreviousNetCoreMobile>
 
-		<NetWasmPreviousAndCurrent>net7.0;net8.0</NetWasmPreviousAndCurrent>
-		<NetSkiaPreviousAndCurrent>net7.0;net8.0</NetSkiaPreviousAndCurrent>
-		<NetReferencePreviousAndCurrent>net7.0;net8.0</NetReferencePreviousAndCurrent>
-		<NetUnitTests>net7.0</NetUnitTests>
+		<NetPreviousWpf>$(NetPrevious)-windows</NetPreviousWpf>
+		<NetCurrentWpf>$(NetCurrent)-windows</NetCurrentWpf>
+
+		<NetMobilePreviousAndCurrent>$(NetPreviousNetCoreMobile);$(NetCurrentNetCoreMobile)</NetMobilePreviousAndCurrent>
+		<NetWpfPreviousAndCurrent>$(NetPreviousWpf);$(NetCurrentWpf)</NetWpfPreviousAndCurrent>
+		<NetWasmPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetWasmPreviousAndCurrent>
+		<NetSkiaPreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetSkiaPreviousAndCurrent>
+		<NetReferencePreviousAndCurrent>$(NetPrevious);$(NetCurrent)</NetReferencePreviousAndCurrent>
+		<NetUnitTests>$(NetPrevious)</NetUnitTests>
 
 		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
 		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">net7.0-windows10.0.19041.0</NetUWPOrWinUI>

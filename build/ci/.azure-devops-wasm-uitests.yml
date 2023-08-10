@@ -13,8 +13,8 @@ jobs:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
     # Only build for net7
-    UnoDisableNet8Mobile: true
-    UnoDisableNet8: true
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   strategy:
     matrix:

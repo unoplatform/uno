@@ -10,7 +10,7 @@
 		<TargetFrameworks>$([MSBuild]::Unescape($(_UnoFilteredTargetFrameworks)))</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoDisableNet8Mobile)'=='true'">
+	<PropertyGroup Condition="'$(UnoDisableNetCurrentMobile)'=='true'">
 		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net8.0-ios','').Replace('net8.0-android','').Replace('net8.0-maccatalyst','').Replace('net8.0-macos','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
@@ -20,7 +20,7 @@
 		<TargetFrameworks>$([MSBuild]::Unescape($(_UnoFilteredTargetFrameworks)))</TargetFrameworks>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="'$(UnoDisableNet8)'=='true'">
+	<PropertyGroup Condition="'$(UnoDisableNetCurrent)'=='true'">
 		<_UnoFilteredTargetFrameworks>$(TargetFrameworks.Replace('net8.0-windows','').Replace('net8.0','').Trim(';'))</_UnoFilteredTargetFrameworks>
 
 		<!--
