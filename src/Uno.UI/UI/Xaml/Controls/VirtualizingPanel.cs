@@ -13,5 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		public VirtualizingPanelLayout GetLayouter() => GetLayouterCore();
 
 		private protected virtual VirtualizingPanelLayout GetLayouterCore() => throw new NotSupportedException($"This method must be overridden by implementing classes.");
+
+		internal override Orientation? InternalOrientation => GetLayouter().Orientation;
 	}
 }

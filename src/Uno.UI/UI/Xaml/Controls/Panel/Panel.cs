@@ -106,6 +106,13 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		/// <summary>
+		/// Panels don't have an Orientation in UWP, but many derived types do.
+		/// This should be overriden by the derived types to refer to match their
+		/// own Orientation.
+		/// </summary>
+		internal virtual Orientation? InternalOrientation { get; }
+
 		internal Thickness PaddingInternal { get; set; }
 
 		internal Thickness BorderThicknessInternal { get; set; }
