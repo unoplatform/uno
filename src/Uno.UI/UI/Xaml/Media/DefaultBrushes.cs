@@ -19,10 +19,7 @@ internal static class DefaultBrushes
 
 	internal static Brush TextForegroundBrush => GetDefaultTextBrush(DefaultTextForegroundThemeBrushKey, ref _textForegroundBrush);
 
-	// HyperlinkForeground is AccentTextFillColorPrimaryBrush
-	// On light theme that is SystemAccentColorDark2 (#004275)
-	// On dark theme, that is SystemAccentColorLight3 (#A6D8FF)
-	internal static Brush HyperlinkForegroundBrush => GetDefaultTextBrush(HyperlinkForegroundKey, ref _hyperlinkForegroundBrush, Color.FromArgb(255, 0, 66, 117), Color.FromArgb(255, 166, 216, 255));
+	internal static Brush HyperlinkForegroundBrush => GetDefaultTextBrush(HyperlinkForegroundKey, ref _hyperlinkForegroundBrush);
 
 	internal static SolidColorBrush SelectionHighlightColor { get; } = new SolidColorBrush(Color.FromArgb(255, 0, 120, 212));
 
@@ -49,10 +46,6 @@ internal static class DefaultBrushes
 				defaultBrushObject is Brush defaultBrush)
 			{
 				brush = defaultBrush;
-			}
-			else if (darkFallback.HasValue)
-			{
-				brush = new SolidColorBrush(CoreApplication.RequestedTheme == SystemTheme.Dark ? darkFallback.Value : lightFallback!.Value);
 			}
 			else
 			{
