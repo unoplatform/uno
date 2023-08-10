@@ -990,9 +990,12 @@ namespace Windows.UI.Xaml.Controls
 
 			SetDefaultForeground(ForegroundProperty);
 
-			foreach (var inline in _inlines)
+			if (_inlines is not null)
 			{
-				((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason);
+				foreach (var inline in _inlines)
+				{
+					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason);
+				}
 			}
 		}
 
