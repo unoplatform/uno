@@ -6,9 +6,6 @@ using AVFoundation;
 using Foundation;
 using Speech;
 using Windows.Foundation;
-#if NET8_0_OR_GREATER
-using AudioToolbox;
-#endif
 
 namespace Windows.Media.SpeechRecognition;
 
@@ -109,7 +106,7 @@ public partial class SpeechRecognizer : IDisposable
 #if NET8_0_OR_GREATER
 				audioSession.SetMode(AVAudioSessionMode.Default, out err);
 #else
-				audioSession.SetMode(AVAudioSession.ModeDefault, out err);			
+				audioSession.SetMode(AVAudioSession.ModeDefault, out err);
 #endif
 				err = audioSession.SetActive(false, AVAudioSessionSetActiveOptions.NotifyOthersOnDeactivation);
 
