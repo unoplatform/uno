@@ -1,9 +1,11 @@
 ﻿using Android.Graphics;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Rect = Windows.Foundation.Rect;
 
-namespace Windows.UI.Xaml.Media;
+namespace Microsoft.UI.Xaml.Media;
 
-partial class RevealBrush
+public partial class RevealBrush : XamlCompositionBrushBase
 {
 	protected override Paint GetPaintInner(Rect destinationRect)
 	{
