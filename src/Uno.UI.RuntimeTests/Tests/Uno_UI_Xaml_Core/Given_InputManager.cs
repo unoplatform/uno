@@ -174,7 +174,7 @@ public class Given_InputManager
 		mouse.MoveTo(position.GetCenter().X, position.GetCenter().Y);
 		Assert.AreEqual("PointerOver", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
 
-		mouse.Wheel(-50, steps: 10);
+		mouse.Wheel(-50);
 
 		await TestServices.WindowHelper.WaitForIdle();
 		Assert.AreEqual("Normal", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
