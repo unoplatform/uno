@@ -20,7 +20,7 @@ partial class ElevatedView
 	private AndroidBitmap? _shadowBitmap;
 	private bool _invalidateShadow = true;
 
-	protected override void DispatchDraw(Canvas? canvas)
+	protected override void DispatchDraw(Canvas canvas)
 	{
 		if (Elevation > 0)
 		{
