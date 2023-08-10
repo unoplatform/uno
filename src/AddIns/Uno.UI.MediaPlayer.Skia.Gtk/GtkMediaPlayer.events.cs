@@ -13,6 +13,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using Uno.Helpers;
 using System.IO;
+using Windows.Media.Core;
 
 namespace Uno.UI.Media;
 
@@ -292,9 +293,9 @@ public partial class GtkMediaPlayer
 
 	private static void OnSourceChanged(DependencyObject source, DependencyPropertyChangedEventArgs args)
 	{
-		if (source is GtkMediaPlayer player && args.NewValue is string encodedSource)
+		if (source is GtkMediaPlayer player && args.NewValue is MediaSource mediaSource)
 		{
-			player.SetSource(encodedSource);
+			player.SetSource(mediaSource);
 		}
 		else
 		{
@@ -305,72 +306,116 @@ public partial class GtkMediaPlayer
 		}
 	}
 
-	private void SetSource(string encodedSource)
+	private void SetSource(MediaSource mediaSource)
+	{
+		if (mediaSource.Uri is { })
+		{
+			SetUriSource(mediaSource.Uri);
+		}
+		else if (mediaSource.Stream is { })
+		{
+			SetStreamSource();
+		}
+	}
+
+	private void SetStreamSource()
+	{
+		UpdateStreamMedia();
+	}
+
+	private void SetUriSource(Uri sourceUri)
 	{
 		_updateVideoSizeOnFirstTimeStamp = true;
 		_isParsedLocalFile = false;
 
 		if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 		{
-			typeof(GtkMediaPlayer).Log().Debug($"Using source {encodedSource}");
+			typeof(GtkMediaPlayer).Log().Debug($"Using source {sourceUri}");
 		}
 
-		if (Uri.TryCreate(encodedSource, UriKind.RelativeOrAbsolute, out var sourceUri))
+		if (!sourceUri.IsAbsoluteUri || sourceUri.Scheme == "")
 		{
-			if (!sourceUri.IsAbsoluteUri || sourceUri.Scheme == "")
+			sourceUri = new Uri(MsAppXScheme + ":///" + sourceUri.OriginalString.TrimStart(new char[] { '/' }));
+		}
+
+		if (sourceUri.IsLocalResource())
+		{
+			var filePath = sourceUri.PathAndQuery;
+
+			if (sourceUri.Host is { Length: > 0 } host)
 			{
-				sourceUri = new Uri(MsAppXScheme + ":///" + sourceUri.OriginalString.TrimStart(new char[] { '/' }));
+				filePath = host + "/" + filePath.TrimStart('/');
 			}
 
-			if (sourceUri.IsLocalResource())
-			{
-				var filePath = sourceUri.PathAndQuery;
+			var originalLocalPath =
+			Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath,
+				 filePath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
+			);
+			_isParsedLocalFile = true;
+			_mediaPath = new Uri(originalLocalPath);
+			UpdateUriMedia();
+			return;
+		}
 
-				if (sourceUri.Host is { Length: > 0 } host)
-				{
-					filePath = host + "/" + filePath.TrimStart('/');
-				}
+		if (sourceUri.IsAppData())
+		{
+			var filePath = AppDataUriEvaluator.ToPath(sourceUri);
+			_mediaPath = new Uri(filePath);
+			_isParsedLocalFile = true;
+			UpdateUriMedia();
+			return;
+		}
 
-				var originalLocalPath =
-				Path.Combine(Windows.ApplicationModel.Package.Current.InstalledPath,
-					 filePath.TrimStart('/').Replace('/', global::System.IO.Path.DirectorySeparatorChar)
-				);
-				_isParsedLocalFile = true;
-				_mediaPath = new Uri(originalLocalPath);
-				UpdateMedia();
-				return;
-			}
-
-			if (sourceUri.IsAppData())
-			{
-				var filePath = AppDataUriEvaluator.ToPath(sourceUri);
-				_mediaPath = new Uri(filePath);
-				_isParsedLocalFile = true;
-				UpdateMedia();
-				return;
-			}
-
-			if (sourceUri.IsFile)
-			{
-				_mediaPath = sourceUri;
-				_isParsedLocalFile = true;
-				UpdateMedia();
-				return;
-			}
-
+		if (sourceUri.IsFile)
+		{
 			_mediaPath = sourceUri;
-			UpdateMedia();
+			_isParsedLocalFile = true;
+			UpdateUriMedia();
+			return;
+		}
+
+		_mediaPath = sourceUri;
+		UpdateUriMedia();
+	}
+
+	private void UpdateMedia()
+	{
+		if (Source?.Stream is { })
+		{
+			UpdateStreamMedia();
+		}
+		else if (_mediaPath is { })
+		{
+			UpdateUriMedia();
+		}
+	}
+
+	private void UpdateStreamMedia()
+	{
+		if (_mediaPlayer != null && _libvlc != null && Source.Stream != null)
+		{
+			string[] options = new string[1];
+			var stream = new StreamMediaInput(Source.Stream.AsStream());
+			var media = new LibVLCSharp.Shared.Media(_libvlc, stream, options);
+			var test = media.Duration;
+			media.Parse(true ? MediaParseOptions.ParseLocal : MediaParseOptions.ParseNetwork);
+			_mediaPlayer.Media = media;
+			AddMediaEvents();
+			Duration = (double)(_videoView?.MediaPlayer?.Media?.Duration / 1000 ?? 0);
+			OnSourceLoaded?.Invoke(this, EventArgs.Empty);
+
+			UpdateVideoStretch();
 		}
 		else
 		{
-			if (typeof(GtkMediaPlayer).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				typeof(GtkMediaPlayer).Log().Error($"Unable to parse source [{encodedSource}]");
+				this.Log().Debug("Unable to update the media, the player is not ready yet");
 			}
 		}
 	}
 
-	private void UpdateMedia()
+	private void UpdateUriMedia()
 	{
 		if (_mediaPlayer != null && _libvlc != null && _mediaPath != null)
 		{
@@ -648,7 +693,7 @@ public partial class GtkMediaPlayer
 			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				_isEnding = true;
-				UpdateMedia();
+				UpdateUriMedia();
 
 				OnSourceEnded?.Invoke(this, EventArgs.Empty);
 				if (_isLoopingEnabled)

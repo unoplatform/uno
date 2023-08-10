@@ -34,6 +34,10 @@
 			<Button Content="Get video from stream"
                     Click="Button_Click"
                     />
+
+			<!--<Button Content="Get video from uri"
+                    Click="Button_Click2"
+                    />-->
 		</StackPanel>
 	</ScrollViewer>
 </Page>

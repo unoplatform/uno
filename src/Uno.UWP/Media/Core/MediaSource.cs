@@ -17,7 +17,7 @@ namespace Windows.Media.Core
 				Uri = uri
 			};
 		}
-#if __ANDROID__
+#if __ANDROID__ || __SKIA__
 		public static MediaSource CreateFromStream(IRandomAccessStream stream, string _)
 		{
 			return new MediaSource()
