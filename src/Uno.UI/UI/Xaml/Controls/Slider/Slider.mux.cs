@@ -822,7 +822,7 @@ public partial class Slider
 		{
 			spSliderContainer.PointerPressed -= OnPointerPressed;
 			spSliderContainer.PointerReleased -= OnPointerReleased;
-			spSliderContainer.PointerMoved += OnPointerMoved;
+			spSliderContainer.PointerMoved -= OnPointerMoved;
 			spSliderContainer.PointerCaptureLost -= OnPointerCaptureLost;
 			spSliderContainer.SizeChanged -= OnSizeChanged;
 		});
