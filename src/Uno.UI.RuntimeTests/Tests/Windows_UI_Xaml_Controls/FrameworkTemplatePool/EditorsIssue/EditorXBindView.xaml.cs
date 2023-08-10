@@ -22,6 +22,7 @@ public sealed partial class EditorXBindView : Page
 		if (DataContext is EditorViewModel editor)
 		{
 			ViewModel = editor;
+			Bindings.Update();
 		}
 	}
 }
