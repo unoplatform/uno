@@ -338,7 +338,7 @@ internal partial class InputManager
 				}
 			}
 
-				// Second (try to) raise the PointerEnter on the OriginalSource
+			// Second (try to) raise the PointerEnter on the OriginalSource
 			// Note: This won't do anything if already over.
 			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
 			{
