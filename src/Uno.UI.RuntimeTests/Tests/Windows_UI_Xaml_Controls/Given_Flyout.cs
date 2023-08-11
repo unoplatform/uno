@@ -555,12 +555,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.ShowAttachedFlyout(b1);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("41", tb.Text);
-			SUT.Close();
+			SUT.Hide();
 
 			FlyoutBase.ShowAttachedFlyout(b2);
 			await TestServices.WindowHelper.WaitForLoaded(tb);
 			Assert.AreEqual("42", tb.Text);
-			SUT.Close();
+			SUT.Hide();
 		}
 #endif
 
@@ -656,9 +656,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 			finally
 			{
-#if HAS_UNO
-				SUT.contextFlyout.Close();
-#endif
+				SUT.contextFlyout.Hide();
 			}
 		}
 

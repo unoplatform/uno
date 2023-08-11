@@ -107,18 +107,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
-		protected internal override void Close()
-		{
-			// This overload is required for binary compatibility
-			base.Close();
-		}
-
-		protected internal override void Open()
-		{
-			// This overload is required for binary compatibility
-			base.Open();
-		}
-
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnTemplatedParentChanged(e);

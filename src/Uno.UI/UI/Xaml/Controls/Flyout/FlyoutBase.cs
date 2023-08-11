@@ -482,7 +482,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_sizeChangedDisposable.Disposable = null;
 		}
 
-		protected internal virtual void Close()
+		private void Close()
 		{
 			if (_popup != null)
 			{
@@ -490,7 +490,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		protected internal virtual void Open()
+		private void Open()
 		{
 			EnsurePopupCreated(Target.DataContext);
 

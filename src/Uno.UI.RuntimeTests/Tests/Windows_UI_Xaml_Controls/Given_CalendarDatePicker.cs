@@ -24,14 +24,14 @@ public class Given_CalendarDatePicker
 		var root = (Grid)SUT.FindName("Root");
 		var flyout = (Flyout)FlyoutBase.GetAttachedFlyout(root);
 		flyout.XamlRoot = SUT.XamlRoot;
-		flyout.Open();
+		flyout.ShowAt(SUT);
 
 		await WindowHelper.WaitForIdle();
 		var calendarView = (CalendarView)flyout.Content;
 
 		Assert.IsTrue(calendarView.ActualHeight > 300);
 
-		flyout.Close();
+		flyout.Hide();
 	}
 #endif
 }
