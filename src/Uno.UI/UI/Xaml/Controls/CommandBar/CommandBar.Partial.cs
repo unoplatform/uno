@@ -261,6 +261,12 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnApplyTemplate();
 
+			// UNO Specific
+			if (m_tpContentRoot is { })
+			{
+				m_tpContentRoot.RenderTransform.Changed += RenderTransformOnChanged;
+			}
+
 			GetTemplatePart("PrimaryItemsControl", out m_tpPrimaryItemsControlPart);
 			GetTemplatePart("SecondaryItemsControl", out m_tpSecondaryItemsControlPart);
 
@@ -359,6 +365,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#region Uno Only
+
+		private void RenderTransformOnChanged(object? sender, EventArgs args)
+		{
+			// The popup's PopupPanel depends on the RenderTransform of ContentRoot.
+			// When RenderTransform is changed, only the rendering is updated, without
+			// invalidating Arrange. However, the PopupPanel updates its anchor position in
+			// ArrangeOverride, so we need to add this hack to forcibly invalidate its
+			// Arrange to recalculate its position after the RenderTransform of ContentRoot is updated.
+			m_tpOverflowPopup?.PopupPanel.InvalidateArrange();
+		}
 
 		private void OnOverflowPopupClosed(object? sender, object e)
 		{
