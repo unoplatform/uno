@@ -11,7 +11,7 @@ using System.Runtime.CompilerServices;
 
 namespace Uno.UI.Helpers
 {
-	public sealed class WeakEventManager
+	internal sealed class WeakEventManager
 	{
 		private readonly Dictionary<string, List<Subscription>> _eventHandlers = new(StringComparer.Ordinal);
 
