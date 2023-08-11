@@ -61,16 +61,6 @@ namespace Windows.UI.Xaml.Shapes
 
 #if LEGACY_SHAPE_MEASURE
 		partial void OnPointsChanged();
-
-		protected internal override IEnumerable<object> GetShapeParameters()
-		{
-			yield return Points?.ToArray();
-
-			foreach (var p in base.GetShapeParameters())
-			{
-				yield return p;
-			}
-		}
 #endif
 	}
 }

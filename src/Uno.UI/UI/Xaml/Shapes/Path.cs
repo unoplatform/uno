@@ -40,19 +40,5 @@ namespace Windows.UI.Xaml.Shapes
 
 		#endregion
 
-#if LEGACY_SHAPE_MEASURE
-		protected internal override IEnumerable<object?> GetShapeParameters()
-		{
-			if (Data is { } data)
-			{
-				yield return data;
-			}
-
-			foreach (var p in base.GetShapeParameters())
-			{
-				yield return p;
-			}
-		}
-#endif
 	}
 }

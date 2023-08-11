@@ -12,10 +12,6 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class ArbitraryShapeBase
 	{
-		private IDisposable BuildDrawableLayer() => Disposable.Empty;
-
-		private Size GetActualSize() => Size.Empty;
-
 		protected virtual void InvalidateShape() { }
 
 		protected override Size MeasureOverride(Size availableSize)

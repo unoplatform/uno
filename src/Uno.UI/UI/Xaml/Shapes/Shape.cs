@@ -212,11 +212,7 @@ namespace Windows.UI.Xaml.Shapes
 		private void OnFillChanged(Brush newValue)
 		{
 			_brushChangedProxy ??= new();
-			_brushChanged ??= () =>
-			{
-				OnFillUpdatedPartial();
-				RefreshShape();
-			};
+			_brushChanged ??= () => OnFillUpdatedPartial();
 
 			_brushChangedProxy.Subscribe(newValue, _brushChanged);
 		}
@@ -226,11 +222,7 @@ namespace Windows.UI.Xaml.Shapes
 		private void OnStrokeChanged(Brush newValue)
 		{
 			_strokeBrushChangedProxy ??= new();
-			_strokeBrushChanged ??= () =>
-			{
-				OnStrokeUpdatedPartial();
-				RefreshShape();
-			};
+			_strokeBrushChanged ??= () => OnStrokeUpdatedPartial();
 			_strokeBrushChangedProxy.Subscribe(newValue, _strokeBrushChanged);
 		}
 		partial void OnStrokeUpdatedPartial();
@@ -238,25 +230,20 @@ namespace Windows.UI.Xaml.Shapes
 		private void OnStrokeThicknessUpdated(double newValue)
 		{
 			OnStrokeThicknessUpdatedPartial();
-			RefreshShape();
 		}
 		partial void OnStrokeThicknessUpdatedPartial();
 
 		private void OnStrokeDashArrayUpdated(DoubleCollection newValue)
 		{
 			OnStrokeDashArrayUpdatedPartial();
-			RefreshShape();
 		}
 		partial void OnStrokeDashArrayUpdatedPartial();
 
 		private void OnStretchUpdated(Stretch newValue)
 		{
 			OnStretchUpdatedPartial();
-			RefreshShape();
 		}
 		partial void OnStretchUpdatedPartial();
-
-		protected virtual void RefreshShape(bool forceRefresh = false) { }
 #endif
 
 		internal override bool IsViewHit()

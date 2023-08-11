@@ -144,19 +144,6 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		partial void OnY2PropertyChangedPartial(double oldValue, double newValue);
-
-		protected internal override IEnumerable<object> GetShapeParameters()
-		{
-			yield return X1;
-			yield return X2;
-			yield return Y1;
-			yield return Y2;
-
-			foreach (var p in base.GetShapeParameters())
-			{
-				yield return p;
-			}
-		}
 #endif
 	}
 }

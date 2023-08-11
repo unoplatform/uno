@@ -18,9 +18,6 @@ namespace Windows.UI.Xaml.Shapes
 		private const double _scaleX = 0;
 		private const double _scaleY = 0;
 
-		private readonly SerialDisposable _layer = new SerialDisposable();
-		private object?[]? _layerState;
-
 		protected static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
 		{
 			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
@@ -45,37 +42,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			//If both availableSize and userSize are NaN, use the fallback.
 			return naNFallbackValue;
-		}
-
-#if !UNO_REFERENCE_API
-		protected internal override void OnInvalidateMeasure()
-		{
-			base.OnInvalidateMeasure();
-			RefreshShape(true);
-		}
-#endif
-
-		/// <summary>
-		/// Refreshes the current shape, considering its drawinf parameters.
-		/// </summary>
-		/// <param name="forceRefresh">Forces a refresh by ignoring the shape parameters.</param>
-		protected override void RefreshShape(bool forceRefresh = false)
-		{
-			if (!IsLoaded)
-			{
-				return;
-			}
-
-			var newLayerState = GetShapeParameters().ToArray();
-
-			if (forceRefresh || !(_layerState?.SequenceEqual(newLayerState) ?? false))
-			{
-				// Remove the previous layer
-				_layer.Disposable = null;
-
-				_layerState = newLayerState;
-				_layer.Disposable = BuildDrawableLayer();
-			}
 		}
 
 		private protected Rect GetBounds()
@@ -116,22 +82,6 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			return new Rect(0.0, 0.0, width, height);
-		}
-
-		/// <summary>
-		/// Provides a enumeration of values that are used to determine if the shape
-		/// should be rebuilt. Inheritors should append the base's enumeration.
-		/// </summary>
-		protected internal virtual IEnumerable<object?> GetShapeParameters()
-		{
-			yield return GetActualSize();
-			yield return Fill;
-			yield return Stroke;
-			yield return StrokeThickness;
-			yield return Stretch;
-			yield return StrokeDashArray;
-			yield return _scaleX;
-			yield return _scaleY;
 		}
 
 		/// <summary>
