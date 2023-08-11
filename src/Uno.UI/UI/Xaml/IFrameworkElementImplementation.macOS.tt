@@ -874,16 +874,8 @@ namespace <#= mixin.NamespaceName #>
 				WantsLayer = true;
 			}
 
-			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(brush));
+			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(newValue));
 		}
-
-		~<#= mixin.ClassName #>()
-		{
-			_brushChangedProxy?.Unsubscribe();
-			FinalizerPartial();
-		}
-
-		partial void FinalizerPartial();
 
 		#endregion
 
