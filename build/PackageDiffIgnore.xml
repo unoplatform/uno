@@ -872,6 +872,8 @@
 			<!-- End Skia lifecycle -->
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+
+			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase::ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1650,6 +1652,9 @@
 			<Member fullName="System.Numerics.Quaternion Windows.UI.Composition.Visual.get_Orientation()" reason="Converted to auto-property" />
 			<!-- END Skia clipping -->
 
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
+			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
