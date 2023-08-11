@@ -36,19 +36,19 @@
 		<PackageReference Include="Uno.WinUI" Version="4.7.0-dev.950" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android'">
+	<ItemGroup Condition="$(IsAndroid)">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios'">
+	<ItemGroup Condition="$(IsIOS)">
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst'">
+	<ItemGroup Condition="$(IsCatalyst)">
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-macos'">
+	<ItemGroup Condition="$(IsMacOS)">
 		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 	</ItemGroup>
 

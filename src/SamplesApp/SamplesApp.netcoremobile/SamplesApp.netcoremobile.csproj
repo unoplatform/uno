@@ -119,7 +119,7 @@
 		<PackageReference Include="Uno.Fonts.Fluent" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'android'">
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 	</ItemGroup>
 
