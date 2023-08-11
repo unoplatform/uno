@@ -219,5 +219,30 @@ namespace Windows.UI.Xaml.Shapes
 
 			return shapeSize;
 		}
+
+		private void OnFillBrushChanged() => InvalidateCommon();
+		private void OnStrokeBrushChanged() => InvalidateCommon();
+
+		private void InvalidateCommon()
+		{
+			// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
+			// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
+			// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
+			// on the native side, but not yet collected on the managed side (for Xamarin targets).
+
+			// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
+			// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
+			try
+			{
+				Invalidate();
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
+				}
+			}
+		}
 	}
 }

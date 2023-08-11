@@ -652,6 +652,8 @@
 			<!-- BEGIN Skia clipping -->
 			<Member fullName="System.Numerics.VectorExtensions" reason="Does not exist in WinAppSDK" />
 			<!-- END Skia clipping -->
+
+			<Member fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase" reason="Shapes refactoring" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -872,6 +874,8 @@
 			<!-- End Skia lifecycle -->
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
+
+			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase::ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1650,7 +1654,13 @@
 			<Member fullName="System.Numerics.Quaternion Windows.UI.Composition.Visual.get_Orientation()" reason="Converted to auto-property" />
 			<!-- END Skia clipping -->
 
+<<<<<<< HEAD
 			<Member fullName="System.Collections.Generic.IEnumerator`1&lt;T&gt; Uno.Collections.MaterializableList`1.GetEnumerator()" reason="Changed return type" />
+=======
+			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
+			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
+			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
+>>>>>>> e7ab1515db (refactor: Cleanup dead shapes code on Wasm)
 		</Methods>
 	</IgnoreSet>
 	  <!--
