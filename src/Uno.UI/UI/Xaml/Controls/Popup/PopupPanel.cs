@@ -245,8 +245,8 @@ internal partial class PopupPanel : Panel
 		)
 		{
 			// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
-			// disabled for ContentDialogs
-			if (popup.IsLightDismissEnabled)
+			// disabled for ContentDialogs. In addition, CommandBar is always closes the Popup.
+			if (popup.IsLightDismissEnabled || popup.TemplatedParent is CommandBar)
 			{
 				ClosePopup(popup);
 			}
@@ -265,5 +265,13 @@ internal partial class PopupPanel : Panel
 		}
 	}
 
-	internal override bool IsViewHit() => Popup?.IsLightDismissEnabled ?? false;
+	internal override bool IsViewHit()
+	{
+		if (Popup is { TemplatedParent: CommandBar })
+		{
+			return true;
+		}
+
+		return Popup?.IsLightDismissEnabled ?? false;
+	}
 }
