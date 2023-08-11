@@ -133,7 +133,7 @@ internal partial class InputManager
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
 
 			// Scrolling can change the element underneath the pointer, so we need to update
-			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_leave", isStale: _isOver);
+			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
 			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
 
 			// Second raise the PointerExited events on the stale branch
