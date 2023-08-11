@@ -1272,8 +1272,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return false;
 		}
-<<<<<<< HEAD
-=======
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs e) // todo: maybe adjust event source
 		{
@@ -1723,6 +1721,5 @@ namespace Windows.UI.Xaml.Controls
 			}
 			return false;
 		}
->>>>>>> 4b4d7c1b4d (chore: DropoutOrder)
 	}
 }
