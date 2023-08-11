@@ -12,7 +12,7 @@ jobs:
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
-    # Only build for net7
+    # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
 
