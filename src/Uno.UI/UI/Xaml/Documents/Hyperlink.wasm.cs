@@ -17,10 +17,14 @@ namespace Windows.UI.Xaml.Documents
 			PointerReleased += TextBlock.OnPointerReleased;
 			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
 <<<<<<< HEAD
+<<<<<<< HEAD
 			ResourceResolver.ApplyResource(this, Hyperlink.ForegroundProperty, "SystemControlHyperlinkTextBrush", isThemeResourceExtension: true);
 
 =======
 >>>>>>> ef087507bb (chore: Adjust on Wasm as well)
+=======
+			OnUnderlineStyleChanged();
+>>>>>>> cb59b12e84 (chore: Small fix on Wasm)
 		}
 
 		#region NavigationTarget DependencyProperty
