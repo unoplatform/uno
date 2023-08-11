@@ -166,6 +166,10 @@ embed.uno-frameworkelement.uno-unarranged {
   position: relative;
 }
 
+.uno-svgelement {
+  vector-effect: non-scaling-stroke
+}
+
 .uno-htmlimage {
   -moz-user-select: none;
   -webkit-user-drag: none;
