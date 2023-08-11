@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
 			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
-			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _borderBrushChanged, newOnInvalidateRender);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
