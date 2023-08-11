@@ -53,7 +53,7 @@ jobs:
     SourceLinkEnabled: falses
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for net7
+    # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
 

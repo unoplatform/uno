@@ -29,7 +29,7 @@ jobs:
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-    # Only build for net7
+    # Only build for NetPrevious
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
 
