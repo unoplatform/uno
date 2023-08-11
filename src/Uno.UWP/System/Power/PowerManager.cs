@@ -1,5 +1,8 @@
 #if __ANDROID__ || __IOS__ || __WASM__
 using System;
+using System.Threading.Tasks;
+using Uno.Foundation.Logging;
+using Uno.Foundation;
 using Uno.Helpers;
 
 namespace Windows.System.Power;
@@ -108,6 +111,27 @@ public static partial class PowerManager
 		remove => _energySaverStatusChanged.RemoveHandler(value);
 	}
 #endif
+
+	/// <summary>
+	/// Initializes the PowerManager.
+	/// </summary>
+	/// <returns>A value indicating whether the initialization succeeded.</returns>
+	public static async Task<bool> InitializeAsync()
+	{
+#if __WASM__
+
+#elif __ANDROID__ || __IOS__
+
+#else
+
+#endif
+		if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
+		{
+			typeof(PowerManager).Log().LogError("PowerManager is not implemented on this platform", ex);
+		}
+
+		return false;
+	}
 
 	internal static void RaiseRemainingChargePercentChanged()
 	{

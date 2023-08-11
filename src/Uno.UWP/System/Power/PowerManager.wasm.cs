@@ -2,27 +2,27 @@
 
 
 using System;
+using System.Threading.Tasks;
 using Uno;
 using Uno.Foundation;
+using Uno.Foundation.Logging;
 
 namespace Windows.System.Power;
 
 partial class PowerManager
 {
-	private const string JsType = "Windows.System.Power.PowerManager";
-
 	private static bool _isInitialized;
 	private static bool _isChargingChangedSubscribed;
 
-	static partial void StartPowerSupplyStatus() => StartOnChargingChange();
+	static partial void StartPowerSupplyStatus() => StartChargingChange();
 
-	static partial void EndPowerSupplyStatus() => EndOnChargingChange();
+	static partial void EndPowerSupplyStatus() => EndChargingChange();
 
-	static partial void StartBatteryStatus() => StartOnChargingChange();
+	static partial void StartBatteryStatus() => StartChargingChange();
 
-	static partial void EndBatteryStatus() => EndOnChargingChange();
+	static partial void EndBatteryStatus() => EndChargingChange();
 
-	private static void StartOnChargingChange()
+	private static void StartChargingChange()
 	{
 		if (_isChargingChangedSubscribed)
 		{
@@ -33,7 +33,7 @@ partial class PowerManager
 		_isChargingChangedSubscribed = true;
 	}
 
-	private static void EndOnChargingChange()
+	private static void EndChargingChange()
 	{
 		if (_powerSupplyStatusChanged.IsActive || _batteryStatusChanged.IsActive)
 		{
@@ -127,6 +127,24 @@ partial class PowerManager
 		if (!_isInitialized)
 		{
 			throw new InvalidOperationException("You must call the InitializeAsync method of PowerManager before using any of its properties.");
+		}
+	}
+
+	private static async Task<bool> InitializePlatformAsync()
+	{
+		try
+		{
+			await WebAssemblyRuntime.InvokeAsync($"{JsType}.initializeAsync()");
+			_isInitialized = true;
+			return true;
+		}
+		catch (Exception ex)
+		{
+			if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
+			{
+				typeof(PowerManager).Log().LogError("Could not initialize PowerManager", ex);
+			}
+			return false;
 		}
 	}
 }
