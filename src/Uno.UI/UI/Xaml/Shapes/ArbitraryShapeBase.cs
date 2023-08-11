@@ -4,90 +4,11 @@
 
 #if LEGACY_SHAPE_MEASURE
 #nullable enable
-using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using Windows.Foundation;
 
-namespace Windows.UI.Xaml.Shapes
+namespace Windows.UI.Xaml.Shapes;
+
+public abstract partial class ArbitraryShapeBase : Shape
 {
-	public abstract partial class ArbitraryShapeBase : Shape
-	{
-		private const double _scaleX = 0;
-		private const double _scaleY = 0;
 
-		protected static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
-		{
-			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
-			var hasAvailableSize = !double.IsNaN(availableSize);
-
-#if UNO_REFERENCE_API
-			// The measuring algorithms for shapes in Wasm and iOS/Android/macOS are not using the
-			// infinity the same way.
-			// Those implementation will need to be merged.
-			hasAvailableSize &= !double.IsInfinity(availableSize);
-#endif
-
-			if (hasUserSize && hasAvailableSize)
-			{
-				return Math.Min(userSize, availableSize);
-			}
-
-			if (hasAvailableSize)
-			{
-				return availableSize;
-			}
-
-			//If both availableSize and userSize are NaN, use the fallback.
-			return naNFallbackValue;
-		}
-
-		private protected Rect GetBounds()
-		{
-			var width = Width;
-			var height = Height;
-
-			if (double.IsNaN(width))
-			{
-				var minWidth = MinWidth;
-				if (minWidth > 0.0)
-				{
-					width = minWidth;
-				}
-			}
-			if (double.IsNaN(height))
-			{
-				var minHeight = MinHeight;
-				if (minHeight > 0.0)
-				{
-					height = minHeight;
-				}
-			}
-
-			if (double.IsNaN(width))
-			{
-				if (double.IsNaN(height))
-				{
-					return new Rect(0.0, 0.0, 0.0, 0.0);
-				}
-
-				return new Rect(0.0, 0.0, height, height);
-			}
-
-			if (double.IsNaN(height))
-			{
-				return new Rect(0.0, 0.0, width, width);
-			}
-
-			return new Rect(0.0, 0.0, width, height);
-		}
-
-		/// <summary>
-		/// Gets whether the shape should preserve the path's origin (and ignore StrokeThickness)
-		/// </summary>
-		protected bool ShouldPreserveOrigin => this is Path && Stretch == Stretch.None;
-	}
 }
 #endif

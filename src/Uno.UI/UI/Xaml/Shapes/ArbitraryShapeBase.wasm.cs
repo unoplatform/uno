@@ -176,5 +176,29 @@ namespace Windows.UI.Xaml.Shapes
 
 			return bBoxWithStrokeThickness;
 		}
+
+		private static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
+		{
+			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
+			var hasAvailableSize = !double.IsNaN(availableSize);
+
+			// The measuring algorithms for shapes in Wasm and iOS/Android/macOS are not using the
+			// infinity the same way.
+			// Those implementation will need to be merged.
+			hasAvailableSize &= !double.IsInfinity(availableSize);
+
+			if (hasUserSize && hasAvailableSize)
+			{
+				return Math.Min(userSize, availableSize);
+			}
+
+			if (hasAvailableSize)
+			{
+				return availableSize;
+			}
+
+			//If both availableSize and userSize are NaN, use the fallback.
+			return naNFallbackValue;
+		}
 	}
 }
