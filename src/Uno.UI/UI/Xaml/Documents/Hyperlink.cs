@@ -6,10 +6,12 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI;
 using Windows.UI.Input;
+using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -18,32 +20,11 @@ namespace Windows.UI.Xaml.Documents
 {
 	public sealed partial class Hyperlink : Span
 	{
-#pragma warning disable CS0649 // error CS0649: Field '_focusableHelper' is never assigned to, and will always have its default value null
-		private readonly IFocusable _focusableHelper;
-#pragma warning restore CS0649 // error CS0649: Field '_focusableHelper' is never assigned to, and will always have its default value null
-
 #if !__WASM__
-		#region Static
-		private static Brush _defaultForeground;
-		private static Brush DefaultForeground
-		{
-			get
-			{
-				if (_defaultForeground == null)
-				{
-#if __IOS__ || __MACOS__ || __ANDROID__ || __SKIA__
-					_defaultForeground = GetDefaultForeground();
-#else
-					_defaultForeground = null;
+		private readonly IFocusable _focusableHelper;
 #endif
-				}
 
-				return _defaultForeground;
-			}
-		}
-
-		#endregion
-#endif
+		private protected override Brush DefaultTextForegroundBrush => DefaultBrushes.HyperlinkForegroundBrush;
 
 		public
 #if __WASM__
@@ -111,7 +92,6 @@ namespace Windows.UI.Xaml.Documents
 		public Hyperlink()
 		{
 			OnUnderlineStyleChanged();
-			Foreground = DefaultForeground;
 			_focusableHelper = new FocusableHelper(this);
 		}
 #endif

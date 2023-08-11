@@ -655,17 +655,17 @@ namespace SamplesApp
 		}
 
 		/// <summary>
-		/// Assert that the App Title was found in manifest and loaded from resources
+		/// Assert that the App DisplayName was found in manifest and loaded from resources
 		/// </summary>
 		public void AssertIssue12936()
 		{
-			//ApplicationView Title is currently not supported on iOS
-#if !__IOS__
-			var title = ApplicationView.GetForCurrentView().Title;
+			//On Wasm the DisplayName is currently empty, as it is not being load from manifest
+#if !__WASM__
+			var displayName = Package.Current.DisplayName;
 
-			Assert.IsFalse(string.IsNullOrEmpty(title), "App Title is empty.");
+			Assert.IsFalse(string.IsNullOrEmpty(displayName), "DisplayName is empty.");
 
-			Assert.IsFalse(title.Contains("ms-resource:"), $"'{title}' wasn't found in resources.");
+			Assert.IsFalse(displayName.Contains("ms-resource:"), $"'{displayName}' wasn't found in resources.");
 #endif
 		}
 
@@ -674,7 +674,7 @@ namespace SamplesApp
 		/// </summary>
 		public void AssertIssue12937()
 		{
-			//The ApplicationModel Package properties are currently are currently supported on Skia
+			//The ApplicationModel Package properties are currently only supported on Skia
 #if __SKIA__
 			var description = Package.Current.Description;
 			var publisherName = Package.Current.PublisherDisplayName;

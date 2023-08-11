@@ -127,7 +127,7 @@ namespace Uno.UI {
 		private containerElement: HTMLDivElement;
 		private rootElement: HTMLElement;
 
-		private cursorStyleElement: HTMLElement;
+		private cursorStyleRule: CSSStyleRule;
 
 		private allActiveElementsById: { [id: string]: HTMLElement | SVGElement } = {};
 		private uiElementRegistrations: {
@@ -1731,21 +1731,15 @@ namespace Uno.UI {
 
 			if (unoBody) {
 
-				//always cleanup
-				if (this.cursorStyleElement != undefined) {
-					this.cursorStyleElement.remove();
-					this.cursorStyleElement = undefined
+				if (this.cursorStyleRule === undefined) {
+					const styleSheet = document.styleSheets[document.styleSheets.length - 1];
+
+					const ruleId = styleSheet.insertRule(".uno-buttonbase { }", styleSheet.cssRules.length);
+
+					this.cursorStyleRule = <CSSStyleRule>styleSheet.cssRules[ruleId];
 				}
 
-				//only add custom overriding style if not auto 
-				if (cssCursor != "auto") {
-
-					// this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
-
-					this.cursorStyleElement = document.createElement("style");
-					this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
-					document.body.appendChild(this.cursorStyleElement);
-				}
+				this.cursorStyleRule.style.cursor = cssCursor !== "auto" ? cssCursor : null;
 
 				unoBody.style.cursor = cssCursor;
 			}

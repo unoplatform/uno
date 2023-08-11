@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using DirectUI;
 using Uno.Disposables;
 using Uno.Extensions;
+using System.Threading;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -23,8 +24,8 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Uno.UI.Xaml.Core;
-#endif
 
+#endif
 #if __IOS__
 using UIKit;
 #elif __MACOS__
@@ -41,6 +42,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private MediaPlayerElement? _mpe;
 		private readonly SerialDisposable _subscriptions = new();
+		private bool _isMeasureCommandBarRunning;
 
 #pragma warning disable CS0649
 		private bool m_transportControlsEnabled = true; // not-implemented
@@ -527,11 +529,29 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
+				m_tpCommandBar.SizeChanged += Container_SizeChanged;
+				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
+
+			}
+			if (_timelineContainer is not null)
+			{
+				_timelineContainer.SizeChanged += Container_SizeChanged;
 			}
 
 			HideMoreButtonIfNecessary();
 			HideCastButtonIfNecessary();
 		}
+
+		private void M_tpCommandBar_DynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
+		{
+			SetMeasureCommandBar();
+		}
+
+		private void Container_SizeChanged(object sender, SizeChangedEventArgs args)
+		{
+			SetMeasureCommandBar();
+		}
+
 		private void HideMoreButtonIfNecessary()
 		{
 			if (m_tpCommandBar is { SecondaryCommands.Count: 0 })
@@ -705,6 +725,7 @@ namespace Windows.UI.Xaml.Controls
 					slot.Height = 0;
 				}
 				_mediaPlayer.SetTransportControlBounds(slot);
+				SetMeasureCommandBar();
 			}
 		}
 
@@ -1431,39 +1452,56 @@ namespace Windows.UI.Xaml.Controls
 		private void SetMeasureCommandBar()
 		{
 			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
+			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Low, MeasureCommandBar);
+			Thread.Yield();
 		}
 		/// <summary>
 		/// Measure CommandBar to fit the buttons in given width.
 		/// </summary>
 		private void MeasureCommandBar()
 		{
-			if (m_tpCommandBar is { })
+			if (!_isMeasureCommandBarRunning && m_tpCommandBar is { })
 			{
-				ResetMargins();
-
-				var availableSize = this.ActualWidth;
-				m_tpCommandBar.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-				var desiredSize = m_tpCommandBar.DesiredSize;
-
-				if (availableSize < desiredSize.Width)
+				try
 				{
-					Dropout(availableSize, desiredSize);
-				}
-				else
-				{
-					Expand(availableSize, desiredSize);
+					_isMeasureCommandBarRunning = true;
+					ResetMargins();
 					AddMarginsBetweenGroups();
-				}
+					var desiredSize = m_tpCommandBar.DesiredSize;
 
+					var availableSize = this.ActualWidth;
+					if (IsCompact && m_tpTHLeftSidePlayPauseButton as FrameworkElement is { } ppElementy && ppElementy.Visibility == Visibility.Visible)
+					{
+						availableSize -= ppElementy.ActualWidth;
+						if (_timelineContainer as FrameworkElement is { } tlElement)
+						{
+							if (tlElement.Visibility == Visibility.Visible && tlElement.DesiredSize.Width <= ppElementy.ActualWidth)
+							{
+								tlElement.Visibility = Visibility.Collapsed;
+							}
+							if (tlElement.Visibility == Visibility.Collapsed && (availableSize - desiredSize.Width) >= ppElementy.ActualWidth)
+							{
+								tlElement.Visibility = Visibility.Visible;
+							}
+						}
+					}
+
+					DropoutOrder(availableSize, desiredSize);
+					AddMarginsBetweenGroups();
 #if !HAS_UNO
-				// Remove this code to disable and hide only after Deliverable 19012797: Fullscreen media works in ApplicationWindow and Win32 XAML Islands is complete
-				// since Expand or Dropout can make the full window button visible again, this code is used to hide it again
-				CContentRoot* contentRoot = VisualTree::GetContentRootForElement(GetHandle());
-				if (contentRoot->GetType() == CContentRoot::Type::XamlIsland)
-				{
-					IFC(m_tpFullWindowButton.Cast<ButtonBase>()->put_Visibility(xaml::Visibility_Collapsed));
-				}
+					// Remove this code to disable and hide only after Deliverable 19012797: Fullscreen media works in ApplicationWindow and Win32 XAML Islands is complete
+					// since Expand or Dropout can make the full window button visible again, this code is used to hide it again
+					CContentRoot* contentRoot = VisualTree::GetContentRootForElement(GetHandle());
+					if (contentRoot->GetType() == CContentRoot::Type::XamlIsland)
+					{
+						IFC(m_tpFullWindowButton.Cast<ButtonBase>()->put_Visibility(xaml::Visibility_Collapsed));
+					}
 #endif
+				}
+				finally
+				{
+					_isMeasureCommandBarRunning = false;
+				}
 			}
 		}
 		private void AddMarginsBetweenGroups()
@@ -1556,6 +1594,13 @@ namespace Windows.UI.Xaml.Controls
 					m_tpRightAppBarSeparator.Margin(extraMargin);
 				}
 			}
+			else
+			{
+				if (m_tpCommandBar as FrameworkElement is { } cmElementy)
+				{
+					cmElementy.HorizontalAlignment = HorizontalAlignment.Stretch;
+				}
+			}
 		}
 		private void ResetMargins()
 		{
@@ -1570,7 +1615,8 @@ namespace Windows.UI.Xaml.Controls
 				m_tpRightAppBarSeparator.Margin = zeroMargin;
 			}
 		}
-		private void Dropout(double availableSize, Size desiredSize)
+
+		private void DropoutOrder(double availableSize, Size desiredSize)
 		{
 			if (m_tpCommandBar is null)
 			{
@@ -1579,104 +1625,73 @@ namespace Windows.UI.Xaml.Controls
 
 			var spPrimaryButtons = m_tpCommandBar.PrimaryCommands.ToArray();
 			var buttonsCount = spPrimaryButtons.Length;
-			var infiniteBounds = new Size(double.PositiveInfinity, double.PositiveInfinity);
+			double widthButton = 0;
 
-			while (availableSize < desiredSize.Width)
+			//Get the icons size
+			if (spPrimaryButtons[0] as FrameworkElement is { } bt)
 			{
-				var lowestVisibleOrder = int.MaxValue;
-				int lowestElementIndex = 0;
-
-				for (int i = 0; i < buttonsCount; i++)
-				{
-					var spCommandElement = spPrimaryButtons[i];
-
-					if (spCommandElement as UIElement is { } spElement)
-					{
-						if (spElement.Visibility == Visibility.Visible)
-						{
-							var spOrder = MediaTransportControlsHelper.GetDropoutOrder(spElement);
-
-							if (spOrder is { } order && order > 0 && lowestVisibleOrder > order)
-							{
-								lowestVisibleOrder = order;
-								lowestElementIndex = i;
-							}
-						}
-					}
-				}
-				if (lowestVisibleOrder == int.MaxValue)
-				{
-					break;
-				}
-				else
-				{
-					var spCommandElement = spPrimaryButtons[lowestElementIndex];
-					if (spCommandElement as UIElement is { } spElement)
-					{
-						spElement.Visibility = Visibility.Collapsed;
-					}
-					m_tpCommandBar.Measure(infiniteBounds);
-					desiredSize = m_tpCommandBar.DesiredSize;
-				}
+				widthButton = bt.Width;
 			}
-		}
-		private void Expand(double availableSize, Size desiredSize)
-		{
-			if (m_tpCommandBar is null)
+			var infiniteBounds = new Size(double.PositiveInfinity, double.PositiveInfinity);
+			var difference = availableSize - desiredSize.Width;
+			//To avoid resize intermittent
+			if (difference < widthButton && difference > 0)
 			{
 				return;
 			}
-
-			var spPrimaryButtons = m_tpCommandBar.PrimaryCommands.ToArray();
-			var buttonsCount = spPrimaryButtons.Length;
-			var infiniteBounds = new Size(double.PositiveInfinity, double.PositiveInfinity);
-
-			while (availableSize > desiredSize.Width)
+			var limit = availableSize > desiredSize.Width ? buttonsCount : (int)Math.Floor(availableSize / widthButton);
+			//Just process when have size
+			if (limit == 0)
 			{
-				var highestCollapseOrder = -1;
-				int highestElementIndex = 0;
-
-				for (int i = 0; i < buttonsCount; i++)
+				return;
+			}
+			var listOrder = new List<KeyValuePair<int, UIElement>>();
+			for (int i = 0; i < buttonsCount; i++)
+			{
+				var spCommandElement = spPrimaryButtons[i];
+				if (spCommandElement as UIElement is { } spElement)
 				{
-					var spCommandElement = spPrimaryButtons[i];
-					if (spCommandElement as UIElement is { } spElement)
+					var spOrder = MediaTransportControlsHelper.GetDropoutOrder(spElement);
+					listOrder.Add(new KeyValuePair<int, UIElement>(spOrder ?? 0, spElement));
+				}
+			}
+			int index = 1;
+			foreach (var spElement in listOrder.OrderByDescending(e => e.Key))
+			{
+				if (spElement.Value as FrameworkElement is { } fe)
+				{
+					if (fe.Width == 0)
 					{
-						if (spElement.Visibility == Visibility.Collapsed && !IsButtonCollapsedbySystem(spElement))
-						{
-							var spOrder = MediaTransportControlsHelper.GetDropoutOrder(spElement);
-
-							if (spOrder is { } order && order > highestCollapseOrder)
-							{
-								highestCollapseOrder = order;
-								highestElementIndex = i;
-							}
-						}
+						continue;
 					}
-				}
-				if (highestCollapseOrder == -1)
-				{
-					break;
-				}
-				else
-				{
-					var spCommandElement = spPrimaryButtons[highestElementIndex];
-
-					// Make sure it should be complete space but not partial space to fit the button
-					if (spCommandElement as UIElement is { } spElement &&
-						spElement as FrameworkElement is { } frameworkElement &&
-						availableSize >= (desiredSize.Width + frameworkElement.Width))
+					if (fe.Visibility == Visibility.Collapsed)
 					{
-						spElement.Visibility = Visibility.Visible;
-						m_tpCommandBar.Measure(infiniteBounds);
-						desiredSize = m_tpCommandBar.DesiredSize;
+						if (index <= limit && !IsButtonCollapsedbySystem(spElement.Value))
+						{
+							index++;
+							fe.Visibility = Visibility.Visible;
+						}
 					}
 					else
 					{
-						break;
+						if (index > limit)
+						{
+							fe.Visibility = Visibility.Collapsed;
+						}
+						else
+						{
+							index++;
+						}
 					}
 				}
 			}
+			//if the difference is negative, we need to reprocess
+			if (difference < 0)
+			{
+				_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
+			}
 		}
+
 		/// <summary>
 		/// Determine whether button collapsed by system.
 		/// </summary>
