@@ -97,7 +97,8 @@ internal partial class PopupPanel : Panel
 	{
 		// Note: Here finalSize is expected to be the be the size of the window
 
-		var size = Popup.CustomLayouter is { } ? _lastMeasuredSize : GetChildren().FirstOrDefault()?.DesiredSize ?? _lastMeasuredSize;
+		var child = this.GetChildren().FirstOrDefault();
+		var size = Popup.CustomLayouter is { } ? _lastMeasuredSize : child?.DesiredSize ?? _lastMeasuredSize;
 
 		// Usually this check is achieved by the parent, but as this Panel
 		// is injected at the root (it's a subView of the Window), we make sure
@@ -108,7 +109,6 @@ internal partial class PopupPanel : Panel
 			size = finalSize = default;
 		}
 
-		var child = this.GetChildren().FirstOrDefault();
 		if (child == null)
 		{
 			return finalSize;
