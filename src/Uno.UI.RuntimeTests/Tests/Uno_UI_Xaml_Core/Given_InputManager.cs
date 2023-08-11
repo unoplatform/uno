@@ -141,5 +141,48 @@ public class Given_InputManager
 		Assert.AreEqual("Normal", oldState);
 		Assert.AreEqual("PointerOver", newState);
 	}
+
+	[TestMethod]
+#if !__SKIA__
+	[Ignore("Pointer injection supported only on skia for now.")]
+#endif
+	public async Task When_Scroll_No_Delay_For_VisualState_Update()
+	{
+		var stackPanel = new StackPanel();
+		for (var i = 1; i <= 10; i++)
+		{
+			var button = new Button { Content = "Button " + i };
+			stackPanel.Children.Add(button);
+		}
+
+		var scrollViewer = new ScrollViewer()
+		{
+			VerticalScrollMode = ScrollMode.Enabled,
+			Content = stackPanel,
+			MaxHeight = 50,
+		};
+
+		var button1 = stackPanel.Children[0] as Button;
+		var button2 = stackPanel.Children[1] as Button;
+
+		var border = new Border { scrollViewer };
+
+		await UITestHelper.Load(border);
+
+		var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+		var mouse = injector.GetMouse();
+
+		Assert.AreEqual("Normal", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
+
+		var position = button1.GetAbsoluteBounds();
+		mouse.MoveTo(position.GetCenter().X, position.GetCenter().Y);
+		Assert.AreEqual("PointerOver", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
+
+		mouse.Wheel(-50);
+
+		await TestServices.WindowHelper.WaitForIdle();
+		Assert.AreEqual("Normal", VisualStateManager.GetCurrentState(button1, "CommonStates").Name);
+		Assert.AreEqual("PointerOver", VisualStateManager.GetCurrentState(button2, "CommonStates").Name);
+	}
 }
 #endif
