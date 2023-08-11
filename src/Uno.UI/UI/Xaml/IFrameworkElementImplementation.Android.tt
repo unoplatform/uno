@@ -186,11 +186,6 @@ namespace <#= mixin.NamespaceName #>
 		{
 			var oldValue = e.OldValue as Brush;
 			var newValue = e.NewValue as Brush;
-			if (newValue is not null)
-			{
-				WantsLayer = true;
-			}
-
 			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => SetBackgroundColor(Brush.GetFallbackColor(newValue)));
 		}
 		#endregion

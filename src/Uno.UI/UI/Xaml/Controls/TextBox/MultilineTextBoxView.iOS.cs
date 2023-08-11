@@ -213,6 +213,11 @@ namespace Windows.UI.Xaml.Controls
 				if (newValue is SolidColorBrush scb)
 				{
 					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
+
+					void ApplyColor()
+					{
+						TextColor = scb.Color;
+					}
 				}
 			}
 		}
