@@ -16,6 +16,7 @@ namespace Windows.UI.Xaml.Documents
 			PointerPressed += TextBlock.OnPointerPressed;
 			PointerReleased += TextBlock.OnPointerReleased;
 			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
+			OnUnderlineStyleChanged();
 		}
 
 		#region NavigationTarget DependencyProperty
