@@ -35,6 +35,10 @@
 		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="16.0.374-pre" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+	</ItemGroup>
+
 	<!-- Fix for VS 2022 -->
 	<Target Name="GetTargetPath" />
 
