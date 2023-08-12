@@ -71,6 +71,9 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable m_overflowPopupClosedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowPresenterItemsPresenterKeyDownEventHandler = new SerialDisposable();
 
+		// Uno specific
+		private readonly SerialDisposable m_contentRootRenderTransformChangedEventHandler = new SerialDisposable();
+
 		private readonly SerialDisposable m_accessKeyInvokedEventHandler = new SerialDisposable();
 		private readonly SerialDisposable m_overflowPopupOpenedEventHandler = new SerialDisposable();
 
@@ -140,6 +143,8 @@ namespace Windows.UI.Xaml.Controls
 			m_overflowContentSizeChangedEventHandler.Disposable = null;
 			m_overflowPopupClosedEventHandler.Disposable = null;
 			m_overflowPresenterItemsPresenterKeyDownEventHandler.Disposable = null;
+
+			m_contentRootRenderTransformChangedEventHandler.Disposable = null;
 
 			m_accessKeyInvokedEventHandler.Disposable = null;
 			m_overflowPopupOpenedEventHandler.Disposable = null;
@@ -240,6 +245,7 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpOverflowContentRoot is { })
 			{
 				m_overflowContentSizeChangedEventHandler.Disposable = null;
+				m_contentRootRenderTransformChangedEventHandler.Disposable = null;
 			}
 
 			if (m_tpOverflowPresenterItemsPresenter is { })
@@ -265,6 +271,7 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpContentRoot is { })
 			{
 				m_tpContentRoot.RenderTransform.Changed += RenderTransformOnChanged;
+				m_contentRootRenderTransformChangedEventHandler.Disposable = Disposable.Create(() => m_tpContentRoot.RenderTransform.Changed -= RenderTransformOnChanged);
 			}
 
 			GetTemplatePart("PrimaryItemsControl", out m_tpPrimaryItemsControlPart);
