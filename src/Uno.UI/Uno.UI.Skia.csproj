@@ -30,7 +30,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Memory" Version="4.5.2" />
 		<PackageReference Include="SkiaSharp.HarfBuzz" />
 	</ItemGroup>
 

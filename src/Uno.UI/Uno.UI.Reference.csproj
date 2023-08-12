@@ -69,10 +69,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Memory" Version="4.5.2" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>

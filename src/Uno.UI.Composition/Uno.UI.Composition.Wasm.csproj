@@ -19,10 +19,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
 	</ItemGroup>
