@@ -83,7 +83,7 @@
 			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets">
 				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs</Properties>
 			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsIOSOrCatalyst) or $(TargetFrameworks.Contains('-ios')) or  or $(TargetFrameworks.Contains('-maccatalyst'))">
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsIOSOrCatalyst) or $(TargetFrameworks.Contains('-ios')) or $(TargetFrameworks.Contains('-maccatalyst'))">
 				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs</Properties>
 			</MixinDefinition>
 			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsMacOS) or $(TargetFrameworks.Contains('-macos'))">
