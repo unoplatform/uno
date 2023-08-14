@@ -16,14 +16,16 @@ namespace Windows.UI.Xaml.Controls
 		private BorderLayerRenderer _borderRenderer;
 #endif
 
+<<<<<<< HEAD
 		private bool _forceUpdateChrome;
 >>>>>>> 00f85827b8 (fix: Ensure CalendarView item styles are updated properly on reload)
+=======
+>>>>>>> 7bae0147ec (chore: Simplify logic)
 		private Size _lastSize;
 
 		private void Uno_InvalidateRender()
 		{
 			_lastSize = default;
-			_forceUpdateChrome = true;
 			InvalidateArrange();
 #if __WASM__
 			if (this.GetTemplateRoot() is UIElement templateRoot)
@@ -62,9 +64,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateChromeIfNeeded(Rect rect)
 		{
-			if (rect.Width > 0 && rect.Height > 0 && (_lastSize != rect.Size || _forceUpdateChrome))
+			if (rect.Width > 0 && rect.Height > 0 && _lastSize != rect.Size)
 			{
-				_forceUpdateChrome = false;
 				_lastSize = rect.Size;
 				UpdateChrome();
 			}
