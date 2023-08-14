@@ -34,6 +34,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 {
 	private static ConditionalWeakTable<Windows.Media.Playback.MediaPlayer, MediaPlayerExtension> _instances = new();
 
+	private MediaSource? _mediaSource;
 	private Uri? _uri;
 	private List<Uri>? _playlistItems;
 	private readonly Windows.Media.Playback.MediaPlayer _owner;
@@ -137,9 +138,9 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	private void ApplyVideoSource()
 	{
-		if (_player is not null && _uri is not null)
+		if (_player is not null && _mediaSource is not null)
 		{
-			_player.Source = _uri.OriginalString;
+			_player.Source = _mediaSource;
 		}
 	}
 
@@ -178,7 +179,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		switch (_owner.Source)
 		{
-			case MediaPlaybackList playlist when playlist.Items.Count > 0:
+			case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
+				_mediaSource = playlist.Items[0].Source;
 				SetPlaylistItems(playlist);
 				if (_playlistItems is not null)
 				{
@@ -191,10 +193,12 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				break;
 
 			case MediaPlaybackItem item:
+				_mediaSource = item.Source;
 				_uri = item.Source.Uri;
 				break;
 
 			case MediaSource source:
+				_mediaSource = source;
 				_uri = source.Uri;
 				break;
 
@@ -390,7 +394,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 		if (_player is not null)
 		{
-			_player.Source = uri.OriginalString;
+			_player.Source = MediaSource.CreateFromUri(uri);
 		}
 	}
 

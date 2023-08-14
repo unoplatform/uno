@@ -18,6 +18,8 @@ using Uno.Logging;
 using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.Media.Core;
+using VideoTrack = LibVLCSharp.Shared.VideoTrack;
 
 namespace Uno.UI.Media;
 
@@ -60,14 +62,14 @@ public partial class GtkMediaPlayer : FrameworkElement
 		//_libvlc?.Dispose();
 	}
 
-	public string Source
+	public MediaSource Source
 	{
-		get => (string)GetValue(SourceProperty);
+		get => (MediaSource)GetValue(SourceProperty);
 		set => SetValue(SourceProperty, value);
 	}
 
 	public static DependencyProperty SourceProperty { get; } = DependencyProperty.Register(
-		"Source", typeof(string), typeof(GtkMediaPlayer), new PropertyMetadata(default(string),
+		"Source", typeof(MediaSource), typeof(GtkMediaPlayer), new PropertyMetadata(default(MediaSource),
 			OnSourceChanged));
 
 	public double Duration { get; set; }

@@ -6,7 +6,7 @@ using Stream = System.IO.Stream;
 namespace Windows.Media.Playback;
 internal class UnoMediaDataSource : MediaDataSource
 {
-	private Stream _stream { get; set; }
+	private readonly Stream _stream;
 
 	public UnoMediaDataSource(IRandomAccessStream stream)
 	{

@@ -8,7 +8,7 @@ namespace Windows.Media.Core
 	{
 		public Uri Uri { get; private set; }
 
-		public IRandomAccessStream Stream { get; private set; }
+		internal IRandomAccessStream Stream { get; private set; }
 
 		public static MediaSource CreateFromUri(Uri uri)
 		{
@@ -17,7 +17,7 @@ namespace Windows.Media.Core
 				Uri = uri
 			};
 		}
-#if __ANDROID__
+#if __ANDROID__ || __SKIA__
 		public static MediaSource CreateFromStream(IRandomAccessStream stream, string _)
 		{
 			return new MediaSource()
