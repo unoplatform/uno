@@ -15,7 +15,7 @@ internal static partial class PowerManager
 		internal static partial Task InitializeAsync();
 
 		[JSImport("globalThis.Windows.System.Power.PowerManager.startChargingChange")]
-		internal static partial void StartOnChargingChange();
+		internal static partial void StartChargingChange();
 
 		[JSImport("globalThis.Windows.System.Power.PowerManager.endChargingChange")]
 		internal static partial void EndChargingChange();

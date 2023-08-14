@@ -23,6 +23,7 @@ public partial class PowerManager
 		_batteryManager = (BatteryManager)Android.App.Application.Context.GetSystemService(Context.BatteryService);
 		_powerManager = (AndroidPowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService);
 	}
+
 	private static UwpBatteryStatus GetBatteryStatus()
 	{
 		var batteryStatusFilter = new IntentFilter(Intent.ActionBatteryChanged);
