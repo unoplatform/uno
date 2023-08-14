@@ -683,7 +683,7 @@ namespace SamplesApp
 
 			Assert.IsFalse(string.IsNullOrEmpty(publisherName), "PublisherDisplayName isn't in manifest.");
 
-			Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");			
+			Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");
 
 			Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
 #endif
