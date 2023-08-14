@@ -7,7 +7,7 @@ using Uno;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
-using NativeMethods = __Windows.System.Power.PowerManager.NativeMethods;
+using NativeMethods = __Windows.__System.Power.PowerManager.NativeMethods;
 
 namespace Windows.System.Power;
 
