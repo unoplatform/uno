@@ -397,7 +397,6 @@ public class Mouse : IInjectedPointer, IDisposable
 			MouseOptions = InjectedInputMouseOptions.LeftUp,
 		};
 
-<<<<<<< HEAD
 	private static InjectedInputMouseInfo GetRightRelease()
 		=> new()
 		{
@@ -405,11 +404,6 @@ public class Mouse : IInjectedPointer, IDisposable
 			MouseOptions = InjectedInputMouseOptions.RightUp,
 		};
 
-	public static InjectedInputMouseInfo GetWheel(double delta, bool isHorizontal)
-		=> isHorizontal
-			? new() { TimeOffsetInMilliseconds = 1, DeltaX = (int)delta, MouseOptions = InjectedInputMouseOptions.HWheel }
-			: new() { TimeOffsetInMilliseconds = 1, DeltaY = (int)delta, MouseOptions = InjectedInputMouseOptions.Wheel };
-=======
 	public static IEnumerable<InjectedInputMouseInfo> GetWheel(double delta, bool isHorizontal, uint steps = 1)
 	{
 		if (steps is 0)
@@ -432,6 +426,5 @@ public class Mouse : IInjectedPointer, IDisposable
 			prev = current;
 		}
 	}
->>>>>>> e8a7fd2b0f (test: add a test for updating visual states when mouse is scrolled)
 }
 #endif
