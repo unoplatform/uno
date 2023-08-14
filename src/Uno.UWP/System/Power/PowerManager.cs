@@ -116,21 +116,20 @@ public static partial class PowerManager
 	/// Initializes the PowerManager.
 	/// </summary>
 	/// <returns>A value indicating whether the initialization succeeded.</returns>
-	public static async Task<bool> InitializeAsync()
+	public static Task<bool> InitializeAsync()
 	{
 #if __WASM__
-
+		return InitializePlatformAsync();
 #elif __ANDROID__ || __IOS__
-
+		return Task.FromResult(true);
 #else
-
-#endif
 		if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
 		{
 			typeof(PowerManager).Log().LogError("PowerManager is not implemented on this platform", ex);
 		}
 
-		return false;
+		return Task.FromResult(false);
+#endif
 	}
 
 	internal static void RaiseRemainingChargePercentChanged()

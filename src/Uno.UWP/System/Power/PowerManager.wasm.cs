@@ -7,6 +7,8 @@ using Uno;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
 
+using NativeMethods = __Windows.System.Power.PowerManager.NativeMethods;
+
 namespace Windows.System.Power;
 
 partial class PowerManager
@@ -29,7 +31,7 @@ partial class PowerManager
 			return;
 		}
 
-		WebAssemblyRuntime.InvokeJS($"{JsType}.startChargingChange()");
+		NativeMethods.StartChargingChange();
 		_isChargingChangedSubscribed = true;
 	}
 
@@ -41,17 +43,17 @@ partial class PowerManager
 			return;
 		}
 
-		WebAssemblyRuntime.InvokeJS($"{JsType}.endChargingChange()");
+		NativeMethods.EndChargingChange();
 		_isChargingChangedSubscribed = false;
 	}
 
-	static partial void StartRemainingChargePercent() => WebAssemblyRuntime.InvokeJS($"{JsType}.startRemainingChargePercentChange()");
+	static partial void StartRemainingChargePercent() => NativeMethods.StartRemainingChargePercent();
 
-	static partial void EndRemainingChargePercent() => WebAssemblyRuntime.InvokeJS($"{JsType}.endRemainingChargePercentChange()");
+	static partial void EndRemainingChargePercent() => NativeMethods.EndRemainingChargePercent();
 
-	static partial void StartRemainingDischargeTime() => WebAssemblyRuntime.InvokeJS($"{JsType}.startRemainingDischargeTimeChange()");
+	static partial void StartRemainingDischargeTime() => NativeMethods.StartRemainingDischargeTime();
 
-	static partial void EndRemainingDischargedTime() => WebAssemblyRuntime.InvokeJS($"{JsType}.endRemainingDischargeTimeChange()");
+	static partial void EndRemainingDischargedTime() => NativeMethods.EndRemainingDischargedTime();
 
 	[Preserve]
 	public static int DispatchChargingChanged()
@@ -79,7 +81,7 @@ partial class PowerManager
 	{
 		EnsureInitialized();
 
-		var batteryStatusString = WebAssemblyRuntime.InvokeJS($"{JsType}.getBatteryStatus()");
+		var batteryStatusString = NativeMethods.GetBatteryStatus();
 		return Enum.TryParse<BatteryStatus>(batteryStatusString, out var batteryStatus) ?
 			batteryStatus : Power.BatteryStatus.NotPresent;
 	}
@@ -88,7 +90,7 @@ partial class PowerManager
 	{
 		EnsureInitialized();
 
-		var powerSupplyStatusString = WebAssemblyRuntime.InvokeJS($"{JsType}.getPowerSupplyStatus()");
+		var powerSupplyStatusString = NativeMethods.GetPowerSupplyStatus();
 		return Enum.TryParse<PowerSupplyStatus>(powerSupplyStatusString, out var powerSupplyStatus) ?
 			powerSupplyStatus : Power.PowerSupplyStatus.NotPresent;
 	}
@@ -97,9 +99,8 @@ partial class PowerManager
 	{
 		EnsureInitialized();
 
-		var remainingChargeString = WebAssemblyRuntime.InvokeJS($"{JsType}.getRemainingChargePercent()");
-		if (double.TryParse(remainingChargeString, out var remainingCharge) &&
-			!double.IsNaN(remainingCharge))
+		var remainingCharge = NativeMethods.GetRemainingChargePercent();
+		if (!double.IsNaN(remainingCharge))
 		{
 			return (int)(remainingCharge * 100);
 		}
@@ -111,9 +112,8 @@ partial class PowerManager
 	{
 		EnsureInitialized();
 
-		var remainingDischargeTimeString = WebAssemblyRuntime.InvokeJS($"{JsType}.getRemainingDischargeTime()");
-		if (double.TryParse(remainingDischargeTimeString, out var remainingDischargeTimeInSeconds) &&
-			!double.IsNaN(remainingDischargeTimeInSeconds) &&
+		var remainingDischargeTimeInSeconds = NativeMethods.GetRemainingDischargeTime();
+		if (!double.IsNaN(remainingDischargeTimeInSeconds) &&
 			remainingDischargeTimeInSeconds >= 0)
 		{
 			return TimeSpan.FromSeconds(remainingDischargeTimeInSeconds);
@@ -134,7 +134,7 @@ partial class PowerManager
 	{
 		try
 		{
-			await WebAssemblyRuntime.InvokeAsync($"{JsType}.initializeAsync()");
+			await NativeMethods.InitializeAsync();
 			_isInitialized = true;
 			return true;
 		}
