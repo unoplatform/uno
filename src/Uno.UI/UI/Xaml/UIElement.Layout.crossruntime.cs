@@ -14,12 +14,6 @@ namespace Windows.UI.Xaml
 
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElement)this).DesiredSize;
 
-		internal void SetDesiredSize(Size size)
-		{
-			var iUIElement = ((IUIElement)this);
-			iUIElement.DesiredSize = size;
-		}
-
 		/// <summary>
 		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a re-layout.
 		/// Used where repeated unnecessary measure/arrange passes would be unacceptable for performance (eg scrolling in a list).
