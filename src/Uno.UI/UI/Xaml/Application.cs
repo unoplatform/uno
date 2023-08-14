@@ -32,6 +32,7 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
+using Windows.UI.Xaml.Controls;
 #elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -467,6 +468,17 @@ namespace Windows.UI.Xaml
 			}
 			else if (instance is ViewGroup g)
 			{
+#if __ANDROID__
+				// We need to propagate for list view items that were materialized but not visible.
+				// Without this, theme changes will not propagate properly to all list view items.
+				if (instance is NativeListViewBase nativeListViewBase)
+				{
+					foreach (var selectorItem in nativeListViewBase.CachedItemViews)
+					{
+						PropagateResourcesChanged(selectorItem, updateReason);
+					}
+				}
+#endif
 				foreach (object o in g.GetChildren())
 				{
 					PropagateResourcesChanged(o, updateReason);
