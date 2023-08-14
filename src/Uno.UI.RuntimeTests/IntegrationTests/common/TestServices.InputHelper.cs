@@ -48,7 +48,7 @@ namespace Private.Infrastructure
 				throw new System.NotImplementedException();
 			}
 
-			public static void Tap(UIElement element)
+			public static void Tap(UIElement element, uint waitBetweenPressRelease = 0)
 			{
 #if NETFX_CORE || __SKIA__
 				Finger finger = null;
@@ -60,10 +60,9 @@ namespace Private.Infrastructure
 					finger.Press(center);
 				});
 
-#if NETFX_CORE
-				// On Windows, We need to wait a bit before releasing for the popup to open.
-				Thread.Sleep(600);
-#endif
+				// UNO specific - we sometimes need to explicitly wait between press and release, e.g. in CalendarDatePickerIntegrationTests
+				Thread.Sleep((int)waitBetweenPressRelease);
+
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					finger.Release();
