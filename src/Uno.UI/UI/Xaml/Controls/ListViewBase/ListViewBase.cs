@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				var orientation = ItemsPanelRoot.InternalOrientation ?? Orientation.Vertical;
+				var orientation = ItemsPanelRoot?.InternalOrientation ?? Orientation.Vertical;
 
 				switch (args.Key)
 				{
