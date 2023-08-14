@@ -9,11 +9,11 @@ namespace Windows.Gaming.UI
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.UI.GameMonitoringPermission> RequestPermissionAsync()
+		public global::Windows.Foundation.IAsyncOperation<global::Windows.Gaming.UI.GameMonitoringPermission> RequestPermissionAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<GameMonitoringPermission> GameMonitor.RequestPermissionAsync() is not implemented in Uno.");
 		}
-		#endif
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Gaming.UI.GameMonitor GetDefault()
