@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 #if NETFX_CORE
 				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { token }));
 #else
-				_eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { handler });
+				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { handler }));
 #endif
 			});
 		}
