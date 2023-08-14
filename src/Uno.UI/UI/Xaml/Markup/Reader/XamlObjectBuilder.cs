@@ -143,14 +143,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				if (Activator.CreateInstance(type) is ResourceDictionary rd)
 				{
-					if (unknownContent is { })
-					{
-						ProcessResourceDictionaryContent(rd, unknownContent, rootInstance);
-					}
-
 					foreach (var member in control.Members.Where(m => m != unknownContent))
 					{
 						ProcessNamedMember(control, rd, member, rd);
+					}
+
+					if (unknownContent is { })
+					{
+						ProcessResourceDictionaryContent(rd, unknownContent, rootInstance);
 					}
 
 					return rd;
@@ -577,6 +577,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 		private void ProcessResourceDictionaryContent(ResourceDictionary rd, XamlMemberDefinition unknownContent, object? rootInstance)
 		{
+			// note: In order for static resolution to work, the referenced resources must be already parsed & added, which means:
+			// - MergedDictionaries should be processed before this method call.
+			// - Member resources should be all processed prior the resolution can began.
+			var delayedResolutionList = new List<IDependencyObjectStoreProvider>();
+
 			foreach (var child in unknownContent.Objects)
 			{
 				var childInstance = LoadObject(child, rootInstance);
@@ -592,9 +597,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				if (HasAnyResourceMarkup(child) && childInstance is IDependencyObjectStoreProvider provider)
 				{
-					// Delay resolve static resources
-					provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, rd);
+					delayedResolutionList.Add(provider);
 				}
+			}
+
+			// Delay resolve static resources
+			foreach (var provider in delayedResolutionList)
+			{
+				provider.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading, rd);
 			}
 		}
 
