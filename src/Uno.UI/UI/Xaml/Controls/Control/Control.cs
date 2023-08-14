@@ -718,7 +718,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					FrameworkPropertyMetadataOptions.None,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
