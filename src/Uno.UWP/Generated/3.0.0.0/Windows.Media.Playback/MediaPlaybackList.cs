@@ -54,14 +54,9 @@ namespace Windows.Media.Playback
 				throw new global::System.NotImplementedException("The member uint MediaPlaybackList.CurrentItemIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MediaPlaybackList.CurrentItemIndex");
 			}
 		}
-		#endif
-<<<<<<< HEAD
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-=======
-		#if false || false || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
->>>>>>> 8bc4223730 (chore: changes from rebase)
+#endif
+#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Playback.MediaPlaybackItem> Items
 		{
 			get
@@ -69,8 +64,8 @@ namespace Windows.Media.Playback
 				throw new global::System.NotImplementedException("The member IObservableVector<MediaPlaybackItem> MediaPlaybackList.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IObservableVector%3CMediaPlaybackItem%3E%20MediaPlaybackList.Items");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public  global::Windows.Media.Playback.MediaPlaybackItem StartingItem
 		{
