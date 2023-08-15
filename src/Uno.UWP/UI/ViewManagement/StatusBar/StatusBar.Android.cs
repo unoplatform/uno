@@ -6,53 +6,31 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
+using Uno.Foundation.Logging;
+using System.Threading.Tasks;
+using Uno.UI.ViewManagement.Helpers;
 
 namespace Windows.UI.ViewManagement
 {
 	public sealed partial class StatusBar
 	{
-		private StatusBarForegroundType? _foregroundType;
 		private bool? _isShown;
 
-		private readonly DisplayInformation _displayInformation = DisplayInformation.GetForCurrentViewSafe(); // TODO Uno: Avoid using this #16404.
-
-		private int? _statusBarHeightResourceId;
-
-		private void SetStatusBarForegroundType(StatusBarForegroundType foregroundType)
+		public double BackgroundOpacity
 		{
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
+			get => StatusBarHelper.BackgroundColor is { } color ? color.A / 255.0 : 0;
+			set
 			{
-				_foregroundType = foregroundType;
-				UpdateSystemUiVisibility();
-			}
-			else
-			{
-				this.Log().Warn("The status bar foreground color couldn't be changed. This API is only available starting from Android M (API 23).");
+				var existingColor = StatusBarHelper.BackgroundColor ?? Colors.Transparent;
+				var updatedColor = Color.FromArgb((byte)(value * 255.0), existingColor.R, existingColor.G, existingColor.B);
+				StatusBarHelper.BackgroundColor = updatedColor;
 			}
 		}
 
-		private StatusBarForegroundType GetStatusBarForegroundType()
+		public global::Windows.UI.Color? BackgroundColor
 		{
-			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
-			{
-				var activity = ContextHelper.Current as Activity;
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-				int uiVisibility = (int)activity.Window.DecorView.SystemUiVisibility;
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
-
-				var isForegroundDark = (int)SystemUiFlags.LightStatusBar == (uiVisibility & (int)SystemUiFlags.LightStatusBar);
-
-				return isForegroundDark
-					? StatusBarForegroundType.Dark
-					: StatusBarForegroundType.Light;
-			}
-			else
-			{
-				// The status bar foreground is always light below Android M (API 23)
-				return StatusBarForegroundType.Light;
-			}
+			get => StatusBarHelper.BackgroundColor;
+			set => StatusBarHelper.BackgroundColor = value;
 		}
 
 		public Rect GetOccludedRect()
@@ -103,7 +81,7 @@ namespace Windows.UI.ViewManagement
 			});
 		}
 
-		private void UpdateSystemUiVisibility()
+		internal void UpdateSystemUiVisibility()
 		{
 #pragma warning disable 618
 			var activity = ContextHelper.Current as Activity;
@@ -127,12 +105,12 @@ namespace Windows.UI.ViewManagement
 
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.M)
 			{
-				if (_foregroundType == StatusBarForegroundType.Dark)
+				if (StatusBarHelper.ForegroundType == StatusBarForegroundType.Dark)
 				{
 					// Dark text to show up on your light status bar
 					newUiOptions |= (int)SystemUiFlags.LightStatusBar;
 				}
-				else if (_foregroundType == StatusBarForegroundType.Light)
+				else if (StatusBarHelper.ForegroundType == StatusBarForegroundType.Light)
 				{
 					// Light text to show up on your dark status bar
 					newUiOptions &= ~(int)SystemUiFlags.LightStatusBar;

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI.ViewManagement.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
@@ -51,44 +52,11 @@ namespace Windows.UI.ViewManagement
 		/// </remarks>
 		public Color? ForegroundColor
 		{
-			get
-			{
-				var foregroundType = GetStatusBarForegroundType();
-				switch (foregroundType)
-				{
-					case StatusBarForegroundType.Light:
-						return Colors.White;
-					case StatusBarForegroundType.Dark:
-						return Colors.Black;
-					default:
-						return null;
-				}
-			}
-			set
-			{
-				if (!value.HasValue)
-				{
-					return;
-				}
-
-				var foregroundType = ColorToForegroundType(value.Value);
-
-				SetStatusBarForegroundType(foregroundType);
-			}
+			get => StatusBarHelper.ForegroundColor;
+			set => StatusBarHelper.ForegroundColor = value;
 		}
 
-		private StatusBarForegroundType ColorToForegroundType(Color color)
-		{
-			// Source: https://en.wikipedia.org/wiki/Luma_(video)
-			var y = 0.2126 * color.R + 0.7152 * color.G + 0.0722 * color.B;
-
-			return y < 128
-				? StatusBarForegroundType.Dark
-				: StatusBarForegroundType.Light;
-		}
-
-		private enum StatusBarForegroundType { Light, Dark }
-
+#if !__ANDROID__
 		[global::Uno.NotImplemented]
 		public double BackgroundOpacity
 		{
@@ -115,8 +83,8 @@ namespace Windows.UI.ViewManagement
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
 			}
-
 		}
+#endif
 	}
 }
 #endif
