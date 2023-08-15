@@ -87,14 +87,6 @@
 		<UnoRuntimeEnabledPackage Include="Uno.WinUI" PackageBasePath="$(MSBuildThisFileDirectory).." Condition="$(_IsUnoWinUIPackage)" />
 	</ItemGroup>
 
-	<!-- Backward compatibility validation -->
-	<Target Name="_ValidateTopLevelPackageWasmUpgrade"
-				  Condition="'$(IsUnoHead)'!='true' and '$(WasmHead)'!=''"
-				  BeforeTargets="BeforeBuild">
-
-		<Error Text="WebAssembly head projects need to be updated to use the [Uno.UI.WebAssembly] package instead of the [Uno.UI] NuGet package." />
-	</Target>
-
 	<!--
   Cross-runtime libraries creation targets
   -->
