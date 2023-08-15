@@ -74,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.ActualHeight);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 #if !__SKIA__
 		[Ignore("InputInjector is only supported on skia")]
@@ -115,6 +116,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 		}
 	}
+#endif
 
 	public partial class MySlider : Slider
 	{
