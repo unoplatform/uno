@@ -2,28 +2,28 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
+using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Microsoft.Extensions.Logging;
-using Uno.Extensions;
 using Uno.UI.RemoteControl.Messages;
-using System.Runtime.Loader;
-using Microsoft.Extensions.Configuration;
-using System.Reflection;
 
 namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		private readonly static Dictionary<string, AssemblyLoadContext> _loadContexts = new();
+		private readonly static Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private System.Reflection.Assembly? _loopAssembly;
 		private WebSocket? _socket;
-		private string? _appInstanceId;
+		private List<string> _appInstanceIds = new();
 		private readonly IConfiguration _configuration;
 
 		public RemoteControlServer(IConfiguration configuration)
@@ -41,9 +41,10 @@ namespace Uno.UI.RemoteControl.Host
 
 		private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
 		{
-			if (_loadContexts.TryGetValue(applicationId, out var context))
+			if (_loadContexts.TryGetValue(applicationId, out var lc))
 			{
-				return context;
+				lc.Count++;
+				return lc.Context;
 			}
 
 			var loadContext = new AssemblyLoadContext(applicationId, isCollectible: true);
@@ -100,7 +101,7 @@ namespace Uno.UI.RemoteControl.Host
 				return context.LoadFromAssemblyName(assemblyName);
 			};
 
-			_loadContexts.Add(applicationId, loadContext);
+			_loadContexts.Add(applicationId, (loadContext, 1));
 
 			return loadContext;
 		}
@@ -158,7 +159,7 @@ namespace Uno.UI.RemoteControl.Host
 
 			var assemblies = new List<System.Reflection.Assembly>();
 
-			_appInstanceId = msg.AppInstanceId;
+			_appInstanceIds.Add(msg.AppInstanceId);
 			var asmblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
 
 			// If BasePath is a specific file, try and load that
@@ -187,7 +188,7 @@ namespace Uno.UI.RemoteControl.Host
 				basePath = Path.Combine(basePath, "net7.0");
 #endif
 
-				// Additional processors may not need the directory added immmediately above.
+				// Additional processors may not need the directory added immediately above.
 				if (!Directory.Exists(basePath))
 				{
 					basePath = msg.BasePath;
@@ -255,7 +256,7 @@ namespace Uno.UI.RemoteControl.Host
 				{
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
-						this.Log().LogError("Failed to create instace of server processor in  {Asm} : {Exc}", asm, exc);
+						this.Log().LogError("Failed to create instance of server processor in  {Asm} : {Exc}", asm, exc);
 					}
 				}
 			}
@@ -289,6 +290,19 @@ namespace Uno.UI.RemoteControl.Host
 			foreach (var processor in _processors)
 			{
 				processor.Value.Dispose();
+			}
+
+			// Unload any AssemblyLoadContexts not being used by any current connection
+			foreach (var appId in _appInstanceIds)
+			{
+				if (_loadContexts.TryGetValue(appId, out var lc))
+				{
+					if (--lc.Count == 0)
+					{
+						_loadContexts[appId].Context.Unload();
+						_loadContexts.Remove(appId);
+					}
+				}
 			}
 		}
 	}
