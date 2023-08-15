@@ -125,7 +125,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 							if (droppedNode != droppedOnNode)
 							{
-								((TreeViewNodeVector)droppedOnNode.Parent.Children).RemoveAt(removeIndex);
+								((TreeViewNodeVector)droppedNode.Parent.Children).RemoveAt(removeIndex);
 
 								// Append the dragged dropped item as a child of the node it was dropped onto
 								((TreeViewNodeVector)droppedOnNode.Children).Append(droppedNode);

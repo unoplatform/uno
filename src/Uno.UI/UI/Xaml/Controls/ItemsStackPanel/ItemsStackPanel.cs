@@ -2,12 +2,16 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Linq;
 using Uno;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
 using Uno.UI;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ItemsStackPanel : Panel, IVirtualizingPanel
+	public partial class ItemsStackPanel : Panel, IVirtualizingPanel, IInsertionPanel
 	{
 		VirtualizingPanelLayout _layout;
 
@@ -56,6 +60,43 @@ namespace Windows.UI.Xaml.Controls
 #if !__IOS__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
+			}
+		}
+
+		void IInsertionPanel.GetInsertionIndexes(Windows.Foundation.Point position, out int first, out int second)
+		{
+			first = -1;
+			second = -1;
+			if ((new Windows.Foundation.Rect(0, 0, ActualSize.X, ActualSize.Y)).Contains(position))
+			{
+				if (Children == null || Children.Empty())
+				{
+					return;
+				}
+				if (Orientation == Orientation.Vertical)
+				{
+					foreach (var child in Children)
+					{
+						if (position.Y >= child.ActualOffset.Y + child.ActualSize.Y / 2)
+						{
+							first++;
+						}
+					}
+				}
+				else
+				{
+					foreach (var child in Children)
+					{
+						if (position.X >= child.ActualOffset.X + child.ActualSize.X / 2)
+						{
+							first++;
+						}
+					}
+				}
+				if (first + 1 < Children.Count)
+				{
+					second = first + 1;
+				}
 			}
 		}
 	}
