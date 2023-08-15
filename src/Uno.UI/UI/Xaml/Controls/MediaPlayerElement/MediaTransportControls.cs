@@ -24,6 +24,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Uno.UI.Xaml.Core;
+using Uno.UI.Controls.Legacy;
 
 #endif
 #if __IOS__
@@ -1466,7 +1467,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_isMeasureCommandBarRunning = true;
 					ResetMargins();
-					AddMarginsBetweenGroups();
 					var desiredSize = m_tpCommandBar.DesiredSize;
 
 					var availableSize = this.ActualWidth;
@@ -1488,6 +1488,7 @@ namespace Windows.UI.Xaml.Controls
 
 					DropoutOrder(availableSize, desiredSize);
 					AddMarginsBetweenGroups();
+					DropoutOrder(availableSize, desiredSize);
 #if !HAS_UNO
 					// Remove this code to disable and hide only after Deliverable 19012797: Fullscreen media works in ApplicationWindow and Win32 XAML Islands is complete
 					// since Expand or Dropout can make the full window button visible again, this code is used to hide it again
@@ -1593,6 +1594,10 @@ namespace Windows.UI.Xaml.Controls
 					var extraMargin = new Thickness(rightGap / 2, 0, rightGap / 2, 0);
 					m_tpRightAppBarSeparator.Margin(extraMargin);
 				}
+				if (rightGap > 0)
+				{
+					m_tpCommandBar.Padding = new Thickness(0, 0, rightGap, 0);
+				}
 			}
 			else
 			{
@@ -1635,7 +1640,7 @@ namespace Windows.UI.Xaml.Controls
 			var infiniteBounds = new Size(double.PositiveInfinity, double.PositiveInfinity);
 			var difference = availableSize - desiredSize.Width;
 			//To avoid resize intermittent
-			if (difference < widthButton && difference > 0)
+			if (IsCompact && difference < widthButton && difference > 0)
 			{
 				return;
 			}
@@ -1643,7 +1648,7 @@ namespace Windows.UI.Xaml.Controls
 			//Just process when have size
 			if (limit == 0)
 			{
-				return;
+				difference = -1;
 			}
 			var listOrder = new List<KeyValuePair<int, UIElement>>();
 			for (int i = 0; i < buttonsCount; i++)
