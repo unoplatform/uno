@@ -89,12 +89,31 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		Events?.RaiseMediaEnded();
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
-
-		// Play next item in playlist, if any
-		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		if (IsLoopingEnabled && !IsLoopingAllEnabled)
 		{
-			_uri = _playlistItems[++_playlistIndex];
-			ApplyVideoSource();
+			ReInitializeSource();
+			Play();
+		}
+		else
+		{
+			// Play first item in playlist, if any and repeat all
+			if (_playlistItems != null && _playlistIndex >= _playlistItems.Count - 1 && IsLoopingAllEnabled)
+			{
+				_playlistIndex = 0;
+				_uri = _playlistItems[_playlistIndex];
+				ReInitializeSource();
+				Play();
+			}
+			else
+			{
+				// Play next item in playlist, if any
+				if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+				{
+					_uri = _playlistItems[++_playlistIndex];
+					ReInitializeSource();
+					Play();
+				}
+			}
 		}
 	}
 

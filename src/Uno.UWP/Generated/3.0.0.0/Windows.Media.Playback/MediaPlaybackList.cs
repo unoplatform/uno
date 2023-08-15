@@ -2,14 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Media.Playback
 {
-	#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 	[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-	#endif
-	public  partial class MediaPlaybackList : global::Windows.Media.Playback.IMediaPlaybackSource
+#endif
+	public partial class MediaPlaybackList : global::Windows.Media.Playback.IMediaPlaybackSource
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool ShuffleEnabled
+		public bool ShuffleEnabled
 		{
 			get
 			{
@@ -20,10 +20,10 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "bool MediaPlaybackList.ShuffleEnabled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  bool AutoRepeatEnabled
+		public bool AutoRepeatEnabled
 		{
 			get
 			{
@@ -34,29 +34,29 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "bool MediaPlaybackList.AutoRepeatEnabled");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackItem CurrentItem
+		public global::Windows.Media.Playback.MediaPlaybackItem CurrentItem
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.CurrentItem is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20MediaPlaybackList.CurrentItem");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint CurrentItemIndex
+		public uint CurrentItemIndex
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member uint MediaPlaybackList.CurrentItemIndex is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=uint%20MediaPlaybackList.CurrentItemIndex");
 			}
 		}
-		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
+#endif
+#if false || false || NET461 || false || false || __NETSTD_REFERENCE__ || false
+		[global::Uno.NotImplemented("NET461", "__NETSTD_REFERENCE__")]
 		public  global::Windows.Foundation.Collections.IObservableVector<global::Windows.Media.Playback.MediaPlaybackItem> Items
 		{
 			get
@@ -64,10 +64,10 @@ namespace Windows.Media.Playback
 				throw new global::System.NotImplementedException("The member IObservableVector<MediaPlaybackItem> MediaPlaybackList.Items is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IObservableVector%3CMediaPlaybackItem%3E%20MediaPlaybackList.Items");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackItem StartingItem
+		public global::Windows.Media.Playback.MediaPlaybackItem StartingItem
 		{
 			get
 			{
@@ -78,10 +78,10 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "MediaPlaybackItem MediaPlaybackList.StartingItem");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.TimeSpan? MaxPrefetchTime
+		public global::System.TimeSpan? MaxPrefetchTime
 		{
 			get
 			{
@@ -92,20 +92,20 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "TimeSpan? MediaPlaybackList.MaxPrefetchTime");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Playback.MediaPlaybackItem> ShuffledItems
+		public global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Playback.MediaPlaybackItem> ShuffledItems
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member IReadOnlyList<MediaPlaybackItem> MediaPlaybackList.ShuffledItems is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=IReadOnlyList%3CMediaPlaybackItem%3E%20MediaPlaybackList.ShuffledItems");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  uint? MaxPlayedItemsToKeepOpen
+		public uint? MaxPlayedItemsToKeepOpen
 		{
 			get
 			{
@@ -116,14 +116,14 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "uint? MediaPlaybackList.MaxPlayedItemsToKeepOpen");
 			}
 		}
-		#endif
-		#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
+#endif
+#if false || false || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public MediaPlaybackList() 
+		public MediaPlaybackList()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "MediaPlaybackList.MediaPlaybackList()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MediaPlaybackList()
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemFailed.add
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ItemFailed.remove
@@ -138,44 +138,44 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffleEnabled.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItem.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.CurrentItemIndex.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackItem MoveNext()
+		public global::Windows.Media.Playback.MediaPlaybackItem MoveNext()
 		{
 			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.MoveNext() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20MediaPlaybackList.MoveNext%28%29");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackItem MovePrevious()
+		public global::Windows.Media.Playback.MediaPlaybackItem MovePrevious()
 		{
 			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.MovePrevious() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20MediaPlaybackList.MovePrevious%28%29");
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaPlaybackItem MoveTo( uint itemIndex)
+		public global::Windows.Media.Playback.MediaPlaybackItem MoveTo(uint itemIndex)
 		{
 			throw new global::System.NotImplementedException("The member MediaPlaybackItem MediaPlaybackList.MoveTo(uint itemIndex) is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaPlaybackItem%20MediaPlaybackList.MoveTo%28uint%20itemIndex%29");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPrefetchTime.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPrefetchTime.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.StartingItem.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.StartingItem.set
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.ShuffledItems.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  void SetShuffledItems( global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.MediaPlaybackItem> value)
+		public void SetShuffledItems(global::System.Collections.Generic.IEnumerable<global::Windows.Media.Playback.MediaPlaybackItem> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "void MediaPlaybackList.SetShuffledItems(IEnumerable<MediaPlaybackItem> value)");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPlayedItemsToKeepOpen.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackList.MaxPlayedItemsToKeepOpen.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs> CurrentItemChanged
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.CurrentMediaPlaybackItemChangedEventArgs> CurrentItemChanged
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -188,10 +188,10 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "event TypedEventHandler<MediaPlaybackList, CurrentMediaPlaybackItemChangedEventArgs> MediaPlaybackList.CurrentItemChanged");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.MediaPlaybackItemFailedEventArgs> ItemFailed
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.MediaPlaybackItemFailedEventArgs> ItemFailed
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -204,10 +204,10 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "event TypedEventHandler<MediaPlaybackList, MediaPlaybackItemFailedEventArgs> MediaPlaybackList.ItemFailed");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs> ItemOpened
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Media.Playback.MediaPlaybackList, global::Windows.Media.Playback.MediaPlaybackItemOpenedEventArgs> ItemOpened
 		{
 			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 			add
@@ -220,7 +220,7 @@ namespace Windows.Media.Playback
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "event TypedEventHandler<MediaPlaybackList, MediaPlaybackItemOpenedEventArgs> MediaPlaybackList.ItemOpened");
 			}
 		}
-		#endif
+#endif
 		// Processing: Windows.Media.Playback.IMediaPlaybackSource
 	}
 }
