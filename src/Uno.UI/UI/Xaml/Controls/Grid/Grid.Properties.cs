@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)

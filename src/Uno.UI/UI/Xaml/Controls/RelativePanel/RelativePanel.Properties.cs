@@ -83,7 +83,7 @@ public partial class RelativePanel
 	/// <summary>
 	/// Identifies the Padding dependency property.
 	/// </summary>
-	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
+	[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 	public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 	private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
