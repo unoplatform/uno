@@ -10,9 +10,12 @@ using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -227,6 +230,47 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			NumberAssert.Greater(tb.ActualWidth, 0);
 			NumberAssert.Greater(tb.ActualHeight, 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Padding_Set_In_SizeChanged()
+		{
+			var SUT = new Grid
+			{
+				RowDefinitions =
+				{
+					new RowDefinition()
+					{
+						Height = new GridLength(200)
+					}
+				},
+				ColumnDefinitions =
+				{
+					new ColumnDefinition()
+					{
+						Width = new GridLength(200)
+					}
+				},
+				Children =
+				{
+					new Border()
+					{
+						Child = new Ellipse()
+						{
+							Fill = new SolidColorBrush(Colors.DarkOrange)
+						}
+					}
+				}
+			};
+
+			SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 		}
 
 		[TestMethod]
