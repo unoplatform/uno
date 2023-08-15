@@ -80,7 +80,6 @@
 	</ItemGroup>
 
 	<Target Name="_CompileUnoJava"
-			Condition="'$(DesignTimeBuild)' != 'true'"
 			BeforeTargets="@(_CompileUnoJavaBeforeTargets)"
 			AfterTargets="@(_CompileUnoJavaAfterTargets)"
 			Inputs="@(_JavaFile)"
