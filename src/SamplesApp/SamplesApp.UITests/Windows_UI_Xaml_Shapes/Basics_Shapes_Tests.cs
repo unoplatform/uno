@@ -18,35 +18,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Rectangle()
 			=> ValidateShape("Rectangle");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Ellipse()
 			=> ValidateShape("Ellipse");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Line()
 			=> ValidateShape("Line");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Polyline()
 			=> ValidateShape("Polyline");
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		[Timeout(TestTimeout)]
 		public void When_Polygon()
 		{
@@ -62,7 +57,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS)]
 		[Timeout(TestTimeout)]
 		public void When_Path()
 		{
