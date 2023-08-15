@@ -154,30 +154,26 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTextBlockForeground();
 		}
 
-		// TODO UNO
-		//private void EnterImpl(
-		//	bool bLive,
-		//	bool bSkipNameRegistration,
-		//	bool bCoercedIsEnabled,
-		//	bool bUseLayoutRounding)
-		//{
-		//	base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
+		private void EnterImpl()
+		{
+			//TODO:Uno Specific: This should be called by the base class each time the element enters the visual tree.
+			//For now we call it on Loaded.
 
-		//	if (bLive)
-		//	{
-		//		// In case any of the TextBlock properties have been updated while
-		//		// we were out of the visual tree, we should update them in order to ensure
-		//		// that we always have the most up-to-date values.
-		//		// An example where this can happen is if the theme changes while
-		//		// the flyout holding the CalendarView for a CalendarDatePicker is closed.
-		//		UpdateTextBlockForeground();
-		//		UpdateTextBlockFontProperties();
-		//		UpdateTextBlockAlignments();
-		//		UpdateVisualStateInternal();
-		//	}
+			//base.EnterImpl(bLive, bSkipNameRegistration, bCoercedIsEnabled, bUseLayoutRounding);
 
-		//	return;
-		//}
+			// In case any of the TextBlock properties have been updated while
+			// we were out of the visual tree, we should update them in order to ensure
+			// that we always have the most up-to-date values.
+			// An example where this can happen is if the theme changes while
+			// the flyout holding the CalendarView for a CalendarDatePicker is closed.
+			UpdateTextBlockForeground();
+			UpdateTextBlockFontProperties();
+			UpdateTextBlockAlignments();
+			UpdateVisualStateInternal();
+
+			//TODO:Uno specific: Ensure chrome of the calendar item is updated (e.g. the background color, border color, etc.)
+			InvalidateRender();
+		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private protected CCalendarViewBaseItemChrome GetHandle() => this;

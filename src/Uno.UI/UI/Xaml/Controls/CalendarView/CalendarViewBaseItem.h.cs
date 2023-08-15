@@ -24,6 +24,10 @@ namespace Windows.UI.Xaml.Controls
 #endif
 			// Uno only
 			Initialize_CalendarViewBaseItemChrome();
+			this.Loaded += (_, _) =>
+			{
+				EnterImpl();
+			};
 		}
 
 
