@@ -115,8 +115,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			mouse.Release();
 		}
-	}
 #endif
+	}
 
 	public partial class MySlider : Slider
 	{
