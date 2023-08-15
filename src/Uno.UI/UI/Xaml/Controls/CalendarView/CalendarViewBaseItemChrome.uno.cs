@@ -9,18 +9,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	partial class CalendarViewBaseItem
 	{
-<<<<<<< HEAD
 		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
-=======
-#if __ANDROID__ || __IOS__ || __SKIA__ || __WASM__ || __MACOS__
-		private BorderLayerRenderer _borderRenderer;
-#endif
-
-<<<<<<< HEAD
-		private bool _forceUpdateChrome;
->>>>>>> 00f85827b8 (fix: Ensure CalendarView item styles are updated properly on reload)
-=======
->>>>>>> 7bae0147ec (chore: Simplify logic)
 		private Size _lastSize;
 
 		private void Uno_InvalidateRender()
