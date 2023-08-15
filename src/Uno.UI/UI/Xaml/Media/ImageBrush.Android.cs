@@ -33,9 +33,9 @@ namespace Windows.UI.Xaml.Media
 			_onImageLoaded?.Invoke();
 		}
 
-		protected override Paint GetPaintInner(Rect drawRect)
+		protected override void ApplyToPaintInner(Rect drawRect, Paint paint)
 		{
-			throw new NotSupportedException($"{nameof(GetPaintInner)} is not supported for ImageBrush.");
+			throw new NotSupportedException($"{nameof(ApplyToPaintInner)} is not supported for ImageBrush.");
 		}
 
 		internal void ScheduleRefreshIfNeeded(Windows.Foundation.Rect drawRect, Action onImageLoaded)

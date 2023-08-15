@@ -32,11 +32,17 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Fill style</returns>
-		internal Paint GetFillPaint(Windows.Foundation.Rect destinationRect)
+		internal void ApplyToFillPaint(Windows.Foundation.Rect destinationRect, Paint paint)
 		{
-			var paint = GetPaintInner(destinationRect);
-			paint?.SetStyle(SystemFill);
-			return paint;
+			if (paint is null)
+			{
+				throw new ArgumentNullException(nameof(paint));
+			}
+
+			paint.Reset();
+			ApplyToPaintInner(destinationRect, paint);
+			paint.AntiAlias = true;
+			paint.SetStyle(SystemFill);
 		}
 
 		/// <summary>
@@ -44,14 +50,20 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Stroke style</returns>
-		internal Paint GetStrokePaint(Windows.Foundation.Rect destinationRect)
+		internal void ApplyToStrokePaint(Windows.Foundation.Rect destinationRect, Paint paint)
 		{
-			var paint = GetPaintInner(destinationRect);
-			paint?.SetStyle(SystemStroke);
-			return paint;
+			if (paint is null)
+			{
+				throw new ArgumentNullException(nameof(paint));
+			}
+
+			paint.Reset();
+			ApplyToPaintInner(destinationRect, paint);
+			paint.AntiAlias = true;
+			paint.SetStyle(SystemStroke);
 		}
 
-		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
+		protected virtual void ApplyToPaintInner(Rect destinationRect, Paint paint) => throw new InvalidOperationException();
 
 		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{

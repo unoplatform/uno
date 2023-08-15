@@ -67,14 +67,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				var muxRevealBorderBrush = new Microsoft.UI.Xaml.Media.RevealBorderBrush();
 				var muxRevealBackgroundBrush = new Microsoft.UI.Xaml.Media.RevealBackgroundBrush();
 
-				revealBorderBrush.GetStrokePaint(default);
-				revealBackgroundBrush.GetStrokePaint(default);
-				muxRevealBorderBrush.GetStrokePaint(default);
-				muxRevealBackgroundBrush.GetStrokePaint(default);
-				revealBorderBrush.GetFillPaint(default);
-				revealBackgroundBrush.GetFillPaint(default);
-				muxRevealBorderBrush.GetFillPaint(default);
-				muxRevealBackgroundBrush.GetFillPaint(default);
+				var paint = new Android.Graphics.Paint();
+				revealBorderBrush.ApplyToStrokePaint(default, paint);
+				revealBackgroundBrush.ApplyToStrokePaint(default, paint);
+				muxRevealBorderBrush.ApplyToStrokePaint(default, paint);
+				muxRevealBackgroundBrush.ApplyToStrokePaint(default, paint);
+				revealBorderBrush.ApplyToFillPaint(default, paint);
+				revealBackgroundBrush.ApplyToFillPaint(default, paint);
+				muxRevealBorderBrush.ApplyToFillPaint(default, paint);
+				muxRevealBackgroundBrush.ApplyToFillPaint(default, paint);
 			}
 			catch
 			{

@@ -1,24 +1,21 @@
 #pragma warning disable 0618 // Used for compatibility with SetBackgroundDrawable and previous API Levels
 
+using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.Views;
+using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI;
 using Uno.UI.Controls;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using Uno.Disposables;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Uno.UI;
-using AndroidX.AppCompat.View;
-using System.Diagnostics;
-using Rect = Windows.Foundation.Rect;
 using Windows.UI.Xaml.Media.Imaging;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -31,6 +28,8 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _layerDisposable = new SerialDisposable();
 		private static readonly float[] _outerRadiiStore = new float[8];
 		private static readonly float[] _innerRadiiStore = new float[8];
+		private static Paint _strokePaint;
+		private static Paint _fillPaint;
 
 		/// <summary>
 		/// Updates or creates a sublayer to render a border-like shape.
@@ -164,8 +163,17 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
-							var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath)));
+							_fillPaint ??= new();
+							if (background is not null)
+							{
+								background.ApplyToFillPaint(drawArea, _fillPaint);
+							}
+							else
+							{
+								_fillPaint.Reset();
+								_fillPaint.Color = Android.Graphics.Color.Transparent;
+							}
+							ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, _fillPaint, backgroundPath)));
 						}
 						disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 					}
@@ -174,25 +182,25 @@ namespace Windows.UI.Xaml.Controls
 					{
 						//TODO: Handle case when BorderBrush is an ImageBrush
 						// Related Issue: https://github.com/unoplatform/uno/issues/6893
-						using (var strokePaint = new Paint(borderBrush.GetStrokePaint(drawArea)))
+						_strokePaint ??= new();
+						borderBrush.ApplyToStrokePaint(drawArea, _strokePaint);
+
+						//Create the path for the outer and inner rectangles that will become our border shape							
+						using var borderPath = new Path();
+
+						borderPath.AddRoundRect(drawArea, _outerRadiiStore, Path.Direction.Cw);
+						borderPath.AddRoundRect(adjustedArea, _innerRadiiStore, Path.Direction.Cw);
+
+						var overlay = GetOverlayDrawable(
+							_strokePaint,
+							physicalBorderThickness,
+							new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height),
+							borderPath);
+
+						if (overlay != null)
 						{
-							//Create the path for the outer and inner rectangles that will become our border shape							
-							using var borderPath = new Path();
-
-							borderPath.AddRoundRect(drawArea, _outerRadiiStore, Path.Direction.Cw);
-							borderPath.AddRoundRect(adjustedArea, _innerRadiiStore, Path.Direction.Cw);
-
-							var overlay = GetOverlayDrawable(
-								strokePaint,
-								physicalBorderThickness,
-								new global::System.Drawing.Size((int)drawArea.Width, (int)drawArea.Height),
-								borderPath);
-
-							if (overlay != null)
-							{
-								overlay.SetBounds(0, 0, view.Width, view.Height);
-								SetOverlay(view, disposables, overlay);
-							}
+							overlay.SetBounds(0, 0, view.Width, view.Height);
+							SetOverlay(view, disposables, overlay);
 						}
 					}
 				}
@@ -219,8 +227,17 @@ namespace Windows.UI.Xaml.Controls
 					}
 					else
 					{
-						var fillPaint = background?.GetFillPaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent };
-						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, fillPaint, backgroundPath, antiAlias: false)));
+						_fillPaint ??= new();
+						if (background is not null)
+						{
+							background.ApplyToFillPaint(drawArea, _fillPaint);
+						}
+						else
+						{
+							_fillPaint.Reset();
+							_fillPaint.Color = Android.Graphics.Color.Transparent;
+						}
+						ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(background, drawArea, _fillPaint, backgroundPath, antiAlias: false)));
 					}
 					disposables.Add(() => ExecuteWithNoRelayout(view, v => v.SetBackgroundDrawable(null)));
 				}
@@ -229,15 +246,23 @@ namespace Windows.UI.Xaml.Controls
 				{
 					//TODO: Handle case when BorderBrush is an ImageBrush
 					// Related Issue: https://github.com/unoplatform/uno/issues/6893
-					using (var strokePaint = borderBrush?.GetStrokePaint(drawArea) ?? new Paint() { Color = Android.Graphics.Color.Transparent })
+					_strokePaint ??= new();
+					if (borderBrush is not null)
 					{
-						var overlay = GetOverlayDrawable(strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
+						borderBrush.ApplyToStrokePaint(drawArea, _strokePaint);
+					}
+					else
+					{
+						_strokePaint.Reset();
+						_strokePaint.Color = Android.Graphics.Color.Transparent;
+					}
 
-						if (overlay != null)
-						{
-							overlay.SetBounds(0, 0, view.Width, view.Height);
-							SetOverlay(view, disposables, overlay);
-						}
+					var overlay = GetOverlayDrawable(_strokePaint, physicalBorderThickness, new global::System.Drawing.Size(view.Width, view.Height));
+
+					if (overlay != null)
+					{
+						overlay.SetBounds(0, 0, view.Width, view.Height);
+						SetOverlay(view, disposables, overlay);
 					}
 				}
 			}

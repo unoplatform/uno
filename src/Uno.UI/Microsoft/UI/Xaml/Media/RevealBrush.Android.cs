@@ -7,11 +7,11 @@ namespace Microsoft.UI.Xaml.Media;
 
 public partial class RevealBrush : XamlCompositionBrushBase
 {
-	protected override Paint GetPaintInner(Rect destinationRect)
+	protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 	{
 		var color = this.IsDependencyPropertySet(FallbackColorProperty) ?
 			GetColorWithOpacity(FallbackColor) :
 			GetColorWithOpacity(Color);
-		return new Paint() { Color = color, AntiAlias = true };
+		paint.Color = color;
 	}
 }
