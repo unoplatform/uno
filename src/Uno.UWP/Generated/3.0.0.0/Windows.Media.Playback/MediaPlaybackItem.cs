@@ -169,9 +169,9 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.DurationLimit.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.get
 		// Forced skipping of method Windows.Media.Playback.MediaPlaybackItem.CanSkip.set
-#if __ANDROID__ || __IOS__ || NET461 || false || false || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public  global::Windows.Media.Playback.MediaItemDisplayProperties GetDisplayProperties()
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__SKIA__", "NET461", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public global::Windows.Media.Playback.MediaItemDisplayProperties GetDisplayProperties()
 		{
 			throw new global::System.NotImplementedException("The member MediaItemDisplayProperties MediaPlaybackItem.GetDisplayProperties() is not implemented. For more information, visit https://aka.platform.uno/notimplemented?m=MediaItemDisplayProperties%20MediaPlaybackItem.GetDisplayProperties%28%29");
 		}
