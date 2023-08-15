@@ -8,7 +8,6 @@ namespace Windows.UI.Xaml.Media
 	{
 		protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
-			paint.Reset();
 			paint.SetShader(GetShader(destinationRect.Size));
 			paint.SetStyle(Paint.Style.Stroke);
 		}

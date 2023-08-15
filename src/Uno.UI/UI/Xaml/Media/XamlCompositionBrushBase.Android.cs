@@ -9,6 +9,5 @@ public partial class XamlCompositionBrushBase : Brush
 	{
 		// By default fallback to FallbackColor, unless overridden by a derived class.
 		paint.Color = FallbackColorWithOpacity;
-		paint.AntiAlias = true;
 	}
 }

@@ -40,8 +40,8 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			paint.Reset();
-			ApplyToPaintInner(destinationRect, paint);
 			paint.AntiAlias = true;
+			ApplyToPaintInner(destinationRect, paint);
 			paint.SetStyle(SystemFill);
 		}
 
@@ -58,8 +58,8 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			paint.Reset();
-			ApplyToPaintInner(destinationRect, paint);
 			paint.AntiAlias = true;
+			ApplyToPaintInner(destinationRect, paint);
 			paint.SetStyle(SystemStroke);
 		}
 
