@@ -406,7 +406,9 @@ namespace Uno.UI.RemoteControl.VS
 
 		private bool IsApplication(Microsoft.Build.Evaluation.Project project)
 		{
-			return project.GetPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) == true;
+  			var outputType = project.GetPropertyValue("OutputType");
+			return outputType is not null &&
+   				(outputType.Equals("Exe", StringComparison.OrdinalIgnoreCase) || outputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase));
 		}
 
 		public void Dispose()
