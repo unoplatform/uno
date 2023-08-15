@@ -153,11 +153,13 @@ namespace Windows.UI.Xaml.Controls
 					that.DragLeave -= OnReorderDragLeave;
 					that.Drop -= OnReorderCompleted;
 
-					that.DragEnter += OnReorderDragUpdated;
-					that.DragOver += OnReorderDragUpdated;
-					that.DragLeave += OnReorderDragLeave;
-					that.Drop += OnReorderCompleted;
-
+					if (that is not Microsoft.UI.Xaml.Controls.TreeViewList)
+					{
+						that.DragEnter += OnReorderDragUpdated;
+						that.DragOver += OnReorderDragUpdated;
+						that.DragLeave += OnReorderDragLeave;
+						that.Drop += OnReorderCompleted;
+					}
 					that.m_tpPrimaryDraggedContainer = sender as SelectorItem;
 
 					that.ChangeSelectorItemsVisualState(true);

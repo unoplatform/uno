@@ -43,7 +43,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal TreeViewViewModel ListViewModel { get; private set; }
 
-		internal TreeViewNode DraggedTreeViewNode { get; private set; }
+		internal TreeViewNode DraggedTreeViewNode
+		{
+			get
+			{
+				return m_draggedTreeViewNode;
+			}
+		}
 
 		private void OnDragItemsStarting(object sender, DragItemsStartingEventArgs args)
 		{
