@@ -8,6 +8,10 @@ using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -17,6 +21,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public class Given_StackPanel
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Padding_Set_In_SizeChanged()
+		{
+			var SUT = new StackPanel()
+			{
+				Width = 200,
+				Height = 200,
+				Children =
+				{
+					new Border()
+					{
+						Child = new Ellipse()
+						{
+							Fill = new SolidColorBrush(Colors.DarkOrange)
+						}
+					}
+				}
+			};
+
+			SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_InsertingChildren_Then_ResultIsInRightOrder()

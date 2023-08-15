@@ -11,6 +11,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 
@@ -22,6 +23,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 #endif
 public class Given_ContentPresenter
 {
+	[TestMethod]
+	public async Task When_Padding_Set_In_SizeChanged()
+	{
+		var SUT = new ContentPresenter()
+		{
+			Width = 200,
+			Height = 200,
+			Content = new Border()
+			{
+				Child = new Ellipse()
+				{
+					Fill = new SolidColorBrush(Colors.DarkOrange)
+				}
+			}
+		};
+
+		SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
+
+		TestServices.WindowHelper.WindowContent = SUT;
+		await TestServices.WindowHelper.WaitForLoaded(SUT);
+		await TestServices.WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+	}
+
 	[TestMethod]
 	public void When_Content_Alignment_Set_Default_Alignment_Not_Overriden()
 	{
