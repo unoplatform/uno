@@ -237,6 +237,8 @@ namespace Windows.UI.Xaml
 					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
 					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
 
+					var previousDesiredSize = LayoutInformation.GetDesiredSize(this);
+
 					// The dirty flag is explicitly set on this element
 #if DEBUG
 					try
@@ -255,6 +257,13 @@ namespace Windows.UI.Xaml
 #endif
 					{
 						LayoutInformation.SetAvailableSize(this, availableSize);
+
+						if (previousDesiredSize != LayoutInformation.GetDesiredSize(this) &&
+							!IsMeasureDirtyPathDisabled &&
+							this.GetParent() is UIElement parent)
+						{
+							parent.InvalidateMeasure();
+						}
 					}
 
 					break;
