@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetCurrentNetCoreMobile);$(NetPreviousNetCoreMobile)</TargetFrameworks>
 	</PropertyGroup>
@@ -69,6 +69,10 @@
 
 	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='ios'">
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='maccatalyst'">
+		<SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
