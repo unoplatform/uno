@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.IO;
 using System.Diagnostics;
@@ -50,6 +52,7 @@ namespace SamplesApp
 		private static ILogger _log;
 #endif
 
+		private static Windows.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
 
@@ -93,6 +96,8 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+			EnsureMainWindow();
+
 #if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
@@ -117,7 +122,7 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+			var n = _mainWindow.Dispatcher.RunIdleAsync(
 				_ =>
 				{
 					Console.WriteLine("Done loading " + sw.Elapsed);
@@ -160,6 +165,82 @@ namespace SamplesApp
 			ApplicationView.GetForCurrentView().Title += $" ({repositoryPath})";
 		}
 #endif
+
+		[MemberNotNull(nameof(_mainWindow))]
+		private void EnsureMainWindow()
+		{
+			_mainWindow ??=
+#if HAS_UNO_WINUI
+				new Windows.UI.Xaml.Window();
+#else
+				Windows.UI.Xaml.Window.IReallyUseCurrentWindow;
+#endif
+		}
+
+		private bool HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
+		{
+#if __SKIA__ || __MACOS__
+			var runAutoScreenshotsParam =
+			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
+
+			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
+
+			if (!string.IsNullOrEmpty(screenshotsPath))
+			{
+				var n = _mainWindow.Dispatcher.RunIdleAsync(
+					_ =>
+					{
+						var n = _mainWindow.Dispatcher.RunAsync(
+							CoreDispatcherPriority.Normal,
+							async () =>
+							{
+								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
+							}
+						);
+
+					});
+
+				return true;
+			}
+#endif
+
+			return false;
+		}
+
+		private static Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e) => HandleSkiaRuntimeTests(e.Arguments);
+
+		public static
+#if __SKIA__ || __MACOS__
+			async
+#endif
+			Task<bool> HandleSkiaRuntimeTests(string args)
+		{
+#if __SKIA__ || __MACOS__
+			var runRuntimeTestsResultsParam =
+				args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
+
+			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
+
+			if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
+			{
+				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
+
+				// let the app finish its startup
+				await Task.Delay(TimeSpan.FromSeconds(5));
+
+				await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
+					CancellationToken.None,
+					runtimeTestResultFilePath,
+					() => System.Environment.Exit(0));
+
+				return true;
+			}
+
+			return false;
+#else
+			return Task.FromResult(false);
+#endif
+		}
 
 #if __IOS__
 		/// <summary>
@@ -213,6 +294,7 @@ namespace SamplesApp
 		{
 			base.OnActivated(e);
 
+			EnsureMainWindow();
 			InitializeFrame();
 			ActivateMainWindow();
 
@@ -255,7 +337,7 @@ namespace SamplesApp
 
 		private void InitializeFrame(string arguments = null)
 		{
-			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+			Frame rootFrame = _mainWindow.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
@@ -267,7 +349,7 @@ namespace SamplesApp
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
 				// Place the frame in the current Window
-				Windows.UI.Xaml.Window.Current.Content = rootFrame;
+				_mainWindow.Content = rootFrame;
 			}
 
 			if (rootFrame.Content == null)
