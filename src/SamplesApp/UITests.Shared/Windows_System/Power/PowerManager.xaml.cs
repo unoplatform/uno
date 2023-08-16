@@ -62,7 +62,7 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 #if HAS_UNO
 		IsInitialized = await UwpPowerManager.InitializeAsync();
 #else
-		IsInitialized = true;
+		IsInitialized = await Task.FromResult(true);
 #endif
 	}
 
