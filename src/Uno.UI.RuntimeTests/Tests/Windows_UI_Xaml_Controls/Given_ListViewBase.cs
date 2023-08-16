@@ -3373,6 +3373,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ThemeChange()
+		{
+			const double TotalHeight = 500; // The ListView height.
+			const double ItemHeight = 50; // The ListViewItem height
+			const int NumberOfItemsShownAtATime = (int)(TotalHeight / ItemHeight); // The number of ListViewItems shown at a time.
+			const int NumberOfItems = 50; // The total number of items.
+			var grid = new Grid() { Height = TotalHeight };
+			var SUT = new ListView()
+			{
+				ItemsSource = Enumerable.Range(0, NumberOfItems).Select(x => $"Item {x}").ToList(),
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = ItemHeight,
+						Child = tb
+					};
+
+					return border;
+				})
+			};
+
+			grid.AddChild(SUT);
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+			var exploredTextBlocks = new HashSet<TextBlock>();
+			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
+			{
+				var tb = listViewItem.FindFirstChild<TextBlock>();
+				exploredTextBlocks.Add(tb);
+				Assert.AreEqual(Colors.Black, ((SolidColorBrush)tb.Foreground).Color);
+			}
+
+			using (ThemeHelper.UseDarkTheme())
+			{
+				ScrollTo(SUT, NumberOfItemsShownAtATime * ItemHeight);
+				await WindowHelper.WaitForIdle();
+				var seenNewTextBlock = false;
+				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
+				{
+					var tb = listViewItem.FindFirstChild<TextBlock>();
+					seenNewTextBlock |= exploredTextBlocks.Add(tb);
+					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
+				}
+
+				Assert.AreEqual(true, seenNewTextBlock);
+			}
+		}
+
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
