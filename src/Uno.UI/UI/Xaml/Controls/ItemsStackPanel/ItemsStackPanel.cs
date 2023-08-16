@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			first = -1;
 			second = -1;
-			if ((new Windows.Foundation.Rect(0, 0, ActualSize.X, ActualSize.Y)).Contains(position))
+			if ((new Windows.Foundation.Rect(default, ActualSize)).Contains(position))
 			{
 				if (Children == null || Children.Empty())
 				{
