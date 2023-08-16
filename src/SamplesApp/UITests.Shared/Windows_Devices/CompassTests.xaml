@@ -31,6 +31,10 @@
 				<Run Text="{Binding HeadingMagneticNorth}" />
 			</TextBlock>
 			<TextBlock>
+				<Run FontWeight="Bold">HeadingTrueNorth:</Run>
+				<Run Text="{Binding HeadingTrueNorth}" />
+			</TextBlock>
+			<TextBlock>
 				<Run FontWeight="Bold">Timestamp: </Run>
 				<Run Text="{Binding Timestamp}" />
 			</TextBlock>
