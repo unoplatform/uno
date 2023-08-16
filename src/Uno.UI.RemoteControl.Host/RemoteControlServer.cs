@@ -159,7 +159,7 @@ namespace Uno.UI.RemoteControl.Host
 
 			_resolveAssemblyLocation = string.Empty;
 			_appInstanceIds.Add(msg.AppInstanceId);
-			var asmblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
+			var assemblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
 
 			// If BasePath is a specific file, try and load that
 			if (File.Exists(msg.BasePath))
@@ -167,7 +167,7 @@ namespace Uno.UI.RemoteControl.Host
 				try
 				{
 					using var fs = File.Open(msg.BasePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-					assemblies.Add(asmblyLoadContext.LoadFromStream(fs));
+					assemblies.Add(assemblyLoadContext.LoadFromStream(fs));
 
 					_resolveAssemblyLocation = msg.BasePath;
 				}
@@ -210,7 +210,7 @@ namespace Uno.UI.RemoteControl.Host
 
 					try
 					{
-						assemblies.Add(asmblyLoadContext.LoadFromAssemblyPath(file));
+						assemblies.Add(assemblyLoadContext.LoadFromAssemblyPath(file));
 					}
 					catch (Exception exc)
 					{
