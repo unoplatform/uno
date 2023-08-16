@@ -194,10 +194,17 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+#if !HAS_UNO_WINUI
+		/// <summary>
+		/// Represents the first created window.
+		/// </summary>
+		internal static Window DefaultWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+#endif
+
 		/// <summary>
 		/// Gets the window of the current thread.
 		/// </summary>
-		public static Window Current => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+		public static Window Current => throw new CannotUnloadAppDomainException();
 
 		public void Activate()
 		{

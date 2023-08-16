@@ -87,8 +87,7 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-				Window.Current.ToString();
+				Window.DefaultWindow.ToString();
 
 				InitializationCompleted();
 

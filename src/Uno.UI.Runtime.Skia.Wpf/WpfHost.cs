@@ -69,7 +69,7 @@ public class WpfHost : IWpfApplicationHost
 
 	private void SetupMainWindow()
 	{
-		var unoWpfWindow = new UnoWpfWindow(WinUI.Window.Current);
+		var unoWpfWindow = new UnoWpfWindow(WinUI.Window.DefaultWindow);
 		WpfApplication.Current.MainWindow = unoWpfWindow;
 		unoWpfWindow.Activated += MainWindow_Activated;
 		unoWpfWindow.UpdateWindowPropertiesFromPackage();

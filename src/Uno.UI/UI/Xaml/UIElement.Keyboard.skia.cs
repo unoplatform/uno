@@ -28,8 +28,9 @@ namespace Windows.UI.Xaml
 		{
 			public KeyboardManager()
 			{
-				Window.Current.CoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
-				Window.Current.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
+				//TODO:MZ: This requires a larger rewrite - the key events need to go through the Window directly to properly support multiwindow
+				Window.DefaultWindow.CoreWindow.NativeKeyDownReceived += InitiateKeyDownBubblingFlow;
+				Window.DefaultWindow.CoreWindow.NativeKeyUpReceived += InitiateKeyUpBubblingFlow;
 			}
 
 			private void InitiateKeyDownBubblingFlow(CoreWindow sender, KeyEventArgs args)
