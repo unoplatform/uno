@@ -41,6 +41,7 @@ namespace UITests.Shared.Windows_Devices
 			private bool _readingChangedAttached;
 			private string _sensorStatus;
 			private double _headingMagneticNorth;
+			private double _headingTrueNorth;
 			private string _timestamp;
 
 			public CompassTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
@@ -105,6 +106,16 @@ namespace UITests.Shared.Windows_Devices
 				private set
 				{
 					_headingMagneticNorth = value;
+					RaisePropertyChanged();
+				}
+			}
+
+			public double HeadingTrueNorth
+			{
+				get => _headingTrueNorth;
+				private set
+				{
+					_headingTrueNorth = value;
 					RaisePropertyChanged();
 				}
 			}
