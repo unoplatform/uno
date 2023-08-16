@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml
 
 				if (_visual is null)
 				{
-					_visual = Window.Current.Compositor.CreateShapeVisual();
+					_visual = Compositor.GetSharedCompositor().CreateShapeVisual();
 #if ENABLE_CONTAINER_VISUAL_TRACKING
 					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
 #endif
