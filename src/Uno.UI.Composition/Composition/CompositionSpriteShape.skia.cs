@@ -1,6 +1,7 @@
 #nullable enable
 
 using SkiaSharp;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -9,51 +10,47 @@ namespace Windows.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
-		internal override void Render(SKSurface surface)
+		internal override void Draw(in DrawingSession session)
 		{
-			SkiaGeometrySource2D? geometrySource = Geometry?.BuildGeometry() as SkiaGeometrySource2D;
-
-			SKPath? geometry = geometrySource?.Geometry;
-			if (geometry == null)
+			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
-				return;
-			}
-
-			if (FillBrush != null)
-			{
-				var fillPaint = TryCreateAndClearFillPaint();
-
-				FillBrush.UpdatePaint(fillPaint, geometry.Bounds);
-
-				surface.Canvas.DrawPath(geometry, fillPaint);
-			}
-
-			if (StrokeBrush != null && StrokeThickness > 0)
-			{
-				var fillPaint = TryCreateAndClearFillPaint();
-				var strokePaint = TryCreateAndClearStrokePaint();
-
-				// Set stroke thickness
-				strokePaint.StrokeWidth = StrokeThickness;
-				// TODO: Add support for dashes here
-				// strokePaint.PathEffect = SKPathEffect.CreateDash();
-
-				// Generate stroke geometry for bounds that will be passed to a brush.
-				// - [Future]: This generated geometry should also be used for hit testing.
-				using (var strokeGeometry = strokePaint.GetFillPath(geometry))
+				if (FillBrush is { } fill)
 				{
-					StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+					var fillPaint = TryCreateAndClearFillPaint(in session);
 
-					surface.Canvas.DrawPath(strokeGeometry, fillPaint);
+					fill.UpdatePaint(fillPaint, geometry.Bounds);
+
+					session.Surface.Canvas.DrawPath(geometry, fillPaint);
+				}
+
+				if (StrokeBrush is { } stroke && StrokeThickness > 0)
+				{
+					var fillPaint = TryCreateAndClearFillPaint(in session);
+					var strokePaint = TryCreateAndClearStrokePaint(in session);
+
+					// Set stroke thickness
+					strokePaint.StrokeWidth = StrokeThickness;
+					// TODO: Add support for dashes here
+					// strokePaint.PathEffect = SKPathEffect.CreateDash();
+
+					// Generate stroke geometry for bounds that will be passed to a brush.
+					// - [Future]: This generated geometry should also be used for hit testing.
+					using var strokeGeometry = strokePaint.GetFillPath(geometry);
+
+					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+
+					session.Surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint() => TryCreateAndClearPaint(ref _strokePaint, true);
+		private SKPaint TryCreateAndClearStrokePaint(in DrawingSession session)
+			=> TryCreateAndClearPaint(in session, ref _strokePaint, true);
 
-		private SKPaint TryCreateAndClearFillPaint() => TryCreateAndClearPaint(ref _fillPaint, false);
+		private SKPaint TryCreateAndClearFillPaint(in DrawingSession session)
+			=> TryCreateAndClearPaint(in session, ref _fillPaint, false);
 
-		private SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke)
+		private static SKPaint TryCreateAndClearPaint(in DrawingSession session, ref SKPaint? paint, bool isStroke)
 		{
 			if (paint == null)
 			{
@@ -76,7 +73,7 @@ namespace Windows.UI.Composition
 				}
 			}
 
-			paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
+			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
 		}

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -254,13 +255,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Foreground = new SolidColorBrush(Colors.Red) { Opacity = 0.5 },
 			};
 
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.Load(SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			var renderer = new RenderTargetBitmap();
-			await renderer.RenderAsync(SUT);
-			var bitmap = await RawBitmap.From(renderer, SUT);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Color.FromArgb(127, 127, 0, 0));
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
 		}
 	}
 }

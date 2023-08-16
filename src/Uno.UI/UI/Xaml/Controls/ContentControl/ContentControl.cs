@@ -374,8 +374,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				OnApplyTemplate();
 			}
-
-			SyncDataContext();
 		}
 
 		private void SetContentTemplateRootToPlaceholder()

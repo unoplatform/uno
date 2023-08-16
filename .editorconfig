@@ -24,13 +24,6 @@ indent_size = 2
 [*.md]
 indent_style = space
 
-# Workaround https://github.com/unoplatform/uno/issues/6883
-[**/Generated/**/*.cs]
-generated_code = true
-
-[CyclomaticComplexityWalker.cs]
-generated_code = true
-
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true

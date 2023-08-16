@@ -16,7 +16,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using Uno.Extensions;
-using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
@@ -62,9 +61,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 		}
 
 #if !NETFX_CORE // Testing internal Uno methods
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		[RequiresFullWindow]
 #if __MACOS__

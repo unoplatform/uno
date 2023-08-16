@@ -989,6 +989,14 @@ namespace Windows.UI.Xaml.Controls
 			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
+
+			if (_inlines is not null)
+			{
+				foreach (var inline in _inlines)
+				{
+					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason);
+				}
+			}
 		}
 
 		internal override bool CanHaveChildren() => true;

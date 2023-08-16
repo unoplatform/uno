@@ -75,7 +75,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.6.0</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.7.0-2.final</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -285,7 +285,7 @@
 				<AnalysisModeGlobalization>AllEnabledByDefault</AnalysisModeGlobalization>
 			</PropertyGroup>
 			<ItemGroup>
-				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.0" PrivateAssets="All" />
+				<PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0-preview1.23165.1" PrivateAssets="All" />
 			</ItemGroup>
 		</When>
 		<Otherwise>

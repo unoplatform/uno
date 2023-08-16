@@ -630,6 +630,7 @@
 			<SolidColorBrush x:Key="HyperlinkForegroundThemeBrush" Color="#FF9C72FF" />
 			<SolidColorBrush x:Key="HyperlinkPointerOverForegroundThemeBrush" Color="#CC9C72FF" />
 			<SolidColorBrush x:Key="HyperlinkPressedForegroundThemeBrush" Color="#999C72FF" />
+			<StaticResource x:Key="HyperlinkForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
 			<SolidColorBrush x:Key="HubSectionHeaderPointerOverForegroundThemeBrush" Color="#FFD1D1D1" />
 			<SolidColorBrush x:Key="HubSectionHeaderPressedForegroundThemeBrush" Color="#FF777777" />
 			<SolidColorBrush x:Key="IMECandidateBackgroundThemeBrush" Color="#FFFFFFFF" />
@@ -1931,6 +1932,7 @@
 			<SolidColorBrush x:Key="HyperlinkForegroundThemeBrush" Color="{ThemeResource SystemColorHotlightColor}" />
 			<SolidColorBrush x:Key="HyperlinkPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorHotlightColor}" />
 			<SolidColorBrush x:Key="HyperlinkPressedForegroundThemeBrush" Color="{ThemeResource SystemColorHotlightColor}" />
+			<StaticResource x:Key="HyperlinkForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
 			<SolidColorBrush x:Key="HubSectionHeaderPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorHotlightColor}" />
 			<SolidColorBrush x:Key="HubSectionHeaderPressedForegroundThemeBrush" Color="{ThemeResource SystemColorHotlightColor}" />
 			<SolidColorBrush x:Key="IMECandidateBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
@@ -3221,6 +3223,7 @@
 			<SolidColorBrush x:Key="HyperlinkForegroundThemeBrush" Color="#FF4F1ACB" />
 			<SolidColorBrush x:Key="HyperlinkPointerOverForegroundThemeBrush" Color="#CC4F1ACB" />
 			<SolidColorBrush x:Key="HyperlinkPressedForegroundThemeBrush" Color="#994F1ACB" />
+			<StaticResource x:Key="HyperlinkForeground" ResourceKey="SystemControlHyperlinkTextBrush" />
 			<SolidColorBrush x:Key="HubSectionHeaderPointerOverForegroundThemeBrush" Color="#FFD1D1D1" />
 			<SolidColorBrush x:Key="HubSectionHeaderPressedForegroundThemeBrush" Color="#FF777777" />
 			<SolidColorBrush x:Key="IMECandidateBackgroundThemeBrush" Color="#FFFFFFFF" />

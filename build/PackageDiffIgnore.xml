@@ -647,6 +647,10 @@
 			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
 
 			<Member fullName="Uno.UI.Extensions.KeycodeExtensions" reason="Does not exist in WinAppSDK" />
+			
+			<!-- BEGIN Skia clipping -->
+			<Member fullName="System.Numerics.VectorExtensions" reason="Does not exist in WinAppSDK" />
+			<!-- END Skia clipping -->
 
 		</Types>
 		<Events>
@@ -1618,6 +1622,33 @@
 			<Member fullName="System.Void Windows.Data.Pdf.PdfPage..ctor()"
 				reason="Parameter-less ctor does not exist in UWP"/>
 			<!-- END Android PDFDocument -->
+
+			<!-- BEGIN Skia clipping -->
+			<Member fullName="Windows.Foundation.Point Uno.Extensions.Vector2Extensions.ToPoint(System.Numerics.Vector2 v)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Numerics.Vector2 Uno.Extensions.Vector2Extensions.ToVector(Windows.Foundation.Point p)" reason="Does not exist in WinAppSDK" />
+			<Member fullName="System.Numerics.Matrix3x2 Windows.UI.Composition.CompositionClip.get_TransformMatrix()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionClip.get_Scale()" reason="Converted to auto-property" />
+			<Member fullName="System.Single Windows.UI.Composition.CompositionClip.get_RotationAngle()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionClip.get_CenterPoint()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Matrix3x2 Windows.UI.Composition.CompositionGradientBrush.get_TransformMatrix()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionGradientBrush.get_Scale()" reason="Converted to auto-property" />
+			<Member fullName="System.Single Windows.UI.Composition.CompositionGradientBrush.get_RotationAngle()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionGradientBrush.get_CenterPoint()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Matrix3x2 Windows.UI.Composition.CompositionShape.get_TransformMatrix()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionShape.get_Scale()" reason="Converted to auto-property" />
+			<Member fullName="System.Single Windows.UI.Composition.CompositionShape.get_RotationAngle()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionShape.get_CenterPoint()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Matrix3x2 Windows.UI.Composition.CompositionSurfaceBrush.get_TransformMatrix()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionSurfaceBrush.get_Scale()" reason="Converted to auto-property" />
+			<Member fullName="System.Single Windows.UI.Composition.CompositionSurfaceBrush.get_RotationAngle()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector2 Windows.UI.Composition.CompositionSurfaceBrush.get_CenterPoint()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Matrix4x4 Windows.UI.Composition.Visual.get_TransformMatrix()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector3 Windows.UI.Composition.Visual.get_CenterPoint()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector3 Windows.UI.Composition.Visual.get_Scale()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Vector3 Windows.UI.Composition.Visual.get_RotationAxis()" reason="Converted to auto-property" />
+			<Member fullName="System.Single Windows.UI.Composition.Visual.get_RotationAngle()" reason="Converted to auto-property" />
+			<Member fullName="System.Numerics.Quaternion Windows.UI.Composition.Visual.get_Orientation()" reason="Converted to auto-property" />
+			<!-- END Skia clipping -->
 
 		</Methods>
 	</IgnoreSet>

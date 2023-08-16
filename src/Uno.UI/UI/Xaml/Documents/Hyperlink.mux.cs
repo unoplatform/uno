@@ -28,6 +28,11 @@ namespace Windows.UI.Xaml.Documents
 				IsTabStop;
 		}
 
-		internal IFocusable GetIFocusable() => _focusableHelper;
+		internal IFocusable? GetIFocusable() =>
+#if __WASM__
+			null;
+#else
+			_focusableHelper;
+#endif
 	}
 }

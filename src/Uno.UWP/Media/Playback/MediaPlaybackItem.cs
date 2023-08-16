@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__ || __MACOS__
+﻿#if __ANDROID__ || __IOS__ || __MACOS__ || __SKIA__ || __WASM__
 using Windows.Media.Core;
 
 namespace Windows.Media.Playback

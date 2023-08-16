@@ -68,6 +68,8 @@ namespace Windows.UI.Xaml
 			visualTreeRoot.OnElementUnloaded();
 		}
 
+		partial void OnLoading();
+
 		// Overloads for the FrameworkElement to raise the events
 		// (Load/Unload is actually a concept of the FwElement, but it's easier to handle it directly from the UIElement)
 		private protected virtual void OnFwEltLoading() { }
@@ -85,6 +87,7 @@ namespace Windows.UI.Xaml
 			IsLoading = true;
 			Depth = depth;
 
+			OnLoading();
 			OnFwEltLoading();
 
 			// Explicit propagation of the loading even must be performed
