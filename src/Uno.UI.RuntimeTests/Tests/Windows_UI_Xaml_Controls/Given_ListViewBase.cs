@@ -3373,6 +3373,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(header2.DataContext.ToString(), header2.Text);
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_ThemeChange()
@@ -3428,7 +3429,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
-#if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
 #if __WASM__ || __SKIA__
