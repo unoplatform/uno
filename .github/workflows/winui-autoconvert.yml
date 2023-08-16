@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,7 +59,7 @@ jobs:
 
     - run: |
         & dotnet tool update --global uno.check --version $env:UnoCheck_Version --add-source https://api.nuget.org/v3/index.json
-        & uno-check -v --ci --non-interactive --fix --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
+        & uno-check -v --ci --non-interactive --fix --skip androidsdk --skip androidemulator --skip xcode --skip gtk3 --skip vswin --skip vsmac --manifest $env:UnoCheck_Manifest
       name: Install .NET Workloads
 
     - name: Convert source tree to WinUI
@@ -67,9 +70,10 @@ jobs:
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
+        dotnet build Uno.UI.Build.csproj "/p:CombinedConfiguration=Release|AnyCPU" /t:RunAPISyncTool /bl
 
-    - name: commit
+    - name: Commit to repository
+      if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/master' }}
       run: |
         Set-PSDebug -Trace 1
         git add .
