@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-      <Compile Remove="**/Generated/**/*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
+      <Compile Remove="**/Generated/**/*.cs" />
 	  <Compile Include="**/Generated/**/*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder)" />
 	</ItemGroup>
 
