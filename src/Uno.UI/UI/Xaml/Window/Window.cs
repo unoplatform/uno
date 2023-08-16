@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets the window of the current thread.
 		/// </summary>
-		public static Window Current => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+		public static Window IReallyUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
 
 		public void Activate()
 		{
