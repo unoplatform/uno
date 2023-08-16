@@ -59,10 +59,10 @@ internal class PowerManagerTestsViewModel : ViewModelBase
 
 	public async Task InitializeAsync()
 	{
-#if __CROSSRUNTIME__
+#if HAS_UNO
 		IsInitialized = await UwpPowerManager.InitializeAsync();
 #else
-		IsInitialized = await Task.FromResult(true);
+		IsInitialized = true;
 #endif
 	}
 
