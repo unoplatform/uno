@@ -141,11 +141,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			sender.Maybe<MediaPlayerElement>(mpe =>
 			{
-				mpe.ToogleFullScreen((bool)args.NewValue);
+				mpe.ToggleFullScreen((bool)args.NewValue);
 			});
 		}
 
-		private void ToogleFullScreen(bool showFullscreen)
+		private void ToggleFullScreen(bool showFullscreen)
 		{
 			try
 			{
@@ -186,6 +186,8 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayerPresenter?.ExitFullScreen();
 #endif
 				}
+				TransportControls.SetMeasureCommandBar();
+
 			}
 			finally
 			{
