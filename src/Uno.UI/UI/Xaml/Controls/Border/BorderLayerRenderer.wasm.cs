@@ -19,13 +19,7 @@ namespace Windows.UI.Xaml.Shapes
 		private (Brush, Thickness) _border;
 		private CornerRadius _cornerRadius;
 
-		private WeakBrushChangedProxy _backgroundSubscription;
 		private Action _backgroundChanged;
-
-		~BorderLayerRenderer()
-		{
-			_backgroundSubscription?.Unsubscribe();
-		}
 
 		public void UpdateLayer(
 			UIElement element,
@@ -38,10 +32,10 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			if (_background != background && element is FrameworkElement fwElt)
 			{
+				var oldValue = _background;
 				_background = background;
-				_backgroundSubscription ??= new();
 
-				SetAndObserveBackgroundBrush(fwElt, background, _backgroundSubscription, ref _backgroundChanged);
+				SetAndObserveBackgroundBrush(fwElt, oldValue, background, ref _backgroundChanged);
 			}
 
 			if (_border != (borderBrush, borderThickness))
@@ -127,19 +121,21 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush, WeakBrushChangedProxy brushChangedProxy, ref Action brushChanged)
+		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush oldValue, Brush newValue, ref Action brushChanged)
 		{
-			if (brushChangedProxy.TryGetSource(out var oldValue) && oldValue is AcrylicBrush oldAcrylic)
+			if (oldValue is AcrylicBrush oldAcrylic)
 			{
 				AcrylicBrush.ResetStyle(element);
 			}
 
-			if (brush is ImageBrush imgBrush)
+			Action newOnInvalidateRender;
+
+			if (newValue is ImageBrush imgBrush)
 			{
-				SetBackgroundBrush(element, brush);
+				SetBackgroundBrush(element, newValue);
 
 				RecalculateBrushOnSizeChanged(element, false);
-				brushChanged = () =>
+				newOnInvalidateRender = () =>
 				{
 					if (imgBrush.ImageDataCache is not { } img)
 					{
@@ -167,19 +163,29 @@ namespace Windows.UI.Xaml.Shapes
 							break;
 					}
 				};
-				brushChangedProxy.Subscribe(imgBrush, brushChanged);
 			}
-			else if (brush is AcrylicBrush acrylicBrush)
+			else if (newValue is AcrylicBrush acrylicBrush)
 			{
-				SetBackgroundBrush(element, brush);
+				SetBackgroundBrush(element, newValue);
 
-				brushChanged = () => acrylicBrush.Apply(element);
-				brushChangedProxy.Subscribe(acrylicBrush, brushChanged);
+				newOnInvalidateRender = () => acrylicBrush.Apply(element);
 			}
 			else
 			{
-				brushChanged = () => SetBackgroundBrush(element, brush);
-				brushChangedProxy.Subscribe(brush, brushChanged);
+				SetBackgroundBrush(element, newValue);
+				if (newValue is not null)
+				{
+					newOnInvalidateRender = () => SetBackgroundBrush(element, newValue);
+				}
+				else
+				{
+					newOnInvalidateRender = null;
+				}
+			}
+
+			if (newOnInvalidateRender is not null)
+			{
+				Brush.SetupBrushChanged(oldValue, newValue, ref brushChanged, newOnInvalidateRender);
 			}
 		}
 
@@ -233,7 +239,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		internal void Clear()
 		{
-			_backgroundSubscription?.Unsubscribe();
 			_background = null;
 			_border = default;
 

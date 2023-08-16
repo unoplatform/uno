@@ -20,7 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxViewDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 
-		private WeakBrushChangedProxy _foregroundChangedProxy;
 		private Action _foregroundChanged;
 
 		public TextBoxView(TextBox textBox)
@@ -29,11 +28,6 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializeBinder();
 			Initialize();
-		}
-
-		partial void FinalizerPartial()
-		{
-			_foregroundChangedProxy?.Unsubscribe();
 		}
 
 		public override bool PerformKeyEquivalent(NSEvent theEvent)
@@ -183,9 +177,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundChangedProxy ??= new();
-			_foregroundChanged = () => ApplyColor();
-			_foregroundChangedProxy.Subscribe(newValue, _foregroundChanged);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 			void ApplyColor()
 			{

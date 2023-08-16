@@ -24,13 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		private MultilineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 		private WeakReference<Uno.UI.Controls.Window> _window;
-		private WeakBrushChangedProxy _foregroundChangedProxy;
 		private Action _foregroundChanged;
-
-		partial void FinalizerPartial()
-		{
-			_foregroundChangedProxy?.Unsubscribe();
-		}
 
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
@@ -214,27 +208,17 @@ namespace Windows.UI.Xaml.Controls
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
 			var textBox = _textBox.GetTarget();
-			_foregroundChangedProxy ??= new();
 			if (textBox != null)
 			{
 				if (newValue is SolidColorBrush scb)
 				{
-					_foregroundChanged = () => ApplyColor();
-					_foregroundChangedProxy.Subscribe(scb, _foregroundChanged);
+					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 					void ApplyColor()
 					{
 						TextColor = scb.Color;
 					}
 				}
-				else
-				{
-					_foregroundChangedProxy.Unsubscribe();
-				}
-			}
-			else
-			{
-				_foregroundChangedProxy.Unsubscribe();
 			}
 		}
 

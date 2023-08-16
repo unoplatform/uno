@@ -40,7 +40,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly ManagedWeakReference? _ownerRef;
 		internal TextBox? Owner => _ownerRef?.Target as TextBox;
 
-		private WeakBrushChangedProxy? _foregroundChangedProxy;
 		private Action? _foregroundChanged;
 
 		public TextBoxView(TextBox owner)
@@ -70,22 +69,6 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 			_inputTypes = (InputType, InputType);
-		}
-
-		partial void FinalizerPartial()
-		{
-			_foregroundChangedProxy?.Unsubscribe();
-		}
-
-		protected override void Dispose(bool disposing)
-		{
-			if (disposing)
-			{
-				_brushChangedProxy?.Unsubscribe();
-				_foregroundChangedProxy?.Unsubscribe();
-			}
-
-			base.Dispose(disposing);
 		}
 
 		internal void SetInputTypes(InputTypes inputType, InputTypes rawInputType)
@@ -322,28 +305,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			if (this.IsNullOrDisposed())
-			{
-				_foregroundChangedProxy?.Unsubscribe();
-				return;
-			}
-
-			_foregroundChangedProxy ??= new();
 			if (newValue is SolidColorBrush scb)
 			{
-				_foregroundChanged = () => ApplyColor();
-				_foregroundChangedProxy.Subscribe(scb, _foregroundChanged);
-
+				Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 				void ApplyColor()
 				{
 					SetTextColor(scb.Color);
 					SetCursorColor(scb.Color);
 				}
-			}
-			else
-			{
-				_foregroundChangedProxy.Unsubscribe();
 			}
 		}
 	}

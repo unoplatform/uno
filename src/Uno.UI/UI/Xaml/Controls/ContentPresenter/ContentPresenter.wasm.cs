@@ -45,7 +45,6 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateBorder()
 		{
 			SetBorder(BorderThickness, BorderBrush);
-			SetAndObserveBackgroundBrush(Background);
 		}
 
 		private void ClearBorder()

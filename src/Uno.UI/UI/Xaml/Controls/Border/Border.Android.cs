@@ -18,19 +18,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private WeakBrushChangedProxy _brushChangedProxy;
 		private Action _brushChanged;
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Border()
 		{
-		}
-
-		protected override void JavaFinalize()
-		{
-			_brushChangedProxy?.Unsubscribe();
-			_borderBrushChangedProxy?.Unsubscribe();
-			base.JavaFinalize();
 		}
 
 		private protected override void OnLoaded()
@@ -102,9 +94,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			_brushChangedProxy ??= new();
-			_brushChanged ??= () => UpdateBorder();
-			_brushChangedProxy.Subscribe(e.NewValue as Brush, _brushChanged);
+			var newOnInvalidateRender = _brushChanged ?? (() => UpdateBorder());
+			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _brushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)

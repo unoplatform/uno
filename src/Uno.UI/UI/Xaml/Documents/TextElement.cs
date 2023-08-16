@@ -167,6 +167,7 @@ namespace Windows.UI.Xaml.Documents
 
 		protected virtual void OnForegroundChanged()
 		{
+			// TODO: This is missing listening for brush changes?
 			OnForegroundChangedPartial();
 		}
 

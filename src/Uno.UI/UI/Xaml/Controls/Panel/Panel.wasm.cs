@@ -21,17 +21,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private WeakBrushChangedProxy _borderBrushChangedProxy;
 		private Action _borderBrushChanged;
 
 		public Panel()
 		{
 			Initialize();
-		}
-
-		~Panel()
-		{
-			_borderBrushChangedProxy?.Unsubscribe();
 		}
 
 		partial void Initialize();
@@ -53,9 +47,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChangedProxy ??= new();
-			_borderBrushChanged ??= () => UpdateBorder();
-			_borderBrushChangedProxy.Subscribe(newValue, _borderBrushChanged);
+			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)

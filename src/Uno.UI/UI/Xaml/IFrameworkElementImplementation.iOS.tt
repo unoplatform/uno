@@ -860,25 +860,14 @@ namespace <#= mixin.NamespaceName #>
 			set => SetBackgroundValue(value);
 		}
 
-
-		WeakBrushChangedProxy _brushChangedProxy;
 		Action _brushChanged;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_brushChangedProxy ??= new();
-			var brush = (Brush)e.NewValue;
-			_brushChanged = () => BackgroundColor = Brush.GetFallbackColor(brush);
-			_brushChangedProxy.Subscribe(brush, _brushChanged);
+			var oldValue = e.OldValue as Brush;
+			var newValue = e.NewValue as Brush;
+			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => Layer.BackgroundColor = Brush.GetFallbackColor(newValue));
 		}
-
-		~<#= mixin.ClassName #>()
-		{
-			_brushChangedProxy?.Unsubscribe();
-			FinalizerPartial();
-		}
-
-		partial void FinalizerPartial();
 
 		#endregion
 

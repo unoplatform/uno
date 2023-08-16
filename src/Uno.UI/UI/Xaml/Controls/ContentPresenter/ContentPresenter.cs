@@ -1002,6 +1002,9 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 
 			UpdateBorder();
+#if __WASM__
+			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
+#endif
 		}
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)

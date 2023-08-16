@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Windows.UI.Xaml.Controls
@@ -90,6 +91,9 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			UpdateBorder();
+#if __WASM__
+			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
+#endif
 		}
 	}
 }
