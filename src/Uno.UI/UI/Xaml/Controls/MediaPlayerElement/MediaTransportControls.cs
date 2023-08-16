@@ -1511,7 +1511,6 @@ namespace Windows.UI.Xaml.Controls
 							_timelineContainer.Visibility = Visibility.Visible;
 						}
 					}
-					//this.UpdateLayout();
 
 					DropoutOrder(availableSize, desiredSize);
 					AddMarginsBetweenGroups();
