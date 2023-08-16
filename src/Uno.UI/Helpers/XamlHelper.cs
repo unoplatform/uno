@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#define DISABLE_GENERATED_REGEX
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Windows.UI.Xaml.Markup;
