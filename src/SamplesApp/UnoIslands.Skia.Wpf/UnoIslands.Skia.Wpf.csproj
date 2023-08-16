@@ -1,6 +1,6 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFrameworks>NetWpfPreviousAndCurrent</TargetFrameworks>
+		<TargetFrameworks>$(NetWpfPreviousAndCurrent)</TargetFrameworks>
 
 		<!--
 		Enable implicit dotnet runtime forward rolling, as a net5
