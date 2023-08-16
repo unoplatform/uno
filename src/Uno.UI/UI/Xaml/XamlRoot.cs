@@ -6,6 +6,7 @@ using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
+using Windows.UI.Composition;
 
 namespace Microsoft.UI.Xaml;
 
@@ -33,7 +34,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public UIElement? Content =>
 		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
-			Microsoft.UI.Xaml.Window.Current?.Content : VisualTree.PublicRootVisual;
+			Microsoft.UI.Xaml.Window.IReallyUseCurrentWindow?.Content : VisualTree.PublicRootVisual;
 
 	/// <summary>
 	/// Gets the width and height of the content area.
@@ -41,6 +42,8 @@ public sealed partial class XamlRoot
 	public Size Size => VisualTree.Size;
 
 	internal Rect Bounds => VisualTree.VisibleBounds;
+
+	internal Compositor Compositor => Compositor.GetSharedCompositor();
 
 	/// <summary>
 	/// Gets a value that represents the number of raw (physical) pixels for each view pixel.
