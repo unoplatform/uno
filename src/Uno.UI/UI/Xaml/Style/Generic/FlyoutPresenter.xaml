@@ -52,12 +52,7 @@
                         CornerRadius="{TemplateBinding CornerRadius}"
                         Padding="{ThemeResource FlyoutBorderThemePadding}">
 						<ScrollViewer x:Name="ScrollViewer"
-<<<<<<< HEAD
-                            xamarin:ZoomMode="Disabled"
-                            win:ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
-=======
                             ZoomMode="{TemplateBinding ScrollViewer.ZoomMode}"
->>>>>>> 7bc2e64b83 (chore: Revert workaround related to TemplateBinding with attached DP)
                             HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
                             HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
                             VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
