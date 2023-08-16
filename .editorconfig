@@ -24,6 +24,10 @@ indent_size = 2
 [*.md]
 indent_style = space
 
+[**/Generated/**/*.cs]
+# See https://github.com/dotnet/roslyn/issues/69543
+generated_code = false
+
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true
