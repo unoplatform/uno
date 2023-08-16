@@ -21,9 +21,9 @@ namespace Uno.UI.RemoteControl.Host
 		private readonly static Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
-		private System.Reflection.Assembly? _loopAssembly;
+		private string? _resolveAssemblyLocation;
 		private WebSocket? _socket;
-		private List<string> _appInstanceIds = new();
+		private readonly List<string> _appInstanceIds = new();
 		private readonly IConfiguration _configuration;
 
 		public RemoteControlServer(IConfiguration configuration)
@@ -52,7 +52,7 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().LogDebug("Unloading assembly context");
+					this.Log().LogDebug("Unloading assembly context {name}", e.Name);
 				}
 			};
 
@@ -60,33 +60,23 @@ namespace Uno.UI.RemoteControl.Host
 			// is built for a different .net version than the host process.
 			loadContext.Resolving += (context, assemblyName) =>
 			{
-				if (_loopAssembly is not null)
+				if (!string.IsNullOrWhiteSpace(_resolveAssemblyLocation))
 				{
 					try
 					{
-						var loc = _loopAssembly.Location;
-						if (!string.IsNullOrWhiteSpace(loc))
+						var dir = Path.GetDirectoryName(_resolveAssemblyLocation);
+						if (!string.IsNullOrEmpty(dir))
 						{
-							var dir = Path.GetDirectoryName(loc);
-							if (!string.IsNullOrEmpty(dir))
+							var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
+							if (File.Exists(relPath))
 							{
-								var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
-								if (File.Exists(relPath))
+								if (this.Log().IsEnabled(LogLevel.Trace))
 								{
-									if (this.Log().IsEnabled(LogLevel.Trace))
-									{
-										this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
-									}
-
-									return context.LoadFromAssemblyPath(relPath);
+									this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
 								}
-							}
-						}
-						else
-						{
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().LogDebug("Failed for identify location of dependency: {assemblyName}", assemblyName);
+
+								using var fs = File.Open(relPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+								return context.LoadFromStream(fs);
 							}
 						}
 					}
@@ -98,6 +88,14 @@ namespace Uno.UI.RemoteControl.Host
 						}
 					}
 				}
+				else
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug("Failed for identify location of dependency: {assemblyName}", assemblyName);
+					}
+				}
+
 				return context.LoadFromAssemblyName(assemblyName);
 			};
 
@@ -159,6 +157,7 @@ namespace Uno.UI.RemoteControl.Host
 
 			var assemblies = new List<System.Reflection.Assembly>();
 
+			_resolveAssemblyLocation = string.Empty;
 			_appInstanceIds.Add(msg.AppInstanceId);
 			var asmblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
 
@@ -167,7 +166,10 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				try
 				{
-					assemblies.Add(asmblyLoadContext.LoadFromAssemblyPath(msg.BasePath));
+					using var fs = File.Open(msg.BasePath, FileMode.Open, FileAccess.Read, FileShare.Read);
+					assemblies.Add(asmblyLoadContext.LoadFromStream(fs));
+
+					_resolveAssemblyLocation = msg.BasePath;
 				}
 				catch (Exception exc)
 				{
@@ -225,7 +227,10 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				try
 				{
-					_loopAssembly = asm;
+					if (assemblies.Count > 1 || string.IsNullOrEmpty(_resolveAssemblyLocation))
+					{
+						_resolveAssemblyLocation = asm.Location;
+					}
 
 					var attributes = asm.GetCustomAttributes(typeof(ServerProcessorAttribute), false);
 
@@ -260,6 +265,9 @@ namespace Uno.UI.RemoteControl.Host
 					}
 				}
 			}
+
+			// Being thorough about trying to ensure everything is unloaded
+			assemblies.Clear();
 		}
 
 		public async Task SendFrame(IMessage message)
@@ -301,6 +309,11 @@ namespace Uno.UI.RemoteControl.Host
 					{
 						_loadContexts[appId].Context.Unload();
 						_loadContexts.Remove(appId);
+
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().LogTrace("Unloaded and removed AssemblyLoadContext for '{appId}'", appId);
+						}
 					}
 				}
 			}
