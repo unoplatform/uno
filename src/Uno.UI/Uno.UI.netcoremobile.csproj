@@ -65,10 +65,6 @@
 		<None Include="UI\Xaml\Controls\Panel\Panel.macOS.cs" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="System.Memory" Version="4.5.2" />
-	</ItemGroup>
-
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />

@@ -29,6 +29,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0-4.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0-4.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0-4.final" />
+		<!-- TODO: Use version 8 when compiling against .NET 8? -->
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Build" Version="16.5.0" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" ExcludeAssets="runtime" />
@@ -41,6 +42,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Features" Version="4.4.0-4.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="4.4.0-4.final" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="4.4.0-4.final" />
+		<!-- TODO: Use version 7 when compiling against .NET 7? -->
 		<PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
 		<PackageReference Include="Microsoft.Build" Version="16.5.0" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Framework" Version="16.5.0" ExcludeAssets="runtime" />
