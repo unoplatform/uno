@@ -5,7 +5,6 @@
 #nullable enable
 
 using System;
-using System.Diagnostics;
 using DirectUI;
 using Uno.Disposables;
 using Uno.UI.Xaml.Core;
@@ -114,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 				// in XAML template.
 				if (IsLoaded)
 				{
-					Debug.Assert(GetMaxOffset() > 0);
+					global::System.Diagnostics.Debug.Assert(GetMaxOffset() > 0);
 					ForceSwitchKnobEndPosition();
 				}
 			}
