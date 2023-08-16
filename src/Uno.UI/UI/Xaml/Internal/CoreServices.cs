@@ -46,6 +46,8 @@ namespace Uno.UI.Xaml.Core
 
 		public FullWindowMediaRoot? MainFullWindowMediaRoot => _mainVisualTree?.FullWindowMediaRoot;
 
+		public VisualTree? MainVisualTree => _mainVisualTree;
+
 		public DependencyObject? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
 		private void ResetCoreWindowVisualTree()

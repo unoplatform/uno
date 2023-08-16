@@ -786,8 +786,7 @@ namespace Uno.UI.Xaml.Core
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
-					return Window.Current.Bounds.Size;
+					return Window.IReallyUseCurrentWindow.Bounds.Size;
 				}
 				else
 				{
@@ -807,8 +806,7 @@ namespace Uno.UI.Xaml.Core
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					// TODO: Support multiple windows! https://github.com/unoplatform/uno/issues/8978[windows]
-					return Window.Current.Bounds;
+					return Window.IReallyUseCurrentWindow.Bounds;
 				}
 				else
 				{

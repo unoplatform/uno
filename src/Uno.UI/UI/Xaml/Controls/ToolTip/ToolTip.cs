@@ -115,7 +115,12 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
 				ApplyTemplate();
-				Measure(XamlRoot?.Size ?? (_owner as FrameworkElement)?.XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size);
+				var availableSize =
+					XamlRoot?.Size ??
+					(_owner as FrameworkElement)?.XamlRoot?.Size ??
+					Xaml.Window.IReallyUseCurrentWindow?.Bounds.Size ??
+					default;
+				Measure(availableSize);
 			}
 
 			return DesiredSize;
@@ -271,7 +276,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.Current.Bounds;
+			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.IReallyUseCurrentWindow?.Bounds ?? default;
 			screenWidth = bounds.Width;
 			screenHeight = bounds.Height;
 
@@ -443,10 +448,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.Current.Bounds;
+			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.IReallyUseCurrentWindow?.Bounds ?? default;
 			var constraint = visibleRect;
 
-			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.Current.Bounds;
+			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.IReallyUseCurrentWindow?.Bounds ?? default;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 

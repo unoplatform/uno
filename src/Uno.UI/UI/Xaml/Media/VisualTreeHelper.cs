@@ -212,14 +212,10 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
-			if (window == Window.Current)
+			if (window.RootElement?.XamlRoot?.VisualTree is { } visualTree) // TODO:MZ: Verify if there is not a better way
 			{
-				var mainVisualTree = WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.VisualTree;
 				return GetOpenPopups(mainVisualTree);
 			}
-
-			// TODO Uno: Multi-window support #8341.
-			throw new InvalidOperationException("Using multiple windows is not supported on this platform yet.");
 		}
 
 		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>
@@ -813,8 +809,10 @@ namespace Microsoft.UI.Xaml.Media
 
 		internal struct Branch
 		{
-			public static Branch ToWindowRoot(UIElement leaf)
-				=> new Branch(Window.Current.RootElement!, leaf); // TODO:MZ: Multi-window support
+			public static Branch ToPublicRoot(UIElement leaf)
+				=> new Branch(
+					leaf.XamlRoot?.VisualTree?.PublicRootVisual ?? throw new InvalidOperationException("Element must be part of a visual tree"), 
+					leaf); // TODO:MZ: Multi-window support
 
 			public Branch(UIElement root, UIElement leaf)
 			{
