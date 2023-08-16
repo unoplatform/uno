@@ -31,6 +31,11 @@
 		<XamlMergeInput Include="@(Page)" Exclude="@(_NonMergedXamlResources)" />
 	</ItemGroup>
 
+	<ItemGroup>
+      <Compile Remove="**/Generated/**/*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder) />
+	  <Compile Include="**/Generated/**/*.cs" Exclude="$(DefaultItemExcludes);$(DefaultExcludesInProjectFolder) />
+	</ItemGroup>
+
 	<!--
 	Comment out this section if you need to update Resource.designer.cs files.
 	See DEVELOPMENT.md#Android for details.
