@@ -647,7 +647,7 @@
 			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
 
 			<Member fullName="Uno.UI.Extensions.KeycodeExtensions" reason="Does not exist in WinAppSDK" />
-
+			<Member fullName="Uno.UI.Controls.ImageEx" reason="Empty class not present in WinAppSdk" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
