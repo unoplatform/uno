@@ -33,7 +33,6 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
-		#region HitTestVisibility
 		internal void UpdateHitTest()
 		{
 			this.CoerceValue(HitTestVisibilityProperty);
@@ -103,8 +102,6 @@ namespace Windows.UI.Xaml
 		{
 			this.ClearValue(HitTestVisibilityProperty);
 		}
-
-		#endregion
 	}
 }
 #endif
