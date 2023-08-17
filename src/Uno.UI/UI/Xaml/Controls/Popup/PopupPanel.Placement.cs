@@ -75,7 +75,7 @@ partial class PopupPanel
 	/// </summary>
 	protected virtual int PopupPlacementTargetMargin => 0;
 
-	private void Window_SizeChanged(object sender, WindowSizeChangedEventArgs e)
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		=> InvalidateMeasure();
 
 	// TODO: Use this whenever popup placement is Auto

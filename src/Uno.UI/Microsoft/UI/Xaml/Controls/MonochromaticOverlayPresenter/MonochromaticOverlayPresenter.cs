@@ -54,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					_effectFactory = null;
 				}
 
-				var compositor = global::Windows.UI.Xaml.Window.Current.Compositor;
+				var compositor = XamlRoot.Compositor;
 
 				if (_effectFactory == null)
 				{

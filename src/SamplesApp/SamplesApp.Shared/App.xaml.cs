@@ -172,7 +172,7 @@ namespace SamplesApp
 #if HAS_UNO_WINUI
 				new Windows.UI.Xaml.Window();
 #else
-				Windows.UI.Xaml.Window.IReallyUseCurrentWindow;
+				Windows.UI.Xaml.Window.SafeCurrent;
 #endif
 		}
 
