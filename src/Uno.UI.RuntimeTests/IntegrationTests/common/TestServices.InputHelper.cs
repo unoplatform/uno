@@ -60,7 +60,8 @@ namespace Private.Infrastructure
 					finger.Press(center);
 				});
 
-				// UNO specific - we sometimes need to explicitly wait between press and release, e.g. in CalendarDatePickerIntegrationTests
+				// For some tests when running on Windows, we need to explicitly wait between press and release, e.g. in CalendarDatePickerIntegrationTests
+				// UNO TODO: Why do we need this?
 				Thread.Sleep((int)waitBetweenPressRelease);
 
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
