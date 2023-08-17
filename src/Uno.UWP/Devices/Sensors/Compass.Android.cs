@@ -1,8 +1,14 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Android;
 using Android.App;
 using Android.Content;
 using Android.Hardware;
+using Android.Locations;
 using Uno.Devices.Sensors.Helpers;
+using Windows.Devices.Geolocation;
+using Windows.Extensions;
 
 namespace Windows.Devices.Sensors;
 
@@ -10,6 +16,8 @@ public partial class Compass
 {
 	private readonly Sensor _accelerometer;
 	private readonly Sensor _magnetometer;
+
+	private static bool isLocationAccessDeclared;
 
 	private SensorListener _listener;
 	private uint _reportInterval = SensorHelpers.UiReportingInterval;
@@ -44,6 +52,8 @@ public partial class Compass
 		var sensorManager = SensorHelpers.GetSensorManager();
 		var accelerometer = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
 		var magnetometer = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.MagneticField);
+
+		isLocationAccessDeclared = PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessFineLocation);
 
 		if (accelerometer != null && magnetometer != null)
 		{
@@ -81,32 +91,48 @@ public partial class Compass
 		_listener = null;
 	}
 
-	class SensorListener : Java.Lang.Object, ISensorEventListener, IDisposable
+	class SensorListener : Java.Lang.Object, ISensorEventListener
 	{
-		float[] _lastAccelerometer = new float[3];
-		float[] _lastMagnetometer = new float[3];
-		bool _lastAccelerometerSet;
-		bool _lastMagnetometerSet;
-		float[] _r = new float[9];
-		float[] _orientation = new float[3];
+		private readonly float[] _lastAccelerometer = new float[3];
+		private readonly float[] _lastMagnetometer = new float[3];
+		private bool _lastAccelerometerSet;
+		private bool _lastMagnetometerSet;
+		private readonly float[] _r = new float[9];
+		private readonly float[] _orientation = new float[3];
 
-		string _magnetometer;
-		string _accelerometer;
+		private readonly string _magnetometer;
+		private readonly string _accelerometer;
 
-		Compass _compass;
+		private readonly Compass _compass;
+		private Geolocator _geolocator;
 
 		internal SensorListener(Compass compass, string accelerometer, string magnetometer)
 		{
 			_compass = compass;
 			_magnetometer = magnetometer;
 			_accelerometer = accelerometer;
+
+			GetGeolocatorAsync();
+		}
+
+		internal async void GetGeolocatorAsync() 
+		{
+			if (isLocationAccessDeclared)
+			{
+				var accessStatus = await Geolocator.RequestAccessAsync();
+
+				if (accessStatus is GeolocationAccessStatus.Allowed)
+				{
+					_geolocator = new Geolocator();
+				}
+			}
 		}
 
 		void ISensorEventListener.OnAccuracyChanged(Sensor sensor, SensorStatus accuracy)
 		{
 		}
 
-		void ISensorEventListener.OnSensorChanged(SensorEvent e)
+		async void ISensorEventListener.OnSensorChanged(SensorEvent e)
 		{
 			if (e.Sensor.Name == _accelerometer && !_lastAccelerometerSet)
 			{
@@ -125,16 +151,27 @@ public partial class Compass
 				SensorManager.GetRotationMatrix(_r, null, _lastAccelerometer, _lastMagnetometer);
 				SensorManager.GetOrientation(_r, _orientation);
 
-				if (_orientation.Length <= 0)
+				var azimuthInRadians = _orientation[0];
+				var magneticNorth = (Java.Lang.Math.ToDegrees(azimuthInRadians) + 360.0) % 360.0;
+
+				var trueNorth = double.NaN;
+
+				if (_geolocator is not null)
 				{
-					return;
+					var geoposition = await _geolocator.GetGeopositionAsync();
+
+					var geomagneticField = new GeomagneticField(
+						(float)geoposition.Coordinate.Point.Position.Latitude,
+						(float)geoposition.Coordinate.Point.Position.Longitude,
+						(float)geoposition.Coordinate.Point.Position.Altitude,
+						0);
+
+					trueNorth = (magneticNorth + geomagneticField.Declination);
 				}
 
-				var azimuthInRadians = _orientation[0];
-				var azimuthInDegrees = (Java.Lang.Math.ToDegrees(azimuthInRadians) + 360.0) % 360.0;
-
 				var data = new CompassReading(
-					azimuthInDegrees,
+					magneticNorth,
+					trueNorth,
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 
 				_compass.OnReadingChanged(data);
