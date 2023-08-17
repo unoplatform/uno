@@ -31,6 +31,10 @@ If everything builds successfully, the app will run. The app is a collection of 
 
 ![SamplesApp main view](assets/SamplesApp.png)
 
+### Running-debugging the WebAssembly app on a mobile device
+
+By default, SamplesApp starts in debugging mode on localhost, making it inaccessible from external devices, even if they are on the same network. To remedy this, you can utilize Visual Studio 2022 Dev Tunnels to establish an externally accessible URL for your application. For more details, refer to the [Microsoft Learn documentation](https://learn.microsoft.com/en-us/aspnet/core/test/dev-tunnels). If the option doesn't appear initially, consider running a rebuild of the `SamplesApp.Wasm` project.
+
 ## Sample organization
 
 Samples are located in the [`UITests.Shared` project](https://github.com/unoplatform/uno/tree/master/src/SamplesApp/UITests.Shared). UI-related samples are generally grouped by control, or by functional area for samples that aren't specific to a particular control (eg `VisualStateTests`). Non-UI samples are generally grouped by namespace of the tested feature.
