@@ -1,4 +1,6 @@
-﻿using Uno.UI.Xaml.Controls;
+﻿#nullable enable
+
+using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
@@ -15,7 +17,7 @@ internal partial class XamlIsland : Panel
 		InitializeRoot(WinUICoreServices.Instance);
 	}
 
-	public UIElement Content
+	public UIElement? Content
 	{
 		get => _contentManager.Content;
 		set
@@ -32,4 +34,6 @@ internal partial class XamlIsland : Panel
 			UIElement.RootElementLoaded(_contentRoot.VisualTree.RootElement!);
 		}
 	}
+
+	internal Window? Window { get; set; }
 }
