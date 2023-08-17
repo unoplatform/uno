@@ -83,11 +83,16 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
-#if WINUI
+#if WINUI || HAS_UNO_WINUI
 				return new();
 #else
+				if (Window.IReallyUseCurrentWindow is not { } window)
+				{
+					return new();
+				}
+
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				var bounds = Window.Current?.Bounds ?? Rect.Empty;
+				var bounds = window.Bounds;
 				var result = new Thickness
 				{
 					Left = visibleBounds.Left - bounds.Left,
