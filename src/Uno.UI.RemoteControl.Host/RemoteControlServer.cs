@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
@@ -18,7 +19,7 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		private readonly static Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
+		private readonly static ConcurrentDictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private string? _resolveAssemblyLocation;
@@ -43,7 +44,8 @@ namespace Uno.UI.RemoteControl.Host
 		{
 			if (_loadContexts.TryGetValue(applicationId, out var lc))
 			{
-				lc.Count++;
+				_loadContexts.TryUpdate(applicationId, (lc.Context, lc.Count + 1), (lc.Context, lc.Count));
+
 				return lc.Context;
 			}
 
@@ -99,7 +101,13 @@ namespace Uno.UI.RemoteControl.Host
 				return context.LoadFromAssemblyName(assemblyName);
 			};
 
-			_loadContexts.Add(applicationId, (loadContext, 1));
+			if (!_loadContexts.TryAdd(applicationId, (loadContext, 1)))
+			{
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().LogTrace("Failed to add a LoadContext for : {appId}", applicationId);
+				}
+			}
 
 			return loadContext;
 		}
@@ -158,7 +166,12 @@ namespace Uno.UI.RemoteControl.Host
 			var assemblies = new List<System.Reflection.Assembly>();
 
 			_resolveAssemblyLocation = string.Empty;
-			_appInstanceIds.Add(msg.AppInstanceId);
+
+			if (!_appInstanceIds.Contains(msg.AppInstanceId))
+			{
+				_appInstanceIds.Add(msg.AppInstanceId);
+			}
+
 			var assemblyLoadContext = GetAssemblyLoadContext(msg.AppInstanceId);
 
 			// If BasePath is a specific file, try and load that
@@ -305,14 +318,37 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				if (_loadContexts.TryGetValue(appId, out var lc))
 				{
-					if (--lc.Count == 0)
+					if (lc.Count > 1)
 					{
-						_loadContexts[appId].Context.Unload();
-						_loadContexts.Remove(appId);
-
-						if (this.Log().IsEnabled(LogLevel.Trace))
+						_loadContexts.TryUpdate(appId, (lc.Context, lc.Count - 1), (lc.Context, lc.Count));
+					}
+					else
+					{
+						try
 						{
-							this.Log().LogTrace("Unloaded and removed AssemblyLoadContext for '{appId}'", appId);
+							_loadContexts[appId].Context.Unload();
+
+							if (_loadContexts.TryRemove(appId, out _))
+							{
+								if (this.Log().IsEnabled(LogLevel.Trace))
+								{
+									this.Log().LogTrace("Unloaded and removed AssemblyLoadContext for '{appId}'", appId);
+								}
+							}
+							else
+							{
+								if (this.Log().IsEnabled(LogLevel.Trace))
+								{
+									this.Log().LogTrace("Faile do to removed AssemblyLoadContext for '{appId}'", appId);
+								}
+							}
+						}
+						catch (Exception exc)
+						{
+							if (this.Log().IsEnabled(LogLevel.Error))
+							{
+								this.Log().LogError("Failed to unload AssemblyLoadContext for '{appId}' : {Exc}", appId, exc);
+							}
 						}
 					}
 				}
