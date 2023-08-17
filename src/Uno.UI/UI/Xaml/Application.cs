@@ -32,12 +32,8 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-<<<<<<< HEAD
-#elif XAMARIN_IOS
-=======
 using Windows.UI.Xaml.Controls;
 #elif __IOS__
->>>>>>> 52e64d6b73 (fix(android): Propagate theme change to all list view items properly)
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
