@@ -246,7 +246,7 @@ internal partial class PopupPanel : Panel
 		// is reachable by scaling the combined Parent/GetVisualParent() hierarchy.
 		this.SetLogicalParent(Popup);
 
-		Microsoft.UI.Xaml.Window.Current.SizeChanged += Window_SizeChanged;
+		this.XamlRoot.Changed += XamlRootChanged;
 	}
 
 	private protected override void OnUnloaded()
@@ -254,7 +254,7 @@ internal partial class PopupPanel : Panel
 		base.OnUnloaded();
 		this.SetLogicalParent(null);
 
-		Microsoft.UI.Xaml.Window.Current.SizeChanged -= Window_SizeChanged;
+		this.XamlRoot.Changed -= XamlRootChanged;
 	}
 
 	// TODO: pointer handling should really go on PopupRoot. For now it's easier to put here because PopupRoot doesn't track open popups, and also we

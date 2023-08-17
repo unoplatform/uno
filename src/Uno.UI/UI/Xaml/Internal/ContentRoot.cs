@@ -109,7 +109,7 @@ namespace Uno.UI.Xaml.Core
 
 		internal XamlRoot? XamlRoot => VisualTree.XamlRoot;
 
-		internal XamlIsland XamlIslandRoot { get; set; }
+		internal XamlIsland? XamlIslandRoot { get; set; }
 
 		//TODO Uno: This might need to be adjusted when we have proper lifetime handling
 		internal bool IsShuttingDown() => false;
@@ -120,7 +120,7 @@ namespace Uno.UI.Xaml.Core
 		{
 			return Type switch
 			{
-				ContentRootType.CoreWindow => Window.IReallyUseCurrentWindow,
+				ContentRootType.CoreWindow => Window.SafeCurrent,
 				ContentRootType.XamlIsland when XamlIslandRoot is not null => XamlIslandRoot.Window,
 				_ => null
 			};

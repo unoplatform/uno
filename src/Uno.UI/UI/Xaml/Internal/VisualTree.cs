@@ -786,7 +786,12 @@ namespace Uno.UI.Xaml.Core
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					return Window.IReallyUseCurrentWindow.Bounds.Size;
+					if (Window.SafeCurrent is null)
+					{
+						throw new InvalidOperationException("RootVisual should not exist in a Uno.WinUI application.");
+					}
+
+					return Window.SafeCurrent.Bounds.Size;
 				}
 				else
 				{
@@ -806,7 +811,12 @@ namespace Uno.UI.Xaml.Core
 				}
 				else if (RootElement is RootVisual rootVisual)
 				{
-					return Window.IReallyUseCurrentWindow.Bounds;
+					if (Window.SafeCurrent is null)
+					{
+						throw new InvalidOperationException("RootVisual should not exist in a Uno.WinUI application.");
+					}
+
+					return Window.SafeCurrent.Bounds;
 				}
 				else
 				{

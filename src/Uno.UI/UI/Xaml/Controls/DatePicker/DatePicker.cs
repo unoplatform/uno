@@ -219,7 +219,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// Initialize the DatePicker
 		void PrepareState()
 		{
-			Window pCurrentWindow = global::Microsoft.UI.Xaml.Window.Current;
+			Window pCurrentWindow = global::Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow;
 
 			// DatePickerGenerated.PrepareState();
 

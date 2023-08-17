@@ -90,7 +90,7 @@ internal partial class DisplayRegionHelper
 			// Instead of returning the actual window, find the SimulatedWindow element
 			UIElement window = null;
 
-			if (Window.IReallyUseCurrentWindow.Content is FrameworkElement fe)
+			if (Window.SafeCurrent.Content is FrameworkElement fe)
 			{
 				window = SharedHelpers.FindInVisualTreeByName(fe, "SimulatedWindow");
 			}
@@ -99,7 +99,7 @@ internal partial class DisplayRegionHelper
 		}
 		else
 		{
-			return Window.IReallyUseCurrentWindow.Content;
+			return Window.SafeCurrent.Content;
 		}
 	}
 
@@ -120,7 +120,7 @@ internal partial class DisplayRegionHelper
 		}
 		else
 		{
-			return Window.IReallyUseCurrentWindow.Bounds;
+			return Window.SafeCurrent.Bounds;
 		}
 	}
 

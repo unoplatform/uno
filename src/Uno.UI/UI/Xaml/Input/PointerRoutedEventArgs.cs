@@ -117,7 +117,7 @@ namespace Microsoft.UI.Xaml.Input
 				mods |= DragDropModifiers.RightButton;
 			}
 
-			var window = Window.Current.CoreWindow;
+			var window = Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow;
 			if (window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Shift;

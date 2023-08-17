@@ -3274,12 +3274,14 @@ namespace Windows.UI.Xaml.Controls
 
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = WindowsWindow.Current.Content;
-					GeneralTransform gt = TransformToVisual(root);
-					Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
-					if (pos.Y != 0.0f)
+					if (XamlRoot?.HostWindow?.Content is { } root)
 					{
-						topPadding = 0.0;
+						GeneralTransform gt = TransformToVisual(root);
+						Point pos = gt.TransformPoint(new Point(0.0f, 0.0f));
+						if (pos.Y != 0.0f)
+						{
+							topPadding = 0.0;
+						}
 					}
 
 					var backButtonVisibility = IsBackButtonVisible;

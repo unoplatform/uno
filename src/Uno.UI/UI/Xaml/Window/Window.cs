@@ -173,10 +173,25 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
+#if HAS_UNO_WINUI
+		/// <summary>
+		/// Always null in Uno.WinUI.
+		/// </summary>
+		public static Window? Current { get; }
+#else
 		/// <summary>
 		/// Gets the window of the current thread.
 		/// </summary>
-		public static Window IReallyUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+		public static Window Current => InternalGetCurrentWindow();
+#endif
+
+#pragma warning disable RS0030
+		/// <summary>
+		/// Use this to reference Window.Current throughout this codebase
+		/// to ensure it is intentional (the property is null throughout Uno.WinUI).
+		/// </summary>
+		internal static Window? SafeCurrent => Current;
+#pragma warning restore RS0030
 
 		public static Window IShouldntUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
 
@@ -269,7 +284,7 @@ namespace Microsoft.UI.Xaml
 #else
 				var coreWindowActivatedEventArgs = activatedEventArgs;
 #endif
-				CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
+				IReallyUseCoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 				Activated?.Invoke(this, activatedEventArgs);
 			}
 		}
