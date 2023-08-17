@@ -208,8 +208,10 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (window.RootElement?.XamlRoot?.VisualTree is { } visualTree) // TODO:MZ: Verify if there is not a better way
 			{
-				return GetOpenPopups(mainVisualTree);
+				return GetOpenPopups(visualTree);
 			}
+
+			return Array.Empty<Popup>();
 		}
 
 		private static IReadOnlyList<Popup> GetOpenFlyoutPopups(XamlRoot xamlRoot) =>

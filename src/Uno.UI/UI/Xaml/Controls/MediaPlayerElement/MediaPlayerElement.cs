@@ -163,14 +163,14 @@ namespace Windows.UI.Xaml.Controls
 					_mediaPlayerPresenter?.RequestFullScreen();
 #endif
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+					XamlRoot?.VisualTree?.FullWindowMediaRoot?.DisplayFullscreen(_layoutRoot);
 #endif
 				}
 				else
 				{
 					ApplicationView.GetForCurrentView().ExitFullScreenMode();
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+					XamlRoot?.VisualTree?.FullWindowMediaRoot?.DisplayFullscreen(null);
 #endif
 
 #if __ANDROID__
