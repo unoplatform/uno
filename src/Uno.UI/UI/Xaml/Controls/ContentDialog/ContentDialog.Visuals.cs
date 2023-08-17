@@ -206,7 +206,12 @@ namespace Microsoft.UI.Xaml.Controls
 			double xOffset = 0;
 			double yOffset = 0;
 
-			var xamlRootSize = XamlRoot?.Size;
+			if (XamlRoot is null)
+			{
+				throw new InvalidOperationException("Can't size and position content unless loaded");
+			}
+
+			var xamlRootSize = XamlRoot.Size;
 
 			var flowDirection = FlowDirection;
 

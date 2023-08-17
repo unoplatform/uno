@@ -446,7 +446,7 @@ namespace Uno.UI
 		[Pure]
 		internal static Rect GetAbsoluteBoundsRect(this FrameworkElement element)
 		{
-			var root = Window.Current.Content as FrameworkElement;
+			var root = element.XamlRoot.VisualTree.PublicRootVisual as FrameworkElement;
 			return GetBoundsRectRelativeTo(element, root);
 		}
 	}

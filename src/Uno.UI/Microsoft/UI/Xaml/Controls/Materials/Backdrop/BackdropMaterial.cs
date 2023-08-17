@@ -55,8 +55,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			// Or if we're disconnecting the last one, clean up the shared MicaController.
 			if (_connectedBrushCount.Value > 0 && _micaController.Value == null)
 			{
-				var currentWindow = Window.Current;
-
+				var currentWindow = Window.IShouldntUseCurrentWindow;
 				_micaController.Value = new MicaController();
 				if (!_micaController.Value.SetTarget(currentWindow))
 				{

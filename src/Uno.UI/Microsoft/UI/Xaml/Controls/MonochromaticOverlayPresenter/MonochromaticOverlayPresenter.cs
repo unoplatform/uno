@@ -54,7 +54,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 					_effectFactory = null;
 				}
 
-				var compositor = global::Microsoft.UI.Xaml.Window.Current.Compositor;
+				var compositor = XamlRoot.Compositor;
 
 				if (_effectFactory == null)
 				{

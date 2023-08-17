@@ -64,7 +64,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			var wasOverWindow = _isOverWindow;
-			_isOverWindow = Window.Current.Bounds.Contains(src.GetPosition(null));
+			_isOverWindow = Window.IShouldntUseCurrentWindow.Bounds.Contains(src.GetPosition(null));
 
 			Update(src); // It's required to do that as soon as possible in order to update the view's location
 
