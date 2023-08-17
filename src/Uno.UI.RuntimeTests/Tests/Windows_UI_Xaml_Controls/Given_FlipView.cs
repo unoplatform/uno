@@ -60,8 +60,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#elif __IOS__
-		[Ignore("Currently fails on iOS, will be handled on #12780")]
 #endif
 		public async Task When_Background_Color()
 		{
