@@ -1,6 +1,10 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
-	<PropertyGroup >
-		<TargetFrameworks>net7.0</TargetFrameworks>
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+	<PropertyGroup>
+		<!-- There is no need to multi-target this project -->
+		<!-- We keep it on the oldest supported TFM -->
+		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
+		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
+		<TargetFrameworks>$(NetPrevious)</TargetFrameworks>
 	</PropertyGroup>
 
 	<PropertyGroup>

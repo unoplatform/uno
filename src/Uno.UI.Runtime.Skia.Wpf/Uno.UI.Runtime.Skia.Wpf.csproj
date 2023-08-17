@@ -1,8 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-windows</TargetFrameworks>
-		<TargetFrameworks Condition="'$(UnoDisableNet8)'!='true'">$(TargetFrameworks);net8.0-windows</TargetFrameworks>
+		<TargetFrameworks>$(NetPreviousWpf)</TargetFrameworks>
+		<TargetFrameworks Condition="'$(UnoDisableNetCurrent)'!='true'">$(TargetFrameworks);$(NetCurrentWpf)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override-windows.props" />

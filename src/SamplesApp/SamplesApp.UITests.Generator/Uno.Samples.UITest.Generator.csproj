@@ -1,5 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<!-- Generators must be on netstandard2.0 so that they run in VS (.NET Framework) and dotnet build (.NET Core) -->
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>

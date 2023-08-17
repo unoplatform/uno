@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0">
+<Project>
     <!--
         This file is used to control the platforms compiled by visual studio, and
             allow for a faster build when testing for a single platform.
