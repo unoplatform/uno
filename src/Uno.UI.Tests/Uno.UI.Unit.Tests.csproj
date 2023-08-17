@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUnitTests)</TargetFrameworks>
 		<IsPackable>false</IsPackable>
@@ -38,7 +38,7 @@
 		<PackageReference Include="MSTest.TestAdapter" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
-		<PackageReference Include="Moq" Version="4.17.2" />
+		<PackageReference Include="Moq" Version="4.20.69" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" PrivateAssets="all" />
 	</ItemGroup>
 

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -25,7 +25,7 @@
 		<PackageReference Include="MSTest.TestAdapter" />
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
-		<PackageReference Include="Moq" Version="4.17.2" />
+		<PackageReference Include="Moq" Version="4.20.69" />
   </ItemGroup>
 
   <ItemGroup>
