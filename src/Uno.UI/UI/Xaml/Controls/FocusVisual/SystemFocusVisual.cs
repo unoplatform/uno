@@ -22,7 +22,7 @@ internal partial class SystemFocusVisual : Control
 	public SystemFocusVisual()
 	{
 		DefaultStyleKey = typeof(SystemFocusVisual);
-		Windows.UI.Xaml.Window.Current.SizeChanged += WindowSizeChanged;
+		Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.SizeChanged += WindowSizeChanged;
 	}
 
 	public UIElement? FocusedElement
@@ -99,7 +99,7 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.Current.RootElement);
+		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.RootElement);
 		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 
