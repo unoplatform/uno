@@ -87,8 +87,10 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
+#if !HAS_UNO_WINUI
 				// Force init
-				Window.Current.ToString();
+				Window.SafeCurrent?.ToString();
+#endif
 
 				InitializationCompleted();
 

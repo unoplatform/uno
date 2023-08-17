@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SizeChanged += OnSizeChanged;
 
-			m_windowSizeChangedEventHandler.Disposable = Windows.UI.Xaml.Window.Current.RegisterSizeChangedEvent(OnWindowSizeChanged);
+			m_windowSizeChangedEventHandler.Disposable = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.RegisterSizeChangedEvent(OnWindowSizeChanged);
 
 
 			this.SetValue(TemplateSettingsProperty, new AppBarTemplateSettings());
@@ -1156,7 +1156,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					layoutBounds = Windows.UI.Xaml.Window.Current.Bounds;
+					layoutBounds = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.Bounds;
 
 					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 					{

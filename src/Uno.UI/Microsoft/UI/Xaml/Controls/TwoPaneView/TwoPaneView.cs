@@ -42,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(TwoPaneView);
 
 			SizeChanged += OnSizeChanged;
-			var window = Windows.UI.Xaml.Window.Current;
+			var window = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow;
 			window.SizeChanged += OnWindowSizeChanged;
 			m_windowSizeChangedRevoker.Disposable = Disposable.Create(() => window.SizeChanged -= OnWindowSizeChanged);
 
