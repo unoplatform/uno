@@ -14,6 +14,7 @@
 				   FontFamily="Courier New"
 				   Foreground="Black"
 				   Opacity="1"
+				   HorizontalAlignment="Left"
 				   FontSize="20" />
 		<TextBlock Text="Opacity 0.5 ██████████"
 				   x:Name="tbOpacity0_5"
@@ -21,6 +22,7 @@
 				   FontFamily="Courier New"
 				   Opacity="0.5"
 				   Foreground="Black"
+				   HorizontalAlignment="Left"
 				   FontSize="20" />
 		<TextBlock Text="Opacity 0.1 ██████████"
 				   x:Name="tbOpacity0_1"
@@ -28,6 +30,7 @@
 				   FontFamily="Courier New"
 				   Opacity="0.1"
 				   Foreground="Black"
+				   HorizontalAlignment="Left"
 				   FontSize="20" />
 		<Border Opacity="0.5"
 				Background="Red"
@@ -38,6 +41,7 @@
 					   x:FieldModifier="public"
 					   FontFamily="Courier New"
 					   Foreground="Black"
+					   HorizontalAlignment="Left"
 					   FontSize="20" />
 		</Border>
 		<Border Opacity="0.5"
@@ -50,6 +54,7 @@
 					   x:FieldModifier="public"
 					   FontFamily="Courier New"
 					   Foreground="Black"
+					   HorizontalAlignment="Left"
 					   FontSize="20" />
 		</Border>
 		<Image Source="/Assets/ingredient1.png"
@@ -65,6 +70,7 @@
 					   FontFamily="Courier New"
 					   Opacity="1"
 					   Foreground="Black"
+					   HorizontalAlignment="Left"
 					   FontSize="20" />
 			<TextBlock Text="Inherited Opacity 0.5 ██████████"
 					   x:Name="tbInnerOpacity0_5"
@@ -72,6 +78,7 @@
 					   FontFamily="Courier New"
 					   Opacity="0.5"
 					   Foreground="Black"
+					   HorizontalAlignment="Left"
 					   FontSize="20" />
 			<TextBlock Text="Inherited Opacity 0.1 ██████████"
 					   x:Name="tbInnerOpacity0_1"
@@ -79,6 +86,7 @@
 					   FontFamily="Courier New"
 					   Opacity="0.1"
 					   Foreground="Black"
+					   HorizontalAlignment="Left"
 					   FontSize="20" />
 			<Border Opacity="0.5"
 					Background="Red"
@@ -89,6 +97,7 @@
 						   x:FieldModifier="public"
 						   FontFamily="Courier New"
 						   Foreground="Black"
+						   HorizontalAlignment="Left"
 						   FontSize="20" />
 			</Border>
 			<Border Opacity="0.5"
@@ -101,6 +110,7 @@
 						   x:FieldModifier="public"
 						   FontFamily="Courier New"
 						   Foreground="Black"
+						   HorizontalAlignment="Left"
 						   FontSize="20" />
 			</Border>
 			<Image Source="/Assets/ingredient1.png"

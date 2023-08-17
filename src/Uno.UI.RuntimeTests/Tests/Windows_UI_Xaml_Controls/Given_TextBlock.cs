@@ -1,4 +1,6 @@
-﻿using System.Linq;
+using System;
+using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Uno.Helpers;
 using Uno.UI.RuntimeTests.Helpers;
@@ -105,6 +107,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, SUT.ActualWidth);
 			Assert.AreEqual(0, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+#if __ANDROID__
+		[Ignore("Fails")]
+#endif
+		public async Task Check_ActualWidth_After_Loaded()
+		{
+			var SUT = new TextBlock { Text = "Some text", Margin = new Thickness(10) };
+			var border = new Border { Child = SUT };
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			// layout cycle should be done by now
+
+			Assert.IsTrue(SUT.DesiredSize.Width > 0);
+			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+
+			// TextBlock's size should be roughly the same as the surrounding border.
+			var delta1 = Vector2.Subtract(border.DesiredSize.ToVector2(), SUT.DesiredSize.ToVector2());
+			Assert.IsTrue(Math.Abs(delta1.X) < 1);
+			Assert.IsTrue(Math.Abs(delta1.Y) < 1);
+
+			Assert.IsTrue(SUT.ActualWidth > 0);
+			Assert.IsTrue(SUT.ActualHeight > 0);
+
+			var delta2 = Vector2.Subtract(SUT.DesiredSize.ToVector2(), SUT.ActualSize);
+			delta2 = Vector2.Subtract(delta2, new Vector2(20, 20)); // TextBlock's ActualSize should not include margins.
+			Assert.IsTrue(Math.Abs(delta2.X) < 1);
+			Assert.IsTrue(Math.Abs(delta2.Y) < 1);
 		}
 
 		[TestMethod]
