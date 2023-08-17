@@ -25,6 +25,7 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Uno.UI.Xaml.Core;
 using Uno.UI.Controls.Legacy;
+using Windows.UI.ViewManagement;
 
 #endif
 #if __IOS__
@@ -44,6 +45,7 @@ namespace Windows.UI.Xaml.Controls
 		private MediaPlayerElement? _mpe;
 		private readonly SerialDisposable _subscriptions = new();
 		private bool _isMeasureCommandBarRunning;
+		private bool _isMeasureCommandBarRequested;
 
 #pragma warning disable CS0649
 		private bool m_transportControlsEnabled = true; // not-implemented
@@ -530,29 +532,30 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
+				this.LayoutUpdated += MediaTransportControls_LayoutUpdated;
 				m_tpCommandBar.SizeChanged += Container_SizeChanged;
 				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
-
 			}
 			if (_timelineContainer is not null)
 			{
 				_timelineContainer.SizeChanged += Container_SizeChanged;
 			}
-
 			HideMoreButtonIfNecessary();
 			HideCastButtonIfNecessary();
 		}
 
+		private void MediaTransportControls_LayoutUpdated(object? sender, object e)
+		{
+			SetMeasureCommandBar();
+		}
 		private void M_tpCommandBar_DynamicOverflowItemsChanging(CommandBar sender, DynamicOverflowItemsChangingEventArgs args)
 		{
 			SetMeasureCommandBar();
 		}
-
 		private void Container_SizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			SetMeasureCommandBar();
 		}
-
 		private void HideMoreButtonIfNecessary()
 		{
 			if (m_tpCommandBar is { SecondaryCommands.Count: 0 })
@@ -1450,39 +1453,61 @@ namespace Windows.UI.Xaml.Controls
 		Cleanup:
 #endif
 		}
-		private void SetMeasureCommandBar()
+		public void SetMeasureCommandBar()
 		{
 			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
-			_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Low, MeasureCommandBar);
-			Thread.Yield();
 		}
 		/// <summary>
 		/// Measure CommandBar to fit the buttons in given width.
 		/// </summary>
 		private void MeasureCommandBar()
 		{
+			if (_isMeasureCommandBarRunning)
+			{
+				_isMeasureCommandBarRequested = true;
+				return;
+			}
 			if (!_isMeasureCommandBarRunning && m_tpCommandBar is { })
 			{
 				try
 				{
 					_isMeasureCommandBarRunning = true;
 					ResetMargins();
+					AddMarginsBetweenGroups();
 					var desiredSize = m_tpCommandBar.DesiredSize;
 
-					var availableSize = this.ActualWidth;
-					if (IsCompact && m_tpTHLeftSidePlayPauseButton as FrameworkElement is { } ppElementy && ppElementy.Visibility == Visibility.Visible)
+					var availableSize = this.ActualWidth - this.Margin.Left - this.Margin.Right;
+					if (m_tpRightAppBarSeparator as FrameworkElement is { } rightAppBarSeparator && rightAppBarSeparator.Margin.Right > 0)
 					{
-						availableSize -= ppElementy.ActualWidth;
+						availableSize -= rightAppBarSeparator.Margin.Right;
+					}
+					if (IsCompact)
+					{
+						if (m_tpTHLeftSidePlayPauseButton as FrameworkElement is { } ppElementy && ppElementy.Visibility == Visibility.Visible)
+						{
+							availableSize -= ppElementy.ActualWidth;
+							if (_timelineContainer as FrameworkElement is { } tlElement)
+							{
+								if (tlElement.Visibility == Visibility.Visible &&
+											(
+												tlElement.DesiredSize.Width <= ppElementy.ActualWidth ||
+												(availableSize - desiredSize.Width - tlElement.DesiredSize.Width) < 0
+											))
+								{
+									tlElement.Visibility = Visibility.Collapsed;
+								}
+								if (tlElement.Visibility == Visibility.Collapsed && (availableSize - desiredSize.Width) >= ppElementy.ActualWidth)
+								{
+									tlElement.Visibility = Visibility.Visible;
+								}
+							}
+						}
+					}
+					else
+					{
 						if (_timelineContainer as FrameworkElement is { } tlElement)
 						{
-							if (tlElement.Visibility == Visibility.Visible && tlElement.DesiredSize.Width <= ppElementy.ActualWidth)
-							{
-								tlElement.Visibility = Visibility.Collapsed;
-							}
-							if (tlElement.Visibility == Visibility.Collapsed && (availableSize - desiredSize.Width) >= ppElementy.ActualWidth)
-							{
-								tlElement.Visibility = Visibility.Visible;
-							}
+							_timelineContainer.Visibility = Visibility.Visible;
 						}
 					}
 
@@ -1503,6 +1528,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_isMeasureCommandBarRunning = false;
 				}
+			}
+			if (_isMeasureCommandBarRequested)
+			{
+				_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
 			}
 		}
 		private void AddMarginsBetweenGroups()
@@ -1584,12 +1613,12 @@ namespace Windows.UI.Xaml.Controls
 					leftGap = rightGap = (totalWidth - (leftWidth + middleWidth + rightWidth)) / 2;
 				}
 
-				if (m_tpLeftAppBarSeparator is { })
+				if (m_tpLeftAppBarSeparator is { } && leftGap > 0)
 				{
 					var extraMargin = new Thickness(leftGap / 2, 0, leftGap / 2, 0);
 					m_tpLeftAppBarSeparator.Margin(extraMargin);
 				}
-				if (m_tpRightAppBarSeparator is { })
+				if (m_tpRightAppBarSeparator is { } && rightGap > 0)
 				{
 					var extraMargin = new Thickness(rightGap / 2, 0, rightGap / 2, 0);
 					m_tpRightAppBarSeparator.Margin(extraMargin);
@@ -1623,6 +1652,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DropoutOrder(double availableSize, Size desiredSize)
 		{
+			var reprocess = false;
 			if (m_tpCommandBar is null)
 			{
 				return;
@@ -1638,18 +1668,24 @@ namespace Windows.UI.Xaml.Controls
 				widthButton = bt.Width;
 			}
 			var infiniteBounds = new Size(double.PositiveInfinity, double.PositiveInfinity);
-			var difference = availableSize - desiredSize.Width;
-			//To avoid resize intermittent
-			if (IsCompact && difference < widthButton && difference > 0)
+
+			var limit = (int)Math.Floor(availableSize / widthButton);
+			if (IsCompact && _mpe?.IsFullWindow == false)
 			{
-				return;
+				var difference = availableSize - desiredSize.Width;
+				//To avoid resize intermittent
+				if (difference < widthButton && difference > 0)
+				{
+					return;
+				}
+				limit = availableSize > desiredSize.Width ? buttonsCount : (int)Math.Floor(availableSize / widthButton);
+				//Just process when have size
+				if (limit == 0)
+				{
+					reprocess = true;
+				}
 			}
-			var limit = availableSize > desiredSize.Width ? buttonsCount : (int)Math.Floor(availableSize / widthButton);
-			//Just process when have size
-			if (limit == 0)
-			{
-				difference = -1;
-			}
+
 			var listOrder = new List<KeyValuePair<int, UIElement>>();
 			for (int i = 0; i < buttonsCount; i++)
 			{
@@ -1691,7 +1727,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 			//if the difference is negative, we need to reprocess
-			if (difference < 0)
+			if (reprocess)
 			{
 				_ = this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, MeasureCommandBar);
 			}
