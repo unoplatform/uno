@@ -86,7 +86,7 @@ namespace Uno.UI.Toolkit
 #if WINUI || HAS_UNO_WINUI
 				return new();
 #else
-				if (Window.IReallyUseCurrentWindow is not { } window)
+				if (Window.SafeCurrent is not { } window)
 				{
 					return new();
 				}
@@ -160,7 +160,7 @@ namespace Uno.UI.Toolkit
 			{
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 
-				if (Window.Current is Window window)
+				if (Window.IShouldntUseCurrentWindow is Window window)
 				{
 					var bounds = window.Bounds;
 					visibleBounds.X -= bounds.X;
@@ -176,7 +176,7 @@ namespace Uno.UI.Toolkit
 		/// might arise transiently when the screen orientation changes.
 		/// </summary>
 		private static bool AreBoundsAspectRatiosConsistent
-			=> ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == Window.Current?.Bounds.GetOrientation();
+			=> ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == Window.IShouldntUseCurrentWindow?.Bounds.GetOrientation();
 
 		public class VisibleBoundsDetails
 		{
@@ -215,7 +215,7 @@ namespace Uno.UI.Toolkit
 
 			private void UpdatePadding()
 			{
-				if (Window.Current?.Content == null)
+				if (Window.IShouldntUseCurrentWindow?.Content == null)
 				{
 					return;
 				}
