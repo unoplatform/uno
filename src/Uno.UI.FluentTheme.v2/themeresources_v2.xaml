@@ -17228,7 +17228,9 @@
               </Style>
               <!-- New CommandBar Style -->
               <Style x:Key="CommandBarStyle" TargetType="CommandBar" BasedOn="{StaticResource DefaultCommandBarStyle}">
-                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Background" Value="Orange" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Setter Property="BorderBrush" Value="Blue" />
                 <Setter Property="DefaultLabelPosition" Value="Collapsed" />
               </Style>
               <!-- Style for Error Message text -->
@@ -17401,7 +17403,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Border x:Name="ControlPanel_ControlPanelVisibilityStates_Border">
+            <Border x:Name="ControlPanel_ControlPanelVisibilityStates_Border" Background="Blue">
               <Grid x:Name="ControlPanelGrid" Background="{ThemeResource MediaTransportControlsPanelBackground}" VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5" BorderBrush="{ThemeResource MediaTransportControlsBorderBrush}" BorderThickness="{ThemeResource MediaTransportControlsBorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource OverlayCornerRadius}">
                 <Grid.RenderTransform>
                   <TranslateTransform x:Name="TranslateVertical" />
@@ -17419,7 +17421,7 @@
                 <Border x:Name="ErrorBorder" Width="320" Height="96" Grid.ColumnSpan="3" HorizontalAlignment="Center" Background="{ThemeResource MediaTransportControlsPanelBackground}" Visibility="Collapsed">
                   <TextBlock x:Name="ErrorTextBlock" Style="{StaticResource CaptionTextBlockStyle}" TextWrapping="WrapWholeWords" Margin="12" />
                 </Border>
-                <Border x:Name="MediaTransportControls_Timeline_Border" Grid.Column="1" Grid.Row="1">
+                <Border x:Name="MediaTransportControls_Timeline_Border" Grid.Column="1" Grid.Row="1" Background="Green">
                   <Grid x:Name="MediaTransportControls_Timeline_Grid">
                     <Grid.ColumnDefinitions>
                       <ColumnDefinition />
@@ -17436,7 +17438,7 @@
                     </Grid>
                   </Grid>
                 </Border>
-                <Border x:Name="LeftSidePlayBorder" Grid.Column="0" Grid.Row="1" Visibility="Collapsed">
+                <Border x:Name="LeftSidePlayBorder" Grid.Column="0" Grid.Row="1" Visibility="Collapsed" Background="Yellow">
                   <AppBarButton x:Name="PlayPauseButtonOnLeft" Margin="0" VerticalAlignment="Center" Style="{StaticResource AppBarButtonStyle}">
                     <AppBarButton.Resources>
                       <Thickness x:Key="AppBarButtonInnerBorderMargin">5</Thickness>
@@ -17447,7 +17449,7 @@
                     </AppBarButton.Icon>
                   </AppBarButton>
                 </Border>
-                <Border x:Name="MediaTransportControls_Command_Border" Grid.Column="1" Grid.Row="2">
+                <Border x:Name="MediaTransportControls_Command_Border" Grid.Column="1" Grid.Row="2" Background="Red">
                   <CommandBar x:Name="MediaControlsCommandBar" Margin="0,3" Style="{StaticResource CommandBarStyle}" IsDynamicOverflowEnabled="False">
                     <CommandBar.Resources>
                       <Thickness x:Key="AppBarButtonInnerBorderMargin">5</Thickness>

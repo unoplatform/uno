@@ -113,6 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 
+			this.LayoutUpdated += MediaTransportControls_LayoutUpdated;
 			BindToControlEvents();
 			BindMediaPlayer();
 		}
@@ -532,7 +533,6 @@ namespace Windows.UI.Xaml.Controls
 			if (m_tpCommandBar is not null)
 			{
 				m_tpCommandBar.Loaded -= OnCommandBarLoaded;
-				this.LayoutUpdated += MediaTransportControls_LayoutUpdated;
 				m_tpCommandBar.SizeChanged += Container_SizeChanged;
 				m_tpCommandBar.DynamicOverflowItemsChanging += M_tpCommandBar_DynamicOverflowItemsChanging;
 			}
@@ -1467,16 +1467,16 @@ namespace Windows.UI.Xaml.Controls
 				_isMeasureCommandBarRequested = true;
 				return;
 			}
-			if (!_isMeasureCommandBarRunning && m_tpCommandBar is { })
+			if (!_isMeasureCommandBarRunning && m_tpCommandBar is { } cmElementy)
 			{
 				try
 				{
 					_isMeasureCommandBarRunning = true;
 					ResetMargins();
 					AddMarginsBetweenGroups();
-					var desiredSize = m_tpCommandBar.DesiredSize;
+					var desiredSize = cmElementy.DesiredSize;
 
-					var availableSize = this.ActualWidth - this.Margin.Left - this.Margin.Right;
+					var availableSize = _mpe?.IsFullWindow == true ? this.DesiredSize.Width - this.Margin.Left - this.Margin.Right : this.ActualWidth - this.Margin.Left - this.Margin.Right;
 					if (m_tpRightAppBarSeparator as FrameworkElement is { } rightAppBarSeparator && rightAppBarSeparator.Margin.Right > 0)
 					{
 						availableSize -= rightAppBarSeparator.Margin.Right;
@@ -1510,7 +1510,16 @@ namespace Windows.UI.Xaml.Controls
 							_timelineContainer.Visibility = Visibility.Visible;
 						}
 					}
+					cmElementy.HorizontalAlignment = HorizontalAlignment.Right;
 
+					//if (_mpe?.IsFullWindow == true)
+					//{
+					//	cmElementy.HorizontalAlignment = HorizontalAlignment.Right;
+					//}
+					//else
+					//{
+					//	cmElementy.HorizontalAlignment = HorizontalAlignment.Center;
+					//}
 					DropoutOrder(availableSize, desiredSize);
 					AddMarginsBetweenGroups();
 					DropoutOrder(availableSize, desiredSize);
@@ -1630,10 +1639,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				if (m_tpCommandBar as FrameworkElement is { } cmElementy)
-				{
-					cmElementy.HorizontalAlignment = HorizontalAlignment.Stretch;
-				}
+				//if (m_tpCommandBar as FrameworkElement is { } cmElementy)
+				//{
+				//	cmElementy.HorizontalAlignment = HorizontalAlignment.Stretch;
+				//}
 			}
 		}
 		private void ResetMargins()
