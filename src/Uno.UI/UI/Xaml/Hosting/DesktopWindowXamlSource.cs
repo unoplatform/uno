@@ -65,4 +65,9 @@ public partial class DesktopWindowXamlSource : IDisposable
 	public void Dispose()
 	{
 	}
+
+	internal void AttachToWindow(Window window)
+	{
+		_xamlIsland.Window = window;
+	}
 }

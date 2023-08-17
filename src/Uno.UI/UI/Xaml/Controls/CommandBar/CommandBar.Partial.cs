@@ -1696,12 +1696,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var visibleBounds = new Rect();
 				var availableBounds = new Rect();
 
-				visibleBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
-
-				if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-				{
-					visibleBounds = XamlRoot?.Bounds ?? default;
-				}
+				visibleBounds = Windows.UI.Xaml.Window.IReallyUseCurrentWindow?.Bounds ?? XamlRoot?.Bounds ?? default;
 
 				bool windowed = false;
 				//windowed = m_tpOverflowPopup && m_tpOverflowPopup.Cast<Popup>()->IsWindowed();
@@ -1898,12 +1893,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool GetShouldOverflowOpenInFullWidth()
 		{
-			var visibleBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
+			var visibleBounds = Windows.UI.Xaml.Window.IReallyUseCurrentWindow?.Bounds ?? XamlRoot?.Bounds ?? default;
 
-			if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-			{
-				visibleBounds = XamlRoot?.Bounds ?? default;
-			}
 			// IFC_RETURN(DXamlCore::GetCurrent()->GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds));
 
 			return visibleBounds.Width <= m_overflowContentMaxWidth;

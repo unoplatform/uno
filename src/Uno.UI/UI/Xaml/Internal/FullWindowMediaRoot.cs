@@ -17,5 +17,29 @@ namespace Uno.UI.Xaml.Core
 			HorizontalAlignment = HorizontalAlignment.Stretch;
 			Visibility = Visibility.Collapsed;
 		}
+
+		internal void DisplayFullscreen(UIElement content)
+		{
+			if (content == null)
+			{
+				Child = null;
+				//TODO:MZ: Restore _rootBorder
+				//if (_rootBorder != null)
+				//{
+				//	_rootBorder.Visibility = Visibility.Visible;
+				//}
+				Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				Visibility = Visibility.Visible;
+				//TODO:MZ: Restore _rootBorder
+				//if (_rootBorder != null)
+				//{
+				//	_rootBorder.Visibility = Visibility.Collapsed;
+				//}
+				Child = content;
+			}
+		}
 	}
 }

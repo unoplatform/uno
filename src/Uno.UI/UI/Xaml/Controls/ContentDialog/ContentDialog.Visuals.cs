@@ -206,7 +206,7 @@ namespace Microsoft.UI.Xaml.Controls
 			double xOffset = 0;
 			double yOffset = 0;
 
-			var xamlRootSize = XamlRoot?.Size ?? Xaml.Window.Current.Bounds.Size;
+			var xamlRootSize = XamlRoot?.Size;
 
 			var flowDirection = FlowDirection;
 
