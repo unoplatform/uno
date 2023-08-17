@@ -70,7 +70,7 @@ jobs:
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        copy ..\global.json .
+        (Get-Content global.json).replace("latestFeature", "disable") | Set-Content global.json
         msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
 
     - name: Commit to repository
