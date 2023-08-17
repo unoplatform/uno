@@ -5029,11 +5029,11 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				if (needsTopPadding)
+				if (needsTopPadding && XamlRoot.HostWindow is { } window)
 				{
 					// Only add extra padding if the NavView is the "root" of the app,
 					// but not if the app is expanding into the titlebar
-					UIElement root = Windows.UI.Xaml.Window.Current.Content;
+					UIElement root = window.Content;
 					GeneralTransform gt = TransformToVisual(root);
 					Point pos = gt.TransformPoint(Point.Zero);
 
