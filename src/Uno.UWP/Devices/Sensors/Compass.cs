@@ -1,3 +1,4 @@
+#if __IOS__ || __ANDROID__
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
@@ -60,3 +61,4 @@ public partial class Compass
 		_readingChanged?.Invoke(this, new CompassReadingChangedEventArgs(reading));
 	}
 }
+#endif
