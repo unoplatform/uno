@@ -87,7 +87,7 @@ To create an Uno Platform app:
 1. To run the **WebAssembly** (Wasm) head:
     - Right click on the `MyApp.Wasm` project, select **Set as startup project**
     - Press the `MyApp.Wasm` button to deploy the app
-    - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 - see [Microsoft Learn documentation](https://learn.microsoft.com/en-us/aspnet/core/test/dev-tunnels) to get started
+    - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 - see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started
 1. To run the ASP.NET Hosted **WebAssembly** (Server) head:
     - Right click on the `MyApp.Server` project, select **Set as startup project**
     - Press the `MyApp.Server` button to deploy the app
