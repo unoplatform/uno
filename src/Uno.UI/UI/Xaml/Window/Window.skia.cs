@@ -61,35 +61,6 @@ public sealed partial class Window
 		}
 	}
 
-	internal void DisplayFullscreen(UIElement content)
-	{
-		if (FullWindowMediaRoot is null)
-		{
-			throw new InvalidOperationException("The FullWindowMediaRoot is not initialized.");
-		}
-
-		if (content == null)
-		{
-			FullWindowMediaRoot.Child = null;
-			//TODO:MZ: Restore _rootBorder
-			//if (_rootBorder != null)
-			//{
-			//	_rootBorder.Visibility = Visibility.Visible;
-			//}
-			FullWindowMediaRoot.Visibility = Visibility.Collapsed;
-		}
-		else
-		{
-			FullWindowMediaRoot.Visibility = Visibility.Visible;
-			//TODO:MZ: Restore _rootBorder
-			//if (_rootBorder != null)
-			//{
-			//	_rootBorder.Visibility = Visibility.Collapsed;
-			//}
-			FullWindowMediaRoot.Child = content;
-		}
-	}
-
 	partial void ShowPartial()
 	{
 		_shown = true;

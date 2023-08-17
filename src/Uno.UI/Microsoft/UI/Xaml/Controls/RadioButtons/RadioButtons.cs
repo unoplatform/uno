@@ -115,7 +115,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 					// Focus was already in the repeater: in On RS3+ Selection follows focus unless control is held down.
 					else if (SharedHelpers.IsRS3OrHigher() &&
-						(Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
+						(Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow.CoreWindow.GetKeyState(VirtualKey.Control) &
 							CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 					{
 						var newFocusedElementAsUIE = args.NewFocusedElement as UIElement;

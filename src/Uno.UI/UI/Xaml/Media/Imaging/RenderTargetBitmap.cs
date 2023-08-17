@@ -126,7 +126,13 @@ namespace Microsoft.UI.Xaml.Media.Imaging
 			{
 				try
 				{
-					element ??= WinUICore;
+					element ??= WinUICoreServices.Instance.MainVisualTree?.RootElement;
+
+					if (element is null)
+					{
+						throw new InvalidOperationException("No window or element to render");
+					}
+
 					(_bufferSize, PixelWidth, PixelHeight) = RenderAsBgra8_Premul(element!, ref _buffer);
 #if __WASM__ || __SKIA__
 					InvalidateSource();

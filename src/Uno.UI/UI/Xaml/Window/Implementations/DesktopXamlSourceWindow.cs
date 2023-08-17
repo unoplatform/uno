@@ -22,6 +22,7 @@ internal partial class DesktopXamlSourceWindow : IWindowImplementation
 		_window = window;
 		_windowChrome = new WindowChrome(window);
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
+		_desktopWindowXamlSource.AttachToWindow(window);
 		_desktopWindowXamlSource.Content = _windowChrome;
 
 		_nativeWindowWrapper = NativeWindowFactory.CreateWindow(window);

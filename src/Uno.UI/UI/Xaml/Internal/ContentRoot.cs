@@ -6,6 +6,7 @@
 
 using System;
 using Uno.UI.Xaml.Input;
+using Uno.UI.Xaml.Islands;
 using Windows.UI;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Input;
@@ -106,11 +107,23 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		internal AccessKeyExport AccessKeyExport { get; } = new AccessKeyExport();
 
+		internal XamlRoot? XamlRoot => VisualTree.XamlRoot;
+
+		internal XamlIsland XamlIslandRoot { get; set; }
+
 		//TODO Uno: This might need to be adjusted when we have proper lifetime handling
 		internal bool IsShuttingDown() => false;
 
 		internal XamlRoot GetOrCreateXamlRoot() => VisualTree.GetOrCreateXamlRoot();
 
-		internal XamlRoot? XamlRoot => VisualTree.XamlRoot;
+		internal Window? GetOwnerWindow()
+		{
+			return Type switch
+			{
+				ContentRootType.CoreWindow => Window.IReallyUseCurrentWindow,
+				ContentRootType.XamlIsland when XamlIslandRoot is not null => XamlIslandRoot.Window,
+				_ => null
+			};
+		}
 	}
 }

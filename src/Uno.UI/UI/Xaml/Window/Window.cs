@@ -118,11 +118,11 @@ namespace Microsoft.UI.Xaml
 		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
 		internal UIElement? RootElement => _windowImplementation.Content?.XamlRoot?.VisualTree?.PublicRootVisual;
 
-		internal PopupRoot? PopupRoot => WinUICoreServices.Instance.MainPopupRoot;
+		internal PopupRoot? PopupRoot => _windowImplementation.Content?.XamlRoot?.VisualTree?.PopupRoot;
 
-		internal FullWindowMediaRoot? FullWindowMediaRoot => Uno.UI.Xaml.Core.CoreServices.Instance.MainFullWindowMediaRoot;
+		internal FullWindowMediaRoot? FullWindowMediaRoot => _windowImplementation.Content?.XamlRoot?.VisualTree?.FullWindowMediaRoot;
 
-		internal Canvas? FocusVisualLayer => Uno.UI.Xaml.Core.CoreServices.Instance.MainFocusVisualRoot;
+		internal Canvas? FocusVisualLayer => _windowImplementation.Content?.XamlRoot?.VisualTree?.FocusVisualRoot;
 
 		/// <summary>
 		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
@@ -132,7 +132,9 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets an internal core object for the application window.
 		/// </summary>
-		public CoreWindow? CoreWindow => _windowImplementation.CoreWindow;
+		public CoreWindow? IReallyUseCoreWindow => _windowImplementation.CoreWindow;
+
+		public CoreWindow? IShouldntUseCoreWindow => _windowImplementation.CoreWindow;
 
 		/// <summary>
 		/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
@@ -147,6 +149,7 @@ namespace Microsoft.UI.Xaml
 			get => _windowImplementation.Visible;
 			private set
 			{
+				//TODO:MZ: Visibility should not be set here, but in window impl
 				if (Visible != value)
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
@@ -154,16 +157,16 @@ namespace Microsoft.UI.Xaml
 						this.Log().LogDebug($"Window visibility changing to {value}");
 					}
 
-					if (CoreWindow is not null) // TODO:MZ: CoreWindow may be null.
+					if (IShouldntUseCoreWindow is not null)
 					{
-						CoreWindow.Visible = value;
+						IShouldntUseCoreWindow.Visible = value;
 					}
 
 					var args = new VisibilityChangedEventArgs() { Visible = value };
 
-					if (CoreWindow is not null) // TODO:MZ: CoreWindow may be null.
+					if (IShouldntUseCoreWindow is not null) // TODO:MZ: CoreWindow may be null.
 					{
-						CoreWindow.OnVisibilityChanged(args);
+						IShouldntUseCoreWindow.OnVisibilityChanged(args);
 					}
 					VisibilityChanged?.Invoke(this, args);
 				}
@@ -175,6 +178,8 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public static Window IReallyUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
 
+		public static Window IShouldntUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+
 		public void Activate()
 		{
 			// Currently Uno supports only single window,
@@ -183,7 +188,7 @@ namespace Microsoft.UI.Xaml
 			_current ??= this;
 			_wasActivated = true;
 
-			// Initialize visibility on first activation.
+			// Initialize visibility on first activation.			
 			Visible = true;
 
 			TryShow();
