@@ -24,12 +24,8 @@ using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 using Uno.UI.Xaml.Core;
-<<<<<<< HEAD
-=======
 using Uno.UI.Controls.Legacy;
 using Windows.UI.ViewManagement;
->>>>>>> e4bae18347 (chore: make compact works on fullscreen)
-
 #endif
 #if __IOS__
 using UIKit;
@@ -1664,20 +1660,6 @@ namespace Windows.UI.Xaml.Controls
 				widthButton = bt.Width;
 			}
 			var infiniteBounds = new Size(double.PositiveInfinity, double.PositiveInfinity);
-<<<<<<< HEAD
-			var difference = availableSize - desiredSize.Width;
-			//To avoid resize intermittent
-			if (difference < widthButton && difference > 0)
-			{
-				return;
-			}
-			var limit = availableSize > desiredSize.Width ? buttonsCount : (int)Math.Floor(availableSize / widthButton);
-			//Just process when have size
-			if (limit == 0)
-			{
-				return;
-=======
-
 			var limit = (int)Math.Floor(availableSize / widthButton);
 			if (IsCompact && _mpe?.IsFullWindow == false)
 			{
@@ -1693,7 +1675,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					reprocess = true;
 				}
->>>>>>> e4bae18347 (chore: make compact works on fullscreen)
 			}
 
 			var listOrder = new List<KeyValuePair<int, UIElement>>();
