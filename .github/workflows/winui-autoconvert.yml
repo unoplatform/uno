@@ -27,6 +27,10 @@ jobs:
       with:
         fetch-depth: 0
 
+    - name: Pin .NET Version
+      run: |
+        (Get-Content global.json).replace("latestFeature", "disable") | Set-Content global.json
+
     - name: Setup .NET SDK
       uses: actions/setup-dotnet@v3
       with:
@@ -70,7 +74,6 @@ jobs:
     - name: Run API Sync Tool
       run: |
         cd $env:GITHUB_WORKSPACE\build
-        (Get-Content ../global.json).replace("latestFeature", "disable") | Set-Content ../global.json
         msbuild Uno.UI.Build.csproj /v:m "/p:CombinedConfiguration=Release|AnyCPU" /m /t:RunAPISyncTool /bl
 
     - name: Commit to repository
