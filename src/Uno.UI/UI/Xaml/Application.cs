@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml
 
 #if !HAS_UNO_WINUI
 			// Delayed raise of OnWindowCreated.
-			Windows.UI.Xaml.Window.SafeCurrent.RaiseCreated();
+			Windows.UI.Xaml.Window.CurrentSafe.RaiseCreated();
 #endif
 		}
 
