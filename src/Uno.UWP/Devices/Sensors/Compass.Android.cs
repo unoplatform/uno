@@ -1,11 +1,6 @@
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using Android;
-using Android.App;
-using Android.Content;
 using Android.Hardware;
-using Android.Locations;
 using Uno.Devices.Sensors.Helpers;
 using Windows.Devices.Geolocation;
 using Windows.Extensions;
@@ -28,6 +23,9 @@ public partial class Compass
 		_magnetometer = magnetometer;
 	}
 
+	/// <summary>
+	/// Gets or sets the current report interval for the compass.
+	/// </summary>
 	public uint ReportInterval
 	{
 		get => _reportInterval;

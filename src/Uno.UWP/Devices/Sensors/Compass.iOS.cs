@@ -12,8 +12,6 @@ public partial class Compass
 		_locationManager = locationManager;
 	}
 
-	public uint ReportInterval { set; get; }
-
 	private static Compass TryCreateInstance()
 	{
 		var locationManager = new CLLocationManager();
