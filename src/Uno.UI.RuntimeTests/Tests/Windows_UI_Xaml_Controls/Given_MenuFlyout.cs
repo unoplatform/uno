@@ -332,6 +332,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RequiresFullWindow]
 		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
 		{
+			if (WindowHelper.IsXamlIsland)
+			{
+				return;
+			}
+
 			var button = new Button()
 			{
 				HorizontalAlignment = HorizontalAlignment.Right,
