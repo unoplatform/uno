@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public TreeViewList()
 		{
 			ListViewModel = new TreeViewViewModel();
-
+			IsCustomReorder = true;
 			DragItemsStarting += OnDragItemsStarting;
 			DragItemsCompleted += OnDragItemsCompleted;
 			ContainerContentChanging += OnContainerContentChanging;
