@@ -651,8 +651,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.' Line number '13' and line position '5'.
 
 					// Case 1: a single res-dict
-					if (member.Objects.Count == 1 
-						&& member.Objects.FirstOrDefault() is { } singleChild 
+					if (member.Objects.Count == 1
+						&& member.Objects.FirstOrDefault() is { } singleChild
 						&& typeof(ResourceDictionary).IsAssignableFrom(TypeResolver.FindType(singleChild.Type)))
 					{
 						if (propertyInfo.SetMethod == null)
