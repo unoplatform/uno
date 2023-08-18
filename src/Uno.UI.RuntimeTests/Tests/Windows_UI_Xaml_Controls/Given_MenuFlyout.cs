@@ -329,6 +329,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RequiresFullWindow]
 		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
 		{
 			var button = new Button()
