@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		private const string ReorderItemFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__item__";
 		private const string ReorderContainerFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__source__container__";
 		private const string DragItemsFormatId = DataPackage.UnoPrivateDataPrefix + "__list__view__base__items__";
+		internal bool IsCustomReorder;
 
 		public event DragItemsStartingEventHandler DragItemsStarting;
 		public event TypedEventHandler<ListViewBase, DragItemsCompletedEventArgs> DragItemsCompleted;
@@ -153,7 +154,7 @@ namespace Windows.UI.Xaml.Controls
 					that.DragLeave -= OnReorderDragLeave;
 					that.Drop -= OnReorderCompleted;
 
-					if (that is not Microsoft.UI.Xaml.Controls.TreeViewList)
+					if (!that.IsCustomReorder)
 					{
 						that.DragEnter += OnReorderDragUpdated;
 						that.DragOver += OnReorderDragUpdated;
