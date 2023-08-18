@@ -640,7 +640,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			if (TypeResolver.IsCollectionOrListType(propertyInfo.PropertyType))
 			{
-				if (propertyInfo.PropertyType.IsAssignableTo(typeof(ResourceDictionary)))
+				if (typeof(ResourceDictionary).IsAssignableFrom(propertyInfo.PropertyType))
 				{
 					// A resource-dictionary property (typically FE.Resources) can only have two types of nested scenarios:
 					// 1. a single res-dict
@@ -651,8 +651,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 					// > Xaml Xml Parsing Error error WMC9997: 'Unexpected 'PROPERTYELEMENT' in parse rule 'NonemptyPropertyElement ::= . PROPERTYELEMENT Content? ENDTAG.'.' Line number '13' and line position '5'.
 
 					// Case 1: a single res-dict
-					if (member.Objects is [var singleChild] &&
-						TypeResolver.FindType(singleChild.Type)?.IsAssignableTo(typeof(ResourceDictionary)) == true)
+					if (member.Objects.Count == 1 
+						&& member.Objects.FirstOrDefault() is { } singleChild 
+						&& typeof(ResourceDictionary).IsAssignableFrom(TypeResolver.FindType(singleChild.Type)))
 					{
 						if (propertyInfo.SetMethod == null)
 						{
@@ -670,7 +671,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 					}
 					// Case 2: zero-to-many non-res-dict resources
-					else if (member.Objects.All(x => TypeResolver.FindType(x.Type)?.IsAssignableTo(typeof(ResourceDictionary)) != true))
+					else if (member.Objects.All(x => typeof(ResourceDictionary).IsAssignableFrom(TypeResolver.FindType(x.Type)) != true))
 					{
 						if (propertyInfo.GetMethod == null)
 						{
@@ -697,7 +698,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						propertyInfo.DeclaringType == typeof(FrameworkElement) &&
 						propertyInfo.Name == nameof(FrameworkElement.Resources);
 				}
-				else if (propertyInfo.DeclaringType?.IsAssignableTo(typeof(ResourceDictionary)) == true &&
+				else if (typeof(ResourceDictionary).IsAssignableFrom(propertyInfo.DeclaringType) == true &&
 					propertyInfo.Name is nameof(ResourceDictionary.ThemeDictionaries) or nameof(ResourceDictionary.MergedDictionaries))
 				{
 					foreach (var child in member.Objects)
@@ -1227,7 +1228,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 							}
 							else
 							{
-								throw new Exception($"The property {declaringType?.ToString() ?? g["type"].Name}.{propertyName} does not exist");
+								var propertyOwner = declaringType?.ToString() ?? "<unknown>";
+
+								throw new Exception($"The property {propertyOwner}.{propertyName} does not exist");
 							}
 						}
 						else
