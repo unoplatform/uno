@@ -34,7 +34,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public UIElement? Content =>
 		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
-			Microsoft.UI.Xaml.Window.SafeCurrent?.Content : VisualTree.PublicRootVisual;
+			Microsoft.UI.Xaml.Window.CurrentSafe?.Content : VisualTree.PublicRootVisual;
 
 	/// <summary>
 	/// Gets the width and height of the content area.

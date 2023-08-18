@@ -86,7 +86,7 @@ namespace Uno.UI.Toolkit
 #if WINUI || HAS_UNO_WINUI
 				return new();
 #else
-				if (Window.SafeCurrent is not { } window)
+				if (Window.CurrentSafe is not { } window)
 				{
 					return new();
 				}
