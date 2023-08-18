@@ -2,7 +2,7 @@
 
 namespace Uno.UI.Xaml.Controls;
 
-internal sealed class WindowChrome : ContentControl
+internal sealed partial class WindowChrome : ContentControl
 {
 	private WindowChrome()
 	{
