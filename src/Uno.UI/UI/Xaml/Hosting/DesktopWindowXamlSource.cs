@@ -52,6 +52,8 @@ public partial class DesktopWindowXamlSource : IDisposable
 		set => _xamlIsland.Content = value;
 	}
 
+	internal XamlIsland XamlIsland => _xamlIsland;
+
 	/// <summary>
 	/// Attempts to programmatically give focus to the DesktopWindowXamlSource in the desktop application.
 	/// </summary>

@@ -49,4 +49,9 @@ internal partial class DesktopXamlSourceWindow : IWindowImplementation
 		get => _windowChrome.Content as UIElement;
 		set => _windowChrome.Content = value;
 	}
+
+	public void LoadContent()
+	{
+		_desktopWindowXamlSource.XamlIsland.ContentManager.TryLoadRootVisual();
+	}
 }

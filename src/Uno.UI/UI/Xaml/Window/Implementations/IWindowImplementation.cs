@@ -25,5 +25,7 @@ internal interface IWindowImplementation
 
 	//void Activate();
 
+	void LoadContent();
+
 	//void Close();
 }

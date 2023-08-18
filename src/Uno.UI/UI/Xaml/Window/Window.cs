@@ -194,7 +194,7 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Gets the window of the current thread.		
 		/// </summary>
-		public static Window Current => InternalGetCurrentWindow();
+		public static Window Current => _current ??= new Window(WindowType.CoreWindow);
 #endif
 
 #pragma warning disable RS0030 // Current is banned
@@ -205,7 +205,7 @@ namespace Microsoft.UI.Xaml
 		internal static Window? CurrentSafe => Current;
 #pragma warning restore RS0030
 
-		internal static Window IShouldntUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+		internal static Window IShouldntUseCurrentWindow => CurrentSafe; // TODO: We should make sure Current returns null in case of WinUI tree.
 
 		private void InitializeCommon()
 		{
@@ -218,28 +218,14 @@ namespace Microsoft.UI.Xaml
 			Background = SolidColorBrushHelper.White;
 		}
 
-		public void Activate()
-		{
-			// Currently Uno supports only single window,
-			// for compatibility with WinUI we set the first activated
-			// as Current #8341
-			_current ??= this; //TODO:MZ: Verify this!
-			_wasActivated = true;
-
-			// Initialize visibility on first activation.			
-			Visible = true;
-
-			TryShow();
-
-			OnNativeActivated(CoreWindowActivationState.CodeActivated);
-		}
+		public void Activate() => _windowImplementation.Activate();
 
 		/// <summary>
 		/// This is the moment the Window content should be shown.
 		/// It happens once the Window is both first Activated
 		/// in code and its Content is set.
 		/// </summary>
-		private void TryShow()
+		internal void TryShow()
 		{
 			if (!_wasActivated ||
 				Content is null ||

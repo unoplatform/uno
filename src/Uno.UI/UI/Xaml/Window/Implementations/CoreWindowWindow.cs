@@ -40,4 +40,19 @@ internal partial class CoreWindowWindow : IWindowImplementation
 		}
 		set => _contentManager.Content = value;
 	}
+
+	public void Activate()
+	{
+		// Currently Uno supports only single window,
+		// for compatibility with WinUI we set the first activated
+		// as Current #8341
+		_wasActivated = true;
+
+		// Initialize visibility on first activation.			
+		Visible = true;
+
+		TryShow();
+
+		OnNativeActivated(CoreWindowActivationState.CodeActivated);
+	}
 }
