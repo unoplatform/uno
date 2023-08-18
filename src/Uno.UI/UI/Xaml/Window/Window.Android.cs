@@ -40,7 +40,7 @@ namespace Microsoft.UI.Xaml
 
 		partial void ShowPartial() => RemovePreDrawListener();
 
-		internal int SystemUiVisibility { get; set; }		
+		internal int SystemUiVisibility { get; set; }
 
 		internal UIElement MainContent => _rootVisual;
 
@@ -204,7 +204,7 @@ namespace Microsoft.UI.Xaml
 			{
 			}
 
-			public bool OnPreDraw() => Window.Current.Visible;
+			public bool OnPreDraw() => Window.IShouldntUseCurrentWindow.Visible;
 		}
 	}
 }

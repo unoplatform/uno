@@ -118,7 +118,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var availableSize =
 					XamlRoot?.Size ??
 					(_owner as FrameworkElement)?.XamlRoot?.Size ??
-					Xaml.Window.SafeCurrent?.Bounds.Size ??
+					Xaml.Window.CurrentSafe?.Bounds.Size ??
 					default;
 				Measure(availableSize);
 			}
@@ -276,7 +276,7 @@ namespace Microsoft.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.SafeCurrent?.Bounds ?? default;
+			var bounds = XamlRoot?.VisualTree.VisibleBounds ?? Target?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			screenWidth = bounds.Width;
 			screenHeight = bounds.Height;
 
@@ -448,10 +448,10 @@ namespace Microsoft.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.SafeCurrent?.Bounds ?? default;
+			var visibleRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			var constraint = visibleRect;
 
-			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.SafeCurrent?.Bounds ?? default;
+			var windowRect = XamlRoot?.VisualTree.VisibleBounds ?? spTarget?.XamlRoot?.VisualTree.VisibleBounds ?? Xaml.Window.CurrentSafe?.Bounds ?? default;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 

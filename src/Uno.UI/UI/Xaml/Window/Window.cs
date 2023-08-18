@@ -9,6 +9,7 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
+using Windows.UI.Composition;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
@@ -94,14 +95,10 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public event WindowVisibilityChangedEventHandler? VisibilityChanged;
 
-		private void InitializeCommon()
-		{
-#if !HAS_UNO_WINUI
-			RaiseCreated();
-#endif
-
-			Background = SolidColorBrushHelper.White;
-		}
+		/// <summary>
+		/// Gets the Compositor for this window.
+		/// </summary>
+		public Compositor Compositor { get; private set; }
 
 		public UIElement? Content
 		{
@@ -129,10 +126,25 @@ namespace Microsoft.UI.Xaml
 		/// </summary>
 		public Rect Bounds { get; private set; }
 
+#if HAS_UNO_WINUI
 		/// <summary>
-		/// Gets an internal core object for the application window.
+		/// Always null in Uno.WinUI.
 		/// </summary>
-		public CoreWindow? IReallyUseCoreWindow => _windowImplementation.CoreWindow;
+		public CoreWindow? CoreWindow { get; }
+#else
+		/// <summary>
+		/// Gets the window of the current thread.
+		/// </summary>
+		public CoreWindow? CoreWindow => _windowImplementation.CoreWindow;
+#endif
+
+#pragma warning disable RS0030 // CoreWindow is banned
+		/// <summary>
+		/// Use this instead of Window.Current throughout this codebase
+		/// to prove it is intentional (the property is null throughout Uno.WinUI).
+		/// </summary>
+		public CoreWindow? CoreWindowSafe => CoreWindow;
+#pragma warning restore RS0030
 
 		public CoreWindow? IShouldntUseCoreWindow => _windowImplementation.CoreWindow;
 
@@ -180,27 +192,38 @@ namespace Microsoft.UI.Xaml
 		public static Window? Current { get; }
 #else
 		/// <summary>
-		/// Gets the window of the current thread.
+		/// Gets the window of the current thread.		
 		/// </summary>
 		public static Window Current => InternalGetCurrentWindow();
 #endif
 
-#pragma warning disable RS0030
+#pragma warning disable RS0030 // Current is banned
 		/// <summary>
-		/// Use this to reference Window.Current throughout this codebase
-		/// to ensure it is intentional (the property is null throughout Uno.WinUI).
+		/// Use this instead of Window.Current throughout this codebase
+		/// to prove it is intentional (the property is null throughout Uno.WinUI).
 		/// </summary>
-		internal static Window? SafeCurrent => Current;
+		internal static Window? CurrentSafe => Current;
 #pragma warning restore RS0030
 
-		public static Window IShouldntUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+		internal static Window IShouldntUseCurrentWindow => InternalGetCurrentWindow(); // TODO: We should make sure Current returns null in case of WinUI tree.
+
+		private void InitializeCommon()
+		{
+			InitDragAndDrop();
+
+#if !HAS_UNO_WINUI
+			RaiseCreated();
+#endif
+
+			Background = SolidColorBrushHelper.White;
+		}
 
 		public void Activate()
 		{
 			// Currently Uno supports only single window,
 			// for compatibility with WinUI we set the first activated
 			// as Current #8341
-			_current ??= this;
+			_current ??= this; //TODO:MZ: Verify this!
 			_wasActivated = true;
 
 			// Initialize visibility on first activation.			
@@ -284,7 +307,7 @@ namespace Microsoft.UI.Xaml
 #else
 				var coreWindowActivatedEventArgs = activatedEventArgs;
 #endif
-				IReallyUseCoreWindow?.OnActivated(coreWindowActivatedEventArgs);
+				CoreWindowSafe?.OnActivated(coreWindowActivatedEventArgs);
 				Activated?.Invoke(this, activatedEventArgs);
 			}
 		}

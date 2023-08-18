@@ -27,8 +27,6 @@ public sealed partial class Window
 
 	internal event EventHandler? Showing;
 
-	public Compositor Compositor { get; private set; }
-
 	internal void OnNativeSizeChanged(Size size)
 	{
 		var newBounds = new Rect(0, 0, size.Width, size.Height);
