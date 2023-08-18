@@ -56,7 +56,7 @@ namespace Uno.UI.Xaml.Core
 			_mainVisualTree = null;
 		}
 
-		internal void PutVisualRoot(DependencyObject? dependencyObject)
+		internal void PutCoreWindowVisualRoot(DependencyObject? dependencyObject)
 		{
 			ResetCoreWindowVisualTree();
 
