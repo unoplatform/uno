@@ -3,7 +3,6 @@
 using System;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
@@ -14,11 +13,7 @@ internal partial class ContentManager
 	private readonly bool _isCoreWindowContent;
 
 	private UIElement? _content;
-	private UIElement? _privateRootElement;
-	private UIElement? _publicRootElement;
 	private RootVisual? _rootVisual;
-
-	private UIElement? _rootScrollViewer;
 
 	public ContentManager(object owner, bool isCoreWindowContent)
 	{
@@ -36,8 +31,6 @@ internal partial class ContentManager
 
 	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.NotifyChanged();
 
-	public UIElement? PublicRootElement => _publicRootElement;
-
 	private void SetContent(UIElement? newContent)
 	{
 		var oldContent = Content;
@@ -52,36 +45,32 @@ internal partial class ContentManager
 		CreateRootScrollViewer(newContent);
 #endif
 
-		if (_rootVisual is null)
+		if (_isCoreWindowContent && _rootVisual is null)
 		{
-			if (_isCoreWindowContent)
+			WinUICoreServices.Instance.PutCoreWindowVisualRoot(newContent);
+			_rootVisual = WinUICoreServices.Instance.MainRootVisual;
+
+			if (_rootVisual?.XamlRoot is null)
 			{
-				WinUICoreServices.Instance.PutCoreWindowVisualRoot(_publicRootElement);
-				_rootVisual = WinUICoreServices.Instance.MainRootVisual;
-
-				if (_rootVisual?.XamlRoot is null)
-				{
-					throw new InvalidOperationException("The root visual was not created.");
-				}
+				throw new InvalidOperationException("The root visual was not created.");
 			}
+
+			SetupCoreWindowRootVisualPlatform(_rootVisual);
 		}
 
-		if (_isCoreWindowContent)
-		{
-			TryLoadRootVisual();
-		}
-
-		oldContent?.XamlRoot?.NotifyChanged();
-		if (newContent?.XamlRoot != oldContent?.XamlRoot)
-		{
-			newContent?.XamlRoot?.NotifyChanged();
-		}
+		_content = newContent;
 	}
+
+	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual);
 
 #if __WASM__ // Only WASM currently has a root scroll viewer.
 	private void CreateRootScrollViewer(UIElement content)
 	{
-		var rootBorder = new Border();
+		var rootBorder = new Border()
+		{
+			Child = content;
+		}
+
 		RootScrollViewer = new ScrollViewer()
 		{
 			VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -90,7 +79,6 @@ internal partial class ContentManager
 			HorizontalScrollMode = ScrollMode.Disabled,
 			Content = rootBorder
 		};
-		rootBorder.Child = _content = content;
 	}
 #endif
 }

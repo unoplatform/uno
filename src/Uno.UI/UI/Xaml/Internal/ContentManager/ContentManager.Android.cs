@@ -13,21 +13,8 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	private void InternalSetContent(UIElement value)
+	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
 	{
-		if (_rootVisual == null)
-		{
-			_rootBorder = new Border();
-			CoreServices.Instance.PutVisualRoot(_rootBorder);
-			_rootVisual = CoreServices.Instance.MainRootVisual;
-
-			if (_rootVisual == null)
-			{
-				throw new InvalidOperationException("The root visual could not be created.");
-			}
-
-			ApplicationActivity.Instance?.SetContentView(_rootVisual);
-		}
-		_rootBorder.Child = _content = value;
+		ApplicationActivity.Instance?.SetContentView(_rootVisual);
 	}
 }
