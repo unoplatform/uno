@@ -19,6 +19,7 @@
     <PackageCertificateKeyFile>SamplesApp.UWP_TemporaryKey.pfx</PackageCertificateKeyFile>
     <PackageCertificateThumbprint>7420EA2EEA8BC1E402E4A7D15FE9CC36F831D4F6</PackageCertificateThumbprint>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
+    <PolySharpUsePublicAccessibilityForGeneratedTypes>true</PolySharpUsePublicAccessibilityForGeneratedTypes>
     <!-- https://github.com/microsoft/microsoft-ui-xaml/issues/4187 -->
     <NoWarn>$(NoWarn);CS8305</NoWarn>
     <!-- '{0}' is for evaluation purposes only and is subject to change or removal in future updates. -->
@@ -112,6 +113,10 @@
     <PackageReference Include="Uno.Core.Extensions.Disposables" Version="4.0.0-dev.7" />
     <PackageReference Include="Uno.Core.Extensions.Compatibility" Version="4.0.0-dev.7" />
     <PackageReference Include="Uno.Core.Extensions" Version="4.0.1" />
+    <PackageReference Include="PolySharp" Version="1.13.2">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
