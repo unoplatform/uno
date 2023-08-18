@@ -181,6 +181,23 @@ internal partial class PopupPanel : Panel
 
 			ArrangeElement(child, finalFrame);
 
+			var updatedFinalFrame = new Rect(
+				anchorLocation.X + (float)Popup.HorizontalOffset,
+				anchorLocation.Y + (float)Popup.VerticalOffset,
+				size.Width,
+				size.Height);
+
+			if (updatedFinalFrame != finalFrame)
+			{
+				// Workraround:
+				// The HorizontalOffset is updated to the correct value in CascadingMenuHelper.OnPresenterSizeChanged
+				// This update appears to be happening *during* ArrangeElement which was already passed wrong finalFrame.
+				// We re-arrange with the new updated finalFrame.
+				// Note: This might be a lifecycle issue, so this workaround needs to be revised in the future and deleted if possible.
+				// See MenuFlyoutSubItem_Placement sample.
+				ArrangeElement(child, updatedFinalFrame);
+			}
+
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().LogDebug($"Arranged PopupPanel #={GetHashCode()} DC={Popup.DataContext} child={child} popupLocation={anchorLocation} offset={Popup.HorizontalOffset},{Popup.VerticalOffset} finalSize={finalSize} childFrame={finalFrame}");
