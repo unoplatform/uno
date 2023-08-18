@@ -17,7 +17,6 @@ using Windows.Graphics.Display;
 using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
-using Uno;
 using System.Diagnostics.CodeAnalysis;
 using Uno.UI;
 
@@ -172,8 +171,10 @@ namespace SamplesApp
 			_mainWindow ??=
 #if HAS_UNO_WINUI
 				new Windows.UI.Xaml.Window();
-#else
+#elif HAS_UNO
 				Windows.UI.Xaml.Window.CurrentSafe!;
+#else
+				Window.Current;
 #endif
 		}
 
