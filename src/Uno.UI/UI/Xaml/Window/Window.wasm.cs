@@ -123,23 +123,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void ShowPartial() => WindowManagerInterop.WindowActivate();
 
-		internal void UpdateRootAttributes()
-		{
-			if (_rootVisual == null)
-			{
-				throw new InvalidOperationException("Internal window root is not yet set.");
-			}
-
-			if (FeatureConfiguration.Cursors.UseHandForInteraction)
-			{
-				_rootVisual.SetAttribute("data-use-hand-cursor-interaction", "true");
-			}
-			else
-			{
-				_rootVisual.RemoveAttribute("data-use-hand-cursor-interaction");
-			}
-		}
-
 		internal void DisplayFullscreen(UIElement content)
 		{
 			if (content == null)

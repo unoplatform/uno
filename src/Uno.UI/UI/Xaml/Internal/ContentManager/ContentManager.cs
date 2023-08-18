@@ -14,9 +14,11 @@ internal partial class ContentManager
 	private readonly bool _isCoreWindowContent;
 
 	private UIElement? _content;
+	private UIElement? _privateRootElement;
 	private UIElement? _publicRootElement;
 	private RootVisual? _rootVisual;
-	private Border? _rootBorder;
+
+	private UIElement? _rootScrollViewer;
 
 	public ContentManager(object owner, bool isCoreWindowContent)
 	{
@@ -27,82 +29,34 @@ internal partial class ContentManager
 	public UIElement? Content
 	{
 		get => _content;
-		set => InternalSetContent(value);
+		set => SetContent(value);
 	}
+
+	internal Windows.UI.Xaml.Controls.ScrollViewer? RootScrollViewer { get; private set; }
+
+	private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _rootVisual?.XamlRoot?.NotifyChanged();
 
 	public UIElement? PublicRootElement => _publicRootElement;
 
-	private void InternalSetContent(UIElement? content)
+	private void SetContent(UIElement? newContent)
 	{
-		//if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-		//{
-		//	// Ignore setter, in line with XAML Islands behavior.
-		//	return;
-		//}
+		var oldContent = Content;
 
-		//if (Content == value)
-		//{
-		//	// Content already set, ignore.
-		//	return;
-		//}
-
-		//var oldContent = Content;
-		//if (oldContent != null)
-		//{
-		//	oldContent.IsWindowRoot = false;
-
-		//	if (oldContent is FrameworkElement oldRoot)
-		//	{
-		//		oldRoot.SizeChanged -= RootSizeChanged;
-		//	}
-		//}
-
-		//if (value is not null)
-		//{
-		//	value.IsWindowRoot = true;
-		//}
-
-		//InternalSetContent(value);
-
-		//if (value is FrameworkElement newRoot)
-		//{
-		//	newRoot.SizeChanged += RootSizeChanged;
-		//}
-
-		//oldContent?.XamlRoot?.NotifyChanged();
-		//if (value?.XamlRoot != oldContent?.XamlRoot)
-		//{
-		//	value?.XamlRoot?.NotifyChanged();
-		//}
-
-		//TryShow();
-
-
-		if (_content == content)
+		if (oldContent == newContent)
 		{
+			// Content already set, ignore.
 			return;
 		}
 
-		if (_rootVisual is null)
-		{
-			_rootBorder = new Border();
-			_publicRootElement = _rootBorder;
 #if __WASM__ // Only WASM currently has a root scroll viewer.
-			_rootScrollViewer = new ScrollViewer()
-			{
-				VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-				VerticalScrollMode = ScrollMode.Disabled,
-				HorizontalScrollMode = ScrollMode.Disabled,
-				Content = _rootBorder
-			};
-			//TODO Uno: We can set and RootScrollViewer properly in case of WASM
-			_rootElement = _rootScrollViewer;
+		CreateRootScrollViewer(newContent);
 #endif
 
+		if (_rootVisual is null)
+		{
 			if (_isCoreWindowContent)
 			{
-				WinUICoreServices.Instance.PutVisualRoot(_publicRootElement);
+				WinUICoreServices.Instance.PutCoreWindowVisualRoot(_publicRootElement);
 				_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
 				if (_rootVisual?.XamlRoot is null)
@@ -112,16 +66,31 @@ internal partial class ContentManager
 			}
 		}
 
-		//// Attaching to window?
-
-		if (_rootBorder != null)
-		{
-			_rootBorder.Child = _content = content;
-		}
-
 		if (_isCoreWindowContent)
 		{
 			TryLoadRootVisual();
 		}
+
+		oldContent?.XamlRoot?.NotifyChanged();
+		if (newContent?.XamlRoot != oldContent?.XamlRoot)
+		{
+			newContent?.XamlRoot?.NotifyChanged();
+		}
 	}
+
+#if __WASM__ // Only WASM currently has a root scroll viewer.
+	private void CreateRootScrollViewer(UIElement content)
+	{
+		var rootBorder = new Border();
+		RootScrollViewer = new ScrollViewer()
+		{
+			VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
+			HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
+			VerticalScrollMode = ScrollMode.Disabled,
+			HorizontalScrollMode = ScrollMode.Disabled,
+			Content = rootBorder
+		};
+		rootBorder.Child = _content = content;
+	}
+#endif
 }

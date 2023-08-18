@@ -480,7 +480,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnRequestedThemeChanged(ElementTheme oldValue, ElementTheme newValue)
 		{
-			if (IsWindowRoot || XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
+			if (XamlRoot?.Content == this) // Some elements like TextBox set RequestedTheme in their Focused style, so only listen to changes to root view
 			{
 				// This is an ultra-naive implementation... but nonetheless enables the common use case of overriding the system theme for
 				// the entire visual tree (since Application.RequestedTheme cannot be set after launch)

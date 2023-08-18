@@ -15,7 +15,10 @@ internal partial class XamlIsland : Panel
 	{
 		_contentManager = new(this, false);
 		InitializeRoot(WinUICoreServices.Instance);
+		SizeChanged += XamlIsland_SizeChanged;
 	}
+
+	private void XamlIsland_SizeChanged(object sender, SizeChangedEventArgs args) => Content?.XamlRoot?.NotifyChanged();
 
 	public UIElement? Content
 	{
