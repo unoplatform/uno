@@ -457,6 +457,11 @@ namespace Windows.UI.Xaml.Controls
 		internal override void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
 			base.OnSelectedIndexChanged(oldSelectedIndex, newSelectedIndex);
+			if (ExtendedShiftSelectionStart == -1)
+			{
+				// only changed if it wasn't already set. This matches the behaviour on WinUI.
+				ExtendedShiftSelectionStart = newSelectedIndex;
+			}
 
 			try
 			{
