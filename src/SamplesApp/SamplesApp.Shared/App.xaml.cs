@@ -187,76 +187,6 @@ namespace SamplesApp
 #endif
 		}
 
-		private bool HandleSkiaAutoScreenshots(LaunchActivatedEventArgs e)
-		{
-#if __SKIA__ || __MACOS__
-			var runAutoScreenshotsParam =
-			e.Arguments.Split(';').FirstOrDefault(a => a.StartsWith("--auto-screenshots"));
-
-			var screenshotsPath = runAutoScreenshotsParam?.Split('=').LastOrDefault();
-
-			if (!string.IsNullOrEmpty(screenshotsPath))
-			{
-				if (_mainWindow is null)
-				{
-					throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
-				}
-
-				var n = _mainWindow.Dispatcher.RunIdleAsync(
-					_ =>
-					{
-						var n = _mainWindow.Dispatcher.RunAsync(
-							CoreDispatcherPriority.Normal,
-							async () =>
-							{
-								await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
-							}
-						);
-
-					});
-
-				return true;
-			}
-#endif
-
-			return false;
-		}
-
-		private static Task<bool> HandleSkiaRuntimeTests(LaunchActivatedEventArgs e) => HandleSkiaRuntimeTests(e.Arguments);
-
-		public static
-#if __SKIA__ || __MACOS__
-			async
-#endif
-			Task<bool> HandleSkiaRuntimeTests(string args)
-		{
-#if __SKIA__ || __MACOS__
-			var runRuntimeTestsResultsParam =
-				args.Split(';').FirstOrDefault(a => a.StartsWith("--runtime-tests"));
-
-			var runtimeTestResultFilePath = runRuntimeTestsResultsParam?.Split('=').LastOrDefault();
-
-			if (!string.IsNullOrEmpty(runtimeTestResultFilePath))
-			{
-				Console.WriteLine($"HandleSkiaRuntimeTests: {runtimeTestResultFilePath}");
-
-				// let the app finish its startup
-				await Task.Delay(TimeSpan.FromSeconds(5));
-
-				await SampleControl.Presentation.SampleChooserViewModel.Instance.RunRuntimeTests(
-					CancellationToken.None,
-					runtimeTestResultFilePath,
-					() => System.Environment.Exit(0));
-
-				return true;
-			}
-
-			return false;
-#else
-			return Task.FromResult(false);
-#endif
-		}
-
 #if __IOS__
 		/// <summary>
 		/// Launches a watchdog that will terminate the app if the dispatcher does not process
@@ -461,11 +391,6 @@ namespace SamplesApp
 
 		public static void ConfigureLogging()
 		{
-			if (_log is null)
-			{
-				throw new InvalidOperationException("Logging was not initialized");
-			}
-
 #if HAS_UNO
 			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => _log?.Error("UnobservedTaskException", e.Exception);
 			AppDomain.CurrentDomain.UnhandledException += (s, e) => _log?.Error("UnhandledException", (e.ExceptionObject as Exception) ?? new Exception("Unknown exception " + e.ExceptionObject));
