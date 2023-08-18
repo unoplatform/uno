@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,10 +45,25 @@ partial class ContentManager
 			{
 				UIElement.RootElementLoaded(_rootVisual);
 			}
-
-			UpdateRootAttributes();
 		}
 
 		_rootBorder.Child = _content = content;
+	}
+
+	private void UpdateRootAttributes()
+	{
+		if (_privateRootElement is null)
+		{
+			throw new InvalidOperationException("Private window root is not yet set.");
+		}
+
+		if (FeatureConfiguration.Cursors.UseHandForInteraction)
+		{
+			_privateRootElement.SetAttribute("data-use-hand-cursor-interaction", "true");
+		}
+		else
+		{
+			_privateRootElement.RemoveAttribute("data-use-hand-cursor-interaction");
+		}
 	}
 }

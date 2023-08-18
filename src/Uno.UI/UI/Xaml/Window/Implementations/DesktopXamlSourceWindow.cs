@@ -31,7 +31,11 @@ internal partial class DesktopXamlSourceWindow : IWindowImplementation
 
 	public event SizeChangedEventHandler? SizeChanged;
 
-	private void OnNativeWindowSizeChanged(object sender, SizeChangedEventArgs args) => SizeChanged?.Invoke(this, args);
+	private void OnNativeWindowSizeChanged(object sender, SizeChangedEventArgs args)
+	{
+		SizeChanged?.Invoke(this, args);
+		_windowChrome.XamlRoot?.NotifyChanged();
+	}
 
 	/// <summary>
 	/// For WinUI-based windows, CoreWindow is always null.
