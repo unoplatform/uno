@@ -535,8 +535,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-#if false
-		void Open()
+		internal void Open()
 		{
 #if MFSI_DEBUG
 			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Open.", this));
@@ -545,7 +544,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OpenSubMenu();
 		}
 
-		void Close()
+		internal void Close()
 		{
 #if MFSI_DEBUG
 			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Close.", this));
@@ -554,7 +553,6 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.CloseSubMenu();
 
 		}
-#endif
 
 		private protected override void ChangeVisualState(bool bUseTransitions)
 		{

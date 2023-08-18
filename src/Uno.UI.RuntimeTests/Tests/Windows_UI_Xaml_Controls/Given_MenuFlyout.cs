@@ -1,6 +1,7 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
@@ -324,6 +325,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					flyout.Hide();
 				}
+			}
+		}
+
+		[TestMethod]
+		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
+		{
+			var button = new Button()
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Content = "Open flyout",
+				Flyout = new MenuFlyout()
+				{
+					Items =
+					{
+						new MenuFlyoutSubItem()
+						{
+							Text = "Open submenu",
+							Items =
+							{
+								new MenuFlyoutSubItem() { Text = "First item" },
+							},
+						},
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = button;
+			await WindowHelper.WaitForLoaded(button);
+			button.AutomationPeerClick();
+
+			var flyout = (MenuFlyout)button.Flyout;
+			var subItem = (MenuFlyoutSubItem)flyout.Items.Single();
+			try
+			{
+				subItem.Open();
+
+				// The "Open submenu" opens at the very right of the screen.
+				// So, the "First item" sub item should open on its left.
+				// We assert that the left of "Open sub menu" is almost the same as the right of "First item"
+
+				await WindowHelper.WaitForIdle();
+
+				var subItemBounds = subItem.GetAbsoluteBounds();
+				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
+
+				var difference = subItemBounds.X - subSubItemBounds.Right;
+				Assert.IsTrue(Math.Abs(difference) <= 3);
+
+			}
+			finally
+			{
+				subItem.Close();
+				flyout.Close();
 			}
 		}
 #endif
