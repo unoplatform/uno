@@ -3,10 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
-    xmlns:wasm="http://uno.ui/wasm"
+    xmlns:netstdref="http://uno.ui/netstdref"
+    xmlns:not_netstdref="http://uno.ui/not_netstdref"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d wasm">
+    mc:Ignorable="d netstdref not_netstdref">
 
     <Style TargetType="local:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
 
@@ -27,10 +28,10 @@
                                 <!-- Visual State when a Photo is available for display -->
                                 <VisualState x:Name="Photo">
                                     <VisualState.Setters>
-                                        <Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
+                                        <not_netstdref:Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
 
-                                        <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
-                                        <wasm:Setter Target="PersonPictureImage.Source"
+                                        <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 and https://github.com/unoplatform/uno/issues/7815 -->
+                                        <netstdref:Setter Target="PersonPictureImage.Source"
 														 Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush.ImageSource}" />
                                     </VisualState.Setters>
                                 </VisualState>
@@ -93,16 +94,16 @@
                             IsTextScaleFactorEnabled="False"
                             Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
 
-                        <Ellipse
+                        <not_netstdref:Ellipse
                             x:Name="PersonPictureEllipse"
                             x:DeferLoadStrategy="Lazy"
                             Width="{TemplateBinding Width}"
                             Height="{TemplateBinding Height}"
                             FlowDirection="LeftToRight">
-                        </Ellipse>
+                        </not_netstdref:Ellipse>
 
-                        <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
-                        <wasm:Border Width="{TemplateBinding Width}"
+                        <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 and https://github.com/unoplatform/uno/issues/7815 -->
+                        <netstdref:Border Width="{TemplateBinding Width}"
 										 Height="{TemplateBinding Height}"
 										 CornerRadius="{TemplateBinding Width}"
 										 FlowDirection="LeftToRight">
@@ -110,7 +111,7 @@
 									   Stretch="UniformToFill"
 									   HorizontalAlignment="Center"
 									   VerticalAlignment="Center" />
-                        </wasm:Border>
+                        </netstdref:Border>
 
                         <!-- UNO WORKAROUND: Removed Margin="{ThemeResource PersonPictureBadgeGridMargin}". Clipping issue with negative margin: #-->
                         <Grid
