@@ -3,6 +3,10 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
 
+/// <summary>
+/// Represents a compass sensor.
+/// This sensor returns a heading with respect to Magnetic North and, possibly, True North. (The latter is dependent on the system capabilities.)
+/// </summary>
 public partial class Compass
 {
 	private readonly static object _syncLock = new();
@@ -12,6 +16,10 @@ public partial class Compass
 
 	private TypedEventHandler<Compass, CompassReadingChangedEventArgs> _readingChanged;
 
+	/// <summary>
+	/// Returns the default compass.
+	/// </summary>
+	/// <returns>The default compass or null if no integrated compasses are found.</returns>
 	public static Compass GetDefault()
 	{
 		if (_initializationAttempted)
@@ -29,6 +37,9 @@ public partial class Compass
 		}
 	}
 
+	/// <summary>
+	/// Occurs each time the compass reports a new sensor reading.
+	/// </summary>
 	public event TypedEventHandler<Compass, CompassReadingChangedEventArgs> ReadingChanged
 	{
 		add
