@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml
 			{
 #if !HAS_UNO_WINUI
 				// Force init
-				Window.SafeCurrent?.ToString();
+				Window.CurrentSafe?.ToString();
 #endif
 
 				InitializationCompleted();
