@@ -13,18 +13,10 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	private void CustomSetContent(UIElement value)
+	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
 	{
-		if (_rootVisual == null)
-		{
-
-			_mainController.View.AddSubview(_rootVisual);
-			_rootVisual.Frame = _mainController.View.Bounds;
-			_rootVisual.AutoresizingMask = UIViewAutoresizing.All;
-		}
-
-		_rootBorder.Child?.RemoveFromSuperview();
-		_rootBorder.Child = null;
-		_rootBorder.Child = _content = value;
+		_mainController.View.AddSubview(_rootVisual);
+		_rootVisual.Frame = _mainController.View.Bounds;
+		_rootVisual.AutoresizingMask = UIViewAutoresizing.All;
 	}
 }
