@@ -107,10 +107,15 @@ namespace Windows.UI.Xaml.Controls
 				isOn = IsOn;
 				GoToState(useTransitions, isOn ? "On" : "Off");
 				GoToState(useTransitions, isOn ? "OnContent" : "OffContent");
+
 				// TODO Uno specific: We must force the knob to position, because
 				// we don't yet support the transitions which do this automatically
 				// in XAML template.
-				ForceSwitchKnobEndPosition();
+				if (IsLoaded)
+				{
+					global::System.Diagnostics.Debug.Assert(GetMaxOffset() > 0);
+					ForceSwitchKnobEndPosition();
+				}
 			}
 		}
 
