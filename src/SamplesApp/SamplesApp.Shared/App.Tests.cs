@@ -53,27 +53,32 @@ partial class App
 
 	public static string RunTest(string metadataName)
 	{
+		if (_mainWindow is null)
+		{
+			throw new InvalidOperationException("Cannot run tests until main window is initialized.");
+		}
+
 		try
 		{
 			Console.WriteLine($"Initiate Running Test {metadataName}");
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+			_ = _mainWindow.Dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				async () =>
 				{
 					try
 					{
 #if __IOS__ || __ANDROID__
-						var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-						if (statusBar != null)
-						{
-							_ = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-								Windows.UI.Core.CoreDispatcherPriority.Normal,
-								async () => await statusBar.HideAsync()
-							);
-						}
+							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+							if (statusBar != null)
+							{
+								_ = _mainWindow.Dispatcher.RunAsync(
+									Windows.UI.Core.CoreDispatcherPriority.Normal,
+									async () => await statusBar.HideAsync()
+								);
+							}
 #endif
 
 #if __ANDROID__
@@ -132,15 +137,15 @@ partial class App
 
 		if (!string.IsNullOrEmpty(screenshotsPath))
 		{
-			if (Windows.UI.Xaml.Window.Current is null)
+			if (_mainWindow is null)
 			{
 				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 			}
 
-			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
+			var n = _mainWindow.Dispatcher.RunIdleAsync(
 				_ =>
 				{
-					var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+					var n = _mainWindow.Dispatcher.RunAsync(
 						CoreDispatcherPriority.Normal,
 						async () =>
 						{
