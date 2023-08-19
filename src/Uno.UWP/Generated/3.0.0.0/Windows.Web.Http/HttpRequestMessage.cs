@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpRequestMessage : global::System.IDisposable,global::Windows.Foundation.IStringable
+	public partial class HttpRequestMessage : global::System.IDisposable, global::Windows.Foundation.IStringable
 	{
 		// Skipping already declared property RequestUri
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

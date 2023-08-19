@@ -86,7 +86,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BluetoothLEAdvertisementPublisher() 
+		public BluetoothLEAdvertisementPublisher()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "BluetoothLEAdvertisementPublisher.BluetoothLEAdvertisementPublisher()");
 		}
@@ -94,7 +94,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher.BluetoothLEAdvertisementPublisher()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BluetoothLEAdvertisementPublisher(global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement advertisement) 
+		public BluetoothLEAdvertisementPublisher(global::Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisement advertisement)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementPublisher", "BluetoothLEAdvertisementPublisher.BluetoothLEAdvertisementPublisher(BluetoothLEAdvertisement advertisement)");
 		}

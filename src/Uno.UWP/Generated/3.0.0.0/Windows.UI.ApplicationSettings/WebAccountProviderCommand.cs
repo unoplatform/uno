@@ -30,7 +30,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebAccountProviderCommand(global::Windows.Security.Credentials.WebAccountProvider webAccountProvider, global::Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler invoked) 
+		public WebAccountProviderCommand(global::Windows.Security.Credentials.WebAccountProvider webAccountProvider, global::Windows.UI.ApplicationSettings.WebAccountProviderCommandInvokedHandler invoked)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.WebAccountProviderCommand", "WebAccountProviderCommand.WebAccountProviderCommand(WebAccountProvider webAccountProvider, WebAccountProviderCommandInvokedHandler invoked)");
 		}

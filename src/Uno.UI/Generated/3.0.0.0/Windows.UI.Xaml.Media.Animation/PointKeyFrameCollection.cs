@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PointKeyFrameCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Animation.PointKeyFrame>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Animation.PointKeyFrame>
+	public partial class PointKeyFrameCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Animation.PointKeyFrame>, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Media.Animation.PointKeyFrame>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PointKeyFrameCollection() 
+		public PointKeyFrameCollection()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.PointKeyFrameCollection", "PointKeyFrameCollection.PointKeyFrameCollection()");
 		}

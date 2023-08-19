@@ -6,7 +6,7 @@ namespace Windows.Devices.PointOfService
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ReceiptPrintJob : global::Windows.Devices.PointOfService.IReceiptOrSlipJob,global::Windows.Devices.PointOfService.IPosPrinterJob
+	public partial class ReceiptPrintJob : global::Windows.Devices.PointOfService.IReceiptOrSlipJob, global::Windows.Devices.PointOfService.IPosPrinterJob
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal ReceiptPrintJob()

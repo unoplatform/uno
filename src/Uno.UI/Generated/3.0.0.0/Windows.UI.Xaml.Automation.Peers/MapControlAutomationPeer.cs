@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MapControlAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider,global::Windows.UI.Xaml.Automation.Provider.ITransformProvider2,global::Windows.UI.Xaml.Automation.Provider.ITransformProvider
+	public partial class MapControlAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IScrollProvider, global::Windows.UI.Xaml.Automation.Provider.ITransformProvider2, global::Windows.UI.Xaml.Automation.Provider.ITransformProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal MapControlAutomationPeer()

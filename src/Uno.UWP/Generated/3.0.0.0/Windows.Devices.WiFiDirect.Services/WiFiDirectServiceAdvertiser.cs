@@ -144,7 +144,7 @@ namespace Windows.Devices.WiFiDirect.Services
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WiFiDirectServiceAdvertiser(string serviceName) 
+		public WiFiDirectServiceAdvertiser(string serviceName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.WiFiDirect.Services.WiFiDirectServiceAdvertiser", "WiFiDirectServiceAdvertiser.WiFiDirectServiceAdvertiser(string serviceName)");
 		}

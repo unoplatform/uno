@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionObject : global::System.IDisposable,global::Windows.UI.Composition.IAnimationObject
+	public partial class CompositionObject : global::System.IDisposable, global::Windows.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Compositor
 		// Skipping already declared property Dispatcher
