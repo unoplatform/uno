@@ -61,14 +61,16 @@ namespace Windows.UI.Xaml.Media
 					yield return subtree;
 				}
 
-				foreach (var uiElement in subtree.GetChildren())
+				foreach (var child in subtree.GetChildren())
 				{
 #if __ANDROID__ || __IOS__ || __MACOS__
 					// On Wasm and Skia, child is always UIElement.
-					if (uiElement is not UIElement)
+					if (child is not UIElement uiElement)
 					{
 						continue;
 					}
+#else
+					var uiElement = child;
 #endif
 					var canTest = includeAllElements
 						|| (uiElement.IsHitTestVisible && uiElement.IsViewHit());
