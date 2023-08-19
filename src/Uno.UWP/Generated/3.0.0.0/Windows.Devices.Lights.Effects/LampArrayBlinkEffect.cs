@@ -136,7 +136,7 @@ namespace Windows.Devices.Lights.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public LampArrayBlinkEffect(global::Windows.Devices.Lights.LampArray lampArray, int[] lampIndexes) 
+		public LampArrayBlinkEffect(global::Windows.Devices.Lights.LampArray lampArray, int[] lampIndexes)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Lights.Effects.LampArrayBlinkEffect", "LampArrayBlinkEffect.LampArrayBlinkEffect(LampArray lampArray, int[] lampIndexes)");
 		}

@@ -90,7 +90,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DnssdServiceInstance(string dnssdServiceInstanceName, global::Windows.Networking.HostName hostName, ushort port) 
+		public DnssdServiceInstance(string dnssdServiceInstanceName, global::Windows.Networking.HostName hostName, ushort port)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance", "DnssdServiceInstance.DnssdServiceInstance(string dnssdServiceInstanceName, HostName hostName, ushort port)");
 		}

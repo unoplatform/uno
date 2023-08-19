@@ -6,7 +6,7 @@ namespace Windows.Networking.Sockets
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StreamWebSocketControl : global::Windows.Networking.Sockets.IWebSocketControl,global::Windows.Networking.Sockets.IWebSocketControl2
+	public partial class StreamWebSocketControl : global::Windows.Networking.Sockets.IWebSocketControl, global::Windows.Networking.Sockets.IWebSocketControl2
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal StreamWebSocketControl()

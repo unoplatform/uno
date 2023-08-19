@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Store
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ProductPurchaseDisplayProperties(string name) 
+		public ProductPurchaseDisplayProperties(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string name)");
 		}
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.Store
 		// Forced skipping of method Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ProductPurchaseDisplayProperties() 
+		public ProductPurchaseDisplayProperties()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Store.ProductPurchaseDisplayProperties", "ProductPurchaseDisplayProperties.ProductPurchaseDisplayProperties()");
 		}

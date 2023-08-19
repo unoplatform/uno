@@ -6,11 +6,11 @@ namespace Windows.Storage.Compression
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Decompressor : global::Windows.Storage.Streams.IInputStream,global::System.IDisposable
+	public partial class Decompressor : global::Windows.Storage.Streams.IInputStream, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Decompressor(global::Windows.Storage.Streams.IInputStream underlyingStream) 
+		public Decompressor(global::Windows.Storage.Streams.IInputStream underlyingStream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Compression.Decompressor", "Decompressor.Decompressor(IInputStream underlyingStream)");
 		}

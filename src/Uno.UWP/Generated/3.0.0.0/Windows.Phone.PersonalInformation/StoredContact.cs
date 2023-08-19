@@ -6,7 +6,7 @@ namespace Windows.Phone.PersonalInformation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StoredContact : global::Windows.Phone.PersonalInformation.IContactInformation,global::Windows.Phone.PersonalInformation.IContactInformation2
+	public partial class StoredContact : global::Windows.Phone.PersonalInformation.IContactInformation, global::Windows.Phone.PersonalInformation.IContactInformation2
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -138,7 +138,7 @@ namespace Windows.Phone.PersonalInformation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StoredContact(global::Windows.Phone.PersonalInformation.ContactStore store) 
+		public StoredContact(global::Windows.Phone.PersonalInformation.ContactStore store)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.PersonalInformation.StoredContact", "StoredContact.StoredContact(ContactStore store)");
 		}
@@ -146,7 +146,7 @@ namespace Windows.Phone.PersonalInformation
 		// Forced skipping of method Windows.Phone.PersonalInformation.StoredContact.StoredContact(Windows.Phone.PersonalInformation.ContactStore)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public StoredContact(global::Windows.Phone.PersonalInformation.ContactStore store, global::Windows.Phone.PersonalInformation.ContactInformation contact) 
+		public StoredContact(global::Windows.Phone.PersonalInformation.ContactStore store, global::Windows.Phone.PersonalInformation.ContactInformation contact)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Phone.PersonalInformation.StoredContact", "StoredContact.StoredContact(ContactStore store, ContactInformation contact)");
 		}

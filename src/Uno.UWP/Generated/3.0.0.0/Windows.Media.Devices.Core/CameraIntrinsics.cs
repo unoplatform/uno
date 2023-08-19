@@ -80,7 +80,7 @@ namespace Windows.Media.Devices.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CameraIntrinsics(global::System.Numerics.Vector2 focalLength, global::System.Numerics.Vector2 principalPoint, global::System.Numerics.Vector3 radialDistortion, global::System.Numerics.Vector2 tangentialDistortion, uint imageWidth, uint imageHeight) 
+		public CameraIntrinsics(global::System.Numerics.Vector2 focalLength, global::System.Numerics.Vector2 principalPoint, global::System.Numerics.Vector3 radialDistortion, global::System.Numerics.Vector2 tangentialDistortion, uint imageWidth, uint imageHeight)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Devices.Core.CameraIntrinsics", "CameraIntrinsics.CameraIntrinsics(Vector2 focalLength, Vector2 principalPoint, Vector3 radialDistortion, Vector2 tangentialDistortion, uint imageWidth, uint imageHeight)");
 		}

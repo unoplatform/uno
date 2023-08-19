@@ -10,7 +10,7 @@ namespace Windows.System.Threading.Core
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler) 
+		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem.PreallocatedWorkItem(WorkItemHandler handler)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.System.Threading.Core
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority) 
+		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem.PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority)");
 		}
@@ -26,7 +26,7 @@ namespace Windows.System.Threading.Core
 		// Forced skipping of method Windows.System.Threading.Core.PreallocatedWorkItem.PreallocatedWorkItem(Windows.System.Threading.WorkItemHandler, Windows.System.Threading.WorkItemPriority)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority, global::Windows.System.Threading.WorkItemOptions options) 
+		public PreallocatedWorkItem(global::Windows.System.Threading.WorkItemHandler handler, global::Windows.System.Threading.WorkItemPriority priority, global::Windows.System.Threading.WorkItemOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Threading.Core.PreallocatedWorkItem", "PreallocatedWorkItem.PreallocatedWorkItem(WorkItemHandler handler, WorkItemPriority priority, WorkItemOptions options)");
 		}

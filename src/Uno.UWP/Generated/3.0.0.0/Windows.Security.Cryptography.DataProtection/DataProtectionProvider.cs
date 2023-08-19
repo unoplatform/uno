@@ -10,7 +10,7 @@ namespace Windows.Security.Cryptography.DataProtection
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DataProtectionProvider(string protectionDescriptor) 
+		public DataProtectionProvider(string protectionDescriptor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.DataProtection.DataProtectionProvider", "DataProtectionProvider.DataProtectionProvider(string protectionDescriptor)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.Security.Cryptography.DataProtection
 		// Forced skipping of method Windows.Security.Cryptography.DataProtection.DataProtectionProvider.DataProtectionProvider(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DataProtectionProvider() 
+		public DataProtectionProvider()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Cryptography.DataProtection.DataProtectionProvider", "DataProtectionProvider.DataProtectionProvider()");
 		}

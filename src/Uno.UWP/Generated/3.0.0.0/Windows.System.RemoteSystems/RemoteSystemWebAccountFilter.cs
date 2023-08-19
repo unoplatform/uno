@@ -20,7 +20,7 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RemoteSystemWebAccountFilter(global::Windows.Security.Credentials.WebAccount account) 
+		public RemoteSystemWebAccountFilter(global::Windows.Security.Credentials.WebAccount account)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemWebAccountFilter", "RemoteSystemWebAccountFilter.RemoteSystemWebAccountFilter(WebAccount account)");
 		}

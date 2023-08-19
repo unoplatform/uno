@@ -6,7 +6,7 @@ namespace Windows.Storage.Pickers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FilePickerSelectedFilesArray : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>,global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageFile>
+	public partial class FilePickerSelectedFilesArray : global::System.Collections.Generic.IReadOnlyList<global::Windows.Storage.StorageFile>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.StorageFile>
 	{
 		// Skipping already declared property Size
 		// Forced skipping of method Windows.Storage.Pickers.FilePickerSelectedFilesArray.GetAt(uint)

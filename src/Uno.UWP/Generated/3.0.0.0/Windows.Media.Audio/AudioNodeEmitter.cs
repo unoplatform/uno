@@ -138,7 +138,7 @@ namespace Windows.Media.Audio
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AudioNodeEmitter(global::Windows.Media.Audio.AudioNodeEmitterShape shape, global::Windows.Media.Audio.AudioNodeEmitterDecayModel decayModel, global::Windows.Media.Audio.AudioNodeEmitterSettings settings) 
+		public AudioNodeEmitter(global::Windows.Media.Audio.AudioNodeEmitterShape shape, global::Windows.Media.Audio.AudioNodeEmitterDecayModel decayModel, global::Windows.Media.Audio.AudioNodeEmitterSettings settings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter(AudioNodeEmitterShape shape, AudioNodeEmitterDecayModel decayModel, AudioNodeEmitterSettings settings)");
 		}
@@ -146,7 +146,7 @@ namespace Windows.Media.Audio
 		// Forced skipping of method Windows.Media.Audio.AudioNodeEmitter.AudioNodeEmitter(Windows.Media.Audio.AudioNodeEmitterShape, Windows.Media.Audio.AudioNodeEmitterDecayModel, Windows.Media.Audio.AudioNodeEmitterSettings)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AudioNodeEmitter() 
+		public AudioNodeEmitter()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Audio.AudioNodeEmitter", "AudioNodeEmitter.AudioNodeEmitter()");
 		}

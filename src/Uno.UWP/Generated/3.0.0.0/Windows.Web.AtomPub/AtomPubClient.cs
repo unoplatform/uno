@@ -80,7 +80,7 @@ namespace Windows.Web.AtomPub
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AtomPubClient(global::Windows.Security.Credentials.PasswordCredential serverCredential) 
+		public AtomPubClient(global::Windows.Security.Credentials.PasswordCredential serverCredential)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient.AtomPubClient(PasswordCredential serverCredential)");
 		}
@@ -88,7 +88,7 @@ namespace Windows.Web.AtomPub
 		// Forced skipping of method Windows.Web.AtomPub.AtomPubClient.AtomPubClient(Windows.Security.Credentials.PasswordCredential)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AtomPubClient() 
+		public AtomPubClient()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.AtomPub.AtomPubClient", "AtomPubClient.AtomPubClient()");
 		}

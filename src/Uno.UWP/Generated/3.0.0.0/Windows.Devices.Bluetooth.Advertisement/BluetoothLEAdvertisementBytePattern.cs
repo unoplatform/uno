@@ -52,7 +52,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BluetoothLEAdvertisementBytePattern() 
+		public BluetoothLEAdvertisementBytePattern()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern", "BluetoothLEAdvertisementBytePattern.BluetoothLEAdvertisementBytePattern()");
 		}
@@ -60,7 +60,7 @@ namespace Windows.Devices.Bluetooth.Advertisement
 		// Forced skipping of method Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern.BluetoothLEAdvertisementBytePattern()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BluetoothLEAdvertisementBytePattern(byte dataType, short offset, global::Windows.Storage.Streams.IBuffer data) 
+		public BluetoothLEAdvertisementBytePattern(byte dataType, short offset, global::Windows.Storage.Streams.IBuffer data)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Bluetooth.Advertisement.BluetoothLEAdvertisementBytePattern", "BluetoothLEAdvertisementBytePattern.BluetoothLEAdvertisementBytePattern(byte dataType, short offset, IBuffer data)");
 		}

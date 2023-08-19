@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemsControl : global::Windows.UI.Xaml.Controls.Control,global::Windows.UI.Xaml.Controls.IItemContainerMapping
+	public partial class ItemsControl : global::Windows.UI.Xaml.Controls.Control, global::Windows.UI.Xaml.Controls.IItemContainerMapping
 	{
 		// Skipping already declared property ItemsSource
 		// Skipping already declared property ItemsPanel

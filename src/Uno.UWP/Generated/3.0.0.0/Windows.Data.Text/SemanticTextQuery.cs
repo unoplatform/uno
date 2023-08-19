@@ -10,7 +10,7 @@ namespace Windows.Data.Text
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SemanticTextQuery(string aqsFilter) 
+		public SemanticTextQuery(string aqsFilter)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.SemanticTextQuery", "SemanticTextQuery.SemanticTextQuery(string aqsFilter)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.Data.Text
 		// Forced skipping of method Windows.Data.Text.SemanticTextQuery.SemanticTextQuery(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SemanticTextQuery(string aqsFilter, string filterLanguage) 
+		public SemanticTextQuery(string aqsFilter, string filterLanguage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Text.SemanticTextQuery", "SemanticTextQuery.SemanticTextQuery(string aqsFilter, string filterLanguage)");
 		}

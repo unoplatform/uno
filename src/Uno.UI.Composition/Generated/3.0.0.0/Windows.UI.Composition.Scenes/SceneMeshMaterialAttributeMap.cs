@@ -6,7 +6,7 @@ namespace Windows.UI.Composition.Scenes
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SceneMeshMaterialAttributeMap : global::Windows.UI.Composition.Scenes.SceneObject,global::System.Collections.Generic.IDictionary<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic>>
+	public partial class SceneMeshMaterialAttributeMap : global::Windows.UI.Composition.Scenes.SceneObject, global::System.Collections.Generic.IDictionary<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, global::Windows.UI.Composition.Scenes.SceneAttributeSemantic>>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal SceneMeshMaterialAttributeMap()

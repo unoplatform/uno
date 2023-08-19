@@ -6,7 +6,7 @@ namespace Windows.Media.Core
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TimedMetadataStreamDescriptor : global::Windows.Media.Core.IMediaStreamDescriptor2,global::Windows.Media.Core.IMediaStreamDescriptor
+	public partial class TimedMetadataStreamDescriptor : global::Windows.Media.Core.IMediaStreamDescriptor2, global::Windows.Media.Core.IMediaStreamDescriptor
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -72,7 +72,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public TimedMetadataStreamDescriptor(global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties encodingProperties) 
+		public TimedMetadataStreamDescriptor(global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties encodingProperties)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.TimedMetadataStreamDescriptor", "TimedMetadataStreamDescriptor.TimedMetadataStreamDescriptor(TimedMetadataEncodingProperties encodingProperties)");
 		}

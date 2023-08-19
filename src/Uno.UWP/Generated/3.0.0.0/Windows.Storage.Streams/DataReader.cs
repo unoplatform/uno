@@ -6,7 +6,7 @@ namespace Windows.Storage.Streams
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DataReader : global::Windows.Storage.Streams.IDataReader,global::System.IDisposable
+	public partial class DataReader : global::Windows.Storage.Streams.IDataReader, global::System.IDisposable
 	{
 		// Skipping already declared property UnicodeEncoding
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
@@ -27,7 +27,7 @@ namespace Windows.Storage.Streams
 		// Skipping already declared property UnconsumedBufferLength
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DataReader(global::Windows.Storage.Streams.IInputStream inputStream) 
+		public DataReader(global::Windows.Storage.Streams.IInputStream inputStream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataReader", "DataReader.DataReader(IInputStream inputStream)");
 		}

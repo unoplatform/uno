@@ -6,11 +6,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SoftwareBitmapSource : global::Windows.UI.Xaml.Media.ImageSource,global::System.IDisposable
+	public partial class SoftwareBitmapSource : global::Windows.UI.Xaml.Media.ImageSource, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SoftwareBitmapSource() 
+		public SoftwareBitmapSource()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SoftwareBitmapSource", "SoftwareBitmapSource.SoftwareBitmapSource()");
 		}

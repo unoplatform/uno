@@ -6,7 +6,7 @@ namespace Windows.Graphics.Printing.OptionDetails
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PrintTaskOptionDetails : global::Windows.Graphics.Printing.IPrintTaskOptionsCore,global::Windows.Graphics.Printing.IPrintTaskOptionsCoreUIConfiguration
+	public partial class PrintTaskOptionDetails : global::Windows.Graphics.Printing.IPrintTaskOptionsCore, global::Windows.Graphics.Printing.IPrintTaskOptionsCoreUIConfiguration
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal PrintTaskOptionDetails()

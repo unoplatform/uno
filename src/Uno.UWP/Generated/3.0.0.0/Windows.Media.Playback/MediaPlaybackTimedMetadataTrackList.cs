@@ -6,7 +6,7 @@ namespace Windows.Media.Playback
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MediaPlaybackTimedMetadataTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.TimedMetadataTrack>,global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataTrack>
+	public partial class MediaPlaybackTimedMetadataTrackList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Media.Core.TimedMetadataTrack>, global::System.Collections.Generic.IEnumerable<global::Windows.Media.Core.TimedMetadataTrack>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal MediaPlaybackTimedMetadataTrackList()
