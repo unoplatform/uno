@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿#nullable enable
+
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,6 +17,7 @@ namespace Uno.Collections
 	public class MaterializableList<T> : IList<T>, IReadOnlyList<T>
 	{
 		private readonly List<T> _innerList;
+		private List<T>? _materialized;
 
 		public MaterializableList()
 		{
@@ -36,9 +39,13 @@ namespace Uno.Collections
 			_innerList = new List<T>(collection);
 		}
 
-		public IEnumerator<T> GetEnumerator() => Materialized.GetEnumerator();
+		public List<T>.Enumerator GetEnumerator() => Materialized.GetEnumerator();
 
 		IEnumerator IEnumerable.GetEnumerator() => Materialized.GetEnumerator();
+
+		IEnumerator<T> IEnumerable<T>.GetEnumerator() => Materialized.GetEnumerator();
+
+		public MaterializableList<T>.ReverseEnumerator GetReverseEnumerator() => new ReverseEnumerator(Materialized);
 
 		public void Add(T item)
 		{
@@ -90,8 +97,6 @@ namespace Uno.Collections
 			}
 		}
 
-		private List<T> _materialized;
-
 		/// <summary>
 		/// Get a materialized copy of the inner list. DON'T UPDATE IT!!
 		/// </summary>
@@ -116,6 +121,46 @@ namespace Uno.Collections
 		public void ClearMaterialized()
 		{
 			_materialized = null;
+		}
+
+		public struct ReverseEnumerator : IEnumerator<T>, IEnumerator
+		{
+			private readonly List<T> _list;
+			private int _index;
+			private T? _current;
+
+			internal ReverseEnumerator(List<T> list)
+			{
+				_list = list;
+				_index = list.Count - 1;
+				_current = default;
+			}
+
+			public void Dispose()
+			{
+			}
+
+			public bool MoveNext()
+			{
+				if (_index >= 0)
+				{
+					_current = _list[_index];
+					_index--;
+					return true;
+				}
+
+				return false;
+			}
+
+			public T Current => _current!;
+
+			object? IEnumerator.Current => _current;
+
+			void IEnumerator.Reset()
+			{
+				_index = _list.Count - 1;
+				_current = default;
+			}
 		}
 	}
 }

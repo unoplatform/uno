@@ -684,7 +684,7 @@ namespace Windows.UI.Xaml
 
 			// [3] Any local handlers?
 			var isHandled = IsHandled(args);
-			if (!ctx.Mode.HasFlag(BubblingMode.IgnoreElement)
+			if (!ctx.ModeHasFlag(BubblingMode.IgnoreElement)
 				&& !ctx.IsInternal
 				&& _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
 				&& handlers.Any())
@@ -719,7 +719,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (routedEvent.IsTunnelingEvent || ctx.Mode.HasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
+			if (routedEvent.IsTunnelingEvent || ctx.ModeHasFlag(BubblingMode.IgnoreParents) || ctx.Root == this)
 			{
 				return isHandled;
 			}
@@ -884,6 +884,9 @@ namespace Windows.UI.Xaml
 
 			public BubblingContext WithMode(BubblingMode mode)
 				=> this with { Mode = mode };
+
+			public bool ModeHasFlag(BubblingMode flag)
+				=> (Mode & flag) != 0;
 
 			public override string ToString()
 				=> $"{Mode}{(IsInternal ? " *internal*" : "")}{(Root is { } r ? $" up to {Root.GetDebugName()}" : "")}";

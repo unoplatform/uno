@@ -507,7 +507,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	private static bool IsPressed(ModifierType state, ModifierType mask, PointerUpdateKind update, PointerUpdateKind pressed, PointerUpdateKind released)
-		=> update == pressed || (state.HasFlag(mask) && update != released);
+		=> update == pressed || (((state & mask) != 0) && update != released);
 	#endregion
 
 	private void RaisePointerEntered(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")

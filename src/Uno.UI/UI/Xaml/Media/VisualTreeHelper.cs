@@ -6,21 +6,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Uno.UI;
-using Windows.Foundation;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
+using Uno.Collections;
 using Uno.Extensions;
-using Uno.Disposables;
-using Windows.Globalization.DateTimeFormatting;
-using Windows.UI.Core;
-using Uno.Foundation.Logging;
+
+using Uno.UI;
 using Uno.UI.Extensions;
-using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Xaml.Core;
-using Uno.UI.DataBinding;
+using Windows.Foundation;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 #if __IOS__
@@ -67,19 +61,26 @@ namespace Windows.UI.Xaml.Media
 					yield return subtree;
 				}
 
-				foreach (var child in subtree.GetChildren().OfType<UIElement>())
+				foreach (var uiElement in subtree.GetChildren())
 				{
+#if __ANDROID__ || __IOS__ || __MACOS__
+					// On Wasm and Skia, child is always UIElement.
+					if (uiElement is not UIElement)
+					{
+						continue;
+					}
+#endif
 					var canTest = includeAllElements
-						|| (child.IsHitTestVisible && child.IsViewHit());
+						|| (uiElement.IsHitTestVisible && uiElement.IsViewHit());
 
-					if (child is UIElement uiElement && canTest)
+					if (canTest)
 					{
 						if (IsElementIntersecting(intersectingPoint, uiElement))
 						{
 							yield return uiElement;
 						}
 
-						foreach (var subChild in FindElementsInHostCoordinates(intersectingPoint, child, includeAllElements))
+						foreach (var subChild in FindElementsInHostCoordinates(intersectingPoint, uiElement, includeAllElements))
 						{
 							yield return subChild;
 						}
@@ -111,7 +112,6 @@ namespace Windows.UI.Xaml.Media
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.OfType<DependencyObject>()
 				.ElementAtOrDefault(childIndex);
 #endif
 		}
@@ -126,7 +126,6 @@ namespace Windows.UI.Xaml.Media
 #else
 			return (reference as UIElement)?
 				.GetChildren()
-				.OfType<DependencyObject>()
 				.Count() ?? 0;
 #endif
 		}
@@ -284,7 +283,7 @@ namespace Windows.UI.Xaml.Media
 			view.AddView(child);
 #elif __IOS__ || __MACOS__
 			view.AddSubview(child);
-#elif UNO_REFERENCE_API
+#elif __CROSSRUNTIME__
 			view.AddChild(child);
 #elif IS_UNIT_TESTS
 			if (view is FrameworkElement fe)
@@ -309,7 +308,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				child.RemoveFromSuperview();
 			}
-#elif UNO_REFERENCE_API
+#elif __CROSSRUNTIME__
 			view.RemoveChild(child);
 #else
 			throw new NotImplementedException("AddChild not implemented on this platform.");
@@ -333,7 +332,7 @@ namespace Windows.UI.Xaml.Media
 			children.ForEach(v => v.RemoveFromSuperview());
 
 			return children;
-#elif UNO_REFERENCE_API
+#elif __CROSSRUNTIME__
 			var children = GetChildren<_View>(view).ToList();
 			view.ClearChildren();
 
@@ -343,11 +342,7 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
-		internal static readonly GetHitTestability DefaultGetTestability;
-		static VisualTreeHelper()
-		{
-			DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
-		}
+		internal static readonly GetHitTestability DefaultGetTestability = elt => (elt.GetHitTestVisibility(), DefaultGetTestability!);
 
 		internal static (UIElement? element, Branch? stale) HitTest(
 			Point position,
@@ -375,8 +370,7 @@ namespace Windows.UI.Xaml.Media
 			Point posRelToParent,
 			UIElement element,
 			GetHitTestability getVisibility,
-			StalePredicate? isStale = null,
-			Func<IEnumerable<UIElement>, IEnumerable<UIElement>>? childrenFilter = null)
+			StalePredicate? isStale = null)
 		{
 			var stale = default(Branch?);
 			HitTestability elementHitTestVisibility;
@@ -464,9 +458,19 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			// Validate if any child is an acceptable target
-			var children = childrenFilter is null ? GetManagedVisualChildren(element) : childrenFilter(GetManagedVisualChildren(element));
-			using var child = children.Reverse().GetEnumerator();
+			var children = GetManagedVisualChildren(element);
+
 			var isChildStale = isStale;
+
+			using var child = children
+#if __IOS__ || __MACOS__ || __ANDROID__
+				.Reverse().GetEnumerator();
+#else
+				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
+				// It has an efficient "ReverseEnumerator". This will also avoid the boxing allocations of the enumerator when it's a struct.
+				.GetReverseEnumerator();
+#endif
+
 			while (child.MoveNext())
 			{
 				var childResult = SearchDownForTopMostElementAt(posRelToElement, child.Current!, getVisibility, isChildStale);
@@ -571,8 +575,16 @@ namespace Windows.UI.Xaml.Media
 
 		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
 		{
-			foreach (var child in GetManagedVisualChildren(root).Reverse())
+			using var enumerator = GetManagedVisualChildren(root)
+#if __IOS__ || __MACOS__ || __ANDROID__
+				.Reverse().GetEnumerator();
+#else
+				.GetReverseEnumerator();
+#endif
+
+			while (enumerator.MoveNext())
 			{
+				var child = enumerator.Current;
 #if TRACE_HIT_TESTING
 				SET_TRACE_SUBJECT(child);
 #endif
@@ -653,8 +665,8 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 #else
-		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
-			=> view.GetChildren().OfType<UIElement>();
+		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
+			=> view._children;
 #endif
 		#endregion
 
