@@ -1650,6 +1650,7 @@
 			<Member fullName="System.Numerics.Quaternion Windows.UI.Composition.Visual.get_Orientation()" reason="Converted to auto-property" />
 			<!-- END Skia clipping -->
 
+			<Member fullName="System.Collections.Generic.IEnumerator`1<T> Uno.Collections.MaterializableList`1.GetEnumerator()" reason="Changed return type" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
