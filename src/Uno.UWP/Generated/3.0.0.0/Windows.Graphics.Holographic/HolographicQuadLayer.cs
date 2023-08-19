@@ -30,7 +30,7 @@ namespace Windows.Graphics.Holographic
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HolographicQuadLayer(global::Windows.Foundation.Size size) 
+		public HolographicQuadLayer(global::Windows.Foundation.Size size)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "HolographicQuadLayer.HolographicQuadLayer(Size size)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Graphics.Holographic
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicQuadLayer.HolographicQuadLayer(Windows.Foundation.Size)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HolographicQuadLayer(global::Windows.Foundation.Size size, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat) 
+		public HolographicQuadLayer(global::Windows.Foundation.Size size, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Holographic.HolographicQuadLayer", "HolographicQuadLayer.HolographicQuadLayer(Size size, DirectXPixelFormat pixelFormat)");
 		}

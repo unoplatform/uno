@@ -80,7 +80,7 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationClient(global::Windows.Security.Credentials.PasswordCredential serverCredential) 
+		public SyndicationClient(global::Windows.Security.Credentials.PasswordCredential serverCredential)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SyndicationClient.SyndicationClient(PasswordCredential serverCredential)");
 		}
@@ -88,7 +88,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationClient.SyndicationClient(Windows.Security.Credentials.PasswordCredential)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationClient() 
+		public SyndicationClient()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationClient", "SyndicationClient.SyndicationClient()");
 		}

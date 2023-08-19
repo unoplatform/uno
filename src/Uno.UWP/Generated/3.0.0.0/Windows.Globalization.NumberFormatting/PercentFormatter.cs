@@ -6,7 +6,7 @@ namespace Windows.Globalization.NumberFormatting
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PercentFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions,global::Windows.Globalization.NumberFormatting.INumberFormatter,global::Windows.Globalization.NumberFormatting.INumberFormatter2,global::Windows.Globalization.NumberFormatting.INumberParser,global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption,global::Windows.Globalization.NumberFormatting.INumberRounderOption,global::Windows.Globalization.NumberFormatting.ISignedZeroOption
+	public partial class PercentFormatter : global::Windows.Globalization.NumberFormatting.INumberFormatterOptions, global::Windows.Globalization.NumberFormatting.INumberFormatter, global::Windows.Globalization.NumberFormatting.INumberFormatter2, global::Windows.Globalization.NumberFormatting.INumberParser, global::Windows.Globalization.NumberFormatting.ISignificantDigitsOption, global::Windows.Globalization.NumberFormatting.INumberRounderOption, global::Windows.Globalization.NumberFormatting.ISignedZeroOption
 	{
 		// Skipping already declared property IsDecimalPointAlwaysDisplayed
 		// Skipping already declared property IntegerDigits
@@ -40,7 +40,7 @@ namespace Windows.Globalization.NumberFormatting
 		// Skipping already declared property SignificantDigits
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PercentFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion) 
+		public PercentFormatter(global::System.Collections.Generic.IEnumerable<string> languages, string geographicRegion)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.NumberFormatting.PercentFormatter", "PercentFormatter.PercentFormatter(IEnumerable<string> languages, string geographicRegion)");
 		}

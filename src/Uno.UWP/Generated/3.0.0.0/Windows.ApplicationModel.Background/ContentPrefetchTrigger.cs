@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContentPrefetchTrigger(global::System.TimeSpan waitInterval) 
+		public ContentPrefetchTrigger(global::System.TimeSpan waitInterval)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger(TimeSpan waitInterval)");
 		}
@@ -28,7 +28,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.ContentPrefetchTrigger.ContentPrefetchTrigger(System.TimeSpan)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContentPrefetchTrigger() 
+		public ContentPrefetchTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ContentPrefetchTrigger", "ContentPrefetchTrigger.ContentPrefetchTrigger()");
 		}

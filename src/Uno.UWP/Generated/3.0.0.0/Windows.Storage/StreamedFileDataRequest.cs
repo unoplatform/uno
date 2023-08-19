@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StreamedFileDataRequest : global::Windows.Storage.Streams.IOutputStream,global::System.IDisposable,global::Windows.Storage.IStreamedFileDataRequest
+	public partial class StreamedFileDataRequest : global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable, global::Windows.Storage.IStreamedFileDataRequest
 	{
 		// Skipping already declared method Windows.Storage.StreamedFileDataRequest.WriteAsync(Windows.Storage.Streams.IBuffer)
 		// Skipping already declared method Windows.Storage.StreamedFileDataRequest.FlushAsync()

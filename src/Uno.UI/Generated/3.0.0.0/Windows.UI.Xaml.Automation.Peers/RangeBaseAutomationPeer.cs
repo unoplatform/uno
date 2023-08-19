@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class RangeBaseAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IRangeValueProvider
+	public partial class RangeBaseAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IRangeValueProvider
 	{
 		// Skipping already declared property IsReadOnly
 		// Skipping already declared property LargeChange

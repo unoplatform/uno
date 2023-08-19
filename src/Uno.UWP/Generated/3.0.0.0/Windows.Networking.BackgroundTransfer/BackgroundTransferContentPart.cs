@@ -10,7 +10,7 @@ namespace Windows.Networking.BackgroundTransfer
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BackgroundTransferContentPart(string name) 
+		public BackgroundTransferContentPart(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "BackgroundTransferContentPart.BackgroundTransferContentPart(string name)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BackgroundTransferContentPart(string name, string fileName) 
+		public BackgroundTransferContentPart(string name, string fileName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "BackgroundTransferContentPart.BackgroundTransferContentPart(string name, string fileName)");
 		}
@@ -26,7 +26,7 @@ namespace Windows.Networking.BackgroundTransfer
 		// Forced skipping of method Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart.BackgroundTransferContentPart(string, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BackgroundTransferContentPart() 
+		public BackgroundTransferContentPart()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.BackgroundTransferContentPart", "BackgroundTransferContentPart.BackgroundTransferContentPart()");
 		}

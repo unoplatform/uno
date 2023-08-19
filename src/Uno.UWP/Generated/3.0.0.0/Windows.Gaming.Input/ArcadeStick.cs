@@ -6,7 +6,7 @@ namespace Windows.Gaming.Input
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ArcadeStick : global::Windows.Gaming.Input.IGameController,global::Windows.Gaming.Input.IGameControllerBatteryInfo
+	public partial class ArcadeStick : global::Windows.Gaming.Input.IGameController, global::Windows.Gaming.Input.IGameControllerBatteryInfo
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal ArcadeStick()

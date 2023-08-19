@@ -6,7 +6,7 @@ namespace Windows.Foundation.Diagnostics
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FileLoggingSession : global::Windows.Foundation.Diagnostics.IFileLoggingSession,global::System.IDisposable
+	public partial class FileLoggingSession : global::Windows.Foundation.Diagnostics.IFileLoggingSession, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.Foundation.Diagnostics
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FileLoggingSession(string name) 
+		public FileLoggingSession(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.Diagnostics.FileLoggingSession", "FileLoggingSession.FileLoggingSession(string name)");
 		}

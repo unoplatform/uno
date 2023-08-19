@@ -81,7 +81,7 @@ namespace Windows.Devices.Perception.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PerceptionFrameProviderInfo() 
+		public PerceptionFrameProviderInfo()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionFrameProviderInfo", "PerceptionFrameProviderInfo.PerceptionFrameProviderInfo()");
 		}

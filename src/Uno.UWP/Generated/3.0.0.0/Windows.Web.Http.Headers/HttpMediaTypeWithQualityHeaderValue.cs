@@ -62,7 +62,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMediaTypeWithQualityHeaderValue(string mediaType) 
+		public HttpMediaTypeWithQualityHeaderValue(string mediaType)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue", "HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string mediaType)");
 		}
@@ -70,7 +70,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMediaTypeWithQualityHeaderValue(string mediaType, double quality) 
+		public HttpMediaTypeWithQualityHeaderValue(string mediaType, double quality)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue", "HttpMediaTypeWithQualityHeaderValue.HttpMediaTypeWithQualityHeaderValue(string mediaType, double quality)");
 		}

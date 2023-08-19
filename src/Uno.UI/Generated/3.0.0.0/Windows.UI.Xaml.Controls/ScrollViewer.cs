@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ScrollViewer : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.IScrollAnchorProvider
+	public partial class ScrollViewer : global::Windows.UI.Xaml.Controls.ContentControl, global::Windows.UI.Xaml.Controls.IScrollAnchorProvider
 	{
 		// Skipping already declared property CurrentAnchor
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

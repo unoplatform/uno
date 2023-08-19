@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SplitButtonAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IInvokeProvider
+	public partial class SplitButtonAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider, global::Windows.UI.Xaml.Automation.Provider.IInvokeProvider
 	{
 		// Skipping already declared property ExpandCollapseState
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.SplitButtonAutomationPeer.SplitButtonAutomationPeer(Microsoft.UI.Xaml.Controls.SplitButton)

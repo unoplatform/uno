@@ -6,7 +6,7 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadyLicenseAcquisitionServiceRequest : global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest,global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest,global::Windows.Media.Protection.IMediaProtectionServiceRequest
+	public partial class PlayReadyLicenseAcquisitionServiceRequest : global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseAcquisitionServiceRequest, global::Windows.Media.Protection.PlayReady.IPlayReadyServiceRequest, global::Windows.Media.Protection.IMediaProtectionServiceRequest
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -106,7 +106,7 @@ namespace Windows.Media.Protection.PlayReady
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PlayReadyLicenseAcquisitionServiceRequest() 
+		public PlayReadyLicenseAcquisitionServiceRequest()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseAcquisitionServiceRequest", "PlayReadyLicenseAcquisitionServiceRequest.PlayReadyLicenseAcquisitionServiceRequest()");
 		}

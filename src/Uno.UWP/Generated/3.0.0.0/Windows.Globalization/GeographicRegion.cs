@@ -80,7 +80,7 @@ namespace Windows.Globalization
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GeographicRegion(string geographicRegionCode) 
+		public GeographicRegion(string geographicRegionCode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.GeographicRegion", "GeographicRegion.GeographicRegion(string geographicRegionCode)");
 		}
@@ -88,7 +88,7 @@ namespace Windows.Globalization
 		// Forced skipping of method Windows.Globalization.GeographicRegion.GeographicRegion(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GeographicRegion() 
+		public GeographicRegion()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.GeographicRegion", "GeographicRegion.GeographicRegion()");
 		}

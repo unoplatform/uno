@@ -10,7 +10,7 @@ namespace Windows.Media.Core
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaSourceAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection) 
+		public MediaSourceAppServiceConnection(global::Windows.ApplicationModel.AppService.AppServiceConnection appServiceConnection)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaSourceAppServiceConnection", "MediaSourceAppServiceConnection.MediaSourceAppServiceConnection(AppServiceConnection appServiceConnection)");
 		}

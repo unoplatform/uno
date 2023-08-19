@@ -40,7 +40,7 @@ namespace Windows.UI.Input.Inking.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CoreIncrementalInkStroke(global::Windows.UI.Input.Inking.InkDrawingAttributes drawingAttributes, global::System.Numerics.Matrix3x2 pointTransform) 
+		public CoreIncrementalInkStroke(global::Windows.UI.Input.Inking.InkDrawingAttributes drawingAttributes, global::System.Numerics.Matrix3x2 pointTransform)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.Core.CoreIncrementalInkStroke", "CoreIncrementalInkStroke.CoreIncrementalInkStroke(InkDrawingAttributes drawingAttributes, Matrix3x2 pointTransform)");
 		}

@@ -6,7 +6,7 @@ namespace Windows.ApplicationModel.Activation
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SearchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgsWithLinguisticDetails,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
+	public partial class SearchActivatedEventArgs : global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgs, global::Windows.ApplicationModel.Activation.IActivatedEventArgs, global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs, global::Windows.ApplicationModel.Activation.ISearchActivatedEventArgsWithLinguisticDetails, global::Windows.ApplicationModel.Activation.IViewSwitcherProvider, global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
 		// Skipping already declared property Kind
 		// Skipping already declared property PreviousExecutionState

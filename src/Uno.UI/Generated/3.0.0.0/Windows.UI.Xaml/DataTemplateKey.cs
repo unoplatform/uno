@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DataTemplateKey() 
+		public DataTemplateKey()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DataTemplateKey", "DataTemplateKey.DataTemplateKey()");
 		}
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 		// Forced skipping of method Windows.UI.Xaml.DataTemplateKey.DataTemplateKey()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DataTemplateKey(object dataType) 
+		public DataTemplateKey(object dataType)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.DataTemplateKey", "DataTemplateKey.DataTemplateKey(object dataType)");
 		}

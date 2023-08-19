@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DatePickerFlyoutItem : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.ICustomPropertyProvider
+	public partial class DatePickerFlyoutItem : global::Windows.UI.Xaml.DependencyObject, global::Windows.UI.Xaml.Data.ICustomPropertyProvider
 	{
 		// Skipping already declared property SecondaryText
 		// Skipping already declared property PrimaryText

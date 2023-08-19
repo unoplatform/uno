@@ -120,7 +120,7 @@ namespace Windows.Media.Playback
 #endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public MediaPlaybackList() 
+		public MediaPlaybackList()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.MediaPlaybackList", "MediaPlaybackList.MediaPlaybackList()");
 		}

@@ -44,7 +44,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ConditionForceEffect(global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind effectKind) 
+		public ConditionForceEffect(global::Windows.Gaming.Input.ForceFeedback.ConditionForceEffectKind effectKind)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.ConditionForceEffect", "ConditionForceEffect.ConditionForceEffect(ConditionForceEffectKind effectKind)");
 		}

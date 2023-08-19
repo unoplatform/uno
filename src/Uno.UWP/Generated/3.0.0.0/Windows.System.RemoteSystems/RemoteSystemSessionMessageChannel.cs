@@ -20,7 +20,7 @@ namespace Windows.System.RemoteSystems
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RemoteSystemSessionMessageChannel(global::Windows.System.RemoteSystems.RemoteSystemSession session, string channelName) 
+		public RemoteSystemSessionMessageChannel(global::Windows.System.RemoteSystems.RemoteSystemSession session, string channelName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel", "RemoteSystemSessionMessageChannel.RemoteSystemSessionMessageChannel(RemoteSystemSession session, string channelName)");
 		}
@@ -28,7 +28,7 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel.RemoteSystemSessionMessageChannel(Windows.System.RemoteSystems.RemoteSystemSession, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RemoteSystemSessionMessageChannel(global::Windows.System.RemoteSystems.RemoteSystemSession session, string channelName, global::Windows.System.RemoteSystems.RemoteSystemSessionMessageChannelReliability reliability) 
+		public RemoteSystemSessionMessageChannel(global::Windows.System.RemoteSystems.RemoteSystemSession session, string channelName, global::Windows.System.RemoteSystems.RemoteSystemSessionMessageChannelReliability reliability)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionMessageChannel", "RemoteSystemSessionMessageChannel.RemoteSystemSessionMessageChannel(RemoteSystemSession session, string channelName, RemoteSystemSessionMessageChannelReliability reliability)");
 		}

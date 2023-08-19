@@ -6,7 +6,7 @@ namespace Windows.Media
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class VideoFrame : global::Windows.Media.IMediaFrame,global::System.IDisposable
+	public partial class VideoFrame : global::Windows.Media.IMediaFrame, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -116,7 +116,7 @@ namespace Windows.Media
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height) 
+		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame.VideoFrame(BitmapPixelFormat format, int width, int height)");
 		}
@@ -124,7 +124,7 @@ namespace Windows.Media
 		// Forced skipping of method Windows.Media.VideoFrame.VideoFrame(Windows.Graphics.Imaging.BitmapPixelFormat, int, int)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
+		public VideoFrame(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.VideoFrame", "VideoFrame.VideoFrame(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
 		}

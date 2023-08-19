@@ -61,7 +61,7 @@ namespace Windows.Devices.AllJoyn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllJoynBusAttachment(string connectionSpecification) 
+		public AllJoynBusAttachment(string connectionSpecification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "AllJoynBusAttachment.AllJoynBusAttachment(string connectionSpecification)");
 		}
@@ -69,7 +69,7 @@ namespace Windows.Devices.AllJoyn
 		// Forced skipping of method Windows.Devices.AllJoyn.AllJoynBusAttachment.AllJoynBusAttachment(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AllJoynBusAttachment() 
+		public AllJoynBusAttachment()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.AllJoyn.AllJoynBusAttachment", "AllJoynBusAttachment.AllJoynBusAttachment()");
 		}

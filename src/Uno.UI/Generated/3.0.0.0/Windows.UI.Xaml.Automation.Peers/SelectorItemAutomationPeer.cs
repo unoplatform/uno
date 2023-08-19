@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SelectorItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionItemProvider
+	public partial class SelectorItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.ISelectionItemProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

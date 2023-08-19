@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpFormUrlEncodedContent : global::Windows.Web.Http.IHttpContent,global::System.IDisposable,global::Windows.Foundation.IStringable
+	public partial class HttpFormUrlEncodedContent : global::Windows.Web.Http.IHttpContent, global::System.IDisposable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpFormUrlEncodedContent(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> content) 
+		public HttpFormUrlEncodedContent(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> content)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpFormUrlEncodedContent", "HttpFormUrlEncodedContent.HttpFormUrlEncodedContent(IEnumerable<KeyValuePair<string, string>> content)");
 		}

@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Search
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SearchQueryLinguisticDetails(global::System.Collections.Generic.IEnumerable<string> queryTextAlternatives, uint queryTextCompositionStart, uint queryTextCompositionLength) 
+		public SearchQueryLinguisticDetails(global::System.Collections.Generic.IEnumerable<string> queryTextAlternatives, uint queryTextCompositionStart, uint queryTextCompositionLength)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Search.SearchQueryLinguisticDetails", "SearchQueryLinguisticDetails.SearchQueryLinguisticDetails(IEnumerable<string> queryTextAlternatives, uint queryTextCompositionStart, uint queryTextCompositionLength)");
 		}

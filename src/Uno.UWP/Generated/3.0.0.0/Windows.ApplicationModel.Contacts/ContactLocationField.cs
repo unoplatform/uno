@@ -110,7 +110,7 @@ namespace Windows.ApplicationModel.Contacts
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactLocationField(string unstructuredAddress) 
+		public ContactLocationField(string unstructuredAddress)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField.ContactLocationField(string unstructuredAddress)");
 		}
@@ -118,7 +118,7 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactLocationField(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category) 
+		public ContactLocationField(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField.ContactLocationField(string unstructuredAddress, ContactFieldCategory category)");
 		}
@@ -126,7 +126,7 @@ namespace Windows.ApplicationModel.Contacts
 		// Forced skipping of method Windows.ApplicationModel.Contacts.ContactLocationField.ContactLocationField(string, Windows.ApplicationModel.Contacts.ContactFieldCategory)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContactLocationField(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string street, string city, string region, string country, string postalCode) 
+		public ContactLocationField(string unstructuredAddress, global::Windows.ApplicationModel.Contacts.ContactFieldCategory category, string street, string city, string region, string country, string postalCode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Contacts.ContactLocationField", "ContactLocationField.ContactLocationField(string unstructuredAddress, ContactFieldCategory category, string street, string city, string region, string country, string postalCode)");
 		}

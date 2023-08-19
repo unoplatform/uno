@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentItem(string label, global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount) 
+		public PaymentItem(string label, global::Windows.ApplicationModel.Payments.PaymentCurrencyAmount amount)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentItem", "PaymentItem.PaymentItem(string label, PaymentCurrencyAmount amount)");
 		}

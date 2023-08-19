@@ -10,7 +10,7 @@ namespace Windows.System.Display
 	{
 #if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__")]
-		public DisplayRequest() 
+		public DisplayRequest()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.Display.DisplayRequest", "DisplayRequest.DisplayRequest()");
 		}

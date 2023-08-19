@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpMultipartFormDataContent : global::Windows.Web.Http.IHttpContent,global::System.IDisposable,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.IHttpContent>,global::Windows.Foundation.IStringable
+	public partial class HttpMultipartFormDataContent : global::Windows.Web.Http.IHttpContent, global::System.IDisposable, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.IHttpContent>, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMultipartFormDataContent(string boundary) 
+		public HttpMultipartFormDataContent(string boundary)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "HttpMultipartFormDataContent.HttpMultipartFormDataContent(string boundary)");
 		}
@@ -28,7 +28,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.HttpMultipartFormDataContent(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMultipartFormDataContent() 
+		public HttpMultipartFormDataContent()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "HttpMultipartFormDataContent.HttpMultipartFormDataContent()");
 		}

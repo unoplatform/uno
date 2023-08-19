@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpResponseMessage : global::System.IDisposable,global::Windows.Foundation.IStringable
+	public partial class HttpResponseMessage : global::System.IDisposable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -114,7 +114,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpResponseMessage(global::Windows.Web.Http.HttpStatusCode statusCode) 
+		public HttpResponseMessage(global::Windows.Web.Http.HttpStatusCode statusCode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage.HttpResponseMessage(HttpStatusCode statusCode)");
 		}
@@ -122,7 +122,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpResponseMessage.HttpResponseMessage(Windows.Web.Http.HttpStatusCode)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpResponseMessage() 
+		public HttpResponseMessage()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpResponseMessage", "HttpResponseMessage.HttpResponseMessage()");
 		}

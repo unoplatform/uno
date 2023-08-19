@@ -72,7 +72,7 @@ namespace Windows.Media.SpeechRecognition
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpeechRecognitionGrammarFileConstraint(global::Windows.Storage.StorageFile file) 
+		public SpeechRecognitionGrammarFileConstraint(global::Windows.Storage.StorageFile file)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "SpeechRecognitionGrammarFileConstraint.SpeechRecognitionGrammarFileConstraint(StorageFile file)");
 		}
@@ -80,7 +80,7 @@ namespace Windows.Media.SpeechRecognition
 		// Forced skipping of method Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint.SpeechRecognitionGrammarFileConstraint(Windows.Storage.StorageFile)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpeechRecognitionGrammarFileConstraint(global::Windows.Storage.StorageFile file, string tag) 
+		public SpeechRecognitionGrammarFileConstraint(global::Windows.Storage.StorageFile file, string tag)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.SpeechRecognition.SpeechRecognitionGrammarFileConstraint", "SpeechRecognitionGrammarFileConstraint.SpeechRecognitionGrammarFileConstraint(StorageFile file, string tag)");
 		}

@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentMerchantInfo(global::System.Uri uri) 
+		public PaymentMerchantInfo(global::System.Uri uri)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo(Uri uri)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMerchantInfo.PaymentMerchantInfo(System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentMerchantInfo() 
+		public PaymentMerchantInfo()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMerchantInfo", "PaymentMerchantInfo.PaymentMerchantInfo()");
 		}

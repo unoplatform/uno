@@ -44,7 +44,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpExpectationHeaderValue(string name) 
+		public HttpExpectationHeaderValue(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValue", "HttpExpectationHeaderValue.HttpExpectationHeaderValue(string name)");
 		}
@@ -52,7 +52,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpExpectationHeaderValue.HttpExpectationHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpExpectationHeaderValue(string name, string value) 
+		public HttpExpectationHeaderValue(string name, string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpExpectationHeaderValue", "HttpExpectationHeaderValue.HttpExpectationHeaderValue(string name, string value)");
 		}

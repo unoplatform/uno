@@ -184,7 +184,7 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationLink(global::System.Uri uri) 
+		public SyndicationLink(global::System.Uri uri)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationLink", "SyndicationLink.SyndicationLink(Uri uri)");
 		}
@@ -192,7 +192,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationLink.SyndicationLink(System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationLink(global::System.Uri uri, string relationship, string title, string mediaType, uint length) 
+		public SyndicationLink(global::System.Uri uri, string relationship, string title, string mediaType, uint length)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationLink", "SyndicationLink.SyndicationLink(Uri uri, string relationship, string title, string mediaType, uint length)");
 		}
@@ -200,7 +200,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationLink.SyndicationLink(System.Uri, string, string, string, uint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationLink() 
+		public SyndicationLink()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationLink", "SyndicationLink.SyndicationLink()");
 		}

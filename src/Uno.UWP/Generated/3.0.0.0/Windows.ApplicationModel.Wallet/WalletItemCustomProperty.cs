@@ -80,7 +80,7 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WalletItemCustomProperty(string name, string value) 
+		public WalletItemCustomProperty(string name, string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItemCustomProperty", "WalletItemCustomProperty.WalletItemCustomProperty(string name, string value)");
 		}

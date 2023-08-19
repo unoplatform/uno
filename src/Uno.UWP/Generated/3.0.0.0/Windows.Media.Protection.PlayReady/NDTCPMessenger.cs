@@ -11,7 +11,7 @@ namespace Windows.Media.Protection.PlayReady
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public NDTCPMessenger(string remoteHostName, uint remoteHostPort) 
+		public NDTCPMessenger(string remoteHostName, uint remoteHostPort)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.NDTCPMessenger", "NDTCPMessenger.NDTCPMessenger(string remoteHostName, uint remoteHostPort)");
 		}

@@ -6,7 +6,7 @@ namespace Windows.Security.Authentication.OnlineId
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class UserAuthenticationOperation : global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.OnlineId.UserIdentity>,global::Windows.Foundation.IAsyncInfo
+	public partial class UserAuthenticationOperation : global::Windows.Foundation.IAsyncOperation<global::Windows.Security.Authentication.OnlineId.UserIdentity>, global::Windows.Foundation.IAsyncInfo
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal UserAuthenticationOperation()

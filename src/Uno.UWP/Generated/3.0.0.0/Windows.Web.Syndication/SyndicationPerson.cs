@@ -142,7 +142,7 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationPerson(string name) 
+		public SyndicationPerson(string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson.SyndicationPerson(string name)");
 		}
@@ -150,7 +150,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationPerson.SyndicationPerson(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationPerson(string name, string email, global::System.Uri uri) 
+		public SyndicationPerson(string name, string email, global::System.Uri uri)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson.SyndicationPerson(string name, string email, Uri uri)");
 		}
@@ -158,7 +158,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationPerson.SyndicationPerson(string, string, System.Uri)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationPerson() 
+		public SyndicationPerson()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationPerson", "SyndicationPerson.SyndicationPerson()");
 		}

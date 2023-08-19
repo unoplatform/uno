@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ApplicationDataContainerSettings : global::Windows.Foundation.Collections.IPropertySet,global::Windows.Foundation.Collections.IObservableMap<string, object>,global::System.Collections.Generic.IDictionary<string, object>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
+	public partial class ApplicationDataContainerSettings : global::Windows.Foundation.Collections.IPropertySet, global::Windows.Foundation.Collections.IObservableMap<string, object>, global::System.Collections.Generic.IDictionary<string, object>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, object>>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal ApplicationDataContainerSettings()

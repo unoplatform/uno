@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Frame : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.INavigate
+	public partial class Frame : global::Windows.UI.Xaml.Controls.ContentControl, global::Windows.UI.Xaml.Controls.INavigate
 	{
 		// Skipping already declared property SourcePageType
 		// Skipping already declared property CacheSize

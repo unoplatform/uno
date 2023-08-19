@@ -6,7 +6,7 @@ namespace Windows.Globalization.Collation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>,global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>
+	public partial class CharacterGroupings : global::System.Collections.Generic.IReadOnlyList<global::Windows.Globalization.Collation.CharacterGrouping>, global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Collation.CharacterGrouping>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.Globalization.Collation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CharacterGroupings(string language) 
+		public CharacterGroupings(string language)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings(string language)");
 		}
@@ -28,7 +28,7 @@ namespace Windows.Globalization.Collation
 		// Forced skipping of method Windows.Globalization.Collation.CharacterGroupings.CharacterGroupings(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CharacterGroupings() 
+		public CharacterGroupings()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Collation.CharacterGroupings", "CharacterGroupings.CharacterGroupings()");
 		}

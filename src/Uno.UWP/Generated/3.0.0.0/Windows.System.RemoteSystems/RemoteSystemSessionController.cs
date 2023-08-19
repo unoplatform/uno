@@ -10,7 +10,7 @@ namespace Windows.System.RemoteSystems
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RemoteSystemSessionController(string displayName) 
+		public RemoteSystemSessionController(string displayName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionController", "RemoteSystemSessionController.RemoteSystemSessionController(string displayName)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemSessionController.RemoteSystemSessionController(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RemoteSystemSessionController(string displayName, global::Windows.System.RemoteSystems.RemoteSystemSessionOptions options) 
+		public RemoteSystemSessionController(string displayName, global::Windows.System.RemoteSystems.RemoteSystemSessionOptions options)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemSessionController", "RemoteSystemSessionController.RemoteSystemSessionController(string displayName, RemoteSystemSessionOptions options)");
 		}

@@ -48,7 +48,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpMediaTypeHeaderValue(string mediaType) 
+		public HttpMediaTypeHeaderValue(string mediaType)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpMediaTypeHeaderValue", "HttpMediaTypeHeaderValue.HttpMediaTypeHeaderValue(string mediaType)");
 		}

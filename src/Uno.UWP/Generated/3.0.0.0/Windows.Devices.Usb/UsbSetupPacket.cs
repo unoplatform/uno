@@ -80,7 +80,7 @@ namespace Windows.Devices.Usb
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UsbSetupPacket(global::Windows.Storage.Streams.IBuffer eightByteBuffer) 
+		public UsbSetupPacket(global::Windows.Storage.Streams.IBuffer eightByteBuffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbSetupPacket.UsbSetupPacket(IBuffer eightByteBuffer)");
 		}
@@ -88,7 +88,7 @@ namespace Windows.Devices.Usb
 		// Forced skipping of method Windows.Devices.Usb.UsbSetupPacket.UsbSetupPacket(Windows.Storage.Streams.IBuffer)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public UsbSetupPacket() 
+		public UsbSetupPacket()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Usb.UsbSetupPacket", "UsbSetupPacket.UsbSetupPacket()");
 		}

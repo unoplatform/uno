@@ -30,7 +30,7 @@ namespace Windows.Graphics.Printing
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PrintPageRange(int firstPage, int lastPage) 
+		public PrintPageRange(int firstPage, int lastPage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRange", "PrintPageRange.PrintPageRange(int firstPage, int lastPage)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Graphics.Printing
 		// Forced skipping of method Windows.Graphics.Printing.PrintPageRange.PrintPageRange(int, int)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PrintPageRange(int page) 
+		public PrintPageRange(int page)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Printing.PrintPageRange", "PrintPageRange.PrintPageRange(int page)");
 		}

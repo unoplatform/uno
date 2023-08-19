@@ -392,7 +392,7 @@ namespace Windows.ApplicationModel.Wallet
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WalletItem(global::Windows.ApplicationModel.Wallet.WalletItemKind kind, string displayName) 
+		public WalletItem(global::Windows.ApplicationModel.Wallet.WalletItemKind kind, string displayName)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Wallet.WalletItem", "WalletItem.WalletItem(WalletItemKind kind, string displayName)");
 		}

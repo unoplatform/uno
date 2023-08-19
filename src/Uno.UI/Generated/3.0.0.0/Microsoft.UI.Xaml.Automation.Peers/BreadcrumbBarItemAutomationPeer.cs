@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BreadcrumbBarItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IInvokeProvider
+	public partial class BreadcrumbBarItemAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IInvokeProvider
 	{
 		// Skipping already declared method Microsoft.UI.Xaml.Automation.Peers.BreadcrumbBarItemAutomationPeer.BreadcrumbBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem)
 		// Forced skipping of method Microsoft.UI.Xaml.Automation.Peers.BreadcrumbBarItemAutomationPeer.BreadcrumbBarItemAutomationPeer(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem)

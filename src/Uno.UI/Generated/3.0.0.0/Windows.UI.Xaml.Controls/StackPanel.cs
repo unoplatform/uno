@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class StackPanel : global::Windows.UI.Xaml.Controls.Panel,global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo,global::Windows.UI.Xaml.Controls.IInsertionPanel
+	public partial class StackPanel : global::Windows.UI.Xaml.Controls.Panel, global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo, global::Windows.UI.Xaml.Controls.IInsertionPanel
 	{
 		// Skipping already declared property Orientation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

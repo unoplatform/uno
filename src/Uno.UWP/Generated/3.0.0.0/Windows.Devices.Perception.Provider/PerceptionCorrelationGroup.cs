@@ -21,7 +21,7 @@ namespace Windows.Devices.Perception.Provider
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PerceptionCorrelationGroup(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Perception.Provider.PerceptionCorrelation> relativeLocations) 
+		public PerceptionCorrelationGroup(global::System.Collections.Generic.IEnumerable<global::Windows.Devices.Perception.Provider.PerceptionCorrelation> relativeLocations)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Perception.Provider.PerceptionCorrelationGroup", "PerceptionCorrelationGroup.PerceptionCorrelationGroup(IEnumerable<PerceptionCorrelation> relativeLocations)");
 		}

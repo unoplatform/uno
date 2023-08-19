@@ -30,7 +30,7 @@ namespace Windows.Media.Effects
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AudioEffectDefinition(string activatableClassId) 
+		public AudioEffectDefinition(string activatableClassId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioEffectDefinition", "AudioEffectDefinition.AudioEffectDefinition(string activatableClassId)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Media.Effects
 		// Forced skipping of method Windows.Media.Effects.AudioEffectDefinition.AudioEffectDefinition(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public AudioEffectDefinition(string activatableClassId, global::Windows.Foundation.Collections.IPropertySet props) 
+		public AudioEffectDefinition(string activatableClassId, global::Windows.Foundation.Collections.IPropertySet props)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Effects.AudioEffectDefinition", "AudioEffectDefinition.AudioEffectDefinition(string activatableClassId, IPropertySet props)");
 		}

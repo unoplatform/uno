@@ -6,7 +6,7 @@ namespace Windows.Security.Authentication.Web.Provider
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class WebAccountProviderGetTokenSilentOperation : global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation,global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation,global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderSilentReportOperation,global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderBaseReportOperation
+	public partial class WebAccountProviderGetTokenSilentOperation : global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderTokenOperation, global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation, global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderSilentReportOperation, global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderBaseReportOperation
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal WebAccountProviderGetTokenSilentOperation()

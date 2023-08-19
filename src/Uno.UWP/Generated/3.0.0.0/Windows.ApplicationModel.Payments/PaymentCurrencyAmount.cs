@@ -52,7 +52,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentCurrencyAmount(string value, string currency) 
+		public PaymentCurrencyAmount(string value, string currency)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "PaymentCurrencyAmount.PaymentCurrencyAmount(string value, string currency)");
 		}
@@ -60,7 +60,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentCurrencyAmount.PaymentCurrencyAmount(string, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentCurrencyAmount(string value, string currency, string currencySystem) 
+		public PaymentCurrencyAmount(string value, string currency, string currencySystem)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentCurrencyAmount", "PaymentCurrencyAmount.PaymentCurrencyAmount(string value, string currency, string currencySystem)");
 		}
