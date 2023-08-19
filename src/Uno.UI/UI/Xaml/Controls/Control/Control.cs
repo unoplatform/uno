@@ -330,127 +330,127 @@ namespace Windows.UI.Xaml.Controls
 
 			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
+			if ((implementedEvents & RoutedEventFlag.PointerPressed) != 0)
 			{
 				PointerPressed += OnPointerPressedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerReleased))
+			if ((implementedEvents & RoutedEventFlag.PointerReleased) != 0)
 			{
 				PointerReleased += OnPointerReleasedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerMoved))
+			if ((implementedEvents & RoutedEventFlag.PointerMoved) != 0)
 			{
 				PointerMoved += OnPointerMovedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerEntered))
+			if ((implementedEvents & RoutedEventFlag.PointerEntered) != 0)
 			{
 				PointerEntered += OnPointerEnteredHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerExited))
+			if ((implementedEvents & RoutedEventFlag.PointerExited) != 0)
 			{
 				PointerExited += OnPointerExitedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCanceled))
+			if ((implementedEvents & RoutedEventFlag.PointerCanceled) != 0)
 			{
 				PointerCanceled += OnPointerCanceledHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
+			if ((implementedEvents & RoutedEventFlag.PointerCaptureLost) != 0)
 			{
 				PointerCaptureLost += OnPointerCaptureLostHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerWheelChanged))
+			if ((implementedEvents & RoutedEventFlag.PointerWheelChanged) != 0)
 			{
 				PointerWheelChanged += OnPointerWheelChangedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarting))
+			if ((implementedEvents & RoutedEventFlag.ManipulationStarting) != 0)
 			{
 				ManipulationStarting += OnManipulationStartingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarted))
+			if ((implementedEvents & RoutedEventFlag.ManipulationStarted) != 0)
 			{
 				ManipulationStarted += OnManipulationStartedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationDelta))
+			if ((implementedEvents & RoutedEventFlag.ManipulationDelta) != 0)
 			{
 				ManipulationDelta += OnManipulationDeltaHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationInertiaStarting))
+			if ((implementedEvents & RoutedEventFlag.ManipulationInertiaStarting) != 0)
 			{
 				ManipulationInertiaStarting += OnManipulationInertiaStartingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationCompleted))
+			if ((implementedEvents & RoutedEventFlag.ManipulationCompleted) != 0)
 			{
 				ManipulationCompleted += OnManipulationCompletedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Tapped))
+			if ((implementedEvents & RoutedEventFlag.Tapped) != 0)
 			{
 				Tapped += OnTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DoubleTapped))
+			if ((implementedEvents & RoutedEventFlag.DoubleTapped) != 0)
 			{
 				DoubleTapped += OnDoubleTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.RightTapped))
+			if ((implementedEvents & RoutedEventFlag.RightTapped) != 0)
 			{
 				RightTapped += OnRightTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragEnter))
+			if ((implementedEvents & RoutedEventFlag.DragEnter) != 0)
 			{
 				DragEnter += OnDragEnterHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragOver))
+			if ((implementedEvents & RoutedEventFlag.DragOver) != 0)
 			{
 				DragOver += OnDragOverHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragLeave))
+			if ((implementedEvents & RoutedEventFlag.DragLeave) != 0)
 			{
 				DragLeave += OnDragLeaveHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Drop))
+			if ((implementedEvents & RoutedEventFlag.Drop) != 0)
 			{
 				Drop += OnDropHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
+			if ((implementedEvents & RoutedEventFlag.Holding) != 0)
 			{
 				Holding += OnHoldingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
+			if ((implementedEvents & RoutedEventFlag.KeyDown) != 0)
 			{
 				KeyDown += OnKeyDownHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyUp))
+			if ((implementedEvents & RoutedEventFlag.KeyUp) != 0)
 			{
 				KeyUp += OnKeyUpHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.GotFocus))
+			if ((implementedEvents & RoutedEventFlag.GotFocus) != 0)
 			{
 				GotFocus += OnGotFocusHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.LostFocus))
+			if ((implementedEvents & RoutedEventFlag.LostFocus) != 0)
 			{
 				LostFocus += OnLostFocusHandler;
 			}

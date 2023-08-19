@@ -226,8 +226,6 @@ namespace Windows.UI.Xaml
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		partial void InitializeCapture();
-
 		internal bool IsPointerCaptured { get; set; }
 
 		public virtual IEnumerable<UIElement> GetChildren() => _children;
