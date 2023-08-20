@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml
 			_windowImplementation = windowType switch
 			{
 				WindowType.CoreWindow => new CoreWindowWindow(this),
-				WindowType.DesktopXamlSource => new DesktopXamlSourceWindow(this),
+				WindowType.DesktopXamlSource => new DesktopWindow(this),
 				_ => throw new InvalidOperationException("Unsupported window type")
 			};
 
@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml
 		internal static Window? CurrentSafe => Current;
 #pragma warning restore RS0030
 
-		internal static Window IShouldntUseCurrentWindow => CurrentSafe; // TODO: We should make sure Current returns null in case of WinUI tree.
+		internal static Window? IShouldntUseCurrentWindow => CurrentSafe; // TODO: We should make sure Current returns null in case of WinUI tree.
 
 		private void InitializeCommon()
 		{
@@ -221,10 +221,16 @@ namespace Windows.UI.Xaml
 
 		public void Activate()
 		{
-			_wasActivated = true;
-			ActivatePlatform();
+			_windowImplementation.Activate();
+			if (!_wasActivated)
+			{
+				ShowPartial();
+				_wasActivated = true;
+			}
 			TryDismissSplashScreen();
 		}
+
+		partial void ShowPartial();
 
 		private void TryDismissSplashScreen()
 		{
@@ -236,8 +242,6 @@ namespace Windows.UI.Xaml
 		}
 
 		partial void DismissSplashScreenPlatform();
-
-		partial void ActivatePlatform();
 
 		public void Close() { }
 
