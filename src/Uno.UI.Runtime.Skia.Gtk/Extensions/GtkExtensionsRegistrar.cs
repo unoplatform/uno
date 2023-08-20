@@ -11,6 +11,7 @@ using Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.System;
 using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
 using Uno.UI.Runtime.Skia.Gtk.System.Profile;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
@@ -29,6 +30,7 @@ internal static class GtkExtensionsRegistrar
 			return;
 		}
 
+		ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension());
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new GtkKeyboardInputSource());
 		ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new GtkCorePointerInputSource());
