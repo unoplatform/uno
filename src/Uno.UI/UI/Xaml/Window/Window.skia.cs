@@ -59,6 +59,8 @@ public sealed partial class Window
 		}
 	}
 
+	partial void ActivatePlatform() => 
+
 	partial void ShowPartial()
 	{
 		_shown = true;
