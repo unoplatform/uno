@@ -395,7 +395,7 @@ namespace Uno.UI.Toolkit
 		}
 #endif
 
-		private static Window GetCurrentWindow()
+		private static Window? GetCurrentWindow()
 		{
 #if !HAS_UNO
 			return Window.Current;
