@@ -9,7 +9,7 @@ partial class NativeWindowFactory
 {
 	private static Lazy<INativeWindowFactoryExtension?> _nativeWindowFactory = new(() =>
 	{
-		if (!ApiExtensibility.CreateInstance<INativeWindowFactoryExtension>(typeof(DesktopXamlSourceWindow), out var factory))
+		if (!ApiExtensibility.CreateInstance<INativeWindowFactoryExtension>(typeof(DesktopWindow), out var factory))
 		{
 			return null;
 		}
