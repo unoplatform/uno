@@ -990,7 +990,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[RunsOnUIThread]
 #if !__SKIA__
-        [Ignore("InputInjector is only supported on skia")]
+		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Extended_Selection_SelectedIndex_Changed_Mixed()
 		{
