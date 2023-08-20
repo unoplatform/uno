@@ -134,6 +134,12 @@ namespace Windows.UI.Composition
 		public CompositionViewBox CreateViewBox()
 			=> new CompositionViewBox(this);
 
+		public RedirectVisual CreateRedirectVisual()
+			=> new RedirectVisual(this);
+
+		public RedirectVisual CreateRedirectVisual(Visual source)
+			=> new RedirectVisual(this) { Source = source };
+
 		internal void InvalidateRender() => InvalidateRenderPartial();
 
 		partial void InvalidateRenderPartial();

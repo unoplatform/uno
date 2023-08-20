@@ -350,20 +350,8 @@ namespace Windows.UI.Composition
 #endif
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateGeometricClip()
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateGeometricClip(Windows.UI.Composition.CompositionGeometry)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual()
-		{
-			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RedirectVisual%20Compositor.CreateRedirectVisual%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual(global::Windows.UI.Composition.Visual source)
-		{
-			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual(Visual source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RedirectVisual%20Compositor.CreateRedirectVisual%28Visual%20source%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateRedirectVisual()
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateRedirectVisual(Windows.UI.Composition.Visual)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()

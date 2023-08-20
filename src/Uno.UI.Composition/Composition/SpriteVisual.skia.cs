@@ -23,7 +23,7 @@ namespace Windows.UI.Composition
 			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 		}
 
-		private protected override void Draw(in DrawingSession session)
+		internal override void Draw(in DrawingSession session)
 		{
 			base.Draw(in session);
 

@@ -36,7 +36,7 @@ public partial class ShapeVisual
 	}
 
 	/// <inheritdoc />
-	private protected override void Draw(in DrawingSession session)
+	internal override void Draw(in DrawingSession session)
 	{
 		if (ViewBox is { } viewBox)
 		{

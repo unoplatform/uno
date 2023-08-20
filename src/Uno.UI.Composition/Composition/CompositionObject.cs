@@ -41,7 +41,7 @@ namespace Windows.UI.Composition
 
 		}
 
-		public void Dispose()
+		public virtual void Dispose()
 		{
 
 		}
