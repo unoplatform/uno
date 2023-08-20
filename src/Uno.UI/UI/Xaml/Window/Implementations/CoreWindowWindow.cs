@@ -7,7 +7,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class CoreWindowWindow : IWindowImplementation
+internal partial class CoreWindowWindow
 {
 	private readonly Window _window;
 	private readonly ContentManager _contentManager;
@@ -39,20 +39,5 @@ internal partial class CoreWindowWindow : IWindowImplementation
 			return _contentManager.Content;
 		}
 		set => _contentManager.Content = value;
-	}
-
-	public void Activate()
-	{
-		// Currently Uno supports only single window,
-		// for compatibility with WinUI we set the first activated
-		// as Current #8341
-		_wasActivated = true;
-
-		// Initialize visibility on first activation.			
-		Visible = true;
-
-		TryShow();
-
-		OnNativeActivated(CoreWindowActivationState.CodeActivated);
 	}
 }
