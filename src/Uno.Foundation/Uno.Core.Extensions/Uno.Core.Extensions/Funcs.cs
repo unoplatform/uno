@@ -165,11 +165,4 @@ namespace Uno
 			return function.AsMemoized();
 		}
 	}
-
-	internal static class NullableFuncs<T>
-		where T : struct
-	{
-		public static readonly Func<T?, T> FromNullable = item => item.GetValueOrDefault();
-		public static readonly Func<T, T?> ToNullable = item => item;
-	}
 }
