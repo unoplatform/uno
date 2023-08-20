@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using Uno.UI.Xaml.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -7,7 +8,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class CoreWindowWindow
+internal partial class CoreWindowWindow : IWindowImplementation
 {
 	private readonly Window _window;
 	private readonly ContentManager _contentManager;
@@ -39,5 +40,14 @@ internal partial class CoreWindowWindow
 			return _contentManager.Content;
 		}
 		set => _contentManager.Content = value;
+	}
+
+	public void Activate()
+	{
+		if (CoreServices.Instance.MainVisualTree is null)
+		{
+			throw new InvalidOperationException("Main visual tree is not initialized.");
+		}
+		_contentManager.TryLoadRootVisual(CoreServices.Instance.MainVisualTree.GetOrCreateXamlRoot());
 	}
 }

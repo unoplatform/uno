@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Hosting;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class DesktopXamlSourceWindow : IWindowImplementation
+internal partial class DesktopWindow : IWindowImplementation
 {
 	private readonly Window _window;
 
@@ -17,7 +17,7 @@ internal partial class DesktopXamlSourceWindow : IWindowImplementation
 #pragma warning disable CS0649
 	private readonly INativeWindowWrapper? _nativeWindowWrapper; // TODO:MZ: Implement this
 
-	public DesktopXamlSourceWindow(Window window)
+	public DesktopWindow(Window window)
 	{
 		_window = window;
 		_windowChrome = new WindowChrome(window);
@@ -50,8 +50,8 @@ internal partial class DesktopXamlSourceWindow : IWindowImplementation
 		set => _windowChrome.Content = value;
 	}
 
-	public void LoadContent()
+	public void Activate()
 	{
-		_desktopWindowXamlSource.XamlIsland.ContentManager.TryLoadRootVisual();
+		_desktopWindowXamlSource.XamlIsland.ContentManager.TryLoadRootVisual(_windowChrome.XamlRoot!);
 	}
 }

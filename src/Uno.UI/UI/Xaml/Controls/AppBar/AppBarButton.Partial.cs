@@ -481,7 +481,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (flyout is { })
 			{
-				var rootVisual = Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow.Content;
+				var rootVisual = Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow!.Content;
 				flyout.OverlayInputPassThroughElement = rootVisual;
 
 				if (flyout is IMenu flyoutAsMenu)

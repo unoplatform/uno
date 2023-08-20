@@ -23,9 +23,7 @@ internal interface IWindowImplementation
 
 	//event TypedEventHandler<object, VisibilityChangedEventArgs> VisibilityChanged;
 
-	//void Activate();
-
-	void LoadContent();
+	void Activate();
 
 	//void Close();
 }

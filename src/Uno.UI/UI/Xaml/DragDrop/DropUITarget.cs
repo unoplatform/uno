@@ -126,7 +126,7 @@ namespace Microsoft.UI.Xaml
 		{
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
-				Window.IShouldntUseCurrentWindow.RootElement!.XamlRoot, //TODO:MZ:Multi-window //TODO: Choose proper XamlRoot https://github.com/unoplatform/uno/issues/8978
+				Window.IShouldntUseCurrentWindow!.RootElement!.XamlRoot, //TODO:MZ:Multi-window //TODO: Choose proper XamlRoot https://github.com/unoplatform/uno/issues/8978
 				getTestability: GetDropHitTestability,
 				isStale: new StalePredicate(elt => elt.IsDragOver(dragInfo.SourceId), "IsDragOver"));
 

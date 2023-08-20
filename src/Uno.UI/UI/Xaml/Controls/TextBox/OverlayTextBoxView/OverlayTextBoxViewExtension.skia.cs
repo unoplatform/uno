@@ -154,7 +154,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			return;
 		}
 
-		var transformToRoot = _contentElement.TransformToVisual(Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow.Content);
+		var transformToRoot = _contentElement.TransformToVisual(Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow!.Content);
 		var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
 		var pointX = _owner?.TextBox?.FlowDirection is FlowDirection.RightToLeft
 			? (int)(point.X - _contentElement.RenderSize.Width)
