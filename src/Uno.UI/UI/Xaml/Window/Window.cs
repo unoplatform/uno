@@ -7,6 +7,7 @@ using Uno.Foundation.Logging;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
+using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.Foundation;
 using Windows.UI.Composition;
@@ -32,7 +33,7 @@ namespace Windows.UI.Xaml
 		private CoreWindowActivationState? _lastActivationState;
 		private Brush? _background;
 		private bool _wasActivated;
-		private bool _wasShown;
+		private bool _splashScreenDismissed;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 		private List<WeakEventHelper.GenericEventHandler>? _backgroundChangedHandlers;
@@ -99,7 +100,11 @@ namespace Windows.UI.Xaml
 		public UIElement? Content
 		{
 			get => _windowImplementation.Content;
-			set => _windowImplementation.Content = value;
+			set
+			{
+				_windowImplementation.Content = value;
+				TryDismissSplashScreen();
+			}
 		}
 
 		/// <summary>
@@ -214,27 +219,25 @@ namespace Windows.UI.Xaml
 			Background = SolidColorBrushHelper.White;
 		}
 
-		public void Activate() => _windowImplementation.Activate();
-
-		/// <summary>
-		/// This is the moment the Window content should be shown.
-		/// It happens once the Window is both first Activated
-		/// in code and its Content is set.
-		/// </summary>
-		internal void TryShow()
+		public void Activate()
 		{
-			if (!_wasActivated ||
-				Content is null ||
-				_wasShown)
-			{
-				return;
-			}
-
-			ShowPartial();
-			_wasShown = true;
+			_wasActivated = true;
+			ActivatePlatform();
+			TryDismissSplashScreen();
 		}
 
-		partial void ShowPartial();
+		private void TryDismissSplashScreen()
+		{
+			if (_wasActivated && Content != null && !_splashScreenDismissed)
+			{
+				DismissSplashScreenPlatform();
+				_splashScreenDismissed = true;
+			}
+		}
+
+		partial void DismissSplashScreenPlatform();
+
+		partial void ActivatePlatform();
 
 		public void Close() { }
 
