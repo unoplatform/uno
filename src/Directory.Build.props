@@ -17,13 +17,6 @@
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 
-		<!-- Enables hard links for obj -> bin files (symlinks generally don't work there -->
-		<CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>true</CreateHardLinksForCopyFilesToOutputDirectoryIfPossible>
-
-		<CreateHardLinksForCopyLocalIfPossible>true</CreateHardLinksForCopyLocalIfPossible>
-		<CreateHardLinksForAdditionalFilesIfPossible>true</CreateHardLinksForAdditionalFilesIfPossible>
-		<CreateHardLinksForPublishFilesIfPossible>true</CreateHardLinksForPublishFilesIfPossible>
-
 		<!-- Version management is now done through NuGet, this avoids issues related version mismatch -->
 		<Version>255.255.255.255</Version>
 		<ReportAnalyzer>true</ReportAnalyzer>
