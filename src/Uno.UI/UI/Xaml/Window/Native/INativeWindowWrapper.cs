@@ -9,4 +9,6 @@ internal interface INativeWindowWrapper
 	bool Visible { get; }
 
 	event SizeChangedEventHandler? SizeChanged;
+
+	void Activate();
 }
