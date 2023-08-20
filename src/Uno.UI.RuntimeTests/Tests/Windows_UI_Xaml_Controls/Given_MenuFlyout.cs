@@ -330,6 +330,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RequiresFullWindow]
+#if __IOS__
+		[Ignore("https://github.com/unoplatform/uno/issues/13314")]
+#endif
 		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
 		{
 			if (WindowHelper.IsXamlIsland)
