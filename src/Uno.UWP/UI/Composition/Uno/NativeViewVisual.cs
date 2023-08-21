@@ -30,8 +30,11 @@ namespace Uno.UI.Composition
 				// TODO leak
 				Offset = new Vector3(e.Left, e.Top, 0);
 				Size = new Vector2(e.Right - e.Left, e.Bottom - e.Top);
+				Invalidate(CompositionPropertyType.Dependent);
 			};
 			Kind = kind;
+
+			Invalidate(CompositionPropertyType.Dependent);
 		}
 
 		/// <inheritdoc />

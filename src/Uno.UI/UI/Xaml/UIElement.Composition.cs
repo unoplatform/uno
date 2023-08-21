@@ -4,6 +4,7 @@ using System.Numerics;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Composition;
+using Android.Views;
 using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
@@ -94,6 +95,13 @@ namespace Windows.UI.Xaml
 			//}
 
 			//UIContext.Compositor.InvalidateRender();
+		}
+
+		/// <inheritdoc />
+		protected override void OnVisibilityChanged(View changedView, ViewStates visibility)
+		{
+			base.OnVisibilityChanged(changedView, visibility);
+
 		}
 	}
 }

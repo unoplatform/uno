@@ -236,8 +236,26 @@ namespace Windows.UI.Composition
 		public CompositionClip? Clip
 		{
 			get => _fields._clip;
-			set => _fields._clip = value;
+			set
+			{
+				var current = _fields._clip;
+				if (current == value)
+				{
+					return;
+				}
+
+				current?.Unsubscribe(this);
+
+				_fields._clip = value;
+				OnClipChanged(value);
+
+				value?.Subscribe(this);
+
+				Invalidate(CompositionPropertyType.Dependent);
+			}
 		}
+
+		partial void OnClipChanged(CompositionClip? value);
 		#endregion
 	}
 }

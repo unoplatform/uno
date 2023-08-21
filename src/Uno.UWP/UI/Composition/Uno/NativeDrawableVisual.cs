@@ -45,6 +45,7 @@ namespace Uno.UI.Composition
 		{
 			base.RenderDependent(canvas);
 
+			// TODO: HERE SIZE IS ALSO DEPENDENT !!!
 			_drawable?.SetBounds(0, 0, (int)Size.X, (int)Size.Y); // Offset is set on the RenderNode itself
 			_drawable?.Draw(canvas);
 		}
@@ -68,6 +69,8 @@ namespace Uno.UI.Composition
 			{
 				Attach(@new, isImmutableDrawable);
 			}
+
+			Invalidate(CompositionPropertyType.Dependent);
 		}
 
 		private void Attach(Drawable drawable, bool isStaticDrawable)

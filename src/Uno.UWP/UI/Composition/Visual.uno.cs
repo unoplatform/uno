@@ -101,7 +101,7 @@ namespace Windows.UI.Composition
 		/// <remarks>This method is mutually-excluded with the <see cref="CompositionObject.Commit"/>.</remarks>
 		internal void RenderIndependent()
 		{
-			if (Reset(CompositionPropertyType.Independent)) { }
+			if (Reset(CompositionPropertyType.Independent))
 			{
 				// Give opportunity to implementers to run shared code
 				OnRenderIndependent();
@@ -124,7 +124,7 @@ namespace Windows.UI.Composition
 		/// <remarks>This method is mutually-excluded with the <see cref="CompositionObject.Commit"/>.</remarks>
 		internal void RenderDependent()
 		{
-			if (Reset(CompositionPropertyType.Dependent)) { }
+			if (Reset(CompositionPropertyType.Dependent))
 			{
 				// Give opportunity to implementers to run shared code
 				OnRenderDependent();

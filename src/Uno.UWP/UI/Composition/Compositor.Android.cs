@@ -74,7 +74,8 @@ namespace Windows.UI.Composition
 			lock (_gate)
 			{
 				//Console.WriteLine($"Acquired lock RENDER NATIVE  - id: {id} | count: {_gateCount}");
-
+				//visual.Commit();
+				visual.Render();
 				visual.DrawOn(canvas);
 			}
 

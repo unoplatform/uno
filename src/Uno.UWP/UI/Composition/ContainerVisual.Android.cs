@@ -40,5 +40,16 @@ namespace Windows.UI.Composition
 		//		child.DrawOn(canvas);
 		//	}
 		//}
+
+		/// <inheritdoc />
+		private protected override void RenderDependent(Canvas canvas)
+		{
+			base.RenderDependent(canvas);
+
+			foreach (var child in Children.Committed)
+			{
+				child.DrawOn(canvas);
+			}
+		}
 	}
 }

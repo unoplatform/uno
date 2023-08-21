@@ -5,6 +5,7 @@
 #if __ANDROID__
 using System.Numerics;
 using System;
+using System.Diagnostics;
 using System.Threading;
 using Android.Graphics;
 using Android.Views;
@@ -66,7 +67,7 @@ namespace Windows.UI.Composition
 		/// <remarks>This method does not commit the changes.</remarks>
 		internal void DrawOn(Canvas canvas)
 		{
-			Render();
+			//Render();
 
 			canvas.DrawRenderNode(_node);
 		}
@@ -209,6 +210,7 @@ namespace Windows.UI.Composition
 			{
 				try
 				{
+					DrawDebugBounds(session.Canvas);
 					RenderDependent(session.Canvas);
 				}
 				catch (Exception)
@@ -232,22 +234,11 @@ namespace Windows.UI.Composition
 		/// <remarks>This might be invoked either on the UIThread, either on the compositor thread.</remarks>
 		private protected virtual void RenderDependent(Canvas canvas)
 		{
-			//canvas.DrawARGB(128, 255, 0, 0);
-#if DRAW_DRAW_BOUNDS
-			//canvas.DrawARGB(128, 255, 0, 0);
-			//canvas.DrawRect(
-			//	0,
-			//	0,
-			//	255,
-			//	255,
-			//	_debugBoundsFill!);
+		}
 
-			//var bounds = new Rect(
-			//	(int)_render._offset.X,
-			//	(int)_render._offset.Y,
-			//	(int)_render._size.X,
-			//	(int)_render._size.Y);
-
+		[Conditional("DRAW_DRAW_BOUNDS")]
+		private void DrawDebugBounds(Canvas canvas)
+		{
 			var values = _renderFields;
 
 			canvas.DrawRect(
@@ -259,10 +250,10 @@ namespace Windows.UI.Composition
 
 			var halfStrokeThickness = _debugStrokeThickness / 2.0;
 			canvas.DrawRect(
-				(float)Math.Min(values._offset.X + halfStrokeThickness, values._size.X),
-				(float)Math.Min(values._offset.Y + halfStrokeThickness, values._size.Y),
-				(float)Math.Max(values._size.X - halfStrokeThickness, 0),
-				(float)Math.Max(values._size.Y - halfStrokeThickness, 0),
+				(float) Math.Min(values._offset.X + halfStrokeThickness, values._size.X),
+				(float) Math.Min(values._offset.Y + halfStrokeThickness, values._size.Y),
+				(float) Math.Max(values._size.X - halfStrokeThickness, 0),
+				(float) Math.Max(values._size.Y - halfStrokeThickness, 0),
 				_debugBoundsStroke!);
 
 			canvas.DrawLine(
@@ -273,11 +264,10 @@ namespace Windows.UI.Composition
 				_debugBoundsStroke!);
 			canvas.DrawLine(
 				values._offset.X,
-				values._offset.Y + values._size.Y, 
+				values._offset.Y + values._size.Y,
 				values._offset.X + values._size.X,
 				values._offset.Y,
 				_debugBoundsStroke!);
-#endif
 		}
 
 		internal static DrawingSession? Edit(RenderNode node)
