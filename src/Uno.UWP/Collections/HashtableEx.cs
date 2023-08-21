@@ -90,10 +90,13 @@ namespace Uno.Collections
 
 			public readonly bucket[] Array;
 
-			public buckets(int length)
+			public buckets(int length, bool usePooling)
 			{
 				Length = length;
-				Array = Uno.Buffers.ArrayPool<bucket>.Shared.Rent(length);
+				if (usePooling)
+					Array = Uno.Buffers.ArrayPool<bucket>.Shared.Rent(length);
+				else
+					Array = new bucket[length];
 			}
 
 			public void Return()
@@ -102,6 +105,7 @@ namespace Uno.Collections
 			}
 		}
 
+		private readonly bool _usePooling;
 		private buckets _buckets;
 
 		// The total number of entries in the hash table.
@@ -122,7 +126,7 @@ namespace Uno.Collections
 
 		// Constructs a new hashtable. The hashtable is created with an initial
 		// capacity of zero and a load factor of 1.0.
-		public HashtableEx() : this(0, 1.0f)
+		public HashtableEx(bool usePooling = true) : this(0, 1.0f, usePooling)
 		{
 		}
 
@@ -133,7 +137,7 @@ namespace Uno.Collections
 		// eliminate a number of resizing operations that would otherwise be
 		// performed when elements are added to the hashtable.
 		//
-		public HashtableEx(int capacity) : this(capacity, 1.0f)
+		public HashtableEx(int capacity, bool usePooling = true) : this(capacity, 1.0f, usePooling)
 		{
 		}
 
@@ -148,7 +152,7 @@ namespace Uno.Collections
 		// increased memory consumption. A load factor of 1.0 generally provides
 		// the best balance between speed and size.
 		//
-		public HashtableEx(int capacity, float loadFactor)
+		public HashtableEx(int capacity, float loadFactor, bool usePooling = true)
 		{
 			if (capacity < 0)
 				throw new ArgumentOutOfRangeException(nameof(capacity), "SR.ArgumentOutOfRange_NeedNonNegNum");
@@ -158,55 +162,57 @@ namespace Uno.Collections
 			// Based on perf work, .72 is the optimal load factor for this table.
 			_loadFactor = 0.72f * loadFactor;
 
+			_usePooling = usePooling;
+
 			double rawsize = capacity / _loadFactor;
 			if (rawsize > int.MaxValue)
 				throw new ArgumentException("SR.Arg_HTCapacityOverflow", nameof(capacity));
 
 			// Avoid awfully small sizes
 			int hashsize = (rawsize > InitialSize) ? HashHelpers.GetPrime((int)rawsize) : InitialSize;
-			_buckets = new buckets(hashsize);
+			_buckets = new buckets(hashsize, usePooling);
 
 			_loadsize = (int)(_loadFactor * hashsize);
 			// Based on the current algorithm, loadsize must be less than hashsize.
 			Debug.Assert(_loadsize < hashsize, "Invalid hashtable loadsize!");
 		}
 
-		public HashtableEx(int capacity, float loadFactor, IEqualityComparer? equalityComparer) : this(capacity, loadFactor)
+		public HashtableEx(int capacity, float loadFactor, IEqualityComparer? equalityComparer, bool usePooling = true) : this(capacity, loadFactor, usePooling)
 		{
 			_keycomparer = equalityComparer;
 		}
 
-		public HashtableEx(IEqualityComparer? equalityComparer) : this(0, 1.0f, equalityComparer)
+		public HashtableEx(IEqualityComparer? equalityComparer, bool usePooling = true) : this(0, 1.0f, equalityComparer, usePooling)
 		{
 		}
 
-		public HashtableEx(int capacity, IEqualityComparer? equalityComparer)
-			: this(capacity, 1.0f, equalityComparer)
+		public HashtableEx(int capacity, IEqualityComparer? equalityComparer, bool usePooling = true)
+			: this(capacity, 1.0f, equalityComparer, usePooling)
 		{
 		}
 
 		// Constructs a new hashtable containing a copy of the entries in the given
 		// dictionary. The hashtable is created with a load factor of 1.0.
 		//
-		public HashtableEx(HashtableEx d) : this(d, 1.0f)
+		public HashtableEx(HashtableEx d, bool usePooling = true) : this(d, 1.0f, usePooling)
 		{
 		}
 
 		// Constructs a new hashtable containing a copy of the entries in the given
 		// dictionary. The hashtable is created with the given load factor.
 		//
-		public HashtableEx(HashtableEx d, float loadFactor)
-			: this(d, loadFactor, (IEqualityComparer?)null)
+		public HashtableEx(HashtableEx d, float loadFactor, bool usePooling = true)
+			: this(d, loadFactor, (IEqualityComparer?)null, usePooling)
 		{
 		}
 
-		public HashtableEx(HashtableEx d, IEqualityComparer? equalityComparer)
-			: this(d, 1.0f, equalityComparer)
+		public HashtableEx(HashtableEx d, IEqualityComparer? equalityComparer, bool usePooling = true)
+			: this(d, 1.0f, equalityComparer, usePooling)
 		{
 		}
 
-		public HashtableEx(HashtableEx d, float loadFactor, IEqualityComparer? equalityComparer)
-			: this(d != null ? d.Count : 0, loadFactor, equalityComparer)
+		public HashtableEx(HashtableEx d, float loadFactor, IEqualityComparer? equalityComparer, bool usePooling = true)
+			: this(d != null ? d.Count : 0, loadFactor, equalityComparer, usePooling)
 		{
 			if (d == null)
 				throw new ArgumentNullException(nameof(d), "SR.ArgumentNull_Dictionary");
@@ -218,7 +224,8 @@ namespace Uno.Collections
 
 		public void Dispose()
 		{
-			_buckets.Return();
+			if (_usePooling)
+				_buckets.Return();
 		}
 
 		// ?InitHash? is basically an implementation of classic DoubleHashing (see http://en.wikipedia.org/wiki/Double_hashing)
@@ -571,7 +578,7 @@ namespace Uno.Collections
 			//      at all times
 			//   2) Protect against an OutOfMemoryException while allocating this
 			//      new bucket[].
-			buckets newBuckets = new buckets(newsize);
+			buckets newBuckets = new buckets(newsize, _usePooling);
 
 			// Local alias for performance
 			var bucketsArray = _buckets.Array;
@@ -588,12 +595,14 @@ namespace Uno.Collections
 				}
 			}
 
-			var previousBuckets = _buckets;
+			if (_usePooling)
+			{
+				// Return the bucket's array to the pool
+				_buckets.Return();
+			}
+
 			// New bucket[] is good to go - replace buckets and other internal state.
 			_buckets = newBuckets;
-
-			// Return the bucket's array to the pool
-			previousBuckets.Return();
 
 			_loadsize = (int)(_loadFactor * newsize);
 			// minimum size of hashtable is 3 now and maximum loadFactor is 0.72 now.

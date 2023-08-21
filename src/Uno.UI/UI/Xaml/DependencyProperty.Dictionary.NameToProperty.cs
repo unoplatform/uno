@@ -27,21 +27,15 @@ namespace Windows.UI.Xaml
 	{
 		private class NameToPropertyDictionary
 		{
-			private readonly Hashtable _entries = new Hashtable(PropertyCacheEntry.DefaultComparer);
-			private static readonly object _nullSentinel = new();
+			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
+			// So we don't use pooling to not cause pool exhaustion by renting without returning.
+			private readonly HashtableEx _entries = new HashtableEx(PropertyCacheEntry.DefaultComparer, usePooling: false);
 
 			internal bool TryGetValue(PropertyCacheEntry key, out DependencyProperty? result)
 			{
-				if (_entries[key] is { } value)
+				if (_entries.TryGetValue(key, out var value))
 				{
-					if (object.ReferenceEquals(value, _nullSentinel))
-					{
-						result = null;
-					}
-					else
-					{
-						result = (DependencyProperty?)value;
-					}
+					result = (DependencyProperty?)value;
 
 					return true;
 				}
@@ -51,7 +45,7 @@ namespace Windows.UI.Xaml
 			}
 
 			internal void Add(PropertyCacheEntry key, DependencyProperty? dependencyProperty)
-				=> _entries.Add(key, dependencyProperty ?? _nullSentinel);
+				=> _entries.Add(key, dependencyProperty);
 
 			internal void Remove(PropertyCacheEntry propertyCacheEntry)
 				=> _entries.Remove(propertyCacheEntry);

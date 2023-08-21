@@ -24,11 +24,13 @@ namespace Windows.UI.Xaml
 
 		private class TypeNullableDictionary
 		{
-			private readonly Hashtable _entries = new Hashtable(FastTypeComparer.Default);
+			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
+			// So we don't use pooling to not cause pool exhaustion by renting without returning.
+			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default, usePooling: false);
 
 			internal bool TryGetValue(Type key, out bool result)
 			{
-				if (_entries[key] is { } value)
+				if (_entries.TryGetValue(key, out var value))
 				{
 					result = (bool)value!;
 					return true;
