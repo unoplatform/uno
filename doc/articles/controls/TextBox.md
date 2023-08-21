@@ -85,3 +85,17 @@ Or in XAML:
 > Follow [Platform-specific XAML guide](xref:Uno.Development.PlatformSpecificXaml) to add the `wasm` namespace.
 
 The value only affects WebAssembly, all other targets capture by default.
+
+## Customizing the Enter key appearance
+
+On mobile targets you can customize the visual appearance of the Enter key on the virtual keyboard. This can be done using the `TextBox.ReturnKeyType` property on iOS, the `TextBox.ImeOptions` property on Android, and the `TextBox.EnterKeyHint` property on WebAssembly.
+
+```csharp
+#if __IOS__
+MyTextBox.ReturnKeyType = UIReturnKeyType.Search;
+#elif __ANDROID__
+MyTextBox.ImeOptions = ImeAction.Search;
+#elif __WASM__
+MyTextBox.EnterKeyHint = EnterKeyHint.Search;
+#endif
+```
