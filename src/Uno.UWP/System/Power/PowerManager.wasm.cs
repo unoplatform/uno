@@ -2,9 +2,8 @@
 
 
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading.Tasks;
-using Uno;
-using Uno.Foundation;
 using Uno.Foundation.Logging;
 
 using NativeMethods = __Windows.__System.Power.PowerManager.NativeMethods;
@@ -55,7 +54,7 @@ partial class PowerManager
 
 	static partial void EndRemainingDischargedTime() => NativeMethods.EndRemainingDischargedTime();
 
-	[Preserve]
+	[JSExport]
 	public static int DispatchChargingChanged()
 	{
 		RaiseBatteryStatusChanged();
@@ -63,19 +62,11 @@ partial class PowerManager
 		return 0;
 	}
 
-	[Preserve]
-	public static int DispatchRemainingChargePercentChanged()
-	{
-		RaiseRemainingChargePercentChanged();
-		return 0;
-	}
+	[JSExport]
+	public static void DispatchRemainingChargePercentChanged() => RaiseRemainingChargePercentChanged();
 
-	[Preserve]
-	public static int DispatchRemainingDischargeTimeChanged()
-	{
-		RaiseRemainingDischargeTimeChanged();
-		return 0;
-	}
+	[JSExport]
+	public static void DispatchRemainingDischargeTimeChanged() => RaiseRemainingDischargeTimeChanged();
 
 	private static BatteryStatus GetBatteryStatus()
 	{
