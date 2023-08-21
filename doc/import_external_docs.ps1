@@ -7,15 +7,15 @@ Set-PSDebug -Trace 1
 
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
-    "uno.wasm.bootstrap" = "5ef2048d98df307c738186a5339eedcc4665be72"
-    "uno.themes"         = "37e913dea361bcc13e20587184bb3691c6b31d3b"
-    "uno.toolkit.ui"     = "31028b21593d885d79873371c3d3271c72fa6482"
-    "uno.check"          = "2ef22f04f65ac954bf505f8ae84a366b99146d21"
-    "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
-    "figma-docs"         = "abb770f1c853e9872d3826699d74107a5deb6538"
-    "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
-    "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
-    "uno.extensions"     = "fd39e2669674717e4f91746c5a4b8d09766e038c"      
+    # "uno.wasm.bootstrap" = "4abadfc93ffeddc82420cc28af04cd7f6b2693ab"
+    # "uno.themes"         = "36020096cbed81be67385d25feaa711620f42778"
+    # "uno.toolkit.ui"     = "e358da0eb3e912ed0c8ba01d022ad0fcdb83b0f0"
+    # "uno.check"          = "5dec33b3cb4c26f578c8d6bd7a84000bf265a14e"
+    # "uno.xamlmerge.task" = "7e8ffef206e87dfea90c53805c45e93a7d8c0b46"
+    # "figma-docs"         = "9ee95d5b3627657d6e818d79e9d6e6019fc53f5b"
+    # "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
+    # "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
+    # "uno.extensions"     = "539d6b0f2e61fbc2ae5d6e35a77de41cafacf5ce"      
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
