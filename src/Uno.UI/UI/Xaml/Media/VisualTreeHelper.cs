@@ -465,7 +465,7 @@ namespace Windows.UI.Xaml.Media
 			var isChildStale = isStale;
 
 			using var child = children
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
 				.Reverse().GetEnumerator();
 #else
 				// On Skia and Wasm, we can get concrete data structure (MaterializableList in this case) instead of IEnumerable<T>.
@@ -578,7 +578,7 @@ namespace Windows.UI.Xaml.Media
 		private static UIElement SearchDownForLeafCore(UIElement root, StalePredicate predicate)
 		{
 			using var enumerator = GetManagedVisualChildren(root)
-#if __IOS__ || __MACOS__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __ANDROID__ || IS_UNIT_TESTS
 				.Reverse().GetEnumerator();
 #else
 				.GetReverseEnumerator();
