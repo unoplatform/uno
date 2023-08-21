@@ -27,6 +27,12 @@ namespace Windows.UI.Composition
 		{
 			base.Draw(in session);
 
+			if (Brush is CompositionSurfaceBrush surfaceBrush && surfaceBrush.Surface is CompositionVisualSurface visualSurface)
+			{
+				((ISkiaSurface)visualSurface).UpdateSurface(in session);
+				return;
+			}
+
 			_paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			session.Surface.Canvas.DrawRect(

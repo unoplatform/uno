@@ -381,13 +381,7 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateRadialGradientBrush()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionVisualSurface CreateVisualSurface()
-		{
-			throw new global::System.NotImplementedException("The member CompositionVisualSurface Compositor.CreateVisualSurface() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionVisualSurface%20Compositor.CreateVisualSurface%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateVisualSurface()
 		// Forced skipping of method Windows.UI.Composition.Compositor.DispatcherQueue.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

@@ -140,6 +140,9 @@ namespace Windows.UI.Composition
 		public RedirectVisual CreateRedirectVisual(Visual source)
 			=> new RedirectVisual(this) { Source = source };
 
+		public CompositionVisualSurface CreateVisualSurface()
+			=> new CompositionVisualSurface(this);
+
 		internal void InvalidateRender() => InvalidateRenderPartial();
 
 		partial void InvalidateRenderPartial();
