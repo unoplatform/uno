@@ -20,13 +20,15 @@ namespace Windows.UI.Xaml
 	{
 		private class DependencyPropertyRegistry
 		{
-			private readonly Hashtable _entries = new Hashtable(FastTypeComparer.Default);
+			// This dictionary has a single static instance that is kept for the lifetime of the whole app.
+			// So we don't use pooling to not cause pool exhaustion by renting without returning.
+			private readonly HashtableEx _entries = new HashtableEx(FastTypeComparer.Default, usePooling: false);
 
 			internal bool TryGetValue(Type type, string name, out DependencyProperty? result)
 			{
 				if (TryGetTypeTable(type, out var typeTable))
 				{
-					if (typeTable![name] is { } propertyObject)
+					if (typeTable!.TryGetValue(name, out var propertyObject))
 					{
 						result = (DependencyProperty)propertyObject!;
 						return true;
@@ -43,7 +45,7 @@ namespace Windows.UI.Xaml
 			{
 				if (!TryGetTypeTable(type, out var typeTable))
 				{
-					typeTable = new Hashtable();
+					typeTable = new HashtableEx(usePooling: false);
 					_entries[type] = typeTable;
 				}
 
@@ -61,11 +63,11 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			private bool TryGetTypeTable(Type type, out Hashtable? table)
+			private bool TryGetTypeTable(Type type, out HashtableEx? table)
 			{
-				if (_entries[type] is { } dictionaryObject)
+				if (_entries.TryGetValue(type, out var dictionaryObject))
 				{
-					table = (Hashtable)dictionaryObject!;
+					table = (HashtableEx)dictionaryObject!;
 					return true;
 				}
 
