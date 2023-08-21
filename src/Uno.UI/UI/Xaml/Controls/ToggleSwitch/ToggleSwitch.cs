@@ -201,35 +201,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
 
-		private double GetEndAbsoluteOffset()
-		{
-			var minOffset = 0;
-			var maxOffset = GetMaxOffset();
-			var startOffset = IsOn ? maxOffset : 0;
-			var absoluteOffset = startOffset;
-			absoluteOffset = Math.Max(minOffset, absoluteOffset);
-			absoluteOffset = Math.Min(maxOffset, absoluteOffset);
-			return absoluteOffset;
-		}
-
-		private double GetMaxOffset()
-		{
-			if (_tpKnobBounds == null || _tpKnob == null)
-			{
-				return 0;
-			}
-
-			return _tpKnobBounds.ActualWidth - _tpKnob.ActualWidth;
-		}
-
-		private void ForceSwitchKnobEndPosition()
-		{
-			if (_spKnobTransform != null)
-			{
-				_spKnobTransform.X = GetEndAbsoluteOffset();
-			}
-		}
-
 		public void OnTemplateRecycled()
 		{
 			try
