@@ -300,5 +300,30 @@ namespace Uno.Extensions
 
 			return -1;
 		}
+
+		/// <summary>
+		/// Determines whether two lists are key-equal, using the default <see cref="KeyEqualityComparer"/> for <see cref="IKeyEquatable"/>.
+		/// </summary>
+		/// <typeparam name="T">The type of the elements of the input sequences.</typeparam>
+		/// <param name="first">The first list.</param>
+		/// <param name="second">The second list.</param>
+		/// <returns>True if the two source lists are of equal length and their corresponding elements are key-equal; otherwise false.</returns>
+		public static bool SequenceKeyEqual<T>(this IList<T> first, IList<T> second)
+		{
+			if (first.Count != second.Count)
+			{
+				return false;
+			}
+
+			for (int i = 0; i < first.Count; i++)
+			{
+				if (!KeyEqualityComparer.Default.Equals(first[i], second[i]))
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
 	}
 }
