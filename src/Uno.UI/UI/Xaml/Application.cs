@@ -59,6 +59,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
+		//private bool _isSuspended;
 
 		static Application()
 		{
@@ -141,6 +142,8 @@ namespace Windows.UI.Xaml
 				SetExplicitRequestedTheme(value);
 			}
 		}
+
+		internal bool IsSuspended { get; set; }
 
 		private void InitializeSystemTheme()
 		{
@@ -359,17 +362,24 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseResuming()
 		{
+			if (!IsSuspended)
+			{
+				return;
+			}
+
 			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
-
-			OnResumingPartial();
+			IsSuspended = false;
 		}
-
-		partial void OnResumingPartial();
 
 		internal void RaiseSuspending()
 		{
-			var suspendingOperation = CreateSuspendingOperation();
+			if (IsSuspended)
+			{
+				return;
+			}
+
+			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
 			Suspending?.Invoke(this, suspendingEventArgs);
@@ -392,8 +402,7 @@ namespace Windows.UI.Xaml
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
 		/// </summary>
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
 #endif
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
