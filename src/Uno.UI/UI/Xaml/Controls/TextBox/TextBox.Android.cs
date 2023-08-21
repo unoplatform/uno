@@ -118,7 +118,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty ImeOptionsProperty { get; } =
-			DependencyProperty.Register("ImeOptions",
+			DependencyProperty.Register(
+				nameof(ImeOptions),
 				typeof(ImeAction),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
