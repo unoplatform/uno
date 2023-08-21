@@ -15,7 +15,7 @@ namespace SkiaSharpExample
 		[STAThread]
 		public static void Main(string[] args)
 		{
-			SamplesApp.App.ConfigureFilters(); // Enable tracing of the host
+			SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
 			ApiExtensibility.Register(typeof(IMediaPlayerExtension), o => new Uno.UI.Media.MediaPlayerExtension(o));
 			ApiExtensibility.Register(typeof(IMediaPlayerPresenterExtension), o => new Uno.UI.Media.MediaPlayerPresenterExtension(o));
