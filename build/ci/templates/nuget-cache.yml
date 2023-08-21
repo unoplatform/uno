@@ -4,7 +4,7 @@ parameters:
 steps:
 
   - powershell: |
-      md -p "${{ parameters.nugetPackages }}"
+      md -Force -p "${{ parameters.nugetPackages }}"
     displayName: Create nuget packages cache folder
 
   - script: |
