@@ -59,7 +59,6 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme _requestedTheme = ApplicationTheme.Dark;
 		private SpecializedResourceDictionary.ResourceKey _requestedThemeForResources;
 		private bool _isInBackground;
-		//private bool _isSuspended;
 
 		static Application()
 		{
