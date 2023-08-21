@@ -149,7 +149,7 @@ public static partial class PowerManager
 		if (_lastRemainingDischargeTime != currentValue)
 		{
 			_lastRemainingDischargeTime = currentValue;
-			_remainingChargePercentChanged.Event?.Invoke(null, null);
+			_remainingDischargeTimeChanged.Event?.Invoke(null, null);
 		}
 	}
 #endif
