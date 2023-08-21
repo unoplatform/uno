@@ -666,6 +666,9 @@ namespace Windows.UI.Xaml.Media
 				}
 			}
 		}
+#elif IS_UNIT_TESTS
+		internal static IEnumerable<UIElement> GetManagedVisualChildren(_View view)
+			=> view.GetChildren();
 #else
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
