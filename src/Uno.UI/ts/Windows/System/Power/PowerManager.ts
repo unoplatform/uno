@@ -24,9 +24,9 @@ namespace Windows.System.Power {
 	export class PowerManager {
 
 		private static battery: BatteryManager;
-		private static dispatchChargingChanged: () => number;
-		private static dispatchRemainingChargePercentChanged: () => number;
-		private static dispatchRemainingDischargeTimeChanged: () => number;
+		private static dispatchChargingChanged: () => void;
+		private static dispatchRemainingChargePercentChanged: () => void;
+		private static dispatchRemainingDischargeTimeChanged: () => void;
 
 		public static async initializeAsync(): Promise<string> {
 			if (!PowerManager.battery) {
@@ -97,27 +97,21 @@ namespace Windows.System.Power {
 
 		private static onChargingChange() {
 			if (!PowerManager.dispatchChargingChanged) {
-				PowerManager.dispatchChargingChanged =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.System.Power.PowerManager:DispatchChargingChanged");
+				PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchChargingChanged;
 			}
 			PowerManager.dispatchChargingChanged();
 		}
 
 		private static onDischargingTimeChange() {
 			if (!PowerManager.dispatchRemainingDischargeTimeChanged) {
-				PowerManager.dispatchRemainingDischargeTimeChanged =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.System.Power.PowerManager:DispatchRemainingDischargeTimeChanged");
+				PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingDischargeTimeChanged;
 			}
 			PowerManager.dispatchRemainingDischargeTimeChanged();
 		}
 
 		private static onLevelChange() {
 			if (!PowerManager.dispatchRemainingChargePercentChanged) {
-				PowerManager.dispatchRemainingChargePercentChanged =
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.System.Power.PowerManager:DispatchRemainingChargePercentChanged");
+				PowerManager.dispatchChargingChanged = (<any>globalThis).DotnetExports.Uno.Windows.System.Power.PowerManager.DispatchRemainingChargePercentChanged;
 			}
 			PowerManager.dispatchRemainingChargePercentChanged();
 		}

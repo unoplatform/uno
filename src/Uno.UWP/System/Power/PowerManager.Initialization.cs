@@ -18,7 +18,7 @@ partial class PowerManager
 #else
 		if (typeof(PowerManager).Log().IsEnabled(LogLevel.Error))
 		{
-			typeof(PowerManager).Log().LogError("PowerManager is not implemented on this platform", ex);
+			typeof(PowerManager).Log().LogError("PowerManager is not implemented on this platform");
 		}
 
 		return Task.FromResult(false);
