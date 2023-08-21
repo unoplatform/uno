@@ -30,16 +30,10 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
-		partial void OnResumingPartial()
-		{
-			Resuming?.Invoke(null, null);
-		}
-
 		/// <remarks>
 		/// The 5 second timeout seems to be the safest timeout for suspension activities.
 		/// See - https://stackoverflow.com/a/3987733/732221
 		/// </remarks>
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(5), null);
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(5);
 	}
 }
