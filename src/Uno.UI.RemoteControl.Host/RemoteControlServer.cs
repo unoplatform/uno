@@ -44,7 +44,13 @@ namespace Uno.UI.RemoteControl.Host
 		{
 			if (_loadContexts.TryGetValue(applicationId, out var lc))
 			{
-				_loadContexts.TryUpdate(applicationId, (lc.Context, lc.Count + 1), (lc.Context, lc.Count));
+				if (!_loadContexts.TryUpdate(applicationId, (lc.Context, lc.Count + 1), (lc.Context, lc.Count)))
+				{
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().LogDebug($"Failed to increment the count of load context connections for '{applicationId}'");
+					}
+				}
 
 				return lc.Context;
 			}
@@ -320,7 +326,14 @@ namespace Uno.UI.RemoteControl.Host
 				{
 					if (lc.Count > 1)
 					{
-						_loadContexts.TryUpdate(appId, (lc.Context, lc.Count - 1), (lc.Context, lc.Count));
+						if (!_loadContexts.TryUpdate(appId, (lc.Context, lc.Count - 1), (lc.Context, lc.Count)))
+						{
+
+							if (this.Log().IsEnabled(LogLevel.Debug))
+							{
+								this.Log().LogDebug($"Failed to decrement the count of load context connections for '{appId}'");
+							}
+						}
 					}
 					else
 					{
