@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 		// children. However, since derived types of Panel can add their own Children, we need to make
 		// sure our internal FrameworkElement.<Measure|Arrange>Override isn't used by user-defined
 		// subclasses of Panel.
-		protected override Size MeasureOverride(Size availableSize) => availableSize;
+		protected override Size MeasureOverride(Size availableSize) => new Size(0, 0);
 		protected override Size ArrangeOverride(Size finalSize) => finalSize;
 
 		private void UpdateTransitions(IFrameworkElement element)
