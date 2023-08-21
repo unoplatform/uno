@@ -142,4 +142,17 @@ partial class App
 		}
 #endif
 	}
+
+	private void AssertIssue10313ResumingAfterActivate()
+	{
+		if (!_wasActivated)
+		{
+			Assert.Fail("Resuming should never be triggered before initial Window activation.");
+		}
+
+		if (!_isSuspended)
+		{
+			Assert.Fail("Resuming should never be triggered unless the app is suspended.");
+		}
+	}
 }
