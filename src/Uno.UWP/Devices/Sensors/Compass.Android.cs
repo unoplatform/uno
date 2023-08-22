@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Android;
 using Android.Hardware;
@@ -9,18 +11,16 @@ namespace Windows.Devices.Sensors;
 
 public partial class Compass
 {
-	private readonly Sensor _accelerometer;
-	private readonly Sensor _magnetometer;
+	private Sensor? _accelerometer;
+	private Sensor? _magnetometer;
 
-	private static bool isLocationAccessDeclared;
+	private static bool _isLocationAccessDeclared;
 
-	private SensorListener _listener;
+	private SensorListener? _listener;
 	private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-	private Compass(Sensor accelerometer, Sensor magnetometer)
+	private Compass()
 	{
-		_accelerometer = accelerometer;
-		_magnetometer = magnetometer;
 	}
 
 	/// <summary>
@@ -45,17 +45,17 @@ public partial class Compass
 		}
 	}
 
-	private static Compass TryCreateInstance()
+	private static Compass? TryCreateInstance()
 	{
 		var sensorManager = SensorHelpers.GetSensorManager();
 		var accelerometer = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
 		var magnetometer = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.MagneticField);
 
-		isLocationAccessDeclared = PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessFineLocation);
+		_isLocationAccessDeclared = PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessFineLocation);
 
 		if (accelerometer != null && magnetometer != null)
 		{
-			return new Compass(accelerometer, magnetometer);
+			return new Compass();
 		}
 
 		return null;
@@ -63,29 +63,37 @@ public partial class Compass
 
 	private void StartReadingChanged()
 	{
-		_listener = new SensorListener(this, _accelerometer.Name, _magnetometer.Name);
-		SensorHelpers.GetSensorManager().RegisterListener(
-			_listener,
-			_accelerometer,
-			(SensorDelay)(_reportInterval * 1000));
+		_accelerometer = SensorHelpers.GetSensorManager().GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
+		_magnetometer = SensorHelpers.GetSensorManager().GetDefaultSensor(Android.Hardware.SensorType.MagneticField);
 
-		SensorHelpers.GetSensorManager().RegisterListener(
-			_listener,
-			_magnetometer,
-			(SensorDelay)(_reportInterval * 1000));
+		_listener = new SensorListener(this, _accelerometer!.Name ?? "", _magnetometer!.Name ?? "");
+
+		if (_accelerometer != null && _magnetometer != null)
+		{
+			SensorHelpers.GetSensorManager().RegisterListener(
+				_listener,
+				_accelerometer,
+				(SensorDelay)(_reportInterval * 1000));
+
+			SensorHelpers.GetSensorManager().RegisterListener(
+				_listener,
+				_magnetometer,
+				(SensorDelay)(_reportInterval * 1000));
+		}
 	}
 
 	private void StopReadingChanged()
 	{
-		if (_listener == null)
-		{
-			return;
-		}
-
 		SensorHelpers.GetSensorManager().UnregisterListener(_listener, _accelerometer);
 		SensorHelpers.GetSensorManager().UnregisterListener(_listener, _magnetometer);
 
-		_listener.Dispose();
+		_accelerometer!.Dispose();
+		_magnetometer!.Dispose();
+
+		_accelerometer = null;
+		_magnetometer = null;
+
+		_listener?.Dispose();
 		_listener = null;
 	}
 
@@ -102,7 +110,7 @@ public partial class Compass
 		private readonly string _accelerometer;
 
 		private readonly Compass _compass;
-		private Geolocator _geolocator;
+		private Geolocator? _geolocator;
 
 		internal SensorListener(Compass compass, string accelerometer, string magnetometer)
 		{
@@ -113,9 +121,9 @@ public partial class Compass
 			GetGeolocatorAsync();
 		}
 
-		internal async void GetGeolocatorAsync() 
+		internal async void GetGeolocatorAsync()
 		{
-			if (isLocationAccessDeclared)
+			if (_isLocationAccessDeclared)
 			{
 				var accessStatus = await Geolocator.RequestAccessAsync();
 
@@ -126,21 +134,26 @@ public partial class Compass
 			}
 		}
 
-		void ISensorEventListener.OnAccuracyChanged(Sensor sensor, SensorStatus accuracy)
+		void ISensorEventListener.OnAccuracyChanged(Sensor? sensor, SensorStatus accuracy)
 		{
 		}
 
-		async void ISensorEventListener.OnSensorChanged(SensorEvent e)
+		async void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 		{
-			if (e.Sensor.Name == _accelerometer && !_lastAccelerometerSet)
+			if (e is null)
 			{
-				e.Values.CopyTo(_lastAccelerometer, 0);
+				return;
+			}
+
+			if (e.Sensor is not null && e.Sensor.Name == _accelerometer && !_lastAccelerometerSet)
+			{
+				e.Values?.CopyTo(_lastAccelerometer, 0);
 				_lastAccelerometerSet = true;
 			}
 			else
-			if (e.Sensor.Name == _magnetometer && !_lastMagnetometerSet)
+			if (e.Sensor is not null && e.Sensor.Name == _magnetometer && !_lastMagnetometerSet)
 			{
-				e.Values.CopyTo(_lastMagnetometer, 0);
+				e.Values?.CopyTo(_lastMagnetometer, 0);
 				_lastMagnetometerSet = true;
 			}
 
@@ -164,7 +177,7 @@ public partial class Compass
 						(float)geoposition.Coordinate.Point.Position.Altitude,
 						0);
 
-					trueNorth = (magneticNorth + geomagneticField.Declination);
+					trueNorth = (magneticNorth + geomagneticField.Declination + 360.0) % 360.0;
 				}
 
 				var data = new CompassReading(
