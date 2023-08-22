@@ -23,7 +23,7 @@ public partial class Given_LayoutPanel
 #pragma warning disable CS8305 // Type is for evaluation purposes only and is subject to change or removal in future updates.
 		var SUT = new LayoutPanel()
 		{
-			Width = 200,
+			Width = 300,
 			Height = 300,
 			VerticalAlignment = VerticalAlignment.Top,
 			Children =
@@ -41,6 +41,13 @@ public partial class Given_LayoutPanel
 		TestServices.WindowHelper.WindowContent = SUT;
 		await TestServices.WindowHelper.WaitForLoaded(SUT);
 		await TestServices.WindowHelper.WaitForIdle();
+
+		// We have a problem on IOS and Android where SUT isn't relayouted after the padding
+		// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
+#if __IOS__ || __ANDROID__
+		SUT.InvalidateMeasure();
+		SUT.UpdateLayout();
+#endif
 
 		Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 	}
