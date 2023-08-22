@@ -408,10 +408,10 @@ namespace Uno.UI.Controls
 				}
 
 				// Closing should continue, perform suspension.
-				if (!Application.Current.Suspended)
+				if (!Application.Current.IsSuspended)
 				{
 					Application.Current.RaiseSuspending();
-					return Application.Current.Suspended;
+					return Application.Current.IsSuspended;
 				}
 
 				// All prerequisites passed, can safely close.
