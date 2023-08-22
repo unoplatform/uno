@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
+		<ProjectReference Include="..\..\Uno.UI\Uno.UI.Skia.csproj" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
@@ -40,8 +40,10 @@
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\uno-runtime\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_overridePackageId>Uno.UI.Lottie</_overridePackageId>
+			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Lottie</_overridePackageId>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
