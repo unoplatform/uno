@@ -247,6 +247,8 @@ namespace Uno.Media
 					bezierPath.ClosePath();
 #elif __ANDROID__
 					bezierPath.Close();
+#elif __SKIA__
+					bezierPath.Geometry.Close();
 #endif
 				}
 			}

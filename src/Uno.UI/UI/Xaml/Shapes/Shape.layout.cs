@@ -277,10 +277,8 @@ namespace Windows.UI.Xaml.Shapes
 					// Also, as the path does not have any notion of stroke thickness, we have to include it for the measure phase.
 					// Note: The logic would say to include the full StrokeThickness as it will "overflow" half on booth side of the path,
 					//		 but WinUI does include only the half of it.
-					var pathNaturalSize = new Size(
-						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Right + alignedHalfStrokeThickness,
-						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + alignedHalfStrokeThickness);
-					size = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
+					var halfStrokeThickness = strokeThickness / 2;
+					size = new Size(pathBounds.Right + halfStrokeThickness, pathBounds.Bottom + halfStrokeThickness);
 					break;
 
 				case Stretch.Fill:
@@ -368,10 +366,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				default:
 				case Stretch.None:
-					var alignedHalfStrokeThickness = GetAlignedHalfStrokeThickness();
-					var pathNaturalSize = new Size(
-						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Right + alignedHalfStrokeThickness,
-						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + alignedHalfStrokeThickness);
+					var pathNaturalSize = new Size(pathBounds.Right + halfStrokeThickness, pathBounds.Bottom + halfStrokeThickness);
 					var (userMinSize, userMaxSize) = GetMinMax(userSize);
 
 					var clampedSize = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
