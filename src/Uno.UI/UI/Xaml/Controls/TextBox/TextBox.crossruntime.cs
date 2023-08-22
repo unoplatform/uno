@@ -24,7 +24,7 @@ partial class TextBox
 			typeof(TextBox),
 			new FrameworkPropertyMetadata(
 				EnterKeyHint.Default,
-				(s, e) => ((TextBox)s)?.OnEnterKeyHintChangedPartial((EnterKeyHint)e.NewValue)
+				(s, e) => ((TextBox)s).OnEnterKeyHintChangedPartial((EnterKeyHint)e.NewValue)
 			));
 
 	partial void OnEnterKeyHintChangedPartial(EnterKeyHint enterKeyHint);
