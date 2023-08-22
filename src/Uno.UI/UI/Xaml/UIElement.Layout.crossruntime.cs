@@ -1,16 +1,22 @@
 ﻿#if !__NETSTD_REFERENCE__
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
 		private Size _size;
+
+		private Size PreviousLayoutCycleDesiredSize { get; set; }
+
+		private bool CurrentlyBeingMeasuredByParentInLayoutCycle { get; set; }
 
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElement)this).DesiredSize;
 
@@ -207,6 +213,8 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void DoMeasure(Size availableSize)
 		{
+			var partOfLayoutCycle = CurrentlyBeingMeasuredByParentInLayoutCycle || IsVisualTreeRoot;
+
 			var isFirstMeasure = !IsLayoutFlagSet(LayoutFlag.FirstMeasureDone);
 
 			var isDirty =
@@ -235,16 +243,29 @@ namespace Windows.UI.Xaml
 				if (isDirty)
 				{
 					// We must reset the flag **BEFORE** doing the actual measure, so the elements are able to re-invalidate themselves
-					ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
-
-					var previousDesiredSize = LayoutInformation.GetDesiredSize(this);
+					if (partOfLayoutCycle)
+					{
+						ClearLayoutFlags(LayoutFlag.MeasureDirty | LayoutFlag.MeasureDirtyPath);
+					}
 
 					// The dirty flag is explicitly set on this element
 #if DEBUG
 					try
 #endif
 					{
+						var disposables = new List<IDisposable>();
+						// This checks makes sure that this is part of the layout cycle,
+						// and not just a random call to a parent's Measure()
+						if (partOfLayoutCycle)
+						{
+							foreach (var child in GetChildren())
+							{
+								child.CurrentlyBeingMeasuredByParentInLayoutCycle = true;
+								disposables.Add(Disposable.Create(() => child.CurrentlyBeingMeasuredByParentInLayoutCycle = false));
+							}
+						}
 						MeasureCore(availableSize);
+						disposables.ForEach(d => d.Dispose());
 						InvalidateArrange();
 					}
 #if DEBUG
@@ -256,14 +277,11 @@ namespace Windows.UI.Xaml
 					finally
 #endif
 					{
-						LayoutInformation.SetAvailableSize(this, availableSize);
-
-						if (previousDesiredSize != LayoutInformation.GetDesiredSize(this) &&
-							!IsMeasureDirtyPathDisabled &&
-							this.GetParent() is UIElement parent)
+						if (partOfLayoutCycle)
 						{
-							parent.InvalidateMeasure();
+							PreviousLayoutCycleDesiredSize = DesiredSize;
 						}
+						LayoutInformation.SetAvailableSize(this, availableSize);
 					}
 
 					break;
@@ -272,31 +290,36 @@ namespace Windows.UI.Xaml
 				// isMeasureDirtyPath is always true here
 				ClearLayoutFlags(LayoutFlag.MeasureDirtyPath);
 
-				// The dirty flag is set on one of the descendents:
-				// it will bypass the current element's MeasureOverride()
-				// since it shouldn't produce a different result and it's
-				// just a waste of precious CPU time to call it.
-				var children = GetChildren().GetEnumerator();
-
-				//foreach (var child in children)
-				while (children.MoveNext())
+				if (partOfLayoutCycle)
 				{
-					if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
-					{
-						// If the child is dirty (or is a path to a dirty descendant child),
-						// We're remeasuring it.
+					// The dirty flag is set on one of the descendents:
+					// it will bypass the current element's MeasureOverride()
+					// since it shouldn't produce a different result and it's
+					// just a waste of precious CPU time to call it.
+					var children = GetChildren().GetEnumerator();
 
-						var previousDesiredSize = child.DesiredSize;
-						child.Measure(child.LastAvailableSize);
-						if (child.DesiredSize != previousDesiredSize)
+					//foreach (var child in children)
+					while (children.MoveNext())
+					{
+						if (children.Current is { IsMeasureDirtyOrMeasureDirtyPath: true } child)
 						{
-							isDirty = true;
-							break;
+							// If the child is dirty (or is a path to a dirty descendant child),
+							// We're remeasuring it.
+
+							var previousDesiredSize = child.PreviousLayoutCycleDesiredSize;
+							child.CurrentlyBeingMeasuredByParentInLayoutCycle = true;
+							child.Measure(child.LastAvailableSize);
+							child.CurrentlyBeingMeasuredByParentInLayoutCycle = false;
+							if (child.DesiredSize != previousDesiredSize)
+							{
+								isDirty = true;
+								break;
+							}
 						}
 					}
-				}
 
-				children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
+					children.Dispose(); // no "using" operator here to prevent an implicit try-catch on Wasm
+				}
 
 				if (isDirty)
 				{
