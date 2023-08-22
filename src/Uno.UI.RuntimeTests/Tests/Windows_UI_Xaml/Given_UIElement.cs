@@ -586,13 +586,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			protected override Size MeasureOverride(Size availableSize)
 			{
 				MeasureCount++;
-				return base.MeasureOverride(availableSize);
+
+				// copied from FrameworkElement.MeasureOverride
+				var child = this.FindFirstChild();
+				return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 			}
 
 			protected override Size ArrangeOverride(Size finalSize)
 			{
 				ArrangeCount++;
-				return base.ArrangeOverride(finalSize);
+
+				// copied from FrameworkElement.ArrangeOverride
+				var child = this.FindFirstChild();
+
+				if (child != null)
+				{
+#if UNO_REFERENCE_API
+					child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+#else
+					ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+#endif
+					return finalSize;
+				}
+				else
+				{
+					return finalSize;
+				}
 			}
 		}
 
