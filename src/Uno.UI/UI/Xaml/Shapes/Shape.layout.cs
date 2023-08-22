@@ -248,7 +248,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			// Compute the final size of the Shape and the render properties
 			Size size;
-			(double x, double y) renderScale;
 			switch (stretch)
 			{
 				default:
@@ -286,43 +285,63 @@ namespace Windows.UI.Xaml.Shapes
 					size = userMaxSize.FiniteOrDefault(availableSize.FiniteOrDefault(pathSize));
 					break;
 
-#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
-				case Stretch.Uniform when (userSize.min.hasWidth && userSize.min.width > availableSize.Width) || (userSize.min.hasHeight && userSize.min.height > availableSize.Height):
-					size = availableSize;
-					break;
-
-				// Note: If the parent is going to stretch us due to the Width and/or the Height, we still go in the case below,
-				//		 so we compute the effective size and we properly full-fill the _realDesiredSize
-#endif
-
 				case Stretch.Uniform:
-					size = userMaxSize.FiniteOrDefault(availableSize);
-					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-					if (renderScale.x > renderScale.y)
+					// For Stretch.Uniform, if available size is infinity (both Width and Height), we just return the path size plus stroke thickness.
+					if (availableSize.Width == double.PositiveInfinity && availableSize.Height == double.PositiveInfinity)
 					{
-						renderScale.x = renderScale.y;
-						size.Width = pathSize.Width * renderScale.x + strokeThickness;
+						size = new Size(pathSize.Width + strokeThickness, pathSize.Height + strokeThickness);
 					}
 					else
 					{
-						renderScale.y = renderScale.x;
-						size.Height = pathSize.Height * renderScale.y + strokeThickness;
+						// Now, we will take the smaller dimension in available size and adjust the other to maintain the geometry aspect ratio.
+						// Note 1: maintaining aspect ratio means that we maintain it without the stroke thickness.
+						// This means that the following equation should hold: (width - strokeThickness) / (height - strokeThickness) = pathSize.Width / pathSize.Height
+						// Note 2: The tie-breaker rule when availableSize Width and Height are the same is the smaller dimension in pathSize.
+						if (availableSize.Width < availableSize.Height ||
+							(availableSize.Width == availableSize.Height && pathSize.Width < pathSize.Height))
+						{
+							var width = availableSize.Width;
+							var height = ((width - strokeThickness) / pathSize.AspectRatio()) + strokeThickness;
+							size = new Size(width, height);
+						}
+						else
+						{
+							var height = availableSize.Height;
+							var width = ((height - strokeThickness) * pathSize.AspectRatio()) + strokeThickness;
+							size = new Size(width, height);
+						}
 					}
+
 					break;
 
 				case Stretch.UniformToFill:
-					size = userMinSize.AtLeast(availableSize);
-					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-					if (renderScale.x < renderScale.y)
+					// For Stretch.UniformToFill, if available size is infinity (both Width and Height), we just return the path size plus stroke thickness.
+					if (availableSize.Width == double.PositiveInfinity && availableSize.Height == double.PositiveInfinity)
 					{
-						renderScale.x = renderScale.y;
-						size.Width = pathSize.Width * renderScale.x + strokeThickness;
+						size = new Size(pathSize.Width + strokeThickness, pathSize.Height + strokeThickness);
 					}
 					else
 					{
-						renderScale.y = renderScale.x;
-						size.Height = pathSize.Height * renderScale.y + strokeThickness;
+						// Now, we will take the larger (but not infinity!) dimension in available size and adjust the other to maintain the geometry aspect ratio.
+						// Note 1: maintaining aspect ratio means that we maintain it without the stroke thickness.
+						// This means that the following equation should hold: (width - strokeThickness) / (height - strokeThickness) = pathSize.Width / pathSize.Height
+						// Note 2: The tie-breaker rule when availableSize Width and Height are the same is the larger dimension in pathSize.
+						if (availableSize.Width != double.PositiveInfinity &&
+							(availableSize.Width > availableSize.Height ||
+							(availableSize.Width == availableSize.Height && pathSize.Width > pathSize.Height)))
+						{
+							var width = availableSize.Width;
+							var height = ((width - strokeThickness) / pathSize.AspectRatio()) + strokeThickness;
+							size = new Size(width, height);
+						}
+						else
+						{
+							var height = availableSize.Height;
+							var width = ((height - strokeThickness) * pathSize.AspectRatio()) + strokeThickness;
+							size = new Size(width, height);
+						}
 					}
+
 					break;
 			}
 
