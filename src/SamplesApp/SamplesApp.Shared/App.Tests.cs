@@ -73,8 +73,8 @@ partial class App
 #endif
 
 #if __ANDROID__
-							Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
-							Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
+						Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+						Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
 #endif
 
 #if HAS_UNO
@@ -176,7 +176,7 @@ partial class App
 		}
 		catch (Exception ex)
 		{
-			_log?.Error($"Could not navigate to initial sample - {ex}");
+			_log?.LogError($"Could not navigate to initial sample - {ex}");
 		}
 		return false;
 	}
