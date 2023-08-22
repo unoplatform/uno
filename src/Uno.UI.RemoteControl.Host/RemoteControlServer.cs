@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Net.WebSockets;
@@ -19,7 +18,8 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		private readonly static ConcurrentDictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
+		private object _loadContextGate = new();
+		private readonly static Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private string? _resolveAssemblyLocation;
@@ -42,80 +42,77 @@ namespace Uno.UI.RemoteControl.Host
 
 		private AssemblyLoadContext GetAssemblyLoadContext(string applicationId)
 		{
-			if (_loadContexts.TryGetValue(applicationId, out var lc))
+			lock (_loadContextGate)
 			{
-				if (!_loadContexts.TryUpdate(applicationId, (lc.Context, lc.Count + 1), (lc.Context, lc.Count)))
+				if (_loadContexts.TryGetValue(applicationId, out var lc))
+				{
+					_loadContexts[applicationId] = (lc.Context, lc.Count + 1);
+
+					return lc.Context;
+				}
+
+				var loadContext = new AssemblyLoadContext(applicationId, isCollectible: true);
+				loadContext.Unloading += (e) =>
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().LogDebug($"Failed to increment the count of load context connections for '{applicationId}'");
+						this.Log().LogDebug("Unloading assembly context {name}", e.Name);
 					}
-				}
+				};
 
-				return lc.Context;
-			}
-
-			var loadContext = new AssemblyLoadContext(applicationId, isCollectible: true);
-			loadContext.Unloading += (e) =>
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
+				// Add custom resolving so we can find dependencies even when the processor assembly
+				// is built for a different .net version than the host process.
+				loadContext.Resolving += (context, assemblyName) =>
 				{
-					this.Log().LogDebug("Unloading assembly context {name}", e.Name);
-				}
-			};
-
-			// Add custom resolving so we can find dependencies even when the processor assembly
-			// is built for a different .net version than the host process.
-			loadContext.Resolving += (context, assemblyName) =>
-			{
-				if (!string.IsNullOrWhiteSpace(_resolveAssemblyLocation))
-				{
-					try
+					if (!string.IsNullOrWhiteSpace(_resolveAssemblyLocation))
 					{
-						var dir = Path.GetDirectoryName(_resolveAssemblyLocation);
-						if (!string.IsNullOrEmpty(dir))
+						try
 						{
-							var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
-							if (File.Exists(relPath))
+							var dir = Path.GetDirectoryName(_resolveAssemblyLocation);
+							if (!string.IsNullOrEmpty(dir))
 							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
+								var relPath = Path.Combine(dir, assemblyName.Name + ".dll");
+								if (File.Exists(relPath))
 								{
-									this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
-								}
+									if (this.Log().IsEnabled(LogLevel.Trace))
+									{
+										this.Log().LogTrace("Loading assembly from resolved path: {relPath}", relPath);
+									}
 
-								using var fs = File.Open(relPath, FileMode.Open, FileAccess.Read, FileShare.Read);
-								return context.LoadFromStream(fs);
+									using var fs = File.Open(relPath, FileMode.Open, FileAccess.Read, FileShare.Read);
+									return context.LoadFromStream(fs);
+								}
+							}
+						}
+						catch (Exception exc)
+						{
+							if (this.Log().IsEnabled(LogLevel.Error))
+							{
+								this.Log().LogError(exc, "Failed for load dependency: {assemblyName}", assemblyName);
 							}
 						}
 					}
-					catch (Exception exc)
+					else
 					{
-						if (this.Log().IsEnabled(LogLevel.Error))
+						if (this.Log().IsEnabled(LogLevel.Debug))
 						{
-							this.Log().LogError(exc, "Failed for load dependency: {assemblyName}", assemblyName);
+							this.Log().LogDebug("Failed for identify location of dependency: {assemblyName}", assemblyName);
 						}
 					}
-				}
-				else
+
+					return context.LoadFromAssemblyName(assemblyName);
+				};
+
+				if (!_loadContexts.TryAdd(applicationId, (loadContext, 1)))
 				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().LogDebug("Failed for identify location of dependency: {assemblyName}", assemblyName);
+						this.Log().LogTrace("Failed to add a LoadContext for : {appId}", applicationId);
 					}
 				}
 
-				return context.LoadFromAssemblyName(assemblyName);
-			};
-
-			if (!_loadContexts.TryAdd(applicationId, (loadContext, 1)))
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace("Failed to add a LoadContext for : {appId}", applicationId);
-				}
+				return loadContext;
 			}
-
-			return loadContext;
 		}
 
 		private void RegisterProcessor(IServerProcessor hotReloadProcessor)
@@ -322,45 +319,28 @@ namespace Uno.UI.RemoteControl.Host
 			// Unload any AssemblyLoadContexts not being used by any current connection
 			foreach (var appId in _appInstanceIds)
 			{
-				if (_loadContexts.TryGetValue(appId, out var lc))
+				lock (_loadContextGate)
 				{
-					if (lc.Count > 1)
+					if (_loadContexts.TryGetValue(appId, out var lc))
 					{
-						if (!_loadContexts.TryUpdate(appId, (lc.Context, lc.Count - 1), (lc.Context, lc.Count)))
+						if (lc.Count > 1)
 						{
-
-							if (this.Log().IsEnabled(LogLevel.Debug))
-							{
-								this.Log().LogDebug($"Failed to decrement the count of load context connections for '{appId}'");
-							}
+							_loadContexts[appId] = (lc.Context, lc.Count - 1);
 						}
-					}
-					else
-					{
-						try
+						else
 						{
-							_loadContexts[appId].Context.Unload();
+							try
+							{
+								_loadContexts[appId].Context.Unload();
 
-							if (_loadContexts.TryRemove(appId, out _))
-							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
-								{
-									this.Log().LogTrace("Unloaded and removed AssemblyLoadContext for '{appId}'", appId);
-								}
+								_loadContexts.Remove(appId);
 							}
-							else
+							catch (Exception exc)
 							{
-								if (this.Log().IsEnabled(LogLevel.Trace))
+								if (this.Log().IsEnabled(LogLevel.Error))
 								{
-									this.Log().LogTrace("Faile do to removed AssemblyLoadContext for '{appId}'", appId);
+									this.Log().LogError("Failed to unload AssemblyLoadContext for '{appId}' : {Exc}", appId, exc);
 								}
-							}
-						}
-						catch (Exception exc)
-						{
-							if (this.Log().IsEnabled(LogLevel.Error))
-							{
-								this.Log().LogError("Failed to unload AssemblyLoadContext for '{appId}' : {Exc}", appId, exc);
 							}
 						}
 					}
