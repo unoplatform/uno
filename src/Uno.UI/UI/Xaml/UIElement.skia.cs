@@ -1,4 +1,6 @@
-﻿//#define ENABLE_CONTAINER_VISUAL_TRACKING
+﻿#if DEBUG
+#define ENABLE_CONTAINER_VISUAL_TRACKING
+#endif
 
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
