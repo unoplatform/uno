@@ -21,10 +21,10 @@ using Windows.UI.Xaml.Navigation;
 namespace UITests.Shared.Windows_Devices
 {
 	[Sample(
-		"Windows.Devices", 
-		Name = "Compass", 
-		Description = "Demonstrates use of Windows.Devices.Sensors.Compass", 
-		ViewModelType = typeof(CompassTestsViewModel), 
+		"Windows.Devices",
+		Name = "Compass",
+		Description = "Demonstrates use of Windows.Devices.Sensors.Compass",
+		ViewModelType = typeof(CompassTestsViewModel),
 		IgnoreInSnapshotTests = true)]
 	public sealed partial class CompassTests : UserControl
 	{
