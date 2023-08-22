@@ -231,7 +231,8 @@ namespace Windows.UI.Xaml.Shapes
 			var stretch = Stretch;
 			var userSize = GetUserSizes();
 			var (userMinSize, userMaxSize) = GetMinMax(userSize);
-			var strokeThickness = StrokeThickness;
+			var stroke = Stroke;
+			var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
 			var pathBounds = GetPathBoundingBox(path); // The BoundingBox does also contains bezier anchors even if out of geometry
 			var pathSize = (Size)pathBounds.Size;
 
@@ -344,7 +345,8 @@ namespace Windows.UI.Xaml.Shapes
 			var vertical = VerticalAlignment;
 			var stretch = Stretch;
 			var userSize = GetUserSizes();
-			var strokeThickness = StrokeThickness;
+			var stroke = Stroke;
+			var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
 			var halfStrokeThickness = strokeThickness / 2.0;
 			var pathBounds = GetPathBoundingBox(path); // The BoundingBox does also contains bezier anchors even if out of geometry
 			var pathSize = (Size)pathBounds.Size;
