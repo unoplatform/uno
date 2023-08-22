@@ -81,6 +81,10 @@ namespace Windows.UI.Composition
 						session.Surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 						session.Surface.Canvas.SetMatrix(originalMatrix);
 					}
+					else
+					{
+						session.Surface.Canvas.DrawPath(strokeGeometry, fillPaint);
+					}
 				}
 			}
 		}
