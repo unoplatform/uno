@@ -6,6 +6,7 @@
 #endif
 
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -587,31 +588,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			{
 				MeasureCount++;
 
-				// copied from FrameworkElement.MeasureOverride
-				var child = this.FindFirstChild();
+				// copied from FrameworkElement.MeasureOverride and modified to compile on Windows
+				var child = Children.Count > 0 ? Children[0] : null;
+#if NETFX_CORE
+				if (child != null)
+				{
+					child.Measure(availableSize);
+					return child.DesiredSize;
+				}
+
+				return new Size(0, 0);
+#else
 				return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+#endif
 			}
 
 			protected override Size ArrangeOverride(Size finalSize)
 			{
 				ArrangeCount++;
 
-				// copied from FrameworkElement.ArrangeOverride
-				var child = this.FindFirstChild();
+				// copied from FrameworkElement.ArrangeOverride and modified to compile on Windows
+				var child = Children.Count > 0 ? Children[0] : null;
 
 				if (child != null)
 				{
-#if UNO_REFERENCE_API
+#if NETFX_CORE
 					child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 #else
 					ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
 #endif
-					return finalSize;
 				}
-				else
-				{
-					return finalSize;
-				}
+
+				return finalSize;
 			}
 		}
 
