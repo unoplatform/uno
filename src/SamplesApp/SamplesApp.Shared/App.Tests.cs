@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Immutable;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Windows.UI.Core;
@@ -127,15 +128,15 @@ partial class App
 
 		if (!string.IsNullOrEmpty(screenshotsPath))
 		{
-			if (Windows.UI.Xaml.Window is null)
+			if (Windows.UI.Xaml.Window.Current is null)
 			{
 				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 			}
 
-			var n = Windows.UI.Xaml.Window.Dispatcher.RunIdleAsync(
+			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ =>
 				{
-					var n = Windows.UI.Xaml.Window.Dispatcher.RunAsync(
+					var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
 						CoreDispatcherPriority.Normal,
 						async () =>
 						{
