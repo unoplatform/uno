@@ -90,7 +90,7 @@ namespace Windows.Devices.Geolocation
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GeoboundingBox(global::Windows.Devices.Geolocation.BasicGeoposition northwestCorner, global::Windows.Devices.Geolocation.BasicGeoposition southeastCorner) 
+		public GeoboundingBox(global::Windows.Devices.Geolocation.BasicGeoposition northwestCorner, global::Windows.Devices.Geolocation.BasicGeoposition southeastCorner)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeoboundingBox", "GeoboundingBox.GeoboundingBox(BasicGeoposition northwestCorner, BasicGeoposition southeastCorner)");
 		}
@@ -98,7 +98,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoboundingBox(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GeoboundingBox(global::Windows.Devices.Geolocation.BasicGeoposition northwestCorner, global::Windows.Devices.Geolocation.BasicGeoposition southeastCorner, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem) 
+		public GeoboundingBox(global::Windows.Devices.Geolocation.BasicGeoposition northwestCorner, global::Windows.Devices.Geolocation.BasicGeoposition southeastCorner, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeoboundingBox", "GeoboundingBox.GeoboundingBox(BasicGeoposition northwestCorner, BasicGeoposition southeastCorner, AltitudeReferenceSystem altitudeReferenceSystem)");
 		}
@@ -106,7 +106,7 @@ namespace Windows.Devices.Geolocation
 		// Forced skipping of method Windows.Devices.Geolocation.GeoboundingBox.GeoboundingBox(Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.BasicGeoposition, Windows.Devices.Geolocation.AltitudeReferenceSystem)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public GeoboundingBox(global::Windows.Devices.Geolocation.BasicGeoposition northwestCorner, global::Windows.Devices.Geolocation.BasicGeoposition southeastCorner, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId) 
+		public GeoboundingBox(global::Windows.Devices.Geolocation.BasicGeoposition northwestCorner, global::Windows.Devices.Geolocation.BasicGeoposition southeastCorner, global::Windows.Devices.Geolocation.AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Geolocation.GeoboundingBox", "GeoboundingBox.GeoboundingBox(BasicGeoposition northwestCorner, BasicGeoposition southeastCorner, AltitudeReferenceSystem altitudeReferenceSystem, uint spatialReferenceId)");
 		}

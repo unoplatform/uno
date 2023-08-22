@@ -6,7 +6,7 @@ namespace Windows.Web.Syndication
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SyndicationText : global::Windows.Web.Syndication.ISyndicationText,global::Windows.Web.Syndication.ISyndicationNode
+	public partial class SyndicationText : global::Windows.Web.Syndication.ISyndicationText, global::Windows.Web.Syndication.ISyndicationNode
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -142,7 +142,7 @@ namespace Windows.Web.Syndication
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationText(string text) 
+		public SyndicationText(string text)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationText", "SyndicationText.SyndicationText(string text)");
 		}
@@ -150,7 +150,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.SyndicationText(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationText(string text, global::Windows.Web.Syndication.SyndicationTextType type) 
+		public SyndicationText(string text, global::Windows.Web.Syndication.SyndicationTextType type)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationText", "SyndicationText.SyndicationText(string text, SyndicationTextType type)");
 		}
@@ -158,7 +158,7 @@ namespace Windows.Web.Syndication
 		// Forced skipping of method Windows.Web.Syndication.SyndicationText.SyndicationText(string, Windows.Web.Syndication.SyndicationTextType)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SyndicationText() 
+		public SyndicationText()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Syndication.SyndicationText", "SyndicationText.SyndicationText()");
 		}

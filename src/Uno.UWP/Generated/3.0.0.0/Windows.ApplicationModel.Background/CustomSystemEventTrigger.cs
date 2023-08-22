@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CustomSystemEventTrigger(string triggerId, global::Windows.ApplicationModel.Background.CustomSystemEventTriggerRecurrence recurrence) 
+		public CustomSystemEventTrigger(string triggerId, global::Windows.ApplicationModel.Background.CustomSystemEventTriggerRecurrence recurrence)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.CustomSystemEventTrigger", "CustomSystemEventTrigger.CustomSystemEventTrigger(string triggerId, CustomSystemEventTriggerRecurrence recurrence)");
 		}

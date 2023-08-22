@@ -30,7 +30,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentCodingWithQualityHeaderValue(string contentCoding) 
+		public HttpContentCodingWithQualityHeaderValue(string contentCoding)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string contentCoding)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality) 
+		public HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentCodingWithQualityHeaderValue", "HttpContentCodingWithQualityHeaderValue.HttpContentCodingWithQualityHeaderValue(string contentCoding, double quality)");
 		}

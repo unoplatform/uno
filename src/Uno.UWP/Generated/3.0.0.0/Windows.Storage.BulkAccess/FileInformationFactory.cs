@@ -10,7 +10,7 @@ namespace Windows.Storage.BulkAccess
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode) 
+		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FileInformationFactory", "FileInformationFactory.FileInformationFactory(IStorageQueryResultBase queryResult, ThumbnailMode mode)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.Storage.BulkAccess
 		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.FileInformationFactory(Windows.Storage.Search.IStorageQueryResultBase, Windows.Storage.FileProperties.ThumbnailMode)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedThumbnailSize) 
+		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedThumbnailSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FileInformationFactory", "FileInformationFactory.FileInformationFactory(IStorageQueryResultBase queryResult, ThumbnailMode mode, uint requestedThumbnailSize)");
 		}
@@ -26,7 +26,7 @@ namespace Windows.Storage.BulkAccess
 		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.FileInformationFactory(Windows.Storage.Search.IStorageQueryResultBase, Windows.Storage.FileProperties.ThumbnailMode, uint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedThumbnailSize, global::Windows.Storage.FileProperties.ThumbnailOptions thumbnailOptions) 
+		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedThumbnailSize, global::Windows.Storage.FileProperties.ThumbnailOptions thumbnailOptions)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FileInformationFactory", "FileInformationFactory.FileInformationFactory(IStorageQueryResultBase queryResult, ThumbnailMode mode, uint requestedThumbnailSize, ThumbnailOptions thumbnailOptions)");
 		}
@@ -34,7 +34,7 @@ namespace Windows.Storage.BulkAccess
 		// Forced skipping of method Windows.Storage.BulkAccess.FileInformationFactory.FileInformationFactory(Windows.Storage.Search.IStorageQueryResultBase, Windows.Storage.FileProperties.ThumbnailMode, uint, Windows.Storage.FileProperties.ThumbnailOptions)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedThumbnailSize, global::Windows.Storage.FileProperties.ThumbnailOptions thumbnailOptions, bool delayLoad) 
+		public FileInformationFactory(global::Windows.Storage.Search.IStorageQueryResultBase queryResult, global::Windows.Storage.FileProperties.ThumbnailMode mode, uint requestedThumbnailSize, global::Windows.Storage.FileProperties.ThumbnailOptions thumbnailOptions, bool delayLoad)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.BulkAccess.FileInformationFactory", "FileInformationFactory.FileInformationFactory(IStorageQueryResultBase queryResult, ThumbnailMode mode, uint requestedThumbnailSize, ThumbnailOptions thumbnailOptions, bool delayLoad)");
 		}

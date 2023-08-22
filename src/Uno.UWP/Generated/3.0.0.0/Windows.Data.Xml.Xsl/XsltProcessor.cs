@@ -10,7 +10,7 @@ namespace Windows.Data.Xml.Xsl
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public XsltProcessor(global::Windows.Data.Xml.Dom.XmlDocument document) 
+		public XsltProcessor(global::Windows.Data.Xml.Dom.XmlDocument document)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Xsl.XsltProcessor", "XsltProcessor.XsltProcessor(XmlDocument document)");
 		}

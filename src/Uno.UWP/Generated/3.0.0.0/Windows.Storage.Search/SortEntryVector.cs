@@ -6,7 +6,7 @@ namespace Windows.Storage.Search
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class SortEntryVector : global::System.Collections.Generic.IList<global::Windows.Storage.Search.SortEntry>,global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry>
+	public partial class SortEntryVector : global::System.Collections.Generic.IList<global::Windows.Storage.Search.SortEntry>, global::System.Collections.Generic.IEnumerable<global::Windows.Storage.Search.SortEntry>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal SortEntryVector()

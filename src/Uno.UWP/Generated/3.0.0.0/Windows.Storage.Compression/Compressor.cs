@@ -6,11 +6,11 @@ namespace Windows.Storage.Compression
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Compressor : global::Windows.Storage.Streams.IOutputStream,global::System.IDisposable
+	public partial class Compressor : global::Windows.Storage.Streams.IOutputStream, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Compressor(global::Windows.Storage.Streams.IOutputStream underlyingStream) 
+		public Compressor(global::Windows.Storage.Streams.IOutputStream underlyingStream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Compression.Compressor", "Compressor.Compressor(IOutputStream underlyingStream)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.Storage.Compression
 		// Forced skipping of method Windows.Storage.Compression.Compressor.Compressor(Windows.Storage.Streams.IOutputStream)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public Compressor(global::Windows.Storage.Streams.IOutputStream underlyingStream, global::Windows.Storage.Compression.CompressAlgorithm algorithm, uint blockSize) 
+		public Compressor(global::Windows.Storage.Streams.IOutputStream underlyingStream, global::Windows.Storage.Compression.CompressAlgorithm algorithm, uint blockSize)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Compression.Compressor", "Compressor.Compressor(IOutputStream underlyingStream, CompressAlgorithm algorithm, uint blockSize)");
 		}

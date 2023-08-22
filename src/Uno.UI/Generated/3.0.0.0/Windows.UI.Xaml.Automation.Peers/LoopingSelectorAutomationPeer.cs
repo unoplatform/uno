@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class LoopingSelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider,global::Windows.UI.Xaml.Automation.Provider.IItemContainerProvider,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider,global::Windows.UI.Xaml.Automation.Provider.IScrollProvider
+	public partial class LoopingSelectorAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.FrameworkElementAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.ISelectionProvider, global::Windows.UI.Xaml.Automation.Provider.IItemContainerProvider, global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider, global::Windows.UI.Xaml.Automation.Provider.IScrollProvider
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

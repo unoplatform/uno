@@ -6,7 +6,7 @@ namespace Windows.Storage.BulkAccess
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class FileInformation : global::Windows.Storage.BulkAccess.IStorageItemInformation,global::Windows.Storage.IStorageFile,global::Windows.Storage.Streams.IInputStreamReference,global::Windows.Storage.Streams.IRandomAccessStreamReference,global::Windows.Storage.IStorageItem,global::Windows.Storage.IStorageItemProperties,global::Windows.Storage.IStorageItem2,global::Windows.Storage.IStorageItemPropertiesWithProvider,global::Windows.Storage.IStorageFilePropertiesWithAvailability,global::Windows.Storage.IStorageFile2
+	public partial class FileInformation : global::Windows.Storage.BulkAccess.IStorageItemInformation, global::Windows.Storage.IStorageFile, global::Windows.Storage.Streams.IInputStreamReference, global::Windows.Storage.Streams.IRandomAccessStreamReference, global::Windows.Storage.IStorageItem, global::Windows.Storage.IStorageItemProperties, global::Windows.Storage.IStorageItem2, global::Windows.Storage.IStorageItemPropertiesWithProvider, global::Windows.Storage.IStorageFilePropertiesWithAvailability, global::Windows.Storage.IStorageFile2
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal FileInformation()
