@@ -270,6 +270,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await TestServices.WindowHelper.WaitForLoaded(SUT);
 			await TestServices.WindowHelper.WaitForIdle();
 
+			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
+			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
+#if __IOS__ || __ANDROID__
+			SUT.InvalidateMeasure();
+			SUT.UpdateLayout();
+#endif
+
 			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 		}
 
