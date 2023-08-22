@@ -1,3 +1,5 @@
+#nullable enable
+
 using CoreLocation;
 using Uno.Devices.Sensors.Helpers;
 
@@ -5,23 +7,19 @@ namespace Windows.Devices.Sensors;
 
 public partial class Compass
 {
-	private readonly CLLocationManager _locationManager;
+	private CLLocationManager? _locationManager;
 
-	private Compass(CLLocationManager locationManager)
+	private Compass()
 	{
-		_locationManager = locationManager;
 	}
 
-	private static Compass TryCreateInstance()
-	{
-		var locationManager = new CLLocationManager();
-		return !CLLocationManager.HeadingAvailable ?
+	private static Compass? TryCreateInstance() => !CLLocationManager.HeadingAvailable ?
 			null :
-			new Compass(locationManager);
-	}
+			new Compass();
 
 	private void StartReadingChanged()
 	{
+		_locationManager ??= new();
 		_locationManager.UpdatedHeading += LocationManagerUpdatedHeading;
 		_locationManager.StartUpdatingHeading();
 	}
@@ -36,9 +34,10 @@ public partial class Compass
 		_locationManager.UpdatedHeading -= LocationManagerUpdatedHeading;
 		_locationManager.StopUpdatingHeading();
 		_locationManager.Dispose();
+		_locationManager = null;
 	}
 
-	void LocationManagerUpdatedHeading(object sender, CLHeadingUpdatedEventArgs e)
+	void LocationManagerUpdatedHeading(object? sender, CLHeadingUpdatedEventArgs e)
 	{
 		var data = new CompassReading(
 			e.NewHeading.MagneticHeading,
