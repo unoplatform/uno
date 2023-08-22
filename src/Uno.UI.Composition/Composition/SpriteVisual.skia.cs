@@ -27,9 +27,9 @@ namespace Windows.UI.Composition
 		{
 			base.Draw(in session);
 
-			if (Brush is CompositionSurfaceBrush surfaceBrush && surfaceBrush.Surface is CompositionVisualSurface visualSurface)
+			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{
-				((ISkiaSurface)visualSurface).UpdateSurface(in session);
+				onlineBrush.Draw(session, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 				return;
 			}
 

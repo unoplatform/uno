@@ -219,13 +219,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member LayerVisual Compositor.CreateLayerVisual() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LayerVisual%20Compositor.CreateLayerVisual%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionMaskBrush CreateMaskBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionMaskBrush Compositor.CreateMaskBrush() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionMaskBrush%20Compositor.CreateMaskBrush%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateMaskBrush()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.CompositionNineGridBrush CreateNineGridBrush()

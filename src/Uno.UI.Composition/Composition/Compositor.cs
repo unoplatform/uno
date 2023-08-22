@@ -143,6 +143,9 @@ namespace Windows.UI.Composition
 		public CompositionVisualSurface CreateVisualSurface()
 			=> new CompositionVisualSurface(this);
 
+		public CompositionMaskBrush CreateMaskBrush()
+			=> new CompositionMaskBrush(this);
+
 		internal void InvalidateRender() => InvalidateRenderPartial();
 
 		partial void InvalidateRenderPartial();
