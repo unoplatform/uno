@@ -9,6 +9,9 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Xaml.Markup;
+using Uno.UI.Extensions;
+using System.Collections.ObjectModel;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml;
 
@@ -19,28 +22,54 @@ public class Given_Panel
 	[RunsOnUIThread]
 	public async Task When_Overriding_Measure_Arrange()
 	{
-		var SUT = new BaseLayoutOverrideCallingPanel();
-		for (var i = 0; i < 4; i++)
-		{
-			SUT.Children.Add(new Border { Child = new Image { Source = new BitmapImage(new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/linux.png")), Name = $"Image{i}"} });
-		}
+		var grid = (Grid)XamlReader.Load(
+			"""
+				<Grid
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					mc:Ignorable="d"
+					Height="800"
+					Width="600">
+						<ListView ItemsSource="1234">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<local:BaseLayoutOverrideCallingPanel />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<Grid Background="Black" >
+										<Image Source="ms-appx:///Uno.UI.RuntimeTests/Assets/linux.png" />
+									</Grid>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ListView>
+				</Grid>
+			""");
 
-		WindowHelper.WindowContent = SUT;
+		var lv = (ListView)grid.Children[0];
 
-		await WindowHelper.WaitFor(() => SUT.Children.Select(c => c.DesiredSize.Width > 0).AllTrue());
-		await WindowHelper.WaitForLoaded(SUT);
+		WindowHelper.WindowContent = grid;
+
+		await WindowHelper.WaitForLoaded(lv);
+		await WindowHelper.WaitFor(() => lv.Items.Select(item => ((ListViewItem)lv.ContainerFromItem(item)).DesiredSize.Width > 0).AllTrue());
 		await WindowHelper.WaitForIdle();
 
-		var parent = (UIElement)VisualTreeHelper.GetParent(SUT);
-		Assert.IsTrue(Math.Abs(parent.ActualSize.X - SUT.ActualSize.X) < 1);
-		Assert.IsTrue(Math.Abs(parent.ActualSize.Y - SUT.ActualSize.Y) < 1);
-		Assert.IsTrue(Math.Abs(SUT.DesiredSize.Width - SUT.ActualSize.X) < 1);
-		Assert.IsTrue(Math.Abs(SUT.DesiredSize.Height - SUT.ActualSize.Y) < 1);
+		var parent = (UIElement)VisualTreeHelper.GetParent(lv);
+		Assert.IsTrue(Math.Abs(parent.ActualSize.X - lv.ActualSize.X) < 1);
+		Assert.IsTrue(Math.Abs(parent.ActualSize.Y - lv.ActualSize.Y) < 1);
+
+		// MeasureOverride should be returning the default Size(0,0)
+		Assert.AreEqual(lv.DesiredSize.Width, 0);
+		Assert.AreEqual(lv.DesiredSize.Height, 0);
 
 		for (var i = 0; i < 4; i++)
 		{
-			var child = SUT.Children[i];
-			var image = (Image)SUT.FindName($"Image{i}");
+			var child = (ListViewItem)lv.ContainerFromIndex(i);
+			var image = lv.FindFirstChild<Image>();
 			var imageSource = ((BitmapImage)image.Source);
 
 			var availableSize = LayoutInformation.GetAvailableSize(child);
