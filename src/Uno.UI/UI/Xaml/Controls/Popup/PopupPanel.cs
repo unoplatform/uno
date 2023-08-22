@@ -241,12 +241,19 @@ internal partial class PopupPanel : Panel
 	private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 	{
 		// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
-		if (args.OriginalSource == this && Popup is { } popup
-		)
+		if (args.OriginalSource == this && Popup is { } popup)
 		{
+			// CommandBars in WinUI don't rely on IsLightDismissEnabled, instead there's IsSticky.
+			// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
+			// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
+			// rely on this workaround to close CommandBar's popup.
+			if (popup.TemplatedParent is CommandBar cb)
+			{
+				cb.TryDismissInlineAppBarInternal();
+			}
 			// The check is here because ContentDialogPopupPanel returns true for IsViewHit() even though light-dismiss is always
 			// disabled for ContentDialogs. In addition, CommandBar is always closes the Popup.
-			if (popup.IsLightDismissEnabled || popup.TemplatedParent is CommandBar)
+			else if (popup.IsLightDismissEnabled)
 			{
 				ClosePopup(popup);
 			}
@@ -267,7 +274,11 @@ internal partial class PopupPanel : Panel
 
 	internal override bool IsViewHit()
 	{
-		if (Popup is { TemplatedParent: CommandBar })
+		// CommandBars in WinUI don't rely on IsLightDismissEnabled, instead there's IsSticky.
+		// Instead of handling it here, CommandBar should handle it using an LTE (look at the comment
+		// in AppBar.SetupOverlayState) but we don't have the logic implemented in Uno yet, so we
+		// rely on this workaround to close CommandBar's popup.
+		if (Popup is { TemplatedParent: CommandBar { IsSticky: false } })
 		{
 			return true;
 		}
