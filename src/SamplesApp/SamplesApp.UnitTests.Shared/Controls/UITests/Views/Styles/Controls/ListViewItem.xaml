@@ -65,14 +65,14 @@
 								CornerRadius="2"
 								Padding="0,4">
 							<ContentPresenter
-							x:Name="ContentPresenter"
-							xamarin:Content="{TemplateBinding Content}"
-							xamarin:ContentTemplate="{TemplateBinding ContentTemplate}"
-							xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-							ContentTransitions="{TemplateBinding ContentTransitions}"
-							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-							Margin="{TemplateBinding Padding}" />
+								x:Name="ContentPresenter"
+								Content="{TemplateBinding Content}"
+								ContentTemplate="{TemplateBinding ContentTemplate}"
+								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+								ContentTransitions="{TemplateBinding ContentTransitions}"
+								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+								Margin="{TemplateBinding Padding}" />
 						</Border>
 						
 						<Border x:Name="SelectionIndicator" CornerRadius="2" Width="4" Opacity="0" Height="16" Margin="4,0,0,0" Background="{ThemeResource Color06Brush}" HorizontalAlignment="Left" />
