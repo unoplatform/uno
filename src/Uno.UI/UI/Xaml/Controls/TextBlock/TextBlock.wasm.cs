@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
+		private Size PlatformMeasure(Size availableSize)
 		{
 			SynchronizeHtmlParagraphAttributes();
 
