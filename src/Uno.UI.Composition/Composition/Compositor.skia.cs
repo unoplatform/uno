@@ -25,12 +25,7 @@ public partial class Compositor
 
 		_isDirty = false;
 
-		// TODO: Why are we enumerating children manually instead of just let the ContainerVisual do its job?
-		var children = rootVisual.GetChildrenInRenderOrder();
-		for (var i = 0; i < children.Count; i++)
-		{
-			children[i].RenderRootVisual(surface);
-		}
+		rootVisual.RenderRootVisual(surface);
 	}
 
 	partial void InvalidateRenderPartial()
