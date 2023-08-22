@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Layout
 
-		protected override Size MeasureOverride(Size size)
+		private Size PlatformMeasure(Size size)
 		{
 			// `size` is used to compare with the previous one `_previousDesiredSize`
 			// We need to apply `Math.Ceiling` to compare them correctly

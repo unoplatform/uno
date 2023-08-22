@@ -292,7 +292,7 @@ namespace Windows.UI.Xaml.Controls
 			Invalidate();
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
+		private Size PlatformMeasure(Size availableSize)
 		{
 			IDisposable measureActivity = null;
 

@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
-		protected override Size MeasureOverride(Size availableSize)
+		private Size PlatformMeasure(Size availableSize)
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding);
