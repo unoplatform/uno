@@ -5,8 +5,11 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.Logging;
 using Windows.UI.Core;
+
+#if !HAS_UNO
+using Uno.Logging;
+#endif
 
 namespace SamplesApp;
 
