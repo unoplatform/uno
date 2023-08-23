@@ -212,9 +212,10 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		internal void AbortAllPointerPressed()
+		internal void AbortAllPointerState()
 		{
 			_pressedState = (null, null);
+			_hoveredState = (null, null);
 			SetCurrentForeground();
 		}
 

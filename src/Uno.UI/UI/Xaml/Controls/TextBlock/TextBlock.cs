@@ -917,7 +917,7 @@ namespace Windows.UI.Xaml.Controls
 					// Make sure to clear the pressed state of removed hyperlinks
 					foreach (var hyperlink in _hyperlinks)
 					{
-						hyperlink.hyperlink.AbortAllPointerPressed();
+						hyperlink.hyperlink.AbortAllPointerState();
 					}
 
 					_hyperlinks.Clear();
@@ -950,7 +950,7 @@ namespace Windows.UI.Xaml.Controls
 			// Make sure to clear the pressed state of removed hyperlinks
 			foreach (var removed in previousHyperLinks)
 			{
-				removed.AbortAllPointerPressed();
+				removed.AbortAllPointerState();
 			}
 
 			// Update events subscriptions if needed

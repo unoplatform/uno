@@ -1,13 +1,16 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading.Tasks;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Documents;
@@ -38,6 +41,55 @@ public class Given_Hyperlink
 
 				var run = (Run)((Hyperlink)tb.Inlines.Single()).Inlines.Single();
 				Assert.AreEqual(expectedColor, ((SolidColorBrush)run.Foreground).Color);
+			}
+		}
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+#if !__SKIA__
+	[Ignore("InputInjector is only supported on skia")]
+#endif
+	[DataRow(true, false, "#FF0078D7", "#99FFFFFF")]
+	[DataRow(false, false, "#FF0078D7", "#99000000")]
+	[DataRow(true, true, "#FFA6D8FF", "#99FFFFFF")]
+	[DataRow(false, true, "#FF004275", "#99000000")]
+	public async Task TestHoveredHyperlink(bool useDark, bool useFluent, string expectedUnhoveredColorCode, string expectedHoveredColorCode)
+	{
+		var expectedUnhoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedUnhoveredColorCode);
+		var expectedHoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedHoveredColorCode);
+		using (useDark ? ThemeHelper.UseDarkTheme() : null)
+		{
+			using (useFluent ? StyleHelper.UseFluentStyles() : null)
+			{
+				var stackPanel = (StackPanel)XamlReader.Load("""
+				<StackPanel xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'>
+					<TextBlock>
+						<Hyperlink>Hello</Hyperlink>
+					</TextBlock>
+					<TextBlock Text="Bye" />
+				</StackPanel>
+				""");
+
+				WindowHelper.WindowContent = stackPanel;
+				await WindowHelper.WaitForLoaded(stackPanel);
+				await WindowHelper.WaitForIdle();
+
+				var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+				using var mouse = injector.GetMouse();
+
+				var tb1 = (TextBlock)stackPanel.Children[0];
+				var tb2 = (TextBlock)stackPanel.Children[1];
+
+				mouse.MoveTo(tb1.GetAbsoluteBounds().GetCenter());
+
+				var run = (Run)((Hyperlink)tb1.Inlines.Single()).Inlines.Single();
+				Assert.AreEqual(expectedHoveredColor, ((SolidColorBrush)run.Foreground).Color);
+
+				mouse.MoveTo(tb2.GetAbsoluteBounds().GetCenter());
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(expectedUnhoveredColor, ((SolidColorBrush)run.Foreground).Color);
 			}
 		}
 	}
