@@ -1,5 +1,15 @@
+using System;
+using System.IO;
+using Windows.Storage;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
+
+#if __SKIA__
+using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Controls.Extensions;
+#endif
 
 namespace SamplesApp;
 
@@ -61,7 +71,7 @@ partial class App
 			return;
 		}
 		// Temporarily add a TextBox to the current page's content to verify native overlay is available
-		if (Windows.UI.Xaml.Window?.Content is not Frame rootFrame)
+		if (Windows.UI.Xaml.Window.Current?.Content is not Frame rootFrame)
 		{
 			throw new InvalidOperationException("Native overlay verification executed too early");
 		}

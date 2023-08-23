@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,10 +17,6 @@ using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using Uno;
 using System.Diagnostics.CodeAnalysis;
-
-#if __SKIA__
-using System.Diagnostics.CodeAnalysis;
-#endif
 
 #if !HAS_UNO
 using Uno.Logging;
