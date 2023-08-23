@@ -1,7 +1,7 @@
 ﻿#if __MACOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
 namespace Windows.Devices.Sensors;
 
-public class Compass
+public partial class Compass
 {
 	private Compass()
 	{

@@ -3,26 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-#if false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompassReadingChangedEventArgs
 	{
-#if false
-		internal CompassReadingChangedEventArgs()
-		{
-		}
-#endif
-#if false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.Devices.Sensors.CompassReading Reading
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CompassReading CompassReadingChangedEventArgs.Reading is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompassReading%20CompassReadingChangedEventArgs.Reading");
-			}
-		}
-#endif
+		// Skipping already declared property Reading
 		// Forced skipping of method Windows.Devices.Sensors.CompassReadingChangedEventArgs.Reading.get
 	}
 }
