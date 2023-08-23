@@ -60,6 +60,8 @@ namespace Uno.UI
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 
+		private protected Windows.UI.Xaml.Window WinUIWindow { get; set; }
+
 		/// <summary>
 		/// Unique identifier for this instance of an activity.
 		/// </summary>
@@ -196,7 +198,7 @@ namespace Uno.UI
 
 			Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
+				WinUIWindow?.OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -207,12 +209,12 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Windows.UI.Xaml.Application.Current?.RaiseResuming();
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			WinUIWindow?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(
+			WinUIWindow?.OnNativeActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -222,14 +224,14 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			WinUIWindow?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
 		{
 			ResignCurrent();
 
-			Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
+			WinUIWindow?.OnNativeVisibilityChanged(false);
 			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
