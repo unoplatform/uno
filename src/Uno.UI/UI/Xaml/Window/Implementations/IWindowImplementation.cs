@@ -9,6 +9,8 @@ internal interface IWindowImplementation
 {
 	bool Visible { get; }
 
+	XamlRoot? XamlRoot { get; }
+
 	//Rect Bounds { get; }
 
 	CoreWindow? CoreWindow { get; }

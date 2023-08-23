@@ -49,7 +49,7 @@ namespace SamplesApp.Droid
 		[Export("GetScreenshot")]
 		public string GetScreenshot(string displayId)
 		{
-			var rootView = Microsoft.UI.Xaml.Window.Current.MainContent as View;
+			var rootView = WinUIWindow.RootElement as View;
 
 			var bitmap = Android.Graphics.Bitmap.CreateBitmap(rootView.Width, rootView.Height, Android.Graphics.Bitmap.Config.Argb8888);
 			var locationOfViewInWindow = new int[2];

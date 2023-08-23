@@ -7,7 +7,7 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	internal void TryLoadRootVisual(XamlRoot xamlRoot)
+	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
 	{
 		if (xamlRoot?.VisualTree?.RootElement is not { } rootElement) //TODO:MZ: What if the Content is null?
 		{

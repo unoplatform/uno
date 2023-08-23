@@ -26,7 +26,6 @@ namespace Microsoft.UI.Xaml
 	public sealed partial class Window
 	{
 		private readonly ActivationPreDrawListener _preDrawListener = new();
-		private Border _rootBorder;
 
 		partial void InitPlatform()
 		{
@@ -41,8 +40,6 @@ namespace Microsoft.UI.Xaml
 		partial void ShowPartial() => RemovePreDrawListener();
 
 		internal int SystemUiVisibility { get; set; }
-
-		internal UIElement MainContent => _rootVisual;
 
 		internal void RaiseNativeSizeChanged()
 		{
@@ -129,22 +126,6 @@ namespace Microsoft.UI.Xaml
 #pragma warning restore 618
 
 				displaySize = new Size(realMetrics.WidthPixels, realMetrics.HeightPixels);
-			}
-		}
-
-		internal void DisplayFullscreen(UIElement element)
-		{
-			if (element == null)
-			{
-				FullWindowMediaRoot.Child = null;
-				_rootBorder.Visibility = Visibility.Visible;
-				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				FullWindowMediaRoot.Visibility = Visibility.Visible;
-				_rootBorder.Visibility = Visibility.Collapsed;
-				FullWindowMediaRoot.Child = element;
 			}
 		}
 

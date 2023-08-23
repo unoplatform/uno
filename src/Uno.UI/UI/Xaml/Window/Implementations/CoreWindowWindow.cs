@@ -42,12 +42,14 @@ internal partial class CoreWindowWindow : IWindowImplementation
 		set => _contentManager.Content = value;
 	}
 
+	public XamlRoot? XamlRoot => WinUICoreServices.Instance.MainVisualTree?.GetOrCreateXamlRoot();
+
 	public void Activate()
 	{
 		if (CoreServices.Instance.MainVisualTree is null)
 		{
 			throw new InvalidOperationException("Main visual tree is not initialized.");
 		}
-		_contentManager.TryLoadRootVisual(CoreServices.Instance.MainVisualTree.GetOrCreateXamlRoot());
+		ContentManager.TryLoadRootVisual(CoreServices.Instance.MainVisualTree.GetOrCreateXamlRoot());
 	}
 }
