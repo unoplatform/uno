@@ -229,8 +229,6 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			var stretch = Stretch;
-			var userSize = GetUserSizes();
-			var (userMinSize, userMaxSize) = GetMinMax(userSize);
 			var stroke = Stroke;
 			var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
 			var pathBounds = GetPathBoundingBox(path); // The BoundingBox does also contains bezier anchors even if out of geometry
@@ -252,7 +250,6 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				default:
 				case Stretch.None:
-					var alignedHalfStrokeThickness = GetAlignedHalfStrokeThickness();
 					// If stretch is None, we have to keep the origin defined by the absolute coordinates of the path:
 					//
 					// This means that if you draw a line from 50,50 to 100,100 (so it's not starting at 0, 0),
@@ -282,23 +279,24 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 
 				case Stretch.Fill:
+					var userSize = GetUserSizes();
+					var (_, userMaxSize) = GetMinMax(userSize);
 					size = userMaxSize.FiniteOrDefault(availableSize.FiniteOrDefault(pathSize));
 					break;
 
 				case Stretch.Uniform:
 					// For Stretch.Uniform, if available size is infinity (both Width and Height), we just return the path size plus stroke thickness.
-					if (availableSize.Width == double.PositiveInfinity && availableSize.Height == double.PositiveInfinity)
+					if (availableSize.Width == PositiveInfinity && availableSize.Height == PositiveInfinity)
 					{
 						size = new Size(pathSize.Width + strokeThickness, pathSize.Height + strokeThickness);
 					}
+					else if (availableSize.Width <= strokeThickness || availableSize.Height <= strokeThickness)
+					{
+						size = new Size(strokeThickness, strokeThickness);
+					}
 					else
 					{
-						// Now, we will take the smaller dimension in available size and adjust the other to maintain the geometry aspect ratio.
-						// Note 1: maintaining aspect ratio means that we maintain it without the stroke thickness.
-						// This means that the following equation should hold: (width - strokeThickness) / (height - strokeThickness) = pathSize.Width / pathSize.Height
-						// Note 2: The tie-breaker rule when availableSize Width and Height are the same is the smaller dimension in pathSize.
-						if (availableSize.Width < availableSize.Height ||
-							(availableSize.Width == availableSize.Height && pathSize.Width < pathSize.Height))
+						if ((pathSize.Width / (availableSize.Width - strokeThickness)) > pathSize.Height / (availableSize.Height - strokeThickness))
 						{
 							var width = availableSize.Width;
 							var height = ((width - strokeThickness) / pathSize.AspectRatio()) + strokeThickness;
@@ -316,29 +314,31 @@ namespace Windows.UI.Xaml.Shapes
 
 				case Stretch.UniformToFill:
 					// For Stretch.UniformToFill, if available size is infinity (both Width and Height), we just return the path size plus stroke thickness.
-					if (availableSize.Width == double.PositiveInfinity && availableSize.Height == double.PositiveInfinity)
+					if (availableSize.Width == PositiveInfinity && availableSize.Height == PositiveInfinity)
 					{
 						size = new Size(pathSize.Width + strokeThickness, pathSize.Height + strokeThickness);
 					}
+					else if (availableSize.Width <= strokeThickness && availableSize.Height <= strokeThickness)
+					{
+						size = new Size(strokeThickness, strokeThickness);
+					}
 					else
 					{
-						// Now, we will take the larger (but not infinity!) dimension in available size and adjust the other to maintain the geometry aspect ratio.
-						// Note 1: maintaining aspect ratio means that we maintain it without the stroke thickness.
-						// This means that the following equation should hold: (width - strokeThickness) / (height - strokeThickness) = pathSize.Width / pathSize.Height
-						// Note 2: The tie-breaker rule when availableSize Width and Height are the same is the larger dimension in pathSize.
-						if (availableSize.Width != double.PositiveInfinity &&
-							(availableSize.Width > availableSize.Height ||
-							(availableSize.Width == availableSize.Height && pathSize.Width > pathSize.Height)))
+						var availableSizeWithoutStroke = new Size(Math.Max(0, availableSize.Width - strokeThickness), Math.Max(0, availableSize.Height - strokeThickness));
+
+						if (availableSize.Height == double.PositiveInfinity ||
+							(availableSize.Height == 0 && availableSize.Width != double.PositiveInfinity) ||
+							(availableSize.Width != double.PositiveInfinity && (pathSize.Width / availableSizeWithoutStroke.Width) <= pathSize.Height / availableSizeWithoutStroke.Height))
 						{
 							var width = availableSize.Width;
-							var height = ((width - strokeThickness) / pathSize.AspectRatio()) + strokeThickness;
-							size = new Size(width, height);
+							var height = (availableSizeWithoutStroke.Width / pathSize.AspectRatio()) + strokeThickness;
+							size = new Size(Math.Max(width, strokeThickness), Math.Max(height, strokeThickness));
 						}
 						else
 						{
 							var height = availableSize.Height;
-							var width = ((height - strokeThickness) * pathSize.AspectRatio()) + strokeThickness;
-							size = new Size(width, height);
+							var width = (availableSizeWithoutStroke.Height * pathSize.AspectRatio()) + StrokeThickness;
+							size = new Size(Math.Max(width, StrokeThickness), Math.Max(height, StrokeThickness));
 						}
 					}
 
@@ -577,11 +577,6 @@ namespace Windows.UI.Xaml.Shapes
 		#endregion
 
 		#region Helper methods
-		/// <summary>
-		/// Gets the rounded/adjusted half stroke thickness that should be used for measuring absolute shapes (Path, Line, Polyline and Polygon)
-		/// </summary>
-		private double GetAlignedHalfStrokeThickness()
-			=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
 
 		private
 			(
