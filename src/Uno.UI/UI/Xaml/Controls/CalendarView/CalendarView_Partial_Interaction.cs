@@ -6,6 +6,7 @@ using Windows.System;
 using Windows.UI.Xaml.Input;
 using DirectUI;
 using DateTime = System.DateTimeOffset;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -368,23 +369,20 @@ namespace Windows.UI.Xaml.Controls
 			return;
 		}
 
-#if false
 		// UIElement override for getting next tab stop on path from focus candidate element to root.
-		private void ProcessCandidateTabStopOverride(
-			DependencyObject pFocusedElement,
-			DependencyObject pCandidateTabStopElement,
-			DependencyObject pOverriddenCandidateTabStopElement,
-			bool isBackward,
-			out DependencyObject ppNewTabStop,
-			out bool pIsCandidateTabStopOverridden)
+		internal override TabStopProcessingResult ProcessCandidateTabStopOverride(
+			DependencyObject focusedElement,
+			DependencyObject candidateTabStopElement,
+			DependencyObject overriddenCandidateTabStopElement,
+			bool isBackward)
 		{
 			// There is no ICalendarViewBaseItem interface so we can't use ctl.is to check an element is CalendarViewBaseItem or not
 			// because in ctl.is, it will call ReleaseInterface and CalendarViewBaseItem has multiple interfaces.
 			// ComPtr will do this in a smarter way - it always casts to IUnknown before release/addso there is no ambiguity.
-			CalendarViewBaseItem spCandidateAsCalendarViewBaseItem = pCandidateTabStopElement as CalendarViewBaseItem;
+			CalendarViewBaseItem spCandidateAsCalendarViewBaseItem = candidateTabStopElement as CalendarViewBaseItem;
 
-			ppNewTabStop = null;
-			pIsCandidateTabStopOverridden = false;
+			DependencyObject newTabStop = null;
+			var isCandidateTabStopOverridden = false;
 
 			// Check if the candidate is a calendaritem and the currently focused is not a calendaritem.
 			// Which means we Tab (or shift+Tab) into the scrollviewer and we are going to put focus on the candidate.
@@ -393,7 +391,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (spCandidateAsCalendarViewBaseItem is { })
 			{
-				CalendarViewBaseItem spFocusedAsCalendarViewBaseItem = pFocusedElement as CalendarViewBaseItem;
+				CalendarViewBaseItem spFocusedAsCalendarViewBaseItem = focusedElement as CalendarViewBaseItem;
 				if (spFocusedAsCalendarViewBaseItem is null)
 				{
 					CalendarViewGeneratorHost spHost;
@@ -409,24 +407,21 @@ namespace Windows.UI.Xaml.Controls
 						// For other modes (Local or Cycle) we don't want to override.
 						if (mode == KeyboardNavigationMode.Once)
 						{
-							bool isAncestor = false;
-
 							// Are we tabbing from/to another view?
 							// if developer makes other view focusable by re-template and the candidate is not
 							// in the active view, we'll not override the candidate.
-							isAncestor = pScrollViewer.IsAncestorOf(pCandidateTabStopElement);
+							var isAncestor = pScrollViewer.IsAncestorOf(candidateTabStopElement);
 
 							if (isAncestor)
 							{
 								var pPanel = spHost.Panel;
 								if (pPanel is { })
 								{
-									int index = -1;
 									DependencyObject spContainer;
 									//CalendarViewGeneratorHost spHost;
 									GetActiveGeneratorHost(out spHost);
 
-									index = spHost.CalculateOffsetFromMinDate(m_lastDisplayedDate);
+									var index = spHost.CalculateOffsetFromMinDate(m_lastDisplayedDate);
 
 									// This container might not have focus so it could be recycled, bring
 									// it into view so it can take focus.
@@ -440,8 +435,8 @@ namespace Windows.UI.Xaml.Controls
 
 									global::System.Diagnostics.Debug.Assert(spContainer is { });
 
-									ppNewTabStop = spContainer;
-									pIsCandidateTabStopOverridden = true;
+									newTabStop = spContainer;
+									isCandidateTabStopOverridden = true;
 								}
 							}
 						}
@@ -449,7 +444,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			return new(isCandidateTabStopOverridden, newTabStop);
 		}
-#endif
 	}
 }
