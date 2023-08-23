@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
+			Windows.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(() => RaiseSuspending());
 		}
@@ -216,17 +216,17 @@ namespace Windows.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true));
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			Windows.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			Windows.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		private void SetCurrentLanguage()

@@ -231,7 +231,7 @@ namespace Uno.UI
 		/// <returns></returns>
 		internal static CGSize GetMainWindowSize()
 		{
-			return GetWindowSize(window: Windows.UI.Xaml.Window.Current);
+			return GetWindowSize(window: Windows.UI.Xaml.Window.IShouldntUseCurrentWindow);
 		}
 
 		internal static CGSize GetWindowSize(Windows.UI.Xaml.Window window)
