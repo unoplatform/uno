@@ -29,11 +29,8 @@ internal static class DefaultBrushes
 		_hyperlinkForegroundBrush = null;
 	}
 
-	private static Brush GetDefaultTextBrush(string key, ref Brush? brush, Color? lightFallback = null, Color? darkFallback = null)
+	private static Brush GetDefaultTextBrush(string key, ref Brush? brush)
 	{
-		// We expect both to be set, or none.
-		Debug.Assert(!(darkFallback is null ^ lightFallback is null));
-
 		if (Application.Current is null)
 		{
 			// Called too early or within unit tests, fallback
