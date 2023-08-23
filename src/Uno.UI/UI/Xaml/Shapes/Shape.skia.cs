@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.Geometry.Bounds.ToRect();
+			=> path.Geometry.TightBounds.ToRect();
 
 		private bool IsFinite(double value) => !double.IsInfinity(value);
 
