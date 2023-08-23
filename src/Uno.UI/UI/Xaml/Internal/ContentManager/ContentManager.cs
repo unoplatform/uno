@@ -2,7 +2,9 @@
 
 using System;
 using Uno.UI.Xaml.Core;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
@@ -47,7 +49,7 @@ internal partial class ContentManager
 
 		if (_isCoreWindowContent && _rootVisual is null)
 		{
-			WinUICoreServices.Instance.PutCoreWindowVisualRoot(newContent);
+			WinUICoreServices.Instance.PutCoreWindowVisualRoot(newContent, RootScrollViewer);
 			_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
 			if (_rootVisual?.XamlRoot is null)
@@ -64,14 +66,14 @@ internal partial class ContentManager
 	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual);
 
 #if __WASM__ // Only WASM currently has a root scroll viewer.
-	private void CreateRootScrollViewer(UIElement content)
+	private void CreateRootScrollViewer(UIElement? content)
 	{
 		var rootBorder = new Border()
 		{
-			Child = content;
-		}
+			Child = content
+		};
 
-		RootScrollViewer = new ScrollViewer()
+		RootScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
 		{
 			VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
 			HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
@@ -86,6 +88,24 @@ internal partial class ContentManager
 	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
 	{
 		//TODO:MZ: Implement this for all platforms!
+		if (xamlRoot?.VisualTree?.RootElement is not { } rootElement) //TODO:MZ: What if the Content is null?
+		{
+			// TODO:MZ: Indicate failure!
+			return;
+		}
+
+		var dispatcher = rootElement.Dispatcher;
+
+		if (dispatcher.HasThreadAccess)
+		{
+			LoadRootElementPlatform(xamlRoot, rootElement);
+		}
+		else
+		{
+			_ = dispatcher.RunAsync(CoreDispatcherPriority.High, () => LoadRootElementPlatform(xamlRoot, rootElement));
+		}
 	}
+
+	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);
 #endif
 }
