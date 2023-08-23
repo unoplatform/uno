@@ -12,7 +12,8 @@ namespace UITests.Shared.Windows_System.Power;
 
 [Sample("Windows.System", Name = "Power.PowerManager",
 	ViewModelType = typeof(PowerManagerTestsViewModel),
-	Description = "Shows properties of Power manager and handles its events")]
+	Description = "Shows properties of Power manager and handles its events",
+	IsManualTest = true)]
 public sealed partial class PowerManager : UserControl
 {
 	public PowerManager()
