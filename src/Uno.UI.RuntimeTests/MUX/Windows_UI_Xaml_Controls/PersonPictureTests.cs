@@ -168,8 +168,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 			await RunOnUIThread.ExecuteAsync(() =>
 			{
 				personPicture.SizeChanged += (sender, args) => sizeChangedEvent.TrySetResult(true);
+				personPicture.UpdateLayout();
 				personPicture.Width = 0.4;
 				personPicture.Height = 0.4;
+				personPicture.UpdateLayout();
 			});
 
 			await sizeChangedEvent.Task;
