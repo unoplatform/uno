@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.Logging;
 using Windows.UI.Core;
 
 namespace SamplesApp;
@@ -176,7 +177,7 @@ partial class App
 		}
 		catch (Exception ex)
 		{
-			_log?.LogError($"Could not navigate to initial sample - {ex}");
+			_log?.Error($"Could not navigate to initial sample - {ex}");
 		}
 		return false;
 	}
