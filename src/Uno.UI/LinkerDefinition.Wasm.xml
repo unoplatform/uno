@@ -51,6 +51,11 @@
 		<type fullname="Windows.Devices.Sensors.LightSensor" required="false">
 			<method name="DispatchReading" />
 		</type>
+		<type fullname="Windows.System.Power.PowerManager">
+	  		<method name="DispatchRemainingDischargeTimeChanged" />
+	  		<method name="DispatchRemainingChargePercentChanged" />
+	  		<method name="DispatchChargingChanged" />
+		</type>
 		<type fullname="Windows.Networking.Connectivity.NetworkInformation" required="false">
 			<method name="DispatchStatusChanged" />
 		</type>
