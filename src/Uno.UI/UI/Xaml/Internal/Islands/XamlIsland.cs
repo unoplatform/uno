@@ -33,7 +33,7 @@ internal partial class XamlIsland : Panel
 		}
 	}
 
-	internal Window? Window { get; set; }
+	internal Window? OwnerWindow { get; set; }
 
 	private void XamlIsland_SizeChanged(object sender, SizeChangedEventArgs args) => Content?.XamlRoot?.NotifyChanged();
 }

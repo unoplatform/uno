@@ -121,7 +121,7 @@ namespace Uno.UI.Xaml.Core
 			return Type switch
 			{
 				ContentRootType.CoreWindow => Window.CurrentSafe,
-				ContentRootType.XamlIsland when XamlIslandRoot is not null => XamlIslandRoot.Window,
+				ContentRootType.XamlIsland when XamlIslandRoot is not null => XamlIslandRoot.OwnerWindow,
 				_ => null
 			};
 		}

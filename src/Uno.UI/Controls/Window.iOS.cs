@@ -230,7 +230,10 @@ namespace Uno.UI.Controls
 			}
 		}
 
+
+#if __MACCATALYST__
 		internal void SetOwner(CoreWindow owner) => _ownerEvents = (ICoreWindowEvents)owner;
+#endif
 
 		/// <summary>
 		/// The behavior to use to bring the focused item into view when opening the keyboard.
