@@ -12,6 +12,7 @@ using Uno.UI.DataBinding;
 using System;
 using Uno.UI;
 using System.Collections;
+using System.Diagnostics;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
@@ -36,6 +37,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+		private Hyperlink _hyperlinkOver;
 		private Action _foregroundChanged;
 
 		private Run _reusableRun;
@@ -827,7 +829,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			hyperlink.SetPointerPressed(e.Pointer);
+			hyperlink.SetPointerPressed(e.Pointer, that.Resources.ThemeDictionaries);
 			e.Handled = true;
 			that.CompleteGesture(); // Make sure to mute Tapped
 		};
@@ -865,13 +867,35 @@ namespace Windows.UI.Xaml.Controls
 			}
 		};
 
+		private static readonly PointerEventHandler OnPointerMoved = (sender, e) =>
+		{
+			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			{
+				return;
+			}
+
+			var point = e.GetCurrentPoint(that);
+
+			var hyperlink = that.FindHyperlinkAt(point.Position);
+			if (that._hyperlinkOver != hyperlink)
+			{
+				that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
+				that._hyperlinkOver = hyperlink;
+				hyperlink?.SetPointerOver(e.Pointer, that.Resources.ThemeDictionaries);
+			}
+		};
+
 		private bool AbortHyperlinkCaptures(Pointer pointer)
 		{
 			var aborted = false;
 			foreach (var hyperlink in _hyperlinks.ToList()) // .ToList() : for a strange reason on WASM the collection gets modified
 			{
 				aborted |= hyperlink.hyperlink.AbortPointerPressed(pointer);
+				aborted |= hyperlink.hyperlink.ReleasePointerOver(pointer);
 			}
+
+			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
+			_hyperlinkOver = null;
 
 			return aborted;
 		}
@@ -887,6 +911,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					RemoveHandler(PointerPressedEvent, OnPointerPressed);
 					RemoveHandler(PointerReleasedEvent, OnPointerReleased);
+					RemoveHandler(PointerMovedEvent, OnPointerMoved);
 					RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 
 					// Make sure to clear the pressed state of removed hyperlinks
@@ -934,17 +959,29 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InsertHandler(PointerPressedEvent, OnPointerPressed);
 				InsertHandler(PointerReleasedEvent, OnPointerReleased);
+				InsertHandler(PointerMovedEvent, OnPointerMoved);
 				InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
 			else if (!HasHyperlink && previousHasHyperlinks)
 			{
 				RemoveHandler(PointerPressedEvent, OnPointerPressed);
 				RemoveHandler(PointerReleasedEvent, OnPointerReleased);
+				RemoveHandler(PointerMovedEvent, OnPointerMoved);
 				RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
 		}
 
-		private bool HasHyperlink => _hyperlinks.Any();
+		private bool HasHyperlink
+		{
+			get
+			{
+				var hasHyperlink = _hyperlinks.Any();
+
+				Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
+
+				return hasHyperlink;
+			}
+		}
 
 #if !__SKIA__
 		private Hyperlink FindHyperlinkAt(Point point)

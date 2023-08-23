@@ -15,6 +15,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -24,6 +25,8 @@ namespace Windows.UI.Xaml.Documents
 		private readonly IFocusable _focusableHelper;
 #endif
 
+		private const string HyperlinkForegroundPressedKey = "HyperlinkForegroundPressed";
+		private const string HyperlinkForegroundPointerOverKey = "HyperlinkForegroundPointerOver";
 		private protected override Brush DefaultTextForegroundBrush => DefaultBrushes.HyperlinkForegroundBrush;
 
 		public
@@ -148,22 +151,45 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-		#region Click
-		private Pointer _pressedPointer;
-		internal void SetPointerPressed(Pointer pointer)
+		#region Hover
+		private (Pointer pointer, IDictionary<object, object> themes) _hoveredState;
+		internal void SetPointerOver(Pointer pointer, IDictionary<object, object> themeDictionary)
 		{
-			_pressedPointer = pointer;
-			this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
+			_hoveredState = (pointer, themeDictionary);
+			SetCurrentForeground();
+		}
+
+		internal bool ReleasePointerOver(Pointer pointer)
+		{
+			if (_hoveredState.pointer?.Equals(pointer) ?? false)
+			{
+				_hoveredState = (null, null);
+				SetCurrentForeground();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		#endregion
+
+		#region Click
+		private (Pointer pointer, IDictionary<object, object> themes) _pressedState;
+		internal void SetPointerPressed(Pointer pointer, IDictionary<object, object> themeDictionary)
+		{
+			_pressedState = (pointer, themeDictionary);
+			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerPressed(Pointer pointer)
 		{
-			if (_pressedPointer?.Equals(pointer) ?? false)
+			if (_pressedState.pointer?.Equals(pointer) ?? false)
 			{
 				OnClick();
 
-				_pressedPointer = null;
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				_pressedState = (null, null);
+				SetCurrentForeground();
 				return true;
 			}
 			else
@@ -174,10 +200,10 @@ namespace Windows.UI.Xaml.Documents
 
 		internal bool AbortPointerPressed(Pointer pointer)
 		{
-			if (_pressedPointer?.Equals(pointer) ?? false)
+			if (_pressedState.pointer?.Equals(pointer) ?? false)
 			{
-				_pressedPointer = null;
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				_pressedState = (null, null);
+				SetCurrentForeground();
 				return true;
 			}
 			else
@@ -188,7 +214,8 @@ namespace Windows.UI.Xaml.Documents
 
 		internal void AbortAllPointerPressed()
 		{
-			this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+			_pressedState = (null, null);
+			SetCurrentForeground();
 		}
 
 		internal void OnClick()
@@ -202,18 +229,28 @@ namespace Windows.UI.Xaml.Documents
 			}
 #endif
 		}
-
-		private Brush GetPressedForeground()
-		{
-#if XAMARIN
-			var normalColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
-			var pressedColor = Color.FromArgb((byte)(normalColor.A / 2), normalColor.R, normalColor.G, normalColor.B);
-			return new SolidColorBrush(pressedColor);
-#else
-			return null;
-#endif
-		}
 		#endregion
+
+		private void SetCurrentForeground()
+		{
+			if (_pressedState.pointer is { }
+				&& _pressedState.themes.UnoGetValueOrDefault(HyperlinkForegroundPressedKey,null) is Brush brush)
+			{
+				this.SetValue(ForegroundProperty, brush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else
+			{
+				if (_hoveredState.pointer is { }
+					&& _hoveredState.themes.UnoGetValueOrDefault(HyperlinkForegroundPointerOverKey,null) is Brush brush2)
+				{
+					this.SetValue(ForegroundProperty, brush2, DependencyPropertyValuePrecedences.Animations);
+				}
+				else
+				{
+					this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				}
+			}
+		}
 
 #if !__WASM__
 		public FocusState FocusState
