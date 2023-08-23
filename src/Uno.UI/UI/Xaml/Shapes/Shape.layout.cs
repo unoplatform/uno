@@ -279,9 +279,10 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 
 				case Stretch.Fill:
-					var userSize = GetUserSizes();
-					var (_, userMaxSize) = GetMinMax(userSize);
-					size = userMaxSize.FiniteOrDefault(availableSize.FiniteOrDefault(pathSize));
+					size = new Size(
+						availableSize.Width == PositiveInfinity ? pathBounds.Width + strokeThickness : Math.Max(availableSize.Width, strokeThickness),
+						availableSize.Height == PositiveInfinity ? pathBounds.Height + strokeThickness : Math.Max(availableSize.Height, strokeThickness)
+						);
 					break;
 
 				case Stretch.Uniform:
