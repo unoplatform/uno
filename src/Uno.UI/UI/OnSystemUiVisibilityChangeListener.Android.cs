@@ -34,7 +34,7 @@ namespace Uno.UI
 			// - LayoutHideNavigation : User can show the navigation bar by sliding up from the bottom of the screen and have the option to dock it / undock it
 			// In the case we set the navigation bar to LayoutHideNavigation, when the user hide the bar, HideNavigation will be triggered.
 			// But we don't want to inject it in the decorView.SystemUiVisibility to let the navigation bar dockable again
-			Window.Current.SystemUiVisibility = newUiOptions;
+			Window.IShouldntUseCurrentWindow.SystemUiVisibility = newUiOptions;
 
 			activity.OnConfigurationChanged(activity.Resources.Configuration);
 		}

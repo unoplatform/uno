@@ -385,7 +385,7 @@ namespace SamplesApp
 			deferral.Complete();
 		}
 
-		private void OnResuming(object sender, object e)
+		private void OnResuming(object? sender, object e)
 		{
 			Console.WriteLine("OnResuming");
 

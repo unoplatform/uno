@@ -953,7 +953,7 @@ namespace Microsoft.UI.Xaml.Controls
 #if __ANDROID__
 				// Check whether the status bar is translucent
 				// If so, we may need to compensate for the origin location
-				var isTranslucent = Window.Current.IsStatusBarTranslucent();
+				var isTranslucent = Window.IShouldntUseCurrentWindow!.IsStatusBarTranslucent();
 				var allowUnderStatusBar = FeatureConfiguration.ComboBox.AllowPopupUnderTranslucentStatusBar;
 				if (isTranslucent && allowUnderStatusBar)
 				{

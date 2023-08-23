@@ -54,6 +54,8 @@ namespace Microsoft.UI.Xaml
 		{
 			Instance = this;
 
+			WinUIWindow = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow;
+
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
@@ -91,7 +93,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			if (Xaml.Window.Current.MainContent is View content)
+			if (WinUIWindow.RootElement is View content) // TODO:MZ: Fix this!
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
 				SetContentView(content);
@@ -215,7 +217,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyboardChanged(Rect keyboard)
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			WinUIWindow?.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
@@ -227,7 +229,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
-			Microsoft.UI.Xaml.Window.Current.OnActivityCreated();
+			WinUIWindow.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -238,7 +240,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			WinUIWindow?.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View view)
@@ -301,9 +303,9 @@ namespace Microsoft.UI.Xaml
 			RaiseConfigurationChanges();
 		}
 
-		private static void RaiseConfigurationChanges()
+		private void RaiseConfigurationChanges()
 		{
-			Xaml.Window.Current?.RaiseNativeSizeChanged();
+			WinUIWindow?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();

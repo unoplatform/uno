@@ -81,4 +81,11 @@ internal partial class ContentManager
 		};
 	}
 #endif
+
+#if !__SKIA__
+	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
+	{
+		//TODO:MZ: Implement this for all platforms!
+	}
+#endif
 }

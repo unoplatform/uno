@@ -370,7 +370,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
 						UIElement reference =
 #if __ANDROID__
-							Window.Current.Content;
+							Window.IShouldntUseCurrentWindow.Content;
 #else
 							null;
 #endif

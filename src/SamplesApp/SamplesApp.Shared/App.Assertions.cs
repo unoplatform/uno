@@ -9,7 +9,6 @@ using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 #if HAS_UNO
 using Uno.Foundation.Extensibility;
-using Uno.UI.Xaml.Controls.Extensions;
 #endif
 
 #if __SKIA__

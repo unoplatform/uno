@@ -118,13 +118,13 @@ namespace Microsoft.UI.Xaml
 		/// On platforms like iOS and Android, we might still have few native controls above this.
 		/// </summary>
 		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
-		internal UIElement? RootElement => _windowImplementation.Content?.XamlRoot?.VisualTree?.PublicRootVisual;
+		internal UIElement? RootElement => _windowImplementation.XamlRoot?.VisualTree?.RootElement; //TODO:MZ: Is it ok to change to RootElement instead of PublicRootVisual?
 
-		internal PopupRoot? PopupRoot => _windowImplementation.Content?.XamlRoot?.VisualTree?.PopupRoot;
+		internal PopupRoot? PopupRoot => _windowImplementation.XamlRoot?.VisualTree?.PopupRoot;
 
-		internal FullWindowMediaRoot? FullWindowMediaRoot => _windowImplementation.Content?.XamlRoot?.VisualTree?.FullWindowMediaRoot;
+		internal FullWindowMediaRoot? FullWindowMediaRoot => _windowImplementation.XamlRoot?.VisualTree?.FullWindowMediaRoot;
 
-		internal Canvas? FocusVisualLayer => _windowImplementation.Content?.XamlRoot?.VisualTree?.FocusVisualRoot;
+		internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
 		/// <summary>
 		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.

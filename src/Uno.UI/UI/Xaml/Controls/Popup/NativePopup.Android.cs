@@ -54,7 +54,7 @@ public partial class NativePopup : NativePopupBase
 		{
 			if (Child is FrameworkElement child)
 			{
-				child.Measure(Window.Current.Bounds.Size);
+				child.Measure(Window.IShouldntUseCurrentWindow.Bounds.Size);
 				_popupWindow.Width = ViewHelper.LogicalToPhysicalPixels(child.DesiredSize.Width);
 				_popupWindow.Height = ViewHelper.LogicalToPhysicalPixels(child.DesiredSize.Height);
 			}
