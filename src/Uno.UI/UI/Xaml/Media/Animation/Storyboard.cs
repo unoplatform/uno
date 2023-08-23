@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			_runningChildren = Children?.Count ?? 0;
 			if (_runningChildren > 0)
 			{
-				for (int i = 0; i < Children.Count; i++)
+				for (int i = 0; i < _runningChildren; i++)
 				{
 					ITimeline child = Children[i];
 
