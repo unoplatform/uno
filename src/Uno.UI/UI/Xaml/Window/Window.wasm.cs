@@ -26,76 +26,9 @@ namespace Microsoft.UI.Xaml
 {
 	public sealed partial class Window
 	{
-		private ScrollViewer _rootScrollViewer;
-		private Border _rootBorder;
-		private bool _invalidateRequested;
-
-		partial void InitPlatform()
-		{
-			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-		}
-
-		internal static void InvalidateMeasure()
-		{
-			Current?.InnerInvalidateMeasure();
-		}
-
-		internal static void InvalidateArrange()
-		{
-			// Right now, both measure & arrange invalidations
-			// are done in the same loop
-			Current?.InnerInvalidateMeasure();
-		}
-
-		private void InnerInvalidateMeasure()
-		{
-			if (!_invalidateRequested)
-			{
-				_invalidateRequested = true;
-
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug("DispatchInvalidateMeasure scheduled");
-				}
-
-				_ = CoreDispatcher.Main.RunAsync(
-					CoreDispatcherPriority.Normal,
-					() =>
-					{
-						_invalidateRequested = false;
-
-						Current?.DispatchInvalidateMeasure();
-					}
-				);
-			}
-		}
-
-		private void DispatchInvalidateMeasure()
-		{
-			if (_rootVisual is null)
-			{
-				return;
-			}
-
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				var sw = Stopwatch.StartNew();
-				_rootVisual.Measure(Bounds.Size);
-				_rootVisual.Arrange(Bounds);
-				sw.Stop();
-
-				this.Log().Debug($"DispatchInvalidateMeasure: {sw.Elapsed}");
-			}
-			else
-			{
-				_rootVisual.Measure(Bounds.Size);
-				_rootVisual.Arrange(Bounds);
-			}
-		}
-
 		[JSExport]
 		[Preserve]
-		internal static void Resize(double width, double height) => Current.OnNativeSizeChanged(new Size(width, height));
+		public static void Resize(double width, double height) => IShouldntUseCurrentWindow.OnNativeSizeChanged(new Size(width, height));
 
 		internal void OnNativeSizeChanged(Size size)
 		{
@@ -110,7 +43,7 @@ namespace Microsoft.UI.Xaml
 
 				Bounds = newBounds;
 
-				DispatchInvalidateMeasure();
+				_windowImplementation.XamlRoot?.InvalidateMeasure();
 				RaiseSizeChanged(new Windows.UI.Core.WindowSizeChangedEventArgs(size));
 
 				// Note that UWP raises the ApplicationView.VisibleBoundsChanged event
@@ -122,21 +55,5 @@ namespace Microsoft.UI.Xaml
 		}
 
 		partial void ShowPartial() => WindowManagerInterop.WindowActivate();
-
-		internal void DisplayFullscreen(UIElement content)
-		{
-			if (content == null)
-			{
-				FullWindowMediaRoot.Child = null;
-				_rootBorder.Visibility = Visibility.Visible;
-				FullWindowMediaRoot.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				FullWindowMediaRoot.Visibility = Visibility.Visible;
-				_rootBorder.Visibility = Visibility.Collapsed;
-				FullWindowMediaRoot.Child = content;
-			}
-		}
 	}
 }

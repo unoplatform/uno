@@ -7,38 +7,13 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
+	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);
 	{
-		if (xamlRoot?.VisualTree?.RootElement is not { } rootElement) //TODO:MZ: What if the Content is null?
-		{
-			// TODO:MZ: Indicate failure!
-			return;
-		}
+		UIElement.LoadingRootElement(rootElement);
 
-		//if (!_shown || !_windowCreated)
-		//{
-		//	return;
-		//}
+		xamlRoot.InvalidateMeasure();
+		xamlRoot.InvalidateArrange();
 
-		void LoadRoot()
-		{
-			UIElement.LoadingRootElement(rootElement);
-
-			rootElement.XamlRoot!.InvalidateMeasure();
-			rootElement.XamlRoot!.InvalidateArrange();
-
-			UIElement.RootElementLoaded(rootElement);
-		}
-
-		var dispatcher = rootElement.Dispatcher;
-
-		if (dispatcher.HasThreadAccess)
-		{
-			LoadRoot();
-		}
-		else
-		{
-			_ = dispatcher.RunAsync(CoreDispatcherPriority.High, LoadRoot);
-		}
+		UIElement.RootElementLoaded(rootElement);
 	}
 }
