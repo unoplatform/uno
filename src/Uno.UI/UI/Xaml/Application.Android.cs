@@ -15,7 +15,9 @@ public partial class Application
 {
 	partial void InitializePartial()
 	{
-		Window.Current.ToString();
+#if !HAS_UNO_WINUI
+		Window.CurrentSafe.ToString();
+#endif
 		PermissionsHelper.Initialize();
 	}
 

@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System;
 using System.Runtime.CompilerServices;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -26,6 +27,11 @@ internal partial class DesktopWindow : IWindowImplementation
 		_desktopWindowXamlSource.Content = _windowChrome;
 
 		_nativeWindowWrapper = NativeWindowFactory.CreateWindow(window);
+		if (_nativeWindowWrapper is null)
+		{
+			throw new InvalidOperationException("This platform does not support creating multiple windows yet.");
+		}
+
 		_nativeWindowWrapper.SizeChanged += OnNativeWindowSizeChanged;
 	}
 
@@ -50,8 +56,10 @@ internal partial class DesktopWindow : IWindowImplementation
 		set => _windowChrome.Content = value;
 	}
 
+	public XamlRoot? XamlRoot => _desktopWindowXamlSource.XamlIsland.XamlRoot;
+
 	public void Activate()
 	{
-		_desktopWindowXamlSource.XamlIsland.ContentManager.TryLoadRootVisual(_windowChrome.XamlRoot!);
+		ContentManager.TryLoadRootVisual(_windowChrome.XamlRoot!);
 	}
 }
