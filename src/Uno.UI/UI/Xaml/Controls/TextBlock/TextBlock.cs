@@ -885,6 +885,36 @@ namespace Windows.UI.Xaml.Controls
 			}
 		};
 
+		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
+		{
+			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			{
+				return;
+			}
+
+			Debug.Assert(that._hyperlinkOver == null);
+
+			var point = e.GetCurrentPoint(that);
+
+			var hyperlink = that.FindHyperlinkAt(point.Position);
+
+			that._hyperlinkOver = hyperlink;
+			hyperlink?.SetPointerOver(e.Pointer, that.Resources.ThemeDictionaries);
+		};
+
+		private static readonly PointerEventHandler OnPointerExit = (sender, e) =>
+		{
+			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			{
+				return;
+			}
+
+			Debug.Assert(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) == null);
+
+			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
+			that._hyperlinkOver = null;
+		};
+
 		private bool AbortHyperlinkCaptures(Pointer pointer)
 		{
 			var aborted = false;
@@ -912,6 +942,8 @@ namespace Windows.UI.Xaml.Controls
 					RemoveHandler(PointerPressedEvent, OnPointerPressed);
 					RemoveHandler(PointerReleasedEvent, OnPointerReleased);
 					RemoveHandler(PointerMovedEvent, OnPointerMoved);
+					RemoveHandler(PointerEnteredEvent, OnPointerEntered);
+					RemoveHandler(PointerExitedEvent, OnPointerExit);
 					RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 
 					// Make sure to clear the pressed state of removed hyperlinks
@@ -960,6 +992,8 @@ namespace Windows.UI.Xaml.Controls
 				InsertHandler(PointerPressedEvent, OnPointerPressed);
 				InsertHandler(PointerReleasedEvent, OnPointerReleased);
 				InsertHandler(PointerMovedEvent, OnPointerMoved);
+				InsertHandler(PointerEnteredEvent, OnPointerEntered);
+				InsertHandler(PointerExitedEvent, OnPointerExit);
 				InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
 			else if (!HasHyperlink && previousHasHyperlinks)
@@ -967,6 +1001,8 @@ namespace Windows.UI.Xaml.Controls
 				RemoveHandler(PointerPressedEvent, OnPointerPressed);
 				RemoveHandler(PointerReleasedEvent, OnPointerReleased);
 				RemoveHandler(PointerMovedEvent, OnPointerMoved);
+				RemoveHandler(PointerEnteredEvent, OnPointerEntered);
+				RemoveHandler(PointerExitedEvent, OnPointerExit);
 				RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
 		}
