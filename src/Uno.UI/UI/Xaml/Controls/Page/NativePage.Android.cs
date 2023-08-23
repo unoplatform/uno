@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
-			Windows.UI.Xaml.Window.Current.SystemUiVisibility = (int)decorView.SystemUiVisibility;
+			Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.SystemUiVisibility = (int)decorView.SystemUiVisibility;
 			decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener());
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
