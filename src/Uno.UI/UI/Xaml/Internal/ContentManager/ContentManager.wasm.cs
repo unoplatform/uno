@@ -1,10 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Uno.UI.Xaml.Core;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -12,37 +10,39 @@ partial class ContentManager
 {
 	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
 	{
-		WindowManagerInterop.SetRootElement(_rootVisual.HtmlId);
+		WindowManagerInterop.SetRootElement(rootVisual.HtmlId);
 	}
 
-	private void UpdateRootAttributes()
+	private void UpdateRootAttributes(UIElement rootElement)
 	{
-		if (_privateRootElement is null)
+		if (rootElement is null)
 		{
 			throw new InvalidOperationException("Private window root is not yet set.");
 		}
 
 		if (FeatureConfiguration.Cursors.UseHandForInteraction)
 		{
-			_privateRootElement.SetAttribute("data-use-hand-cursor-interaction", "true");
+			rootElement.SetAttribute("data-use-hand-cursor-interaction", "true");
 		}
 		else
 		{
-			_privateRootElement.RemoveAttribute("data-use-hand-cursor-interaction");
+			rootElement.RemoveAttribute("data-use-hand-cursor-interaction");
 		}
 	}
 
-	private void LoadRoot()
+	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement)
 	{
 		if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 		{
-			UIElement.LoadingRootElement(_rootVisual);
+			UIElement.LoadingRootElement(rootElement);
 		}
 
+		xamlRoot.InvalidateMeasure();
+		xamlRoot.InvalidateArrange();
 
 		if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 		{
-			UIElement.RootElementLoaded(_rootVisual);
+			UIElement.RootElementLoaded(rootElement);
 		}
 	}
 }
