@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Windows.UI.Composition", Name = "RedirectVisual", IsManualTest = true)]
+	[Sample("Windows.UI.Composition", Name = "RedirectVisual", Description = "Represents a visual that gets its content from another visual.", IsManualTest = true)]
 	public sealed partial class RedirectVisualTests : UserControl
 	{
 		public RedirectVisualTests()

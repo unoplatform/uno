@@ -11,13 +11,17 @@
 			 d:DesignWidth="400">
 
 	<StackPanel Orientation="Vertical" Spacing="20" VerticalAlignment="Top" HorizontalAlignment="Left">
-		<StackPanel Orientation="Horizontal" Spacing="20">
+		<StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
+			<TextBlock Text="Source" FontSize="27" Width="200" FontWeight="Light" TextAlignment="Center"/>
+			<TextBlock Text="Visual Surface" FontSize="27" Width="200" FontWeight="Light" TextAlignment="Center"/>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
 			<winui:AnimatedVisualPlayer x:Name="player0" AutoPlay="True" Width="200" Height="200">
 				<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/acrobat.json" />
 			</winui:AnimatedVisualPlayer>
 			<Canvas x:Name="canvas" Width="200" Height="200"/>
 		</StackPanel>
-		<StackPanel Orientation="Horizontal" Spacing="20">
+		<StackPanel Orientation="Horizontal" Spacing="20" HorizontalAlignment="Center">
 			<winui:AnimatedVisualPlayer x:Name="player" AutoPlay="True" Width="200" Height="200">
 				<lottie:LottieVisualSource UriSource="ms-appx:///Assets/Animations/squirrel.json" />
 			</winui:AnimatedVisualPlayer>

@@ -19,7 +19,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Composition
 {
-	[Sample("Windows.UI.Composition", Name = "CompositionVisualSurface", IsManualTest = true)]
+	[Sample("Windows.UI.Composition", Name = "CompositionVisualSurface", Description = "Represents a visual tree as an ICompositionSurface that can be used to paint a Visual using a CompositionBrush.", IsManualTest = true)]
 	public sealed partial class VisualSurfaceTests : UserControl
 	{
 		public VisualSurfaceTests()
