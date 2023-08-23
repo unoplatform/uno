@@ -58,7 +58,7 @@ namespace Microsoft.UI.Xaml
 		internal static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Microsoft.UI.Xaml.Application.Current;
-			var window = Microsoft.UI.Xaml.Window.Current;
+			var window = Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>
@@ -109,7 +109,10 @@ namespace Microsoft.UI.Xaml
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
 				// Force init
-				Window.Current.ToString();
+#if !HAS_UNO_WINUI
+				// Force init
+				Window.CurrentSafe?.ToString();
+#endif
 
 				var arguments = WindowManagerInterop.BeforeLaunch();
 

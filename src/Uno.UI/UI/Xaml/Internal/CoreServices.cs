@@ -56,7 +56,7 @@ namespace Uno.UI.Xaml.Core
 			_mainVisualTree = null;
 		}
 
-		internal void PutCoreWindowVisualRoot(DependencyObject? dependencyObject)
+		internal void PutCoreWindowVisualRoot(DependencyObject? dependencyObject, ScrollViewer? rootScrollViewer)
 		{
 			ResetCoreWindowVisualTree();
 
@@ -68,7 +68,7 @@ namespace Uno.UI.Xaml.Core
 			if (dependencyObject != null)
 			{
 				var root = dependencyObject as UIElement;
-				_mainVisualTree!.SetPublicRootVisual(root, rootScrollViewer: null, rootContentPresenter: null);
+				_mainVisualTree!.SetPublicRootVisual(root, rootScrollViewer, rootContentPresenter: null);
 			}
 		}
 

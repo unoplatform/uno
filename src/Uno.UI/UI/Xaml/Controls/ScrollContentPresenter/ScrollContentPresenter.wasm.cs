@@ -281,7 +281,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// The scroll to was not processed by the native SCP, we need to re-request ScrollTo a bit later.
 				// This happen has soon as the native SCP element is not in a valid state (like un-arranged or hidden).
 
-				if (_rootEltUsedToProcessScrollTo is null && Window.Current.RootElement is FrameworkElement rootFwElt)
+				if (_rootEltUsedToProcessScrollTo is null && Window.IShouldntUseCurrentWindow.RootElement is FrameworkElement rootFwElt)
 				{
 					_rootEltUsedToProcessScrollTo = rootFwElt;
 					rootFwElt.LayoutUpdated += TryProcessScrollTo;
