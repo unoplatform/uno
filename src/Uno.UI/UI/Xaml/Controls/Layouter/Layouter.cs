@@ -108,6 +108,8 @@ namespace Windows.UI.Xaml.Controls
 					.AtMost(maxSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
+				desiredSize = new Size(Math.Round(desiredSize.Width, MidpointRounding.AwayFromZero), Math.Round(desiredSize.Height, MidpointRounding.AwayFromZero));
+
 				LayoutInformation.SetAvailableSize(Panel, availableSize);
 
 				_logDebug?.Trace($"{this}.MeasureOverride(availableSize={availableSize}); frameworkAvailableSize={frameworkAvailableSize}; desiredSize={desiredSize}");
