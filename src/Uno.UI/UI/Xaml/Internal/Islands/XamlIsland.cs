@@ -29,12 +29,7 @@ internal partial class XamlIsland : Panel
 
 			SetPublicRootVisual(value, null, null);
 
-			UIElement.LoadingRootElement(_contentRoot.VisualTree.RootElement!);
-
-			_contentRoot.VisualTree.RootElement!.XamlRoot!.InvalidateMeasure();
-			_contentRoot.VisualTree.RootElement!.XamlRoot!.InvalidateArrange();
-
-			UIElement.RootElementLoaded(_contentRoot.VisualTree.RootElement!);
+			ContentManager.TryLoadRootVisual(XamlRoot!);
 		}
 	}
 
