@@ -37,7 +37,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+
+#if !__WASM__
 		private Hyperlink _hyperlinkOver;
+#endif
+
 		private Action _foregroundChanged;
 
 		private Run _reusableRun;
