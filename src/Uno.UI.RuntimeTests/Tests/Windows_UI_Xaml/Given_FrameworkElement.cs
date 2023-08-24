@@ -36,7 +36,7 @@ using _View = Windows.UI.Xaml.UIElement;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	public class Given_FrameworkElement
+	public partial class Given_FrameworkElement
 	{
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
@@ -331,9 +331,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 #endif
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
+		public partial class MyGrid : Grid
+		{
+			public Size AvailableSizeUsedForMeasure { get; private set; }
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				AvailableSizeUsedForMeasure = availableSize;
+				return base.MeasureOverride(availableSize);
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -343,19 +350,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			Border content = null;
 			ContentControl contentCtl = null;
-			Grid grid = null;
+			MyGrid grid = null;
 
 			content = new Border { Width = 100, Height = 15 };
 
 			contentCtl = new ContentControl { MinWidth = 110, Content = content };
 
-			grid = new Grid() { MinWidth = 120 };
+			grid = new MyGrid() { MinWidth = 120 };
 
 			grid.Children.Add(contentCtl);
 
 			grid.Measure(new Size(50, 50));
 
+			// This is matching Windows and is important to keep the behavior of this test like this.
+			Assert.AreEqual(new Size(120, 50), grid.AvailableSizeUsedForMeasure);
+
+#if __SKIA__
+			// https://github.com/unoplatform/uno/issues/7271
+			// This assert is NOT correct. The correct size is 50, 15
+			// It's happening because ContentControl is measuring incorrectly because GetFirstChild is returning null instead of the Border.
+			Assert.AreEqual(new Size(50, 0), grid.DesiredSize);
+#else
 			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
+#endif
+
 #if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
 			Assert.AreEqual(new Size(100, 15), content.DesiredSize);
