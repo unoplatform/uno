@@ -15,22 +15,33 @@ namespace Uno.UI.Xaml.Core;
 
 internal partial class InputManager : IInputInjectorTarget
 {
-	private ContentRoot _contentRoot;
-
 	public InputManager(ContentRoot contentRoot)
 	{
-		_contentRoot = contentRoot;
+		ContentRoot = contentRoot;
 
-		ConstructManagedPointers();
+		ConstructKeyboardManager();
+
+		ConstructPointerManager();
 	}
-	partial void ConstructManagedPointers();
+
+	partial void ConstructKeyboardManager();
+
+	partial void ConstructPointerManager();
 
 	/// <summary>
 	/// Initialize the InputManager.
 	/// </summary>
-	internal void Initialize(object host) => InitializeManagedPointers(host);
+	internal void Initialize(object host)
+	{
+		InitializeKeyboard(host);
+		InitializeManagedPointers(host);
+	}
+
+	partial void InitializeKeyboard(object host);
 
 	partial void InitializeManagedPointers(object host);
+
+	internal ContentRoot ContentRoot { get; }
 
 	//TODO Uno: Set along with user input - this needs to be adjusted soon
 	internal InputDeviceType LastInputDeviceType { get; set; } = InputDeviceType.None;
