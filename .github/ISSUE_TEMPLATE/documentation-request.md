@@ -30,7 +30,6 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged, difficul
   - [ ] WPF
   - [ ] GTK (Linux)
   - [ ] Linux Framebuffer
-  - [ ] Tizen
 - [ ] Windows
 
 ## Anything else we need to know?
