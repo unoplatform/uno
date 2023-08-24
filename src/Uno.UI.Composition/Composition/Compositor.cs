@@ -146,6 +146,9 @@ namespace Windows.UI.Composition
 		public CompositionMaskBrush CreateMaskBrush()
 			=> new CompositionMaskBrush(this);
 
+		public CompositionNineGridBrush CreateNineGridBrush()
+			=> new CompositionNineGridBrush(this);
+
 		internal void InvalidateRender() => InvalidateRenderPartial();
 
 		partial void InvalidateRenderPartial();

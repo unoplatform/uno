@@ -220,13 +220,7 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateMaskBrush()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionNineGridBrush CreateNineGridBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionNineGridBrush Compositor.CreateNineGridBrush() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionNineGridBrush%20Compositor.CreateNineGridBrush%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateNineGridBrush()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.PointLight CreatePointLight()
