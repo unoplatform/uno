@@ -191,34 +191,12 @@ namespace Windows.UI.Xaml.Shapes
 				return pathBounds;
 			}
 
-			float minX;
-			float minY;
-			float maxX;
-			float maxY;
+			float minX = float.MaxValue;
+			float minY = float.MaxValue;
+			float maxX = float.MinValue;
+			float maxY = float.MinValue;
 
-			if (approximatedPoints[1] < approximatedPoints[4])
-			{
-				minX = approximatedPoints[1];
-				maxX = approximatedPoints[4];
-			}
-			else
-			{
-				maxX = approximatedPoints[1];
-				minX = approximatedPoints[4];
-			}
-
-			if (approximatedPoints[2] < approximatedPoints[5])
-			{
-				minY = approximatedPoints[2];
-				maxY = approximatedPoints[5];
-			}
-			else
-			{
-				maxY = approximatedPoints[2];
-				minY = approximatedPoints[5];
-			}
-
-			for (int i = 6; i < approximatedPoints.Length; i += 3)
+			for (int i = 0; i < approximatedPoints.Length; i += 3)
 			{
 				var currentX = approximatedPoints[i + 1];
 				var currentY = approximatedPoints[i + 2];
