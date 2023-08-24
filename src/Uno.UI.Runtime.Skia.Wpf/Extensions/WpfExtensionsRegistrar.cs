@@ -19,6 +19,7 @@ using Windows.Networking.Connectivity;
 using Windows.Storage.Pickers;
 using Windows.System.Profile.Internal;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Runtime.Skia.Wpf.Input;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Extensions;
 
@@ -34,6 +35,7 @@ internal static class WpfExtensionsRegistrar
 		}
 
 		ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => new CoreApplicationExtension(o));
+		ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => new WpfKeyboardInputSource(o));
 		ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new WpfCorePointerInputSource(o));
 		ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new WpfCoreWindowExtension(o));
 		ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new WpfApplicationViewExtension(o));
