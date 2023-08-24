@@ -35,7 +35,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public TreeViewList()
 		{
 			ListViewModel = new TreeViewViewModel();
-
+			IsCustomReorder = true;
 			DragItemsStarting += OnDragItemsStarting;
 			DragItemsCompleted += OnDragItemsCompleted;
 			ContainerContentChanging += OnContainerContentChanging;
@@ -43,7 +43,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal TreeViewViewModel ListViewModel { get; private set; }
 
-		internal TreeViewNode DraggedTreeViewNode { get; private set; }
+		internal TreeViewNode DraggedTreeViewNode
+		{
+			get
+			{
+				return m_draggedTreeViewNode;
+			}
+		}
 
 		private void OnDragItemsStarting(object sender, DragItemsStartingEventArgs args)
 		{
@@ -194,7 +200,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (!args.Handled)
 			{
 				args.AcceptedOperation = DataPackageOperation.None;
-				IInsertionPanel insertionPanel = (IInsertionPanel)ItemsPanelRoot;
+				IInsertionPanel insertionPanel = ItemsPanelRoot as IInsertionPanel;
 
 				// reorder is only supported with panels that implement IInsertionPanel
 				if (insertionPanel != null && m_draggedTreeViewNode != null && CanReorderItems)
