@@ -105,7 +105,8 @@ namespace Windows.UI.Xaml.Controls
 				frameworkAvailableSize = frameworkAvailableSize
 					.Subtract(marginSize)
 					.AtLeastZero()
-					.AtMost(maxSize);
+					.AtMost(maxSize)
+					.AtLeast(minSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
