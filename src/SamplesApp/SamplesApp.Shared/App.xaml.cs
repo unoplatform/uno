@@ -324,7 +324,6 @@ namespace SamplesApp
 
 				// Place the frame in the current Window
 				Windows.UI.Xaml.Window.Current.Content = rootFrame;
-				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
 			if (rootFrame.Content == null)
