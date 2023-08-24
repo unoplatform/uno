@@ -21,6 +21,6 @@ namespace Windows.UI.Composition
 
 		public partial bool AreEffectsFast();
 
-		TypedEventHandler<CompositionCapabilities, object>? Changed;
+		public TypedEventHandler<CompositionCapabilities, object>? Changed;
 	}
 }
