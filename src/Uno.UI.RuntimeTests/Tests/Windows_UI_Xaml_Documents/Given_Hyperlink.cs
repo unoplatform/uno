@@ -52,8 +52,8 @@ public class Given_Hyperlink
 #endif
 	[DataRow(true, false, "#FF0078D7", "#99FFFFFF")]
 	[DataRow(false, false, "#FF0078D7", "#99000000")]
-	[DataRow(true, true, "#FFA6D8FF", "#99FFFFFF")]
-	[DataRow(false, true, "#FF004275", "#99000000")]
+	[DataRow(true, true, "#FFA6D8FF", "#FFA6D8FF")]
+	[DataRow(false, true, "#FF004275", "#FF002642")]
 	public async Task TestHoveredHyperlink(bool useDark, bool useFluent, string expectedUnhoveredColorCode, string expectedHoveredColorCode)
 	{
 		var expectedUnhoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedUnhoveredColorCode);
@@ -101,8 +101,8 @@ public class Given_Hyperlink
     #endif
     	[DataRow(true, false, "#FF0078D7", "#99FFFFFF", "#66FFFFFF")]
     	[DataRow(false, false, "#FF0078D7", "#99000000", "#66000000")]
-    	[DataRow(true, true, "#FFA6D8FF", "#99FFFFFF", "#66FFFFFF")]
-    	[DataRow(false, true, "#FF004275", "#99000000", "#66000000")]
+    	[DataRow(true, true, "#FFA6D8FF", "#FFA6D8FF", "#FF76B9ED")]
+    	[DataRow(false, true, "#FF004275", "#FF002642", "#FF005A9E")]
     	public async Task TestPressedHyperlink(bool useDark, bool useFluent, string expectedUnhoveredColorCode, string expectedHoveredColorCode, string expectedPressedColorCode)
     	{
     		var expectedUnhoveredColor = (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedUnhoveredColorCode);

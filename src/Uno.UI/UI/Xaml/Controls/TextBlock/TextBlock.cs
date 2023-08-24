@@ -807,7 +807,7 @@ namespace Windows.UI.Xaml.Controls
 #else
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
-			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			if (sender is not TextBlock { HasHyperlink: true } that)
 			{
 				return;
 			}
@@ -829,7 +829,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			hyperlink.SetPointerPressed(e.Pointer, that.Resources.ThemeDictionaries);
+			hyperlink.SetPointerPressed(e.Pointer);
 			e.Handled = true;
 			that.CompleteGesture(); // Make sure to mute Tapped
 		};
@@ -869,7 +869,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly PointerEventHandler OnPointerMoved = (sender, e) =>
 		{
-			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			if (sender is not TextBlock { HasHyperlink: true } that)
 			{
 				return;
 			}
@@ -881,13 +881,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
 				that._hyperlinkOver = hyperlink;
-				hyperlink?.SetPointerOver(e.Pointer, that.Resources.ThemeDictionaries);
+				hyperlink?.SetPointerOver(e.Pointer);
 			}
 		};
 
 		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
 		{
-			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			if (sender is not TextBlock { HasHyperlink: true } that)
 			{
 				return;
 			}
@@ -899,12 +899,12 @@ namespace Windows.UI.Xaml.Controls
 			var hyperlink = that.FindHyperlinkAt(point.Position);
 
 			that._hyperlinkOver = hyperlink;
-			hyperlink?.SetPointerOver(e.Pointer, that.Resources.ThemeDictionaries);
+			hyperlink?.SetPointerOver(e.Pointer);
 		};
 
 		private static readonly PointerEventHandler OnPointerExit = (sender, e) =>
 		{
-			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			if (sender is not TextBlock { HasHyperlink: true } that)
 			{
 				return;
 			}
@@ -935,6 +935,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
+			Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
 				if (HasHyperlink)
@@ -952,6 +954,7 @@ namespace Windows.UI.Xaml.Controls
 						hyperlink.hyperlink.AbortAllPointerState();
 					}
 
+					_hyperlinkOver = null;
 					_hyperlinks.Clear();
 				}
 
@@ -960,6 +963,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var previousHasHyperlinks = HasHyperlink;
 			var previousHyperLinks = _hyperlinks.Select(h => h.hyperlink).ToList();
+			_hyperlinkOver = null;
 			_hyperlinks.Clear();
 
 			var start = 0;
@@ -1011,7 +1015,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				var hasHyperlink = _hyperlinks.Any();
+				var hasHyperlink = _hyperlinks.Count > 0;
 
 				Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
 

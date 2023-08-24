@@ -152,18 +152,18 @@ namespace Windows.UI.Xaml.Documents
 		#endregion
 
 		#region Hover
-		private (Pointer pointer, IDictionary<object, object> themes) _hoveredState;
-		internal void SetPointerOver(Pointer pointer, IDictionary<object, object> themeDictionary)
+		private Pointer _hoveredState;
+		internal void SetPointerOver(Pointer pointer)
 		{
-			_hoveredState = (pointer, themeDictionary);
+			_hoveredState = pointer;
 			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerOver(Pointer pointer)
 		{
-			if (_hoveredState.pointer?.Equals(pointer) ?? false)
+			if (_hoveredState?.Equals(pointer) ?? false)
 			{
-				_hoveredState = (null, null);
+				_hoveredState = null;
 				SetCurrentForeground();
 				return true;
 			}
@@ -175,20 +175,20 @@ namespace Windows.UI.Xaml.Documents
 		#endregion
 
 		#region Click
-		private (Pointer pointer, IDictionary<object, object> themes) _pressedState;
-		internal void SetPointerPressed(Pointer pointer, IDictionary<object, object> themeDictionary)
+		private Pointer _pressedState;
+		internal void SetPointerPressed(Pointer pointer)
 		{
-			_pressedState = (pointer, themeDictionary);
+			_pressedState = pointer;
 			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerPressed(Pointer pointer)
 		{
-			if (_pressedState.pointer?.Equals(pointer) ?? false)
+			if (_pressedState?.Equals(pointer) ?? false)
 			{
 				OnClick();
 
-				_pressedState = (null, null);
+				_pressedState = null;
 				SetCurrentForeground();
 				return true;
 			}
@@ -200,9 +200,9 @@ namespace Windows.UI.Xaml.Documents
 
 		internal bool AbortPointerPressed(Pointer pointer)
 		{
-			if (_pressedState.pointer?.Equals(pointer) ?? false)
+			if (_pressedState?.Equals(pointer) ?? false)
 			{
-				_pressedState = (null, null);
+				_pressedState = null;
 				SetCurrentForeground();
 				return true;
 			}
@@ -214,8 +214,8 @@ namespace Windows.UI.Xaml.Documents
 
 		internal void AbortAllPointerState()
 		{
-			_pressedState = (null, null);
-			_hoveredState = (null, null);
+			_pressedState = null;
+			_hoveredState = null;
 			SetCurrentForeground();
 		}
 
@@ -234,22 +234,19 @@ namespace Windows.UI.Xaml.Documents
 
 		private void SetCurrentForeground()
 		{
-			if (_pressedState.pointer is { }
-				&& _pressedState.themes.UnoGetValueOrDefault(HyperlinkForegroundPressedKey,null) is Brush brush)
+			if (_pressedState is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
 			{
-				this.SetValue(ForegroundProperty, brush, DependencyPropertyValuePrecedences.Animations);
+				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else if (_hoveredState is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush))
+			{
+				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
 			}
 			else
 			{
-				if (_hoveredState.pointer is { }
-					&& _hoveredState.themes.UnoGetValueOrDefault(HyperlinkForegroundPointerOverKey,null) is Brush brush2)
-				{
-					this.SetValue(ForegroundProperty, brush2, DependencyPropertyValuePrecedences.Animations);
-				}
-				else
-				{
-					this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
-				}
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
 			}
 		}
 
