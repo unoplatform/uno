@@ -111,6 +111,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// TODO: Windows does this rounding, but it fails VerifySmallWidthAndHeightDoNotCrash test.
 				// We need to figure it out and fix that.
+				// Tracking issue: https://github.com/unoplatform/uno/issues/13380
 				//desiredSize = new Size(Math.Round(desiredSize.Width, MidpointRounding.AwayFromZero), Math.Round(desiredSize.Height, MidpointRounding.AwayFromZero));
 
 				LayoutInformation.SetAvailableSize(Panel, availableSize);

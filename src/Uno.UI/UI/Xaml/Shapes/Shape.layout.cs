@@ -231,7 +231,7 @@ namespace Windows.UI.Xaml.Shapes
 			var stretch = Stretch;
 			var stroke = Stroke;
 			var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
-			var pathBounds = GetPathBoundingBox(path); // The BoundingBox does also contains bezier anchors even if out of geometry
+			var pathBounds = GetPathBoundingBox(path); // The BoundingBox shouldn't include the control points.
 			var pathSize = (Size)pathBounds.Size;
 
 			if (NativeSingle.IsInfinity(pathBounds.Right) || NativeSingle.IsInfinity(pathBounds.Bottom))
@@ -368,7 +368,7 @@ namespace Windows.UI.Xaml.Shapes
 			var stroke = Stroke;
 			var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
 			var halfStrokeThickness = strokeThickness / 2.0;
-			var pathBounds = GetPathBoundingBox(path); // The BoundingBox does also contains bezier anchors even if out of geometry
+			var pathBounds = GetPathBoundingBox(path); // The BoundingBox shouldn't include the control points.
 			var pathSize = (Size)pathBounds.Size;
 
 			if (NativeSingle.IsInfinity(pathBounds.Right) || NativeSingle.IsInfinity(pathBounds.Bottom))
