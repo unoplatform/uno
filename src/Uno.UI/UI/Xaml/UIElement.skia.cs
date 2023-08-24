@@ -38,7 +38,6 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
-			InitializeKeyboard();
 
 			UpdateHitTest();
 		}
@@ -57,8 +56,6 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(true));
 
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
-
-		partial void InitializeKeyboard();
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
