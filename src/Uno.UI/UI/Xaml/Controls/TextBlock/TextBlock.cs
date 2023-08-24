@@ -977,18 +977,6 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualWidth() => DesiredSize.Width;
 		private protected override double GetActualHeight() => DesiredSize.Height;
 
-#if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
-		protected override Size MeasureOverride(Size size)
-		{
-			// On Windows, TextBlock.MeasureOverride always return integer measurement.
-			// The platform-specific measurement can contain floating-point numbers, and hence we need to ceil.
-			// Note that FrameworkElement will round what is being returned here when it sets DesiredSize, and so the ceiling here is necessary.
-			// Otherwise, the text may be clipped or wrapped when it shouldn't.
-			var platformMeasure = PlatformMeasure(size);
-			return new Size(Math.Ceiling(platformMeasure.Width), Math.Ceiling(platformMeasure.Height));
-		}
-#endif
-
 		internal override void UpdateThemeBindings(Data.ResourceUpdateReason updateReason)
 		{
 			base.UpdateThemeBindings(updateReason);
