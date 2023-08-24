@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 using ImageBrush = Windows.UI.Xaml.Media.ImageBrush;
 
@@ -90,6 +91,23 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 5);
 			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 5);
 			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 5);
+		}
+
+		[TestMethod]
+		public async Task When_ImageBrush_Ellipse()
+		{
+			var ellipse = new Ellipse()
+			{
+				Fill = new ImageBrush()
+				{
+					ImageSource = new BitmapImage(new Uri("ms-appx:///Assets/BlackRedRect.png"))
+				},
+				Width = 100,
+				Height = 100
+			};
+
+			WindowHelper.WindowContent = ellipse;
+			await Task.Delay(5000);
 		}
 	}
 }
