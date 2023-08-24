@@ -107,7 +107,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			};
 
 			WindowHelper.WindowContent = ellipse;
-			await Task.Delay(5000);
+			var bitmap = await UITestHelper.ScreenShot(ellipse);
+			ImageAssert.HasColorAt(bitmap, new Windows.Foundation.Point(ellipse.Width * 0.1, ellipse.Height * 0.5), "#000000");
+			ImageAssert.HasColorAt(bitmap, new Windows.Foundation.Point(ellipse.Width * 0.9, ellipse.Height * 0.5), "#FF0000");
 		}
 	}
 }
