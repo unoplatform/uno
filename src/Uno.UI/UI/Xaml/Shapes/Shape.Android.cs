@@ -166,11 +166,73 @@ namespace Windows.UI.Xaml.Shapes
 
 		private Windows.Foundation.Rect GetPathBoundingBox(Android.Graphics.Path path)
 		{
-			//There is currently a bug here, Android's ComputeBounds includes the control points of a Bezier path
-			//which can result in improper positioning when aligning paths with Bezier segments.
-			var pathBounds = new RectF();
-			path.ComputeBounds(pathBounds, true);
-			return pathBounds;
+			// This method should return the bounding box, *not including* control points.
+			// On Android, there doesn't seem to be an easy built-in way to do that, since ComputeBounds will include control points.
+			// There is currently no "ComputeTightBounds" method.
+			// There are two ways to go:
+			// 1. Compute the tight bounds ourselves.
+			// 2. Use the native Approximate method to approximate the path into straight lines.
+			// We go with 2 for now, but this can be revisited later if we found that 1 has more benefits.
+
+			// From documentation (https://developer.android.com/reference/android/graphics/Path#approximate(float)):
+			// Approximate the Path with a series of line segments. This returns float[] with the array containing point components. There are three components for each point, in order:
+			// - Fraction along the length of the path that the point resides
+			// - The x coordinate of the point
+			// - The y coordinate of the point
+
+			// So each point has three elements in the array.
+			var approximatedPoints = path.Approximate(0.5f);
+			if (approximatedPoints.Length < 6)
+			{
+				// Less than two points is quite meaningless and probably shouldn't happen unless the path is empty.
+				// Fallback to ComputeBounds.
+				var pathBounds = new RectF();
+				path.ComputeBounds(pathBounds, true);
+				return pathBounds;
+			}
+
+			float minX;
+			float minY;
+			float maxX;
+			float maxY;
+
+			if (approximatedPoints[1] < approximatedPoints[4])
+			{
+				minX = approximatedPoints[1];
+				maxX = approximatedPoints[4];
+			}
+			else
+			{
+				maxX = approximatedPoints[1];
+				minX = approximatedPoints[4];
+			}
+
+			if (approximatedPoints[2] < approximatedPoints[5])
+			{
+				minY = approximatedPoints[2];
+				maxY = approximatedPoints[5];
+			}
+			else
+			{
+				maxY = approximatedPoints[2];
+				minY = approximatedPoints[5];
+			}
+
+			for (int i = 6; i < approximatedPoints.Length; i += 3)
+			{
+				var currentX = approximatedPoints[i + 1];
+				var currentY = approximatedPoints[i + 2];
+				minX = Math.Min(minX, currentX);
+				maxX = Math.Max(maxX, currentX);
+				minY = Math.Min(minY, currentY);
+				maxY = Math.Max(maxY, currentY);
+			}
+
+			return new Foundation.Rect(
+				x: minX,
+				y: minY,
+				width: maxX - minX,
+				height: maxY - minY);
 		}
 
 		protected Android.Graphics.Path GetOrCreatePath()
