@@ -105,7 +105,8 @@ namespace Windows.UI.Xaml.Controls
 				frameworkAvailableSize = frameworkAvailableSize
 					.Subtract(marginSize)
 					.AtLeastZero()
-					.AtMost(maxSize);
+					.AtMost(maxSize)
+					.AtLeast(minSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 				LayoutInformation.SetAvailableSize(Panel, availableSize);
@@ -129,8 +130,9 @@ namespace Windows.UI.Xaml.Controls
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
-					.AtMost(frameworkAvailableSize)
 					.Add(marginSize)
+					// Making sure after adding margins that clipped DesiredSize is not bigger than the AvailableSize
+					.AtMost(availableSize)
 					// Margin may be negative
 					.AtLeastZero();
 
