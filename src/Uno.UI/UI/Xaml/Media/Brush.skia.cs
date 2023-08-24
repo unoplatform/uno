@@ -142,7 +142,13 @@ namespace Windows.UI.Xaml.Media
 		{
 			var disposables = new CompositeDisposable();
 
-			var surfaceBrush = compositor.CreateSurfaceBrush();
+			var surfaceBrush = CreateCompositionImageBrush(brush, compositor);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+					ImageBrush.StretchProperty,
+					(s, e) => surfaceBrush.Stretch = (CompositionStretch)e.NewValue
+				)
+				.DisposeWith(disposables);
 
 			Action onInvalidateRender = () =>
 			{
@@ -154,8 +160,10 @@ namespace Windows.UI.Xaml.Media
 
 			onInvalidateRender();
 			brush.InvalidateRender += onInvalidateRender;
+			disposables.Add(new DisposableAction(() => brush.InvalidateRender -= onInvalidateRender));
 			brushSetter(surfaceBrush);
-			return new DisposableAction(() => brush.InvalidateRender -= onInvalidateRender);
+
+			return disposables;
 		}
 
 		private static IDisposable AssignAndObserveRadialGradientBrush(RadialGradientBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
@@ -259,6 +267,14 @@ namespace Windows.UI.Xaml.Media
 			compositionBrush.MappingMode = ConvertBrushMappingMode(gradientBrush.MappingMode);
 			ConvertGradientColorStops(compositor, compositionBrush, gradientBrush.GradientStops, gradientBrush.Opacity);
 
+			return compositionBrush;
+		}
+
+		private static CompositionSurfaceBrush CreateCompositionImageBrush(ImageBrush imageBrush, Compositor compositor)
+		{
+			var compositionBrush = compositor.CreateSurfaceBrush();
+			compositionBrush.Stretch = (CompositionStretch)imageBrush.Stretch;
+			// TODO: More properties should be implemented later.
 			return compositionBrush;
 		}
 

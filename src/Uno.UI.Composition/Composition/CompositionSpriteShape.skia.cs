@@ -1,5 +1,6 @@
 #nullable enable
 
+using System.Numerics;
 using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Composition;
