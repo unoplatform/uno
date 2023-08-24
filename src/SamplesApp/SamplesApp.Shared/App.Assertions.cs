@@ -5,11 +5,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
-using Windows.Storage;
-using Windows.UI.Xaml.Controls;
-#if HAS_UNO
-using Uno.Foundation.Extensibility;
-#endif
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
