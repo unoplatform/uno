@@ -8,9 +8,13 @@ using System.Runtime.Intrinsics.Arm;
 
 namespace Windows.UI.Composition
 {
-	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush
+	public partial class CompositionSurfaceBrush : CompositionBrush, IOnlineBrush, ISizedBrush
 	{
 		bool IOnlineBrush.IsOnline => Surface is ISkiaSurface skiaSurface;
+
+		bool ISizedBrush.IsSized => true;
+
+		Vector2? ISizedBrush.Size => Surface is SkiaCompositionSurface scs && scs.Image is not null ? new(scs.Image.Width, scs.Image.Height) : (Surface is ISkiaSurface skiaSurface && skiaSurface.Surface is not null ? new((float)skiaSurface.Surface.Canvas.DeviceClipBounds.Width, (float)skiaSurface.Surface.Canvas.DeviceClipBounds.Height) : null);
 
 		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{
@@ -30,6 +34,9 @@ namespace Windows.UI.Composition
 				{
 					fillPaint.Shader = skiaSurface.Surface.Snapshot().ToShader(SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, TransformMatrix.ToSKMatrix());
 					fillPaint.IsAntialias = true;
+					fillPaint.FilterQuality = SKFilterQuality.High;
+					fillPaint.IsAutohinted = true;
+					fillPaint.IsDither = true;
 				}
 				else
 					fillPaint.Shader = null;

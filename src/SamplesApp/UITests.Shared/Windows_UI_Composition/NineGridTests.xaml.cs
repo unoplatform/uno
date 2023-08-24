@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -42,9 +43,26 @@ namespace UITests.Shared.Windows_UI_Composition
 
 			var spriteVisual = compositor.CreateSpriteVisual();
 			spriteVisual.Brush = nineGridBrush;
-			spriteVisual.Size = new(100, 100);
+			spriteVisual.Size = new(200, 200);
+
+			var brush2 = compositor.CreateColorBrush(Colors.Red);
+
+			var spriteVisual1 = compositor.CreateSpriteVisual();
+			spriteVisual1.Brush = brush2;
+			spriteVisual1.Size = new(200, 200);
+
+			var nineGridBrush2 = compositor.CreateNineGridBrush();
+			nineGridBrush2.Source = brush2;
+			nineGridBrush2.IsCenterHollow = true;
+			nineGridBrush2.SetInsets(20);
+
+			var spriteVisual2 = compositor.CreateSpriteVisual();
+			spriteVisual2.Brush = nineGridBrush2;
+			spriteVisual2.Size = new(200, 200);
 
 			ElementCompositionPreview.SetElementChildVisual(canvas, spriteVisual);
+			ElementCompositionPreview.SetElementChildVisual(canvas1, spriteVisual1);
+			ElementCompositionPreview.SetElementChildVisual(canvas2, spriteVisual2);
 		}
 	}
 }

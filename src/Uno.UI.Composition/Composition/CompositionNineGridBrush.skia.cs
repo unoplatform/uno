@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using SkiaSharp;
@@ -15,7 +16,7 @@ namespace Windows.UI.Composition
 		private SKPaint _sourcePaint = new SKPaint() { IsAntialias = true };
 		private SKImage? _sourceImage;
 		private SKSurface? _surface;
-		//private SKPaint? _hollowPaint; // TODO: Implement IsCenterHollow
+		private SKPaint? _filterPaint = new SKPaint() { FilterQuality = SKFilterQuality.High, IsAntialias = true, IsAutohinted = true, IsDither = true };
 		private SKRectI _insetRect;
 
 		bool IOnlineBrush.IsOnline => true; // TODO: `Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline` 
@@ -29,16 +30,22 @@ namespace Windows.UI.Composition
 
 		void IOnlineBrush.Draw(in DrawingSession session, SKRect bounds)
 		{
+			SKRect sourceBounds;
+			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)
+				sourceBounds = new(0, 0, sourceSize.X, sourceSize.Y);
+			else
+				sourceBounds = bounds;
+
 			if ((Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline) || _sourcePaint.Shader is null || _sourceImage is null)
 			{
-				Source?.UpdatePaint(_sourcePaint, bounds);
+				Source?.UpdatePaint(_sourcePaint, sourceBounds);
 
 				if (_surface is null)
-					_surface = SKSurface.Create(new SKImageInfo((int)bounds.Width, (int)bounds.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
+					_surface = SKSurface.Create(new SKImageInfo((int)sourceBounds.Width, (int)sourceBounds.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
 
 				if (_surface is not null)
 				{
-					_surface.Canvas.DrawRect(bounds, _sourcePaint);
+					_surface.Canvas.DrawRect(sourceBounds, _sourcePaint);
 					_surface.Canvas.Flush();
 					_sourceImage?.Dispose();
 					_sourceImage = _surface.Snapshot();
@@ -48,11 +55,14 @@ namespace Windows.UI.Composition
 			if (_sourceImage is not null)
 			{
 				_insetRect.Top = (int)(TopInset * TopInsetScale);
-				_insetRect.Bottom = (int)(bounds.Height - (BottomInset * BottomInsetScale));
-				_insetRect.Right = (int)(bounds.Width - (RightInset * RightInsetScale));
+				_insetRect.Bottom = (int)(sourceBounds.Height - (BottomInset * BottomInsetScale));
+				_insetRect.Right = (int)(sourceBounds.Width - (RightInset * RightInsetScale));
 				_insetRect.Left = (int)(LeftInset * LeftInsetScale);
 
-				session.Surface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds);
+				if (IsCenterHollow)
+					session.Surface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
+
+				session.Surface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
 			}
 		}
 	}
