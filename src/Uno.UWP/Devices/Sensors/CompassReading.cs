@@ -16,7 +16,7 @@ public partial class CompassReading
 
 
 	public double HeadingMagneticNorth { get; }
-	public double HeadingTrueNorth { get; }
+	public double? HeadingTrueNorth { get; }
 
 	public DateTimeOffset Timestamp { get; }
 }

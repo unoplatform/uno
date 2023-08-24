@@ -124,7 +124,7 @@ namespace UITests.Shared.Windows_Devices
 				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					HeadingMagneticNorth = args.Reading.HeadingMagneticNorth;
-					HeadingTrueNorth = args.Reading.HeadingTrueNorth;
+					HeadingTrueNorth = args.Reading.HeadingTrueNorth ?? double.NaN;
 					Timestamp = args.Reading.Timestamp.ToString("R");
 				});
 			}

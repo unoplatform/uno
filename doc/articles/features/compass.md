@@ -26,7 +26,7 @@ uid: Uno.Features.Compass
 
 ### Android
 
-If you are planning to use the `HeadingTrueNorth`, your app must declare `android.permission.ACCESS_FINE_LOCATION` permission, otherwise the value will return `NaN`:
+If you are planning to use the `HeadingTrueNorth`, your app must declare `android.permission.ACCESS_FINE_LOCATION` permission, otherwise the value will return `null`:
 
 ```
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
