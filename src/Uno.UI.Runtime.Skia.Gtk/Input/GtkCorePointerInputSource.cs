@@ -379,7 +379,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX, rootY);
 		var position = new Windows.Foundation.Point(x, y);
-		var modifiers = GtkCoreWindowExtension.GetKeyModifiers(state);
+		var modifiers = GtkKeyboardInputSource.GetKeyModifiers(state);
 		var properties = new PointerPointProperties();
 
 		switch (evtType)
