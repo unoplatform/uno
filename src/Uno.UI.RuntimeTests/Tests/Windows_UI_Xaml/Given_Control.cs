@@ -124,6 +124,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if !__CROSSRUNTIME__
+		[Ignore("We override <Measure|Arrange>Override to include padding in ContentControl which is a superclass of UserControl on Uno")]
+#endif
 		public async Task When_Padding_Set_In_SizeChanged()
 		{
 			var SUT = new UserControl()
