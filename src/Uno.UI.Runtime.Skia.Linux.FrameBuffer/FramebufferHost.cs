@@ -121,13 +121,27 @@ namespace Uno.UI.Runtime.Skia
 						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
 						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
 				}
+
+				// Force intialization of the DisplayInformation
+				DisplayInformation.GetForCurrentView();
+
+				if (_displayInformationExtension is null)
+				{
+					throw new InvalidOperationException("DisplayInformation is not yet initialized");
+				}
+
+				_displayInformationExtension.Renderer = _renderer;
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
+<<<<<<< HEAD
 			_renderer = new Renderer();
 			_displayInformationExtension!.Renderer = _renderer;
+=======
+			_renderer = new Renderer(this);
+>>>>>>> de705fdabf (fix(fb): Adjust initialization for framebuffer host)
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
