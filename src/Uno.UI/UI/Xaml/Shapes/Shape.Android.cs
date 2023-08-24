@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Shapes
 				maxY = Math.Max(maxY, currentY);
 			}
 
-			return new Foundation.Rect(
+			return new Windows.Foundation.Rect(
 				x: minX,
 				y: minY,
 				width: maxX - minX,
