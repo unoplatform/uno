@@ -25,7 +25,7 @@ body:
       required: true
 
   - type: textarea
-    id: enhancement-additional-info
+    id: docs-issue-additional-info
     attributes:
       label: Any feedback?
       description: Feel free to offer any additional feedback that could help us better understand the problem or potential solution
