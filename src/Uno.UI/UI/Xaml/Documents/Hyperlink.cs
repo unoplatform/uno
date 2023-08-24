@@ -152,18 +152,18 @@ namespace Windows.UI.Xaml.Documents
 		#endregion
 
 		#region Hover
-		private Pointer _hoveredState;
+		private Pointer _hoveredPointer;
 		internal void SetPointerOver(Pointer pointer)
 		{
-			_hoveredState = pointer;
+			_hoveredPointer = pointer;
 			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerOver(Pointer pointer)
 		{
-			if (_hoveredState?.Equals(pointer) ?? false)
+			if (_hoveredPointer?.Equals(pointer) ?? false)
 			{
-				_hoveredState = null;
+				_hoveredPointer = null;
 				SetCurrentForeground();
 				return true;
 			}
@@ -175,20 +175,20 @@ namespace Windows.UI.Xaml.Documents
 		#endregion
 
 		#region Click
-		private Pointer _pressedState;
+		private Pointer _pressedPointer;
 		internal void SetPointerPressed(Pointer pointer)
 		{
-			_pressedState = pointer;
+			_pressedPointer = pointer;
 			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerPressed(Pointer pointer)
 		{
-			if (_pressedState?.Equals(pointer) ?? false)
+			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
 				OnClick();
 
-				_pressedState = null;
+				_pressedPointer = null;
 				SetCurrentForeground();
 				return true;
 			}
@@ -200,9 +200,9 @@ namespace Windows.UI.Xaml.Documents
 
 		internal bool AbortPointerPressed(Pointer pointer)
 		{
-			if (_pressedState?.Equals(pointer) ?? false)
+			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
-				_pressedState = null;
+				_pressedPointer = null;
 				SetCurrentForeground();
 				return true;
 			}
@@ -214,8 +214,8 @@ namespace Windows.UI.Xaml.Documents
 
 		internal void AbortAllPointerState()
 		{
-			_pressedState = null;
-			_hoveredState = null;
+			_pressedPointer = null;
+			_hoveredPointer = null;
 			SetCurrentForeground();
 		}
 
@@ -234,12 +234,12 @@ namespace Windows.UI.Xaml.Documents
 
 		private void SetCurrentForeground()
 		{
-			if (_pressedState is { }
+			if (_pressedPointer is { }
 				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
 			{
 				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
 			}
-			else if (_hoveredState is { }
+			else if (_hoveredPointer is { }
 				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush))
 			{
 				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
