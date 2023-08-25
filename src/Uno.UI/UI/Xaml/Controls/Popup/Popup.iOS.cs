@@ -19,36 +19,6 @@ public partial class Popup
 		}
 	}
 
-	partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
-	{
-		if (previousPanel?.Superview != null)
-		{
-			// Remove the current child, if any.
-			previousPanel.Children.Clear();
-
-			previousPanel.RemoveFromSuperview();
-		}
-
-		if (newPanel != null)
-		{
-			if (Child != null)
-			{
-				// Make sure that the child does not find itself without a TemplatedParent
-				if (newPanel.TemplatedParent == null)
-				{
-					newPanel.TemplatedParent = TemplatedParent;
-				}
-
-				RegisterPopupPanelChild();
-			}
-
-			newPanel.Background = GetPanelBackground();
-
-			RegisterPopupPanel();
-			RegisterPopupPanelChild();
-		}
-	}
-
 	private protected override void OnLoaded()
 	{
 		base.OnLoaded();
@@ -96,43 +66,6 @@ public partial class Popup
 	{
 		PopupPanel?.RemoveFromSuperview();
 		UnregisterPopupPanelChild();
-	}
-
-	partial void OnChildChangedPartialNative(UIElement oldChild, UIElement newChild)
-	{
-		if (PopupPanel != null)
-		{
-			if (oldChild != null)
-			{
-				UnregisterPopupPanelChild(oldChild);
-			}
-
-			RegisterPopupPanelChild();
-		}
-	}
-
-	partial void OnIsOpenChangedPartialNative(bool oldIsOpen, bool newIsOpen)
-	{
-		if (newIsOpen)
-		{
-			RegisterPopupPanelChild(force: true);
-		}
-		else
-		{
-			UnregisterPopupPanelChild();
-		}
-
-		UpdateLightDismissLayer(newIsOpen);
-
-		EnsureForward();
-	}
-
-	partial void OnIsLightDismissEnabledChangedPartialNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
-	{
-		if (PopupPanel != null)
-		{
-			PopupPanel.Background = GetPanelBackground();
-		}
 	}
 
 	private void UpdateLightDismissLayer(bool newIsOpen)

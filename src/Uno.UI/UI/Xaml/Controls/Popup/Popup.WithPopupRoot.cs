@@ -1,5 +1,4 @@
-﻿#if __ANDROID__ || __WASM__ || __SKIA__
-using Uno.Extensions;
+﻿using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -13,7 +12,7 @@ namespace Windows.UI.Xaml.Controls.Primitives;
 
 public partial class Popup
 {
-	private readonly SerialDisposable _closePopup = new SerialDisposable();
+	private readonly SerialDisposable _closePopup = new();
 
 #if __ANDROID__
 	private bool _useNativePopup = FeatureConfiguration.Popup.UseNativePopup;
@@ -136,4 +135,3 @@ public partial class Popup
 	partial void OnPopupPanelChangedPartialNative(PopupPanel previousPanel, PopupPanel newPanel);
 #endif
 }
-#endif
