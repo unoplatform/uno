@@ -1586,5 +1586,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endregion
+
+#if __CROSSRUNTIME__ || __MACOS__
+		private static bool _warnedAboutZoomedContentAlignment;
+
+		[NotImplemented]
+		private void UpdateZoomedContentAlignment()
+		{
+			if (_warnedAboutZoomedContentAlignment)
+			{
+				return;
+			}
+
+			_warnedAboutZoomedContentAlignment = true;
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("Zoom-based content alignment is not implemented on this platform.");
+			}
+		}
+#endif
 	}
 }

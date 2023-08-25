@@ -13,13 +13,25 @@ var Uno;
                     return document.getElementById(htmlId.toString()).videoHeight;
                 }
                 static getCurrentPosition(htmlId) {
-                    return document.getElementById(htmlId.toString()).currentTime;
+                    const element = document.getElementById(htmlId);
+                    if (element !== null && element !== undefined) {
+                        return element.currentTime;
+                    }
+                    else {
+                        return 0;
+                    }
                 }
                 static getPaused(htmlId) {
-                    return document.getElementById(htmlId.toString()).paused;
+                    const element = document.getElementById(htmlId);
+                    if (element !== null && element !== undefined) {
+                        return element.paused;
+                    }
                 }
                 static setCurrentPosition(htmlId, currentTime) {
-                    document.getElementById(htmlId.toString()).currentTime = currentTime;
+                    const element = document.getElementById(htmlId);
+                    if (element !== null && element !== undefined) {
+                        element.currentTime = currentTime;
+                    }
                 }
                 static setAttribute(htmlId, name, value) {
                     document.getElementById(htmlId.toString()).setAttribute(name, value);

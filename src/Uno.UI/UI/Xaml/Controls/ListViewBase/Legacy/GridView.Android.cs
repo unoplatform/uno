@@ -90,6 +90,7 @@ namespace Uno.UI.Controls.Legacy
 				typeof(GridView),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((GridView)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);

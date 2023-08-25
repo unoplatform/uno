@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Windows.Input;
 using Windows.UI.Core;
 using Windows.System;
 using Uno.Foundation.Logging;
@@ -24,6 +25,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 					new Windows.UI.Core.KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(args.KeyboardDevice.Modifiers),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)args.SystemKey,
@@ -51,6 +53,7 @@ namespace Uno.UI.Runtime.Skia.Wpf
 					new Windows.UI.Core.KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(args.KeyboardDevice.Modifiers),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = (uint)args.SystemKey,
@@ -61,6 +64,24 @@ namespace Uno.UI.Runtime.Skia.Wpf
 			{
 				Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 			}
+		}
+
+		private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+			if (modifierKeys.HasFlag(ModifierKeys.Shift))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+			if (modifierKeys.HasFlag(ModifierKeys.Control))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+			if (modifierKeys.HasFlag(ModifierKeys.Windows))
+			{
+				modifiers |= VirtualKeyModifiers.Windows;
+			}
+			return modifiers;
 		}
 
 		private VirtualKey ConvertKey(System.Windows.Input.Key key)

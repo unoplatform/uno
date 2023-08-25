@@ -21,7 +21,6 @@ labels: kind/contributor-experience, kind/documentation, triage/untriaged, diffi
   - [ ] WPF
   - [ ] GTK (Linux)
   - [ ] Linux Framebuffer
-  - [ ] Tizen
 - [ ] Windows
 
 

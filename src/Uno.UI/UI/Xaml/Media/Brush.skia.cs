@@ -3,6 +3,7 @@ using System.Numerics;
 using Uno.Disposables;
 using Windows.UI.Composition;
 using Windows.UI;
+using Uno.Extensions;
 using Microsoft.UI.Xaml.Media;
 using System.Collections.Generic;
 using Uno;

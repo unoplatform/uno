@@ -7,7 +7,7 @@ using Uno.UI.XamlHost;
 
 namespace SamplesApp;
 
-sealed public partial class App
+partial class App
 {
 	public App(List<IXamlMetadataProvider> providers)
 	{

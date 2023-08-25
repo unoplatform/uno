@@ -84,10 +84,12 @@ namespace Uno.UI.Controls
 			foreach (UIPress press in presses)
 			{
 				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+				var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
 				var args = new KeyEventArgs(
 					"keyboard",
 					virtualKey,
+					modifiers,
 					new CorePhysicalKeyStatus
 					{
 						ScanCode = (uint)press.Key.KeyCode,
@@ -105,7 +107,7 @@ namespace Uno.UI.Controls
 					{
 						_ownerEvents.RaiseKeyUp(args);
 
-						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 						{
 							CanBubbleNatively = false
 						};
@@ -136,10 +138,12 @@ namespace Uno.UI.Controls
 			foreach (UIPress press in presses)
 			{
 				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+				var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
 				var args = new KeyEventArgs(
 					"keyboard",
 					virtualKey,
+					modifiers,
 					new CorePhysicalKeyStatus
 					{
 						ScanCode = (uint)press.Key.KeyCode,
@@ -157,7 +161,7 @@ namespace Uno.UI.Controls
 					{
 						_ownerEvents.RaiseKeyDown(args);
 
-						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 						{
 							CanBubbleNatively = false
 						};

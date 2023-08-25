@@ -19,7 +19,7 @@ public partial class InjectedInputMouseInfo
 
 	public int DeltaX { get; set; }
 
-	internal PointerEventArgs ToEventArgs(InjectedInputState state)
+	internal PointerEventArgs ToEventArgs(InjectedInputState state, VirtualKeyModifiers modifiers)
 	{
 		var update = default(PointerUpdateKind);
 		var position = state.Position;
@@ -110,6 +110,6 @@ public partial class InjectedInputMouseInfo
 			isInContact: properties.HasPressedButton,
 			properties);
 
-		return new PointerEventArgs(point, default);
+		return new PointerEventArgs(point, modifiers);
 	}
 }

@@ -408,7 +408,7 @@ namespace Windows.UI.Xaml.Media
 			if (element is ScrollViewer sv)
 				TRACE($"- scroll viewer: zoom={sv.ZoomFactor:F2}");
 			if (element.RenderTransform is { } tr)
-				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin)}");
+				TRACE($"- renderTransform: {tr.ToMatrix(element.RenderTransformOrigin, element.ActualSize.ToSize())}");
 
 			// First compute the transformation between the element and its parent coordinate space
 			var matrix = Matrix3x2.Identity;

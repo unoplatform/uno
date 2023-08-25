@@ -44,6 +44,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private int _playlistIndex;
 	private TimeSpan _naturalDuration;
 	private bool _isLoopingEnabled;
+	private bool _isLoopingAllEnabled;
 	private double _playbackRate;
 
 	public MediaPlayerExtension(object owner)
@@ -177,9 +178,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		switch (_owner.Source)
 		{
-			case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
+			case MediaPlaybackList playlist when playlist.Items.Count > 0:
 				SetPlaylistItems(playlist);
-				_uri = _playlistItems[0];
+				if (_playlistItems is not null)
+				{
+					_uri = _playlistItems[0];
+				}
+				else
+				{
+					throw new InvalidOperationException("Playlist Items could not be set");
+				}
 				break;
 
 			case MediaPlaybackItem item:
@@ -190,9 +198,34 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				_uri = source.Uri;
 				break;
 
+
 			default:
 				throw new InvalidOperationException("Unsupported media source type");
 		}
+		ApplyVideoSource();
+		Events?.RaiseSourceChanged();
+
+		// Set the player back to the paused state, so that the
+		// transport controls can be shown properly.
+		// This may need to be changed when the initialization of libVLC
+		// can be taken into account, as well as the media status.
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+	}
+
+	public void ReInitializeSource()
+	{
+		NaturalDuration = TimeSpan.Zero;
+		if (Position != TimeSpan.Zero)
+		{
+			Position = TimeSpan.Zero;
+		}
+
+		if (_owner.Source == null)
+		{
+			return;
+		}
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+		InitializePlayer();
 		ApplyVideoSource();
 		Events?.RaiseSourceChanged();
 
@@ -281,10 +314,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		set
 		{
 			_isLoopingEnabled = value;
-			if (_player is not null)
-			{
-				_player.SetIsLoopingEnabled(value);
-			}
+		}
+	}
+
+	public bool IsLoopingAllEnabled
+	{
+		get => _isLoopingAllEnabled;
+		set
+		{
+			_isLoopingAllEnabled = value;
 		}
 	}
 
@@ -391,6 +429,28 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		{
 			_isPlayRequested = false;
 			_isPlayerPrepared = false;
+		}
+	}
+
+	public void PreviousTrack()
+	{
+		// Play next item in playlist, if any
+		if (_playlistItems != null && _playlistIndex > 0)
+		{
+			_uri = _playlistItems[--_playlistIndex];
+			ReInitializeSource();
+			Play();
+		}
+	}
+
+	public void NextTrack()
+	{
+		// Play next item in playlist, if any
+		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		{
+			_uri = _playlistItems[++_playlistIndex];
+			ReInitializeSource();
+			Play();
 		}
 	}
 }

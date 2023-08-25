@@ -52,13 +52,6 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.ContentThemeTransition),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContentThemeTransition() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ContentThemeTransition", "ContentThemeTransition.ContentThemeTransition()");
-		}
-#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ContentThemeTransition.ContentThemeTransition()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ContentThemeTransition.HorizontalOffset.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ContentThemeTransition.HorizontalOffset.set

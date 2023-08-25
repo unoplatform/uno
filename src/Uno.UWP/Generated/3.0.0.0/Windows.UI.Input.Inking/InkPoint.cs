@@ -60,7 +60,7 @@ namespace Windows.UI.Input.Inking
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public InkPoint(global::Windows.Foundation.Point position, float pressure, float tiltX, float tiltY, ulong timestamp) 
+		public InkPoint(global::Windows.Foundation.Point position, float pressure, float tiltX, float tiltY, ulong timestamp)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPoint", "InkPoint.InkPoint(Point position, float pressure, float tiltX, float tiltY, ulong timestamp)");
 		}
@@ -68,7 +68,7 @@ namespace Windows.UI.Input.Inking
 		// Forced skipping of method Windows.UI.Input.Inking.InkPoint.InkPoint(Windows.Foundation.Point, float, float, float, ulong)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public InkPoint(global::Windows.Foundation.Point position, float pressure) 
+		public InkPoint(global::Windows.Foundation.Point position, float pressure)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkPoint", "InkPoint.InkPoint(Point position, float pressure)");
 		}

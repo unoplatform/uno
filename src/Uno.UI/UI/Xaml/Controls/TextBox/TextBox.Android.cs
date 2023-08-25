@@ -19,6 +19,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Data;
@@ -555,8 +556,8 @@ namespace Windows.UI.Xaml.Controls
 			//We need to force a keypress event on editor action.
 			//the key press event is not triggered if we press the enter key depending on the ime.options
 
-			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter));
-			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter));
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, VirtualKeyHelper.FromModifiers(e.Modifiers)));
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, VirtualKeyHelper.FromModifiers(e.Modifiers)));
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.
 			// Otherwise we return true to allow the focus to change correctly.

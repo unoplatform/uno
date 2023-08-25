@@ -45,6 +45,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(evt.State),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = evt.HardwareKeycode,
@@ -72,6 +73,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 					new KeyEventArgs(
 						"keyboard",
 						virtualKey,
+						GetKeyModifiers(evt.State),
 						new CorePhysicalKeyStatus
 						{
 							ScanCode = evt.HardwareKeycode,

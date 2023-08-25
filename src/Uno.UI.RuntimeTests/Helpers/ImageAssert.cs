@@ -50,19 +50,24 @@ public static partial class ImageAssert
 	public static void HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 	{
 		var bitmap = screenshot;
+		(int x, int y, int diff, Color color) min = (-1, -1, int.MaxValue, default);
 		for (var x = rect.Left; x < rect.Right; x++)
 		{
 			for (var y = rect.Top; y < rect.Bottom; y++)
 			{
 				var pixel = bitmap.GetPixel(x, y);
-				if (AreSameColor(expectedColor, pixel, tolerance, out _))
+				if (AreSameColor(expectedColor, pixel, tolerance, out var diff))
 				{
 					return;
+				}
+				else if (diff < min.diff)
+				{
+					min = (x, y, diff, pixel);
 				}
 			}
 		}
 
-		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
+		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}', but no pixel has this color. The closest pixel found is '{ToArgbCode(min.color)}' at '{min.x},{min.y}' with a (exclusive) difference of {min.diff}.");
 	}
 
 	/// <summary>
@@ -76,9 +81,9 @@ public static partial class ImageAssert
 			for (var y = rect.Top; y < rect.Bottom; y++)
 			{
 				var pixel = bitmap.GetPixel(x, y);
-				if (AreSameColor(excludedColor, pixel, tolerance, out _))
+				if (AreSameColor(excludedColor, pixel, tolerance, out var diff))
 				{
-					Assert.Fail($"Color '{ToArgbCode(excludedColor)}' was found at ({x}, {y}) in rectangle '{rect}'.");
+					Assert.Fail($"Color '{ToArgbCode(excludedColor)}' was found at ({x}, {y}) in rectangle '{rect}' (Exclusive difference of {diff}).");
 				}
 			}
 		}
@@ -209,8 +214,6 @@ public static partial class ImageAssert
 
 		using var reader1 = DataReader.FromBuffer(buffer1);
 		using var reader2 = DataReader.FromBuffer(buffer2);
-		var reader1Window = new byte[1024];
-		var reader2Window = new byte[1024];
 		while (reader1.UnconsumedBufferLength > 0 && reader2.UnconsumedBufferLength > 0)
 		{
 			if (reader1.ReadByte() != reader2.ReadByte())

@@ -44,7 +44,7 @@ namespace Windows.Gaming.Input.ForceFeedback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PeriodicForceEffect(global::Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind effectKind) 
+		public PeriodicForceEffect(global::Windows.Gaming.Input.ForceFeedback.PeriodicForceEffectKind effectKind)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Gaming.Input.ForceFeedback.PeriodicForceEffect", "PeriodicForceEffect.PeriodicForceEffect(PeriodicForceEffectKind effectKind)");
 		}

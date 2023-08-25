@@ -2,6 +2,7 @@
 using System;
 using System.Runtime.InteropServices;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using Windows.UI.Composition;
 using Uno.UI.Xaml.Media;
 using SkiaSharp;
@@ -14,21 +15,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private const int _bitsPerComponent = 8;
 		private const int _bytesPerPixel = _bitsPerPixel / _bitsPerComponent;
 
-		delegate void SwapColor(ref byte[] buffer, int byteCount);
-
-		private static readonly SwapColor? _platformSwap = RuntimeInformation.IsOSPlatform(OSPlatform.OSX) ? SwapRB : default;
-
 		private static ImageData Open(byte[] buffer, int bufferLength, int width, int height)
 		{
-			if (_platformSwap is not null)
-			{
-				var swappedBuffer = default(byte[]);
-				EnsureBuffer(ref swappedBuffer, bufferLength);
-				Array.Copy(buffer, swappedBuffer!, bufferLength);
-				_platformSwap(ref swappedBuffer!, bufferLength);
-				buffer = swappedBuffer;
-			}
-
 			var bufferHandle = GCHandle.Alloc(buffer, GCHandleType.Pinned);
 			try
 			{
@@ -55,22 +43,25 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var renderSize = element.RenderSize;
 			var visual = element.Visual;
 
-			if (element.RenderSize is { IsEmpty: true }
-				|| element.RenderSize is { Width: 0, Height: 0 })
+			if (renderSize is { IsEmpty: true } or { Width: 0, Height: 0 })
 			{
 				return (0, 0, 0);
 			}
-			var (width, height) = ((int)renderSize.Width, (int)renderSize.Height);
+
+			// Note: RenderTargetBitmap returns images with the current DPI (a 50x50 Border rendered on WinUI will return a 75x75 image)
+			var dpi = DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1;
+			var (width, height) = ((int)(renderSize.Width * dpi), (int)(renderSize.Height * dpi));
 			var info = new SKImageInfo(width, height, SKColorType.Bgra8888, SKAlphaType.Premul);
 			using var surface = SKSurface.Create(info);
 			//Ensure Clear
 			var canvas = surface.Canvas;
 			canvas.Clear(SKColors.Transparent);
-			visual.Render(surface);
+			canvas.Scale((float)dpi);
+			visual.RenderRootVisual(surface, ignoreLocation: true);
 
 			var img = surface.Snapshot();
 
-			var bitmap = SKBitmap.FromImage(img);
+			var bitmap = img.ToSKBitmap();
 			if (scaledSize.HasValue)
 			{
 				var scaledBitmap = bitmap.Resize(
@@ -84,8 +75,6 @@ namespace Windows.UI.Xaml.Media.Imaging
 			var byteCount = bitmap.ByteCount;
 			EnsureBuffer(ref buffer, byteCount);
 			bitmap.GetPixelSpan().CopyTo(buffer);
-			//On macOS color as stored as rgba
-			_platformSwap?.Invoke(ref buffer!, byteCount);
 			bitmap?.Dispose();
 			return (byteCount, width, height);
 		}

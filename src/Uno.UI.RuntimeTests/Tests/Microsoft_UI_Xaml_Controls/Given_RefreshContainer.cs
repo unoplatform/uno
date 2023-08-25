@@ -124,12 +124,7 @@ namespace Uno.UI.RuntimeTests.Tests.Microsoft_UI_Xaml_Controls
 			}
 		}
 
-		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
-		{
-			var renderer = new RenderTargetBitmap();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			return result;
-		}
+		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+			=> UITestHelper.ScreenShot(SUT);
 	}
 }

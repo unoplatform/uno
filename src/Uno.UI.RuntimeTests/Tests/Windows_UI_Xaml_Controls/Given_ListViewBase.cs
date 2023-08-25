@@ -6,12 +6,15 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
@@ -20,6 +23,7 @@ using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -636,6 +640,454 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.AreEqual(list.SelectedIndex, -1);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Multiple_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var centers = items.Select(item => item.GetAbsoluteBounds().GetCenter()).ToList();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(centers[1]);
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(centers[3], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[6]);
+			mouse.Release();
+
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			mouse.Press(centers[8], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 6 and <= 8));
+			await AssertSelected();
+
+			mouse.Press(centers[8]);
+			mouse.Release();
+
+			selected.Remove(items[8]);
+			await AssertSelected();
+
+			mouse.Press(centers[0], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i < 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiple_Selection_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+			KeyboardHelper.Down(list);
+
+			await AssertSelected();
+
+			KeyboardHelper.Space(list);
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is >= 5 and <= 8).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+
+			items.Where((_, i) => i is >= 7 and <= 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Extended_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var centers = items.Select(item => item.GetAbsoluteBounds().GetCenter()).ToList();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(centers[1]);
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(centers[3]);
+			mouse.Release();
+
+			selected.Remove(items[1]);
+			selected.Add(items[3]);
+			await AssertSelected();
+
+			mouse.Press(centers[5], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 3 and <= 5).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[7], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 5 and <= 7).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[1], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is > 3 and <= 7).ForEach(item => selected.Remove(item));
+			selected.AddRange(items.Where((_, i) => i is >= 1 and < 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[8], VirtualKeyModifiers.Control);
+			mouse.Release(VirtualKeyModifiers.Control);
+
+			selected.Add(items[8]);
+			await AssertSelected();
+
+			mouse.Press(centers[4], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.AddRange(items.Where((_, i) => i is >= 4 and < 8).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Extended_Selection_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[4]);
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+
+			selected.Remove(items[4]);
+			selected.Add(items[5]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Control));
+
+			selected.Add(items[7]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is >= 4 and < 7 && i != 5).ToList());
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+
+			items.Where((_, i) => i is >= 4 and < 7).ForEach(item => selected.Remove(item));
+			selected.Add(items[8]);
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Extended_Selection_SelectedIndex_Changed_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			list.SelectedIndex = 6;
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.Remove(items[6]);
+			selected.AddRange(items.Where((_, i) => i is >= 1 and <= 4).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Extended_Selection_SelectedIndex_Changed_Mixed()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			list.SelectedIndex = 6;
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			mouse.Press(((ListViewItem)list.ContainerFromIndex(8)).GetAbsoluteBounds().GetCenter(), VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is >= 1 and <= 8 and not 6).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_Horizontal_Keyboard_Navigation()
+		{
+			var SUT = (ListView)XamlReader.Load("""
+				<ListView
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+					ItemsSource="12345"
+				        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+				        ScrollViewer.HorizontalScrollMode="Enabled"
+				        ScrollViewer.VerticalScrollMode="Disabled">
+					<ListView.ItemsPanel>
+						<ItemsPanelTemplate>
+							<ItemsStackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ListView.ItemsPanel>
+				</ListView>
+			""");
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(SUT.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			KeyboardHelper.Right();
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, SUT.SelectedIndex);
+
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectedIndex);
 		}
 
 		[TestMethod]
@@ -3065,6 +3517,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 #if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ThemeChange()
+		{
+			const double TotalHeight = 500; // The ListView height.
+			const double ItemHeight = 50; // The ListViewItem height
+			const int NumberOfItemsShownAtATime = (int)(TotalHeight / ItemHeight); // The number of ListViewItems shown at a time.
+			const int NumberOfItems = 50; // The total number of items.
+			var grid = new Grid() { Height = TotalHeight };
+			var SUT = new ListView()
+			{
+				ItemsSource = Enumerable.Range(0, NumberOfItems).Select(x => $"Item {x}").ToList(),
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = ItemHeight,
+						Child = tb
+					};
+
+					return border;
+				})
+			};
+
+			grid.AddChild(SUT);
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+			var exploredTextBlocks = new HashSet<TextBlock>();
+			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
+			{
+				var tb = listViewItem.FindFirstChild<TextBlock>();
+				exploredTextBlocks.Add(tb);
+				Assert.AreEqual(Colors.Black, ((SolidColorBrush)tb.Foreground).Color);
+			}
+
+			using (ThemeHelper.UseDarkTheme())
+			{
+				ScrollTo(SUT, NumberOfItemsShownAtATime * ItemHeight);
+				await WindowHelper.WaitForIdle();
+				var seenNewTextBlock = false;
+				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
+				{
+					var tb = listViewItem.FindFirstChild<TextBlock>();
+					seenNewTextBlock |= exploredTextBlocks.Add(tb);
+					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
+				}
+
+				Assert.AreEqual(true, seenNewTextBlock);
+			}
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __WASM__ || __SKIA__

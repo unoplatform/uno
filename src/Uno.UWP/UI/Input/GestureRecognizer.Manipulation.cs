@@ -705,7 +705,7 @@ namespace Windows.UI.Input
 						var p2 = _pointer2.RawPosition;
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
-						Distance = Vector2.Distance(p1.ToVector(), p2.ToVector());
+						Distance = Vector2.Distance(p1.ToVector2(), p2.ToVector2());
 						Angle = Math.Atan2(p1.Y - p2.Y, p1.X - p2.X);
 					}
 				}

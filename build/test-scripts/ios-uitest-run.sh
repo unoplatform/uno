@@ -30,7 +30,6 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests \
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.WUXProgressRingTests \
 			| FullyQualifiedName ~ SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests.DragDrop_ListViewReorder_Automated \
-			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests \
 			| Namespace = SamplesApp.UITests.MessageDialogTests
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '2' ];
@@ -58,6 +57,11 @@ else
 			| Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		"
 	elif [ "$UITEST_AUTOMATED_GROUP" == '4' ];
+	then
+		export TEST_FILTERS=" \
+			Namespace = SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests \
+		"
+	elif [ "$UITEST_AUTOMATED_GROUP" == 'RuntimeTests' ];
 	then
 		export TEST_FILTERS="FullyQualifiedName = SamplesApp.UITests.Runtime.RuntimeTests"
 
@@ -165,10 +169,10 @@ echo "Dumping device logs"
 log show --style syslog $TMP_LOG_FILEPATH > $LOG_FILEPATH_FULL
 
 echo "Searching for failures in device logs"
-if grep -cq "mini-generic-sharing.c:899" $LOG_FILEPATH_FULL
+if grep -Eq "mini-generic-sharing.c:\d+, condition \`oti' not met" $LOG_FILEPATH_FULL
 then
 	# The application may crash without known cause, add a marker so the job can be restarted in that case.
-    echo "##vso[task.logissue type=error]UNOBLD001: mini-generic-sharing.c:899 assertion reached (https://github.com/unoplatform/uno/issues/8167)"
+    echo "##vso[task.logissue type=error]UNOBLD001: mini-generic-sharing.c:XXX assertion reached (https://github.com/unoplatform/uno/issues/8167)"
 fi
 
 if grep -cq "Unhandled managed exception: Watchdog failed" $LOG_FILEPATH_FULL

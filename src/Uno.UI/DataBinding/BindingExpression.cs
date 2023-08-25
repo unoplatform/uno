@@ -220,6 +220,11 @@ namespace Windows.UI.Xaml.Data
 		{
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				ParentBinding.XBindBack(DataContext, value);
 			}
 			catch (Exception exception)
@@ -244,6 +249,11 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				if (ParentBinding.Mode == BindingMode.TwoWay
 					&& ResolveUpdateSourceTrigger() == UpdateSourceTrigger.PropertyChanged)
 				{
@@ -499,7 +509,7 @@ namespace Windows.UI.Xaml.Data
 						}
 					}
 
-					_subscription.Disposable = Actions.ToDisposable(() =>
+					_subscription.Disposable = new DisposableAction(() =>
 					{
 						foreach (var bindingPath in _updateSources)
 						{
@@ -512,7 +522,7 @@ namespace Windows.UI.Xaml.Data
 				{
 					_bindingPath.ValueChangedListener = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = new DisposableAction(() => _bindingPath.ValueChangedListener = null);
 				}
 			}
 			else

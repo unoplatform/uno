@@ -1,49 +1,60 @@
 ﻿#nullable enable
 
+using System.Diagnostics;
+using Uno.Helpers.Theming;
 using Windows.ApplicationModel.Core;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Uno.Helpers.Theming;
 
 namespace Uno.UI.Xaml.Media;
 
 internal static class DefaultBrushes
 {
 	private const string DefaultTextForegroundThemeBrushKey = "DefaultTextForegroundThemeBrush";
+	private const string HyperlinkForegroundKey = "HyperlinkForeground";
 
 	private static Brush? _textForegroundBrush;
+	private static Brush? _hyperlinkForegroundBrush;
 
-	internal static Brush TextForegroundBrush => GetDefaultTextBrush();
+	internal static Brush TextForegroundBrush => GetDefaultTextBrush(DefaultTextForegroundThemeBrushKey, ref _textForegroundBrush);
+
+	internal static Brush HyperlinkForegroundBrush => GetDefaultTextBrush(HyperlinkForegroundKey, ref _hyperlinkForegroundBrush);
 
 	internal static SolidColorBrush SelectionHighlightColor { get; } = new SolidColorBrush(Color.FromArgb(255, 0, 120, 212));
 
-	internal static void ResetDefaultThemeBrushes() => _textForegroundBrush = null;
-
-	private static Brush GetDefaultTextBrush()
+	internal static void ResetDefaultThemeBrushes()
 	{
+		_textForegroundBrush = null;
+		_hyperlinkForegroundBrush = null;
+	}
+
+	private static Brush GetDefaultTextBrush(string key, ref Brush? brush, Color? lightFallback = null, Color? darkFallback = null)
+	{
+		// We expect both to be set, or none.
+		Debug.Assert(!(darkFallback is null ^ lightFallback is null));
+
 		if (Application.Current is null)
 		{
 			// Called too early or within unit tests, fallback
 			return SolidColorBrushHelper.Black;
 		}
 
-		if (_textForegroundBrush is null)
+		if (brush is null)
 		{
-			if (Application.Current.Resources.TryGetValue(DefaultTextForegroundThemeBrushKey, out var defaultBrushObject) &&
+			if (Application.Current.Resources.TryGetValue(key, out var defaultBrushObject) &&
 				defaultBrushObject is Brush defaultBrush)
 			{
-				_textForegroundBrush = defaultBrush;
+				brush = defaultBrush;
 			}
 			else
 			{
 				// Fallback to black/white
-				_textForegroundBrush = CoreApplication.RequestedTheme == SystemTheme.Dark ?
+				brush = CoreApplication.RequestedTheme == SystemTheme.Dark ?
 					SolidColorBrushHelper.White : SolidColorBrushHelper.Black;
 			}
 		}
 
-		return _textForegroundBrush;
+		return brush;
 	}
 }

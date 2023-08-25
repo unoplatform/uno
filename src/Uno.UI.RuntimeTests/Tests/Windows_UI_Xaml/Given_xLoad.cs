@@ -200,6 +200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			Assert.IsNotNull(SUT.tb01);
 			Assert.IsNotNull(SUT.tb02);
+			// Note: If not null, this usually means that the control is leaking!!!
 			await AssertIsNullAsync(() => SUT.panel01);
 			await AssertIsNullAsync(() => SUT.tb03);
 			await AssertIsNullAsync(() => SUT.panel02);

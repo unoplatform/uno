@@ -340,13 +340,7 @@ namespace Windows.UI.Composition
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateShapeVisual()
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateSpriteShape()
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateSpriteShape(Windows.UI.Composition.CompositionGeometry)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionViewBox CreateViewBox()
-		{
-			throw new global::System.NotImplementedException("The member CompositionViewBox Compositor.CreateViewBox() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionViewBox%20Compositor.CreateViewBox%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateViewBox()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncAction RequestCommitAsync()

@@ -24,20 +24,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.Duration GeneratedDuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Duration VisualTransition.GeneratedDuration is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Duration%20VisualTransition.GeneratedDuration");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualTransition", "Duration VisualTransition.GeneratedDuration");
-			}
-		}
-#endif
 		// Skipping already declared property From
 		// Skipping already declared method Windows.UI.Xaml.VisualTransition.VisualTransition()
 		// Forced skipping of method Windows.UI.Xaml.VisualTransition.VisualTransition()

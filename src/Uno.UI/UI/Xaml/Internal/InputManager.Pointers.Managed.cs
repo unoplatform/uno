@@ -129,8 +129,26 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			// Second raise the event, either on the OriginalSource or on the capture owners if any
+			// First raise the event, either on the OriginalSource or on the capture owners if any
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
+
+			// Scrolling can change the element underneath the pointer, so we need to update
+			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
+			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+
+			// Second raise the PointerExited events on the stale branch
+			if (staleBranch.HasValue)
+			{
+				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
+				{
+					// The visual tree has been modified in a way that requires performing a new hit test.
+					originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_leave").element ?? _inputManager._contentRoot.VisualTree.RootElement;
+				}
+			}
+
+			// Third (try to) raise the PointerEnter on the OriginalSource
+			// Note: This won't do anything if already over.
+			Raise(Enter, originalSource!, routedArgs);
 		}
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)

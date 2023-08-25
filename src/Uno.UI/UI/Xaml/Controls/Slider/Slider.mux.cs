@@ -815,12 +815,14 @@ public partial class Slider
 		//TODO MZ: Should include handled too?
 		spSliderContainer.PointerPressed += OnPointerPressed;
 		spSliderContainer.PointerReleased += OnPointerReleased;
+		spSliderContainer.PointerMoved += OnPointerMoved;
 		spSliderContainer.PointerCaptureLost += OnPointerCaptureLost;
 		spSliderContainer.SizeChanged += OnSizeChanged;
 		_sliderContainerToken.Disposable = Disposable.Create(() =>
 		{
 			spSliderContainer.PointerPressed -= OnPointerPressed;
 			spSliderContainer.PointerReleased -= OnPointerReleased;
+			spSliderContainer.PointerMoved -= OnPointerMoved;
 			spSliderContainer.PointerCaptureLost -= OnPointerCaptureLost;
 			spSliderContainer.SizeChanged -= OnSizeChanged;
 		});

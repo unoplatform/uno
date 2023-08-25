@@ -31,6 +31,14 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtBottom(_textVisual);
 		}
 
+#if DEBUG
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			_textVisual.Comment = $"{Visual.Comment}#text";
+		}
+#endif
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var padding = Padding;

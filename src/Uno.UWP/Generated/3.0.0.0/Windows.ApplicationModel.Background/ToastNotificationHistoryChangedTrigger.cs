@@ -10,7 +10,7 @@ namespace Windows.ApplicationModel.Background
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ToastNotificationHistoryChangedTrigger(string applicationId) 
+		public ToastNotificationHistoryChangedTrigger(string applicationId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger", "ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string applicationId)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ToastNotificationHistoryChangedTrigger() 
+		public ToastNotificationHistoryChangedTrigger()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.ToastNotificationHistoryChangedTrigger", "ToastNotificationHistoryChangedTrigger.ToastNotificationHistoryChangedTrigger()");
 		}

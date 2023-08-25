@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.System;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
@@ -63,6 +64,16 @@ public partial class Popup
 	public Popup()
 	{
 		Initialize();
+		KeyDown += OnKeyDown;
+	}
+
+	private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+	{
+		if (args.Key == VirtualKey.Escape)
+		{
+			args.Handled = true;
+			IsOpen = false;
+		}
 	}
 
 	internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)

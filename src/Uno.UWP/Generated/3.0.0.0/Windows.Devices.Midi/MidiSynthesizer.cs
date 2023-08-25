@@ -6,7 +6,7 @@ namespace Windows.Devices.Midi
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MidiSynthesizer : global::Windows.Devices.Midi.IMidiOutPort,global::System.IDisposable
+	public partial class MidiSynthesizer : global::Windows.Devices.Midi.IMidiOutPort, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal MidiSynthesizer()

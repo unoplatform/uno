@@ -651,10 +651,6 @@ public partial class GtkMediaPlayer
 				UpdateMedia();
 
 				OnSourceEnded?.Invoke(this, EventArgs.Empty);
-				if (_isLoopingEnabled)
-				{
-					_mediaPlayer.Play();
-				}
 				_videoView.Visible = true;
 				_isEnding = false;
 			});

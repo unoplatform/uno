@@ -3,6 +3,7 @@ using System;
 using System.Reflection;
 using System.Reflection.Emit;
 using Windows.UI.Xaml.Controls;
+using MUXControlsTestApp.Utilities;
 using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Tests.Enterprise
@@ -23,11 +24,16 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 		{
 			Detach(); // Detach any previous handler
 
-			_eventInfo.GetAddMethod()!.Invoke(element, new object[] { handler });
+			object? token = _eventInfo.GetAddMethod()!.Invoke(element, new object[] { handler });
 
 			return _last = Disposable.Create(() =>
 			{
-				_eventInfo.GetRemoveMethod()!.Invoke(element, new object[] { handler });
+				// On Windows, token is EventRegistrationToken, on Uno, token is null
+#if NETFX_CORE
+				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { token }));
+#else
+				RunOnUIThread.Execute(() => _eventInfo.GetRemoveMethod()!.Invoke(element, new object?[] { handler }));
+#endif
 			});
 		}
 

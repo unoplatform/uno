@@ -161,4 +161,26 @@ internal static class VirtualKeyHelper
 				}
 		}
 	}
+
+	public static VirtualKeyModifiers FromModifiers(MetaKeyStates flags)
+	{
+		var modifiers = VirtualKeyModifiers.None;
+
+		if (flags.HasFlag(MetaKeyStates.ShiftMask))
+		{
+			modifiers |= VirtualKeyModifiers.Shift;
+		}
+
+		if (flags.HasFlag(MetaKeyStates.CtrlMask))
+		{
+			modifiers |= VirtualKeyModifiers.Control;
+		}
+
+		if (flags.HasFlag(MetaKeyStates.MetaMask))
+		{
+			modifiers |= VirtualKeyModifiers.Windows;
+		}
+
+		return modifiers;
+	}
 }

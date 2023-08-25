@@ -29,7 +29,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private VideoView? _videoView;
 	private Uri? _mediaPath;
 	private bool _isEnding;
-	private bool _isLoopingEnabled;
 	private double _playbackRate;
 	private Rect _transportControlsBounds;
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
@@ -517,11 +516,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 				_mediaPlayer.Time = (long)value;
 			}
 		}
-	}
-
-	public void SetIsLoopingEnabled(bool value)
-	{
-		_isLoopingEnabled = value;
 	}
 
 	internal void UpdateVideoStretch(Windows.UI.Xaml.Media.Stretch stretch)

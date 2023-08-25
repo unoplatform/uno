@@ -1079,7 +1079,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
-		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
+		HashSet<DependencyProperty>? _updatedProperties;
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
@@ -1092,10 +1092,10 @@ namespace Windows.UI.Xaml
 				if (
 					localProperty != _dataContextProperty &&
 					localProperty != _templatedParentProperty &&
-					!_updatedProperties.Contains(localProperty)
+					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
 				)
 				{
-					_updatedProperties.Add(localProperty);
+					(_updatedProperties ??= new HashSet<DependencyProperty>(DependencyPropertyComparer.Default)).Add(localProperty);
 				}
 
 				SetValue(localProperty, newValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
@@ -1216,14 +1216,18 @@ namespace Windows.UI.Xaml
 
 				if (ActualInstance != null)
 				{
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var propertiesEnumerator = _updatedProperties.GetEnumerator();
-					while (propertiesEnumerator.MoveNext())
+					if (_updatedProperties is not null)
 					{
-						var dp = propertiesEnumerator.Current;
-						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						// This block is a manual enumeration to avoid the foreach pattern
+						// See https://github.com/dotnet/runtime/issues/56309 for details
+						var propertiesEnumerator = _updatedProperties.GetEnumerator();
+						while (propertiesEnumerator.MoveNext())
+						{
+							var dp = propertiesEnumerator.Current;
+							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						}
 					}
+
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
