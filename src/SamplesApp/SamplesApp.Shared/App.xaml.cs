@@ -673,7 +673,7 @@ namespace SamplesApp
 			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
 			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-			
+
 			if (textBoxViewExtension is not null)
 			{
 				Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
