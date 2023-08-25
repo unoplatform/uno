@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_ViewManagement
 		public ApplicationViewSizing()
 		{
 			this.InitializeComponent();
-			CoreWindow.GetForCurrentThread().SizeChanged += ApplicationViewSizing_SizeChanged;
+			CoreWindow.IShouldntUseGetForCurrentThread().SizeChanged += ApplicationViewSizing_SizeChanged;
 			this.Unloaded += ApplicationViewSizing_Unloaded;
 		}
 
@@ -28,7 +28,7 @@ namespace UITests.Windows_UI_ViewManagement
 
 		private void ApplicationViewSizing_Unloaded(object sender, RoutedEventArgs e)
 		{
-			CoreWindow.GetForCurrentThread().SizeChanged -= ApplicationViewSizing_SizeChanged;
+			CoreWindow.IShouldntUseGetForCurrentThread().SizeChanged -= ApplicationViewSizing_SizeChanged;
 		}
 
 		void SetWindowSize_Click(System.Object sender, Microsoft.UI.Xaml.RoutedEventArgs e)
