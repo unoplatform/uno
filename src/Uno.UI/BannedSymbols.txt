@@ -1,4 +1,4 @@
 M:Microsoft.UI.Xaml.DependencyProperty.Register(System.String,System.Type,System.Type,Microsoft.UI.Xaml.PropertyMetadata);Use FrameworkPropertyMetadata instead.
 M:Microsoft.UI.Xaml.DependencyProperty.RegisterAttached(System.String,System.Type,System.Type,Microsoft.UI.Xaml.PropertyMetadata);Use FrameworkPropertyMetadata instead.
-P:Microsoft.UI.Xaml.Window.Current;Window.Current is null in WinUI - try using XamlRoot instead.
-P:Microsoft.UI.Xaml.Window.CoreWindow;Window.CoreWindow is null in WinUI - try using XamlRoot instead.
+P:Microsoft.UI.Xaml.Window.Current;Window.Current is null in WinUI - try using XamlRoot instead, CurrentSafe if necessary.
+P:Microsoft.UI.Xaml.Window.CoreWindow;Window.CoreWindow is null in WinUI - try using XamlRoot instead, CoreWindowSafe if necessary.

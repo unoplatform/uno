@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Input
 		public PointerRoutedEventArgs()
 		{
 			// This is acceptable as all ctors of this class are internal
-			CoreWindow.GetForCurrentThread().LastPointerEvent = this;
+			CoreWindow.IShouldntUseGetForCurrentThread().LastPointerEvent = this;
 
 			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}

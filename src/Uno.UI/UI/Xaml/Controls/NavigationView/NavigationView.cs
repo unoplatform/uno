@@ -1558,7 +1558,7 @@ namespace Windows.UI.Xaml.Controls
 					handled = BumperNavigation(1);
 					break;
 				case VirtualKey.Left:
-					var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
 					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 					if (isAltPressed && IsPaneOpen && IsLightDismissible())
