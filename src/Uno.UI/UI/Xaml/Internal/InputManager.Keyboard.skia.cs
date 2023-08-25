@@ -9,13 +9,14 @@ namespace Uno.UI.Xaml.Core;
 
 partial class InputManager
 {
-	internal KeyboardManager Keyboard { get; private set; } = default!;
+	internal KeyboardManager Keyboard { get; private set; }
 
+	[MemberNotNull(nameof(Keyboard))]
 	partial void ConstructKeyboardManager() => Keyboard = new(this);
 
 	partial void InitializeKeyboard(object host) => Keyboard.Init(host);
 
-	internal class KeyboardManager
+	internal sealed class KeyboardManager
 	{
 		private readonly InputManager _inputManager;
 		private IUnoKeyboardInputSource _source;
