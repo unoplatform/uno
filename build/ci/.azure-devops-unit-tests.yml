@@ -35,9 +35,9 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
-    # Only build for net7
-    UnoDisableNet8Mobile: true
-    UnoDisableNet8: true
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
   - checkout: self
@@ -117,9 +117,9 @@ jobs:
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
-    # Only build for net7
-    UnoDisableNet8Mobile: true
-    UnoDisableNet8: true
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
   - checkout: self

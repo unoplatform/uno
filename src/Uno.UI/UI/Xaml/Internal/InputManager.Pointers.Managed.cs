@@ -26,7 +26,7 @@ internal partial class InputManager
 {
 	internal PointerManager Pointers { get; private set; } = default!;
 
-	partial void ConstructManagedPointers()
+	partial void ConstructPointerManager()
 	{
 		Pointers = new PointerManager(this);
 
@@ -76,10 +76,10 @@ internal partial class InputManager
 				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
 			}
 
-			// Currently there is no need to filter on ContentRootType ('_inputManager._contentRoot.Type is ContentRootType.CoreWindow')
-			// As soon as we have a CoreWindow we configure it.
-			// This might be needed later once we support multi-windowing
-			CoreWindow.GetForCurrentThread()?.SetPointerInputSource(_source);
+			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
+			{
+				CoreWindow.GetForCurrentThread()?.SetPointerInputSource(_source);
+			}
 
 			_source.PointerMoved += (c, e) => OnPointerMoved(e);
 			_source.PointerEntered += (c, e) => OnPointerEntered(e);
@@ -108,7 +108,7 @@ internal partial class InputManager
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -129,8 +129,26 @@ internal partial class InputManager
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
-			// Second raise the event, either on the OriginalSource or on the capture owners if any
+			// First raise the event, either on the OriginalSource or on the capture owners if any
 			RaiseUsingCaptures(Wheel, originalSource, routedArgs);
+
+			// Scrolling can change the element underneath the pointer, so we need to update
+			(originalSource, var staleBranch) = HitTest(args, caller: "OnPointerWheelChanged_post_wheel", isStale: _isOver);
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
+
+			// Second raise the PointerExited events on the stale branch
+			if (staleBranch.HasValue)
+			{
+				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
+				{
+					// The visual tree has been modified in a way that requires performing a new hit test.
+					originalSource = HitTest(args, caller: "OnPointerWheelChanged_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
+				}
+			}
+
+			// Third (try to) raise the PointerEnter on the OriginalSource
+			// Note: This won't do anything if already over.
+			Raise(Enter, originalSource!, routedArgs);
 		}
 
 		private void OnPointerEntered(Windows.UI.Core.PointerEventArgs args)
@@ -144,7 +162,7 @@ internal partial class InputManager
 			// Even if impossible for the Enter, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -171,7 +189,7 @@ internal partial class InputManager
 		private void OnPointerExited(Windows.UI.Core.PointerEventArgs args)
 		{
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is used.
-			var originalSource = _inputManager._contentRoot.VisualTree.RootElement;
+			var originalSource = _inputManager.ContentRoot.VisualTree.RootElement;
 			if (originalSource is null)
 			{
 				if (_trace)
@@ -218,7 +236,7 @@ internal partial class InputManager
 			// Even if impossible for the Pressed, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -252,7 +270,7 @@ internal partial class InputManager
 			// Even if impossible for the Release, we are fallbacking on the RootElement for safety
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -289,7 +307,7 @@ internal partial class InputManager
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that if another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -316,7 +334,7 @@ internal partial class InputManager
 				if (Raise(Leave, staleBranch.Value, routedArgs) is { VisualTreeAltered: true })
 				{
 					// The visual tree has been modified in a way that requires performing a new hit test.
-					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager._contentRoot.VisualTree.RootElement;
+					originalSource = HitTest(args, caller: "OnPointerMoved_post_leave").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
 				}
 			}
 
@@ -325,7 +343,7 @@ internal partial class InputManager
 			if (Raise(Enter, originalSource, routedArgs) is { VisualTreeAltered: true })
 			{
 				// The visual tree has been modified in a way that requires performing a new hit test.
-				originalSource = HitTest(args, caller: "OnPointerMoved_post_enter").element ?? _inputManager._contentRoot.VisualTree.RootElement;
+				originalSource = HitTest(args, caller: "OnPointerMoved_post_enter").element ?? _inputManager.ContentRoot.VisualTree.RootElement;
 			}
 
 			// Finally raise the event, either on the OriginalSource or on the capture owners if any
@@ -338,7 +356,7 @@ internal partial class InputManager
 
 			// This is how UWP behaves: when out of the bounds of the Window, the root element is use.
 			// Note that is another app covers your app, then the OriginalSource on UWP is still the element of your app at the pointer's location.
-			originalSource ??= _inputManager._contentRoot.VisualTree.RootElement;
+			originalSource ??= _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -440,12 +458,12 @@ internal partial class InputManager
 		#region Helpers
 		private (UIElement? element, VisualTreeHelper.Branch? stale) HitTest(PointerEventArgs args, StalePredicate? isStale = null, [CallerMemberName] string caller = "")
 		{
-			if (_inputManager._contentRoot.XamlRoot is null)
+			if (_inputManager.ContentRoot.XamlRoot is null)
 			{
 				throw new InvalidOperationException("The XamlRoot must be properly initialized for hit testing.");
 			}
 
-			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager._contentRoot.XamlRoot, isStale: isStale);
+			return VisualTreeHelper.HitTest(args.CurrentPoint.Position, _inputManager.ContentRoot.XamlRoot, isStale: isStale);
 		}
 
 		private delegate void RaisePointerEventArgs(UIElement element, PointerRoutedEventArgs args, BubblingContext ctx);

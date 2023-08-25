@@ -46,7 +46,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallback = false)]
+		[GeneratedDependencyProperty(ChangedCallback = false, Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		#endregion

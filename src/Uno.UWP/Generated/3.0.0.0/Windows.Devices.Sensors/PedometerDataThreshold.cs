@@ -10,7 +10,7 @@ namespace Windows.Devices.Sensors
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PedometerDataThreshold(global::Windows.Devices.Sensors.Pedometer sensor, int stepGoal) 
+		public PedometerDataThreshold(global::Windows.Devices.Sensors.Pedometer sensor, int stepGoal)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Sensors.PedometerDataThreshold", "PedometerDataThreshold.PedometerDataThreshold(Pedometer sensor, int stepGoal)");
 		}

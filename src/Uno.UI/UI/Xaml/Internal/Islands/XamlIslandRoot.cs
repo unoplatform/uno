@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
@@ -16,6 +17,8 @@ internal partial class XamlIslandRoot : Panel
 	internal XamlIslandRoot(WinUICoreServices coreServices)
 	{
 		_contentRoot = coreServices.ContentRootCoordinator.CreateContentRoot(ContentRootType.XamlIsland, Colors.Transparent, this);
+
+		this.Background = new SolidColorBrush(Colors.Transparent);
 
 		//Uno specific - flag as VisualTreeRoot for interop with existing logic
 		IsVisualTreeRoot = true;

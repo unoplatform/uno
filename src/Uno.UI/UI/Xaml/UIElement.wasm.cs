@@ -80,8 +80,6 @@ namespace Windows.UI.Xaml
 
 		~UIElement()
 		{
-			_brushSubscription?.Unsubscribe();
-
 			try
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))

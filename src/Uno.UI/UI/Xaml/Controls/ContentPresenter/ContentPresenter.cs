@@ -483,6 +483,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -1001,6 +1002,9 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 
 			UpdateBorder();
+#if __WASM__
+			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
+#endif
 		}
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)

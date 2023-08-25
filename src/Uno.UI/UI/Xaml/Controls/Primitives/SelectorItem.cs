@@ -392,6 +392,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnGotFocus(e);
 			ChangeVisualState(true);
+
+			if (Selector is ListViewBase lvb)
+			{
+				var index = lvb.IndexFromContainer(this);
+				lvb.FocusedIndexContainerItem = (index, this, lvb.ItemFromIndex(index));
+			}
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)

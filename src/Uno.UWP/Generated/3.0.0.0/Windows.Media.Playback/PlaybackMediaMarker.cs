@@ -40,7 +40,7 @@ namespace Windows.Media.Playback
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PlaybackMediaMarker(global::System.TimeSpan value) 
+		public PlaybackMediaMarker(global::System.TimeSpan value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarker", "PlaybackMediaMarker.PlaybackMediaMarker(TimeSpan value)");
 		}
@@ -48,7 +48,7 @@ namespace Windows.Media.Playback
 		// Forced skipping of method Windows.Media.Playback.PlaybackMediaMarker.PlaybackMediaMarker(System.TimeSpan)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PlaybackMediaMarker(global::System.TimeSpan value, string mediaMarketType, string text) 
+		public PlaybackMediaMarker(global::System.TimeSpan value, string mediaMarketType, string text)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Playback.PlaybackMediaMarker", "PlaybackMediaMarker.PlaybackMediaMarker(TimeSpan value, string mediaMarketType, string text)");
 		}

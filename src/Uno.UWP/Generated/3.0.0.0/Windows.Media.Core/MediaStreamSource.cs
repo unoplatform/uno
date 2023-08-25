@@ -128,7 +128,7 @@ namespace Windows.Media.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor) 
+		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaStreamSource.MediaStreamSource(IMediaStreamDescriptor descriptor)");
 		}
@@ -136,7 +136,7 @@ namespace Windows.Media.Core
 		// Forced skipping of method Windows.Media.Core.MediaStreamSource.MediaStreamSource(Windows.Media.Core.IMediaStreamDescriptor)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor, global::Windows.Media.Core.IMediaStreamDescriptor descriptor2) 
+		public MediaStreamSource(global::Windows.Media.Core.IMediaStreamDescriptor descriptor, global::Windows.Media.Core.IMediaStreamDescriptor descriptor2)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Core.MediaStreamSource", "MediaStreamSource.MediaStreamSource(IMediaStreamDescriptor descriptor, IMediaStreamDescriptor descriptor2)");
 		}

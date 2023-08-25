@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class LoadedImageSurface : global::System.IDisposable,global::Windows.UI.Composition.ICompositionSurface
+	public partial class LoadedImageSurface : global::System.IDisposable, global::Windows.UI.Composition.ICompositionSurface
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal LoadedImageSurface()

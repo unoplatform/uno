@@ -18,7 +18,6 @@ namespace Windows.UI.Xaml.Controls
 	internal partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
-		private WeakBrushChangedProxy _foregroundChangedProxy;
 		private Action _foregroundChanged;
 
 		private bool _browserContextMenuEnabled = true;
@@ -44,9 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (e.NewValue is SolidColorBrush scb)
 			{
-				_foregroundChangedProxy ??= new();
-				_foregroundChanged = () => SetForeground(e.NewValue);
-				_foregroundChangedProxy.Subscribe(scb, _foregroundChanged);
+				Brush.SetupBrushChanged(e.OldValue as Brush, scb, ref _foregroundChanged, () => SetForeground(scb));
 			}
 		}
 
@@ -66,11 +63,6 @@ namespace Windows.UI.Xaml.Controls
 
 			SetAttribute("tabindex", "0");
 			UpdateContextMenuEnabling();
-		}
-
-		~TextBoxView()
-		{
-			_foregroundChangedProxy?.Unsubscribe();
 		}
 
 		private event EventHandler HtmlInput

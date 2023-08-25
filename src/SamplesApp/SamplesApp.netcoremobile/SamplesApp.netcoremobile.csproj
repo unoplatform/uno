@@ -1,6 +1,6 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>$(NetCurrentNetCoreMobile);$(NetPreviousNetCoreMobile)</TargetFrameworks>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../../targetframework-override.props" />
@@ -71,6 +71,10 @@
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='maccatalyst'">
+		<SupportedOSPlatformVersion>14.2</SupportedOSPlatformVersion>
+	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
 		<SupportedOSPlatformVersion>10.0</SupportedOSPlatformVersion>
 		<AndroidUseAssemblyStore>false</AndroidUseAssemblyStore>
@@ -119,7 +123,7 @@
 		<PackageReference Include="Uno.Fonts.Fluent" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'android'">
+	<ItemGroup Condition="'$(TargetPlatformIdentifier)' == 'android'">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 	</ItemGroup>
 

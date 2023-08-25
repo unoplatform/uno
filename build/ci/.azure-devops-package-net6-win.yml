@@ -25,24 +25,20 @@ jobs:
       UWP_NET7:
         UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
-        UnoDisableNet8Mobile: true
-        UnoDisableNet8: true
+        UnoDisableNetCurrentMobile: true
+        UnoDisableNetCurrent: true
         ZipFileTargetFramework: net7
 
       WinUI_NET7:
         UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
-        UnoDisableNet8Mobile: true
-        UnoDisableNet8: true
+        UnoDisableNetCurrentMobile: true
+        UnoDisableNetCurrent: true
         ZipFileTargetFramework: net7
 
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
 
     # Disable trimming for packages creation
     PublishTrimmed: false

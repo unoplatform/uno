@@ -1147,7 +1147,7 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
-		private Brush GetItemBackgroundBrush()
+		internal Brush GetItemBackgroundBrush()
 		{
 			Brush pBrush = null;
 

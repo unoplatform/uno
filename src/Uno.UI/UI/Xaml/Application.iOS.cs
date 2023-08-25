@@ -24,9 +24,6 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate
 	{
-		private bool _suspended;
-		internal bool IsSuspended => _suspended;
-
 		private bool _preventSecondaryActivationHandling;
 
 		partial void InitializePartial()
@@ -128,18 +125,7 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
-
-		partial void OnResumingPartial()
-		{
-			if (_suspended)
-			{
-				_suspended = false;
-
-				Resuming?.Invoke(this, null);
-			}
-		}
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(10);
 
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)
 		{

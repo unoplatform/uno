@@ -84,7 +84,7 @@ namespace Windows.Security.Authentication.Web.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId) 
+		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope, string clientId)");
 		}
@@ -92,7 +92,7 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId, global::Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType promptType) 
+		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope, string clientId, global::Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType promptType)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope, string clientId, WebTokenRequestPromptType promptType)");
 		}
@@ -100,7 +100,7 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider, string, string, Windows.Security.Authentication.Web.Core.WebTokenRequestPromptType)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider) 
+		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider)");
 		}
@@ -108,7 +108,7 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebTokenRequest.WebTokenRequest(Windows.Security.Credentials.WebAccountProvider)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope) 
+		public WebTokenRequest(global::Windows.Security.Credentials.WebAccountProvider provider, string scope)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebTokenRequest", "WebTokenRequest.WebTokenRequest(WebAccountProvider provider, string scope)");
 		}
