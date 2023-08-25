@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Windows.UI.Xaml.Controls;
-using Java.IO;
+﻿using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml.Clipping
@@ -11,7 +9,7 @@ namespace UITests.Shared.Windows_UI_Xaml.Clipping
 	{
 		public ClippingWithOpacity()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 		}
 	}
 }
