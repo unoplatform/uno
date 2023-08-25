@@ -896,7 +896,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			Debug.Assert(that._hyperlinkOver == null);
+			global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
 
 			var point = e.GetCurrentPoint(that);
 
@@ -913,7 +913,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			Debug.Assert(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) == null);
+			global::System.Diagnostics.Debug.Assert(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) == null);
 
 			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
 			that._hyperlinkOver = null;
@@ -939,7 +939,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
-			Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
 
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
@@ -1021,7 +1021,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var hasHyperlink = _hyperlinks.Count > 0;
 
-				Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
+				global::System.Diagnostics.Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
 
 				return hasHyperlink;
 			}
