@@ -132,6 +132,7 @@ namespace Windows.UI.Xaml.Controls
 				var clippedDesiredSize = desiredSize
 					.Add(marginSize)
 					// Making sure after adding margins that clipped DesiredSize is not bigger than the AvailableSize
+					.AtMost(frameworkAvailableSize)
 					.AtMost(availableSize)
 					// Margin may be negative
 					.AtLeastZero();
