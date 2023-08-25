@@ -214,8 +214,6 @@ namespace Windows.UI.Xaml
 
 		private void InitializeCommon()
 		{
-			InitDragAndDrop();
-
 #if !HAS_UNO_WINUI
 			RaiseCreated();
 #endif
