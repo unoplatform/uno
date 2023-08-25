@@ -827,7 +827,7 @@ namespace Microsoft.UI.Xaml.Controls
 			//	}
 			//}
 
-			if (CoreWindow.GetForCurrentThread() is { } coreWindow)
+			if (CoreWindow.IShouldntUseGetForCurrentThread() is { } coreWindow)
 			{
 				if (coreWindow.Dispatcher is { } dispatcher)
 				{

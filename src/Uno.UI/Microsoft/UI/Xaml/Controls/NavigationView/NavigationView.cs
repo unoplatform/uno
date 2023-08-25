@@ -3203,7 +3203,7 @@ namespace Microsoft.UI.Xaml.Controls
 					m_TabKeyPrecedesFocusChange = true;
 					break;
 				case VirtualKey.Left:
-					var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
 					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 					if (isAltPressed && IsPaneOpen && IsLightDismissible())

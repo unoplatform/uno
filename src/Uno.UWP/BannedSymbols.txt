@@ -1,0 +1,1 @@
+M:Windows.UI.Core.CoreWindow.GetForCurrentThread();Window.GetForCurrentThread returns null in WinUI - try using XamlRoot instead, use GetForCurrentThreadSafe if necessary.

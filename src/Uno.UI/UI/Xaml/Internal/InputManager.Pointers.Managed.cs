@@ -78,7 +78,7 @@ internal partial class InputManager
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
 			{
-				CoreWindow.GetForCurrentThread()?.SetPointerInputSource(_source);
+				CoreWindow.IShouldntUseGetForCurrentThread()?.SetPointerInputSource(_source);
 			}
 
 			_source.PointerMoved += (c, e) => OnPointerMoved(e);
