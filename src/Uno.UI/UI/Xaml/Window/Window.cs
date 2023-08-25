@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml
 
 			windowSizeChangedEventArgs.Handled = baseSizeChanged.Handled;
 
-			CoreWindow.GetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
+			CoreWindow.IShouldntUseGetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
 
 			baseSizeChanged.Handled = windowSizeChangedEventArgs.Handled;
 
