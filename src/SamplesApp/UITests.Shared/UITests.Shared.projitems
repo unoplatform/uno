@@ -862,6 +862,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingWithOpacity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\CornerRadiusControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -922,6 +926,13 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+<<<<<<< HEAD
+=======
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TreeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+>>>>>>> a50a332702 (fix(android_clipping): Fixed clipping was applied on Android when opacity (Alpha) where less than 1.)
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView_Custom_States.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5724,6 +5735,16 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Clipping652.xaml.cs">
       <DependentUpon>Clipping652.xaml</DependentUpon>
     </Compile>
+<<<<<<< HEAD
+=======
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingWithOpacity.xaml.cs">
+      <DependentUpon>ClippingWithOpacity.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElement_Clipping.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_SoftKeboard.xaml.cs">
+      <DependentUpon>AutoSuggestBox_SoftKeboard.xaml</DependentUpon>
+    </Compile>
+>>>>>>> a50a332702 (fix(android_clipping): Fixed clipping was applied on Android when opacity (Alpha) where less than 1.)
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\BitmapIconTests\BitmapIcon_Monochromatic.xaml.cs">
       <DependentUpon>BitmapIcon_Monochromatic.xaml</DependentUpon>
     </Compile>
@@ -5780,6 +5801,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView.xaml.cs">
       <DependentUpon>DragDrop_ListView.xaml</DependentUpon>
     </Compile>
+<<<<<<< HEAD
+=======
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TreeView.xaml.cs">
+      <DependentUpon>DragDrop_TreeView.xaml</DependentUpon>
+    </Compile>
+>>>>>>> a50a332702 (fix(android_clipping): Fixed clipping was applied on Android when opacity (Alpha) where less than 1.)
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView_Custom_States.xaml.cs">
       <DependentUpon>DragDrop_ListView_Custom_States.xaml</DependentUpon>
     </Compile>
