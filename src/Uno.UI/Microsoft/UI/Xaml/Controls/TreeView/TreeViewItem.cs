@@ -420,13 +420,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsInReorderMode(VirtualKey key)
 		{
-			var ctrlState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Control);
+			var ctrlState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Control);
 			bool isControlPressed = (ctrlState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+			var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
 			bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var shiftState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Shift);
+			var shiftState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Shift);
 			bool isShiftPressed = (shiftState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			bool isDirectionPressed = IsDirectionalKey(key);
@@ -584,13 +584,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsExpandCollapse(VirtualKey key)
 		{
-			var ctrlState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Control);
+			var ctrlState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Control);
 			bool isControlPressed = (ctrlState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+			var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
 			bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var shiftState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Shift);
+			var shiftState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Shift);
 			bool isShiftPressed = (shiftState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			bool isDirectionPressed = IsDirectionalKey(key);
