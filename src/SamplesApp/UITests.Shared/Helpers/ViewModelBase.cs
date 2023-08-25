@@ -26,7 +26,7 @@ namespace Uno.UI.Samples.UITests.Helpers
 		protected readonly CompositeDisposable Disposables = new CompositeDisposable();
 		protected readonly CancellationToken CT;
 
-		public ViewModelBase() : this(CoreWindow.GetForCurrentThread().Dispatcher)
+		public ViewModelBase() : this(CoreWindow.IShouldntUseGetForCurrentThread().Dispatcher)
 		{
 		}
 

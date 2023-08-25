@@ -26,7 +26,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			TestServices.WindowHelper.WindowContent = SUT;
 
-			var coreWindow = CoreWindow.GetForCurrentThread();
+			var coreWindow = CoreWindow.IShouldntUseGetForCurrentThread();
 			Assert.IsTrue(coreWindow.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
 		}
 
@@ -47,7 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			TestServices.WindowHelper.WindowContent = SUT;
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var coreWindow = CoreWindow.GetForCurrentThread();
+			var coreWindow = CoreWindow.IShouldntUseGetForCurrentThread();
 
 			Assert.IsTrue(coreWindow.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
 
