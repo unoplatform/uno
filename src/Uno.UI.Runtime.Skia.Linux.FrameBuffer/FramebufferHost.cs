@@ -136,12 +136,7 @@ namespace Uno.UI.Runtime.Skia
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
-<<<<<<< HEAD
 			_renderer = new Renderer();
-			_displayInformationExtension!.Renderer = _renderer;
-=======
-			_renderer = new Renderer(this);
->>>>>>> de705fdabf (fix(fb): Adjust initialization for framebuffer host)
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 
