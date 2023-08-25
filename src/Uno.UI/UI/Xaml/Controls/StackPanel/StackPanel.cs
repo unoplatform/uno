@@ -138,6 +138,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Orientation DependencyProperty
 
+		internal override Orientation? InternalOrientation => Orientation;
+
 		public Orientation Orientation
 		{
 			get { return (Orientation)GetValue(OrientationProperty); }
