@@ -994,7 +994,7 @@ namespace Windows.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
 				if (gestures.IsDragging)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 				}
 			}
 
@@ -1026,7 +1026,7 @@ namespace Windows.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
 				if (gestures.IsDragging)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 				}
 			}
 
@@ -1069,7 +1069,7 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 				if (isDragging && !ctx.IsInternal)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessDropped(args);
 				}
 			}
 
@@ -1105,7 +1105,7 @@ namespace Windows.UI.Xaml
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
-				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
+				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 			}
 
 #if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
@@ -1149,7 +1149,7 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessAborted(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args);
 				}
 			}
 

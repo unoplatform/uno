@@ -22,6 +22,8 @@ internal partial class InputManager : IInputInjectorTarget
 		ConstructKeyboardManager();
 
 		ConstructPointerManager();
+
+		InitDragAndDrop();
 	}
 
 	partial void ConstructKeyboardManager();
