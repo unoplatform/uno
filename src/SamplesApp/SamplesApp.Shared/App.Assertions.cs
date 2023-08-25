@@ -57,16 +57,16 @@ partial class App
 	{
 		//The ApplicationModel Package properties are currently only supported on Skia
 #if __SKIA__
-			var description = Package.Current.Description;
-			var publisherName = Package.Current.PublisherDisplayName;
+		var description = Package.Current.Description;
+		var publisherName = Package.Current.PublisherDisplayName;
 
-			Assert.IsFalse(string.IsNullOrEmpty(description), "Description isn't in manifest.");
+		Assert.IsFalse(string.IsNullOrEmpty(description), "Description isn't in manifest.");
 
-			Assert.IsFalse(string.IsNullOrEmpty(publisherName), "PublisherDisplayName isn't in manifest.");
+		Assert.IsFalse(string.IsNullOrEmpty(publisherName), "PublisherDisplayName isn't in manifest.");
 
-			Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");
+		Assert.IsFalse(description.Contains("ms-resource:"), $"'{description}' wasn't found in resources.");
 
-			Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
+		Assert.IsFalse(publisherName.Contains("ms-resource:"), $"'{publisherName}' wasn't found in resources.");
 #endif
 	}
 
