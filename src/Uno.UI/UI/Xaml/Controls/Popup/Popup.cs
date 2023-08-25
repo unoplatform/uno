@@ -311,7 +311,7 @@ public partial class Popup
 	/// </summary>
 	internal Brush LightDismissOverlayBackground
 	{
-		get => return (Brush)GetValue(LightDismissOverlayBackgroundProperty);
+		get => (Brush)GetValue(LightDismissOverlayBackgroundProperty);
 		set => SetValue(LightDismissOverlayBackgroundProperty, value);
 	}
 
