@@ -9,7 +9,7 @@ namespace SamplesApp.Wpf
 	{
 		public App()
 		{
-			SamplesApp.App.ConfigureFilters();
+			SamplesApp.App.ConfigureLogging();
 
 			var host = new WpfHost(Dispatcher, () => new SamplesApp.App());
 

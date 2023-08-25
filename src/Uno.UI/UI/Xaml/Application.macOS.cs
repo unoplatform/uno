@@ -47,8 +47,6 @@ namespace Windows.UI.Xaml
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
 
-		internal bool Suspended { get; private set; }
-
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			callback(new ApplicationInitializationCallbackParams());
@@ -83,12 +81,6 @@ namespace Windows.UI.Xaml
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
-
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
-			{
-				Suspended = true;
-			});
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
