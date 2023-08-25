@@ -189,9 +189,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, textBox.SelectionLength);
 		}
 
-#if __IOS__
-		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
-#endif
+//#if __IOS__
+//		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
+//#endif
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
@@ -230,9 +230,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(3, textBox.SelectionStart);
 		}
 
-#if __IOS__
-		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
-#endif
+//#if __IOS__
+//		[Ignore("Disabled as not working properly. See https://github.com/unoplatform/uno/issues/8016")]
+//#endif
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
