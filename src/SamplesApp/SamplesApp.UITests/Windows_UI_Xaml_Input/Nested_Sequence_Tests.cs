@@ -65,6 +65,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[Ignore("Inputs simulated by selenium are directly appreaing at the start location and wrongly inserting an exit.")]
 		//[ActivePlatforms(Platform.Browser)]
 #endif
+#if IS_RUNTIME_UI_TESTS
+		[Uno.UI.RuntimeTests.RequiresFullWindow]
+#endif
 		[InjectedPointer(PointerDeviceType.Mouse)]
 		public async Task When_PressOnNestedAndReleaseOnContainer_Mouse()
 		{
