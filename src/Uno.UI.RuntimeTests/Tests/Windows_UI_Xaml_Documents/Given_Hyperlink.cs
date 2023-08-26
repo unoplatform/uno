@@ -45,6 +45,7 @@ public class Given_Hyperlink
 		}
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 #if !__SKIA__
@@ -93,7 +94,9 @@ public class Given_Hyperlink
 			}
 		}
 	}
+#endif
 
+#if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
 #if !__SKIA__
@@ -148,6 +151,7 @@ public class Given_Hyperlink
 			}
 		}
 	}
+#endif
 
 	[TestMethod]
 	[RunsOnUIThread]
