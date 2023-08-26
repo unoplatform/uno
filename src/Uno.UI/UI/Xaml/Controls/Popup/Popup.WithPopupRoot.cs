@@ -6,7 +6,7 @@ using System;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
-using CoreServices = Uno.UI.Xaml.Core.CoreServices;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
@@ -85,13 +85,13 @@ public partial class Popup
 			{
 #if !HAS_UNO_WINUI
 				// In UWP, XamlRoot is set automatically to CoreWindow XamlRoot if not set beforehand.
-				if (XamlRoot is null && Child?.XamlRoot is null && CoreServices.Instance.InitializationType != InitializationType.IslandsOnly)
+				if (XamlRoot is null && Child?.XamlRoot is null && WinUICoreServices.Instance.InitializationType != InitializationType.IslandsOnly)
 				{
-					XamlRoot = CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+					XamlRoot = WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				}
 #endif
 
-				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
+				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
 				PopupPanel.Visibility = Visibility.Visible;
