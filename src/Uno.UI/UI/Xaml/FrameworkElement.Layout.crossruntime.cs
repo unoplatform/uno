@@ -281,7 +281,8 @@ namespace Windows.UI.Xaml
 				var layoutFrame = new Rect(offset, clippedInkSize);
 
 				// Calculate clipped frame.
-				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRect.DeflateBy(margin)) ?? Rect.Empty;
+				var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
+				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
 
 				// Rebase the origin of the clipped frame to layout
 				var clippedFrame = new Rect(

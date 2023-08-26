@@ -212,6 +212,10 @@ namespace Windows.UI.Xaml.Controls
 
 				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, clippedArrangeSize={clippedArrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
+				var arrangeSize = finalRect
+					.Size
+					.AtLeastZero(); // 0.0,0.0
+
 				if (allowClipToSlot && !needsClipToSlot)
 				{
 					if (IsLessThanAndNotCloseTo(clippedArrangeSize.Width, _unclippedDesiredSize.Width))
@@ -230,10 +234,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var (minSize, maxSize) = this.Panel.GetMinMax();
-
-				var arrangeSize = finalRect
-					.Size
-					.AtLeastZero(); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
 				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
@@ -504,7 +504,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract string Name { get; }
 
-		private (Rect layoutFrame, Rect clippedFrame) ApplyMarginAndAlignments(View view, Rect frame)
+		private static (Rect layoutFrame, Rect clippedFrame) ApplyMarginAndAlignments(View view, Rect frame)
 		{
 			// In this implementation, since we do not have the ability to intercept properly the measure and arrange
 			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignments
@@ -660,6 +660,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				// Calculate Create layoutFrame and apply child's margins
+				// TODO: Something goes wrong here and breaks margins.
 				var layoutFrame = new Rect(x, y, width, height).DeflateBy(childMargin);
 
 				// Give opportunity to element to alter arranged size
@@ -694,7 +695,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
+		private static void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
 			ref VerticalAlignment childVerticalAlignment)
 		{
 			if (view is Image img && (img.Stretch == Stretch.None || img.Stretch == Stretch.Uniform))
@@ -715,7 +716,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private double GetActualSize(
+		private static double GetActualSize(
 			double frameSize,
 			bool isStretch,
 			double childMaxSize,
