@@ -105,8 +105,12 @@ namespace Windows.UI.Xaml.Controls
 				frameworkAvailableSize = frameworkAvailableSize
 					.Subtract(marginSize)
 					.AtLeastZero()
-					.AtMost(maxSize)
-					.AtLeast(minSize);
+					.AtMost(maxSize);
+
+				if (Panel is not ILayoutOptOut { ShouldUseMinSize: false })
+				{
+					frameworkAvailableSize = frameworkAvailableSize.AtLeast(minSize);
+				}
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 				LayoutInformation.SetAvailableSize(Panel, availableSize);
