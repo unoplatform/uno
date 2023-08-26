@@ -192,11 +192,13 @@ namespace Windows.UI.Xaml
 				{
 					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Width = _unclippedDesiredSize.Width;
 				}
 				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 				{
 					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Height = _unclippedDesiredSize.Height;
 				}
 			}
 
@@ -238,7 +240,7 @@ namespace Windows.UI.Xaml
 
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
 
-			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
+			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize; // TODO: Verify if this is correct or if we should always use innerInkSize
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
