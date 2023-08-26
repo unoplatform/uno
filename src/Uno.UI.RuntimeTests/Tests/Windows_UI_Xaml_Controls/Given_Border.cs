@@ -22,13 +22,98 @@ using Windows.Foundation;
 using Windows.UI.Input.Preview.Injection;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
+using System.Numerics;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_Border
+	public partial class Given_Border
 	{
+		private partial class CustomControl : Control
+		{
+			public Border Child { get; set; }
+			public Size AvailableSizePassedToMeasureOverride { get; private set; }
+			public Size SizeReturnedFromMeasureOverride { get; private set; }
+			public Size FinalSizePassedToArrangeOverride { get; private set; }
+			public Size SizeReturnedFromArrangeOverride { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				AvailableSizePassedToMeasureOverride = availableSize;
+				Child.Measure(availableSize);
+				return SizeReturnedFromMeasureOverride = Child.DesiredSize;
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				FinalSizePassedToArrangeOverride = finalSize;
+				Child.Arrange(new(0, 0, finalSize.Width, finalSize.Height));
+				return SizeReturnedFromArrangeOverride = new(Child.ActualSize.X, Child.ActualSize.Y);
+			}
+		}
+
+		[TestMethod]
+		[DataRow(true)]
+		[DataRow(false)]
+		public async Task Check_Border_Margin(bool useCustomControl)
+		{
+			double outerDimension = 300;
+			double innerDimension = 50;
+			double innerMargin = 30;
+			double outerMargin = 2;
+
+			var innerBorder = new Border
+			{
+				Width = innerDimension,
+				Height = innerDimension,
+				Margin = new Thickness(innerMargin),
+				BorderBrush = new SolidColorBrush(Colors.Blue),
+			};
+
+			var customControl = new CustomControl
+			{
+				Child = innerBorder,
+			};
+
+			var outerBorder = new Border
+			{
+				Width = outerDimension,
+				Height = outerDimension,
+				Margin = new Thickness(outerMargin),
+				Child = useCustomControl ? customControl : innerBorder,
+				BorderBrush = new SolidColorBrush(Colors.Red),
+			};
+
+			WindowHelper.WindowContent = outerBorder;
+			await WindowHelper.WaitForLoaded(outerBorder);
+
+			var expectedDimensionInner = Math.Min(outerDimension, innerDimension + 2 * innerMargin);
+			var expectedSizeInner = new Size(expectedDimensionInner, expectedDimensionInner);
+			var expectedOffsetDimension = (outerDimension - innerDimension - 2 * innerMargin) / 2 + innerMargin;
+
+
+			if (useCustomControl)
+			{
+				Assert.AreEqual(new Size(outerDimension, outerDimension), customControl.AvailableSizePassedToMeasureOverride);
+				Assert.AreEqual(new Size(outerDimension, outerDimension), customControl.FinalSizePassedToArrangeOverride);
+				Assert.AreEqual(expectedSizeInner, customControl.SizeReturnedFromMeasureOverride);
+				Assert.AreEqual(new Size(innerDimension, innerDimension), customControl.SizeReturnedFromArrangeOverride);
+				Assert.AreEqual(new Size(innerDimension, innerDimension), customControl.RenderSize);
+				Assert.AreEqual(new Vector2((float)innerDimension, (float)innerDimension), customControl.ActualSize);
+				Assert.AreEqual(new Vector3((float)expectedOffsetDimension, (float)expectedOffsetDimension, 0), customControl.ActualOffset);
+				Assert.AreEqual(expectedSizeInner, customControl.DesiredSize);
+				Assert.AreEqual(null, customControl.Clip);
+			}
+
+			var expectedInnerBorderOffset = useCustomControl ? innerMargin : expectedOffsetDimension;
+
+			Assert.AreEqual(new Size(innerDimension, innerDimension), innerBorder.RenderSize);
+			Assert.AreEqual(new Vector2((float)innerDimension, (float)innerDimension), innerBorder.ActualSize);
+			Assert.AreEqual(new Vector3((float)expectedInnerBorderOffset, (float)expectedInnerBorderOffset, 0), innerBorder.ActualOffset);
+			Assert.AreEqual(expectedSizeInner, innerBorder.DesiredSize);
+			Assert.AreEqual(null, innerBorder.Clip);
+		}
 
 		[TestMethod]
 		public async Task Check_DataContext_Propagation()
