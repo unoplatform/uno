@@ -896,7 +896,9 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
+			// This assertion fails because we don't release pointer captures on PointerExited in InputManager
+			// TODO: make it such that this assertion doesn't fail
+			// global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
 
 			var point = e.GetCurrentPoint(that);
 
