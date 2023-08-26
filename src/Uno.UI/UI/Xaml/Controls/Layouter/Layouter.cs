@@ -218,12 +218,14 @@ namespace Windows.UI.Xaml.Controls
 					{
 						_logDebug?.Debug($"{this}: (arrangeSize.Width) {clippedArrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Width = _unclippedDesiredSize.Width;
 					}
 
 					else if (IsLessThanAndNotCloseTo(clippedArrangeSize.Height, _unclippedDesiredSize.Height))
 					{
 						_logDebug?.Debug($"{this}: (arrangeSize.Height) {clippedArrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Height = _unclippedDesiredSize.Height;
 					}
 				}
 
