@@ -4,7 +4,6 @@ using System;
 using System.Numerics;
 using Uno.UI.Composition;
 using SkiaSharp;
-using System.Runtime.Intrinsics.Arm;
 
 namespace Windows.UI.Composition
 {
@@ -21,6 +20,14 @@ namespace Windows.UI.Composition
 			if (Surface is SkiaCompositionSurface scs)
 			{
 				var imageShader = SKShader.CreateImage(scs.Image, SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, TransformMatrix.ToSKMatrix());
+
+				fillPaint.Shader = imageShader;
+
+				fillPaint.IsAntialias = true;
+			}
+			else if (Surface is ISkiaCompositionSurfaceProvider scsp && scsp.SkiaCompositionSurface is SkiaCompositionSurface scsps)
+			{
+				var imageShader = SKShader.CreateImage(scsps.Image, SKShaderTileMode.Repeat, SKShaderTileMode.Repeat, TransformMatrix.ToSKMatrix());
 
 				fillPaint.Shader = imageShader;
 

@@ -4446,6 +4446,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ArcSegmentPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -7796,6 +7804,12 @@
     </Compile>
 	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Composition\MaskBrushTests.xaml.cs">
       <DependentUpon>MaskBrushTests.xaml</DependentUpon>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\XamlCompositionBrushBase\XamlCompositionBrushBaseTests.xaml.cs">
+      <DependentUpon>XamlCompositionBrushBaseTests.xaml</DependentUpon>
+    </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\LoadedImageSurface\LoadedImageSurfaceTests.xaml.cs">
+      <DependentUpon>LoadedImageSurfaceTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ArcSegmentPage.xaml.cs">
       <DependentUpon>ArcSegmentPage.xaml</DependentUpon>
