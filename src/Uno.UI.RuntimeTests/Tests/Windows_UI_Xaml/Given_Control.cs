@@ -60,7 +60,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			// This assert makes sure that:
 			// 1. The availableSize passed to MeasureOverride is correct
-			// 2. DesiredSize is properly limited by the available size used for measure, after applying the margin.
+			// 2. DesiredSize is not limited by the available size used for measure, after applying the margin.
 
 			var SUT = new CustomControl
 			{
@@ -73,8 +73,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			// The MeasureOverride is passed the size after applying margin, which is 60x60.
 			Assert.AreEqual(new Size(60, 60), SUT.AvailableSizePassedToMeasureOverride);
 
-			// The desiredSize is limited by the available size after applying the margin.
-			Assert.AreEqual(new Size(60, 60), SUT.DesiredSize);
+			// The desiredSize is NOT limited by the available size after applying the margin.
+			Assert.AreEqual(new Size(200, 200), SUT.DesiredSize);
 		}
 
 		[TestMethod]
