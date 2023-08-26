@@ -257,11 +257,11 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				var renderSize = ArrangeOverride(arrangeSize);
+				var renderSize = ArrangeOverride(arrangeSize).AtMost(maxSize);
 
 				if (_elementAsUIElement != null)
 				{
-					_elementAsUIElement.RenderSize = renderSize.AtMost(maxSize);
+					_elementAsUIElement.RenderSize = renderSize;
 					_elementAsUIElement.NeedsClipToSlot = needsClipToSlot;
 					_elementAsUIElement.ApplyClip();
 
