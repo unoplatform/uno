@@ -132,7 +132,6 @@ namespace Windows.UI.Xaml.Controls
 				var clippedDesiredSize = desiredSize
 					.Add(marginSize)
 					// Making sure after adding margins that clipped DesiredSize is not bigger than the AvailableSize
-					.AtMost(frameworkAvailableSize)
 					.AtMost(availableSize)
 					// Margin may be negative
 					.AtLeastZero();
@@ -225,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 						arrangeSize.Width = _unclippedDesiredSize.Width;
 					}
 
-					else if (IsLessThanAndNotCloseTo(clippedArrangeSize.Height, _unclippedDesiredSize.Height))
+					if (IsLessThanAndNotCloseTo(clippedArrangeSize.Height, _unclippedDesiredSize.Height))
 					{
 						_logDebug?.Debug($"{this}: (arrangeSize.Height) {clippedArrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
