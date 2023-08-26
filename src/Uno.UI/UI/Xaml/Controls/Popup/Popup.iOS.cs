@@ -67,36 +67,4 @@ public partial class Popup
 		PopupPanel?.RemoveFromSuperview();
 		UnregisterPopupPanelChild();
 	}
-
-	private void UpdateLightDismissLayer(bool newIsOpen)
-	{
-		if (PopupPanel != null)
-		{
-			if (newIsOpen)
-			{
-				if (PopupPanel.Bounds != MainWindow.Bounds)
-				{
-					// If the Bounds are different, the screen has probably been rotated.
-					// We always want the light dismiss layer to have the same bounds (and frame) as the window.
-					PopupPanel.Bounds = MainWindow.Bounds;
-					PopupPanel.Frame = MainWindow.Frame;
-				}
-
-				PopupPanel.Visibility = Visibility.Visible;
-			}
-			else
-			{
-				PopupPanel.Visibility = Visibility.Collapsed;
-			}
-		}
-	}
-
-	/// <summary>
-	/// Ensure that Popup panel is forward-most in the window. This ensures it isn't hidden behind the main content, which can happen when
-	/// the Popup is created during initial launch.
-	/// </summary>
-	private void EnsureForward()
-	{
-		PopupPanel?.Superview?.BringSubviewToFront(PopupPanel);
-	}
 }
