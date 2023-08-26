@@ -147,6 +147,13 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		internal void RaiseSizeChanged(SizeChangedEventArgs args)
+		{
+			SizeChanged?.Invoke(this, args);
+			_renderTransform?.UpdateSize(args.NewSize);
+		}
+
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
 
 		partial void Initialize()
 		{
