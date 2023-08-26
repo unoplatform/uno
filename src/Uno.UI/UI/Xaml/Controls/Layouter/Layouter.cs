@@ -659,7 +659,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				// Calculate Create layoutFrame and apply child's margins
-				// TODO: Something goes wrong here and breaks margins.
 				var layoutFrame = new Rect(x, y, width, height).DeflateBy(childMargin);
 
 				// Give opportunity to element to alter arranged size
