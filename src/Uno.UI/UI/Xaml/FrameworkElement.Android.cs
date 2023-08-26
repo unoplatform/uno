@@ -238,7 +238,6 @@ namespace Windows.UI.Xaml
 				}
 
 				var previousSize = AssignedActualSize;
-				AssignedActualSize = finalRect.Size;
 
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.
@@ -258,6 +257,9 @@ namespace Windows.UI.Xaml
 
 					OnAfterArrange();
 				}
+
+				// TODO: Get this closer to Wasm/Skia implementation, i.e, have RenderSize setter call into both SetActualSize and RaiseSizeChanged
+				AssignedActualSize = RenderSize;
 
 				if (previousSize != finalRect.Size)
 				{
