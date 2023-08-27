@@ -227,7 +227,11 @@ namespace Windows.UI.Xaml.Media
 			return retVal;
 		}
 
-		public partial void Dispose() { }
+		public partial void Dispose()
+		{
+			_httpClient?.Dispose();
+			InternalSurface?.Image?.Dispose();
+		}
 
 		private async Task<Stream> OpenStreamFromUriAsync(Uri uri)
 		{

@@ -13,7 +13,7 @@ namespace Windows.UI.Composition
 
 		bool ISizedBrush.IsSized => true;
 
-		Vector2? ISizedBrush.Size => Surface is SkiaCompositionSurface scs && scs.Image is not null ? new(scs.Image.Width, scs.Image.Height) : (Surface is ISkiaSurface skiaSurface && skiaSurface.Surface is not null ? new((float)skiaSurface.Surface.Canvas.DeviceClipBounds.Width, (float)skiaSurface.Surface.Canvas.DeviceClipBounds.Height) : null);
+		Vector2? ISizedBrush.Size => Surface is SkiaCompositionSurface scs && scs.Image is not null ? new(scs.Image.Width, scs.Image.Height) : (Surface is ISkiaSurface skiaSurface && skiaSurface.Surface is not null ? new((float)skiaSurface.Surface.Canvas.DeviceClipBounds.Width, (float)skiaSurface.Surface.Canvas.DeviceClipBounds.Height) : (Surface is ISkiaCompositionSurfaceProvider scsp && scsp.SkiaCompositionSurface is SkiaCompositionSurface scsps && scsps.Image is not null ? new(scsps.Image.Width, scsps.Image.Height) : null));
 
 		internal override void UpdatePaint(SKPaint fillPaint, SKRect bounds)
 		{

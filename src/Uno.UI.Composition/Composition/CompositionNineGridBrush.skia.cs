@@ -19,7 +19,7 @@ namespace Windows.UI.Composition
 		private SKPaint? _filterPaint = new SKPaint() { FilterQuality = SKFilterQuality.High, IsAntialias = true, IsAutohinted = true, IsDither = true };
 		private SKRectI _insetRect;
 
-		bool IOnlineBrush.IsOnline => true; // TODO: `Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline` 
+		bool IOnlineBrush.IsOnline => true; // TODO: `Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline`, Implement this after offline rendering is implemented
 
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
@@ -40,11 +40,15 @@ namespace Windows.UI.Composition
 			{
 				Source?.UpdatePaint(_sourcePaint, sourceBounds);
 
-				if (_surface is null)
+				if (_surface is null || _surface.Canvas.DeviceClipBounds != sourceBounds)
+				{
+					_surface?.Dispose();
 					_surface = SKSurface.Create(new SKImageInfo((int)sourceBounds.Width, (int)sourceBounds.Height, SKImageInfo.PlatformColorType, SKAlphaType.Premul));
+				}
 
 				if (_surface is not null)
 				{
+					_surface.Canvas.Clear();
 					_surface.Canvas.DrawRect(sourceBounds, _sourcePaint);
 					_surface.Canvas.Flush();
 					_sourceImage?.Dispose();
@@ -64,6 +68,16 @@ namespace Windows.UI.Composition
 
 				session.Surface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
 			}
+		}
+
+		public override void Dispose()
+		{
+			base.Dispose();
+
+			_sourcePaint?.Dispose();
+			_sourceImage?.Dispose();
+			_surface?.Dispose();
+			_filterPaint?.Dispose();
 		}
 	}
 }
