@@ -96,15 +96,9 @@ namespace Windows.UI.Xaml
 			var frameworkAvailableSize = availableSize
 				.Subtract(marginSize)
 				.AtLeastZero()
-				.AtMost(maxSize)
-				.AtLeast(minSize);
+				.AtMost(maxSize);
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
-
-			// TODO: Windows does this rounding, but it fails VerifySmallWidthAndHeightDoNotCrash test.
-			// We need to figure it out and fix that.
-			// Tracking issue: https://github.com/unoplatform/uno/issues/13380
-			//desiredSize = new Size(Math.Round(desiredSize.Width, MidpointRounding.AwayFromZero), Math.Round(desiredSize.Height, MidpointRounding.AwayFromZero));
 
 			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
