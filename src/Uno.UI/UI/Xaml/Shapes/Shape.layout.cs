@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using static System.Double;
+using Windows.Phone.Media.Devices;
 
 #if __IOS__
 using _Color = UIKit.UIColor;
@@ -243,6 +244,9 @@ namespace Windows.UI.Xaml.Shapes
 
 				return default;
 			}
+
+			// Workaround until https://github.com/unoplatform/uno/pull/13391 is merged.
+			availableSize = availableSize.AtLeast(this.GetMinMax().min);
 
 			// Compute the final size of the Shape and the render properties
 			Size size;
