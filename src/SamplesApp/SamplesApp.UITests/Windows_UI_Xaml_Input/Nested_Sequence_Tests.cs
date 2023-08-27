@@ -33,6 +33,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		[InjectedPointer(PointerDeviceType.Touch)]
+#if IS_RUNTIME_UI_TESTS
+		[Uno.UI.RuntimeTests.RequiresFullWindow]
+#endif
 		public async Task When_PressOnNestedAndReleaseOnContainer_Touch()
 		{
 			await RunAsync(_sample);
