@@ -1,4 +1,6 @@
-﻿//#define ENABLE_CONTAINER_VISUAL_TRACKING
+﻿#if DEBUG
+#define ENABLE_CONTAINER_VISUAL_TRACKING
+#endif
 
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -35,7 +37,6 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
-			InitializeKeyboard();
 
 			UpdateHitTest();
 		}
@@ -54,8 +55,6 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(true));
 
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
-
-		partial void InitializeKeyboard();
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -225,8 +224,6 @@ namespace Windows.UI.Xaml
 		}
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
-
-		partial void InitializeCapture();
 
 		internal bool IsPointerCaptured { get; set; }
 

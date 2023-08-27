@@ -105,13 +105,21 @@ namespace Windows.UI.Xaml.Controls
 					OnItemClicked(focusedContainer, args.KeyboardModifiers);
 				}
 			}
-			else if (args.Key == VirtualKey.Down)
+			else
 			{
-				return TryMoveKeyboardFocusAndSelection(+1, args.KeyboardModifiers);
-			}
-			else if (args.Key == VirtualKey.Up)
-			{
-				return TryMoveKeyboardFocusAndSelection(-1, args.KeyboardModifiers);
+				var orientation = ItemsPanelRoot?.InternalOrientation ?? Orientation.Vertical;
+
+				switch (args.Key)
+				{
+					case VirtualKey.Down when orientation == Orientation.Vertical:
+						return TryMoveKeyboardFocusAndSelection(+1, args.KeyboardModifiers);
+					case VirtualKey.Up when orientation == Orientation.Vertical:
+						return TryMoveKeyboardFocusAndSelection(-1, args.KeyboardModifiers);
+					case VirtualKey.Right when orientation == Orientation.Horizontal:
+						return TryMoveKeyboardFocusAndSelection(+1, args.KeyboardModifiers);
+					case VirtualKey.Left when orientation == Orientation.Horizontal:
+						return TryMoveKeyboardFocusAndSelection(-1, args.KeyboardModifiers);
+				}
 			}
 			return false;
 		}
@@ -123,6 +131,11 @@ namespace Windows.UI.Xaml.Controls
 			var newIndex = prevIndex + offset;
 			var newContainer = ContainerFromIndex(newIndex) as SelectorItem;
 			var newItem = ItemFromIndex(newIndex);
+
+			if (newIndex < 0 || newIndex >= Items.Count)
+			{
+				return false;
+			}
 
 			FocusedIndexContainerItem = (newIndex, newContainer, newItem);
 
@@ -444,6 +457,11 @@ namespace Windows.UI.Xaml.Controls
 		internal override void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
 			base.OnSelectedIndexChanged(oldSelectedIndex, newSelectedIndex);
+			if (ExtendedShiftSelectionStart == -1)
+			{
+				// only changed if it wasn't already set. This matches the behaviour on WinUI.
+				ExtendedShiftSelectionStart = newSelectedIndex;
+			}
 
 			try
 			{

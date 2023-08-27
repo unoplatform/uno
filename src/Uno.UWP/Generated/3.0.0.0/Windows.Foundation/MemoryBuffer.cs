@@ -6,11 +6,11 @@ namespace Windows.Foundation
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class MemoryBuffer : global::Windows.Foundation.IMemoryBuffer,global::System.IDisposable
+	public partial class MemoryBuffer : global::Windows.Foundation.IMemoryBuffer, global::System.IDisposable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public MemoryBuffer(uint capacity) 
+		public MemoryBuffer(uint capacity)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Foundation.MemoryBuffer", "MemoryBuffer.MemoryBuffer(uint capacity)");
 		}

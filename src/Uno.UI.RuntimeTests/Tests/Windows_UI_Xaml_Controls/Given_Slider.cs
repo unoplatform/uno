@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Input.Preview.Injection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml.Shapes;
+using MUXControlsTestApp.Utilities;
+using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -69,6 +73,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.Height);
 			Assert.AreEqual(0, slider.VerticalDecreaseRect.ActualHeight);
 		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Slider_Dragged()
+		{
+			var slider = new MySlider
+			{
+				Minimum = 0,
+				Maximum = 100,
+				Orientation = Orientation.Horizontal,
+				HorizontalAlignment = HorizontalAlignment.Stretch,
+				VerticalAlignment = VerticalAlignment.Stretch
+			};
+			var container = new Grid
+			{
+				Width = 80,
+				Height = 80
+			};
+			container.Children.Add(slider);
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press(slider.GetAbsoluteBounds().GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsTrue(Math.Abs(50 - slider.Value) < 1);
+
+			var clickableLength = slider.ActualWidth - slider.FindVisualChildByType<Thumb>().ActualWidth;
+
+			mouse.MoveBy(clickableLength / 4, 0);
+
+			Assert.IsTrue(Math.Abs(75 - slider.Value) < 1);
+
+			mouse.Release();
+		}
+#endif
 	}
 
 	public partial class MySlider : Slider

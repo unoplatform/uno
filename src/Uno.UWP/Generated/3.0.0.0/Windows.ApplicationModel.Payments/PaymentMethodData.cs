@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentMethodData(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds) 
+		public PaymentMethodData(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMethodData", "PaymentMethodData.PaymentMethodData(IEnumerable<string> supportedMethodIds)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentMethodData.PaymentMethodData(System.Collections.Generic.IEnumerable<string>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentMethodData(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds, string jsonData) 
+		public PaymentMethodData(global::System.Collections.Generic.IEnumerable<string> supportedMethodIds, string jsonData)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentMethodData", "PaymentMethodData.PaymentMethodData(IEnumerable<string> supportedMethodIds, string jsonData)");
 		}

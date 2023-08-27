@@ -80,7 +80,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DisplayPrimaryDescription(uint width, uint height, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace, bool isStereo, global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription) 
+		public DisplayPrimaryDescription(uint width, uint height, global::Windows.Graphics.DirectX.DirectXPixelFormat pixelFormat, global::Windows.Graphics.DirectX.DirectXColorSpace colorSpace, bool isStereo, global::Windows.Graphics.DirectX.Direct3D11.Direct3DMultisampleDescription multisampleDescription)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayPrimaryDescription", "DisplayPrimaryDescription.DisplayPrimaryDescription(uint width, uint height, DirectXPixelFormat pixelFormat, DirectXColorSpace colorSpace, bool isStereo, Direct3DMultisampleDescription multisampleDescription)");
 		}

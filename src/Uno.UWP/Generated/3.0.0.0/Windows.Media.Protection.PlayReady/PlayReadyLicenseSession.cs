@@ -6,11 +6,11 @@ namespace Windows.Media.Protection.PlayReady
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class PlayReadyLicenseSession : global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession,global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession2
+	public partial class PlayReadyLicenseSession : global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession, global::Windows.Media.Protection.PlayReady.IPlayReadyLicenseSession2
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PlayReadyLicenseSession(global::Windows.Foundation.Collections.IPropertySet configuration) 
+		public PlayReadyLicenseSession(global::Windows.Foundation.Collections.IPropertySet configuration)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Protection.PlayReady.PlayReadyLicenseSession", "PlayReadyLicenseSession.PlayReadyLicenseSession(IPropertySet configuration)");
 		}

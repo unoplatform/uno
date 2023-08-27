@@ -17,7 +17,6 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateBorder()
 		{
 			SetBorder(Thickness.Empty, null);
-			SetAndObserveBackgroundBrush(Background);
 		}
 	}
 }

@@ -6,7 +6,7 @@ namespace Windows.Networking.ServiceDiscovery.Dnssd
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class DnssdServiceInstanceCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance>,global::System.Collections.Generic.IEnumerable<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance>
+	public partial class DnssdServiceInstanceCollection : global::System.Collections.Generic.IReadOnlyList<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance>, global::System.Collections.Generic.IEnumerable<global::Windows.Networking.ServiceDiscovery.Dnssd.DnssdServiceInstance>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal DnssdServiceInstanceCollection()

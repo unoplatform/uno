@@ -745,7 +745,7 @@ namespace Uno.UI.Samples.Tests
 					await ReportMessage($"Running test {fullTestName}");
 					ReportTestsResults();
 
-					var cleanupActions = new List<ActionAsync>();
+					var cleanupActions = new List<Func<Task>>();
 					var sw = new Stopwatch();
 					var canRetry = true;
 
@@ -767,7 +767,7 @@ namespace Uno.UI.Samples.Tests
 									Private.Infrastructure.TestServices.WindowHelper.UseActualWindowRoot = true;
 									Private.Infrastructure.TestServices.WindowHelper.SaveOriginalWindowContent();
 								});
-								cleanupActions.Add(async _ =>
+								cleanupActions.Add(async () =>
 								{
 									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 									{
@@ -795,7 +795,7 @@ namespace Uno.UI.Samples.Tests
 									{
 										var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
 
-										cleanupActions.Add(_ =>
+										cleanupActions.Add(() =>
 										{
 											ptSubscription.Dispose();
 											return Task.CompletedTask;
@@ -813,7 +813,7 @@ namespace Uno.UI.Samples.Tests
 								if (testCase.Pointer is { } pt)
 								{
 									var ptSubscription = (instance as IInjectPointers ?? throw new InvalidOperationException("test class does not supports pointer selection.")).SetPointer(pt);
-									cleanupActions.Add(_ =>
+									cleanupActions.Add(() =>
 									{
 										ptSubscription.Dispose();
 										return Task.CompletedTask;
@@ -903,9 +903,9 @@ namespace Uno.UI.Samples.Tests
 						}
 						finally
 						{
-							foreach (var cleanup in cleanupActions.Where(action => action is not null))
+							foreach (var cleanup in cleanupActions)
 							{
-								await cleanup(CancellationToken.None);
+								await cleanup();
 							}
 						}
 					}

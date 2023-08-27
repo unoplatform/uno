@@ -159,9 +159,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return true;
 				}
 
-				if (symbol.AllInterfaces.Any(i => isSameType(i, interfaceName)))
+				foreach (var @interface in symbol.AllInterfaces)
 				{
-					return true;
+					if (isSameType(@interface, interfaceName))
+					{
+						return true;
+					}
 				}
 			}
 

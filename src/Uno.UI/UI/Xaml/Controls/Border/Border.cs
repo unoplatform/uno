@@ -55,15 +55,6 @@ namespace Windows.UI.Xaml.Controls
 			Child = VisualTreeHelper.TryAdaptNative(view);
 		}
 
-		~Border()
-		{
-			_borderBrushChangedProxy?.Unsubscribe();
-
-#if __ANDROID__
-			_brushChangedProxy?.Unsubscribe();
-#endif
-		}
-
 		protected override bool IsSimpleLayout => true;
 
 		private protected override Thickness GetBorderThickness() => BorderThickness;
@@ -231,8 +222,6 @@ namespace Windows.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
-
-		private WeakBrushChangedProxy _borderBrushChangedProxy;
 		private Action _borderBrushChanged;
 
 #if __ANDROID__
@@ -260,10 +249,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChangedProxy ??= new();
-			_borderBrushChanged ??= () => OnBorderBrushChangedPartial();
-			_borderBrushChangedProxy.Subscribe(newValue, _borderBrushChanged);
-
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => OnBorderBrushChangedPartial()));
 #if __WASM__
 			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 			{

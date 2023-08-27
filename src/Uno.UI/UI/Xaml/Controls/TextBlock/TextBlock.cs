@@ -36,16 +36,10 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
-		private WeakBrushChangedProxy _foregroundChangedProxy;
 		private Action _foregroundChanged;
 
 		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
-
-		~TextBlock()
-		{
-			_foregroundChangedProxy?.Unsubscribe();
-		}
 
 #if !UNO_REFERENCE_API
 		public TextBlock()
@@ -416,15 +410,14 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: SolidColorBrushHelper.Black,
 					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).Subscribe((Brush)e.NewValue)
+					propertyChangedCallback: (s, e) => ((TextBlock)s).Subscribe((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
 
-		private void Subscribe(Brush newValue)
+		private void Subscribe(Brush oldValue, Brush newValue)
 		{
-			_foregroundChangedProxy ??= new();
-			_foregroundChanged ??= () => OnForegroundChanged();
-			_foregroundChangedProxy.Subscribe(newValue, _foregroundChanged);
+			var newOnInvalidateRender = _foregroundChanged ?? (() => OnForegroundChanged());
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, newOnInvalidateRender);
 		}
 
 		private void OnForegroundChanged()

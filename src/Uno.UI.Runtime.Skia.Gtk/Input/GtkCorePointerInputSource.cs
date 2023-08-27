@@ -379,7 +379,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX, rootY);
 		var position = new Windows.Foundation.Point(x, y);
-		var modifiers = GtkCoreWindowExtension.GetKeyModifiers(state);
+		var modifiers = GtkKeyboardInputSource.GetKeyModifiers(state);
 		var properties = new PointerPointProperties();
 
 		switch (evtType)
@@ -507,7 +507,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	private static bool IsPressed(ModifierType state, ModifierType mask, PointerUpdateKind update, PointerUpdateKind pressed, PointerUpdateKind released)
-		=> update == pressed || (state.HasFlag(mask) && update != released);
+		=> update == pressed || (((state & mask) != 0) && update != released);
 	#endregion
 
 	private void RaisePointerEntered(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")

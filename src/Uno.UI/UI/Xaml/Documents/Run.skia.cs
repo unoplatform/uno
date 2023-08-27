@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using HarfBuzzSharp;
 using SkiaSharp;
+using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Documents.TextFormatting;
 
 #nullable enable
@@ -65,7 +66,6 @@ namespace Windows.UI.Xaml.Documents
 				else
 				{
 					// Count leading spaces
-
 					while (i < text.Length && char.IsWhiteSpace(text[i]) && !Unicode.IsLineBreak(text[i]))
 					{
 						leadingSpaces++;
@@ -73,7 +73,6 @@ namespace Windows.UI.Xaml.Documents
 					}
 
 					// Keep the segment going until we hit a word break opportunity or a line break
-
 					while (i < text.Length)
 					{
 						if (ProcessLineBreak(text, ref i, ref lineBreakLength))
@@ -96,6 +95,21 @@ namespace Windows.UI.Xaml.Documents
 						{
 							symbolTypeface = SKFontManager.Default
 								.MatchCharacter(text[i]);
+
+							if (symbolTypeface is null)
+							{
+								// Under some Linux systems, the symbol may not be found
+								// in the default font and 
+								// we have to skip the character and continue segments
+								// evaluation.
+								if (this.Log().IsEnabled(LogLevel.Trace))
+								{
+									this.Log().Trace($"Failed to match symbol in the default system font (0x{(int)text[i]:X4}, {text[i]})");
+								}
+
+								i++;
+							}
+
 							break;
 						}
 						else if (i + 1 < text.Length
@@ -106,7 +120,25 @@ namespace Windows.UI.Xaml.Documents
 							var codepoint = (int)((text[i] - 0xD800) * 0x400 + (text[i + 1] - 0xDC00) + 0x10000);
 							symbolTypeface = fontManager
 								.MatchCharacter(codepoint);
-							surrogate = symbolTypeface is { };
+
+							if (symbolTypeface is not null)
+							{
+								surrogate = true;
+							}
+							else
+							{
+								// Under some Linux systems, the symbol may not be found
+								// in the default font and 
+								// we have to skip the character and continue segments
+								// evaluation.
+
+								if (this.Log().IsEnabled(LogLevel.Trace))
+								{
+									this.Log().Trace($"Failed to match surrogate in the default system font (0x{codepoint:X4}, {(char)codepoint})");
+								}
+
+								i++;
+							}
 							break;
 						}
 						i++;

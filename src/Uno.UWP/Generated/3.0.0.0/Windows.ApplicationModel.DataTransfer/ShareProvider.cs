@@ -54,7 +54,7 @@ namespace Windows.ApplicationModel.DataTransfer
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ShareProvider(string title, global::Windows.Storage.Streams.RandomAccessStreamReference displayIcon, global::Windows.UI.Color backgroundColor, global::Windows.ApplicationModel.DataTransfer.ShareProviderHandler handler) 
+		public ShareProvider(string title, global::Windows.Storage.Streams.RandomAccessStreamReference displayIcon, global::Windows.UI.Color backgroundColor, global::Windows.ApplicationModel.DataTransfer.ShareProviderHandler handler)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.ShareProvider", "ShareProvider.ShareProvider(string title, RandomAccessStreamReference displayIcon, Color backgroundColor, ShareProviderHandler handler)");
 		}

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -110,6 +111,37 @@ namespace MUXControlsTestApp.Utilities
 			return element is T elementAsT
 				? elementAsT
 				: VisualTreeHelper.GetParent(element).FindVisualParentByType<T>();
+		}
+
+		public static List<T> FindVisualChildrenByType<T>(DependencyObject parent)
+#if !NETFX_CORE
+			where T : class, DependencyObject
+#else
+			where T : DependencyObject
+#endif
+		{
+			List<T> children = new List<T>();
+			T parentAsT = parent as T;
+
+			if (parentAsT != null)
+			{
+				children.Add(parentAsT);
+			}
+
+			int childrenCount = VisualTreeHelper.GetChildrenCount(parent);
+
+			for (int i = 0; i < childrenCount; i++)
+			{
+				var childAsFE = VisualTreeHelper.GetChild(parent, i) as DependencyObject;
+
+				if (childAsFE != null)
+				{
+					List<T> result = FindVisualChildrenByType<T>(childAsFE);
+					children.AddRange(result);
+				}
+			}
+
+			return children;
 		}
 	}
 }

@@ -10,7 +10,7 @@ namespace Windows.Perception.Spatial.Surfaces
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpatialSurfaceObserver() 
+		public SpatialSurfaceObserver()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Perception.Spatial.Surfaces.SpatialSurfaceObserver", "SpatialSurfaceObserver.SpatialSurfaceObserver()");
 		}
