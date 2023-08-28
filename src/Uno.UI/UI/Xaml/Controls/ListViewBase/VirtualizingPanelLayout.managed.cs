@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// We know that the scroll is outside the available
 				// breath, so all lines can be recycled
-				ClearLines(clearContainer: false);
+				ClearLines();
 
 				// Set the seed start to use the approximate position of
 				// the line based on the average line height.
@@ -514,7 +514,7 @@ namespace Windows.UI.Xaml.Controls
 				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(firstMaterializedLine, clearContainer: false);
+					RecycleLine(firstMaterializedLine);
 					_materializedLines.RemoveFromFront();
 					firstMaterializedLine = GetFirstMaterializedLine();
 				}
@@ -526,7 +526,7 @@ namespace Windows.UI.Xaml.Controls
 				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(lastMaterializedLine, clearContainer: false);
+					RecycleLine(lastMaterializedLine);
 					_materializedLines.RemoveFromBack();
 					lastMaterializedLine = GetLastMaterializedLine();
 				}
@@ -536,12 +536,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Recycle all views for a given line.
 		/// </summary>
-		/// <param name="clearContainer">cleanup the container when an associated item is removed</param>
-		private void RecycleLine(Line line, bool clearContainer)
+		private void RecycleLine(Line line)
 		{
 			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i, clearContainer);
+				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i);
 			}
 		}
 
@@ -799,7 +798,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"{GetMethodTag()}");
 			}
 
-			ClearLines(clearContainer: true);
+			ClearLines();
 
 			UpdateCompleted();
 			Generator.ClearIdCache();
@@ -807,7 +806,7 @@ namespace Windows.UI.Xaml.Controls
 			OwnerPanel?.InvalidateMeasure();
 		}
 
-		private void ClearLines(bool clearContainer)
+		private void ClearLines()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -816,7 +815,7 @@ namespace Windows.UI.Xaml.Controls
 
 			foreach (var line in _materializedLines)
 			{
-				RecycleLine(line, clearContainer);
+				RecycleLine(line);
 			}
 			_materializedLines.Clear();
 		}

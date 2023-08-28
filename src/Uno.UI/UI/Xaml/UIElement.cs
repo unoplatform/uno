@@ -1043,12 +1043,6 @@ namespace Windows.UI.Xaml
 		{
 			ClearPointerStateOnRecycle();
 
-
-			// It's important to clear the index on the way out (recycle) and not wait to set it on the way in (reuse)
-			// because this property is used e.g. in ItemsControl.ContainerFromIndexInner which is used by e.g.
-			// ListView to get a clicked container.
-			ClearValue(ItemsControl.IndexForItemContainerProperty);
-
 			foreach (var child in VisualTreeHelper.GetManagedVisualChildren(this))
 			{
 				child.PrepareForRecycle();

@@ -176,8 +176,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="container">The item container to recycle.</param>
 		/// <param name="index">The item index that the container was being used for.</param>
-		/// <param name="clearContainer">Clears the container DataContext, used when the container is associated when an item is removed</param>
-		public void RecycleViewForItem(FrameworkElement container, int index, bool clearContainer)
+		public void RecycleViewForItem(FrameworkElement container, int index)
 		{
 			var id = GetItemId(index);
 
@@ -194,15 +193,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					cache.Push(container);
 
-					if (clearContainer)
-					{
-						ItemsControl?.CleanUpContainer(container);
-					}
-					else
-					{
-						// https://github.com/unoplatform/uno/issues/11957
-						container.PrepareForRecycle();
-					}
+					ItemsControl?.CleanUpContainer(container);
+					// https://github.com/unoplatform/uno/issues/11957
 				}
 				else
 				{
@@ -255,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			foreach (var kvp in _scrapCache)
 			{
-				RecycleViewForItem(kvp.Value, kvp.Key, clearContainer: false);
+				RecycleViewForItem(kvp.Value, kvp.Key);
 			}
 
 			_scrapCache.Clear();
@@ -296,7 +288,7 @@ namespace Windows.UI.Xaml.Controls
 					// Item has been removed, take out container from scrap so that we don't reuse it without rebinding.
 					// Note: we update scrap before _idCache, so we can access the correct, cached template id in RecycleViewForItem()
 					// We also ensure that the container is cleared up so that we don't leak references
-					RecycleViewForItem(kvp.Value, kvp.Key, clearContainer: true);
+					RecycleViewForItem(kvp.Value, kvp.Key);
 				}
 			}
 
