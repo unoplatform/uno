@@ -324,7 +324,6 @@ namespace SamplesApp
 
 				// Place the frame in the current Window
 				Windows.UI.Xaml.Window.Current.Content = rootFrame;
-				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
 			if (rootFrame.Content == null)
@@ -674,7 +673,15 @@ namespace SamplesApp
 			textBox.XamlRoot = rootFrame.XamlRoot;
 			var textBoxView = new TextBoxView(textBox);
 			ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
-			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+
+			if (textBoxViewExtension is not null)
+			{
+				Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+			}
+			else
+			{
+				Console.WriteLine($"TextBoxView is not available for this platform");
+			}
 #endif
 		}
 
