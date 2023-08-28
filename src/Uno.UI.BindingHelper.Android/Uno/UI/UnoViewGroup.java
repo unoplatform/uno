@@ -95,6 +95,26 @@ public abstract class UnoViewGroup
 		);
 
 		setClipChildren(false); // The actual clipping will be calculated in managed code
+		setClipToPadding(false); // Same as above
+	}
+	
+	@Override
+	public boolean hasOverlappingRendering()
+	{
+		// This override is to prevent the Android framework from creating a layer for this view,
+		// which would cause a clipping issue because the layer could potentially be too small for
+		// the view's content.
+		
+		// By preventing Android from creating that layer, the view will be drawn directly into
+		// the parent's layer, so the problem is avoided.
+		
+		// A slight performance hit is expected, but it's should be negligible when it's only
+		// on elements having opacity < 1f.
+	
+		// Original bug: https://github.com/unoplatform/Uno.Gallery/issues/898
+	
+		// Check for opacity (Alpha) and return false if it's less than 1f
+		return getAlpha() >= 1 && super.hasOverlappingRendering();
 	}
 
 	private boolean _unoLayoutOverride;
