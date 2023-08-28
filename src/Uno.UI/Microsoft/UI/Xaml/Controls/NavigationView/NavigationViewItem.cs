@@ -881,7 +881,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// UNO - OnExpandCollapseChevronTapped is not necessary because NavigationViewMenuItem explicitly
 		// captures the pointer, so when the pointer is released, NVMI's Tapped will trigger first, flipping
-		// IsExpanded. So, flipping it here again undoes the change.
+		// IsExpanded. So, flipping it here again undoes the change. Now, if the chevron itself it clicked, we will
+		// bubble up to OnNavigationViewItemTapped, which will take care of IsExpanded.
 		// internal void OnExpandCollapseChevronTapped(object sender, TappedRoutedEventArgs args)
 		// {
 		// 	IsExpanded = !IsExpanded;
