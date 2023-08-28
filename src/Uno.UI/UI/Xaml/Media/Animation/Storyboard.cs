@@ -114,8 +114,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void Play()
 		{
-			_runningChildren = 0;
-			if (Children != null && Children.Count > 0)
+			_runningChildren = Children?.Count ?? 0;
+			if (_runningChildren > 0)
 			{
 				for (int i = 0; i < Children.Count; i++)
 				{
@@ -123,7 +123,6 @@ namespace Windows.UI.Xaml.Media.Animation
 
 					DisposeChildRegistrations(child);
 
-					_runningChildren++;
 					child.RegisterListener(this);
 
 					child.Begin();
