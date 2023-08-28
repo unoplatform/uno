@@ -16,7 +16,7 @@ public partial class NavigationViewTests : MUXApiTestBase
 {
 	[TestMethod]
 #if !__SKIA__
-		[Ignore("InputInjector is only supported on skia")]
+	[Ignore("InputInjector is only supported on skia")]
 #endif
 	public async Task VerifyNavigationViewItemExpandsCollapsesWhenChevronTapped()
 	{
