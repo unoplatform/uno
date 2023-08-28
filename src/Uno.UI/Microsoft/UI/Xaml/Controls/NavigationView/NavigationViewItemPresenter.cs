@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				// Can be removed when #4689.
 				if (m_expandCollapseChevron != null)
 				{
-					m_expandCollapseChevron.Tapped -= navigationViewItem.OnExpandCollapseChevronTapped;
+					// m_expandCollapseChevron.Tapped -= navigationViewItem.OnExpandCollapseChevronTapped;
 				}
 #endif
 
@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				if (expandCollapseChevron != null)
 				{
 					m_expandCollapseChevron = expandCollapseChevron;
-					expandCollapseChevron.Tapped += navigationViewItem.OnExpandCollapseChevronTapped;
+					// expandCollapseChevron.Tapped += navigationViewItem.OnExpandCollapseChevronTapped;
 				}
 				navigationViewItem.UpdateVisualStateNoTransition();
 
