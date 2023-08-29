@@ -6,6 +6,10 @@ uid: Uno.Development.MigratingFromPreviousReleases
 
 This article details the  migration steps required to migrate from one version to the next when breaking changes are being introduced.
 
+### Uno Platform 4.10
+
+This release does not require upgrade steps.
+
 ### Uno Platform 4.9
 This release does not require upgrade steps.
 
