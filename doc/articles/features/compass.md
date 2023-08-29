@@ -22,13 +22,13 @@ uid: Uno.Features.Compass
  * The `GetDefault` method is available on all targets and will return `null` on those which do not support `Compass` or devices that do not have such a sensor.
  * Ensure to unsubscribe from the `ReadingChanged` event when you no longer need the readings, so that the sensor is no longer active to avoid unnecessary battery consumption.
 
-## Platform-specific    Usage on Android
+## Platform-specific
 
 ### Android
 
 If you are planning to use the `HeadingTrueNorth`, your app must declare `android.permission.ACCESS_FINE_LOCATION` permission, otherwise the value will return `null`:
 
-```
+```csharp
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
 ```
 
