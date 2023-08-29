@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml
 
 		private bool CheckFlagKeyDown(NSEventModifierMask flag, NSEventModifierMask newMask) => !_lastFlags.HasFlag(flag) && newMask.HasFlag(flag);
 
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
