@@ -12,7 +12,7 @@ body:
     attributes:
       label: On which page?
       description: Specify the sample page or section where you've identified an issue
-      placeholder: ex. Windows.Devices/Acceleromter
+      placeholder: ex. Windows.Devices/Accelerometer
     validations:
       required: true
 
