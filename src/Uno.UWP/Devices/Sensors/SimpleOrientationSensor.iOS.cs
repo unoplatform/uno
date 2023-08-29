@@ -1,4 +1,5 @@
-﻿using CoreMotion;
+#nullable enable
+using CoreMotion;
 using Foundation;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
@@ -8,7 +9,7 @@ namespace Windows.Devices.Sensors
 	public partial class SimpleOrientationSensor
 	{
 		private SimpleOrientation _previousOrientation;
-		private static CMMotionManager _motionManager;
+		private static CMMotionManager? _motionManager;
 		private const double _updateInterval = 0.5;
 		private const double _threshold = 0.5;
 
@@ -18,10 +19,24 @@ namespace Windows.Devices.Sensors
 			if (_motionManager.DeviceMotionAvailable) // DeviceMotion is not available on all devices. iOS4+
 			{
 				var operationQueue = (NSOperationQueue.CurrentQueue == null || NSOperationQueue.CurrentQueue == NSOperationQueue.MainQueue) ? new NSOperationQueue() : NSOperationQueue.CurrentQueue;
-				this.Log().Error("DeviceMotion is available");
+				this.Log().Info("DeviceMotion is available");
 				_motionManager.DeviceMotionUpdateInterval = _updateInterval;
+
 				_motionManager.StartDeviceMotionUpdates(operationQueue, (motion, error) =>
 				{
+					// Motion and Error can be null: https://developer.apple.com/documentation/coremotion/cmdevicemotionhandler
+					if (error is not null)
+					{
+						this.Log().Error($"SimpleOrientationSensor returned error when reading Device Motion updates. {error.Description}");
+						return;
+					}
+
+					if (motion is null)
+					{
+						this.Log().Error($"SimpleOrientationSensor failed read Device Motion updates.");
+						return;
+					}
+
 					OnMotionChanged(motion);
 				});
 			}
