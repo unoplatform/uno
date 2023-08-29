@@ -1654,13 +1654,11 @@
 			<Member fullName="System.Numerics.Quaternion Windows.UI.Composition.Visual.get_Orientation()" reason="Converted to auto-property" />
 			<!-- END Skia clipping -->
 
-<<<<<<< HEAD
 			<Member fullName="System.Collections.Generic.IEnumerator`1&lt;T&gt; Uno.Collections.MaterializableList`1.GetEnumerator()" reason="Changed return type" />
-=======
+
 			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
->>>>>>> e7ab1515db (refactor: Cleanup dead shapes code on Wasm)
 		</Methods>
 	</IgnoreSet>
 	  <!--
