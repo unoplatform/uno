@@ -69,6 +69,7 @@ svg.uno-uielement {
   */
   pointer-events: none;
   stroke-width: 1px; /* default value of Shape.StrokeThickness */
+  overflow: visible
 }
 
 .uno-frameworkelement.uno-unarranged {
