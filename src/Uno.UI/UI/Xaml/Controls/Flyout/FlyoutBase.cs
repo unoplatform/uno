@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 
 				InitializePopupPanel();
-				
+
 				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
