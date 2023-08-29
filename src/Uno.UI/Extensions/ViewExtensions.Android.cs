@@ -606,7 +606,7 @@ namespace Uno.UI
 					{
 						Inner(childViewGroup, s);
 					}
-					else if (child is { })
+					else if (child is not null)
 					{
 						AppendView(child, s);
 					}
