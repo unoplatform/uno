@@ -11,14 +11,8 @@ public partial class XamlCompositionBrushBase : Brush
 
 	public Color FallbackColor
 	{
-		get
-		{
-			return (Color)this.GetValue(FallbackColorProperty);
-		}
-		set
-		{
-			this.SetValue(FallbackColorProperty, value);
-		}
+		get => (Color)GetValue(FallbackColorProperty);
+		set => SetValue(FallbackColorProperty, value);
 	}
 
 	public static DependencyProperty FallbackColorProperty { get; } =
@@ -34,14 +28,8 @@ public partial class XamlCompositionBrushBase : Brush
 
 	public CompositionBrush CompositionBrush
 	{
-		get
-		{
-			return (CompositionBrush)this.GetValue(CompositionBrushProperty);
-		}
-		set
-		{
-			this.SetValue(CompositionBrushProperty, value);
-		}
+		get => (CompositionBrush)GetValue(CompositionBrushProperty);
+		set => SetValue(CompositionBrushProperty, value);
 	}
 
 	/// <summary>
