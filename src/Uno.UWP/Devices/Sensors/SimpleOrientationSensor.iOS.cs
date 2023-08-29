@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using CoreMotion;
 using Foundation;
 using Uno.Extensions;
@@ -15,6 +15,12 @@ namespace Windows.Devices.Sensors
 
 		partial void Initialize()
 		{
+			if (_motionManager is { DeviceMotionAvailable: true })
+			{
+				// We should not start more than one CMMotionManager to avoid performance hit.
+				_motionManager.StopDeviceMotionUpdates();
+			}
+
 			_motionManager = new CMMotionManager();
 			if (_motionManager.DeviceMotionAvailable) // DeviceMotion is not available on all devices. iOS4+
 			{
