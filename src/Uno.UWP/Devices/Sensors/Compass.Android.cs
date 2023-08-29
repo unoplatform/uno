@@ -33,6 +33,11 @@ public partial class Compass
 		{
 			lock (_syncLock)
 			{
+				if (_reportInterval == value)
+				{
+					return;
+				}
+
 				_reportInterval = value;
 
 				if (_readingChanged != null)
@@ -66,10 +71,10 @@ public partial class Compass
 		_accelerometer = SensorHelpers.GetSensorManager().GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
 		_magnetometer = SensorHelpers.GetSensorManager().GetDefaultSensor(Android.Hardware.SensorType.MagneticField);
 
-		_listener = new SensorListener(this, _accelerometer!.Name ?? "", _magnetometer!.Name ?? "");
-
 		if (_accelerometer != null && _magnetometer != null)
 		{
+			_listener = new SensorListener(this, _accelerometer.Name ?? "", _magnetometer.Name ?? "");
+
 			SensorHelpers.GetSensorManager().RegisterListener(
 				_listener,
 				_accelerometer,
