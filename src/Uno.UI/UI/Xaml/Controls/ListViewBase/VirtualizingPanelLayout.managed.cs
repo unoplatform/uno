@@ -260,12 +260,12 @@ namespace Windows.UI.Xaml.Controls
 
 				// We know that the scroll is outside the available
 				// breath, so all lines can be recycled
-				ClearLines();
+				ClearLines(clearContainer: false);
 
 				// Set the seed start to use the approximate position of
 				// the line based on the average line height.
 				var index = (int)(ScrollOffset / _averageLineHeight);
-				_dynamicSeedStart = ScrollOffset - _averageLineHeight;
+				_dynamicSeedStart = ScrollOffset - _averageLineHeight * sign;
 				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index == 0 ? -1 : index - sign, 0);
 			}
 
@@ -514,7 +514,7 @@ namespace Windows.UI.Xaml.Controls
 				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(firstMaterializedLine);
+					RecycleLine(firstMaterializedLine, clearContainer: true);
 					_materializedLines.RemoveFromFront();
 					firstMaterializedLine = GetFirstMaterializedLine();
 				}
@@ -526,7 +526,7 @@ namespace Windows.UI.Xaml.Controls
 				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(lastMaterializedLine);
+					RecycleLine(lastMaterializedLine, clearContainer: true);
 					_materializedLines.RemoveFromBack();
 					lastMaterializedLine = GetLastMaterializedLine();
 				}
@@ -536,11 +536,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Recycle all views for a given line.
 		/// </summary>
-		private void RecycleLine(Line line)
+		/// <param name="clearContainer">cleanup the container when an associated item is removed</param>
+		private void RecycleLine(Line line, bool clearContainer)
 		{
 			for (int i = 0; i < line.Items.Length; i++)
 			{
-				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i);
+				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i, clearContainer);
 			}
 		}
 
@@ -798,7 +799,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug($"{GetMethodTag()}");
 			}
 
-			ClearLines();
+			ClearLines(clearContainer: true);
 
 			UpdateCompleted();
 			Generator.ClearIdCache();
@@ -806,7 +807,7 @@ namespace Windows.UI.Xaml.Controls
 			OwnerPanel?.InvalidateMeasure();
 		}
 
-		private void ClearLines()
+		private void ClearLines(bool clearContainer)
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
@@ -815,7 +816,7 @@ namespace Windows.UI.Xaml.Controls
 
 			foreach (var line in _materializedLines)
 			{
-				RecycleLine(line);
+				RecycleLine(line, clearContainer);
 			}
 			_materializedLines.Clear();
 		}
