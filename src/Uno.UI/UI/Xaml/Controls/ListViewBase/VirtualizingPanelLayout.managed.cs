@@ -265,8 +265,8 @@ namespace Windows.UI.Xaml.Controls
 				// Set the seed start to use the approximate position of
 				// the line based on the average line height.
 				var index = (int)(ScrollOffset / _averageLineHeight);
-				_dynamicSeedStart = ScrollOffset - _averageLineHeight * sign;
-				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index == 0 ? -1 : index - sign, 0);
+				_dynamicSeedStart = index * _averageLineHeight;
+				_dynamicSeedIndex = Uno.UI.IndexPath.FromRowSection(index - 1, 0);
 			}
 
 			while (unappliedDelta > 0)
@@ -991,7 +991,9 @@ namespace Windows.UI.Xaml.Controls
 				return GetMeasuredEnd(lastView);
 			}
 
-			// This will be null except immediately after ScrapLayout(), when it will be the previous start of materialized items
+			// This will be null except
+			// * immediately after ScrapLayout(), where it will be the previous start of materialized items
+			// * during OnScrollChanged if isLargeScroll, where it will be the start of a new layout after all the lines were cleared
 			return _dynamicSeedStart;
 		}
 
