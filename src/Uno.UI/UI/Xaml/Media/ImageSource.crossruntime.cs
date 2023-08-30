@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Media
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Info($"Image {this} opened with {data}");
+				this.Log().Debug($"Image {this} opened with {data}");
 			}
 
 			var listeners = _subscriptions.ToList();
