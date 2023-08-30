@@ -723,7 +723,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							.GetTypeMembers("Drawable")
 							.SingleOrDefault();
 
-						// Support for net8.0+ resource constants
+						// 
 						drawables ??= _metadataHelper
 							.GetTypeByFullName("_Microsoft.Android.Resource.Designer.ResourceConstant")
 							.GetTypeMembers("Drawable")
@@ -731,7 +731,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						if (drawables?.GetFields() is { } drawableFields)
 						{
-							foreach (var drawable in drawables)
+							foreach (var drawable in drawableFields)
 							{
 								writer.AppendLineInvariantIndented("case \"{0}\":", drawable.Name);
 								using (writer.Indent())
