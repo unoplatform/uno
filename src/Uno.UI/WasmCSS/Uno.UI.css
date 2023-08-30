@@ -137,10 +137,11 @@ embed.uno-frameworkelement.uno-unarranged {
   overflow: hidden;
 }
 
-.uno-shape {
+/* This fixes the issue for https://github.com/unoplatform/uno/issues/4563, but caused issues for ui tests */
+/*.uno-shape {
     width: auto !important;
     height: auto !important;
-}
+}*/
 
 [data-use-hand-cursor-interaction="true"] .uno-buttonbase,
 [data-use-hand-cursor-interaction="true"] .uno-toggleswitch {
