@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
+using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -226,6 +227,95 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(ContentWidth - PresenterActualWidth, SUT.ScrollableWidth);
 			;
 		}
+
+		[TestMethod]
+		public async Task When_Scrolled_ViewportSizeLargerThanContent()
+		{
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Width = 400,
+				Content = new StackPanel
+				{
+					Orientation = Orientation.Horizontal,
+					Children =
+					{
+						new TextBlock
+						{
+							Text = "Hello, Uno platform!",
+							FontSize = 40
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			scp.HorizontalOffset.Should().Be(0);
+
+			SUT.ChangeView(5, null, null);
+
+			// The content is smaller than the viewport size, so it shouldn't be scrollable
+			scp.HorizontalOffset.Should().Be(0);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_WheelChanged_OnlyHorizontallyScrollable()
+		{
+			var SUT = new ScrollViewer
+			{
+				Height = 300,
+				Width = 400,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				VerticalScrollMode = ScrollMode.Disabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = new StackPanel
+				{
+					Orientation = Orientation.Horizontal,
+					Children =
+					{
+						new TextBlock
+						{
+							Text = "Hello, Uno platform!",
+							FontSize = 40
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
+			scp.HorizontalOffset.Should().Be(0);
+
+			mouse.MoveTo(scp.GetAbsoluteBounds().GetCenter());
+			mouse.WheelDown();
+
+			await WindowHelper.WaitForIdle();
+
+			scp.HorizontalOffset.Should().Be(0);
+			scp.VerticalOffset.Should().Be(0);
+
+			mouse.WheelUp();
+			await WindowHelper.WaitForIdle();
+
+			scp.HorizontalOffset.Should().Be(0);
+			scp.VerticalOffset.Should().Be(0);
+		}
+#endif
 
 		[TestMethod]
 #if __WASM__
