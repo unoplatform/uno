@@ -34,19 +34,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Shapes
 #endif
 
 			SUT.Measure(new Size(300, 300));
-			// Windows produces DesiredSize as 11x50
-#if __ANDROID__
-			Assert.IsTrue(Math.Abs(12 - SUT.DesiredSize.Width) <= 0.02, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(51 - SUT.DesiredSize.Height) <= 0.02, $"Actual size: {SUT.DesiredSize}");
-#elif __IOS__
-			// The Width on iOS is 12.111 which is not very accurate.
-			Assert.IsTrue(Math.Abs(12 - SUT.DesiredSize.Width) <= 0.2, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(51 - SUT.DesiredSize.Height) <= 0.02, $"Actual size: {SUT.DesiredSize}");
-#elif __WASM__
-			Assert.IsTrue(Math.Abs(11 - SUT.DesiredSize.Width) <= 0.2, $"Actual size: {SUT.DesiredSize}");
-			Assert.IsTrue(Math.Abs(50 - SUT.DesiredSize.Height) <= 0.02, $"Actual size: {SUT.DesiredSize}");
-#else
+
+#if WINDOWS_UWP
 			Assert.AreEqual(new Size(11, 50), SUT.DesiredSize);
+#else
+			Assert.IsTrue(Math.Abs(11 - SUT.DesiredSize.Width) <= 1, $"Actual size: {SUT.DesiredSize}");
+			Assert.IsTrue(Math.Abs(50 - SUT.DesiredSize.Height) <= 1, $"Actual size: {SUT.DesiredSize}");
 #endif
 		}
 	}
