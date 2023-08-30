@@ -41,7 +41,9 @@ namespace Windows.UI.Composition
 
 		}
 
-		public virtual void Dispose()
+		public void Dispose() => DisposeInternal();
+
+		private protected virtual void DisposeInternal()
 		{
 
 		}

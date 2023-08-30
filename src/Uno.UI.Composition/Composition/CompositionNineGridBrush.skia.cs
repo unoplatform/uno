@@ -125,7 +125,7 @@ namespace Windows.UI.Composition
 			}
 		}
 
-		public override void Dispose()
+		private protected override void DisposeInternal()
 		{
 			base.Dispose();
 
