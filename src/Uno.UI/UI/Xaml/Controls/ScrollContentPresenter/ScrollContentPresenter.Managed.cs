@@ -108,9 +108,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (horizontalOffset is double hOffset)
 			{
-				var extentWidth = ExtentWidth;
-				var viewportWidth = ViewportWidth;
-				var scrollX = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
+				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
+
+				var scrollX = ValidateInputOffset(hOffset, 0, maxOffset);
 
 				success &= scrollX == hOffset;
 
@@ -122,9 +122,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (verticalOffset is double vOffset)
 			{
-				var extentHeight = ExtentHeight;
-				var viewportHeight = ViewportHeight;
-				var scrollY = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
+				var maxOffset = Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
+				var scrollY = ValidateInputOffset(vOffset, 0, maxOffset);
 
 				success &= scrollY == vOffset;
 
