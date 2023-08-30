@@ -24,8 +24,13 @@ namespace Windows.Devices.Sensors
 			_motionManager = new CMMotionManager();
 			if (_motionManager.DeviceMotionAvailable) // DeviceMotion is not available on all devices. iOS4+
 			{
+				if (this.Log().IsEnabled(LogLevel.Information))
+				{
+					this.Log().Info("DeviceMotion is available");
+				}
+
 				var operationQueue = (NSOperationQueue.CurrentQueue == null || NSOperationQueue.CurrentQueue == NSOperationQueue.MainQueue) ? new NSOperationQueue() : NSOperationQueue.CurrentQueue;
-				this.Log().Info("DeviceMotion is available");
+
 				_motionManager.DeviceMotionUpdateInterval = _updateInterval;
 
 				_motionManager.StartDeviceMotionUpdates(operationQueue, (motion, error) =>
@@ -33,13 +38,21 @@ namespace Windows.Devices.Sensors
 					// Motion and Error can be null: https://developer.apple.com/documentation/coremotion/cmdevicemotionhandler
 					if (error is not null)
 					{
-						this.Log().Error($"SimpleOrientationSensor returned error when reading Device Motion updates. {error.Description}");
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"SimpleOrientationSensor returned error when reading Device Motion updates. {error.Description}");
+						}
+
 						return;
 					}
 
 					if (motion is null)
 					{
-						this.Log().Error($"SimpleOrientationSensor failed read Device Motion updates.");
+						if (this.Log().IsEnabled(LogLevel.Error))
+						{
+							this.Log().Error($"SimpleOrientationSensor failed read Device Motion updates.");
+						}
+
 						return;
 					}
 
@@ -48,7 +61,10 @@ namespace Windows.Devices.Sensors
 			}
 			else // For iOS devices that don't support CoreMotion
 			{
-				this.Log().Error("SimpleOrientationSensor failed to initialize because CoreMotion is not available");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("SimpleOrientationSensor failed to initialize because CoreMotion is not available");
+				}
 			}
 		}
 
