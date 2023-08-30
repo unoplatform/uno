@@ -1,7 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
 using System.Numerics;
+using Windows.Graphics.Effects;
 using Windows.UI;
 
 namespace Microsoft.UI.Composition
@@ -162,6 +164,11 @@ namespace Microsoft.UI.Composition
 			=> new ExpressionAnimation(this) { Expression = expression };
 
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect)
+			=> new CompositionEffectFactory(graphicsEffect);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties)
+			=> new CompositionEffectFactory(graphicsEffect, animatableProperties);
 
 		partial void InvalidateRenderPartial(Visual visual);
 	}
