@@ -85,20 +85,8 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member CubicBezierEasingFunction Compositor.CreateCubicBezierEasingFunction(Vector2 controlPoint1, Vector2 controlPoint2) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CubicBezierEasingFunction%20Compositor.CreateCubicBezierEasingFunction%28Vector2%20controlPoint1%2C%20Vector2%20controlPoint2%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionEffectFactory CreateEffectFactory(global::Windows.Graphics.Effects.IGraphicsEffect graphicsEffect)
-		{
-			throw new global::System.NotImplementedException("The member CompositionEffectFactory Compositor.CreateEffectFactory(IGraphicsEffect graphicsEffect) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionEffectFactory%20Compositor.CreateEffectFactory%28IGraphicsEffect%20graphicsEffect%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionEffectFactory CreateEffectFactory(global::Windows.Graphics.Effects.IGraphicsEffect graphicsEffect, global::System.Collections.Generic.IEnumerable<string> animatableProperties)
-		{
-			throw new global::System.NotImplementedException("The member CompositionEffectFactory Compositor.CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionEffectFactory%20Compositor.CreateEffectFactory%28IGraphicsEffect%20graphicsEffect%2C%20IEnumerable%3Cstring%3E%20animatableProperties%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect)
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateEffectFactory(Windows.Graphics.Effects.IGraphicsEffect, IEnumerable<string>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.ExpressionAnimation CreateExpressionAnimation()

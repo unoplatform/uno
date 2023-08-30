@@ -1,6 +1,8 @@
 #nullable enable
 
+using System.Collections.Generic;
 using System.Numerics;
+using Windows.Graphics.Effects;
 using Windows.UI;
 
 namespace Windows.UI.Composition
@@ -152,6 +154,12 @@ namespace Windows.UI.Composition
 
 		public CompositionNineGridBrush CreateNineGridBrush()
 			=> new CompositionNineGridBrush(this);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect)
+			=> new CompositionEffectFactory(graphicsEffect);
+
+		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties)
+			=> new CompositionEffectFactory(graphicsEffect, animatableProperties);
 
 		internal void InvalidateRender() => InvalidateRenderPartial();
 
