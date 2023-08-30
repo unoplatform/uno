@@ -160,7 +160,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			_imageData = data; // We should also cache the targetWidth and targetHeight
 
-			if (this.Log().IsEnabled(LogLevel.Information))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Info($"Image {this} opened with {data}");
 			}
