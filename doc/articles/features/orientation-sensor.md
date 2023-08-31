@@ -16,6 +16,8 @@ uid: Uno.Features.OrientationSensor
 | `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
 | `OrientationChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖| ✖ |
 
+>**Important:** The `OrientationChanged` event is not supported by iOS simulators.
+
 ## Using SimpleOrientationSensor with Uno
 
 * The `GetDefault` method is available on all targets and will return `null` on those that do not support `SimpleOrientationSensor` or devices that do not have such a sensor.
