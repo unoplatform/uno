@@ -1,6 +1,9 @@
-﻿// Uncomment the following line to write expected files to disk
+﻿// Disabled as tests explicitly use UWP types.
+#if !HAS_UNO_WINUI
+
+// Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
-//#define WRITE_EXPECTED
+#define WRITE_EXPECTED
 
 using System.Collections.Immutable;
 using System.Diagnostics;
@@ -90,9 +93,9 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
+				// For now, there is no need to customize these for each test.
 				var globalConfigBuilder = new StringBuilder("""
 					is_global = true
-					# For now, there is no need to customize these for each test.
 					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
 					build_property.RootNamespace = MyProject
 					build_property.UnoForceHotReloadCodeGen = false
@@ -261,3 +264,4 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 		}
 	}
 }
+#endif
