@@ -22,6 +22,56 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_AvailableSize_Is_One_Pixel_Smaller_Than_Text()
+		{
+			var tb1 = new TextBlock()
+			{
+				Text = "Test a Test",
+				FontSize = 12,
+				FontFamily = new FontFamily("Arial"),
+				HorizontalAlignment = HorizontalAlignment.Center,
+				TextWrapping = TextWrapping.Wrap,
+			};
+
+			tb1.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			var textSize = tb1.DesiredSize;
+
+			var tb2 = new TextBlock()
+			{
+				Text = "Test a Test",
+				FontSize = 12,
+				FontFamily = new FontFamily("Arial"),
+				HorizontalAlignment = HorizontalAlignment.Center,
+				TextWrapping = TextWrapping.Wrap,
+				Width = textSize.Width - 1, // This should let the text wrap and take two lines.
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					tb1,
+					tb2,
+				},
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(textSize.Width, tb1.ActualWidth);
+			Assert.AreEqual(textSize.Height, tb1.ActualHeight);
+			Assert.AreEqual(textSize.Width - 1, tb2.ActualWidth);
+			Assert.AreEqual(textSize.Height * 2, tb2.ActualHeight);
+
+#if __WASM__
+			Assert.AreEqual(textSize.Width.ToString(), Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({tb1.HtmlId}).offsetWidth"));
+			Assert.AreEqual(textSize.Height.ToString(), Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({tb1.HtmlId}).offsetHeight"));
+			Assert.AreEqual((textSize.Width - 1).ToString(), Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({tb2.HtmlId}).offsetWidth"));
+			Assert.AreEqual((textSize.Height * 2).ToString(), Uno.Foundation.WebAssemblyRuntime.InvokeJS($"document.getElementById({tb2.HtmlId}).offsetHeight"));
+#endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task Check_TextDecorations_Binding()
 		{
 			var SUT = new TextDecorationsBinding();

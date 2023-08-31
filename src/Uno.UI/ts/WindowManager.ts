@@ -1270,8 +1270,7 @@ namespace Uno.UI {
 			const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
 			const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
-			// +1 is added to take rounding/flooring into account
-			return [resultWidth + 1, resultHeight];
+			return [resultWidth, resultHeight];
 		}
 
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number, measureContent: boolean): [number, number] {
