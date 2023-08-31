@@ -24,10 +24,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
 [RunsOnUIThread]
 public partial class Given_MediaPlayerElement
 {
-	private static readonly Uri TestVideoUrl = new Uri("https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4");
+	private static readonly Uri TestVideoUrl = new Uri("https://uno-assets.platform.uno/tests/videos/Getting_Started_with_Uno_Platform_and_Visual_Studio_Code.mp4");
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_NotAutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -46,10 +45,10 @@ public partial class Given_MediaPlayerElement
 			timeoutMS: 5000,
 			message: "Timeout waiting for the media player to enter Paused state."
 		);
+
 	}
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_AutoPlay_Source()
 	{
 		CheckMediaPlayerExtensionAvailability();
@@ -111,8 +110,7 @@ public partial class Given_MediaPlayerElement
 	}
 
 #if __IOS__ || !HAS_UNO
-	// [Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
+	[Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
 #endif
 	[TestMethod]
 	public async Task When_MediaPlayerElement_SetIsFullWindow_Check_Fullscreen()
@@ -171,7 +169,6 @@ public partial class Given_MediaPlayerElement
 	}
 
 	[TestMethod]
-	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	public async Task When_MediaPlayerElement_SetSource_Check_PlayStop()
 	{
 		CheckMediaPlayerExtensionAvailability();
