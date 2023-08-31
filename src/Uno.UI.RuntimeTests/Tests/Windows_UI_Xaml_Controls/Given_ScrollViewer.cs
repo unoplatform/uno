@@ -253,13 +253,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(SUT);
 			await WindowHelper.WaitForIdle();
 
-			var scp = SUT.FindVisualChildByType<ScrollContentPresenter>();
-			scp.HorizontalOffset.Should().Be(0);
+			var before = await UITestHelper.ScreenShot(SUT, true);
 
 			SUT.ChangeView(5, null, null);
+			await WindowHelper.WaitForIdle();
 
-			// The content is smaller than the viewport size, so it shouldn't be scrollable
-			scp.HorizontalOffset.Should().Be(0);
+			var after = await UITestHelper.ScreenShot(SUT, true);
+
+			await ImageAssert.AreEqualAsync(before, after);
 		}
 
 #if HAS_UNO
