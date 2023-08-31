@@ -112,6 +112,7 @@ public partial class Given_MediaPlayerElement
 
 #if __IOS__ || !HAS_UNO
 	// [Ignore("Test ignored on windows. Could not find the element by name. And Not supported under MAC [https://github.com/unoplatform/uno/issues/12663]")]
+	// [Ignore("https://github.com/unoplatform/uno/issues/13384")]
 	[Ignore("https://github.com/unoplatform/uno/issues/13384")]
 #endif
 	[TestMethod]
