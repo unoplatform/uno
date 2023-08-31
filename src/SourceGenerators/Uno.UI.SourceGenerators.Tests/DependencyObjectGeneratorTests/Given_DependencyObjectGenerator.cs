@@ -1,6 +1,4 @@
-﻿// Disabled as tests explicitly use UWP types.
-#if !HAS_UNO_WINUI
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.Testing;
@@ -299,4 +297,3 @@ public class Given_DependencyObjectGenerator
 		}.RunAsync();
 	}
 }
-#endif

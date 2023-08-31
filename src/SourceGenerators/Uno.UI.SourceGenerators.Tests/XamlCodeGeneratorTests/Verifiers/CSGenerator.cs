@@ -1,7 +1,4 @@
-﻿// Disabled as tests explicitly use UWP types.
-#if !HAS_UNO_WINUI
-
-// Uncomment the following line to write expected files to disk
+﻿// Uncomment the following line to write expected files to disk
 // Don't commit this line uncommented.
 #define WRITE_EXPECTED
 
@@ -264,4 +261,3 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 		}
 	}
 }
-#endif

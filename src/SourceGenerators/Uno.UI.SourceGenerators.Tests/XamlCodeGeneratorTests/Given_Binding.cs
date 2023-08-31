@@ -1,6 +1,4 @@
-﻿// Disabled as tests explicitly use UWP types.
-#if !HAS_UNO_WINUI
-using Microsoft.CodeAnalysis.Testing;
+﻿using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
 namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Data.BindingTests;
@@ -256,4 +254,3 @@ public class Given_Binding
 		await test.RunAsync();
 	}
 }
-#endif

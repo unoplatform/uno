@@ -1,6 +1,4 @@
-﻿// Disabled as tests explicitly use UWP types.
-#if !HAS_UNO_WINUI
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using System.Runtime.CompilerServices;
 using CommunityToolkit.Mvvm.SourceGenerators;
 using Microsoft.CodeAnalysis;
@@ -167,4 +165,3 @@ public class Given_MvvmGeneratedMembers
 		await test.RunAsync();
 	}
 }
-#endif

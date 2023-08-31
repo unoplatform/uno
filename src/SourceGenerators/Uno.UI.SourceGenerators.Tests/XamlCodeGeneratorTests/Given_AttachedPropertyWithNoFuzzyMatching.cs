@@ -1,6 +1,4 @@
-﻿// Disabled as tests explicitly use UWP types.
-#if !HAS_UNO_WINUI
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
 
@@ -61,4 +59,3 @@ public class Given_AttachedPropertyWithNoFuzzyMatching
 		await test.RunAsync();
 	}
 }
-#endif

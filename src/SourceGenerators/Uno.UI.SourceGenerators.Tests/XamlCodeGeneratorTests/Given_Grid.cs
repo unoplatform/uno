@@ -1,6 +1,4 @@
-﻿// Disabled as tests explicitly use UWP types.
-#if !HAS_UNO_WINUI
-using Uno.UI.SourceGenerators.Tests.Verifiers;
+﻿using Uno.UI.SourceGenerators.Tests.Verifiers;
 using Microsoft.CodeAnalysis.Testing;
 
 namespace Uno.UI.SourceGenerators.Tests.Windows_UI_Xaml_Controls.GridTests;
@@ -48,4 +46,3 @@ public class Given_Grid
 		await Verify.AssertXamlGenerator(test);
 	}
 }
-#endif
