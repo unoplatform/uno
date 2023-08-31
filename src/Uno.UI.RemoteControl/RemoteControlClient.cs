@@ -390,7 +390,7 @@ namespace Uno.UI.RemoteControl
 		{
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogTrace($"Sending message: {message} {message.Name}");
+				this.Log().Trace($"Sending message: {message} {message.Name}");
 			}
 
 			if (_webSocket != null)
