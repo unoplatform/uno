@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Disabled as tests explicitly use UWP types.
+#if !HAS_UNO_WINUI
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -435,3 +437,4 @@ sealed class MyGeneratorReference : AnalyzerReference
 		return _generators;
 	}
 }
+#endif

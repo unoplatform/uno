@@ -34,8 +34,8 @@
 		<Compile Remove="**\*.xaml.cs" />
 		<None Include="**\*.xaml.cs" />
 
-		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" />
-		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" />
+		<Compile Include="..\..\Uno.UI.RemoteControl.Server.Processors\HotReload\MetadataUpdates\WatchHotReloadService.cs" Link="MetadataUpdates\%(RecursiveDir)%(FileName)%(Extension)" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<Compile Include="MetadataUpdateTests\Scenarios\When_Empty\_._" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -59,12 +59,12 @@
 
 	<ItemGroup>
 		<Compile Remove="XamlCodeGeneratorTests\Out\**\*.cs" />
-		<EmbeddedResource Include="XamlCodeGeneratorTests\Out\**\*.cs" />
+		<EmbeddedResource Include="XamlCodeGeneratorTests\Out\**\*.cs" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<Compile Remove="MetadataUpdateTests\Scenarios\**" />
-		<Content Include="MetadataUpdateTests\Scenarios\**" CopyToOutputDirectory="PreserveNewest" />
+		<Content Include="MetadataUpdateTests\Scenarios\**" CopyToOutputDirectory="PreserveNewest" Condition="'$(UNO_UWP_BUILD)'=='true'" />
 	</ItemGroup>
 
 	<ItemGroup>

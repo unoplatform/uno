@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Disabled as tests explicitly use UWP types.
+#if !HAS_UNO_WINUI
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -187,3 +189,4 @@ public class Given_HotReloadService
 		return results.ToArray();
 	}
 }
+#endif

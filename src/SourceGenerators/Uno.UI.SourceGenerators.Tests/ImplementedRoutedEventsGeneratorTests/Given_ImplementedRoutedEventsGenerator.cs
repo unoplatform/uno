@@ -1,4 +1,6 @@
-﻿using System.Collections.Immutable;
+﻿// Disabled as tests explicitly use UWP types.
+#if !HAS_UNO_WINUI
+using System.Collections.Immutable;
 using System.Text;
 using Microsoft.CodeAnalysis.Testing;
 using Microsoft.CodeAnalysis.Text;
@@ -130,3 +132,4 @@ namespace MyControls.Test
 		public SourceText Source { get; set; }
 	}
 }
+#endif

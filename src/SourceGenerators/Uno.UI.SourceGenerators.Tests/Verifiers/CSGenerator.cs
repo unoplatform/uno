@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis;
+﻿// Disabled as tests explicitly use UWP types.
+#if !HAS_UNO_WINUI
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp.Testing;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
@@ -39,3 +41,4 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 		}
 	}
 }
+#endif

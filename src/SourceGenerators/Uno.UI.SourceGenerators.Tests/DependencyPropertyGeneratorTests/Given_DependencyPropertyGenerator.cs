@@ -1,4 +1,6 @@
-﻿using Microsoft.CodeAnalysis.Testing;
+﻿// Disabled as tests explicitly use UWP types.
+#if !HAS_UNO_WINUI
+using Microsoft.CodeAnalysis.Testing;
 using Uno.UI.SourceGenerators.DependencyObject;
 using Microsoft.CodeAnalysis.Testing.Verifiers;
 using Uno.UI.SourceGenerators.Tests.Verifiers;
@@ -545,3 +547,4 @@ public class Given_DependencyPropertyGenerator
 		await test.RunAsync();
 	}
 }
+#endif
