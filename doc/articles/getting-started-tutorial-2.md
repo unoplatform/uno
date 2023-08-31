@@ -221,11 +221,11 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                     - Include an Issue Title
                     - Include a full issue description with support for Markdown
                     - Include an issue effort
-                    - Include an ability for a developer to update the Status (i.e Icebox,WIP, etc)
+                    - Include an ability for a developer to update the Status (i.e. Icebox, WIP, etc)
 
                     ## Additional Comments
 
-                    We would like to have a visual indicator for the type of issue as wellas something to visualize the effort involved
+                    We would like to have a visual indicator for the type of issue as well as something to visualize the effort involved
                     """,
                 Effort = 3,
                 Status = IssueStatus.WIP,
