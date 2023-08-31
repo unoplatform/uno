@@ -54,8 +54,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
 1. Right-click on `BugTracker` project and select `Manage NuGet Packages for Solution` from the context menu.
     - Make sure to select **nuget.org** or **NuGet official package source** as the package source
-    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.WinUI`, `Uno.UI.WebAssembly` `Uno.Wasm.Bootstrap`, and `Uno.Wasm.Bootstrap.DevServer`.
-    - Click back on the **Browse** tab and install the following NuGet Packages to the `BugTracker` project:
+    - Click back on the **Browse** tab and install the following NuGet Packages in the `BugTracker` project:
         - `Refractored.MvvmHelpers`
 
 1. Finally, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it. This is a workaround for a Visual studio issue regarding the XAML editor.
@@ -66,9 +65,13 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 
     ![Visual Studio - Solution Explorer - `Add > New Folder` option in the context menu for the `BugTracker` shared project](Assets/tutorial01/create-models-folder.png)
 
-1. Add a new class and then paste in the following code:
+1. Add a new `IssueItem.cs` file then paste in the following code:
 
     ```cs
+    using MvvmHelpers;
+
+    namespace Models;
+
     public class IssueItem : ObservableObject
     {
         private int id;
@@ -85,15 +88,15 @@ The tutorial walks you through creating a cross platform application with Uno Pl
             set => SetProperty(ref type, value);
         }
 
-        private string title;
-        public string Title
+        private string? title;
+        public string? Title
         {
             get => title;
             set => SetProperty(ref title, value);
         }
 
-        private string description;
-        public string Description
+        private string? description;
+        public string? Description
         {
             get => description;
             set => SetProperty(ref description, value);
@@ -161,16 +164,20 @@ The tutorial walks you through creating a cross platform application with Uno Pl
 1. First, we will add some base properties to bind to in our XAML. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
 
     ```cs
+    using BugTracker.Models;
+
+    namespace BugTracker;
+
     public sealed partial class MainPage : Page
     {
-        private IssueItem _item;
+        private IssueItem? _item;
 
         public MainPage()
         {
             this.InitializeComponent();
         }
 
-        public IssueItem Item
+        public IssueItem? Item
         {
             get => _item;
             set
@@ -203,20 +210,23 @@ The tutorial walks you through creating a cross platform application with Uno Pl
             {
                 Id = 1232,
                 Title = "Getting Started",
-                Description = @"Create a page to enter Issues that we need to work on.
+                Description = 
+                    """
+                    Create a page to enter Issues that we need to work on.
 
-    ## Acceptance Criteria
+                    ## Acceptance Criteria
 
-    - Display the issue Id
-    - Provide an ability to select the issue Type (i.e. Bug, Feature, etc)
-    - Include an Issue Title
-    - Include a full issue description with support for Markdown
-    - Include an issue effort
-    - Include an ability for a developer to update the Status (i.e Icebox, WIP, etc)
+                    - Display the issue Id
+                    - Provide an ability to select the issue Type (i.e. Bug, Feature, etc)
+                    - Include an Issue Title
+                    - Include a full issue description with support for Markdown
+                    - Include an issue effort
+                    - Include an ability for a developer to update the Status (i.e. Icebox, WIP, etc)
 
-    ## Additional Comments
+                    ## Additional Comments
 
-    We would like to have a visual indicator for the type of issue as well as something to visualize the effort involved",
+                    We would like to have a visual indicator for the type of issue as well as something to visualize the effort involved
+                    """,
                 Effort = 3,
                 Status = IssueStatus.WIP,
                 Type = IssueType.Feature,
@@ -228,7 +238,7 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     ```
 
 1. Now that we have some basic data to bind to, in the **Solution Explorer**, double-click **MainPage.xaml** to open it.
-1. At the top left corner of the editor select **BugTracker.UWP**
+1. On the top left corner of the XAML editor, make sure to select `BugTracker (net7.0-windows.10.0.XXX)` in the dropdown
 1. Then we'll add some XAML. We will start with an XML Namespace for the Converters as shown below:
 
     ```xml
@@ -334,22 +344,25 @@ The tutorial walks you through creating a cross platform application with Uno Pl
     // Sets the time when we Complete or Start an issue.
     private void StatusPicker_SelectionChanged(object sender, SelectionChangedEventArgs args)
     {
-        switch (Item.Status)
-        {
-            case IssueStatus.Removed:
-            case IssueStatus.Done:
-                if(Item.CompletedAt is null)
-                    Item.CompletedAt = DateTimeOffset.Now.ToLocalTime();
-                break;
-            case IssueStatus.WIP:
-                if(Item.StartedAt is null)
-                    Item.StartedAt = DateTimeOffset.Now.ToLocalTime();
-                break;
-            default:
-                Item.StartedAt = null;
-                Item.CompletedAt = null;
-                break;
-        }
+		if (Item is not null)
+		{
+			switch (Item.Status)
+			{
+				case IssueStatus.Removed:
+				case IssueStatus.Done:
+					if (Item.CompletedAt is null)
+						Item.CompletedAt = DateTimeOffset.Now.ToLocalTime();
+					break;
+				case IssueStatus.WIP:
+					if (Item.StartedAt is null)
+						Item.StartedAt = DateTimeOffset.Now.ToLocalTime();
+					break;
+				default:
+					Item.StartedAt = null;
+					Item.CompletedAt = null;
+					break;
+			}
+		}
     }
 
     // Provides a unique color based on the type of Issue
