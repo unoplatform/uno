@@ -1508,8 +1508,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __IOS__ || __ANDROID__
-		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_TryClick()
 		{
