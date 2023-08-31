@@ -388,9 +388,9 @@ namespace Uno.UI.RemoteControl
 
 		public async Task SendMessage(IMessage message)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogError($"Sending message: {message} {message.Name}");
+				this.Log().Trace($"Sending message: {message} {message.Name}");
 			}
 
 			if (_webSocket != null)
