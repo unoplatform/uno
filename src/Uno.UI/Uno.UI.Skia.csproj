@@ -47,6 +47,13 @@
 	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Graphics\Effects\Interop\EffectHelpers.cs" />
+	  <UpToDateCheckInput Remove="Graphics\Effects\Interop\EffectType.cs" />
+	  <UpToDateCheckInput Remove="Graphics\Effects\Interop\IGraphicsEffectD2D1Interop.cs" />
+	  <UpToDateCheckInput Remove="Graphics\GraphicsEffectPropertyMapping.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
 	</ItemGroup>
 
