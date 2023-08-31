@@ -47,12 +47,12 @@ If you haven't prepared your dev environment for Uno Platform app development ye
     ![Visual Studio - Reload projects banner](Assets/quick-start/vs2022-project-reload.PNG)
 
 1. In your `MyApp` Class Library project, open up `MainPage.xaml`
-
-1. Add a `StackPanel` around your `TextBlock`
+1. On the top left corner of the XAML editor, make sure to select `MyApp (net7.0-windows.10.0.XXX)` in the dropdown
+1. Replace the inner content of the `Page` with the following
     ```xml
     <Grid>
         <StackPanel>
-            <TextBlock Text="Hello World" Margin="20" FontSize="30" />
+            <TextBlock Text="Hello Uno Platform" Margin="20" FontSize="30" />
         </StackPanel>
     </Grid>
     ```
