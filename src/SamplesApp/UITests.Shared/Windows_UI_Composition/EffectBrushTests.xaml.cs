@@ -47,6 +47,12 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush2 = factory2.CreateBrush();
 
 			grayGrid.Background = new EffectTesterBrush(effectBrush2);
+
+			var effect3 = new SimpleInvertEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") };
+			var factory3 = compositor.CreateEffectFactory(effect3);
+			var effectBrush3 = factory3.CreateBrush();
+
+			invertGrid.Background = new EffectTesterBrush(effectBrush3);
 		}
 
 		private class EffectTesterBrush : XamlCompositionBrushBase
@@ -154,6 +160,31 @@ namespace UITests.Windows_UI_Composition
 		{
 			private string _name = "SimpleGrayscaleEffect";
 			private Guid _id = new Guid("36DDE0EB-3725-42E0-836D-52FB20AEE644");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping) => throw new NotSupportedException();
+
+			public object GetProperty(uint index) => throw new NotSupportedException();
+
+			public uint GetPropertyCount() => 0;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("E0C3784D-CB39-4E84-B6FD-6B72F0810263")]
+		private class SimpleInvertEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleInvertEffect";
+			private Guid _id = new Guid("E0C3784D-CB39-4E84-B6FD-6B72F0810263");
 
 			public string Name
 			{
