@@ -518,15 +518,8 @@ namespace Windows.UI.Xaml
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
 
-#if __IOS__
-				// On iOS, the `from` and `to` may be coming from different ViewController.
-				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
-				if (from.FindViewController() == to.FindViewController())
-#endif
-				{
-					var rootToTo = toToRoot.Inverse();
-					matrix *= rootToTo;
-				}
+				var rootToTo = toToRoot.Inverse();
+				matrix *= rootToTo;
 			}
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
