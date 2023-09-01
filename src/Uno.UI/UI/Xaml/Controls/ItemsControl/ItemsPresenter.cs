@@ -6,6 +6,8 @@ using Uno.UI.DataBinding;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media.Animation;
+using Uno.UI.Xaml;
 
 #if __ANDROID__
 using Android.Widget;
@@ -25,6 +27,132 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
+
+
+		public object Header
+		{
+			get => GetHeaderValue();
+			set => SetHeaderValue(value);
+		}
+
+		private static object GetHeaderDefaultValue() => null;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty HeaderProperty { get; } = CreateHeaderProperty();
+
+		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is UIElement)
+			{
+				RemoveChildView(0);
+			}
+
+			if (args.NewValue is UIElement h)
+			{
+				AddChildView(new ContentControl{ Content = h, ContentTemplate = HeaderTemplate, ContentTransitions = HeaderTransitions }, 0);
+			}
+		}
+
+		public object Footer
+		{
+			get => GetFooterValue();
+			set => SetFooterValue(value);
+		}
+
+		private static object GetFooterDefaultValue() => null;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty FooterProperty { get; } = CreateFooterProperty();
+
+		private void OnFooterChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is UIElement)
+			{
+				RemoveChildView(_children.Count - 1);
+			}
+
+			if (args.NewValue is UIElement f)
+			{
+				AddChildView(new ContentControl{ Content = f, ContentTemplate = HeaderTemplate, ContentTransitions = FooterTransitions }, _children.Count);
+			}
+		}
+
+		private static DataTemplate GetHeaderTemplateDefaultValue() => null;
+
+		public DataTemplate HeaderTemplate
+		{
+			get => GetHeaderTemplateValue();
+			set => SetHeaderTemplateValue(value);
+		}
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty HeaderTemplateProperty { get; } = CreateHeaderTemplateProperty();
+
+		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (Header is UIElement)
+			{
+				((ContentControl)_children[0]).ContentTemplate = (DataTemplate)args.NewValue;
+			}
+		}
+
+		public DataTemplate FooterTemplate
+		{
+			get => GetFooterTemplateValue();
+			set => SetFooterTemplateValue(value);
+		}
+
+		private static DataTemplate GetFooterTemplateDefaultValue() => null;
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty FooterTemplateProperty { get; } = CreateFooterTemplateProperty();
+
+		private void OnFooterTemplateChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (Footer is UIElement)
+			{
+				((ContentControl)_children[^1]).ContentTemplate = (DataTemplate)args.NewValue;
+			}
+		}
+
+		public TransitionCollection HeaderTransitions
+		{
+			get => GetHeaderTransitionsValue();
+			set => SetHeaderTransitionsValue(value);
+		}
+
+		private static TransitionCollection GetHeaderTransitionsDefaultValue() => new TransitionCollection();
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty HeaderTransitionsProperty { get; } = CreateHeaderTransitionsProperty();
+
+		private void OnHeaderTransitionsChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (Header is UIElement)
+			{
+				((ContentControl)_children[0]).ContentTransitions = (TransitionCollection)args.NewValue;
+			}
+		}
+
+		public TransitionCollection FooterTransitions
+		{
+			get => GetFooterTransitionsValue();
+			set => SetFooterTransitionsValue(value);
+		}
+
+		private static TransitionCollection GetFooterTransitionsDefaultValue() => new TransitionCollection();
+
+		[GeneratedDependencyProperty(ChangedCallback = true)]
+		public static DependencyProperty FooterTransitionsProperty { get; } = CreateFooterTransitionsProperty();
+
+		private void OnFooterTransitionsChanged(DependencyPropertyChangedEventArgs args)
+		{
+			if (Footer is UIElement)
+			{
+				((ContentControl)_children[^1]).ContentTransitions = (TransitionCollection)args.NewValue;
+			}
+		}
+
 		protected internal override void OnTemplatedParentChanged(DependencyPropertyChangedEventArgs e)
 		{
 			base.OnTemplatedParentChanged(e);
@@ -128,19 +256,18 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_itemsPanel = panel;
+			var index = Header is UIElement ? 1 : 0;
 
-			RemoveChildViews();
+			if (_itemsPanel is { })
+			{
+				RemoveChildView(index);
+			}
+
+			_itemsPanel = panel;
 
 			if (_itemsPanel != null)
 			{
-#if __IOS__ || __MACOS__
-				this.AddSubview(_itemsPanel);
-#elif __ANDROID__
-				this.AddView(_itemsPanel);
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
-				AddChild(_itemsPanel);
-#endif
+				AddChildView(_itemsPanel, index);
 
 				PropagateLayoutValues();
 			}
@@ -148,20 +275,31 @@ namespace Windows.UI.Xaml.Controls
 			this.InvalidateMeasure();
 		}
 
-		private void RemoveChildViews()
+		private void RemoveChildView(int index)
 		{
 #if __IOS__ || __MACOS__
-			foreach (var subview in this.Subviews)
-			{
-				subview.RemoveFromSuperview();
-			}
+			this.Subviews[index].RemoveFromSuperview();
 #elif __ANDROID__
+			// TODO: how do I remove a view at a certain index
 			this.RemoveAllViews();
 #elif UNO_REFERENCE_API
-			ClearChildren();
+			RemoveChild(_children[index]);
 #endif
 		}
 
+		private void AddChildView(View view, int index)
+		{
+#if __IOS__ || __MACOS__
+			// TODO: how do I add a subview at a certain index
+			this.AddSubview(view);
+#elif __ANDROID__
+			this.AddView(view, index);
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
+			AddChild(view, index);
+#endif
+		}
+
+		// TODO: why do we need this?
 		private void PropagateLayoutValues()
 		{
 #if XAMARIN && !__MACOS__
@@ -177,20 +315,57 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var child = this.FindFirstChild();
+			var isHorizontal = ((Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal) == Orientation.Horizontal;
 
-			if (child != null)
+			var padding = AppliedPadding;
+
+			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
+
+			var previousChildSize = 0.0;
+
+			var count = _children.Count;
+
+			for (var i = 0; i < count; i++)
 			{
-				var padding = AppliedPadding;
+				var view = _children[i];
+				var desiredChildSize = GetElementDesiredSize(view);
 
-				var finalRect = new Rect(
-					padding.Left,
-					padding.Top,
-					finalSize.Width - padding.Left - padding.Right,
-					finalSize.Height - padding.Top - padding.Bottom
-				);
+				if (isHorizontal)
+				{
+					childRect.X += previousChildSize;
 
-				base.ArrangeElement(child, finalRect);
+					previousChildSize = desiredChildSize.Width;
+					childRect.Width = desiredChildSize.Width;
+					childRect.Height = Math.Max(finalSize.Height, desiredChildSize.Height);
+				}
+				else
+				{
+					childRect.Y += previousChildSize;
+
+					previousChildSize = desiredChildSize.Height;
+					childRect.Height = desiredChildSize.Height;
+					childRect.Width = Math.Max(finalSize.Width, desiredChildSize.Width);
+				}
+
+				if (i != count || Footer is not UIElement) // not footer
+				{
+					ArrangeElement(view, childRect);
+				}
+			}
+
+			if (Footer is UIElement)
+			{
+				var child = _children[^1];
+				var desiredChildSize = GetElementDesiredSize(child);
+				if (isHorizontal)
+				{
+					childRect.X = childRect.X.AtLeast(finalSize.Width - desiredChildSize.Width);
+				}
+				else
+				{
+					childRect.X = childRect.Y.AtLeast(finalSize.Height - desiredChildSize.Height);
+				}
+				ArrangeElement(child, childRect);
 			}
 
 			return finalSize;
@@ -200,16 +375,46 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var padding = AppliedPadding;
 
-			var measuredSize = base.MeasureOverride(
-				new Size(
-					size.Width - padding.Left - padding.Right,
-					size.Height - padding.Top - padding.Bottom
-				)
+			var unpaddedSize = new Size(
+				size.Width - padding.Left - padding.Right,
+				size.Height - padding.Top - padding.Bottom
 			);
 
+			var isHorizontal = ((Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal) == Orientation.Horizontal;
+
+			if (isHorizontal)
+			{
+				unpaddedSize.Width = float.PositiveInfinity;
+			}
+			else
+			{
+				unpaddedSize.Height = float.PositiveInfinity;
+			}
+
+			var desiredSize = default(Size);
+
+			var count = _children.Count;
+			for (var i = 0; i < count; i++)
+			{
+				var view = _children[i];
+
+				var measuredSize = MeasureElement(view, unpaddedSize);
+
+				if (isHorizontal)
+				{
+					desiredSize.Width += measuredSize.Width;
+					desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
+				}
+				else
+				{
+					desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
+					desiredSize.Height += measuredSize.Height;
+				}
+			}
+
 			return new Size(
-				measuredSize.Width + padding.Left + padding.Right,
-				measuredSize.Height + padding.Top + padding.Bottom
+				desiredSize.Width + padding.Left + padding.Right,
+				desiredSize.Height + padding.Top + padding.Bottom
 			);
 		}
 
