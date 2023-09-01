@@ -17,6 +17,9 @@ namespace Windows.UI.Composition
 			if (effect is null)
 				throw new ArgumentNullException(nameof(effect));
 
+			_loadStatus = default;
+			_extendedError = null;
+
 			_effect = effect;
 			_animatableProperties = animatableProperties;
 		}

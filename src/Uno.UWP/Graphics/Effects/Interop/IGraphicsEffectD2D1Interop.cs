@@ -3,7 +3,7 @@ using Windows.Foundation;
 using Windows.Graphics.Effects;
 using System.Runtime.InteropServices;
 
-namespace Windows.UI.Graphics.Effects.Interop
+namespace Windows.Graphics.Effects.Interop
 {
 	[Guid("2FC57384-A068-44D7-A331-30982FCF7177")]
 	public interface IGraphicsEffectD2D1Interop

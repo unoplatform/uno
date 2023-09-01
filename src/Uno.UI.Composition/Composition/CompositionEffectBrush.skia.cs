@@ -1,4 +1,5 @@
 ﻿using Windows.Graphics.Effects;
+using Windows.Graphics.Effects.Interop;
 using System;
 using SkiaSharp;
 
@@ -22,8 +23,38 @@ namespace Windows.UI.Composition
 
 							return SKImageFilter.CreatePaint(paint, new SKImageFilter.CropRect(bounds));
 						}
-						else
-							return null;
+
+						return null;
+					}
+				case IGraphicsEffectD2D1Interop effectInterop:
+					{
+						switch (EffectHelpers.GetEffectType(effectInterop.GetEffectId()))
+						{
+							case EffectType.GaussianBlurEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+										effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
+										effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
+										effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _);
+
+										// TODO: Implement support for other GraphicsEffectPropertyMapping values than Direct
+										float sigma = (float)effectInterop.GetProperty(sigmaProp);
+										_ = (uint)effectInterop.GetProperty(optProp); // TODO
+										_ = (uint)effectInterop.GetProperty(borderProp); // TODO
+
+										return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.Unsupported:
+							default:
+								return null;
+						}
 					}
 				default:
 					return null;

@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Graphics.Effects.Interop
+﻿namespace Windows.Graphics.Effects.Interop
 {
 	public enum GraphicsEffectPropertyMapping
 	{
