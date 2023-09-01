@@ -1,4 +1,4 @@
-﻿namespace Windows.UI.Graphics.Effects.Interop
+﻿namespace Windows.Graphics.Effects.Interop
 {
 	/// <summary>
 	/// This enum specifies effects supported by Composition APIs<br/><br/>
@@ -29,7 +29,7 @@
 		HueRotationEffect,
 		InvertEffect,
 		LuminanceToAlphaEffect,
-		LinearTransferEffect, // Note: This is supported by Composition, docs are wrong
+		LinearTransferEffect, // Note: This is supported by Composition, docs are outdated
 		OpacityEffect,
 		PointDiffuseEffect,
 		PointSpecularEffect,

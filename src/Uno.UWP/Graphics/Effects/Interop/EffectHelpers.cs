@@ -3,9 +3,9 @@ using Windows.Foundation;
 using Windows.Graphics.Effects;
 using System.Runtime.InteropServices;
 
-namespace Windows.UI.Graphics.Effects.Interop
+namespace Windows.Graphics.Effects.Interop
 {
-	internal static class EffectHelpers
+	internal static partial class EffectHelpers
 	{
 		public static EffectType GetEffectType(Guid effectId)
 		{
