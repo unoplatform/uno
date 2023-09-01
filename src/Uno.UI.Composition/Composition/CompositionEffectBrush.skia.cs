@@ -51,6 +51,28 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
+							case EffectType.GrayscaleEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // Grayscale Matrix
+												{
+													0.21f, 0.72f, 0.07f, 0, 0,
+													0.21f, 0.72f, 0.07f, 0, 0,
+													0.21f, 0.72f, 0.07f, 0, 0,
+													0,     0,     0,     1, 0
+												}),
+											sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
 							case EffectType.Unsupported:
 							default:
 								return null;

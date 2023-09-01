@@ -23,7 +23,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Windows_UI_Composition
 {
-	[Sample("Windows.UI.Composition", Name = "CompositionEffectBrush", Description = "", IsManualTest = true)]
+	[Sample("Windows.UI.Composition", Name = "CompositionEffectBrush", Description = "Paints a SpriteVisual with the output of a filter effect. The filter effect description is defined using the CompositionEffectFactory class.", IsManualTest = true)]
 	public sealed partial class EffectBrushTests : UserControl
 	{
 		public EffectBrushTests()
@@ -34,11 +34,27 @@ namespace UITests.Windows_UI_Composition
 
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			testGrid.Background = new TestBrush();
+			var compositor = Window.Current.Compositor;
+
+			var effect = new SimpleBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
+			var factory = compositor.CreateEffectFactory(effect);
+			var effectBrush = factory.CreateBrush();
+
+			blurGrid.Background = new EffectTesterBrush(effectBrush);
+
+			var effect2 = new SimpleGrayscaleEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") };
+			var factory2 = compositor.CreateEffectFactory(effect2);
+			var effectBrush2 = factory2.CreateBrush();
+
+			grayGrid.Background = new EffectTesterBrush(effectBrush2);
 		}
 
-		private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase
+		private class EffectTesterBrush : XamlCompositionBrushBase
 		{
+			private CompositionEffectBrush _effectBrush;
+
+			public EffectTesterBrush(CompositionEffectBrush effectBrush) => _effectBrush = effectBrush;
+
 			protected override void OnConnected()
 			{
 				var compositor = Window.Current.Compositor;
@@ -48,12 +64,9 @@ namespace UITests.Windows_UI_Composition
 					if (o.Status == LoadedImageSourceLoadStatus.Success)
 					{
 						var brush = compositor.CreateSurfaceBrush(surface);
-						var effect = new SimpleBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
-						var factory = compositor.CreateEffectFactory(effect);
-						var effectBrush = factory.CreateBrush();
 
-						effectBrush.SetSourceParameter("sourceBrush", brush);
-						CompositionBrush = effectBrush;
+						_effectBrush.SetSourceParameter("sourceBrush", brush);
+						CompositionBrush = _effectBrush;
 					}
 				};
 			}
@@ -132,6 +145,31 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 3;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("36DDE0EB-3725-42E0-836D-52FB20AEE644")]
+		private class SimpleGrayscaleEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleGrayscaleEffect";
+			private Guid _id = new Guid("36DDE0EB-3725-42E0-836D-52FB20AEE644");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping) => throw new NotSupportedException();
+
+			public object GetProperty(uint index) => throw new NotSupportedException();
+
+			public uint GetPropertyCount() => 0;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}
