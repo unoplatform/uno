@@ -73,6 +73,28 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
+							case EffectType.InvertEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // Invert Matrix
+												{
+													-1, 0,  0,  0, 1,
+													0,  -1, 0,  0, 1,
+													0,  0,  -1, 0, 1,
+													0,  0,  0,  1, 0,
+												}),
+											sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
 							case EffectType.Unsupported:
 							default:
 								return null;
