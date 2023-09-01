@@ -1,6 +1,6 @@
 ﻿#nullable enable
 
-#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__
+#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
 using System;
 using System.Linq;
 using Windows.Foundation;
@@ -12,24 +12,24 @@ using static System.Double;
 using Windows.Phone.Media.Devices;
 
 #if __IOS__
-using _Color = UIKit.UIColor;
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
 #elif __MACOS__
 using AppKit;
-using _Color = AppKit.NSColor;
 using NativePath = CoreGraphics.CGPath;
 using ObjCRuntime;
 using NativeSingle = System.Runtime.InteropServices.NFloat;
 #elif __SKIA__
-using _Color = Windows.UI.Color;
 using NativePath = Windows.UI.Composition.SkiaGeometrySource2D;
 using NativeSingle = System.Double;
 
 #elif __ANDROID__
-using _Color = Android.Graphics.Color;
 using NativePath = Android.Graphics.Path;
+using NativeSingle = System.Double;
+
+#elif __WASM__
+using NativePath = Windows.UI.Xaml.Shapes.Shape;
 using NativeSingle = System.Double;
 #endif
 
@@ -498,6 +498,7 @@ namespace Windows.UI.Xaml.Shapes
 						renderScale.y = renderScale.x;
 						size.Height = pathSize.Height * renderScale.y + strokeThickness;
 					}
+
 					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
 					// Reproduces a bug of WinUI where it's the size without the stretch that is being used to compute the alignments below
 					renderOverflow = (
@@ -573,7 +574,7 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 #elif __SKIA__
 			Render(path, renderScale.x, renderScale.y, renderOrigin.x, renderOrigin.y);
-#elif __ANDROID__
+#elif __ANDROID__ || __WASM__
 			Render(path, size, renderScale.x, renderScale.y, renderOrigin.x, renderOrigin.y);
 #endif
 
