@@ -9,7 +9,8 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<Grid>
-		<Grid x:Name="testGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-	</Grid>
+	<StackPanel Orientation="Horizontal" Spacing="25">
+		<Grid x:Name="blurGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+		<Grid x:Name="grayGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+	</StackPanel>
 </UserControl>
