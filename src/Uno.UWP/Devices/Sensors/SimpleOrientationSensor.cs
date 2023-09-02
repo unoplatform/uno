@@ -32,6 +32,9 @@ namespace Windows.Devices.Sensors
 
 		private static partial SimpleOrientationSensor TryCreateInstance();
 
+		partial void StartListeningOrientationChanged();
+
+		partial void StopListeningOrientationChanged();
 
 		#endregion
 
