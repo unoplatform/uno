@@ -8,16 +8,30 @@ namespace Windows.Devices.Sensors
 		#region Static
 
 		private static SimpleOrientationSensor _instance;
+		private static bool _initialized;
+		private readonly static object _syncLock = new();
 
 		public static SimpleOrientationSensor GetDefault()
 		{
-			if (_instance == null)
+			if (_initialized)
 			{
-				_instance = new SimpleOrientationSensor();
+				return _instance;
 			}
 
-			return _instance;
+			lock (_syncLock)
+			{
+				if (!_initialized)
+				{
+					_instance = TryCreateInstance();
+					_initialized = true;
+				}
+
+				return _instance;
+			}
 		}
+
+		private static partial SimpleOrientationSensor TryCreateInstance();
+
 
 		#endregion
 

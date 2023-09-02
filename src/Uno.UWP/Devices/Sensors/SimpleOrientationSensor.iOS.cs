@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using CoreMotion;
 using Foundation;
 using Uno.Extensions;
@@ -12,6 +12,16 @@ namespace Windows.Devices.Sensors
 		private static CMMotionManager? _motionManager;
 		private const double _updateInterval = 0.5;
 		private const double _threshold = 0.5;
+
+		private static partial SimpleOrientationSensor? TryCreateInstance()
+		{
+			_motionManager ??= new CMMotionManager();
+
+			return _motionManager.DeviceMotionAvailable
+				? new SimpleOrientationSensor()
+				: null;
+		}
+
 
 		partial void Initialize()
 		{
