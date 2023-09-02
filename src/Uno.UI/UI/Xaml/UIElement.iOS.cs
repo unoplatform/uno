@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -229,20 +229,10 @@ namespace Windows.UI.Xaml
 								matrix.M31 += (float)offset.X;
 								matrix.M32 += (float)offset.Y;
 
-								if (this.FindViewController() is { } vc)
-								{
-									context.ViewController = vc;
-								}
-
 								return false;
 						}
 					} while (true);
 			}
-		}
-
-		partial struct TransformToVisualContext
-		{
-			public UIViewController ViewController { get; set; }
 		}
 
 #if DEBUG

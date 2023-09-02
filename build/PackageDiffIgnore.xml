@@ -875,6 +875,11 @@
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 
+			<!-- BEGIN PopupRoot alignment -->
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.Primitives.Popup::MainWindow()" reason="Not available in WinUI" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.Primitives.Popup::MainWindowContent()" reason="Not available in WinUI" />
+			<!-- END PopupRoot alignment -->
+
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase::ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
 		</Properties>
 		<Methods>
@@ -1655,6 +1660,11 @@
 			<!-- END Skia clipping -->
 
 			<Member fullName="System.Collections.Generic.IEnumerator`1&lt;T&gt; Uno.Collections.MaterializableList`1.GetEnumerator()" reason="Changed return type" />
+
+			<!-- BEGIN PopupRoot alignment -->
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.Primitives.Popup.get_MainWindow()" reason="Not available in WinUI" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.Primitives.Popup.get_MainWindowContent()" reason="Not available in WinUI" />
+			<!-- END PopupRoot alignment -->
 
 			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
