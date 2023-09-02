@@ -524,7 +524,7 @@ namespace Windows.UI.Xaml
 #if __IOS__
 				// On iOS, the `from` and `to` may be coming from different ViewController.
 				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
-				if (context.ViewController == toContext.ViewController)
+				//if (context.ViewController == toContext.ViewController)
 #endif
 				{
 					var rootToTo = toToRoot.Inverse();
