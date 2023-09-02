@@ -114,7 +114,7 @@ public abstract class UnoViewGroup
 		// Original bug: https://github.com/unoplatform/Uno.Gallery/issues/898
 	
 		// Check for opacity (Alpha) and return false if it's less than 1f
-		return getAlpha() >= 1 && super.hasOverlappingRendering();
+		return false;
 	}
 
 	private boolean _unoLayoutOverride;
