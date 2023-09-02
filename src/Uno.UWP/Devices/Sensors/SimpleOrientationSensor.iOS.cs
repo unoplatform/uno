@@ -1,4 +1,4 @@
-#nullable enable
+﻿#nullable enable
 using CoreMotion;
 using Foundation;
 using Uno.Extensions;
