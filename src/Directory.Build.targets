@@ -87,8 +87,12 @@
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
+<<<<<<< HEAD
 		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0-dev.8" />
 >>>>>>> 39eb90fb50 (fix: update Uno.Fonts.Fluent for informational icon)
+=======
+		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
+>>>>>>> f48855fa5c (chore: Bump to stable build)
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 		<PackageReference Update="Xamarin.UITest" Version="4.1.4" />
 		<PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
