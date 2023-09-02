@@ -6,13 +6,13 @@ namespace Windows.Devices.Sensors
 {
 	public partial class SimpleOrientationSensor
 	{
+		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChanged;
+
 		#region Static
 
 		private static SimpleOrientationSensor _instance;
 		private static bool _initialized;
 		private readonly static object _syncLock = new();
-
-		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChanged;
 
 		public static SimpleOrientationSensor GetDefault()
 		{
@@ -34,12 +34,11 @@ namespace Windows.Devices.Sensors
 		}
 
 		private static partial SimpleOrientationSensor TryCreateInstance();
+		#endregion
 
 		partial void StartListeningOrientationChanged();
 
 		partial void StopListeningOrientationChanged();
-
-		#endregion
 
 #pragma warning disable CS0649 // Field 'SimpleOrientationSensor._currentOrientation' is never assigned to, and will always have its default value - Assigned only in Android and iOS.
 		private SimpleOrientation _currentOrientation;
