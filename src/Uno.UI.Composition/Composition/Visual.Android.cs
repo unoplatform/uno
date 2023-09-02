@@ -1,6 +1,5 @@
 #nullable enable
 
-#if __ANDROID__
 using System.Numerics;
 using System;
 using Android.Views;
@@ -12,4 +11,3 @@ namespace Windows.UI.Composition
 		internal View? NativeOwner { get; set; }
 	}
 }
-#endif

@@ -1,5 +1,8 @@
+using Windows.UI.Xaml.Markup;
+
 namespace Windows.UI.Xaml.Media
 {
+	[ContentProperty(Name = nameof(Points))]
 	public partial class PolyLineSegment : PathSegment
 	{
 		public PolyLineSegment()

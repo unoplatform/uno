@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Globalization;
@@ -40,4 +39,3 @@ namespace Uno.Media
 		}
 	}
 }
-#endif

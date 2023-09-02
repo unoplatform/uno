@@ -1,6 +1,8 @@
 #nullable enable
 
 using SkiaSharp;
+using Uno.Extensions;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -9,51 +11,74 @@ namespace Windows.UI.Composition
 		private SKPaint? _strokePaint;
 		private SKPaint? _fillPaint;
 
-		internal override void Render(SKSurface surface)
+		internal override void Draw(in DrawingSession session)
 		{
-			SkiaGeometrySource2D? geometrySource = Geometry?.BuildGeometry() as SkiaGeometrySource2D;
-
-			SKPath? geometry = geometrySource?.Geometry;
-			if (geometry == null)
+			if (Geometry?.BuildGeometry() is SkiaGeometrySource2D { Geometry: { } geometry })
 			{
-				return;
-			}
-
-			if (FillBrush != null)
-			{
-				var fillPaint = TryCreateAndClearFillPaint();
-
-				FillBrush.UpdatePaint(fillPaint, geometry.Bounds);
-
-				surface.Canvas.DrawPath(geometry, fillPaint);
-			}
-
-			if (StrokeBrush != null && StrokeThickness > 0)
-			{
-				var fillPaint = TryCreateAndClearFillPaint();
-				var strokePaint = TryCreateAndClearStrokePaint();
-
-				// Set stroke thickness
-				strokePaint.StrokeWidth = StrokeThickness;
-				// TODO: Add support for dashes here
-				// strokePaint.PathEffect = SKPathEffect.CreateDash();
-
-				// Generate stroke geometry for bounds that will be passed to a brush.
-				// - [Future]: This generated geometry should also be used for hit testing.
-				using (var strokeGeometry = strokePaint.GetFillPath(geometry))
+				var transform = this.GetTransform();
+				SKPath geometryWithTransformations;
+				if (transform.IsIdentity)
 				{
-					StrokeBrush.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+					geometryWithTransformations = geometry;
+				}
+				else
+				{
+					geometryWithTransformations = new SKPath();
+					geometry.Transform(transform.ToSKMatrix(), geometryWithTransformations);
+				}
 
-					surface.Canvas.DrawPath(strokeGeometry, fillPaint);
+				if (FillBrush is { } fill)
+				{
+					var fillPaint = TryCreateAndClearFillPaint(in session);
+
+					fill.UpdatePaint(fillPaint, geometry.Bounds);
+
+					session.Surface.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+				}
+
+				if (StrokeBrush is { } stroke && StrokeThickness > 0)
+				{
+					var fillPaint = TryCreateAndClearFillPaint(in session);
+					var strokePaint = TryCreateAndClearStrokePaint(in session);
+
+					// Set stroke thickness
+					strokePaint.StrokeWidth = StrokeThickness;
+					// TODO: Add support for dashes here
+					// strokePaint.PathEffect = SKPathEffect.CreateDash();
+
+					// Generate stroke geometry for bounds that will be passed to a brush.
+					// - [Future]: This generated geometry should also be used for hit testing.
+
+					// If we have something like this:
+					// <Path Data="M 0 0 L 50 0 L 50 50 L 0 50 z"
+					//		 Stroke="Red"
+					//		 StrokeThickness="5"
+					//		 Width="70"
+					//		 Stretch="Fill"
+					//		 HorizontalAlignment="Center"
+					//		 VerticalAlignment="Center" />
+					// The geometry itself is a 50x50 rectangle, and then we set the shape Width to 70 and let it
+					// to stretch over the available height, and we have a stroke thickness as 1px
+					// On Windows, the stroke is simply 1px, it doesn't scale with the height.
+					// So, to get a correct stroke geometry, we must apply the transformations first.
+
+					// Get the stroke geometry, after scaling has been applied.
+					using var strokeGeometry = strokePaint.GetFillPath(geometryWithTransformations);
+
+					stroke.UpdatePaint(fillPaint, strokeGeometry.Bounds);
+
+					session.Surface.Canvas.DrawPath(strokeGeometry, fillPaint);
 				}
 			}
 		}
 
-		private SKPaint TryCreateAndClearStrokePaint() => TryCreateAndClearPaint(ref _strokePaint, true);
+		private SKPaint TryCreateAndClearStrokePaint(in DrawingSession session)
+			=> TryCreateAndClearPaint(in session, ref _strokePaint, true);
 
-		private SKPaint TryCreateAndClearFillPaint() => TryCreateAndClearPaint(ref _fillPaint, false);
+		private SKPaint TryCreateAndClearFillPaint(in DrawingSession session)
+			=> TryCreateAndClearPaint(in session, ref _fillPaint, false);
 
-		private SKPaint TryCreateAndClearPaint(ref SKPaint? paint, bool isStroke)
+		private static SKPaint TryCreateAndClearPaint(in DrawingSession session, ref SKPaint? paint, bool isStroke)
 		{
 			if (paint == null)
 			{
@@ -76,7 +101,7 @@ namespace Windows.UI.Composition
 				}
 			}
 
-			paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
+			paint.ColorFilter = session.Filters.OpacityColorFilter;
 
 			return paint;
 		}

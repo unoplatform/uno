@@ -1,5 +1,4 @@
-﻿#if __WASM__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.ComponentModel;
@@ -93,4 +92,3 @@ namespace Windows.UI.Xaml.Media
 		}
 	}
 }
-#endif

@@ -103,7 +103,7 @@ There are a few steps to adding WinUI 2.5 to the Uno project:
 
 1. To update the UWP target version, right-click the UWP head project and click **Properties**.
 
-1. In the **Application** settings, update **Target version** and **Min version** to a **Windows 10, version 1903 (10.0; Build 18362)** or later.
+1. In the **Application** settings, update **Target version** and **Min version** to a **Windows 10, version 1903 (10.0; Build 19041)** or later.
 
     > [!NOTE]
     > Visual Studio will prompt to reload the project when you update the **Target version**.

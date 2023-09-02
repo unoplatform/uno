@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using CallKit;
@@ -12,4 +11,3 @@ namespace Windows.ApplicationModel.Calls
 			PhoneCallManager.RaiseCallStateChanged();
 	}
 }
-#endif

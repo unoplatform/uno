@@ -1,4 +1,4 @@
-﻿#if XAMARIN_IOS_UNIFIED
+﻿#if __IOS__
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;

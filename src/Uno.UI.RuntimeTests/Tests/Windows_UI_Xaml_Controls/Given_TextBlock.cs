@@ -3,9 +3,11 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
@@ -18,6 +20,21 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_TextBlock
 	{
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task Check_TextDecorations_Binding()
+		{
+			var SUT = new TextDecorationsBinding();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock1.TextDecorations);
+			Assert.AreEqual(TextDecorations.Underline, SUT.textBlock2.TextDecorations);
+			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock3.TextDecorations);
+			Assert.AreEqual(TextDecorations.None, SUT.textBlock4.TextDecorations);
+			Assert.AreEqual(TextDecorations.Strikethrough, SUT.textBlock5.TextDecorations);
+			Assert.AreEqual(TextDecorations.None, SUT.textBlock6.TextDecorations);
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure()
@@ -118,6 +135,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_FontFamily_In_Separate_Assembly()
 		{
 			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
@@ -150,6 +170,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
 		public async Task When_FontFamily_Default()
 		{
 			var SUT = new TextBlock { Text = "\xE102\xE102\xE102\xE102\xE102" };
@@ -232,13 +255,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Foreground = new SolidColorBrush(Colors.Red) { Opacity = 0.5 },
 			};
 
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
+			await UITestHelper.Load(SUT);
+			var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			var renderer = new RenderTargetBitmap();
-			await renderer.RenderAsync(SUT);
-			var bitmap = await RawBitmap.From(renderer, SUT);
-			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Color.FromArgb(127, 127, 0, 0));
+			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
 		}
 	}
 }

@@ -191,17 +191,31 @@ namespace Microsoft.CodeAnalysis
 		public static IEnumerable<IMethodSymbol> GetMethodsWithName(this ITypeSymbol resolvedType, string name)
 			=> resolvedType.GetMembers(name).OfType<IMethodSymbol>();
 
-		public static IMethodSymbol? GetFirstMethodWithName(this ITypeSymbol resolvedType, string name)
+		// includeBaseTypes was added to fix a bug for a specific caller without affecting anything else.
+		// But, we should revise it and make sure whether other callers need it or not, and potentially remove it completely and default to true.
+		public static IMethodSymbol? GetFirstMethodWithName(this ITypeSymbol resolvedType, string name, bool includeBaseTypes = false)
 		{
-			var members = resolvedType.GetMembers(name);
-
-			for (int i = 0; i < members.Length; i++)
+			var baseType = resolvedType;
+			while (baseType is not null)
 			{
-				if (members[i] is IMethodSymbol method)
+				var members = baseType.GetMembers(name);
+
+				for (int i = 0; i < members.Length; i++)
 				{
-					return method;
+					if (members[i] is IMethodSymbol method)
+					{
+						return method;
+					}
 				}
+
+				if (!includeBaseTypes)
+				{
+					return null;
+				}
+
+				baseType = baseType.BaseType;
 			}
+
 
 			return null;
 		}
@@ -257,7 +271,7 @@ namespace Microsoft.CodeAnalysis
 				return symbol.GetMembers(memberName).FirstOrDefault();
 			}
 
-			var typeSymbol = (INamedTypeSymbol?)symbol;
+			var typeSymbol = (ITypeSymbol?)symbol;
 			while (typeSymbol is not null)
 			{
 				if (typeSymbol.GetMembers(memberName).FirstOrDefault() is { } member)
@@ -286,7 +300,7 @@ namespace Microsoft.CodeAnalysis
 				return null;
 			}
 
-			var typeSymbol = (INamedTypeSymbol?)symbol;
+			var typeSymbol = (ITypeSymbol?)symbol;
 			while (typeSymbol is not null)
 			{
 				foreach (var candidate in typeSymbol.GetMembers())

@@ -1,15 +1,10 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Web;
-
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Uno.Helpers
 {
@@ -76,12 +71,7 @@ namespace Uno.Helpers
 			uriString += "%s";
 
 			// register scheme
-#if NET7_0_OR_GREATER
 			NativeMethods.RegisterProtocolHandler(scheme, uriString, prompt);
-#else
-			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(
-				$"navigator.registerProtocolHandler('{scheme}', '{uriString}' , '{prompt.Replace("'", "\\'")}')");
-#endif
 		}
 
 		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
@@ -116,13 +106,10 @@ namespace Uno.Helpers
 			return false;
 		}
 
-#if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
 			[JSImport("globalThis.navigator.registerProtocolHandler")]
 			internal static partial void RegisterProtocolHandler(string scheme, string uri, string prompt);
 		}
-#endif
 	}
 }
-#endif

@@ -1,70 +1,42 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using Android.OS;
 using Java.Lang;
 
 #if HAS_UNO_WINUI && IS_UNO_UI_DISPATCHING_PROJECT
-namespace Microsoft.UI.Dispatching
+namespace Microsoft.UI.Dispatching;
 #else
-namespace Windows.System
+namespace Windows.System;
 #endif
+
+partial class DispatcherQueueTimer
 {
-	partial class DispatcherQueueTimer
+	private Handler _handler;
+	private TickRunnable _runnable;
+
+	partial void InitializePlatform()
 	{
-		private Handler _handler;
-		private TickRunnable _runnable;
+		_handler = new Handler(Looper.MainLooper);
+		_runnable = new TickRunnable(this);
+	}
 
-		partial void NativeCtor()
+	private void ScheduleTickNative(TimeSpan dueTime) => _handler.PostDelayed(_runnable, (long)dueTime.TotalMilliseconds);
+
+	private void StopNative() => _handler.RemoveCallbacks(_runnable);
+
+	private class TickRunnable : Java.Lang.Object, IRunnable
+	{
+		private readonly DispatcherQueueTimer _timer;
+
+		public TickRunnable(DispatcherQueueTimer timer)
 		{
-			_handler = new Handler(Looper.MainLooper);
-			_runnable = new TickRunnable(this);
+			_timer = timer;
 		}
 
-		private void StartNative(TimeSpan interval)
+		public void Run()
 		{
-			var longInterval = (long)interval.TotalMilliseconds;
-
-			_runnable.Interval = longInterval;
-			_handler.PostDelayed(_runnable, longInterval);
-		}
-
-		private void StartNative(TimeSpan dueTime, TimeSpan interval)
-		{
-			_runnable.Interval = (long)interval.TotalMilliseconds;
-			_handler.PostDelayed(_runnable, (long)dueTime.TotalMilliseconds);
-		}
-
-		private void StopNative()
-		{
-			_runnable.Interval = -1;
-			_handler.RemoveCallbacks(_runnable);
-		}
-
-		private class TickRunnable : Java.Lang.Object, IRunnable
-		{
-			private readonly DispatcherQueueTimer _timer;
-
-			public long Interval { get; set; }
-
-			public TickRunnable(DispatcherQueueTimer timer)
+			if (_timer.IsRunning)
 			{
-				_timer = timer;
-			}
-
-			public void Run()
-			{
-				var interval = Interval;
-				if (interval >= 0)
-				{
-					_timer.RaiseTick();
-
-					interval = Interval;
-					if (interval >= 0) // be sure to not self restart if the timer was Stopped by the Tick event handler
-					{
-						_timer._handler.PostDelayed(this, interval);
-					}
-				}
+				_timer.RaiseTick();
 			}
 		}
 	}

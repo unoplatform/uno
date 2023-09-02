@@ -1,5 +1,5 @@
 ﻿<#@template language="C#"#>
-<#@output extension="g.cs" #>
+<#@output extension=".cs" #>
 #if __MACOS__
 <# 
 	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true, hasAutomationPeer: true);

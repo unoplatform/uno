@@ -100,17 +100,7 @@ namespace Windows.ApplicationModel.Resources
 				}
 			}
 
-			// Finally try to fallback on the native localization system
-#if !UNO_REFERENCE_API && !NET461
-			if (GetStringInternal == null)
-			{
-				throw new InvalidOperationException($"ResourceLoader.GetStringInternal hasn't been set. Make sure ResourceHelper is initialized properly.");
-			}
-
-			return GetStringInternal.Invoke(resource);
-#else
 			return string.Empty;
-#endif
 		}
 
 		private bool FindForCulture(string culture, string resource, out string resourceValue)
@@ -145,9 +135,6 @@ namespace Windows.ApplicationModel.Resources
 
 		[NotImplemented]
 		public static string GetStringForReference(Uri uri) { throw new NotSupportedException(); }
-
-		// TODO: Remove this property when getting rid of ResourceHelper
-		public static Func<string, string> GetStringInternal { get; set; }
 
 		/// <summary>
 		/// Provides the default culture if CurrentUICulture cannot provide it.

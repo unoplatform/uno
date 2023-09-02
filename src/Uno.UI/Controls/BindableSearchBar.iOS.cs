@@ -12,17 +12,8 @@ using Uno.Client;
 using CoreGraphics;
 using ObjCRuntime;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-#endif
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Controls
 {
@@ -32,7 +23,7 @@ namespace Uno.UI.Controls
 		private static readonly TimeSpan _defaultTextChangedMinDelay = TimeSpan.FromMilliseconds(250);
 		private const bool _defaultIsAutoLostFocusEnabled = true;
 
-		private readonly SerialDisposable _textChangedSubscription = new SerialDisposable();
+		//private readonly SerialDisposable _textChangedSubscription = new SerialDisposable();
 
 		private ICommand _submitCommand;
 		private TimeSpan _textUpdateMinDelay = _defaultTextChangedMinDelay;
@@ -189,7 +180,7 @@ namespace Uno.UI.Controls
 			//		h => TextChanged += h,
 			//		h => TextChanged -= h,
 			//		this,
-			//		FrameworkElementExtensions.UiEventSubscriptionsOptions.Default) 
+			//		FrameworkElementExtensions.UiEventSubscriptionsOptions.Default)
 			//	.Throttle(TextUpdateMinDelay, this.GetDispatcherScheduler())
 			//	.Subscribe(
 			//		args =>

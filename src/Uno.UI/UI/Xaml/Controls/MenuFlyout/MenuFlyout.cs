@@ -21,7 +21,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyout : FlyoutBase, IMenu
 	{
 		private readonly ObservableVector<MenuFlyoutItemBase> m_tpItems;
@@ -190,8 +190,11 @@ namespace Windows.UI.Xaml.Controls
 
 			AutomationPeer.RaiseEventIfListener(GetPresenter(), AutomationEvents.MenuClosed);
 
-			((MenuFlyoutPresenter)GetPresenter()).m_iFocusedIndex = -1;
-			((ItemsControl)GetPresenter()).ItemsSource = null;
+			if (GetPresenter() is MenuFlyoutPresenter presenter)
+			{
+				presenter.m_iFocusedIndex = -1;
+				presenter.ItemsSource = null;
+			}
 		}
 
 		void CloseSubMenu()

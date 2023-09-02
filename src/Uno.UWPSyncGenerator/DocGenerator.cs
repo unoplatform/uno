@@ -25,7 +25,7 @@ namespace Uno.UWPSyncGenerator
 		private IGrouping<INamespaceSymbol, PlatformSymbols<INamedTypeSymbol>>[] _viewsGrouped;
 		private HashSet<(string name, string namespaceString)> _kosherFrameworkViews;
 
-		public override void Build(string basePath, string baseName, string sourceAssembly)
+		public override async Task Build(string basePath, string baseName, string sourceAssembly)
 		{
 			_sb = new MarkdownStringBuilder();
 
@@ -36,7 +36,7 @@ namespace Uno.UWPSyncGenerator
 
 			try
 			{
-				base.Build(basePath, baseName, sourceAssembly);
+				await base.Build(basePath, baseName, sourceAssembly);
 			}
 			catch (Exception e)
 			{
@@ -51,7 +51,7 @@ namespace Uno.UWPSyncGenerator
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (18362)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (19041)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 

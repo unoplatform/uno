@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using Android.App;
+﻿using Android.App;
 using Android.Content;
 using Android.Views;
 using Android.Widget;
@@ -131,4 +130,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

@@ -1,4 +1,4 @@
-<Project ToolsVersion="15.0">
+<Project>
 
   <ItemGroup>
     <_OverrideTargetFrameworksDependency Include="Restore" />
@@ -40,14 +40,6 @@
 
     <PropertyGroup>
       <TargetFrameworksOverride>$(TargetFrameworks)</TargetFrameworksOverride>
-      <TargetFrameworksOverride Condition="'$(CI_Build)'!='' and '$(TargetFrameworksCI)'!='' and '$(UITestsEnabled)'=='' and '$(UnoDisableTargetFrameworksCIOverride)'==''">$(TargetFrameworksCI)</TargetFrameworksOverride>
-
-
-		<!-- Allow projects to specify an always-built target framework -->
-		<TargetFrameworksOverride Condition="
-			'$(TargetFrameworksOverrideInvariant)'!=''
-			and '$(TargetFrameworksOverrideInvariant)'!='$(TargetFrameworksOverride)'">
-		  $(TargetFrameworksOverride);$(TargetFrameworksOverrideInvariant)</TargetFrameworksOverride>
 
       <_CanOverrideFramework>false</_CanOverrideFramework>
       <_CanOverrideFramework Condition="'$(BuildTargetFramework)' !='' and '$(DisableBuildTargetFramework)' =='' and '$(ExcludeRestorePackageImports)'!='true' and '$(DesignTimeBuild)' != 'true' and $(TargetFrameworks.Contains($(BuildTargetFramework)))">true</_CanOverrideFramework>
@@ -65,7 +57,6 @@
   </Target>
 
   <PropertyGroup Condition="('$(ExcludeRestorePackageImports)'!='true' and '$(TargetFrameworks)'!='') or '$(CI_Build)'!=''">
-    <TargetFrameworks Condition="'$(TargetFrameworksOverride)'==''">$(TargetFrameworks)</TargetFrameworks>
     <TargetFrameworks Condition="'$(TargetFrameworksOverride)'!=''">$(TargetFrameworksOverride)</TargetFrameworks>
   </PropertyGroup>
 

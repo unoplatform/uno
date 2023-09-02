@@ -1,11 +1,9 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
-
-		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
+
+	<Import Project="../targetframework-override.props" />
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Foldable</AssemblyName>
@@ -19,15 +17,13 @@
 		<Deterministic>true</Deterministic>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
-
 	<PropertyGroup>
-    <Authors>nventive</Authors>
+    <authors>Uno Platform</authors>
     <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
     <PackageIcon>uno.png</PackageIcon>
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use dual screen devices such as the Surface Duo or Neo</Description>
-    <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+    <Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
   </PropertyGroup>
 
 	<ItemGroup>
@@ -35,10 +31,6 @@
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
 		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.netcoremobile.csproj" Condition="$(IsAndroid)" TreatAsPackageReference="false" PrivateAssets="all" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetPlatformIdentifier)'=='android'">
@@ -51,9 +43,14 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Foldable\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.Foldable\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
-		<ItemGroup>
+
+	<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />

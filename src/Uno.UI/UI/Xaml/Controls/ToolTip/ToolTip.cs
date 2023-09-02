@@ -20,7 +20,8 @@ namespace Windows.UI.Xaml.Controls
 		private const double DEFAULT_KEYBOARD_OFFSET = 12;  // Default offset for automatic tooltips opened by keyboard.
 		private const double DEFAULT_MOUSE_OFFSET = 20;   // Default offset for automatic tooltips opened by mouse.
 		private const double DEFAULT_TOUCH_OFFSET = 44;  // Default offset for automatic tooltips opened by touch.
-		private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
+
+		//private const double CONTEXT_MENU_HINT_VERTICAL_OFFSET = -5;    // The hint is slightly above center in the vertical axis.
 
 		private const int m_mousePlacementVerticalOffset = 11;  // Mouse placement vertical offset
 
@@ -57,8 +58,8 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning disable CS0414
 		private PlacementMode? m_pToolTipServicePlacementModeOverride;
 		private bool m_bIsPopupPositioned;
-		private bool m_bClosing;
-		private bool m_bIsOpenAsAutomaticToolTip;
+		//private bool m_bClosing;
+		//private bool m_bIsOpenAsAutomaticToolTip;
 		private bool m_bCallPerformPlacementAtNextPopupOpen;
 		internal AutomaticToolTipInputMode m_inputMode = AutomaticToolTipInputMode.Mouse; // TODO Uno: This should be set from ToolTipService
 		internal bool m_isSliderThumbToolTip;

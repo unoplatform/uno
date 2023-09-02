@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return (string)this.GetValue(DayOfWeekFormatProperty);
+				return (string)this.GetValue(DayOfWeekFormatProperty) ?? "";
 			}
 			set
 			{

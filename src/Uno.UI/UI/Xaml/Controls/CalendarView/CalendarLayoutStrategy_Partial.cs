@@ -96,7 +96,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void GetPositionOfFirstElementImpl(out Point returnValue)
 		{
-			returnValue = null;
 			returnValue = _layoutStrategyImpl.GetPositionOfFirstElement();
 
 			return;

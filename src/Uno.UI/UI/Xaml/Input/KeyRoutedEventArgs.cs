@@ -9,11 +9,12 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly CorePhysicalKeyStatus? _keyStatus;
 
-		internal KeyRoutedEventArgs(object originalSource, VirtualKey key, CorePhysicalKeyStatus? keyStatus = null)
+		internal KeyRoutedEventArgs(object originalSource, VirtualKey key, VirtualKeyModifiers modifiers, CorePhysicalKeyStatus? keyStatus = null)
 			: base(originalSource)
 		{
 			Key = key;
 			OriginalKey = key;
+			KeyboardModifiers = modifiers;
 			_keyStatus = keyStatus;
 		}
 
@@ -21,8 +22,8 @@ namespace Windows.UI.Xaml.Input
 
 		public VirtualKey Key { get; }
 
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public CorePhysicalKeyStatus KeyStatus
 		{

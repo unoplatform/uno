@@ -2,22 +2,15 @@
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Uno.Storage.Streams.Internal
 {
 	internal partial class NativeReadStreamAdapter : Stream
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Uno.Storage.Streams.NativeFileReadStream";
-#endif
-
 		private readonly Guid _streamId;
 
 		private long _length;
@@ -26,12 +19,7 @@ namespace Uno.Storage.Streams.Internal
 		public static async Task<NativeReadStreamAdapter> CreateAsync(Guid fileId)
 		{
 			var streamId = Guid.NewGuid();
-			var result = await
-#if NET7_0_OR_GREATER
-				NativeMethods.OpenAsync(streamId.ToString(), fileId.ToString());
-#else
-				WebAssemblyRuntime.InvokeAsync($"{JsType}.openAsync('{streamId}', '{fileId}')");
-#endif
+			var result = await NativeMethods.OpenAsync(streamId.ToString(), fileId.ToString());
 
 			if (result == null || !long.TryParse(result, out var length))
 			{
@@ -90,13 +78,7 @@ namespace Uno.Storage.Streams.Internal
 			{
 				var pinnedData = handle.AddrOfPinnedObject();
 				// TODO: Handle case of reading beyond end of file!
-				var countReadString = await
-#if NET7_0_OR_GREATER
-					NativeMethods.ReadAsync(_streamId.ToString(), pinnedData, offset, count, Position);
-#else
-					WebAssemblyRuntime.InvokeAsync($"{JsType}.readAsync('{_streamId}', {pinnedData}, {offset}, {count}, {Position})");
-#endif
-
+				var countReadString = await NativeMethods.ReadAsync(_streamId.ToString(), pinnedData, offset, count, Position);
 				var countRead = int.Parse(countReadString, CultureInfo.InvariantCulture);
 				Position += countRead;
 				return countRead;
@@ -109,14 +91,9 @@ namespace Uno.Storage.Streams.Internal
 
 		protected override void Dispose(bool disposing)
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.Close(_streamId.ToString());
-#else
-			WebAssemblyRuntime.InvokeJS($"{JsType}.close('{_streamId}')");
-#endif
 		}
 
-#if NET7_0_OR_GREATER
 		internal static partial class NativeMethods
 		{
 			private const string JsType = "globalThis.Uno.Storage.Streams.NativeFileReadStream";
@@ -130,6 +107,5 @@ namespace Uno.Storage.Streams.Internal
 			[JSImport($"{JsType}.readAsync")]
 			internal static partial Task<string> ReadAsync(string streamId, nint pData, int offset, int count, double position);
 		}
-#endif
 	}
 }

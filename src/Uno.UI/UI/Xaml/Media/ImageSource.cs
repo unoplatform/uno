@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using System.ComponentModel;
 using System.IO;
 using System.Net.Http;
@@ -11,6 +12,7 @@ using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI;
+using System.Net;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -23,8 +25,12 @@ namespace Windows.UI.Xaml.Media
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private protected static HttpClient _httpClient;
-		private protected ImageData _imageData;
+		private protected static HttpClient? _httpClient;
+		private protected ImageData _imageData = ImageData.Empty;
+
+		internal event Action? Invalidated;
+
+		private protected void InvalidateImageSource() => Invalidated?.Invoke();
 
 		public static class TraceProvider
 		{
@@ -36,15 +42,18 @@ namespace Windows.UI.Xaml.Media
 
 		const string MsAppXScheme = "ms-appx";
 
+#pragma warning disable CA2211
 		/// <summary>
 		/// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.
 		/// </summary>
-		public static IImageSourceDownloader DefaultDownloader;
+		public static IImageSourceDownloader? DefaultDownloader;
 
 		/// <summary>
 		/// The image downloader for the current instance.
 		/// </summary>
-		public IImageSourceDownloader Downloader;
+		public IImageSourceDownloader? Downloader;
+#pragma warning restore CA2211
+
 
 #if __ANDROID__ || __IOS__ || __MACOS__
 		/// <summary>
@@ -56,11 +65,11 @@ namespace Windows.UI.Xaml.Media
 		}
 #endif
 
-#if !(__NETSTD__)
-		internal Stream Stream { get; set; }
+#if !(__CROSSRUNTIME__)
+		internal Stream? Stream { get; set; }
 #endif
 
-		internal string FilePath { get; private set; }
+		internal string? FilePath { get; private set; }
 
 		public bool UseTargetSize { get; set; }
 
@@ -68,17 +77,15 @@ namespace Windows.UI.Xaml.Media
 		{
 			var uri = TryCreateUriFromString(url);
 
-			if (uri != null)
-			{
-				InitFromUri(uri);
-			}
-			else
+			if (uri is null)
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().DebugFormat("The uri [{0}] is not valid, skipping.", url);
 				}
 			}
+
+			InitFromUri(uri);
 		}
 
 		protected ImageSource(Uri uri) : this()
@@ -86,7 +93,7 @@ namespace Windows.UI.Xaml.Media
 			InitFromUri(uri);
 		}
 
-		internal static Uri TryCreateUriFromString(string url)
+		internal static Uri? TryCreateUriFromString(string url)
 		{
 			if (url is null)
 			{
@@ -111,16 +118,21 @@ namespace Windows.UI.Xaml.Media
 			return null;
 		}
 
-		internal void InitFromUri(Uri uri)
+		internal void InitFromUri(Uri? uri)
 		{
+			CleanupResource();
+			FilePath = null;
+			AbsoluteUri = null;
+
+			if (uri is null)
+			{
+				return;
+			}
+
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
-
-			CleanupResource();
-			FilePath = null;
-			AbsoluteUri = null;
 
 			if (uri.IsLocalResource())
 			{
@@ -151,13 +163,17 @@ namespace Windows.UI.Xaml.Media
 
 		partial void CleanupResource();
 
-		public static implicit operator ImageSource(string url)
+		public static implicit operator ImageSource?(string url)
 		{
-			var uri = TryCreateUriFromString(url);
-			return (ImageSource)uri;
+			if (TryCreateUriFromString(url) is Uri uri)
+			{
+				return (ImageSource?)uri;
+			}
+
+			return null;
 		}
 
-		public static implicit operator ImageSource(Uri uri)
+		public static implicit operator ImageSource?(Uri uri)
 		{
 			if (uri is null)
 			{
@@ -211,9 +227,9 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		private Uri _absoluteUri;
+		private Uri? _absoluteUri;
 
-		internal Uri AbsoluteUri
+		internal Uri? AbsoluteUri
 		{
 			get => _absoluteUri;
 
@@ -232,6 +248,11 @@ namespace Windows.UI.Xaml.Media
 
 		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
 		{
+			if (uri.IsFile)
+			{
+				return File.Open(uri.LocalPath, FileMode.Open);
+			}
+
 			_httpClient ??= new HttpClient();
 			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
 			return await response.Content.ReadAsStreamAsync();

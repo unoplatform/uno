@@ -33,6 +33,7 @@ using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Uno.UI.RuntimeTests;
+using System.Threading.Tasks;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
@@ -91,7 +92,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 		public void ValidateRepeaterDefaults()
 		{
-			RunOnUIThread.Execute(() =>
+			RunOnUIThread.Execute(async () =>
 			{
 				var repeater = new ItemsRepeater()
 				{
@@ -108,12 +109,16 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 					}
 				};
 
-				Content.UpdateLayout();
+				while (repeater.TryGetElement(0) == null)
+				{
+					await Task.Delay(1000);
+					Content.UpdateLayout();
+				}
 
 				for (int i = 0; i < 10; i++)
 				{
 					var element = repeater.TryGetElement(i);
-					Verify.IsNotNull(element);
+					Verify.IsNotNull(element, $"Item {i} is null");
 					Verify.AreEqual(string.Format("Item #{0}", i), ((TextBlock)element).Text);
 					Verify.AreEqual(i, repeater.GetElementIndex(element));
 				}
@@ -262,6 +267,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
                     </ScrollViewer>
                 </controls:ItemsRepeaterScrollHost>");
 
+				Content = scrollhost;
+
 				rootRepeater = (ItemsRepeater)scrollhost.FindName("rootRepeater");
 				scrollViewer = (ScrollViewer)scrollhost.FindName("scrollviewer");
 				scrollViewer.ViewChanged += (sender, args) =>
@@ -273,7 +280,6 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				};
 
 				rootRepeater.ItemsSource = Enumerable.Range(0, 500);
-				Content = scrollhost;
 			});
 
 			// scroll down several times and validate current anchor
@@ -317,6 +323,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS/Skia https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public void VerifyFocusedItemIsRecycledOnCollectionReset()
 		{
@@ -481,6 +489,11 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		// ScrollViewer scrolls vertically, but there is an inner 
 		// repeater which flows horizontally which needs corrections to be handled.
 		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Currently fails on iOS https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		public void VerifyCorrectionsInNonScrollableDirection()
 		{
 			ItemsRepeater rootRepeater = null;
@@ -663,6 +676,8 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 		[TestMethod]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __IOS__
+		[Ignore("Fails")]
 #endif
 		public void VerifyRepeaterDoesNotLeakItemContainers()
 		{

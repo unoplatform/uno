@@ -20,5 +20,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Foundation.Metadata
 			var secondIsPresent = ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Application", "Current");
 			Assert.IsTrue(secondIsPresent);
 		}
+
+		[TestMethod]
+		public void When_StoreContract()
+		{
+			var isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 1);
+			Assert.IsTrue(isPresent);
+			isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 2, 3);
+			Assert.IsTrue(isPresent);
+			isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 4);
+			Assert.IsTrue(isPresent);
+			isPresent = ApiInformation.IsApiContractPresent("Windows.Services.Store.StoreContract", 100);
+			Assert.IsFalse(isPresent);
+		}
 	}
 }

@@ -6,29 +6,27 @@ IFS=$'\n\t'
 set -x
 
 export BUILDCONFIGURATION=Release
-export NUNIT_VERSION=3.12.0
 
 if [ "$UITEST_TEST_MODE_NAME" == 'Snapshots' ];
 then
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+	export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Snap"
+
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME-Snap
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'Automated' ];
 then
 	export TEST_FILTERS="\
-		namespace != 'SamplesApp.UITests.Snap' \
-		and class != 'SamplesApp.UITests.Runtime.BenchmarkDotNetTests' \
-		and class != 'SamplesApp.UITests.Runtime.RuntimeTests' \
-		and cat =~ 'testBucket:$UNO_UITEST_BUCKET_ID'
+		Namespace !~ SamplesApp.UITests.Snap\
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.BenchmarkDotNetTests\
+		& FullyQualifiedName !~ SamplesApp.UITests.Runtime.RuntimeTests\
+		& Category~testBucket:$UNO_UITEST_BUCKET_ID
 	";
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 
 elif [ "$UITEST_TEST_MODE_NAME" == 'RuntimeTests' ];
 then
-	export TEST_FILTERS="\
-		class == 'SamplesApp.UITests.Runtime.RuntimeTests' \
-	";
+	export TEST_FILTERS="FullyQualifiedName ~ SamplesApp.UITests.Runtime.RuntimeTests"
 
 	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-$TARGETPLATFORM_NAME
 fi
@@ -38,7 +36,7 @@ export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/$SAMPLEAPP_ARTIFACT_NAME/android/uno.platform.unosampleapp-Signed.apk
 export IsUiAutomationMappingEnabled=true
 export UITEST_RUNTIME_TEST_GROUP=${UITEST_RUNTIME_TEST_GROUP=automated}
-
+export UNO_TESTS_LOCAL_TESTS_FILE=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests
 export UNO_ORIGINAL_TEST_RESULTS=$BUILD_SOURCESDIRECTORY/build/TestResult-original.xml
 export UNO_TESTS_FAILED_LIST=$BUILD_SOURCESDIRECTORY/build/uitests-failure-results/failed-tests-android-$ANDROID_SIMULATOR_APILEVEL-$SCREENSHOTS_FOLDERNAME-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$TARGETPLATFORM_NAME.txt
 export UNO_TESTS_RESPONSE_FILE=$BUILD_SOURCESDIRECTORY/build/nunit.response
@@ -46,7 +44,7 @@ export UNO_UITEST_RUNTIMETESTS_RESULTS_FILE_PATH=$BUILD_SOURCESDIRECTORY/build/R
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-if [ $(wc -l < "$UNO_TESTS_FAILED_LIST") -eq 1 ];
+if [ -f "$UNO_TESTS_FAILED_LIST" ] && [ `cat "$UNO_TESTS_FAILED_LIST"` = "invalid-test-for-retry" ];
 then
 	# The test results file only contains the re-run marker and no
 	# other test to rerun. We can skip this run.
@@ -138,36 +136,31 @@ cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
 
 cd $BUILD_SOURCESDIRECTORY/build
 
-mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version $NUNIT_VERSION
-
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH
 
-## Build the NUnit configuration file
-echo "--trace=Verbose" > $UNO_TESTS_RESPONSE_FILE
-echo "--framework=mono" >> $UNO_TESTS_RESPONSE_FILE
-echo "--inprocess" >> $UNO_TESTS_RESPONSE_FILE
-echo "--agents=1" >> $UNO_TESTS_RESPONSE_FILE
-echo "--workers=1" >> $UNO_TESTS_RESPONSE_FILE
-echo "--result=$UNO_ORIGINAL_TEST_RESULTS" >> $UNO_TESTS_RESPONSE_FILE
-echo "--timeout=$UITEST_TEST_TIMEOUT" >> $UNO_TESTS_RESPONSE_FILE
-
 if [ -f "$UNO_TESTS_FAILED_LIST" ]; then
-    echo "--testlist \"$UNO_TESTS_FAILED_LIST\"" >> $UNO_TESTS_RESPONSE_FILE
+    UNO_TESTS_FILTER=`cat $UNO_TESTS_FAILED_LIST`
 else
-    echo "--where \"$TEST_FILTERS\"" >> $UNO_TESTS_RESPONSE_FILE
+    UNO_TESTS_FILTER=$TEST_FILTERS
 fi
 
-echo "$BUILD_SOURCESDIRECTORY/build/samplesapp-uitest-binaries/SamplesApp.UITests.dll" >> $UNO_TESTS_RESPONSE_FILE
+echo "Test Parameters:"
+echo "  Timeout=$UITEST_TEST_TIMEOUT"
+echo "  Test filters: $UNO_TESTS_FILTER"
 
-## Show the tests list
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-    @$UNO_TESTS_RESPONSE_FILE --explore || true
+cd $UNO_TESTS_LOCAL_TESTS_FILE
 
 ## Run NUnit tests
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.$NUNIT_VERSION/tools/nunit3-console.exe \
-    @$UNO_TESTS_RESPONSE_FILE || true
+dotnet test \
+	-c Release \
+	-l:"console;verbosity=normal" \
+	--logger "nunit;LogFileName=$UNO_ORIGINAL_TEST_RESULTS" \
+	--filter "$UNO_TESTS_FILTER" \
+	--blame-hang-timeout 120m \
+	-v m \
+	|| true
 
 ## Dump the emulator's system log
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log-$UNO_UITEST_BUCKET_ID-$UITEST_RUNTIME_TEST_GROUP-$UITEST_TEST_MODE_NAME.txt

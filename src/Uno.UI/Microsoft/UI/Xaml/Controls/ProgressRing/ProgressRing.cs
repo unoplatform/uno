@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private readonly ILottieVisualSourceProvider? _lottieProvider;
 
 
-		private Windows.UI.Xaml.Controls.AnimatedVisualPlayer? _player;
+		private AnimatedVisualPlayer? _player;
 		private bool _isTemplateApplied = false;
 		private Panel? _layoutRoot;
 		private double _oldValue = 0d;
@@ -84,24 +84,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 
-		public Windows.UI.Xaml.Controls.IAnimatedVisualSource DeterminateSource
+		public IAnimatedVisualSource DeterminateSource
 		{
-			get { return (Windows.UI.Xaml.Controls.IAnimatedVisualSource)GetValue(DeterminateSourceProperty); }
+			get { return (IAnimatedVisualSource)GetValue(DeterminateSourceProperty); }
 			set { SetValue(DeterminateSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty DeterminateSourceProperty =
-			DependencyProperty.Register("DeterminateSource", typeof(Windows.UI.Xaml.Controls.IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnDeterminateSourcePropertyChanged(e)));
+		public static DependencyProperty DeterminateSourceProperty { get; } =
+			DependencyProperty.Register("DeterminateSource", typeof(IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnDeterminateSourcePropertyChanged(e)));
 
 
-		public Windows.UI.Xaml.Controls.IAnimatedVisualSource IndeterminateSource
+		public IAnimatedVisualSource IndeterminateSource
 		{
-			get { return (Windows.UI.Xaml.Controls.IAnimatedVisualSource)GetValue(IndeterminateSourceProperty); }
+			get { return (IAnimatedVisualSource)GetValue(IndeterminateSourceProperty); }
 			set { SetValue(IndeterminateSourceProperty, value); }
 		}
 
-		public static readonly DependencyProperty IndeterminateSourceProperty =
-			DependencyProperty.Register("IndeterminateSource", typeof(Windows.UI.Xaml.Controls.IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnIndeterminateSourcePropertyChanged(e)));
+		public static DependencyProperty IndeterminateSourceProperty { get; } =
+			DependencyProperty.Register("IndeterminateSource", typeof(IAnimatedVisualSource), typeof(ProgressRing), new FrameworkPropertyMetadata(null, (s, e) => (s as ProgressRing)?.OnIndeterminateSourcePropertyChanged(e)));
 
 		public ProgressRing()
 		{
@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		protected override void OnApplyTemplate()
 		{
 			_isTemplateApplied = true;
-			_player = GetTemplateChild(LottiePlayerName) as Windows.UI.Xaml.Controls.AnimatedVisualPlayer;
+			_player = GetTemplateChild(LottiePlayerName) as AnimatedVisualPlayer;
 			_layoutRoot = GetTemplateChild(LayoutRootName) as Panel;
 
 			ChangeVisualState();
@@ -232,7 +232,7 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						if (indeterminateSource == null)
 						{
-							var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
+							var animatedVisualSource = _lottieProvider.CreateThemableFromLottieAsset(_currentSourceUri);
 							_player.Source = animatedVisualSource;
 						}
 						else
@@ -268,7 +268,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							_currentSourceUri = FeatureConfiguration.ProgressRing.DeterminateProgressRingAsset;
 
-							var animatedVisualSource = _lottieProvider.CreateTheamableFromLottieAsset(_currentSourceUri);
+							var animatedVisualSource = _lottieProvider.CreateThemableFromLottieAsset(_currentSourceUri);
 							_player.Source = animatedVisualSource;
 						}
 						else

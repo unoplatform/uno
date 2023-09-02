@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Common;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.UI.RuntimeTests;
@@ -27,10 +29,10 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 
 	[TestClass]
+	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public class BreadcrumbTests : MUXApiTestBase
 	{
-
 		[TestMethod]
 		public void VerifyBreadcrumbDefaultAPIValues()
 		{

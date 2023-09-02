@@ -2,8 +2,9 @@
 
 using System;
 using System.Windows;
+using System.Windows.Input;
 using Uno.Disposables;
-using Uno.UI.Runtime.Skia.Wpf.Controls;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using WpfElement = System.Windows.UIElement;
 using WpfFrameworkElement = System.Windows.FrameworkElement;
 using WpfGrid = System.Windows.Controls.Grid;
@@ -18,6 +19,7 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	private readonly WpfGrid _grid = new();
 	private readonly SerialDisposable _visibleControlTextChangedSubscription = new();
 	private EventHandler? _textChangedWatcher;
+	private (int start, int length) _selectionBeforeKeyDown;
 
 	public PasswordTextBoxView()
 	{
@@ -28,6 +30,8 @@ internal class PasswordTextBoxView : WpfTextBoxView
 		_passwordBox.Visibility = Visibility.Collapsed;
 		_grid.Children.Add(_passwordBox);
 		_grid.Children.Add(_textBox);
+
+		_passwordBox.PreviewKeyDown += OnPreviewKeyDown;
 	}
 
 	public override string Text
@@ -46,6 +50,12 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	{
 		get => (_textBox.SelectionStart, _textBox.SelectionLength);
 		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
+	}
+
+	public override (int start, int length) SelectionBeforeKeyDown
+	{
+		get => (_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length);
+		protected set => (_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length) = value;
 	}
 
 	public override bool IsCompatible(Windows.UI.Xaml.Controls.TextBox textBox) => textBox is Windows.UI.Xaml.Controls.PasswordBox;
@@ -118,4 +128,20 @@ internal class PasswordTextBoxView : WpfTextBoxView
 	private void OnCommonTextChanged() => _textChangedWatcher?.Invoke(this, EventArgs.Empty);
 
 	private WpfElement GetDisplayedElement() => _textBox.Visibility == Visibility.Visible ? _textBox : _passwordBox;
+
+	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+	{
+		// WpfTextBox's cursor/selection position isn't accessible even with reflection
+		// for security reasons. This prevents TextBox keyboard navigation from working
+		// correctly. So at least we just set SelectionBeforeKeyDown to any fake value
+		// that prevents keyboard navigation from triggering all together.
+		if (e.Key == Key.Left || e.Key == Key.LeftShift || e.Key == Key.LeftCtrl || e.Key == Key.LeftAlt)
+		{
+			SelectionBeforeKeyDown = (_passwordBox.Password.Length, 0);
+		}
+		else
+		{
+			SelectionBeforeKeyDown = (0, 0);
+		}
+	}
 }

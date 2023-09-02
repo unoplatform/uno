@@ -1,12 +1,10 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net6.0-android;net6.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net6.0-maccatalyst;net6.0-macos</TargetFrameworks>
-
-		<TargetFrameworks>$(TargetFrameworks);net7.0-android;net7.0-ios</TargetFrameworks>
-		<TargetFrameworks>$(TargetFrameworks);net7.0-maccatalyst;net7.0-macos</TargetFrameworks>
+		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
 
 	<PropertyGroup>
 		<NoWarn>$(NoWarn);Uno0001</NoWarn>
@@ -18,8 +16,6 @@
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_SKOTTIE</DefineConstants>
 	</PropertyGroup>
 
-	<Import Project="../../targetframework-override.props" />
-
 	<ItemGroup>
 	  <None Remove="buildTransitive\Uno.UI.Lottie.targets" />
 	</ItemGroup>
@@ -29,10 +25,6 @@
 	    <PackagePath>build</PackagePath>
 	    <Pack>true</Pack>
 	  </Content>
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -52,19 +44,19 @@
 		<PackageReference Include="Uno.WinUI" Version="4.4.5" ExcludeAssets="all" IncludeAssets="none" PrivateAssets="all" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-android' or '$(TargetFramework)' == 'net7.0-android'">
+	<ItemGroup Condition="$(IsAndroid)">
 		<PackageReference Include="SkiaSharp.NativeAssets.Android" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-ios' or '$(TargetFramework)' == 'net7.0-ios'">
+	<ItemGroup Condition="$(IsIOS)">
 		<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-maccatalyst' or '$(TargetFramework)' == 'net7.0-maccatalyst'">
+	<ItemGroup Condition="$(IsCatalyst)">
 		<PackageReference Include="SkiaSharp.NativeAssets.MacCatalyst" />
 	</ItemGroup>
 
-	<ItemGroup Condition="'$(TargetFramework)' == 'net6.0-macos' or '$(TargetFramework)' == 'net7.0-macos'">
+	<ItemGroup Condition="$(IsMacOS)">
 		<PackageReference Include="SkiaSharp.NativeAssets.macos" />
 	</ItemGroup>
 

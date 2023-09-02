@@ -1,4 +1,4 @@
-﻿#if NET461 || UNO_REFERENCE_API || __MACOS__
+﻿#if IS_UNIT_TESTS || UNO_REFERENCE_API || __MACOS__
 #pragma warning disable CS0067, CS649
 #endif
 
@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.Foundation.Logging;
 using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
 
@@ -49,14 +50,15 @@ namespace Windows.UI.Xaml.Controls
 		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 		/// </summary>
 		private bool _suppressTextChanged;
+		private bool _wasTemplateRecycled;
 
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
 		private WeakReference<Button> _deleteButton;
 
-		private readonly SerialDisposable _selectionHighlightColorSubscription = new SerialDisposable();
-		private readonly SerialDisposable _foregroundBrushSubscription = new SerialDisposable();
+		private Action _selectionHighlightColorChanged;
+		private Action _foregroundBrushChanged;
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
@@ -101,31 +103,9 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
-
-			Loaded += TextBox_Loaded;
-			Unloaded += TextBox_Unloaded;
 		}
 
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
-
-		private void TextBox_Loaded(object sender, RoutedEventArgs e)
-		{
-			// Brush subscriptions might have been removed during Unloaded
-			if (_foregroundBrushSubscription.Disposable is null)
-			{
-				OnForegroundColorChanged(null, Foreground);
-			}
-			if (_selectionHighlightColorSubscription.Disposable is null)
-			{
-				OnSelectionHighlightColorChanged(SelectionHighlightColor);
-			}
-		}
-
-		private void TextBox_Unloaded(object sender, RoutedEventArgs e)
-		{
-			_foregroundBrushSubscription.Disposable = null;
-			_selectionHighlightColorSubscription.Disposable = null;
-		}
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
@@ -146,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(IsTextPredictionEnabled);
-			OnSelectionHighlightColorChanged(SelectionHighlightColor);
+			OnSelectionHighlightColorChanged(null, SelectionHighlightColor);
 			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
 			OnTextAlignmentChanged(TextAlignment);
 			OnTextWrappingChanged();
@@ -184,6 +164,22 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+#else
+				// The template of TextBox contains the following:
+				/*
+					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+				 */
+				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
+				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
+				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
+				// before the support for TemplateBinding for attached DPs.
+				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
 			}
 
@@ -240,14 +236,11 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: string.Empty,
-					options: FrameworkPropertyMetadataOptions.None,
+					options: FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextChanged(e),
-					coerceValueCallback: (d, v) => ((TextBox)d)?.CoerceText(v),
+					coerceValueCallback: (d, v, _) => ((TextBox)d)?.CoerceText(v),
 					defaultUpdateSourceTrigger: UpdateSourceTrigger.Explicit
 				)
-				{
-					CoerceWhenUnchanged = false
-				}
 			);
 
 		protected virtual void OnTextChanged(DependencyPropertyChangedEventArgs e)
@@ -429,13 +422,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundBrushSubscription.Disposable = null;
-			if (newValue is SolidColorBrush brush)
-			{
-				OnForegroundColorChangedPartial(brush);
-				_foregroundBrushSubscription.Disposable =
-					Brush.AssignAndObserveBrush(brush, c => OnForegroundColorChangedPartial(brush));
-			}
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
@@ -479,20 +466,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					DefaultBrushes.SelectionHighlightColor,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.NewValue)));
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
 
-		private void OnSelectionHighlightColorChanged(SolidColorBrush brush)
+		private void OnSelectionHighlightColorChanged(SolidColorBrush oldBrush, SolidColorBrush newBrush)
 		{
-			_selectionHighlightColorSubscription.Disposable = null;
-			if (brush is not null)
-			{
-				OnSelectionHighlightColorChangedPartial(brush);
-				_selectionHighlightColorSubscription.Disposable = Brush.AssignAndObserveBrush(brush, c => OnSelectionHighlightColorChangedPartial(brush));
-			}
-			else
-			{
-				OnSelectionHighlightColorChangedPartial(DefaultBrushes.SelectionHighlightColor);
-			}
+			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
+			newBrush ??= DefaultBrushes.SelectionHighlightColor;
+			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
@@ -646,8 +626,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public CharacterCasing CharacterCasing
 		{
@@ -655,8 +635,8 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(CharacterCasingProperty, value);
 		}
 
-#if __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty CharacterCasingProperty { get; } =
 			DependencyProperty.Register(
@@ -804,7 +784,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region TextAlignment DependencyProperty
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public new TextAlignment TextAlignment
 #else
 		public TextAlignment TextAlignment
@@ -868,9 +848,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
-				// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
-				var bindingExpression = GetBindingExpression(TextProperty);
-				bindingExpression?.UpdateSource(Text);
+				if (!_wasTemplateRecycled)
+				{
+					// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
+					var bindingExpression = GetBindingExpression(TextProperty);
+					bindingExpression?.UpdateSource(Text);
+				}
+
+				_wasTemplateRecycled = false;
 			}
 
 			UpdateButtonStates();
@@ -960,19 +945,48 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnKeyDown(args);
 
+
+			// On skia, sometimes SelectionStart is updated to a new value before KeyDown is fired, so
+			// we need to get selectionStart from another source on Skia.
+#if __SKIA__
+			var selectionStart = TextBoxView.SelectionBeforeKeyDown.start;
+#else
+			var selectionStart = SelectionStart;
+#endif
+
 			// Note: On windows only keys that are "moving the cursor" are handled
 			//		 AND ** only KeyDown ** is handled (not KeyUp)
 			switch (args.Key)
 			{
 				case VirtualKey.Up:
+					if (AcceptsReturn)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Down:
+					if (selectionStart != Text.Length)
+					{
+						SelectionStart = Text.Length;
+						args.Handled = true;
+					}
 					if (AcceptsReturn)
 					{
 						args.Handled = true;
 					}
 					break;
 				case VirtualKey.Left:
+					if (selectionStart != 0)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Right:
+					if (selectionStart != Text.Length)
+					{
+						args.Handled = true;
+					}
+					break;
 				case VirtualKey.Home:
 				case VirtualKey.End:
 					args.Handled = true;
@@ -982,10 +996,9 @@ namespace Windows.UI.Xaml.Controls
 #if __WASM__
 			if (args.Handled)
 			{
-				// Marking the routed event as Handled makes the browser call
-				// preventDefault() for key events. This is a problem as it
-				// breaks the browser caret navigation within the input.
-				((IPreventDefaultHandling)args).DoNotPreventDefault = true;
+				// Marking the routed event as Handled makes the browser call preventDefault() for key events.
+				// This is a problem as it breaks the browser caret navigation within the input.
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult &= ~HtmlEventDispatchResult.PreventDefault;
 			}
 #endif
 		}
@@ -1058,11 +1071,11 @@ namespace Windows.UI.Xaml.Controls
 			SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 		}
 
-
 		public void OnTemplateRecycled()
 		{
 			_suppressTextChanged = true;
 			Text = string.Empty;
+			_wasTemplateRecycled = true;
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);

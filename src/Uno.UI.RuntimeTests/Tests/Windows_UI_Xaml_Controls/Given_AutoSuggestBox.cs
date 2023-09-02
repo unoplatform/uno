@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Windows.System;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
@@ -194,20 +195,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			eventRaised = false;
 			textBox.ProcessTextInput("a");
 			await WindowHelper.WaitFor(() => eventRaised);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a1", SUT.Text);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("a2", SUT.Text);
 
 			eventRaised = false;
 			textBox.ProcessTextInput("b");
 			await WindowHelper.WaitFor(() => eventRaised);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b1", SUT.Text);
-			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down) });
+			_ = HandleUpDownKeys.Invoke(SUT, new object[] { new KeyRoutedEventArgs(SUT, Windows.System.VirtualKey.Down, VirtualKeyModifiers.None) });
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual("b2", SUT.Text);
 		}
@@ -229,6 +230,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
+		}
+
+		[TestMethod]
+		public async Task When_Using_Custom_ItemContainerStyle()
+		{
+			AutoSuggestBox SUT = new AutoSuggestBox
+			{
+				ItemContainerStyle = new Style(typeof(ListViewItem))
+				{
+					Setters =
+								{
+									new Setter(Control.HorizontalAlignmentProperty, HorizontalAlignment.Stretch),
+								},
+				}
+			};
+			string[] suggestions = { "a1", "a2", "b1", "b2" };
+			SUT.TextChanged += (s, e) =>
+			{
+				if (e.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+				{
+					s.ItemsSource = suggestions.Where(i => i.StartsWith(s.Text));
+				}
+			};
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
+			var listView = (ListView)SUT.GetTemplateChild("SuggestionsList");
+			SUT.Focus(FocusState.Programmatic);
+			textBox.ProcessTextInput("a");
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitFor(() => SUT.IsSuggestionListOpen);
+			Assert.AreEqual(2, listView.Items.Count);
+			Assert.AreEqual("a1", listView.Items[0].ToString());
+			Assert.AreEqual("a2", listView.Items[1].ToString());
+#if __WASM__
+			//ItemsPanelRoot.Children works only on wasm
+			Assert.AreEqual(2, listView.ItemsPanelRoot.Children.Count);
+			Assert.AreEqual("a1", (listView.ItemsPanelRoot.Children[0] as ContentControl).Content.ToString());
+			Assert.AreEqual("a2", (listView.ItemsPanelRoot.Children[1] as ContentControl).Content.ToString());
+#endif
 		}
 #endif
 

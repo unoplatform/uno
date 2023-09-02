@@ -7,11 +7,11 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Widget;
 using Android.Views;
 using View = Android.Views.View;
-#elif XAMARIN_IOS
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 #elif __MACOS__
@@ -134,11 +134,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_itemsPanel != null)
 			{
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 				this.AddSubview(_itemsPanel);
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 				this.AddView(_itemsPanel);
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 				AddChild(_itemsPanel);
 #endif
 
@@ -150,12 +150,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RemoveChildViews()
 		{
-#if XAMARIN_IOS || __MACOS__
+#if __IOS__ || __MACOS__
 			foreach (var subview in this.Subviews)
 			{
 				subview.RemoveFromSuperview();
 			}
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 			this.RemoveAllViews();
 #elif UNO_REFERENCE_API
 			ClearChildren();

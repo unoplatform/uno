@@ -33,9 +33,8 @@ namespace Windows.UI.Xaml
 		internal FrameworkPropertyMetadata(
 			object defaultValue,
 			CoerceValueCallback coerceValueCallback
-		) : base(defaultValue)
+		) : base(defaultValue, coerceValueCallback)
 		{
-			CoerceValueCallback = coerceValueCallback;
 		}
 
 		public FrameworkPropertyMetadata(

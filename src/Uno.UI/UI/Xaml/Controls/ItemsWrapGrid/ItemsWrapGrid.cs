@@ -1,4 +1,4 @@
-﻿#if !NET461 && !UNO_REFERENCE_API && !__MACOS__
+﻿#if !IS_UNIT_TESTS && !UNO_REFERENCE_API && !__MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -14,7 +14,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public int LastVisibleIndex => _layout?.LastVisibleIndex ?? -1;
 
-#if XAMARIN_ANDROID
+		internal override Orientation? InternalOrientation => Orientation;
+
+#if __ANDROID__
 		public int FirstCacheIndex => _layout.XamlParent.NativePanel.ViewCache.FirstCacheIndex;
 		public int LastCacheIndex => _layout.XamlParent.NativePanel.ViewCache.LastCacheIndex;
 
@@ -48,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 				_layout.BindToEquivalentProperty(this, nameof(MaximumRowsOrColumns));
 				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 #endif
 			}

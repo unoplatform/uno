@@ -14,7 +14,7 @@ This is a stripped-down view of the default style for ListView in Uno:
 
 ```xml
 <!-- Default style for Windows.UI.Xaml.Controls.ListView -->
-<xamarin:Style TargetType="ListView">
+<not_win:Style TargetType="ListView">
   <Setter Property="ItemsPanel">
     <Setter.Value>
       <ItemsPanelTemplate>
@@ -28,14 +28,14 @@ This is a stripped-down view of the default style for ListView in Uno:
         <Border>
           <ScrollViewer
               x:Name="ScrollViewer"
-              xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}">
+              not_win:Style="{StaticResource ListViewBaseScrollViewerStyle}">
             <ItemsPresenter/>
           </ScrollViewer>
         </Border>
       </ControlTemplate>
     </Setter.Value>
   </Setter>
-</xamarin:Style>
+</not_win:Style>
 ```
 
 As on Windows, the ItemsPanelTemplate can be set; ItemsStackPanel and ItemsWrapGrid are the supported panels, and each of these supports most of the same properties as on Windows.
@@ -45,7 +45,7 @@ In fact there is only one difference from the Windows style, which is a custom S
 ```xml
 <!-- This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
      while delegating to a native implementation for performance. -->
-<xamarin:Style TargetType="ScrollViewer" x:Key="ListViewBaseScrollViewerStyle">
+<not_win:Style TargetType="ScrollViewer" x:Key="ListViewBaseScrollViewerStyle">
   <Setter Property="Template">
     <Setter.Value>
       <ControlTemplate TargetType="ScrollViewer">
@@ -57,7 +57,7 @@ In fact there is only one difference from the Windows style, which is a custom S
       </ControlTemplate>
     </Setter.Value>
   </Setter>
-</xamarin:Style>
+</not_win:Style>
 ```
 
 This style replaces the internal `ScrollPresenter` with a `ListViewBaseScrollContentPresenter`, for reasons explained below. Custom 

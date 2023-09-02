@@ -1,3 +1,9 @@
+echo 'Updating docfx tool...'
+dotnet tool update --global docfx
+
+echo 'Updating dotnet-serve tool...'
+dotnet tool update --global dotnet-serve
+
 $external_docs = @{
     # use either commit, or branch name to use its latest commit
     "uno.wasm.bootstrap" = "main"
@@ -15,4 +21,4 @@ $external_docs = @{
 
 docfx
 
-dotnet-serve --open-browser
+dotnet-serve --open-browser:_site/articles/intro.html

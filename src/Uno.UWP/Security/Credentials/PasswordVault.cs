@@ -426,7 +426,7 @@ namespace Windows.Security.Credentials
 				var key = new byte[24];
 				var iv = new byte[8];
 
-				var src = SHA256.Create().ComputeHash(Encoding.UTF8.GetBytes(password));
+				var src = SHA256.HashData(Encoding.UTF8.GetBytes(password));
 
 				Array.Copy(src, 0, key, 0, 24);
 				Array.Copy(src, 24, iv, 0, 8);

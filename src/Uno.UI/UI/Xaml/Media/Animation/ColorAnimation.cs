@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{

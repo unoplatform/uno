@@ -4,14 +4,18 @@ using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using View = Windows.UI.Xaml.FrameworkElement;
-
+using Windows.UI.Xaml;
+using Uno.UI.Controls.Legacy;
 
 namespace Uno.UI.Tests.GridTests
 {
 	[TestClass]
-	public class GivenGrid_And_AutoSized : Context
+	public partial class GivenGrid_And_AutoSized : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_One_Auto_Columns_and_one_star_and_two_children()
 		{

@@ -5,12 +5,21 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 using Point = Windows.Foundation.Point;
 using Size = Windows.Foundation.Size;
+using Rect = Windows.Foundation.Rect;
 
 namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		protected internal override Shader GetShader(Size size)
+		protected override Paint GetPaintInner(Rect destinationRect)
+		{
+			var paint = new Paint();
+			paint.SetShader(GetShader(destinationRect.Size));
+			paint.SetStyle(Paint.Style.Stroke);
+			return paint;
+		}
+
+		internal Shader GetShader(Size size)
 		{
 			var center = Center;
 			var radiusX = RadiusX;

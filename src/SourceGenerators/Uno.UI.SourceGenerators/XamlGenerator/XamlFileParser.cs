@@ -118,7 +118,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath);
+						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath, cancellationToken);
 						if (!reader.DisableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -173,7 +173,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_includeXamlNamespaces.Contains(localName))
 			{
-				return __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
+				var result = __uno::Uno.Xaml.IsIncludedResult.ForceInclude;
+				return namespaceUri.Contains("using:")
+					? result
+					: result.WithUpdatedNamespace(XamlConstants.PresentationXamlXmlNamespace);
 			}
 			else if (_excludeXamlNamespaces.Contains(localName))
 			{
@@ -187,6 +190,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return __uno::Uno.Xaml.IsIncludedResult.Default;
 			}
 
+			namespaceUri = valueSplit[0];
 			var elements = valueSplit[1].Split('(', ',', ')');
 
 			var methodName = elements[0];
@@ -203,9 +207,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isIncluded1 = methodName == nameof(ApiInformation.IsApiContractPresent) ?
 						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
 						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
-					return isIncluded1
+					return (isIncluded1
 						? __uno::Uno.Xaml.IsIncludedResult.ForceInclude
-						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
 				case nameof(ApiInformation.IsTypePresent):
 				case nameof(ApiInformation.IsTypeNotPresent):
 					if (elements.Length < 2)
@@ -216,15 +220,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var isIncluded2 = methodName == nameof(ApiInformation.IsTypePresent) ?
 						ApiInformation.IsTypePresent(elements[1], _metadataHelper) :
 						ApiInformation.IsTypeNotPresent(elements[1], _metadataHelper);
-					return isIncluded2
+					return (isIncluded2
 						? __uno::Uno.Xaml.IsIncludedResult.ForceIncludeWithCacheDisabled
-						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude;
+						: __uno::Uno.Xaml.IsIncludedResult.ForceExclude).WithUpdatedNamespace(namespaceUri);
 				default:
-					return __uno::Uno.Xaml.IsIncludedResult.Default; // TODO: support IsPropertyPresent
+					return __uno::Uno.Xaml.IsIncludedResult.Default.WithUpdatedNamespace(namespaceUri); // TODO: support IsPropertyPresent
 			}
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath)
+		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath, CancellationToken cancellationToken)
 		{
 			WriteState(reader);
 
@@ -232,6 +236,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			do
 			{
+				cancellationToken.ThrowIfCancellationRequested();
 				switch (reader.NodeType)
 				{
 					case XamlNodeType.StartObject:

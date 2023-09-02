@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Threading;
 using Uno.Devices.Sensors.Helpers;
@@ -102,4 +101,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

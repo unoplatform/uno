@@ -330,8 +330,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
-#if NET461 || __MACOS__ || __SKIA__
-		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for NET461 and SKIA")]
+#if IS_UNIT_TESTS || __MACOS__ || __SKIA__
+		[Ignore("Currently fails on macOS, part of #9282! epic and Monochromatic Image not supported for IS_UNIT_TESTS and SKIA")]
 #endif
 		public async Task When_Image_Is_Monochromatic()
 		{
@@ -450,6 +450,72 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[DataRow("ms-appx:///Assets/couch.svg")]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg")]
+		[DataRow("ms-appx:///Uno.UI.RuntimeTests/Assets/help.svg")]
+		public async Task When_SVGImageSource(string imagePath)
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive("RenderTargetBitmap is not supported on this platform");
+			}
+
+			var svgImageSource = new SvgImageSource(new Uri(imagePath));
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Null()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(null);
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_SVGImageSource_Uri_Is_Set_Null()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var svgImageSource = new SvgImageSource(new Uri("ms-appx:///Assets/couch.svg"));
+			svgImageSource.UriSource = null;
+			var image = new Image() { Source = svgImageSource, Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_ImageFailed()
+		{
+			var image = new Image() { Width = 100, Height = 100 };
+			TestServices.WindowHelper.WindowContent = image;
+			await WindowHelper.WaitForLoaded(image);
+			bool imageFailedRaised = false;
+			image.ImageFailed += (s, e) =>
+			{
+				imageFailedRaised = true;
+			};
+			image.Source = new BitmapImage(new Uri("ms-appx:///image/definitely/does/not/exist.png"));
+
+			await WindowHelper.WaitFor(() => imageFailedRaised);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
@@ -541,14 +607,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAt(screenshot, screenshot.Width / 2, screenshot.Height - 5, Color.FromArgb(0xFF, 0xED, 0x1B, 0x24), tolerance: 5);
 		}
 
-		private async Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
-		{
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(SUT);
-			var result = await RawBitmap.From(renderer, SUT);
-			await WindowHelper.WaitForIdle();
-			return result;
-		}
+		private Task<RawBitmap> TakeScreenshot(FrameworkElement SUT)
+			=> UITestHelper.ScreenShot(SUT);
 	}
 }

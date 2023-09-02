@@ -13,7 +13,11 @@ using System.Threading.Tasks;
 
 using Com.Airbnb.Lottie;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	partial class LottieVisualSourceBase
 	{
@@ -180,12 +184,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			SetIsPlaying(true);
 			if (_animation is { } animation)
 			{
-#if __ANDROID_26__
 				animation.RepeatCount =
 					looped ? ValueAnimator.Infinite : 0; // Repeat count doesn't include first time.
-#else
-				animation.Loop(looped);
-#endif
 				animation.SetMinProgress((float)fromProgress);
 				animation.SetMaxProgress((float)toProgress);
 				animation.PlayAnimation();

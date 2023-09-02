@@ -8,21 +8,16 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Markup;
 using Uno.UI.Xaml;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-using MonoTouch.UIKit;
 #elif __MACOS__
 using View = AppKit.NSView;
 using Color = Windows.UI.Color;
@@ -32,23 +27,27 @@ using View = Windows.UI.Xaml.UIElement;
 #endif
 using _Debug = System.Diagnostics.Debug;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Controls
 {
+	// TODO: Border should be sealed
 	[ContentProperty(Name = nameof(Child))]
 	public partial class Border : FrameworkElement
 	{
 
-		/// <summary>        
+		/// <summary>
 		/// Support for the C# collection initializer style.
-		/// Allows items to be added like this 
-		/// new Border 
+		/// Allows items to be added like this
+		/// new Border
 		/// {
 		///    new Border()
 		/// }
 		/// </summary>
 		/// <param name="view"></param>
 		public
-#if XAMARIN_IOS
+#if __IOS__
 			new
 #endif
 			void Add(View view)
@@ -63,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Child DependencyProperty
 
-		public virtual UIElement Child
+		public UIElement Child
 		{
 			get => (UIElement)this.GetValue(ChildProperty);
 			set => this.SetValue(ChildProperty, value);
@@ -84,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected void OnChildChanged(UIElement oldValue, UIElement newValue)
+		private void OnChildChanged(UIElement oldValue, UIElement newValue)
 		{
 			ReAttachChildTransitions(oldValue, newValue);
 
@@ -173,7 +172,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetPaddingValue(value);
 		}
 
-		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
+		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
 		}
@@ -212,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 			set => SetBorderThicknessValue(value);
 		}
 
-		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
+		private void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnBorderThicknessChangedPartial(oldValue, newValue);
 		}
@@ -223,11 +222,9 @@ namespace Windows.UI.Xaml.Controls
 
 		#region BorderBrush Dependency Property
 
+		private Action _borderBrushChanged;
 
-		private SerialDisposable _borderBrushColorChanged = new SerialDisposable();
-		private SerialDisposable _borderBrushOpacityChanged = new SerialDisposable();
-
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		//This field is never accessed. It just exists to create a reference, because the DP causes issues with ImageBrush of the backing bitmap being prematurely garbage-collected. (Bug with ConditionalWeakTable? https://bugzilla.xamarin.com/show_bug.cgi?id=21620)
 		private Brush _borderBrushStrongReference;
 #endif
@@ -239,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetBorderBrushValue(value);
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 				_borderBrushStrongReference = value;
 #endif
 			}
@@ -250,45 +247,9 @@ namespace Windows.UI.Xaml.Controls
 		[GeneratedDependencyProperty(ChangedCallback = true, Options = FrameworkPropertyMetadataOptions.ValueInheritsDataContext)]
 		public static DependencyProperty BorderBrushProperty { get; } = CreateBorderBrushProperty();
 
-		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
+		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			if (newValue is SolidColorBrush colorBrush)
-			{
-				_borderBrushColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.ColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
-				);
-				_borderBrushOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
-				);
-			}
-			else if (newValue is GradientBrush gb)
-			{
-				_borderBrushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial()
-				);
-				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.OpacityProperty,
-					(s, _) => OnBorderBrushChangedPartial()
-				);
-			}
-			else if (newValue is AcrylicBrush ab)
-			{
-				_borderBrushColorChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.FallbackColorProperty,
-					(s, colorArg) => OnBorderBrushChangedPartial());
-				_borderBrushOpacityChanged.Disposable = ab.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.OpacityProperty,
-					(s, arg) => OnBorderBrushChangedPartial());
-			}
-			else
-			{
-				_borderBrushColorChanged.Disposable = null;
-				_borderBrushOpacityChanged.Disposable = null;
-			}
-
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, _borderBrushChanged ?? (() => OnBorderBrushChangedPartial()));
 #if __WASM__
 			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
 			{
@@ -296,8 +257,6 @@ namespace Windows.UI.Xaml.Controls
 				Child?.InvalidateArrange();
 			}
 #endif
-
-			OnBorderBrushChangedPartial();
 		}
 
 		partial void OnBorderBrushChangedPartial();

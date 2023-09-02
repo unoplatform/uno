@@ -4,7 +4,7 @@ uid: Uno.Contributing.SourceGeneration
 
 # Troubleshooting Source Generation
 
-Source Generation in Uno is done in one of two ways:
+Before Uno 5.0, Source Generation in Uno was done in one of two ways:
 
 - Using [C# 9.0 source generators](https://devblogs.microsoft.com/dotnet/introducing-c-source-generators/)
 - Using [Uno.SourceGeneration](https://github.com/unoplatform/uno.sourcegeneration) generators
@@ -27,6 +27,8 @@ Conversely, Uno.SourceGeneration generators can be used by setting this:
   <UnoUIUseRoslynSourceGenerators>false</UnoUIUseRoslynSourceGenerators>
 </PropertyGroup>
 ```
+
+Starting with Uno 5.0, the only way for source generation is using Roslyn source generators, and setting `UnoUIUseRoslynSourceGenerators` has no effect.
 
 ## Adding generated files C# pragma
 
@@ -136,3 +138,5 @@ If ever the need arises to view the generated source code of a *failing* CI buil
 ## Xaml fuzzy matching
 
 The XAML source generator used to do fuzzy matching for types. This doesn't match Windows behavior and can cause performance issues. It is planned that fuzzy matching will be removed in Uno 5. You can set `UnoEnableXamlFuzzyMatching` MSBuild property to false to get the behavior planned in Uno 5. This property will be removed in Uno 5 and you will not be able to get the legacy fuzzy matching behavior. So, it's recommended to set this property to false. The property defaults to `true`.
+
+Note that for XAML-included namespaces (for example `android`, `ios`, etc.), The default namespaces are used (it's considered as if it is `http://schemas.microsoft.com/winfx/2006/xaml/presentation`).

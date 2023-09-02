@@ -5,7 +5,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Windows.Devices.Input;
@@ -35,7 +35,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	private HwndSource? _hwndSource;
 	private PointerEventArgs? _previous;
 
-	public WpfCorePointerInputSource(IWpfHost host)
+	public WpfCorePointerInputSource(IXamlRootHost host)
 	{
 		if (host is null) return;
 
@@ -216,7 +216,7 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 						IsHorizontalMouseWheel = msg == Win32Messages.WM_MOUSEHWHEEL,
 						IsPrimary = true,
 						IsInRange = true,
-						MouseWheelDelta = -((int)wparam >> 16) / 40
+						MouseWheelDelta = (int)wparam >> 16
 					}.SetUpdateKindFromPrevious(_previous?.CurrentPoint.Properties);
 
 					var modifiers = VirtualKeyModifiers.None;
@@ -314,6 +314,29 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers()
-		=> VirtualKeyModifiers.None;
+	{
+		VirtualKeyModifiers modifiers = VirtualKeyModifiers.None;
+		if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+		{
+			modifiers |= VirtualKeyModifiers.Shift;
+		}
+
+		if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+		{
+			modifiers |= VirtualKeyModifiers.Control;
+		}
+
+		if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+		{
+			modifiers |= VirtualKeyModifiers.Menu;
+		}
+
+		if (Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
+		{
+			modifiers |= VirtualKeyModifiers.Windows;
+		}
+
+		return modifiers;
+	}
 	#endregion
 }

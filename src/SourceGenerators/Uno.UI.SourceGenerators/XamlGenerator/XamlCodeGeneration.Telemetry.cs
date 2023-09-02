@@ -11,12 +11,6 @@ using Microsoft.CodeAnalysis;
 using Uno.Extensions;
 using Uno.UI.SourceGenerators.Telemetry;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-using ISourceGenerator = Uno.SourceGeneration.SourceGenerator;
-using GeneratorExecutionContext = Uno.SourceGeneration.GeneratorExecutionContext;
-#endif
-
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration

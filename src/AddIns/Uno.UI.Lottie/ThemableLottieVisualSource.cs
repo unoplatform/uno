@@ -3,18 +3,20 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Json;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Data;
+using Microsoft.UI.Xaml.Controls;
+using Uno.UI.Lottie;
+using Uno.Extensions;
 using Uno.Disposables;
 using Windows.UI;
-using Windows.UI.Xaml.Controls;
-using Uno.UI.Lottie;
-using System.Linq;
-using System.Json;
-using Uno.Extensions;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	[Bindable]
 	public partial class ThemableLottieVisualSource : LottieVisualSourceBase, IThemableAnimatedVisualSource
@@ -26,7 +28,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		protected override bool IsPayloadNeedsToBeUpdated => true;
 
-#if NETFRAMEWORK
+#if IS_UNIT_TESTS
 		public void LoadForTests(
 			IInputStream sourceJson,
 			string sourceCacheKey,

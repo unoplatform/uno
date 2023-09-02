@@ -38,6 +38,7 @@ public sealed partial class SvgImageSource_Basic : Page
 
 	public SampleSvgSource[] Sources { get; } = new SampleSvgSource[]
 	{
+		new("Couch (ms-appx library)", new Uri("ms-appx:///Uno.UI.RuntimeTests/Assets/couch.svg")),
 		new("Couch (ms-appx)", new Uri("ms-appx:///Assets/Formats/couch.svg")),
 		new("Calendar (ms-appx)", new Uri("ms-appx:///Assets/Formats/czcalendar.svg")),
 		new("Home (ms-appx)", new Uri("ms-appx:///Assets/Formats/home.svg")),

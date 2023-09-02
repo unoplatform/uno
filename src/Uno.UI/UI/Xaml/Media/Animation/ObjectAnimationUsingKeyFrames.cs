@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Destroys the animation
 		/// </summary>
 		/// <param name="disposing"></param>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			base.Dispose(disposing);
 

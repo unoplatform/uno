@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -19,4 +18,3 @@ namespace Uno.UI.Dispatching
 		private bool GetHasThreadAccess() => NSThread.IsMain;
 	}
 }
-#endif

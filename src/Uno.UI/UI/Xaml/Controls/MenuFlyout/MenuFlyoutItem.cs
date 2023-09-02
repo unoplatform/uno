@@ -7,6 +7,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using ICommand = System.Windows.Input.ICommand;
+using Windows.UI.Xaml.Markup;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -17,6 +18,7 @@ using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
+	[ContentProperty(Name = nameof(Text))]
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
 		// Whether the pointer is currently over the
@@ -91,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Text
 		{
-			get { return (string)GetValue(TextProperty); }
+			get { return (string)GetValue(TextProperty) ?? ""; }
 			set { SetValue(TextProperty, value); }
 		}
 
@@ -119,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string KeyboardAcceleratorTextOverride
 		{
-			get => (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty);
+			get => (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty) ?? "";
 			set => this.SetValue(KeyboardAcceleratorTextOverrideProperty, value);
 		}
 

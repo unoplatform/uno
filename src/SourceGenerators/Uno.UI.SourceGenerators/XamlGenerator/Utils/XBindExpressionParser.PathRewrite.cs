@@ -1,18 +1,11 @@
 ﻿#nullable enable
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
-using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Microsoft.CodeAnalysis;
 using Uno.Extensions;
-using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {

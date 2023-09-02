@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.Xaml.Core
 {
 	//TODO Uno: This is a very simplified version of the WinUI FullWindowMediaRoot.
+	// TODO: Border is supposed to be sealed, so we shouldn't inherit from Border.
 	internal partial class FullWindowMediaRoot : Border
 	{
 		public FullWindowMediaRoot()

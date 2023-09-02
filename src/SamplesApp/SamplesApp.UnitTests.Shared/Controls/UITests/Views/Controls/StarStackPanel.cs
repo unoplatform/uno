@@ -522,12 +522,14 @@ namespace Uno.UI.Samples.Controls
 		}
 
 		private static readonly Regex GridLengthParsingRegex =
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 			new Regex(
 				@"^(?:(?<stars>\d*(?:.\d*))\*)|(?<abs>\d+(?:.\d*))|(?<auto>Auto)|(?<star>\*)$",
 #if NETFX_CORE
 				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline);
 #else
 				RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Singleline | RegexOptions.Compiled);
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 #endif
 
 		private static GridLength[] ParseGridLength(string s)

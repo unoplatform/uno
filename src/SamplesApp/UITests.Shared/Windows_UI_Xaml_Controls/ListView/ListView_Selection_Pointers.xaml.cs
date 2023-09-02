@@ -7,7 +7,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ListView
 {
-	[Sample("ListView", "Pointers")]
+	[Sample("ListView", "Pointers", IgnoreInSnapshotTests = true)]
 	public sealed partial class ListView_Selection_Pointers : Page
 	{
 		public ListView_Selection_Pointers()

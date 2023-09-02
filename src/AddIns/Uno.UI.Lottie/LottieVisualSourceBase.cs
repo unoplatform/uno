@@ -18,7 +18,15 @@ using Uno.Extensions;
 using Uno.Helpers;
 using System.Diagnostics;
 
+#if !HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+#endif
+
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	public abstract partial class LottieVisualSourceBase : DependencyObject, IAnimatedVisualSource, IAnimatedVisualSourceWithUri
 	{
@@ -113,7 +121,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private static void ThrowNotImplementedOnNonTestPlatforms()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			throw new NotImplementedException();
 #endif
 		}

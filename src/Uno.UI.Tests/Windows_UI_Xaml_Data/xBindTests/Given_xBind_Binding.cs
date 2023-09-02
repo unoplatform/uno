@@ -1356,6 +1356,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(42, SUT.tb1.Tag);
 			Assert.AreEqual("TextBlockTag", SUT.tb3.Tag);
 			Assert.AreEqual("Formatted TextBlockTag", SUT.tb4.Tag);
+			Assert.AreEqual("Hello World!!!", SUT.tb5.Text);
 		}
 
 		[TestMethod]

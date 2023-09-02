@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Controls;
 /// <summary>
 /// Defines a content decorator that can stretch and scale a single child to fill the available space.
 /// </summary>
-[ContentProperty(Name = "Child")]
+[ContentProperty(Name = nameof(Child))]
 public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement, ILayoutOptOut
 {
 	public UIElement Child

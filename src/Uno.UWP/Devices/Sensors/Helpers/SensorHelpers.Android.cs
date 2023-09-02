@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
@@ -28,4 +27,3 @@ namespace Uno.Devices.Sensors.Helpers
 			Application.Context.GetSystemService(Context.SensorService) as SensorManager;
 	}
 }
-#endif

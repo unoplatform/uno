@@ -1,4 +1,3 @@
-#if XAMARIN_ANDROID
 using System;
 using Android.App;
 using Android.Runtime;
@@ -40,7 +39,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnActivityCreated() => AddPreDrawListener();
 
-		partial void ActivatingPartial() => RemovePreDrawListener();
+		partial void ShowPartial() => RemovePreDrawListener();
 
 		internal int SystemUiVisibility { get; set; }
 
@@ -85,11 +84,12 @@ namespace Windows.UI.Xaml
 
 		private (Rect windowBounds, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
 		{
-			if (ContextHelper.Current is not Activity activity ||
-				ViewCompat.GetRootWindowInsets(activity.Window.DecorView) is not { } windowInsets)
+			if (ContextHelper.Current is not Activity activity)
 			{
 				return default;
 			}
+
+			var windowInsets = ViewCompat.GetRootWindowInsets(activity.Window.DecorView);
 
 			var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 
@@ -103,8 +103,8 @@ namespace Windows.UI.Xaml
 				opaqueInsetsTypes &= ~WindowInsetsCompat.Type.NavigationBars();
 			}
 
-			var insets = windowInsets.GetInsets(insetsTypes).ToThickness();
-			var opaqueInsets = windowInsets.GetInsets(opaqueInsetsTypes).ToThickness();
+			var insets = windowInsets?.GetInsets(insetsTypes).ToThickness() ?? default;
+			var opaqueInsets = windowInsets?.GetInsets(opaqueInsetsTypes).ToThickness() ?? default;
 			var translucentInsets = insets.Minus(opaqueInsets);
 
 			// The native display size does not include any insets, so we remove the "opaque" insets under which we cannot draw anything
@@ -125,7 +125,6 @@ namespace Windows.UI.Xaml
 
 			Size displaySize = default;
 
-#if __ANDROID_30__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 			{
 				var windowMetrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
@@ -135,9 +134,7 @@ namespace Windows.UI.Xaml
 			{
 				SetDisplaySizeLegacy();
 			}
-#else
-			SetDisplaySizeLegacy();
-#endif
+
 			return displaySize;
 
 			void SetDisplaySizeLegacy()
@@ -230,4 +227,3 @@ namespace Windows.UI.Xaml
 		}
 	}
 }
-#endif

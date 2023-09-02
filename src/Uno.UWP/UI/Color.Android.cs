@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 
 namespace Windows.UI
 {
@@ -10,4 +9,3 @@ namespace Windows.UI
 		public static implicit operator Color(Android.Graphics.Color color) => FromArgb(color.A, color.R, color.G, color.B);
 	}
 }
-#endif

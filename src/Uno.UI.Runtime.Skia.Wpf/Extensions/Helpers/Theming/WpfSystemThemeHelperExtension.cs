@@ -4,7 +4,7 @@ using Microsoft.Win32;
 using System;
 using Uno.Helpers.Theming;
 
-namespace Uno.UI.Runtime.Skia.Wpf.WPF.Extensions.Helpers.Theming
+namespace Uno.UI.Runtime.Skia.Wpf.Extensions.Helpers.Theming
 {
 	internal class WpfSystemThemeHelperExtension : ISystemThemeHelperExtension, IDisposable
 	{

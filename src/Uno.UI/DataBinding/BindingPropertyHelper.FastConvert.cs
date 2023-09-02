@@ -14,11 +14,11 @@ using Windows.UI;
 using Uno.UI.Extensions;
 using System.Text.RegularExpressions;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -339,6 +339,11 @@ namespace Uno.UI.DataBinding
 			}
 
 			if (FastStringToTypeConvert(outputType, input, ref output))
+			{
+				return true;
+			}
+
+			if (FastStringToBoolean(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -973,6 +978,17 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		private static bool FastStringToBoolean(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(bool) && bool.TryParse(input, out var result))
+			{
+				output = result;
+				return true;
+			}
+
+			return false;
+		}
+
 		private static List<double> GetDoubleValues(string input)
 		{
 			var list = new List<double>();
@@ -980,7 +996,7 @@ namespace Uno.UI.DataBinding
 			while (!s.IsEmpty)
 			{
 				var length = NextDoubleLength(s);
-				list.Add(double.Parse(s.Slice(0, length).ToString(), NumberStyles.Float, CultureInfo.InvariantCulture));
+				list.Add(double.Parse(s.Slice(0, length), NumberStyles.Float, CultureInfo.InvariantCulture));
 				s = s.Slice(length);
 				s = EatSeparator(s);
 			}
@@ -995,7 +1011,7 @@ namespace Uno.UI.DataBinding
 			while (!s.IsEmpty)
 			{
 				var length = NextDoubleLength(s);
-				list.Add(float.Parse(s.Slice(0, length).ToString(), NumberStyles.Float, CultureInfo.InvariantCulture));
+				list.Add(float.Parse(s.Slice(0, length), NumberStyles.Float, CultureInfo.InvariantCulture));
 				s = s.Slice(length);
 				s = EatSeparator(s);
 			}

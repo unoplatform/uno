@@ -1,16 +1,10 @@
-// net6.0-macos uses CoreCLR (not mono) and the notification mechanism is different
 #pragma warning disable CS0169
-#if __IOS__ || (__MACOS__ && !NET6_0_OR_GREATER)
 
 using System;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Foundation;
 using ObjCRuntime;
-
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
 
 namespace Uno.UI.Controls;
 
@@ -33,5 +27,3 @@ class NSObjectMemoryRepresentation
 		poker.flags = (byte)(poker.flags & ~InFinalizerQueue);
 	}
 }
-
-#endif

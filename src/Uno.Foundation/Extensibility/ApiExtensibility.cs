@@ -59,6 +59,16 @@ public static class ApiExtensibility
 	}
 
 	/// <summary>
+	/// Checks if an extension builder for the specified <typeparamref name="T"/> type has been registered.
+	/// </summary>
+	/// <typeparam name="T">A registered type</typeparam>
+	/// <returns>If registered or not.</returns>
+	public static bool IsRegistered<T>()
+	{
+		return _registrations.ContainsKey(typeof(T));
+	}
+
+	/// <summary>
 	/// Creates an instance of an extension of the specified <typeparamref name="T"/> type
 	/// </summary>
 	/// <typeparam name="T">A registered type</typeparam>

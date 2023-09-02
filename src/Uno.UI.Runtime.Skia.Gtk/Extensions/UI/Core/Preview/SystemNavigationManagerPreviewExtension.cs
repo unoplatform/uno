@@ -2,17 +2,15 @@
 
 using Gtk;
 using Uno.UI.Core.Preview;
+using Uno.UI.Runtime.Skia.Gtk;
 
 namespace Uno.Extensions.UI.Core.Preview;
 
 internal class SystemNavigationManagerPreviewExtension : ISystemNavigationManagerPreviewExtension
 {
-	private readonly Window _window;
-
-	public SystemNavigationManagerPreviewExtension(Gtk.Window window)
+	public SystemNavigationManagerPreviewExtension()
 	{
-		_window = window;
 	}
 
-	public void RequestNativeAppClose() => _window.Close();
+	public void RequestNativeAppClose() => GtkHost.Current!.MainWindow!.Close();
 }

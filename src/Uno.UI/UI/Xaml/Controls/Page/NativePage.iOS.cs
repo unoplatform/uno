@@ -3,12 +3,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using System;
 using Uno.UI;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {

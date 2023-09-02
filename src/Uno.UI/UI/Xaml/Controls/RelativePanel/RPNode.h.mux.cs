@@ -2,9 +2,9 @@
 using Windows.Foundation;
 using Windows.UI.Xaml;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;

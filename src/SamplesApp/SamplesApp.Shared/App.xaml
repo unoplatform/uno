@@ -1,9 +1,10 @@
 ﻿<Application x:Class="SamplesApp.App"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:xamarin="http://nventive.com/xamarin"
+			 xmlns:not_win="http://uno.ui/not_win"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ios="http://nventive.com/ios"
+			 xmlns:local="using:SamplesApp"
 			 xmlns:toolkit="using:Uno.UI.Toolkit"
 			 mc:Ignorable="ios"
 			 RequestedTheme="Light">
@@ -32,6 +33,12 @@
 				<ResourceDictionary Source="Windows_UI_Xaml_Controls\ListView\MeasureDetectorControl\MeasureDetectorControl.xaml" />
 				<MapResources xmlns="using:Uno.UI.Maps"/>
 			</ResourceDictionary.MergedDictionaries>
+
+			 <local:StringToStyleDictionary x:Key="MyResource">
+                <Style x:Key="MyStyle" TargetType="Button">
+
+                </Style>
+            </local:StringToStyleDictionary>
 
 			<SolidColorBrush x:Key="GlobalStaticResource_Test01"
 							 Color="Purple" />

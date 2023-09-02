@@ -120,8 +120,8 @@ namespace Uno.UI.Extensions
 		{
 			string GetMatrix(MatrixTransform matrix)
 			{
-				var m = matrix.Matrix.Inner;
-				return $" Matrix=[{m.M11}, {m.M21}, {m.M31}, {m.M12}, {m.M22}, {m.M32}]";
+				var m = matrix.Matrix;
+				return $" Matrix=[{m.M11}, {m.M21}, {m.OffsetX}, {m.M12}, {m.M22}, {m.OffsetY}]";
 			}
 
 			return transform switch

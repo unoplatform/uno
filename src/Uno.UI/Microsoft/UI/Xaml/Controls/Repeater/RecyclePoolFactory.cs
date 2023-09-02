@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 			"OriginTemplate",
 			typeof(DataTemplate),
 			typeof(RecyclePool),
-			new FrameworkPropertyMetadata(null /* defaultValue */, null /* propertyChangedCallback */));
+			new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: null));
 
 
 		#region IRecyclePoolStatics

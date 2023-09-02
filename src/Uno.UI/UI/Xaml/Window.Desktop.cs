@@ -1,4 +1,4 @@
-#if NET461 || __NETSTD_REFERENCE__
+#if IS_UNIT_TESTS || __NETSTD_REFERENCE__
 
 using System;
 using System.Linq;
@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml
 			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 		}
 
-		partial void ActivatingPartial()
+		partial void ShowPartial()
 		{
 			_isActive = true;
 			TryLoadRootVisual();

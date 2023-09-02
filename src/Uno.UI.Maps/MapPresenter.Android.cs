@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			}
 		}
 
-		private void MapTouchOccurred(object sender, MotionEvent e)
+		private void MapTouchOccurred(object? sender, MotionEvent e)
 		{
 
 		}

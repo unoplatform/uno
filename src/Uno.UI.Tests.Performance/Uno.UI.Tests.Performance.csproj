@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
     <IsPackable>false</IsPackable>
@@ -26,8 +26,6 @@
 		<PackageReference Include="MSTest.TestFramework" />
 		<PackageReference Include="FluentAssertions" />
 		<PackageReference Include="Moq" Version="4.17.2" />
-		<PackageReference Include="System.Collections.Immutable" Version="1.7.0" />
-		<PackageReference Include="Uno.SourceGenerationTasks"/>
   </ItemGroup>
 
   <ItemGroup>
@@ -46,7 +44,7 @@
 
   <Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
-  <Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1;_UnoSourceGenerator" />
+  <Target Name="BeforeBuildCleanup" BeforeTargets="XamlMarkupCompilePass1" />
 
   <ItemGroup>
     <ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />

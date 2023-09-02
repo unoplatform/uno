@@ -6,20 +6,6 @@
 	<Target Name="BindableMetadataGenerator" />
 
 	<PropertyGroup>
-		<_isRoslynAnalyzerAvailable Condition="'$(MSBuildVersion)' &gt;= '16.8'">true</_isRoslynAnalyzerAvailable>
-
-		<_canUseRoslynAnalyzer Condition="
-							'$(LangVersion)' == 'preview'
-							Or '$(LangVersion)' == 'latest'
-							Or '$(LangVersion)' == 'latestMajor'
-							Or '$(LangVersion)' == 'default'
-							Or (
-								'$(LangVersion)'!=''
-								and '$(LangVersion)' &gt; '9.0'
-							)">true</_canUseRoslynAnalyzer>
-
-		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'=='' and '$(_isRoslynAnalyzerAvailable)' == 'true' and '$(_canUseRoslynAnalyzer)'=='true'">true</UnoUIUseRoslynSourceGenerators>
-		<UnoUIUseRoslynSourceGenerators Condition="'$(UnoUIUseRoslynSourceGenerators)'==''">false</UnoUIUseRoslynSourceGenerators>
 
 		<ShouldRunGenerator>true</ShouldRunGenerator>
 		<ShouldRunGenerator Condition="'$(WindowsAppSDKWinUI)'=='true' or $(TargetFramework.StartsWith('uap10.0'))">false</ShouldRunGenerator>
@@ -44,36 +30,25 @@
 									)
 								  )">false</UnoForceHotReloadCodeGen>
 
-		<!-- Use Application.LoadComponent for Hot Reload scenarios -->
-		<UnoUseXamlReaderHotReload>true</UnoUseXamlReaderHotReload>
-
 		<XamarinProjectType Condition="
-							'$(ProjectTypeGuids)'=='{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'
-							or $(TargetFramework.ToLower().StartsWith('xamarinios'))
-							or '$(TargetPlatformIdentifier)' == 'ios'
+							'$(TargetPlatformIdentifier)' == 'ios'
 							or '$(TargetPlatformIdentifier)' == 'maccatalyst'
-							OR '$(TargetFramework)' == 'net6.0-ios'
-							OR '$(TargetFramework)' == 'net6.0-maccatalyst'
+							OR '$(TargetFramework)' == 'net8.0-ios'
+							OR '$(TargetFramework)' == 'net8.0-maccatalyst'
 							OR '$(TargetFramework)' == 'net7.0-ios'
 							OR '$(TargetFramework)' == 'net7.0-maccatalyst'
 							">ios</XamarinProjectType>
 		<XamarinProjectType Condition="
-							'$(ProjectTypeGuids)'=='{EFBA0AD7-5A72-4C68-AF49-83D382785DCF};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'
-							or $(TargetFramework.ToLower().StartsWith('monoandroid'))
-							or '$(TargetPlatformIdentifier)' == 'android'
-							OR '$(TargetFramework)' == 'net6.0-android'
+							'$(TargetPlatformIdentifier)' == 'android'
+							OR '$(TargetFramework)' == 'net8.0-android'
 							OR '$(TargetFramework)' == 'net7.0-android'
 							">android</XamarinProjectType>
-		<XamarinProjectType Condition="
-							'$(ProjectTypeGuids)'=='{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}'
-							or '$(TargetFramework)'=='xamarinmac20'
-							">macos</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">wasm</XamarinProjectType>
 		<XamarinProjectType Condition="'$(UnoRuntimeIdentifier)'=='Skia'">skia</XamarinProjectType>
-		<XamarinProjectType Condition="'$(TargetFramework)'=='net461'">net461</XamarinProjectType>
+		<XamarinProjectType Condition="$(DefineConstants.Contains('IS_UNIT_TESTS'))">IS_UNIT_TESTS</XamarinProjectType>
 	</PropertyGroup>
 
-  <ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
+	<ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
 		<CompilerVisibleProperty Include="XamlSourceGeneratorTracingFolder" />
 		<CompilerVisibleProperty Include="TargetFramework" />
 		<CompilerVisibleProperty Include="ProjectTypeGuidsProperty" />
@@ -90,8 +65,9 @@
 		<CompilerVisibleProperty Include="UnoUISourceGeneratorDebuggerBreak" />
 		<CompilerVisibleProperty Include="BuildingInsideVisualStudio" />
 		<CompilerVisibleProperty Include="IsHotReloadHost" />
-		<CompilerVisibleProperty Include="UnoUseXamlReaderHotReload" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
+		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
+		<CompilerVisibleProperty Include="RuntimeIdentifier" />
 
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
@@ -113,41 +89,19 @@
 		<CompilerVisibleProperty Include="BaseIntermediateOutputPath"/>
 		<CompilerVisibleProperty Include="AssemblyName"/>
 
-	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
-	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
-	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
-	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
-	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
-	  <CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XamlRuntime" />
-  </ItemGroup>
-
-	<Choose>
-		<When Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(ShouldRunGenerator)'=='true'">
-			<!-- C# 9.0 Generator -->
-
-			<PropertyGroup>
-				<UnoUIUseRoslynSourceGeneratorsValue>$(UnoUIUseRoslynSourceGenerators)</UnoUIUseRoslynSourceGeneratorsValue>
-			</PropertyGroup>
-
-		</When>
-		<Otherwise>
-			<PropertyGroup Condition="'$(UnoUIGeneratorsBinPath)'=='' and '$(ShouldRunGenerator)'=='true'">
-				<_UnoUIGeneratorsBinPathInPackage>$(MSBuildThisFileDirectory)..\tools\uno-sourcegen</_UnoUIGeneratorsBinPathInPackage>
-				<_UnoUIGeneratorsBinPathInSource>$(MSBuildThisFileDirectory)..\bin\$(Configuration)\net461</_UnoUIGeneratorsBinPathInSource>
-				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInPackage)')">$(_UnoUIGeneratorsBinPathInPackage)</UnoUIGeneratorsBinPath>
-				<UnoUIGeneratorsBinPath Condition="exists('$(_UnoUIGeneratorsBinPathInSource)')">$(_UnoUIGeneratorsBinPathInSource)</UnoUIGeneratorsBinPath>
-			</PropertyGroup>
-			<ItemGroup Condition="'$(ShouldRunGenerator)'=='true'">
-				<SourceGenerator Include="$(UnoUIGeneratorsBinPath)\Uno.UI.SourceGenerators.dll" />
-			</ItemGroup>
-		</Otherwise>
-	</Choose>
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="SourceItemGroup" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Link" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="TargetPath" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="FullPath" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="Identity" />
+		<CompilerVisibleItemMetadata Include="AdditionalFiles" MetadataName="XamlRuntime" />
+	</ItemGroup>
 
 	<Target Name="OverrideUnoSolutionTarget"
 			BeforeTargets="CoreCompile"
 			Condition="exists('$(MSBuildThisFileDirectory)..\Uno.UI.SourceGenerators.csproj') and '$(ShouldRunGenerator)'=='true'">
 
-		<ItemGroup >
+		<ItemGroup>
 			<_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\Microsoft.CodeAnalysis.*.dll" />
 			<_UnoAnalyzerExclusion Include="$(MSBuildThisFileDirectory)..\bin\$(Configuration)\netstandard2.0\System.*.dll" />
 
@@ -235,14 +189,14 @@
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_android" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_macos" />
 		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='skia'" Include="not_wasm" />
-		<!-- NET461 -->
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="net461" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_ios" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_android" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_wasm" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_macos" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_skia" />
-		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='net461'" Include="not_netstdref" />
+		<!-- IS_UNIT_TESTS -->
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="unittests" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_ios" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_android" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_wasm" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_macos" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_skia" />
+		<IncludeXamlNamespaces Condition="'$(XamarinProjectType)'=='IS_UNIT_TESTS'" Include="not_netstdref" />
 
 		<!--
 		A list of analyzer suppressions to include in every generated class.
@@ -346,28 +300,6 @@
 		</CustomUiAutomationMemberMapping>
 	</ItemGroup>
 
-	<Target Name="_IncludeXamlFiles" BeforeTargets="_UnoSourceGenerator" DependsOnTargets="_FillSourceGeneratorItemGroups">
-		<!--
-		This group is created as part of a target to ensure the
-		capture of target-defined Pages
-		-->
-		<ItemGroup>
-			<SourceGeneratorInput Include="@(Page);@(ApplicationDefinition);@(UnoPage);@(UnoApplicationDefinition)" />
-		</ItemGroup>
-	</Target>
-
-	<ItemGroup>
-		<UnoSourceGeneratorAdditionalProperty Include="ExcludeXamlNamespacesProperty" />
-		<UnoSourceGeneratorAdditionalProperty Include="IncludeXamlNamespacesProperty" />
-		<UnoSourceGeneratorAdditionalProperty Include="XamlGeneratorAnalyzerSuppressionsProperty" />
-		<UnoSourceGeneratorAdditionalProperty Include="UnoUIUseRoslynSourceGenerators" />
-		<UnoSourceGeneratorAdditionalProperty Include="ProjectTypeGuidsProperty" />
-		<UnoSourceGeneratorAdditionalProperty Include="DefineConstantsProperty" />
-		<UnoSourceGeneratorAdditionalProperty Include="IsUiAutomationMappingEnabled" />
-		<UnoSourceGeneratorAdditionalProperty Include="UnoForceHotReloadCodeGen" />
-		<UnoSourceGeneratorAdditionalProperty Include="UnoUseXamlReaderHotReload" />
-	</ItemGroup>
-
 	<Target Name="_FillSourceGeneratorItemGroups">
 
 		<ItemGroup>
@@ -421,20 +353,12 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile;_UnoSourceGenerator" Condition="'$(ShouldRunGenerator)'=='true'">
-		<Message Importance="low"
-			   Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'"
-			   Text="Uno.UI is using Roslyn generators" />
-		<Message Importance="low"
-			   Condition="'$(UnoUIUseRoslynSourceGenerators)'==''"
-			   Text="Uno.UI is using Uno.SourceGenerators" />
-
+	<Target Name="UnoLogGeneratorsType" BeforeTargets="CoreCompile" Condition="'$(ShouldRunGenerator)'=='true'">
 		<WriteLinesToFile File="$(IntermediateOutputPath)\build-time-generator.touch" />
 	</Target>
 
-	<Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(UnoUIUseRoslynSourceGenerators)'=='false' or '$(ShouldRunGenerator)'!='true'">
-		<!--- If the users explicitly disables Roslyn source generation, remove the analyzer item which is automatically added by NuGet. -->
-		<!-- Additionally, if this is a Windows build, remove the analyzer item for the generators. -->
+	<Target Name="_RemoveRoslynUnoSourceGeneration" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(ShouldRunGenerator)'!='true'">
+		<!-- If this is a Windows build, remove the analyzer item for the generators. -->
 		<ItemGroup>
 			<_AnalyzerToRemove Include="@(Analyzer)" Condition="'%(FileName)'=='Uno.UI.SourceGenerators'" />
 			<Analyzer Remove="@(_AnalyzerToRemove)"/>
@@ -443,7 +367,7 @@
 
 	<Target Name="_UnoUIValidateLongPathSupport"
 			BeforeTargets="CoreCompile"
-			Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOsPlatform(Windows)) and ( ('$(UnoUIUseRoslynSourceGenerators)'=='true' and '$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
+			Condition="'$(MSBuildRuntimeType)'!='Core' and $([MSBuild]::IsOsPlatform(Windows)) and ( ('$(EmitCompilerGeneratedFiles)'=='true') or '$(MSBuildThisFileDirectory.Length)' &gt; 64)">
 		<!---
 	Validation for LongPath support (source https://github.com/dotnet/roslyn/blob/c8eecdb9563127988b3cb564a493eae9ef254a88/eng/build.ps1#L607)
 	https://docs.microsoft.com/en-us/archive/blogs/jeremykuhne/net-4-6-2-and-long-paths-on-windows-10#enabling-win32-long-path-support
@@ -455,8 +379,7 @@
 	</Target>
 
 	<Target Name="_UnoUIValidateInvalidRoslynPath"
-			BeforeTargets="CoreCompile"
-			Condition="'$(UnoUIUseRoslynSourceGenerators)'=='true'">
+			BeforeTargets="CoreCompile">
 		<!---
 	Validation '#' escaped path https://github.com/unoplatform/uno/issues/5953
 	-->

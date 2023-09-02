@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -22,34 +21,6 @@ namespace Uno.UI.Tests.BinderTests.DependencyPropertyPath
 	[TestClass]
 	public partial class Given_Binder_DependencyPropertyPath
 	{
-#if !IS_UNO
-		private Uno.Patterns.IoC.Container _container;
-
-		[TestInitialize]
-		public void Init()
-		{
-			_container = new Uno.Patterns.IoC.Container();
-			_container.Register<IResourceRegistry>(new Mock<IResourceRegistry>().Object);
-
-			ServiceLocator.SetLocatorProvider(() => _container);
-
-			LogManager
-				.Repository
-				.Loggers
-				.OfType<DebuggerLogger>()
-				.FirstOrDefault()
-				.SelectOrDefault(l =>
-				{
-					l.LogLevel = LogLevel.Debug;
-					l.RequiresAttachedDebugger = false;
-
-					return l;
-				});
-
-			LogManager.RefreshLogLevel();
-		}
-#endif
-
 		[TestMethod]
 		public void When_AttachedDependencyProperty_And_SimplePath()
 		{

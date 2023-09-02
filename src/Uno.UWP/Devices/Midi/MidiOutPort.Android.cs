@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Android.Content;
@@ -96,4 +95,3 @@ namespace Windows.Devices.Midi
 		}
 	}
 }
-#endif

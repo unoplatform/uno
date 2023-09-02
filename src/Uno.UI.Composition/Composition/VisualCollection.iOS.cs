@@ -1,6 +1,5 @@
 #nullable enable
 
-#if __IOS__
 using System;
 
 namespace Windows.UI.Composition
@@ -41,4 +40,3 @@ namespace Windows.UI.Composition
 		}
 	}
 }
-#endif

@@ -18,7 +18,7 @@ Also, the point of this exercise is to walk through a migration process from a S
 ## Importing the Silverlight TreeView control source
 
 To migrate a control from Silverlight, there are a few things to do:
-- Create a cross targeted project using the **Cross-Platform library** template from the [Uno Platform VS Add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+- Create a cross targeted project using the **Cross-Platform library** template from the [Uno Platform VS Add-in](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022)
 - Replace Silverlight namespaces with UWP namespaces and selectively import the `TreeView` source files and dependencies
 - Adjust the code for slightly changed APIs
 - Temporarily comment out code for APIs that have significantly changed.

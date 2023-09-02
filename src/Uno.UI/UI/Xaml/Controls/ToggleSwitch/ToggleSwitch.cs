@@ -1,6 +1,7 @@
 using System;
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Markup;
 
 #if __IOS__
 using UIKit;
@@ -11,6 +12,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// Represents a switch that can be toggled between two states.
 	/// </summary>
+	[ContentProperty(Name = nameof(Header))]
 	public partial class ToggleSwitch : Control, IFrameworkTemplatePoolAware
 	{
 		/// <summary>
@@ -198,35 +200,6 @@ namespace Windows.UI.Xaml.Controls
 		/// Gets an object that provides calculated values that can be referenced as TemplateBinding sources when defining templates for a ToggleSwitch control.
 		/// </summary>
 		public ToggleSwitchTemplateSettings TemplateSettings { get; private set; }
-
-		private double GetEndAbsoluteOffset()
-		{
-			var minOffset = 0;
-			var maxOffset = GetMaxOffset();
-			var startOffset = IsOn ? maxOffset : 0;
-			var absoluteOffset = startOffset;
-			absoluteOffset = Math.Max(minOffset, absoluteOffset);
-			absoluteOffset = Math.Min(maxOffset, absoluteOffset);
-			return absoluteOffset;
-		}
-
-		private double GetMaxOffset()
-		{
-			if (_tpKnobBounds == null || _tpKnob == null)
-			{
-				return 0;
-			}
-
-			return _tpKnobBounds.ActualWidth - _tpKnob.ActualWidth;
-		}
-
-		private void ForceSwitchKnobEndPosition()
-		{
-			if (_spKnobTransform != null)
-			{
-				_spKnobTransform.X = GetEndAbsoluteOffset();
-			}
-		}
 
 		public void OnTemplateRecycled()
 		{

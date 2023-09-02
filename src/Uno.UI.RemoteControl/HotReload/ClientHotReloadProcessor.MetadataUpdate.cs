@@ -1,6 +1,6 @@
-﻿#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -10,11 +10,14 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
+using System.Threading;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -22,7 +25,24 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
+		private ElementUpdateAgent? _elementAgent;
 		private static ClientHotReloadProcessor? _instance;
+
+		private ElementUpdateAgent ElementAgent
+		{
+			get
+			{
+				_elementAgent ??= new ElementUpdateAgent(s =>
+					{
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace(s);
+						}
+					});
+
+				return _elementAgent;
+			}
+		}
 
 		[MemberNotNull(nameof(_agent))]
 		partial void InitializeMetadataUpdater()
@@ -89,6 +109,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			return Array.Empty<string>();
 		}
 
+#if __WASM__ || __SKIA__
 		private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 		{
 			if (assemblyDeltaReload.IsValid())
@@ -138,112 +159,120 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			return values;
 		}
-
+#endif
 
 		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
 			if (updatedTypes.Length == 0)
 			{
-				ReloadWithLastChangedFile();
 				return;
 			}
 
-			foreach (var updatedType in updatedTypes)
-			{
-				if (_log.IsEnabled(LogLevel.Debug))
-				{
-					_log.LogDebug($"Processing changed type [{updatedType}]");
-				}
+			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
 
-				if (updatedType.Is<UIElement>())
+			// Action: BeforeVisualTreeUpdate
+			// This is called before the visual tree is updated
+			handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes));
+
+			// Iterate through the visual tree and either invole ElementUpdate, 
+			// or replace the element with a new one
+			foreach (
+				var (element, elementHandler, elementMappedType) in
+				EnumerateHotReloadInstances(
+					Window.Current.Content,
+					fe =>
+						{
+							// Get the original type of the element, in case it's been replaced
+							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+							// Get the handler for the type specified
+							var handler = (from h in handlerActions
+										   where originalType == h.Key ||
+												originalType.IsSubclassOf(h.Key)
+										   select h.Value).FirstOrDefault();
+
+							// Get the replacement type, or null if not replaced
+							var mappedType = originalType.GetMappedType();
+
+							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+						},
+					enumerateChildrenAfterMatch: true))
+			{
+
+				// Action: ElementUpdate
+				// This is invoked for each existing element that is in the tree that needs to be replaced
+				elementHandler?.ElementUpdate(element, updatedTypes);
+
+				if (elementMappedType is not null)
 				{
-					ReplaceViewInstances(i => updatedType.IsInstanceOfType(i));
-				}
-				else
-				{
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"Type [{updatedType}] is not a UIElement, skipping");
-					}
+					ReplaceViewInstance(element, elementMappedType, elementHandler);
 				}
 			}
+
+			// Action: AfterVisualTreeUpdate
+			handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes));
 		}
 
-		/// <summary>
-		/// Reload with the last updated file after metadata was updated
-		/// </summary>
-		/// <remarks>
-		/// This scenario can happen when using WebAssembly from VisualStudio 2022, where changed types are not provided by browserlink.
-		/// </remarks>
-		private static void ReloadWithLastChangedFile()
+		private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
 		{
-			var lastUpdated = _instance?._lastUpdatedFilePath;
-
-			if (lastUpdated is null)
+			if (replacementType.GetConstructor(Array.Empty<Type>()) is { } creator)
 			{
-				if (_log.IsEnabled(LogLevel.Debug))
+				if (_log.IsEnabled(LogLevel.Trace))
 				{
-					_log.LogDebug($"Last changed filed is not available, skipping");
+					_log.Trace($"Creating instance of type {instance.GetType()}");
 				}
 
-				return;
-			}
-
-			if (_log.IsEnabled(LogLevel.Debug))
-			{
-				_log.LogDebug($"Processing last changed file [{lastUpdated}]");
-			}
-
-			var uri = new Uri("file:///" + lastUpdated.Replace('\\', '/'));
-
-			// Search for all types in the main window's tree that
-			// match the last modified uri.
-			ReplaceViewInstances(i => uri.OriginalString == i.DebugParseContext?.LocalFileUri);
-		}
-
-		private static void ReplaceViewInstances(Func<FrameworkElement, bool> predicate)
-		{
-			foreach (var instance in EnumerateInstances(Window.Current.Content, predicate))
-			{
-				if (instance.GetType().GetConstructor(Array.Empty<Type>()) is { })
+				var newInstance = Activator.CreateInstance(replacementType);
+				var instanceFE = instance as FrameworkElement;
+				var newInstanceFE = newInstance as FrameworkElement;
+				if (instanceFE is not null &&
+					newInstanceFE is not null)
 				{
-					if (_log.IsEnabled(LogLevel.Trace))
-					{
-						_log.Trace($"Creating instance of type {instance.GetType()}");
-					}
-
-					var newInstance = Activator.CreateInstance(instance.GetType());
-
-					switch (instance)
-					{
+					handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
+				switch (instance)
+				{
 #if __IOS__
-						case UserControl userControl:
-							if (newInstance is UIKit.UIView newUIViewContent)
-							{
-								SwapViews(userControl, newUIViewContent);
-							}
-							break;
+					case UserControl userControl:
+						if (newInstance is UIKit.UIView newUIViewContent)
+						{
+							SwapViews(userControl, newUIViewContent);
+						}
+						break;
 #endif
-						case ContentControl content:
-							if (newInstance is ContentControl newContent)
-							{
-								SwapViews(content, newContent);
-							}
-							break;
-					}
+					case ContentControl content:
+						if (newInstance is ContentControl newContent)
+						{
+							SwapViews(content, newContent);
+						}
+						break;
 				}
-				else
+
+				if (instanceFE is not null &&
+					newInstanceFE is not null)
 				{
-					if (_log.IsEnabled(LogLevel.Debug))
-					{
-						_log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
-					}
+					handler?.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
+				}
+			}
+			else
+			{
+				if (_log.IsEnabled(LogLevel.Debug))
+				{
+					_log.LogDebug($"Type [{instance.GetType()}] has no parameterless constructor, skipping reload");
 				}
 			}
 		}
 
 		public static void UpdateApplication(Type[] types)
 		{
+			foreach (var t in types)
+			{
+				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
+				{
+					TypeMappingHelper.RegisterMapping(t, update.OriginalType);
+				}
+			}
+
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
 				_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
@@ -255,4 +284,3 @@ namespace Uno.UI.RemoteControl.HotReload
 		}
 	}
 }
-#endif

@@ -220,6 +220,11 @@ namespace Windows.UI.Xaml.Data
 		{
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				ParentBinding.XBindBack(DataContext, value);
 			}
 			catch (Exception exception)
@@ -244,6 +249,11 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
+				if (FrameworkTemplatePool.IsRecycling && _view.IsAlive && _view.Target is IFrameworkTemplatePoolAware)
+				{
+					return;
+				}
+
 				if (ParentBinding.Mode == BindingMode.TwoWay
 					&& ResolveUpdateSourceTrigger() == UpdateSourceTrigger.PropertyChanged)
 				{
@@ -277,6 +287,28 @@ namespace Windows.UI.Xaml.Data
 			{
 				_isBindingSuspended = false;
 				ApplyBinding();
+			}
+		}
+
+		/// <summary>
+		/// Refreshes the value to the target, as the bound source may not be observable
+		/// </summary>
+		internal void RefreshTarget()
+		{
+			ApplyElementName();
+
+			if (
+				// If a listener is set, ApplyBindings has been invoked
+				_bindingPath.ValueChangedListener is not null
+
+				// If this is not an x:Bind
+				&& _updateSources is null
+
+				// If there's a valid DataContext
+				&& GetWeakDataContext() is { IsAlive: true } weakDataContext)
+			{
+				// Apply the source on the target again (e.g. to reevaluate converters)
+				_bindingPath.SetWeakDataContext(weakDataContext);
 			}
 		}
 
@@ -477,7 +509,7 @@ namespace Windows.UI.Xaml.Data
 						}
 					}
 
-					_subscription.Disposable = Actions.ToDisposable(() =>
+					_subscription.Disposable = new DisposableAction(() =>
 					{
 						foreach (var bindingPath in _updateSources)
 						{
@@ -490,7 +522,7 @@ namespace Windows.UI.Xaml.Data
 				{
 					_bindingPath.ValueChangedListener = this;
 					_bindingPath.SetWeakDataContext(weakDataContext);
-					_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = new DisposableAction(() => _bindingPath.ValueChangedListener = null);
 				}
 			}
 			else

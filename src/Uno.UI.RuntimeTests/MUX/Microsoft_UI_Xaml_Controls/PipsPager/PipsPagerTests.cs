@@ -3,9 +3,11 @@
 // MUX reference PipsPagerTests.cs, commit 2eebc34
 
 using Common;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
-using MUXControlsTestApp.Utilities;
 using Microsoft.UI.Xaml.Automation.Peers;
+#endif
+using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Media;
@@ -27,6 +29,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
 	[RequiresFullWindow]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class PipsPagerTests : MUXApiTestBase
 	{
 		[TestMethod]

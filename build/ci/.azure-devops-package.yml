@@ -1,7 +1,6 @@
 parameters:
   poolName: ''
   artifactsToDownload:
-    - "NugetPackages-Artifacts-generic"
     - "NugetPackages-Artifacts-netcoremobile"
     - "NugetPackages-Artifacts-reference"
     - "NugetPackages-Artifacts-skia"
@@ -11,14 +10,10 @@ jobs:
 - job: Generate_Packages
   displayName: 'Pack NuGet'
 
-  dependsOn:
-  - generic_win_build
-  - netcoremobile_win_build
-  - skia_package_build
-  - wasm_package_build
-  - reference_package_build
-
   pool: ${{ parameters.poolName }}
+
+  dependsOn:
+  - templates_package_build
 
   strategy:
     matrix:
@@ -33,10 +28,6 @@ jobs:
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
-
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
 
     # This is required to be able to use hard links as much as possible
     NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget

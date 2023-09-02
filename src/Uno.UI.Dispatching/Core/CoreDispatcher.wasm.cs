@@ -3,16 +3,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.Foundation;
 using Uno.Foundation.Interop;
 using Uno.Foundation.Logging;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Uno.UI.Dispatching
 {
@@ -26,9 +23,7 @@ namespace Uno.UI.Dispatching
 		/// Method invoked from 
 		/// </summary>
 #pragma warning disable IDE0051 // Remove unused private members - called by MonoSupport.ts
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		private static int DispatcherCallback()
 #pragma warning restore IDE0051 // Remove unused private members
 		{

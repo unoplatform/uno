@@ -4,7 +4,7 @@ using Android.Views.Animations;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	public abstract partial class EasingFunctionBase
+	public partial class EasingFunctionBase
 	{
 		internal virtual ITimeInterpolator CreateTimeInterpolator()
 		{

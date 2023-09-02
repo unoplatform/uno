@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.InteropServices.JavaScript;
 using System.Text;
 using System.Threading.Tasks;
 using Uno;
@@ -11,16 +12,12 @@ using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
 using Uno.Foundation;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Devices.Midi.MidiInPort.NativeMethods;
-#endif
 
 namespace Windows.Devices.Midi
 {
 	public partial class MidiInPort
 	{
-		private const string JsType = "Windows.Devices.Midi.MidiInPort";
-
 		private readonly string _managedId;
 
 		private readonly static ConcurrentDictionary<string, MidiInPort> _instanceSubscriptions =
@@ -35,17 +32,18 @@ namespace Windows.Devices.Midi
 		partial void StartMessageReceived()
 		{
 			_instanceSubscriptions.TryAdd(_managedId, this);
-			var addListenerCommand = $"{JsType}.startMessageListener('{_managedId}')";
-			WebAssemblyRuntime.InvokeJS(addListenerCommand);
+
+			NativeMethods.StartMessageListener(_managedId);
 		}
 
 		partial void StopMessageReceived()
 		{
 			_instanceSubscriptions.TryRemove(_managedId, out _);
-			var removeListenerCommand = $"{JsType}.stopMessageListener('{_managedId}')";
-			WebAssemblyRuntime.InvokeJS(removeListenerCommand);
+
+			NativeMethods.StopMessageListener(_managedId);
 		}
 
+		[JSExport]
 		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
 #if DEBUG
@@ -78,8 +76,7 @@ namespace Windows.Devices.Midi
 
 		partial void DisposeNative()
 		{
-			var removeInstanceCommand = $"{JsType}.removePort('{_managedId}')";
-			WebAssemblyRuntime.InvokeJS(removeInstanceCommand);
+			NativeMethods.RemovePort(_managedId);
 		}
 
 		private static async Task<MidiInPort> FromIdInternalAsync(DeviceIdentifier identifier)
@@ -89,8 +86,9 @@ namespace Windows.Devices.Midi
 				throw new UnauthorizedAccessException("User declined access to MIDI.");
 			}
 			var managedId = Guid.NewGuid().ToString();
-			var initialization = $"{JsType}.createPort('{managedId}','{Uri.EscapeDataString(identifier.Id)}')";
-			WebAssemblyRuntime.InvokeJS(initialization);
+
+			NativeMethods.CreatePort(managedId, Uri.EscapeDataString(identifier.Id));
+
 			return new MidiInPort(identifier.ToString(), managedId);
 		}
 	}

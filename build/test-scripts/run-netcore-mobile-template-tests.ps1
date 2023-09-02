@@ -19,10 +19,10 @@ $release = $default + '/p:Configuration=Release' + '/r'
 ## Configurations are split to work around UWP not building with .NET new
 $dotnetBuildConfigurations =
 @(
-    @("Mobile", "-f:net6.0-android", "-r:android-arm64"), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
-    @("Mobile", "-f:net6.0-ios", ""),
-    @("Mobile", "-f:net6.0-maccatalyst", ""),
-    # @("Mobile", "-f:net6.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
+    @("Mobile", "-f:net7.0-android", ""), # workaround for https://github.com/xamarin/xamarin-android/issues/7473
+    @("Mobile", "-f:net7.0-ios", ""),
+    @("Mobile", "-f:net7.0-maccatalyst", ""),
+    # @("Mobile", "-f:net7.0-macos", ""), # workaround for https://github.com/xamarin/xamarin-macios/issues/16401
     @("Wasm", "", ""),
     @("Skia.Gtk", "", ""),
     @("Skia.Linux.FrameBuffer", "", ""),
@@ -85,7 +85,7 @@ for($i = 0; $i -lt $dotnetBuildNet6Configurations.Length; $i++)
 
  # Build with msbuild because of https://github.com/microsoft/WindowsAppSDK/issues/1652
  # force targetframeworks until we can get WinAppSDK to build with `dotnet build`
- & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.18362;TargetFramework=net7.0-windows10.0.18362" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
+ & $msbuild $debug "/p:Platform=x86" "/p:TargetFrameworks=net7.0-windows10.0.19041;TargetFramework=net7.0-windows10.0.19041" "UnoAppWinUI.Windows\UnoAppWinUI.Windows.csproj"
 Assert-ExitCodeIsZero
 
 popd
@@ -106,7 +106,7 @@ popd
 # Uno Library
 dotnet new unolib -n MyUnoLib
 # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-& $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.18362;net7.0`""
+& $msbuild $debug /t:pack MyUnoLib\MyUnoLib.csproj "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
 Assert-ExitCodeIsZero
 
 # Uno Cross-Runtime Library
@@ -122,7 +122,7 @@ mkdir MyUnoLib2\Assets
 echo "Test file" > MyUnoLib2\Assets\MyTestAsset01.txt
 
 # Mobile is removed for now, until we can get net7 supported by msbuild/VS 17.4
-& $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl "/p:TargetFrameworks=`"net7.0-windows10.0.18362;net7.0`""
+& $msbuild $debug /t:pack /p:IncludeContentInPack=false MyUnoLib2\MyUnoLib2.csproj -bl "/p:TargetFrameworks=`"net7.0-windows10.0.19041;net7.0`""
 Assert-ExitCodeIsZero
 
 mv MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.nupkg MyUnoLib2\Bin\Debug\MyUnoLib2.1.0.0.zip

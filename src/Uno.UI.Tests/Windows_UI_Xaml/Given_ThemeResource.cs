@@ -206,7 +206,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("DoubleAnimation not supported by Uno.NET461")]
+		[Ignore("DoubleAnimation not supported by Uno.IS_UNIT_TESTS")]
 		public async Task When_Visual_States_DoubleAnimation_Theme_Changed_Reapplied()
 		{
 			var page = new ThemeResource_In_Visual_States_Page();

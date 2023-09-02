@@ -18,7 +18,6 @@ using Windows.UI.Xaml;
 using MUXControlsTestApp;
 using Windows.Foundation.Metadata;
 
-
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
@@ -44,6 +43,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("Currently fails on Android https://github.com/unoplatform/uno/issues/9080")]
+#endif
 		[RequiresFullWindow]
 		public async Task When_Verify_Canvas_With_Outer_Clip()
 		{
@@ -56,13 +58,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new Canvas_With_Outer_Clip();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var clippedLocation = canvas.Get_LocatorBorder1();
 			await WindowHelper.WaitForIdle();
@@ -83,19 +80,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__
 			Assert.Inconclusive(); // Android doesn't support Canvas.ZIndex on any panel
 #endif
+#if __IOS__
+			Assert.Inconclusive(); // iOS doesn't support Canvas.ZIndex on any panel
+#endif
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
 			{
 				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
 			}
 
 			var canvas = new CanvasZIndex();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var redBorderRect1 = canvas.Get_CanvasBorderRed1();
 			ImageAssert.HasColorAtChild(bitmap, redBorderRect1, (float)redBorderRect1.Width / 2, (float)redBorderRect1.Height / 2, Green);
@@ -132,13 +127,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new Canvas_In_Canvas();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 			var clippedLocation = canvas.Get_CanvasBorderBlue1();
 
 			ImageAssert.HasColorAtChild(bitmap, clippedLocation, (float)clippedLocation.Width / 2, clippedLocation.Height / 2, Blue);

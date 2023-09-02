@@ -3,11 +3,11 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 					xmlns:local="using:Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://nventive.com/ios"
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-					mc:Ignorable="d xamarin ios">
+					mc:Ignorable="d not_win ios">
 	<Style x:Key="BasicListViewContainerStyle"
 		   TargetType="ListViewItem">
 		<Setter Property="Template">
@@ -32,7 +32,7 @@
 				<ControlTemplate TargetType="ListViewItem">
 					<ContentPresenter Content="{TemplateBinding Content}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
-									  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
+									  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -107,6 +107,23 @@
 					   HorizontalAlignment="Center" />
 		</Border>
 	</DataTemplate>
+	<DataTemplate x:Key="DefaultItemTemplate">
+		<Border Width="152"
+				Background="LightSeaGreen">
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto"/>
+					<RowDefinition Height="Auto"/>
+				</Grid.RowDefinitions>
+				<TextBlock Text="{Binding Name}"
+						   Grid.Row="0"
+						   HorizontalAlignment="Center" />
+				<TextBlock Text="{Binding Value}"
+						   Grid.Row="1"
+						   HorizontalAlignment="Center" />
+			</Grid>
+		</Border>
+	</DataTemplate>	
 	<DataTemplate x:Key="CounterItemTemplate">
 		<local:CounterGrid>
 			<TextBlock Text="{Binding}" />

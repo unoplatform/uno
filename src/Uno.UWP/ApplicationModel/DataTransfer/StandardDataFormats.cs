@@ -1,6 +1,6 @@
 #nullable enable
 
-#if !NET461
+#if !IS_UNIT_TESTS
 namespace Windows.ApplicationModel.DataTransfer
 {
 	public partial class StandardDataFormats

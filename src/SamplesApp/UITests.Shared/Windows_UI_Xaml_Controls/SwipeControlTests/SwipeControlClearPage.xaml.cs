@@ -9,6 +9,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
+
 namespace MUXControlsTestApp
 {
 	/// <summary>

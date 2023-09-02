@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using CoreMotion;
 using Foundation;
 using UIKit;
@@ -72,4 +71,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

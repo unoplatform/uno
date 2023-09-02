@@ -18,8 +18,9 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private string? _projectPath;
 		private string[]? _xamlPaths;
-		private bool _useXamlReaderHotReload;
 		private readonly IRemoteControlClient _rcClient;
+
+		private static Logger _log = typeof(ClientHotReloadProcessor).Log();
 
 		public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 		{
@@ -40,11 +41,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			switch (frame.Name)
 			{
-				case FileReload.Name:
-					ReloadFile(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
-					break;
-
-#if NET6_0_OR_GREATER || __WASM__ || __SKIA__
+#if __WASM__ || __SKIA__
 				case AssemblyDeltaReload.Name:
 					AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content)!);
 					break;
@@ -94,24 +91,6 @@ namespace Uno.UI.RemoteControl.HotReload
 					this.Log().LogError("Unable to find ProjectConfigurationAttribute");
 				}
 			}
-
-			if (assembly.GetCustomAttributes(typeof(AssemblyMetadataAttribute), false) is AssemblyMetadataAttribute[] asmMetadataAttributes)
-			{
-				if (asmMetadataAttributes.FirstOrDefault(a => a.Key.Equals("UnoUseXamlReaderHotReload", StringComparison.OrdinalIgnoreCase)) is { } keyAttribute
-					&& bool.TryParse(keyAttribute.Value, out var useXamlReaderHotReload))
-				{
-					_useXamlReaderHotReload = useXamlReaderHotReload;
-				}
-
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"UseXamlReaderHotReload={_useXamlReaderHotReload}");
-				}
-			}
 		}
-
-#if !(NET6_0_OR_GREATER || __WASM__ || __SKIA__)
-		private string[] GetMetadataUpdateCapabilities() => Array.Empty<string>();
-#endif
 	}
 }

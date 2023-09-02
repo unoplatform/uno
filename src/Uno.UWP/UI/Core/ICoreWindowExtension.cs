@@ -17,5 +17,7 @@ internal interface ICoreWindowExtension
 	void ArrangeNativeElement(object owner, object content, Rect arrangeRect);
 
 	Size MeasureNativeElement(object owner, object content, Size size);
+
+	bool IsNativeElementAttached(object owner, object nativeElement);
 #endif
 }

@@ -5,7 +5,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:xamarin="http://uno.ui/xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
     xmlns:navViewLocal="using:Windows.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
@@ -21,7 +21,7 @@
         <Setter Property="VerticalContentAlignment" Value="Center" />
         <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
 		<win:Setter Property="Content" Value="&#xE72B;" />
-		<xamarin:Setter Property="Content" Value="&#xE112;" />
+		<not_win:Setter Property="Content" Value="&#xE112;" />
 		<Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="Button">

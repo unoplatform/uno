@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using Android.App;
 using Android.Content;
 using Android.Util;
@@ -61,4 +60,3 @@ namespace Windows.UI.ViewManagement
 		}
 	}
 }
-#endif

@@ -13,15 +13,14 @@ namespace Windows.UI.Xaml
 	{
 		public static GridLength Auto => GridLengthHelper.Auto;
 
-		public GridUnitType GridUnitType { get; private set; }
+		public GridUnitType GridUnitType;
+		public double Value;
 
 		public bool IsAbsolute { get { return GridUnitType == Xaml.GridUnitType.Pixel; } }
 
 		public bool IsAuto { get { return GridUnitType == Xaml.GridUnitType.Auto; } }
 
 		public bool IsStar { get { return GridUnitType == Xaml.GridUnitType.Star; } }
-
-		public double Value { get; private set; }
 
 		public static implicit operator GridLength(string value)
 			=> FromString(value);

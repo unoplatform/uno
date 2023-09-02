@@ -12,6 +12,9 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Uno.Extensions;
 using Uno.UI.Lottie;
+#if !HAS_UNO_WINUI
+using Microsoft.UI.Xaml.Controls;
+#endif
 
 // **********************************************************
 // *                        ? WHY ?                         *
@@ -27,7 +30,11 @@ using Uno.UI.Lottie;
 // *                                                        *
 // **********************************************************
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	[Bindable]
 	public partial class ThemableLottieVisualSource : LottieVisualSourceBase, IThemableAnimatedVisualSource

@@ -98,3 +98,7 @@ Uno.UI.FeatureConfiguration.ToolTip.UseToolTips = true;
 ```
 
 It is also possible to adjust the delay in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDelay` - defaults to `1000`) and show duration in milliseconds (`Uno.UI.FeatureConfiguration.ToolTip.ShowDuration` - defaults to `5000`). This configuration only applies to Uno Platform targets. Windows App SDK/UWP will not adhere to this configuration.
+
+## `ApplicationData`
+
+On GTK and WPF it is possible to override the default `ApplicationData` folder locations using `WinRTFeatureConfiguration.ApplicationData` properties. For more information see [related docs here](/articles/features/applicationdata.md#data-location-on-gtk-and-wpf)

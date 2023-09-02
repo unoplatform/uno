@@ -8,13 +8,13 @@ namespace Windows.ApplicationModel
 	{
 		private StorageFolder _installedLocation;
 
-		internal Package()
-		{
-		}
+		internal Package() => InitializePlatform();
+
+		partial void InitializePlatform();
 
 		public bool IsDevelopmentMode => GetInnerIsDevelopmentMode();
 
-		public PackageId Id => new PackageId();
+		public PackageId Id { get; } = new();
 
 		public DateTimeOffset InstallDate => GetInstallDate();
 
@@ -56,7 +56,7 @@ namespace Windows.ApplicationModel
 
 #if (__IOS__ || __ANDROID__ || __MACOS__)
 		[global::Uno.NotImplemented]
-		public global::System.Uri Logo => new Uri("http://example.com");
+		public global::System.Uri Logo => default;
 #endif
 
 		[Uno.NotImplemented]

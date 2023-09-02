@@ -12,10 +12,6 @@ using Uno.Extensions;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.RemoteControl
 {
 	[Generator]
@@ -42,7 +38,6 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 					BuildEndPointAttribute(context, sb);
 					BuildProjectConfiguration(context, sb);
 					BuildServerProcessorsPaths(context, sb);
-					BuildXamlReaderHotReloadConfiguration(context, sb);
 
 					context.AddSource("RemoteControl", sb.ToString());
 				}
@@ -71,14 +66,6 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			sb.AppendLineIndented("#pragma warning disable // Ignore code analysis warnings");
 
 			sb.AppendLineIndented("");
-		}
-
-		private void BuildXamlReaderHotReloadConfiguration(GeneratorExecutionContext context, IndentedStringBuilder sb)
-		{
-			sb.AppendLineIndented(
-				$"[assembly: global::System.Reflection.AssemblyMetadata(" +
-				$"\"UnoUseXamlReaderHotReload\", " +
-				$"\"{context.GetMSBuildPropertyValue("UnoUseXamlReaderHotReload")}\")]");
 		}
 
 		private void BuildServerProcessorsPaths(GeneratorExecutionContext context, IndentedStringBuilder sb)

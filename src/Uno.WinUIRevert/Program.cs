@@ -70,6 +70,7 @@ namespace UnoWinUIRevert
 			}
 
 			// Files/Class that are implemented in both MUX and WUX and which should not be converted
+			Directory.Delete(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported"), recursive: true);
 			var duplicatedImplementations = new[]
 			{
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\BitmapIconSource.cs"),
@@ -77,17 +78,9 @@ namespace UnoWinUIRevert
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\PathIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\FontIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\IconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RevealBrush.Android.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RatingControl.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\SplitButton.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\SplitButtonAutomationPeer.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ToggleSplitButton.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ToggleSplitButtonAutomationPeer.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TreeView.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\TwoPaneView.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\ColorPicker.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RefreshContainer.cs"),
-				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RefreshVisualizer.cs"),
 			};
 			DeleteFiles(duplicatedImplementations);
 
@@ -119,6 +112,13 @@ namespace UnoWinUIRevert
 			// Restore DualPaneView XAML
 			// ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml"), "using:Windows.UI.Xaml.Controls", "using:Windows.UI.Xaml.Controls");
 
+			// Adjust lottie namespace
+			var lottieReplacements = new[]
+			{
+				("Microsoft.Toolkit.Uwp.UI.Lottie", "CommunityToolkit.WinUI.Lottie"),
+			};
+			ReplaceInFolders(Path.Combine(basePath, "src", "SamplesApp", "UITests.Shared"), lottieReplacements, "*.xaml");
+
 			// Adjust Colors
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "Colors.cs"), "Windows.UI", "Microsoft.UI");
 			ReplaceInFile(Path.Combine(basePath, @"src", "Uno.UI", "UI", "ColorHelper.cs"), "Windows.UI", "Microsoft.UI");
@@ -140,7 +140,17 @@ namespace UnoWinUIRevert
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.iOSmacOS.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
 			//ReplaceInFile(Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RadialGradientBrush.wasm.cs"), "namespace Windows.UI.Xaml.Controls", "namespace Windows.UI.Xaml.Controls");
 
-			UncommentWinUISpecificBlock(Path.Combine(basePath, "build", "Uno.WinUI.nuspec"));
+			// Replacements for nuspec files
+			string[] nuspecTransformedFiles = new[]{
+				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.nuspec"),
+				Path.Combine(basePath, "build", "nuget", "Uno.WinUI.MSAL.nuspec"),
+			};
+
+			foreach (var nuspecTransformedFile in nuspecTransformedFiles)
+			{
+				UncommentWinUISpecificBlock(nuspecTransformedFile);
+				CommentUWPSpecificBlock(nuspecTransformedFile);
+			}
 		}
 
 		static string[] _exclusions = new string[] {
@@ -223,6 +233,12 @@ namespace UnoWinUIRevert
 		{
 			ReplaceInFile(nuspecPath, @"<!-- BEGIN WinUI-specific", string.Empty);
 			ReplaceInFile(nuspecPath, @"END WinUI-specific -->", string.Empty);
+		}
+
+		private static void CommentUWPSpecificBlock(string nuspecPath)
+		{
+			ReplaceInFile(nuspecPath, @"<!-- BEGIN UWP-specific -->", "<!--");
+			ReplaceInFile(nuspecPath, @"<!-- END UWP-specific -->", "-->");
 		}
 	}
 }

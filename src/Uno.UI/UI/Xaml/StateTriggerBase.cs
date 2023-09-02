@@ -22,9 +22,9 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		protected void SetActive(bool active)
+		protected void SetActive(bool IsActive)
 		{
-			SetActivePrecedence(active ? StateTriggerPrecedence.CustomTrigger : StateTriggerPrecedence.Inactive);
+			SetActivePrecedence(IsActive ? StateTriggerPrecedence.CustomTrigger : StateTriggerPrecedence.Inactive);
 		}
 
 		internal void SetActivePrecedence(StateTriggerPrecedence precedence)

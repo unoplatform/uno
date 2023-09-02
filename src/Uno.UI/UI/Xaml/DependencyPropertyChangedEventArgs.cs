@@ -11,12 +11,10 @@ using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
 namespace Windows.UI.Xaml
@@ -24,7 +22,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// Describes the changes made to a dependency property
 	/// </summary>
-	public partial class DependencyPropertyChangedEventArgs : EventArgs
+	public sealed partial class DependencyPropertyChangedEventArgs : EventArgs
 	{
 		internal DependencyPropertyChangedEventArgs(
 			DependencyProperty property,

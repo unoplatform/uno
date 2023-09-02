@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using CoreGraphics;
 
 #if NET6_0_OR_GREATER
@@ -60,4 +59,3 @@ namespace Windows.UI
 		}
 	}
 }
-#endif

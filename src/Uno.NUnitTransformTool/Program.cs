@@ -6,6 +6,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Transactions;
 using System.Xml;
 using Mono.Cecil;
@@ -33,19 +34,24 @@ namespace Uno.ReferenceImplComparer
 
 			var failedNodes = doc.SelectNodes("//test-case[@result='Failed']")!;
 
-			var builder = new StringBuilder();
+			var failedTests = new List<string>();
 			foreach (var failedNode in failedNodes.OfType<XmlElement>())
 			{
-				builder.AppendLine(failedNode.GetAttribute("fullname"));
+				var name = failedNode.GetAttribute("fullname");
+
+				// This is used to remove the test parameters from the test name, which are not used by the nunit-console runner.
+				var simpleName = Regex.Replace(name, @"\(([^)]*)\)", "");
+
+				failedTests.Add(simpleName);
 			}
 
 			// Add a dummy line to be used to rerun the test running in case 
 			// tests get canceled. This condition happens when running nunit-console
 			// and the retry attribute which markes runners as cancelled and fails any
 			// subsequent test.
-			builder.AppendLine("invalid-test-for-retry");
+			failedTests.Add("invalid-test-for-retry");
 
-			File.WriteAllText(outputFile, builder.ToString());
+			File.WriteAllText(outputFile, string.Join(" | ", failedTests));
 
 			return 0;
 		}

@@ -27,6 +27,8 @@
 	"ellipsize",
 	"Expando",
 	"Framebuffer",
+	"Gamepad",
+	"gamepads",
 	"Geolocation",
 	"globbing",
 	"Gyrometer",

@@ -155,11 +155,11 @@ public class Given_MvvmGeneratedMembers
 		test.ExpectedDiagnostics.AddRange(new[]
 		{
 			// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs(75,239): error CS1061: 'MyViewModel' does not contain a definition for 'Name' and no accessible extension method 'Name' accepting a first argument of type 'MyViewModel' could be found (are you missing a using directive or an assembly reference?)
-			DiagnosticResult.CompilerError("CS1061").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 75, 239, 75, 243).WithArguments("TestRepro.MyViewModel", "Name"),
+			DiagnosticResult.CompilerError("CS1061").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 71, 239, 71, 243).WithArguments("TestRepro.MyViewModel", "Name"),
 			// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs(97,239): error CS1061: 'MyViewModel' does not contain a definition for 'Name' and no accessible extension method 'Name' accepting a first argument of type 'MyViewModel' could be found (are you missing a using directive or an assembly reference?)
-			DiagnosticResult.CompilerError("CS1061").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 97, 239, 97, 243).WithArguments("TestRepro.MyViewModel", "Name"),
+			DiagnosticResult.CompilerError("CS1061").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 93, 239, 93, 243).WithArguments("TestRepro.MyViewModel", "Name"),
 			// Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs(119,239): error CS1061: 'MyViewModel' does not contain a definition for 'Name' and no accessible extension method 'Name' accepting a first argument of type 'MyViewModel' could be found (are you missing a using directive or an assembly reference?)
-			DiagnosticResult.CompilerError("CS1061").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 119, 239, 119, 243).WithArguments("TestRepro.MyViewModel", "Name"),
+			DiagnosticResult.CompilerError("CS1061").WithSpan(@"Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.XamlGenerator.XamlCodeGenerator\MainPage_d6cd66944958ced0c513e0a04797b51d.cs", 115, 239, 115, 243).WithArguments("TestRepro.MyViewModel", "Name"),
 		});
 
 		await test.RunAsync();

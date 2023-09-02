@@ -63,8 +63,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 			yield return new object[] { ColorHelper.FromArgb(0xFF, 0xFF, 0x7F, 0xFF), ColorHelper.FromArgb(0xFF, 0xFF, 0x7F, 0xFF), true };
 			yield return new object[] { ColorHelper.FromArgb(0xFF, 0xFF, 0xFF, 0x7F), ColorHelper.FromArgb(0xFF, 0xFF, 0xFF, 0x7F), true };
 		}
-#if __MACOS__ && NET6_0_OR_GREATER
+
+#if __MACOS__
 		[TestMethod]
+		[RunsOnUIThread]
 		public void When_User_Change_macOS_System_Colors()
 		{
 			var _uiSettings = new Windows.UI.ViewManagement.UISettings();
@@ -80,8 +82,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Core
 		}
 
 #endif
-
-
-
 	}
 }

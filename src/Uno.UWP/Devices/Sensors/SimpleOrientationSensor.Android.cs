@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if __ANDROID__
 using System;
 using Android.App;
 using Android.Content;
@@ -18,7 +17,7 @@ using System.Threading;
 
 namespace Windows.Devices.Sensors
 {
-	public partial class SimpleOrientationSensor : Java.Lang.Object, ISensorEventListener
+	public partial class SimpleOrientationSensor
 	{
 		#region Static
 
@@ -88,7 +87,7 @@ namespace Windows.Devices.Sensors
 						// If the the device has a gyroscope we will use the SensorType.Gravity, if not we will use single angle orientation calculations instead
 						if (gravitySensor != null && useGravitySensor)
 						{
-							_sensorManager.RegisterListener(this, _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
+							_sensorManager.RegisterListener(new OrientationListener(this), _sensorManager.GetDefaultSensor(_gravitySensorType), SensorDelay.Normal);
 						}
 						else
 						{
@@ -107,30 +106,6 @@ namespace Windows.Devices.Sensors
 					}
 				}, null);
 		}
-
-		#region GraviySensorType Methods
-
-		public void OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
-		{
-		}
-
-		public void OnSensorChanged(SensorEvent? e)
-		{
-			if (e?.Sensor?.Type != _gravitySensorType || e?.Values == null)
-			{
-				return;
-			}
-
-			// All units are negatives compared to iOS : https://developer.android.com/reference/android/hardware/SensorEvent#values
-			var gravityX = -(double)e.Values[0];
-			var gravityY = -(double)e.Values[1];
-			var gravityZ = -(double)e.Values[2];
-
-			var simpleOrientation = ToSimpleOrientation(gravityX, gravityY, gravityZ, _threshold, _currentOrientation);
-			SetCurrentOrientation(simpleOrientation);
-		}
-
-		#endregion
 
 		#region OrientationSensorType Methods and Classes
 
@@ -256,7 +231,36 @@ namespace Windows.Devices.Sensors
 			public override void OnOrientationChanged(int orientation) => _orientationChanged(orientation);
 		}
 
+		private sealed class OrientationListener : Java.Lang.Object, ISensorEventListener
+		{
+			private readonly SimpleOrientationSensor _simpleOrientationSensor;
+
+			public OrientationListener(SimpleOrientationSensor simpleOrientationSensor)
+			{
+				_simpleOrientationSensor = simpleOrientationSensor;
+			}
+
+			public void OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
+			{
+			}
+
+			public void OnSensorChanged(SensorEvent? e)
+			{
+				if (e?.Sensor?.Type != _gravitySensorType || e?.Values == null)
+				{
+					return;
+				}
+
+				// All units are negatives compared to iOS : https://developer.android.com/reference/android/hardware/SensorEvent#values
+				var gravityX = -(double)e.Values[0];
+				var gravityY = -(double)e.Values[1];
+				var gravityZ = -(double)e.Values[2];
+
+				var simpleOrientation = ToSimpleOrientation(gravityX, gravityY, gravityZ, _threshold, _simpleOrientationSensor._currentOrientation);
+				_simpleOrientationSensor.SetCurrentOrientation(simpleOrientation);
+			}
+		}
+
 		#endregion
 	}
 }
-#endif

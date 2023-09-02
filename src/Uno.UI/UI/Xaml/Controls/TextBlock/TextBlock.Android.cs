@@ -30,6 +30,8 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Uno.Collections;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBlock : FrameworkElement
@@ -38,7 +40,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly static IEventProvider _frameworkElementTrace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-		private static readonly Logger _log = typeof(TextBlock).Log();
 
 		public new static class TraceProvider
 		{
@@ -67,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Finds a private constructor that allows for the specification of MaxLines. 
+		/// Finds a private constructor that allows for the specification of MaxLines.
 		/// </summary>
 		/// <remarks>
 		/// This code may fail in a newer version of android that
@@ -86,13 +87,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_textDirectionHeuristics == null)
 			{
-#if __ANDROID_18__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					_textDirectionHeuristics = (Java.Lang.Object)TextDirectionHeuristics.FirststrongLtr;
 				}
 				else
-#endif
 				{
 					// This is required because this class was not exposed until API 18 but available before.
 
@@ -109,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The last build layout will be stored in this two fields.
 		/// Both exists as most of the time, the measured layout size will be different
-		/// from the imposed arrange size, particularly when a control is placed in a 
+		/// from the imposed arrange size, particularly when a control is placed in a
 		/// StackPanel or a Grid.
 		/// </summary>
 		private LayoutBuilder _measureLayout, _arrangeLayout;
@@ -234,9 +233,12 @@ namespace Windows.UI.Xaml.Controls
 				.Value;
 
 			// The size is incorrect at this point, we update it later in `UpdateLayout`.
-			var shader = Foreground is GradientBrush gb
-				? gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels())
-				: null;
+			var shader = Foreground switch
+			{
+				GradientBrush gb => gb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				RadialGradientBrush rgb => rgb.GetShader(LayoutSlot.Size.LogicalToPhysicalPixels()),
+				_ => null,
+			};
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
@@ -360,8 +362,8 @@ namespace Windows.UI.Xaml.Controls
 					_measureLayout.MeasuredSize.Width > arrangeSize.Width ||
 					_measureLayout.MeasuredSize.Height > arrangeSize.Height;
 
-				// If the unbound requested height is below the arrange height. In this case, 
-				// the rendered text height is below the arrange size, but since the text 
+				// If the unbound requested height is below the arrange height. In this case,
+				// the rendered text height is below the arrange size, but since the text
 				// does not need the whole height to render completely, we can reuse the measured
 				// layout as the arrangeLayout.
 				var isSameUnboundHeight = _measureLayout.MeasuredSize.Height <= arrangeSize.Height && MaxLines == 0;
@@ -441,6 +443,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				layout.Layout.Paint.SetShader(gb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
 			}
+			else if (Foreground is RadialGradientBrush rgb)
+			{
+				layout.Layout.Paint.SetShader(rgb.GetShader(_measureLayout.MeasuredSize.LogicalToPhysicalPixels()));
+			}
 
 			if (_textFormatted is UnoSpannableString textFormatted)
 			{
@@ -458,8 +464,8 @@ namespace Windows.UI.Xaml.Controls
 		/// A layout builder, used to perform change tracking and avoid creating the same layout multiple times.
 		/// </summary>
 		/// <remarks>
-		/// This class is intentionally left here for easier 
-		/// change tracking. This class can be moved later on with no other 
+		/// This class is intentionally left here for easier
+		/// change tracking. This class can be moved later on with no other
 		/// changes.
 		/// </remarks>
 		private class LayoutBuilder : IEquatable<LayoutBuilder>
@@ -548,7 +554,7 @@ namespace Windows.UI.Xaml.Controls
 			/// Updates the current TextBlock layout to use the provided width and height.
 			/// </summary>
 			/// <remarks>
-			/// Specifies if the provided width must be used for the new layout, and 
+			/// Specifies if the provided width must be used for the new layout, and
 			/// not "at most" of the widh.
 			/// </remarks>
 			/// <returns>The size of the new layout</returns>
@@ -607,7 +613,7 @@ namespace Windows.UI.Xaml.Controls
 				var measuredHeight = Layout.GetLineTop(lineCount);
 				if (_lineHeight != 0 && _addedSpacing > 0)
 				{
-					// Unlike Windows, Android by default doesn't add spacing to final line. However Android seems to add (Top-Ascent) and 
+					// Unlike Windows, Android by default doesn't add spacing to final line. However Android seems to add (Top-Ascent) and
 					// (Bottom-Descent) as 'padding' above the top and below the bottom lines. As a 'safe' approach, we take the greater of the two values.
 					var heightFromLineHeight = (int)(lineCount * _lineHeight);
 					measuredHeight = Math.Max(measuredHeight, heightFromLineHeight);

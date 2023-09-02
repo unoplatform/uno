@@ -9,10 +9,11 @@ using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media.Animation;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
-	[ContentProperty(Name = "Storyboard")]
+	[ContentProperty(Name = nameof(Storyboard))]
 	public sealed partial class VisualState : DependencyObject
 	{
 		private Action lazyBuilder;
@@ -169,18 +170,12 @@ namespace Windows.UI.Xaml
 				LazyBuilder = null;
 				builder.Invoke();
 
-				if (Storyboard is IDependencyObjectStoreProvider storyboardProvider)
-				{
-					storyboardProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-				}
 
-				foreach (var setter in Setters)
-				{
-					if (setter is IDependencyObjectStoreProvider setterProvider)
-					{
-						setterProvider.Store.UpdateResourceBindings(ResourceUpdateReason.ThemeResource);
-					}
-				}
+				// Resolve all theme resources from storyboard children
+				// and setters values. This step is needed to ensure that
+				// Theme Resources are resolved using the proper visual tree
+				// parents, particularly when resources a locally overriden.
+				this.UpdateResourceBindings();
 			}
 		}
 

@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.Media.Playback;
@@ -10,7 +11,11 @@ using Windows.Foundation;
 using Windows.Media.Core;
 using Windows.Media.Playback;
 using Windows.Storage;
+using Windows.Storage.Helpers;
 using Windows.Storage.Streams;
+using Windows.UI.Xaml;
+using Uno.Extensions;
+using Uno.Helpers;
 
 [assembly: ApiExtension(typeof(IMediaPlayerExtension), typeof(Uno.UI.Media.MediaPlayerExtension))]
 
@@ -26,11 +31,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	private bool _updatingPosition;
 	private bool _isPlayRequested;
 	private bool _isPlayerPrepared;
+	private bool _isLoopingEnabled;
+	private bool _isLoopingAllEnabled;
 	private List<Uri>? _playlistItems;
 	private int _playlistIndex;
 	private TimeSpan _naturalDuration;
 	private Uri? _uri;
 	private bool _anonymousCors = FeatureConfiguration.AnonymousCorsDefault;
+
+	const string MsAppXScheme = "ms-appx";
 
 	public MediaPlayerExtension(object owner)
 	{
@@ -108,17 +117,21 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
-	private bool _isLoopingEnabled;
 	public bool IsLoopingEnabled
 	{
 		get => _isLoopingEnabled;
 		set
 		{
 			_isLoopingEnabled = value;
-			if (_player is not null)
-			{
-				_player.SetIsLoopingEnabled(value);
-			}
+		}
+	}
+
+	public bool IsLoopingAllEnabled
+	{
+		get => _isLoopingAllEnabled;
+		set
+		{
+			_isLoopingAllEnabled = value;
 		}
 	}
 
@@ -146,6 +159,8 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 	public bool CanSeek
 		=> true;
+
+	public bool? IsVideo { get; set; }
 
 	public MediaPlayerAudioDeviceType AudioDeviceType { get; set; }
 
@@ -235,14 +250,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged Paused ({_player?.IsPause.ToString()})");
+			this.Log().Debug($"MediaPlayerExtension.OnStatusMediaChanged to state {_player?.PlayerState.ToString()}");
+			this.Log().Debug($"MediaPlayerExtension owner PlaybackSession PlaybackState {_owner?.PlaybackSession?.PlaybackState.ToString()}");
 		}
 
-		if (_player?.IsPause == true && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
+		if (_player?.PlayerState == HtmlMediaPlayerState.Paused && _owner?.PlaybackSession.PlaybackState == MediaPlaybackState.Playing)
 		{
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
 		}
-		else if (_player?.IsPause == false && _owner.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
+		else if (_player?.PlayerState == HtmlMediaPlayerState.Playing && _owner?.PlaybackSession.PlaybackState == MediaPlaybackState.Paused)
 		{
 			_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
 		}
@@ -283,9 +299,16 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			switch (_owner.Source)
 			{
-				case MediaPlaybackList playlist when playlist.Items.Count > 0 && _playlistItems is not null:
+				case MediaPlaybackList playlist when playlist.Items.Count > 0:
 					SetPlaylistItems(playlist);
-					_uri = _playlistItems[0];
+					if (_playlistItems is not null && _playlistItems.Any())
+					{
+						_uri = _playlistItems[0];
+					}
+					else
+					{
+						throw new InvalidOperationException("Playlist Items could not be set");
+					}
 					break;
 
 				case MediaPlaybackItem item:
@@ -301,7 +324,6 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			}
 
 			ApplyVideoSource();
-			Events?.RaiseMediaOpened();
 			Events?.RaiseSourceChanged();
 		}
 		catch (global::System.Exception ex)
@@ -310,6 +332,24 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 			this.Log().Debug($"MediaPlayerElementExtension.InitializeSource({ex.Message})");
 			OnMediaFailed(ex);
 		}
+	}
+
+	public void ReInitializeSource()
+	{
+		NaturalDuration = TimeSpan.Zero;
+		if (Position != TimeSpan.Zero)
+		{
+			Position = TimeSpan.Zero;
+		}
+
+		if (_owner.Source == null)
+		{
+			return;
+		}
+		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
+		InitializePlayer();
+		ApplyVideoSource();
+		Events?.RaiseSourceChanged();
 	}
 
 	private void ApplyVideoSource()
@@ -321,6 +361,30 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		if (_player is not null && _uri is not null)
 		{
+			if (!_uri.IsAbsoluteUri || _uri.Scheme == "")
+			{
+				_uri = new Uri(MsAppXScheme + ":///" + _uri.OriginalString.TrimStart(new char[] { '/' }));
+			}
+
+			if (_uri.IsLocalResource())
+			{
+				_player.Source = AssetsPathBuilder.BuildAssetUri(_uri?.PathAndQuery);
+				return;
+			}
+
+			if (_uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(_uri);
+				_player.Source = filePath;
+				return;
+			}
+
+			if (_uri.IsFile)
+			{
+				_player.Source = _uri.OriginalString;
+				return;
+			}
+
 			_player.Source = _uri.OriginalString;
 		}
 		else
@@ -469,6 +533,23 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		}
 	}
 
+	private void SetPrepared(HtmlMediaPlayer _player)
+	{
+		if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+		{
+			if (_isPlayRequested)
+			{
+				_player.Play();
+				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
+			}
+			else
+			{
+				_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Paused;
+			}
+		}
+		_isPlayerPrepared = true;
+	}
+
 	public void OnPrepared(object? sender, object what)
 	{
 		if (sender is HtmlMediaPlayer mp && _player is not null)
@@ -480,7 +561,9 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 			NaturalDuration = TimeSpan.FromSeconds(_player.Duration);
 
-			if (mp.IsVideo && Events is not null)
+			IsVideo = !_player.IsAudio;
+
+			if (!mp.IsAudio && Events is not null)
 			{
 				try
 				{
@@ -493,17 +576,15 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 				}
 				catch { }
 			}
-
-			if (_owner.PlaybackSession.PlaybackState == MediaPlaybackState.Opening)
+			if (NaturalDuration > TimeSpan.Zero)
 			{
-				if (_isPlayRequested)
-				{
-					_player.Play();
-					_owner.PlaybackSession.PlaybackState = MediaPlaybackState.Playing;
-				}
+				SetPrepared(_player);
 			}
+		}
 
-			_isPlayerPrepared = true;
+		if (Events is not null)
+		{
+			Events?.RaiseMediaOpened();
 		}
 	}
 
@@ -523,6 +604,7 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 		OnMediaFailed(message: $"MediaPlayer Error: {(string)what}");
 	}
 
+
 	public void OnCompletion(object? sender, object what)
 	{
 		if (this.Log().IsEnabled(LogLevel.Debug))
@@ -532,14 +614,33 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 
 		Events?.RaiseMediaEnded();
 		_owner.PlaybackSession.PlaybackState = MediaPlaybackState.None;
-
-		// Play next item in playlist, if any
-		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		if (IsLoopingEnabled && !IsLoopingAllEnabled)
 		{
-			_uri = _playlistItems[++_playlistIndex];
-			ApplyVideoSource();
+			Play();
+		}
+		else
+		{
+			// Play first item in playlist, if any and repeat all
+			if (_playlistItems != null && _playlistIndex >= _playlistItems.Count - 1 && IsLoopingAllEnabled)
+			{
+				_playlistIndex = 0;
+				_uri = _playlistItems[_playlistIndex];
+				ReInitializeSource();
+				Play();
+			}
+			else
+			{
+				// Play next item in playlist, if any
+				if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+				{
+					_uri = _playlistItems[++_playlistIndex];
+					ReInitializeSource();
+					Play();
+				}
+			}
 		}
 	}
+
 
 	private void OnMediaFailed(global::System.Exception? ex = null, string? message = null)
 	{
@@ -601,5 +702,29 @@ public partial class MediaPlayerExtension : IMediaPlayerExtension
 	public void SetTransportControlsBounds(Rect bounds)
 	{
 		// No effect on WebAssembly.
+	}
+
+	public void PreviousTrack()
+	{
+		// Play prev item in playlist, if any
+		if (_playlistItems != null && _playlistIndex > 0)
+		{
+			Pause();
+			_uri = _playlistItems[--_playlistIndex];
+			ReInitializeSource();
+			Play();
+		}
+	}
+
+	public void NextTrack()
+	{
+		// Play next item in playlist, if any
+		if (_playlistItems != null && _playlistIndex < _playlistItems.Count - 1)
+		{
+			Pause();
+			_uri = _playlistItems[++_playlistIndex];
+			ReInitializeSource();
+			Play();
+		}
 	}
 }

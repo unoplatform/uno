@@ -84,11 +84,13 @@ public partial class RefreshContainer : ContentControl
 		m_refreshVisualizerPresenter = (Panel)GetTemplateChild("RefreshVisualizerPresenter");
 		// END: Populate template children
 
+#if !HAS_UNO
 		if (m_root != null)
 		{
 			var rootVisual = ElementCompositionPreview.GetElementVisual(m_root);
 			rootVisual.Clip = rootVisual.Compositor.CreateInsetClip(0.0f, 0.0f, 0.0f, 0.0f);
 		}
+#endif
 
 		m_refreshVisualizer = Visualizer;
 		if (m_refreshVisualizer == null)

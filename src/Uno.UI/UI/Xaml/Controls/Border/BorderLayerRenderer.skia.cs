@@ -90,20 +90,16 @@ namespace Windows.UI.Xaml.Shapes
 				return Disposable.Empty;
 			}
 
-			var parent = owner.Visual;
-			var compositor = parent.Compositor;
+			var visual = owner.Visual;
+			var compositor = visual.Compositor;
 			var background = state.Background;
 			var borderThickness = owner.LayoutRound(state.BorderThickness);
 			var borderBrush = state.BorderBrush;
 			var cornerRadius = state.CornerRadius;
 
 			var disposables = new CompositeDisposable();
-			var sublayers = new List<Visual>();
+			var shapes = new List<CompositionShape>();
 
-			var heightOffset = ((float)borderThickness.Top / 2) + ((float)borderThickness.Bottom / 2);
-			var widthOffset = ((float)borderThickness.Left / 2) + ((float)borderThickness.Right / 2);
-			var halfWidth = (float)area.Width / 2;
-			var halfHeight = (float)area.Height / 2;
 			var adjustedArea = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge
 				? area.DeflateBy(borderThickness)
 				: area;
@@ -112,80 +108,81 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (!fullCornerRadius.IsEmpty)
 			{
-				var borderShape = compositor.CreateSpriteShape();
-				var backgroundShape = compositor.CreateSpriteShape();
-				var outerShape = compositor.CreateSpriteShape();
-				var clipShape = compositor.CreateSpriteShape();
-
-				// Border brush
-				Brush.AssignAndObserveBrush(borderBrush, compositor, brush => borderShape.FillBrush = brush)
-						.DisposeWith(disposables);
-
-				// Background brush
-				if (background is ImageBrush imgBackground)
-				{
-					adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
-				}
-				else
-				{
-					Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
-						.DisposeWith(disposables);
-				}
-
 				// This needs to be adjusted if multiple UI threads are used in the future for multi-window
 				fullCornerRadius.Outer.GetRadii(_outerRadiiStore);
 				fullCornerRadius.Inner.GetRadii(_innerRadiiStore);
 
-				// Background shape
-				var backgroundPath = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge ?
-					GetRoundedPath(adjustedArea.ToSKRect(), _innerRadiiStore) :
-					GetRoundedPath(area.ToSKRect(), _outerRadiiStore);
-				backgroundShape.Geometry = compositor.CreatePathGeometry(backgroundPath);
-				var backgroundVisual = compositor.CreateShapeVisual();
-				backgroundVisual.Shapes.Add(backgroundShape);
-				sublayers.Add(backgroundVisual);
-				parent.Children.InsertAtBottom(backgroundVisual);
+				// Background shape (if any)
+				if (background is not null)
+				{
+					var backgroundShape = compositor.CreateSpriteShape();
+
+					// First we set the brush as it might alter the adjustedArea
+					if (background is ImageBrush imgBackground)
+					{
+						adjustedArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, adjustedArea, imgBackground);
+					}
+					else
+					{
+						Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
+							.DisposeWith(disposables);
+					}
+
+					// Then we create the geometry
+					var backgroundPath = state.BackgroundSizing == BackgroundSizing.InnerBorderEdge
+						? GetBackgroundPath(_innerRadiiStore, adjustedArea)
+						: GetBackgroundPath(_outerRadiiStore, area);
+					backgroundShape.Geometry = compositor.CreatePathGeometry(backgroundPath);
+#if DEBUG
+					backgroundShape.Comment = "#background";
+#endif
+
+					// Finally we add the shape to the visual (so it will invalidate the rendering only once)
+					visual.Shapes.Add(backgroundShape);
+					shapes.Add(backgroundShape);
+				}
 
 				// Border shape (if any)
 				if (borderThickness != Thickness.Empty)
 				{
+					var borderShape = compositor.CreateSpriteShape();
+
+					// Border brush
+					Brush.AssignAndObserveBrush(borderBrush, compositor, brush => borderShape.FillBrush = brush)
+						.DisposeWith(disposables);
+
+					// Then we create the geometry
 					var borderPath = GetBorderPath(_outerRadiiStore, _innerRadiiStore, area, adjustedArea);
 					borderShape.Geometry = compositor.CreatePathGeometry(borderPath);
+#if DEBUG
+					borderShape.Comment = "#border";
+#endif
 
-					var borderVisual = compositor.CreateShapeVisual();
-
-					borderVisual.Shapes.Add(borderShape);
-					sublayers.Add(borderVisual);
-
-					parent.Children.InsertAtTop(borderVisual);
+					// Finally we add the shape to the visual (so it will invalidate the rendering only once)
+					visual.Shapes.Add(borderShape);
+					shapes.Add(borderShape);
 				}
 
+				// Note: The clipping is used to determine the location where the children of current element can be rendered.
+				//		 So its has to be the "inner" area (i.e. the area without the border).
+				//		 The border and the background shapes are already clipped properly and will be drawn without that clipping property set.
 				owner.ClippingIsSetByCornerRadius = true;
-				parent.Clip = compositor.CreateRectangleClip(
-					0, 0, (float)area.Width, (float)area.Height,
-					fullCornerRadius.Outer.TopLeft, fullCornerRadius.Outer.TopRight, fullCornerRadius.Outer.BottomRight, fullCornerRadius.Outer.BottomLeft);
+				visual.Clip = compositor.CreateRectangleClip(
+					(float)adjustedArea.Left, (float)adjustedArea.Top, (float)adjustedArea.Right, (float)adjustedArea.Bottom,
+					fullCornerRadius.Inner.TopLeft, fullCornerRadius.Inner.TopRight, fullCornerRadius.Inner.BottomRight, fullCornerRadius.Inner.BottomLeft);
 			}
 			else
 			{
-				var shapeVisual = compositor.CreateShapeVisual();
-
 				var backgroundShape = compositor.CreateSpriteShape();
-
-				var backgroundArea = area;
 
 				// Background brush
 				if (background is ImageBrush imgBackground)
 				{
-					backgroundArea = CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, backgroundArea, imgBackground);
+					CreateImageLayer(compositor, disposables, borderThickness, adjustedArea, backgroundShape, area, imgBackground);
 				}
 				else
 				{
 					Brush.AssignAndObserveBrush(background, compositor, brush => backgroundShape.FillBrush = brush)
-						.DisposeWith(disposables);
-
-					// This is required because changing the CornerRadius changes the background drawing
-					// implementation and we don't want a rectangular background behind a rounded background.
-					Disposable.Create(() => backgroundShape.FillBrush = null)
 						.DisposeWith(disposables);
 				}
 
@@ -195,91 +192,93 @@ namespace Windows.UI.Xaml.Shapes
 				geometry.AddRect(adjustedArea.ToSKRect());
 
 				backgroundShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometrySource));
+#if DEBUG
+				backgroundShape.Comment = "#background";
+#endif
 
-				shapeVisual.Shapes.Add(backgroundShape);
+				visual.Shapes.Add(backgroundShape);
+				shapes.Add(backgroundShape);
 
 				// Border shape (if any)
 				if (borderThickness != Thickness.Empty)
 				{
-					Action<Action<CompositionSpriteShape, SKPath>> createLayer = builder =>
+					void CreateLayer(Action<CompositionSpriteShape, SKPath> builder, string name)
 					{
 						var spriteShape = compositor.CreateSpriteShape();
 						var geometry = new SkiaGeometrySource2D();
 
 						// Border brush
 						Brush.AssignAndObserveBrush(borderBrush, compositor, brush => spriteShape.StrokeBrush = brush)
-								.DisposeWith(disposables);
+							.DisposeWith(disposables);
 
 						builder(spriteShape, geometry.Geometry);
 						spriteShape.Geometry = compositor.CreatePathGeometry(new CompositionPath(geometry));
+#if DEBUG
+						spriteShape.Comment = name;
+#endif
 
-						shapeVisual.Shapes.Add(spriteShape);
-					};
+						visual.Shapes.Add(spriteShape);
+						shapes.Add(spriteShape);
+					}
 
 					if (borderThickness.Top != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Top;
 							var StrokeThicknessAdjust = (float)(borderThickness.Top / 2);
 							path.MoveTo((float)(area.X + borderThickness.Left), (float)(area.Y + StrokeThicknessAdjust));
 							path.LineTo((float)(area.X + area.Width - borderThickness.Right), (float)(area.Y + StrokeThicknessAdjust));
 							path.Close();
-						});
+						}, "#border-top");
 					}
 
 					if (borderThickness.Bottom != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Bottom;
 							var StrokeThicknessAdjust = borderThickness.Bottom / 2;
 							path.MoveTo((float)(area.X + (float)borderThickness.Left), (float)(area.Y + area.Height - StrokeThicknessAdjust));
 							path.LineTo((float)(area.X + area.Width - (float)borderThickness.Right), (float)(area.Y + area.Height - StrokeThicknessAdjust));
 							path.Close();
-						});
+						}, "#border-bottom");
 					}
 
 					if (borderThickness.Left != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Left;
 							var StrokeThicknessAdjust = borderThickness.Left / 2;
 							path.MoveTo((float)(area.X + StrokeThicknessAdjust), (float)area.Y);
 							path.LineTo((float)(area.X + StrokeThicknessAdjust), (float)(area.Y + area.Height));
 							path.Close();
-						});
+						}, "#border-left");
 					}
 
 					if (borderThickness.Right != 0)
 					{
-						createLayer((l, path) =>
+						CreateLayer((l, path) =>
 						{
 							l.StrokeThickness = (float)borderThickness.Right;
 							var StrokeThicknessAdjust = borderThickness.Right / 2;
 							path.MoveTo((float)(area.X + area.Width - StrokeThicknessAdjust), (float)area.Y);
 							path.LineTo((float)(area.X + area.Width - StrokeThicknessAdjust), (float)(area.Y + area.Height));
 							path.Close();
-						});
+						}, "#border-right");
 					}
 				}
-
-				sublayers.Add(shapeVisual);
-
-				// Must be inserted below the other subviews, which may happen when
-				// the current view has subviews.
-				parent.Children.InsertAtBottom(shapeVisual);
 			}
 
 			disposables.Add(() =>
 			{
 				owner.ClippingIsSetByCornerRadius = false;
 
-				foreach (var sv in sublayers)
+				foreach (var shape in shapes)
 				{
-					parent.Children.Remove(sv);
-					sv.Dispose();
+					visual.Shapes.Remove(shape);
+					shape.Dispose();
 				}
 			}
 			);
@@ -291,8 +290,12 @@ namespace Windows.UI.Xaml.Shapes
 
 		private static Rect CreateImageLayer(Compositor compositor, CompositeDisposable disposables, Thickness borderThickness, Rect adjustedArea, CompositionSpriteShape backgroundShape, Rect backgroundArea, ImageBrush imgBackground)
 		{
-			imgBackground.Subscribe(imageData =>
+			Action onInvalidateRender = () =>
 			{
+				if (imgBackground.ImageDataCache is not { } imageData)
+				{
+					return;
+				}
 
 				if (imageData.Error is null)
 				{
@@ -311,7 +314,7 @@ namespace Windows.UI.Xaml.Shapes
 
 					if (imgBackground.Transform != null)
 					{
-						matrix *= imgBackground.Transform.ToMatrix(new Point());
+						matrix *= imgBackground.Transform.MatrixCore;
 					}
 
 					surfaceBrush.TransformMatrix = matrix;
@@ -322,38 +325,38 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					backgroundShape.FillBrush = null;
 				}
-			}).DisposeWith(disposables);
+			};
+
+			onInvalidateRender();
+			imgBackground.InvalidateRender += onInvalidateRender;
+			new DisposableAction(() => imgBackground.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 			return backgroundArea;
 		}
 
-
-		private static CompositionPath GetRoundedPath(SKRect area, SKPoint[] radii, SkiaGeometrySource2D geometrySource = null)
+		private static CompositionPath GetBackgroundPath(SKPoint[] radii, Rect area)
 		{
-			geometrySource ??= new SkiaGeometrySource2D();
-			var geometry = geometrySource.Geometry;
-
-			var roundRect = CreateRoundRect(area, radii);
-			geometry.AddRoundRect(roundRect);
-			geometry.Close();
+			var geometrySource = new SkiaGeometrySource2D();
+			SetRoundedPath(geometrySource.Geometry, area.ToSKRect(), radii);
 
 			return new CompositionPath(geometrySource);
 		}
 
-		private static SKRoundRect CreateRoundRect(SKRect area, SKPoint[] radii)
-		{
-			var roundRect = new SKRoundRect();
-			roundRect.SetRectRadii(area, radii);
-			return roundRect;
-		}
-
-		private static CompositionPath GetBorderPath(SKPoint[] outerRadii, SKPoint[] innerRadii, Rect area, Rect insetArea)
+		private static CompositionPath GetBorderPath(SKPoint[] outerRadii, SKPoint[] innerRadii, Rect outerArea, Rect innerArea)
 		{
 			var geometrySource = new SkiaGeometrySource2D();
-			GetRoundedPath(area.ToSKRect(), outerRadii, geometrySource);
-			GetRoundedPath(insetArea.ToSKRect(), innerRadii, geometrySource);
+			SetRoundedPath(geometrySource.Geometry, outerArea.ToSKRect(), outerRadii);
+			SetRoundedPath(geometrySource.Geometry, innerArea.ToSKRect(), innerRadii);
 			geometrySource.Geometry.FillType = SKPathFillType.EvenOdd;
 
 			return new CompositionPath(geometrySource);
+		}
+
+		private static void SetRoundedPath(in SKPath geometry, SKRect area, SKPoint[] radii)
+		{
+			var roundRect = new SKRoundRect();
+			roundRect.SetRectRadii(area, radii);
+			geometry.AddRoundRect(roundRect);
+			geometry.Close();
 		}
 
 		private class LayoutState : IEquatable<LayoutState>

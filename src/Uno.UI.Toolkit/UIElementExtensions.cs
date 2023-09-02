@@ -23,7 +23,7 @@ using Microsoft.UI;
 using CoreGraphics;
 #endif
 
-#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+#if __IOS__ || __MACOS__
 using ObjCRuntime;
 #endif
 

@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using UIKit;
+﻿using UIKit;
 using Uno.Extensions;
 
 namespace Windows.Globalization
@@ -23,4 +22,3 @@ namespace Windows.Globalization
 		public static bool TrySetInputMethodLanguageTag(string languageTag) => false;
 	}
 }
-#endif

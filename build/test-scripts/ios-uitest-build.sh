@@ -2,6 +2,6 @@
 set -euo pipefail
 IFS=$'\n\t'
 
-cd $BUILD_SOURCESDIRECTORY
+cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.netcoremobile
 
-mono '/Applications/Visual Studio.app/Contents/MonoBundle/MSBuild/Current/bin/MSBuild.dll' /m /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/SamplesApp.iOS.csproj /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/ios-uitest-build.binlog
+dotnet build -f net7.0-ios -r iossimulator-x64 -c Release -p:UnoTargetFrameworkOverride=net7.0-ios -p:UnoUIDisableNet8Build=true /bl:$BUILD_ARTIFACTSTAGINGDIRECTORY/ios-netcoremobile-sampleapp.binlog

@@ -20,12 +20,12 @@
 
 	<PropertyGroup>
 		<PackageTags>dotnet-new;templates;uno-platform</PackageTags>
-		<Authors>nventive</Authors>
+		<authors>Uno Platform</authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description></Description>
-		<Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 		<PackageTags>dotnet-new;templates;uno-platform;webassembly;ios;android;uwp;winui</PackageTags>
 	</PropertyGroup>
@@ -38,10 +38,6 @@
 		<Compile Remove="content/**/*.cs" />
 		<Content Include="content\unoapp-uitest\**\*">
 			<PackagePath>content\unoapp-uitest</PackagePath>
-			<Pack>true</Pack>
-		</Content>
-		<Content Include="content\unoapp-uwp\**">
-			<PackagePath>content\unoapp-uwp</PackagePath>
 			<Pack>true</Pack>
 		</Content>
 		<Content Include="content\unoapp-uwp-net6\**">
@@ -67,17 +63,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\*.vstemplate" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\__*.png" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\obj\**" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\**\bin\**" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\Properties\**" />
-		<_UnoAppTemplateFilesExclude Include="..\UnoSolutionTemplate\UnoSolutionTemplate.csproj" />
-
-		<_UnoAppTemplateFiles Include="..\UnoSolutionTemplate\**" Exclude="@(_UnoAppTemplateFilesExclude)" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\*.vstemplate" />
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\__*.png" />
 		<_UnoAppnet6UWPTemplateFilesExclude Include="..\UnoSolutionTemplate.netcore\**\obj\**" />
@@ -96,7 +81,7 @@
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\Properties\**" />
 		<_UnoAppnet6WinUITemplateFilesExclude Include="..\UnoSolutionTemplate.WinUI.netcore\UnoSolutionTemplate.WinUI.netcore.csproj" />
 
-		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)"/>
+		<_UnoAppnet6WinUITemplateFiles Include="..\UnoSolutionTemplate.WinUI.netcore\**" Exclude="@(_UnoAppnet6WinUITemplateFilesExclude)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -122,9 +107,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Update="content\unoapp-uwp\UnoQuickStart-vsmac.slnf">
-	    <PackagePath>content\unoapp-uwp</PackagePath>
-	  </Content>
 	  <Content Update="content\unoapp-uwp-net6\UnoQuickStart-vsmac.slnf">
 	    <PackagePath>content\unoapp-uwp-net6</PackagePath>
 	  </Content>
@@ -132,25 +114,6 @@
 	    <PackagePath>content\unoapp-winui</PackagePath>
 	  </Content>
 	</ItemGroup>
-
-	<Target Name="CopyUnoAppTemplate" BeforeTargets="Build">
-		<PropertyGroup>
-			<IntermediateTemplatePath>$(IntermediateOutputPath)\UnoQuickStart</IntermediateTemplatePath>
-		</PropertyGroup>
-
-		<RemoveDir Directories="$(IntermediateTemplatePath)" />
-
-		<Copy SourceFiles="@(_UnoAppTemplateFiles)" DestinationFolder="$(IntermediateTemplatePath)\%(RecursiveDir)" />
-
-		<ReplaceContent SourcePath="$(IntermediateTemplatePath)" SafeProjectName="UnoQuickStart" IsWinUI="False" />
-
-		<ItemGroup>
-			<Content Include="$(IntermediateTemplatePath)/**/*.*">
-				<Pack>true</Pack>
-				<PackagePath>content/unoapp-uwp</PackagePath>
-			</Content>
-		</ItemGroup>
-	</Target>
 
 	<Target Name="CopyUnoAppNet6Template" BeforeTargets="Build">
 		<PropertyGroup>
@@ -229,14 +192,13 @@
 		</ItemGroup>
 	</Target>
 
-	<UsingTask TaskName="ReplaceContent" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+	<UsingTask TaskName="ReplaceContent" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<SourcePath ParameterType="System.String" Required="True" Output="False" />
 			<SafeProjectName ParameterType="System.String" Required="True" Output="False" />
 			<IsWinUI ParameterType="System.Boolean" Required="True" Output="False" />
 		</ParameterGroup>
 		<Task>
-			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
 			<Using Namespace="System.Text" />
 			<Using Namespace="System.Text.RegularExpressions" />
@@ -350,14 +312,13 @@
 		</Task>
 	</UsingTask>
 
-	<UsingTask TaskName="RenameSolution" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
+	<UsingTask TaskName="RenameSolution" TaskFactory="RoslynCodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll">
 		<ParameterGroup>
 			<SourcePath ParameterType="System.String" Required="True" Output="False" />
 			<SourceName ParameterType="System.String" Required="True" Output="False" />
 			<TargetName ParameterType="System.String" Required="True" Output="False" />
 		</ParameterGroup>
 		<Task>
-			<Reference Include="System.Xml" />
 			<Using Namespace="System" />
 			<Using Namespace="System.Linq" />
 			<Using Namespace="System.IO" />

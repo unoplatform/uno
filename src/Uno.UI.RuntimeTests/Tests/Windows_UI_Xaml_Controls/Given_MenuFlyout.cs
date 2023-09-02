@@ -1,10 +1,13 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -24,12 +27,10 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
-#if NETFX_CORE
-// Use the MUX MenuBar on Window for consistency, since Uno is using the MUX styles. (However Uno.UI only defines WUXC.MenuBar, not MUXC.MenuBar)
+
 using MenuBar = Microsoft.UI.Xaml.Controls.MenuBar;
 using MenuBarItem = Microsoft.UI.Xaml.Controls.MenuBarItem;
 using MenuBarItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.MenuBarItemAutomationPeer;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -324,6 +325,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				{
 					flyout.Hide();
 				}
+			}
+		}
+
+		[TestMethod]
+		[RequiresFullWindow]
+#if __IOS__
+		[Ignore("https://github.com/unoplatform/uno/issues/13314")]
+#endif
+		public async Task When_MenuFlyoutSubItem_Should_Have_Correct_Placement()
+		{
+			if (WindowHelper.IsXamlIsland)
+			{
+				return;
+			}
+
+			var button = new Button()
+			{
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Content = "Open flyout",
+				Flyout = new MenuFlyout()
+				{
+					Items =
+					{
+						new MenuFlyoutSubItem()
+						{
+							Text = "Open submenu",
+							Items =
+							{
+								new MenuFlyoutSubItem() { Text = "First item" },
+							},
+						},
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = button;
+			await WindowHelper.WaitForLoaded(button);
+			button.AutomationPeerClick();
+
+			var flyout = (MenuFlyout)button.Flyout;
+			var subItem = (MenuFlyoutSubItem)flyout.Items.Single();
+			try
+			{
+				subItem.Open();
+
+				// The "Open submenu" opens at the very right of the screen.
+				// So, the "First item" sub item should open on its left.
+				// We assert that the left of "Open sub menu" is almost the same as the right of "First item"
+
+				await WindowHelper.WaitForIdle();
+
+				var subItemBounds = subItem.GetAbsoluteBounds();
+				var subSubItemBounds = ((MenuFlyoutSubItem)subItem.Items.Single()).GetAbsoluteBounds();
+
+				var difference = subItemBounds.X - subSubItemBounds.Right;
+				Assert.IsTrue(Math.Abs(difference) <= 3);
+
+			}
+			finally
+			{
+				subItem.Close();
+				flyout.Close();
 			}
 		}
 #endif

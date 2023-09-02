@@ -183,7 +183,7 @@ namespace Uno.Samples.UITest.Generator
 						foreach (var test in group.Symbols)
 						{
 							builder.AppendLineIndented("[global::NUnit.Framework.Test]");
-							builder.AppendLineIndented($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
+							builder.AppendLineIndented($"[global::NUnit.Framework.Category(\"runGroup:{group.Index % GroupCount:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
 							var (ignored, ignoreReason) = (test.ignoreInSnapshotTests, test.isManual) switch
 							{

@@ -13,13 +13,20 @@ using Windows.Foundation;
 using Uno.UI.Xaml;
 
 using Uno.UI.Extensions;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : ContentPresenter, IScrollContentPresenter
 	{
-		private ScrollBarVisibility _verticalScrollBarVisibility;
-		private ScrollBarVisibility _horizontalScrollBarVisibility;
+		// On wasm, the default of "overflow" property is "visible".
+		// This doesn't match any of our scroll-[x|y]-[auto|disabled|hidden|visible] defined in Uno.UI.css
+		// (see https://github.com/unoplatform/uno/blob/dca49dadd6feaf0b3addd2ec2195c3af1b6ac9f4/src/Uno.UI/WasmCSS/Uno.UI.css#L183-L223)
+		// So, we want the first setter call to be executed, regardless of the value being set.
+		// The logic in the setter is done under "if (_[vertical|horizontal]ScrollBarVisibility != value)"
+		// So, to make sure this condition is always true for the first call of the setter, we set the initial value to -1, which isn't a valid value for ScrollBarVisibility.
+		private ScrollBarVisibility _verticalScrollBarVisibility = (ScrollBarVisibility)(-1);
+		private ScrollBarVisibility _horizontalScrollBarVisibility = (ScrollBarVisibility)(-1);
 		private bool _eventsRegistered;
 
 		private (double? horizontal, double? vertical)? _pendingScrollTo;
@@ -37,6 +44,24 @@ namespace Windows.UI.Xaml.Controls
 
 		private object RealContent => Content;
 
+		partial void OnIsPointerWheelReversedChanged(bool isReversed)
+		{
+			PointerWheelChanged -= ManagedScroll;
+			if (isReversed)
+			{
+				PointerWheelChanged += ManagedScroll;
+			}
+
+			static void ManagedScroll(object sender, Input.PointerRoutedEventArgs e)
+			{
+				// When pointer wheel is reversed, we scroll in managed code and prevent the browser to scroll (PreventDefault)
+				e.Handled = true;
+				((IHtmlHandleableRoutedEventArgs)e).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+
+				((ScrollContentPresenter)sender).PointerWheelScroll(sender, e);
+			}
+		}
+
 		private void TryRegisterEvents(ScrollBarVisibility visibility)
 		{
 			if (
@@ -49,20 +74,20 @@ namespace Windows.UI.Xaml.Controls
 
 				_eventsRegistered = true;
 
-				PointerReleased += HandlePointerEvent;
-				PointerPressed += HandlePointerEvent;
-				PointerCanceled += HandlePointerEvent;
-				PointerMoved += HandlePointerEvent;
-				PointerEntered += HandlePointerEvent;
-				PointerExited += HandlePointerEvent;
-				PointerWheelChanged += HandlePointerEvent;
+				PointerReleased += HandlePointerEventIfOverNativeScrollbars;
+				PointerPressed += HandlePointerEventIfOverNativeScrollbars;
+				PointerCanceled += HandlePointerEventIfOverNativeScrollbars;
+				PointerMoved += HandlePointerEventIfOverNativeScrollbars;
+				PointerEntered += HandlePointerEventIfOverNativeScrollbars;
+				PointerExited += HandlePointerEventIfOverNativeScrollbars;
+				PointerWheelChanged += HandlePointerEventIfOverNativeScrollbars;
 			}
 		}
 
-		private static void HandlePointerEvent(object sender, Input.PointerRoutedEventArgs e)
-			=> ((ScrollContentPresenter)sender).HandlePointerEvent(e);
+		private static void HandlePointerEventIfOverNativeScrollbars(object sender, Input.PointerRoutedEventArgs e)
+			=> ((ScrollContentPresenter)sender).HandlePointerEventIfOverNativeScrollbars(e);
 
-		private void HandlePointerEvent(Input.PointerRoutedEventArgs e)
+		private void HandlePointerEventIfOverNativeScrollbars(Input.PointerRoutedEventArgs e)
 		{
 			var (clientSize, offsetSize) = WindowManagerInterop.GetClientViewSize(HtmlId);
 
@@ -93,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-auto", "scroll-y-disabled", "scroll-y-hidden", "scroll-y-visible" };
+		private static readonly string[] VerticalVisibilityClasses = { "scroll-y-disabled", "scroll-y-auto", "scroll-y-hidden", "scroll-y-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeVerticalScrollBarVisibility { set => VerticalScrollBarVisibility = value; }
 		internal ScrollBarVisibility VerticalScrollBarVisibility
@@ -111,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-auto", "scroll-x-disabled", "scroll-x-hidden", "scroll-x-visible" };
+		private static readonly string[] HorizontalVisibilityClasses = { "scroll-x-disabled", "scroll-x-auto", "scroll-x-hidden", "scroll-x-visible" };
 
 		ScrollBarVisibility IScrollContentPresenter.NativeHorizontalScrollBarVisibility { set => HorizontalScrollBarVisibility = value; }
 		internal ScrollBarVisibility HorizontalScrollBarVisibility
@@ -166,7 +191,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (sv.HorizontalOffset > 0 || sv.VerticalOffset > 0)
 				{
-					ScrollTo(sv.HorizontalOffset, sv.VerticalOffset, disableAnimation: true);
+					Set(
+						horizontalOffset: sv.HorizontalOffset,
+						verticalOffset: sv.VerticalOffset,
+						disableAnimation: true);
 				}
 			}
 		}
@@ -191,8 +219,32 @@ namespace Windows.UI.Xaml.Controls
 			TryProcessScrollTo();
 		}
 
-		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		internal bool Set(
+			double? horizontalOffset = null,
+			double? verticalOffset = null,
+			float? zoomFactor = null, // Not supported yet
+			bool disableAnimation = false,
+			bool isIntermediate = false) // Not supported yet
 		{
+			var success = true;
+			if (horizontalOffset is double hOffset)
+			{
+				var extentWidth = ExtentWidth;
+				var viewportWidth = ViewportWidth;
+
+				horizontalOffset = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
+				success &= horizontalOffset == hOffset;
+			}
+
+			if (verticalOffset is double vOffset)
+			{
+				var extentHeight = ExtentHeight;
+				var viewportHeight = ViewportHeight;
+
+				verticalOffset = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
+				success &= verticalOffset == vOffset;
+			}
+
 			_pendingScrollTo = (horizontalOffset, verticalOffset);
 
 			WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
@@ -228,7 +280,11 @@ namespace Windows.UI.Xaml.Controls
 					var willNotScroll = horizontalOffset < 0 && nativeHorizontalOffset == 0
 						|| verticalOffset < 0 && nativeVerticalOffset == 0;
 
-					if (!willNotScroll)
+					if (willNotScroll)
+					{
+						return false;
+					}
+					else
 					{
 						// As the native ScrollTo is going to be async, we manually raise the event with the provided values.
 						// If those values are invalid, the browser will raise the final event anyway.
@@ -242,7 +298,16 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 			}
+
+			return success; // If if not yet processed, we assume that it will be.
 		}
+
+		// Backward compat, use the shared "Set" method instead.
+		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+			=> Set(
+				horizontalOffset: horizontalOffset,
+				verticalOffset: verticalOffset,
+				disableAnimation: disableAnimation);
 
 		private void TryProcessScrollTo(object sender, object e)
 			=> TryProcessScrollTo();

@@ -1,5 +1,4 @@
-﻿#if NET6_0_OR_GREATER
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Threading;
@@ -16,4 +15,3 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		ValueTask ReportDiagnosticsAsync(IEnumerable<string> diagnostics, CancellationToken cancellationToken);
 	}
 }
-#endif

@@ -1,8 +1,9 @@
 ﻿#nullable enable
 
 using System;
+using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Xaml.Controls.Extensions;
-using Uno.UI.XamlHost.Skia.Wpf.Hosting;
 using Windows.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
@@ -24,6 +25,8 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	public bool IsDisplayed => RootElement.Parent is not null;
 
 	public abstract (int start, int length) Selection { get; set; }
+
+	public abstract (int start, int length) SelectionBeforeKeyDown { get; protected set; }
 
 	/// <summary>
 	/// Represents the root element of the input layout.
@@ -74,7 +77,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	public virtual void SetPasswordRevealState(Windows.UI.Xaml.Controls.PasswordRevealState passwordRevealState) { }
 
 	internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
-		XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+		WpfManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
 
 	protected void SetFont(WpfControl wpfControl, Windows.UI.Xaml.Controls.TextBox source)
 	{

@@ -1,4 +1,5 @@
-﻿using System;
+#nullable enable
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Security.Cryptography;
@@ -32,17 +33,7 @@ partial class SvgImageSource
 	{
 		try
 		{
-			if (ResourceId.HasValue)
-			{
-				return await FetchSvgResource(ct, ResourceId.Value);
-			}
-
-			if (ResourceString is not null)
-			{
-				return await FetchSvgAssetAsync(ct, ResourceString);
-			}
-
-			if (Stream != null)
+			if (Stream is not null)
 			{
 				return await ReadFromStreamAsync(Stream, ct);
 			}
@@ -53,25 +44,38 @@ partial class SvgImageSource
 				return await ReadFromStreamAsync(fileStream, ct);
 			}
 
-			if (AbsoluteUri != null)
+			if (AbsoluteUri is not null)
 			{
 				// The ContactsService returns the contact uri for compatibility with UniversalImageLoader - in order to obtain the corresponding photo we resolve using the service below.
 				if (IsContactUri(AbsoluteUri))
 				{
-					var stream = ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString));
+					if (ContactsContract.Contacts.OpenContactPhotoInputStream(ContextHelper.Current.ContentResolver, Android.Net.Uri.Parse(AbsoluteUri.OriginalString)) is not { } stream)
+					{
+						return ImageData.Empty;
+					}
+
 					return await ReadFromStreamAsync(stream, ct);
+				}
+
+				if (AbsoluteUri.IsLocalResource())
+				{
+					var file = await StorageFile.GetFileFromApplicationUriAsync(AbsoluteUri);
+
+					using var fileStream = await file.OpenAsync(FileAccessMode.Read);
+					using var ioStream = fileStream.AsStream();
+					return await ReadFromStreamAsync(ioStream, ct);
 				}
 
 				if (Downloader is not null)
 				{
 					var filePath = await Download(ct, AbsoluteUri);
 
-					if (filePath == null)
+					if (filePath is null)
 					{
 						return ImageData.Empty;
 					}
 
-					using var fileStream = File.OpenRead(FilePath);
+					using var fileStream = File.OpenRead(filePath.LocalPath);
 					return await ReadFromStreamAsync(fileStream, ct);
 				}
 				else
@@ -87,18 +91,6 @@ partial class SvgImageSource
 		{
 			return ImageData.FromError(ex);
 		}
-	}
 
-	private async Task<ImageData> FetchSvgResource(CancellationToken ct, int resourceId)
-	{
-		var rawResourceStream = ContextHelper.Current.Resources.OpenRawResource(resourceId);
-		return await ReadFromStreamAsync(rawResourceStream, ct);
-	}
-
-	private async Task<ImageData> FetchSvgAssetAsync(CancellationToken ct, string assetPath)
-	{
-		AssetManager assets = ContextHelper.Current.Assets;
-		using var stream = assets.Open(assetPath);
-		return await ReadFromStreamAsync(stream, ct);
 	}
 }

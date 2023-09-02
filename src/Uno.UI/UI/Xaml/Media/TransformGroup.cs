@@ -22,7 +22,7 @@ using _View = System.Object;
 
 namespace Windows.UI.Xaml.Media
 {
-	[ContentProperty(Name = "Children")]
+	[ContentProperty(Name = nameof(Children))]
 	public partial class TransformGroup : Transform
 	{
 		public TransformGroup()

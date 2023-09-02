@@ -2,10 +2,11 @@
 using System;
 using Windows.Foundation;
 using Uno.UI;
-#if XAMARIN_ANDROID
+using Windows.System;
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -182,7 +183,71 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit()
 			=> true;
-#elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter
+
+		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
+		{
+			var properties = e.GetCurrentPoint(null).Properties;
+
+			if (Content is UIElement)
+			{
+				var canScrollHorizontally = CanHorizontallyScroll;
+				var canScrollVertically = CanVerticallyScroll;
+				var delta = IsPointerWheelReversed
+					? -properties.MouseWheelDelta
+					: properties.MouseWheelDelta;
+
+				if (e.KeyModifiers == VirtualKeyModifiers.Control)
+				{
+					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
+				}
+				else if (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift)
+				{
+					if (canScrollHorizontally)
+					{
+#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
+						var horizontalOffset = _pendingScrollTo?.horizontal ?? HorizontalOffset;
+#else
+						var horizontalOffset = HorizontalOffset;
+#endif
+
+						Set(
+							horizontalOffset: horizontalOffset + GetHorizontalScrollWheelDelta(DesiredSize, delta),
+							disableAnimation: false);
+					}
+				}
+				else
+				{
+#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
+					var verticalOffset = _pendingScrollTo?.vertical ?? VerticalOffset;
+#else
+					var verticalOffset = VerticalOffset;
+#endif
+
+					Set(
+						verticalOffset: verticalOffset + GetVerticalScrollWheelDelta(DesiredSize, -delta),
+						disableAnimation: false);
+				}
+			}
+		}
+
+		public void SetVerticalOffset(double offset)
+			=> Set(verticalOffset: offset, disableAnimation: true);
+
+		public void SetHorizontalOffset(double offset)
+			=> Set(horizontalOffset: offset, disableAnimation: true);
+
+		// Ensure the offset we're scrolling to is valid.
+		private double ValidateInputOffset(double offset, int minOffset, double maxOffset)
+		{
+			if (offset.IsNaN())
+			{
+				throw new InvalidOperationException($"Invalid scroll offset value");
+			}
+
+			return Math.Max(minOffset, Math.Min(offset, maxOffset));
+		}
+
+#elif __IOS__ // Note: No __ANDROID__, the ICustomScrollInfo support is made directly in the NativeScrollContentPresenter                                                                                                                                                                                                                                                                                                                                                            
 		protected override Size MeasureOverride(Size size)
 		{
 			var result = base.MeasureOverride(size);

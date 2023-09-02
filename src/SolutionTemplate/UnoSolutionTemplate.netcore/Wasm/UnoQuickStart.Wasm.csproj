@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net5.0</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<NoWarn>NU1701</NoWarn>
 		$if$($UseWebAssemblyManifestJson$ == True)<WasmPWAManifestFile>manifest.webmanifest</WasmPWAManifestFile>$endif$
 	</PropertyGroup>
@@ -60,8 +60,8 @@
 		<PackageReference Include="Uno.UI.WebAssembly" Version="2.2.0" />
 		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="3.0.5" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="3.3.1" />
-		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="3.3.1" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="7.0.20" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" Version="7.0.20" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" />

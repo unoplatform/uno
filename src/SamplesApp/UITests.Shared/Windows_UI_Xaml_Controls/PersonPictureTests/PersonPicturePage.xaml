@@ -4,6 +4,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MUXControlsTestApp"
+	xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
@@ -75,19 +76,19 @@
                     x:Name="ContactBtn"
                     AutomationProperties.Name="ContactBtn"
                     Content="Set Contact"
-                    Margin="0,0,10,0" 
+                    Margin="0,0,10,0"
                     Click="ContactBtn_Click" />
 				<Button
                     x:Name="ContactImageBtn"
                     AutomationProperties.Name="ContactImageBtn"
                     Content="Set Contact (w/ Image)"
-                    Margin="10,0,10,0" 
+                    Margin="10,0,10,0"
                     Click="ContactImageBtn_Click" />
 				<Button
                     x:Name="ClearContactBtn"
                     AutomationProperties.Name="ClearContactBtn"
                     Content="Clear Contact"
-                    Margin="10,0,10,0" 
+                    Margin="10,0,10,0"
                     Click="ClearContactBtn_Click" />
 			</StackPanel>
 
@@ -97,13 +98,13 @@
                     x:Name="ImageBtn"
                     AutomationProperties.Name="ImageBtn"
                     Content="Set Image"
-                    Margin="0,0,10,0" 
+                    Margin="0,0,10,0"
                     Click="ImageBtn_Click" />
 				<Button
                     x:Name="ClearImageBtn"
                     AutomationProperties.Name="ClearImageBtn"
                     Content="Clear Image"
-                    Margin="10,0,10,0" 
+                    Margin="10,0,10,0"
                     Click="ClearImageBtn_Click" />
 			</StackPanel>
 
@@ -141,35 +142,35 @@
 		<StackPanel Grid.Column="1">
 			<TextBlock Text="Sample controls" Style="{ThemeResource StandardGroupHeader}"/>
 
-			<PersonPicture
+			<controls:PersonPicture
                 x:Name="TestPersonPicture"
-                AutomationProperties.Name="TestPersonPicture" 
+                AutomationProperties.Name="TestPersonPicture"
                 SizeChanged="TestPersonPicture_SizeChanged"/>
 
 			<StackPanel Orientation="Horizontal">
 				<ListView x:Name="PeopleLV" AutomationProperties.Name="PeopleLV" Height="200" Margin="10">
 					<ListViewItem>
-						<PersonPicture x:Name="PersonPicture0" AutomationProperties.Name="PersonPicture0"
+						<controls:PersonPicture x:Name="PersonPicture0" AutomationProperties.Name="PersonPicture0"
                             BadgeNumber="1" BadgeGlyph="\uE765" Initials="JB" DisplayName="James Bond"/>
 					</ListViewItem>
 					<ListViewItem>
-						<PersonPicture x:Name="PersonPicture1" AutomationProperties.Name="PersonPicture1"
+						<controls:PersonPicture x:Name="PersonPicture1" AutomationProperties.Name="PersonPicture1"
                             BadgeNumber="2" BadgeGlyph="\uE766" Initials="AP" DisplayName="Austin Powers"/>
 					</ListViewItem>
 					<ListViewItem>
-						<PersonPicture x:Name="PersonPicture2" AutomationProperties.Name="PersonPicture2"
+						<controls:PersonPicture x:Name="PersonPicture2" AutomationProperties.Name="PersonPicture2"
                             BadgeNumber="3" BadgeGlyph="\uE767" Initials="SA" DisplayName="Steve Austin"/>
 					</ListViewItem>
 					<ListViewItem>
-						<PersonPicture x:Name="PersonPicture3" AutomationProperties.Name="PersonPicture3"
+						<controls:PersonPicture x:Name="PersonPicture3" AutomationProperties.Name="PersonPicture3"
                             BadgeNumber="4" BadgeGlyph="\uE768" Initials="SJ" DisplayName="Super Jaimie"/>
 					</ListViewItem>
 					<ListViewItem>
-						<PersonPicture x:Name="PersonPicture4" AutomationProperties.Name="PersonPicture4"
+						<controls:PersonPicture x:Name="PersonPicture4" AutomationProperties.Name="PersonPicture4"
                             BadgeNumber="5" BadgeGlyph="\uE769" Initials="BB" DisplayName="Bruce Banner"/>
 					</ListViewItem>
 					<ListViewItem>
-						<PersonPicture x:Name="PersonPicture5" AutomationProperties.Name="PersonPicture5"
+						<controls:PersonPicture x:Name="PersonPicture5" AutomationProperties.Name="PersonPicture5"
                             BadgeNumber="6" BadgeGlyph="\uE770" Initials="BW" DisplayName="Bruce Wayne"/>
 					</ListViewItem>
 				</ListView>
@@ -177,7 +178,7 @@
 				<ListView x:Name="PeopleGLV" AutomationProperties.Name="PeopleGLV" Height="250" Margin="10" ItemsSource="{Binding Source={StaticResource cvs}}">
 					<ListView.ItemTemplate>
 						<DataTemplate>
-							<PersonPicture BadgeNumber="{Binding BadgeNumber}" Initials="{Binding Initials}" DisplayName="{Binding DisplayName}"/>
+							<controls:PersonPicture BadgeNumber="{Binding BadgeNumber}" Initials="{Binding Initials}" DisplayName="{Binding DisplayName}"/>
 						</DataTemplate>
 					</ListView.ItemTemplate>
 					<ListView.GroupStyle>

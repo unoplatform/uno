@@ -16,6 +16,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.Media;
 using System;
 using System.ComponentModel;
@@ -30,6 +31,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using global::Windows.UI.Xaml.Input;
 using Point = Windows.Foundation.Point;
+using Action = global::System.Action;
 using Uno.UI.Xaml;
 
 <#
@@ -42,7 +44,9 @@ namespace <#= mixin.NamespaceName #>
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		public event DependencyPropertyChangedEventHandler IsEnabledChanged;
+#endif
 
 		public event TypedEventHandler<FrameworkElement, object> Loading;
 
@@ -176,11 +180,13 @@ namespace <#= mixin.NamespaceName #>
 			set => SetBackgroundValue(value);
 		}
 
-		SerialDisposable _brushChanged = new SerialDisposable();
+		Action _brushChanged;
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, SetBackgroundColor);
+			var oldValue = e.OldValue as Brush;
+			var newValue = e.NewValue as Brush;
+			Brush.SetupBrushChanged(oldValue, newValue, ref _brushChanged, () => SetBackgroundColor(Brush.GetFallbackColor(newValue)));
 		}
 		#endregion
 
@@ -252,15 +258,13 @@ namespace <#= mixin.NamespaceName #>
 		}
 #endif
 
+#if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsEnabled Dependency Property
 
 		[GeneratedDependencyProperty(
 			DefaultValue = true,
 			Options = FrameworkPropertyMetadataOptions.Inherits,
 			ChangedCallback = true
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-			, CoerceCallback = true
-#endif
 		)]
 		public static DependencyProperty IsEnabledProperty { get ; } = CreateIsEnabledProperty();
 
@@ -270,18 +274,8 @@ namespace <#= mixin.NamespaceName #>
 			set => SetIsEnabledValue(value);
 		}
 
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-		private static readonly IsEnabledChangedEventArgs _isEnabledChangedEventArgs = new IsEnabledChangedEventArgs();
-#endif
 		private void OnIsEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
-#if <#= mixin.IsFrameworkElement #> // IsFrameworkElement
-			// Calling the internal override (WinUI compatibility) -- Defined in FrameworkElement.cs
-			// Note: only available for controls inheriting from FrameworkElement
-			_isEnabledChangedEventArgs.SourceEvent = e;
-			OnIsEnabledChanged(_isEnabledChangedEventArgs);
-#endif
-
 			var newValue = (bool)e.NewValue;
 
 #if <#= mixin.IsUnoMotionTarget #> // IsFrameworkElement
@@ -294,12 +288,11 @@ namespace <#= mixin.NamespaceName #>
 			FocusableInTouchMode = newValue;
 #endif
 
-			OnIsEnabledChangedCore();
-
 			IsEnabledChanged?.Invoke(this, e);
 		}
 
 		#endregion
+#endif
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region IsHitTestVisible Dependency Property
@@ -350,98 +343,6 @@ namespace <#= mixin.NamespaceName #>
 
 		#endregion
 #endif
-
-		#region KeyPress
-		private KeyEventHandler _keyUpHandlers;
-		private KeyEventHandler _keyDownHandlers;
-
-		private bool HasKeyEventRegistrations => _keyUpHandlers != null || _keyDownHandlers != null;
-
-		private SerialDisposable _nativeKeyPressRegistration = new SerialDisposable();
-
-		protected void OnKeyPress(object sender, KeyEventArgs e)
-		{
-			e.Handled = false;
-			if (e.Event == null)
-			{
-				return;
-			}
-
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, e.Event.KeyCode.ToVirtualKey());
-			if (e.Event.Action == KeyEventActions.Up)
-			{
-				_keyUpHandlers?.Invoke(this, keyRoutedEventArgs);
-			}
-			else if (e.Event.Action == KeyEventActions.Down)
-			{
-				_keyDownHandlers?.Invoke(this, keyRoutedEventArgs);
-			}
-
-			e.Handled = keyRoutedEventArgs.Handled;
-		}
-
-		/// <summary>
-		/// Lazily creates an event registration to the native KeyPress event, so that
-		/// the cost of observing a key is only paid when there is a registation to
-		/// either KeyUp or KeyDown events.
-		/// </summary>
-		private void TryCreateKeyRegistration()
-		{
-			if(
-				HasKeyEventRegistrations
-				&& _nativeKeyPressRegistration.Disposable == null
-			)
-			{
-				_nativeKeyPressRegistration.Disposable =
-					Disposable.Create(() => KeyPress -= OnKeyPress);
-
-				KeyPress += OnKeyPress;
-			}
-		}
-
-		private void TryRemoveKeyRegistration(bool forceRemove)
-		{
-			if(forceRemove || !HasKeyEventRegistrations)
-			{
-				_nativeKeyPressRegistration.Disposable = null;
-			}
-		}
-
-		/// <summary>
-		/// An event raised when a keyboard key has gone up.
-		/// </summary>
-		public event KeyEventHandler KeyUp
-		{
-			add
-			{
-				_keyUpHandlers += value;
-				TryCreateKeyRegistration();
-			}
-			remove
-			{
-				_keyUpHandlers -= value;
-				TryRemoveKeyRegistration(forceRemove: false);
-			}
-		}
-
-		/// <summary>
-		/// An event raised when a keyboard key has gone down.
-		/// </summary>
-		public event KeyEventHandler KeyDown
-		{
-			add
-			{
-				_keyDownHandlers += value;
-				TryCreateKeyRegistration();
-			}
-			remove
-			{
-				_keyDownHandlers -= value;
-				TryRemoveKeyRegistration(forceRemove: false);
-			}
-		}
-
-		#endregion
 
 #if !<#= mixin.IsFrameworkElement #> // IsFrameworkElement
 		#region Visibility Dependency Property
@@ -515,7 +416,7 @@ namespace <#= mixin.NamespaceName #>
 		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnGenericPropertyUpdated))]
 		public static DependencyProperty MarginProperty { get ; } = CreateMarginProperty();
 
-		public virtual Thickness Margin
+		public Thickness Margin
 		{
 			get => GetMarginValue();
 			set => SetMarginValue(value);
@@ -770,8 +671,6 @@ namespace <#= mixin.NamespaceName #>
 			OnLoadedPartial();
 
 			Loaded?.Invoke(this, new RoutedEventArgs(this));
-
-			TryCreateKeyRegistration();
 		}
 
 		partial void OnLoadedPartial();
@@ -783,8 +682,6 @@ namespace <#= mixin.NamespaceName #>
 			OnUnloadedPartial();
 
 			Unloaded?.Invoke(this, new RoutedEventArgs(this));
-
-			TryRemoveKeyRegistration(forceRemove: true);
 		}
 
 		partial void OnUnloadedPartial();
@@ -795,11 +692,6 @@ namespace <#= mixin.NamespaceName #>
 			OnGenericPropertyUpdatedPartial(args);
 #endif
 			this.InvalidateMeasure();
-		}
-
-		protected virtual void OnIsEnabledChangedCore()
-		{
-
 		}
 
 #if <#= mixin.OverridesOnLayout #> // OverridesOnLayout

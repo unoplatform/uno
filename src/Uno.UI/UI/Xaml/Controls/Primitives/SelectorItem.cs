@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UI;
 using Uno.UI.Xaml.Core;
 using Windows.Devices.Input;
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_canRaiseClickOnPointerRelease = false;
 
 				update = ManipulationUpdateKind.Clicked;
-				Selector?.OnItemClicked(this);
+				Selector?.OnItemClicked(this, args.KeyModifiers);
 
 				// This should be automatically done by the pointers due to release, but if for any reason
 				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
@@ -392,6 +392,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnGotFocus(e);
 			ChangeVisualState(true);
+
+			if (Selector is ListViewBase lvb)
+			{
+				var index = lvb.IndexFromContainer(this);
+				lvb.FocusedIndexContainerItem = (index, this, lvb.ItemFromIndex(index));
+			}
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)

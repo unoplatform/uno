@@ -6,6 +6,7 @@ using System.Threading;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Common;
+using Uno.UI.RuntimeTests;
 
 #if USING_TAEF
 using WEX.TestExecution;

@@ -15,8 +15,7 @@ jobs:
   timeoutInMinutes: ${{ parameters.JobTimeoutInMinutes }}
   dependsOn:
   - iOS_Build
-  - SamplesApp_UITests_Build
-  - Commitsar
+
   displayName: ${{ parameters.JobDisplayName }}
 
   pool:
@@ -36,12 +35,6 @@ jobs:
     displayName: 'Download iOS Samples App'
     inputs:
         artifactName: ios-uitest-build
-        downloadPath: '$(build.sourcesdirectory)/build'
-
-  - task: DownloadBuildArtifacts@0
-    displayName: 'Download iOS SamplesApp UnitTests'
-    inputs:
-        artifactName: samplesapp-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0

@@ -1,0 +1,83 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras">
+
+	<PropertyGroup>
+		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
+		<NoWarn>$(NoWarn);NU5100;NU5118;NU5128</NoWarn>
+		<Deterministic>true</Deterministic>
+		
+		<AssemblyName>Uno.UI.MSAL</AssemblyName>
+		<RootNamespace>Uno.UI.MSAL</RootNamespace>
+	</PropertyGroup>
+
+	<Import Project="../../targetframework-override.props" />
+
+	<PropertyGroup>
+		<authors>Uno Platform</authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIcon>uno.png</PackageIcon>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>
+		<Copyright>Copyright (C) 2015-$([System.DateTime]::Now.ToString(`yyyy`)) Uno Platform Inc. - all rights reserved</Copyright>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="buildTransitive\Uno.UI.MSAL.targets" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="buildTransitive/*">
+			<Pack>true</Pack>
+			<PackagePath>buildTransitive</PackagePath>
+		</None>
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.47.0" />
+	</ItemGroup>
+
+	<Import Project="..\..\..\build\nuget\uno.winui.cross-runtime.targets"/>
+
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI.MSAL\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)**" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+
+	<Target Name="IncludeRuntimeAssets" BeforeTargets="BeforeCompile">
+		<RemoveDuplicates Inputs="@(TfmSpecificPackageFile)">
+				<Output
+						TaskParameter="Filtered"
+						ItemName="FilteredTfmSpecificPackageFile"/>
+		</RemoveDuplicates>
+
+		<ItemGroup>
+			<TfmSpecificPackageFile Remove="@(TfmSpecificPackageFile)" />
+			<TfmSpecificPackageFile Include="@(FilteredTfmSpecificPackageFile)" />
+		</ItemGroup>
+
+	</Target>
+
+	<!-- Workaround for missing target running on .NET 5 -->
+	<Target Name="GetTargetPath" />
+
+</Project>

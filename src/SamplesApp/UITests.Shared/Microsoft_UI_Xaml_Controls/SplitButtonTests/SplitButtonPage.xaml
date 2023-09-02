@@ -7,9 +7,9 @@
     xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:util="using:MUXControlsTestApp.Utilities"
-    xmlns:xamarin="http://uno.ui/xamarin"
+    xmlns:not_win="http://uno.ui/not_win"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d xamarin">
+    mc:Ignorable="d not_win">
 
     <Page.Resources>
         <local:MyCommand x:Key="TestExecuteCommand" />

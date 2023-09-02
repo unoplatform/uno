@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Android.Runtime;
 using Android.Views;
 using Android.Util;
-using Uno.Presentation.Resources;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml;
 using System.ComponentModel;

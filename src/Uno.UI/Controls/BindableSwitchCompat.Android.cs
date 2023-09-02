@@ -8,6 +8,7 @@ using Android.Graphics;
 using Android.Text;
 using Android.Util;
 using Android.Widget;
+using AndroidX.Core.Graphics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
@@ -76,13 +77,8 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-#if __ANDROID_28__
-#pragma warning disable 618 // SetColorFilter is deprecated
-				ThumbDrawable?.SetColorFilter(asColorBrush.ColorWithOpacity, PorterDuff.Mode.SrcIn);
-#pragma warning restore 618 // SetColorFilter is deprecated
-#else
-				ThumbDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.ColorWithOpacity, BlendMode.SrcIn));
-#endif
+				var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat((Color)asColorBrush.ColorWithOpacity, BlendModeCompat.SrcIn);
+				ThumbDrawable?.SetColorFilter(colorFilter);
 			}
 		}
 
@@ -106,13 +102,8 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-#if __ANDROID_28__
-#pragma warning disable 618 // SetColorFilter is deprecated
-				TrackDrawable?.SetColorFilter(asColorBrush.ColorWithOpacity, PorterDuff.Mode.SrcIn);
-#pragma warning restore 618 // SetColorFilter is deprecated
-#else
-				TrackDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.ColorWithOpacity, BlendMode.SrcIn));
-#endif
+				var colorFilter = BlendModeColorFilterCompat.CreateBlendModeColorFilterCompat((Color)asColorBrush.ColorWithOpacity, BlendModeCompat.SrcIn);
+				TrackDrawable?.SetColorFilter(colorFilter);
 			}
 		}
 

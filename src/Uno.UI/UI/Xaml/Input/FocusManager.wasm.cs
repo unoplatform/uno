@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.InteropServices.JavaScript;
 using Uno;
 using Uno.Foundation;
 using Uno.Foundation.Logging;
@@ -11,10 +11,6 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Windows.UI.Xaml.Input
 {
@@ -115,9 +111,7 @@ namespace Windows.UI.Xaml.Input
 			return true;
 		}
 
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		public static void ReceiveFocusNative(int handle)
 		{
 			if (_isCallingFocusNative)

@@ -41,12 +41,22 @@ namespace Uno.Xaml
 
 		public bool? IsIncluded { get; }
 		public bool DisableCaching { get; }
+		public string UpdatedNamespace { get; }
 
 		private IsIncludedResult(bool? isIncluded, bool disableCaching)
 		{
 			IsIncluded = isIncluded;
 			DisableCaching = disableCaching;
 		}
+
+		private IsIncludedResult(bool? isIncluded, bool disableCaching, string updatedNamespace)
+		{
+			IsIncluded = isIncluded;
+			DisableCaching = disableCaching;
+			UpdatedNamespace = updatedNamespace;
+		}
+
+		public IsIncludedResult WithUpdatedNamespace(string updatedNamespace) => new(IsIncluded, DisableCaching, updatedNamespace);
 
 		public override bool Equals(object obj) => obj is IsIncludedResult result && Equals(result);
 		public bool Equals(IsIncludedResult other) => IsIncluded == other.IsIncluded && DisableCaching == other.DisableCaching;
@@ -236,7 +246,7 @@ namespace Uno.Xaml
 		public object NodeValue;
 	}
 
-	class XamlXmlParser
+	partial class XamlXmlParser
 	{
 		// Uno specific
 		private readonly IsIncluded _isIncluded;
@@ -312,7 +322,7 @@ namespace Uno.Xaml
 			if (r.MoveToFirstAttribute ()) {
 				do {
 					if (r.NamespaceURI == XamlLanguage.Xmlns2000Namespace)
-						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (r.Value, r.Prefix == "xmlns" ? r.LocalName : String.Empty));
+						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (r.Value, r.Prefix == "xmlns" ? r.LocalName : string.Empty));
 				} while (r.MoveToNextAttribute ());
 				r.MoveToElement ();
 			}
@@ -339,7 +349,7 @@ namespace Uno.Xaml
 					xt = new XamlType(sti.Namespace, sti.Name, sti.TypeName.TypeArguments?.Select(xxtn => sctx.GetXamlType(xxtn)).ToArray(), sctx);
 				}
 
-				bool isGetObject = false;
+				var isGetObject = false;
 				if (currentMember != null && !xt.CanAssignTo(currentMember.Type))
 				{
 					if (currentMember.DeclaringType != null && currentMember.DeclaringType.ContentProperty == currentMember)
@@ -383,7 +393,7 @@ namespace Uno.Xaml
 					// Try markup extension
 					// FIXME: is this rule correct?
 					var v = pair.Value;
-					if (!String.IsNullOrEmpty(v) && v[0] == '{' && v.ElementAtOrDefault(1) != '}')
+					if (!string.IsNullOrEmpty(v) && v[0] == '{' && v.ElementAtOrDefault(1) != '}')
 					{
 						IEnumerable<XamlXmlNodeInfo> ProcessArgs(ParsedMarkupExtensionInfo info)
 						{
@@ -453,7 +463,12 @@ namespace Uno.Xaml
 
 		IEnumerable<XamlXmlNodeInfo> ReadMembers (XamlType parentType, XamlType xt)
 		{
-			for (r.MoveToContent (); r.NodeType != XmlNodeType.EndElement; r.MoveToContent ()) {
+			if (r.NodeType != XmlNodeType.SignificantWhitespace)
+			{
+				r.MoveToContent ();
+			}
+			while (r.NodeType != XmlNodeType.EndElement) 
+			{
 				switch (r.NodeType) {
 				case XmlNodeType.Element:
 					// FIXME: parse type arguments etc.
@@ -462,19 +477,23 @@ namespace Uno.Xaml
 							yield break;
 						yield return x;
 					}
-					continue;
+					break;
 				default:
 					foreach (var x in ReadMemberText (xt))
 						yield return x;
-					continue;
+					break;
+				}
+				if (r.NodeType != XmlNodeType.SignificantWhitespace)
+				{
+					r.MoveToContent();
 				}
 			}
 		}
 
 		StartTagInfo GetStartTagInfo ()
 		{
-			string name = r.LocalName;
-			string ns = r.NamespaceURI;
+			var name = r.LocalName;
+			var ns = r.NamespaceURI;
 			string typeArgNames = null;
 
 			var members = new List<Pair> ();
@@ -492,7 +511,7 @@ namespace Uno.Xaml
 			foreach (var p in l)
 				members.Remove (p);
 
-			IList<XamlTypeName> typeArgs = typeArgNames == null ? null : XamlTypeName.ParseList (typeArgNames, xaml_namespace_resolver);
+			var typeArgs = typeArgNames == null ? null : XamlTypeName.ParseList (typeArgNames, xaml_namespace_resolver);
 			var xtn = new XamlTypeName (ns, name, typeArgs);
 			return new StartTagInfo () { Name = name, Namespace = ns, TypeName = xtn, Members = members, Attributes = atts};
 		}
@@ -510,7 +529,7 @@ namespace Uno.Xaml
 
 				// if (!string.IsNullOrEmpty(r.BaseURI))
 				{
-					string xmlbase = r.GetAttribute("base", XamlLanguage.Xml1998Namespace) ?? r.BaseURI;
+					var xmlbase = r.GetAttribute("base", XamlLanguage.Xml1998Namespace) ?? r.BaseURI;
 					if (xmlbase != null)
 						l.Add(new Pair(XamlLanguage.Base, xmlbase));
 				}
@@ -536,7 +555,7 @@ namespace Uno.Xaml
 					case XamlLanguage.Xmlns2000Namespace:
 						continue;
 					case XamlLanguage.Xaml2006Namespace:
-						XamlDirective d = FindStandardDirective (r.LocalName, AllowedMemberLocations.Attribute);
+						var d = FindStandardDirective (r.LocalName, AllowedMemberLocations.Attribute);
 						if (d != null) {
 							l.Add (new Pair (d, r.Value));
 							continue;
@@ -552,16 +571,16 @@ namespace Uno.Xaml
 						break;
 
 					default:
-						if (IsIgnored(r.Prefix, r.NamespaceURI, out var shouldTreatAsDefaultNamespace))
+						if (IsIgnored(r.Prefix, r.NamespaceURI, out var updatedNamespace))
 						{
 							continue;
 						}
 
-						if (r.NamespaceURI == String.Empty  || r.NamespaceURI == r.LookupNamespace("") || shouldTreatAsDefaultNamespace) {
+						if (updatedNamespace == string.Empty  || updatedNamespace == r.LookupNamespace("")) {
 							atts.Add (r.LocalName, r.Value);
 							continue;
 						}
-						if (r.NamespaceURI.StartsWith("using:", StringComparison.Ordinal) || r.NamespaceURI.Contains("#using:")) {
+						if (updatedNamespace.StartsWith("using:", StringComparison.Ordinal) || updatedNamespace.Contains("#using:")) {
 							atts.Add (r.Name, r.Value);
 							continue;
 						}
@@ -579,12 +598,12 @@ namespace Uno.Xaml
 		void ProcessAttributesToMember (XamlSchemaContext sctx, StartTagInfo sti, XamlType xt)
 		{
 			foreach (var p in sti.Attributes) {
-				int nsidx = p.Key.IndexOf (':');
-				string prefix = nsidx > 0 ? p.Key.Substring (0, nsidx) : String.Empty;
-				string aname = nsidx > 0 ? p.Key.Substring (nsidx + 1) : p.Key;
-				int propidx = aname.IndexOf ('.');
+				var nsidx = p.Key.IndexOf (':');
+				var prefix = nsidx > 0 ? p.Key.Substring (0, nsidx) : string.Empty;
+				var aname = nsidx > 0 ? p.Key.Substring (nsidx + 1) : p.Key;
+				var propidx = aname.IndexOf ('.');
 				if (propidx > 0) {
-					string apns = r.LookupNamespace(prefix);
+					var apns = r.LookupNamespace(prefix);
 					var apname = aname.Substring (0, propidx);
 					var axtn = new XamlTypeName (apns, apname, null);
 
@@ -669,11 +688,19 @@ namespace Uno.Xaml
 
 		private string ReadCurrentContentString(bool isFirstElementString)
 		{
-			var value = r.ReadContentAsString();
+			string value;
+			if (r.NodeType == XmlNodeType.SignificantWhitespace)
+			{
+				value = r.Value;
+				r.Read();
+				return value;
+			}
+
+			value = r.ReadContentAsString();
 
 			if (r.XmlSpace == XmlSpace.None)
 			{
-				var regex = new System.Text.RegularExpressions.Regex(@"\s+");
+				var regex = SpaceMatch();
 				value = regex.Replace(value, " ");
 
 				if (isFirstElementString)
@@ -732,7 +759,7 @@ namespace Uno.Xaml
 
 			XamlMember xm = null;
 			var name = r.LocalName;
-			int idx = name.IndexOf ('.');
+			var idx = name.IndexOf ('.');
 			// FIXME: it skips strict type name check, as it could result in MarkupExtension mismatch (could be still checked, though)
 			if (idx >= 0/* && name.Substring (0, idx) == xt.Name*/) {
 				name = name.Substring (idx + 1);
@@ -813,7 +840,7 @@ namespace Uno.Xaml
 						throw new XamlParseException(
 							string.Format(
 								CultureInfo.InvariantCulture,
-								"Member '{0}' cannot have properties", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
+								"Member '{0}' cannot have properties", xm.Name)) { LineNumber = LineNumber, LinePosition = LinePosition };
 					}
 				}
 				else
@@ -844,7 +871,7 @@ namespace Uno.Xaml
 					yield return Node (XamlNodeType.EndObject, xm.Type);
 				}
 				else
-					throw new XamlParseException (String.Format (CultureInfo.InvariantCulture, "Read-only member '{0}' showed up in the source XML, and the xml contains element content that cannot be read.", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
+					throw new XamlParseException (string.Format (CultureInfo.InvariantCulture, "Read-only member '{0}' showed up in the source XML, and the xml contains element content that cannot be read.", xm.Name)) { LineNumber = LineNumber, LinePosition = LinePosition };
 			} else {
 				if (xm.Type.IsCollection || xm.Type.IsDictionary) {
 					foreach (var ni in ReadCollectionItems (parentType, xm))
@@ -871,7 +898,7 @@ namespace Uno.Xaml
 		{
 			var member = xm;
 
-			bool isUnknownContent = !xm.IsDirective && xm.DeclaringType.UnderlyingType == null;
+			var isUnknownContent = !xm.IsDirective && xm.DeclaringType.UnderlyingType == null;
 
 			if (isUnknownContent)
 			{
@@ -946,18 +973,17 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private bool IsIgnored(string localName, string namespaceUri, out bool shouldTreatAsDefaultNamespace)
+		private bool IsIgnored(string localName, string namespaceUri, out string updatedNamespace)
 		{
 			var result = _isIncluded(localName, namespaceUri);
+			updatedNamespace = result.UpdatedNamespace ?? namespaceUri;
 			var isIncluded = result.IsIncluded;
 			DisableCaching |= result.DisableCaching;
 			if (isIncluded == true)
 			{
-				shouldTreatAsDefaultNamespace = true;
 				return false;
 			}
 
-			shouldTreatAsDefaultNamespace = false;
 			if (isIncluded == false)
 			{
 				return true;
@@ -1012,5 +1038,15 @@ namespace Uno.Xaml
 					yield return new NamespaceDeclaration (p.Value, p.Key);
 			}
 		}
+
+#if NET7_0_OR_GREATER && !DISABLE_GENERATED_REGEX
+		[System.Text.RegularExpressions.GeneratedRegex("\\s+")]
+#endif
+		private static partial System.Text.RegularExpressions.Regex SpaceMatch();
+
+#if !NET7_0_OR_GREATER || DISABLE_GENERATED_REGEX
+		private static partial System.Text.RegularExpressions.Regex SpaceMatch()
+			=> new System.Text.RegularExpressions.Regex("\\s+");
+#endif
 	}
 }

@@ -8,21 +8,9 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Ellipse : Shape
 	{
-		private ShapeVisual _rectangleVisual;
-
-		static Ellipse()
-		{
-			StretchProperty.OverrideMetadata(typeof(Ellipse), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
-		}
-
 		public Ellipse()
 		{
-			_rectangleVisual = Visual.Compositor.CreateShapeVisual();
-			Visual.Children.InsertAtBottom(_rectangleVisual);
 		}
-
-		protected override Size MeasureOverride(Size availableSize)
-			=> base.MeasureRelativeShape(availableSize);
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{

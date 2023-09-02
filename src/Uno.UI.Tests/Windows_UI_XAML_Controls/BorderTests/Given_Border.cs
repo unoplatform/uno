@@ -10,7 +10,6 @@ using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
-using View = Windows.UI.Xaml.FrameworkElement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.Foundation;
 using FluentAssertions;
@@ -19,11 +18,15 @@ using FluentAssertions.Execution;
 namespace Uno.UI.Tests.BorderTests
 {
 	[TestClass]
-#if !NET461
+#if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif
-	public class Given_Border : Context
+	public partial class Given_Border : Context
 	{
+		private partial class View : FrameworkElement
+		{
+		}
+
 		[TestMethod]
 		public void When_Border_Has_Fixed_Size()
 		{
@@ -119,8 +122,8 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if NET461 || __IOS__ || __ANDROID__ || __MACOS__ // Broken on Android for now
-		[Ignore("Layout engine is incomplete on net461 for arrange, ios & macOS needs actual layout pass")]
+#if IS_UNIT_TESTS || __IOS__ || __ANDROID__ || __MACOS__ // Broken on Android for now
+		[Ignore("Layout engine is incomplete on IS_UNIT_TESTS for arrange, ios & macOS needs actual layout pass")]
 #endif
 		public void When_Top_Align_Nested_With_Margin()
 		{

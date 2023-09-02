@@ -156,12 +156,7 @@ namespace Windows.UI.Composition
 				discreteAnim.KeyTimes = new NSNumber[] { new NSNumber(0.0), new NSNumber(1.0) };
 				discreteAnim.Values = new NSObject[] { _nsValueConversion(to) };
 
-				discreteAnim.CalculationMode
-#if NET6_0_OR_GREATER
-					 = CAKeyFrameAnimation.AnimationDiscrete;
-#else
-					 = CAKeyFrameAnimation.AnimationDescrete;
-#endif
+				discreteAnim.CalculationMode = CAKeyFrameAnimation.AnimationDiscrete;
 
 				animation = discreteAnim;
 			}

@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string TextMemberPath
 		{
-			get => (string)this.GetValue(TextMemberPathProperty);
+			get => (string)this.GetValue(TextMemberPathProperty) ?? "";
 			set => this.SetValue(TextMemberPathProperty, value);
 		}
 

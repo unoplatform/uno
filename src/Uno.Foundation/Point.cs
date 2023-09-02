@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Globalization;
 
-#if XAMARIN_IOS
+#if __IOS__
 using CoreGraphics;
 #endif
 
@@ -54,25 +54,6 @@ public partial struct Point
 
 	public static Point operator -(Point a)
 		=> new Point(-a.X, -a.Y);
-
-	public static implicit operator Point(string point)
-	{
-		if (string.IsNullOrEmpty(point))
-		{
-			// Marker to enable null-comparison if the string comparer
-			// has been called with null.
-			return new Point(double.NaN, double.NaN);
-		}
-		else
-		{
-			var parts = point
-				.Split(new[] { ',' })
-				.Select(value => double.Parse(value, CultureInfo.InvariantCulture))
-				.ToArray();
-
-			return new Point(parts[0], parts[1]);
-		}
-	}
 
 	public override string ToString()
 		=> "[{0}, {1}]".InvariantCultureFormat(X, Y);

@@ -6,7 +6,7 @@ using System.Linq;
 namespace Windows.Foundation;
 
 [EditorBrowsable(EditorBrowsableState.Never)]
-public class SizeConverter : TypeConverter
+internal class SizeConverter : TypeConverter
 {
 	public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 	{

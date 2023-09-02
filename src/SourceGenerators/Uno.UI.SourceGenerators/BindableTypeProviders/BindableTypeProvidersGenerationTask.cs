@@ -12,15 +12,8 @@ using Uno.UI.SourceGenerators.Helpers;
 using System.Xml;
 using System.Threading;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.BindableTypeProviders
 {
-#if NETFRAMEWORK
-	[GenerateAfter("Uno.ImmutableGenerator")]
-#endif
 	[Generator]
 	public class BindableTypeProvidersSourceGenerator : ISourceGenerator
 	{
@@ -119,16 +112,12 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 						message = (e as AggregateException)?.InnerExceptions.Select(ex => ex.Message + e.StackTrace).JoinBy("\r\n");
 					}
 
-#if NETSTANDARD
 					var diagnostic = Diagnostic.Create(
 						XamlCodeGenerationDiagnostics.GenericXamlErrorRule,
 						null,
 						$"Failed to generate type providers. ({e.Message})");
 
 					context.ReportDiagnostic(diagnostic);
-#else
-					Console.WriteLine("Failed to generate type providers.", new Exception("Failed to generate type providers." + message, e));
-#endif
 				}
 			}
 

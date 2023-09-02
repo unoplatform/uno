@@ -7,7 +7,7 @@
 					xmlns:local="using:GenericApp.Views.Controls"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://uno.ui/ios#using:Uno.UI.Views.Controls;Uno.UI.Controls;UIKit"
 					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
@@ -19,10 +19,10 @@
 					xmlns:wasm="http://uno.ui/wasm"
 					xmlns:skia="http://uno.ui/skia"
 					xmlns:macos="http://uno.ui/macos"
-					xmlns:net461="http://uno.ui/net461"
+					xmlns:IS_UNIT_TESTS="http://uno.ui/IS_UNIT_TESTS"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
-					mc:Ignorable="d xamarin ios android skia wasm not_wasm net461 macos">
+					mc:Ignorable="d not_win ios android skia wasm not_wasm IS_UNIT_TESTS macos">
 
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
@@ -71,13 +71,13 @@
 		TargetType="Button"
 				BasedOn="{StaticResource XamlDefaultButton}" />
 
-	<net461:Style x:Key="NativeDefaultButton"
+	<IS_UNIT_TESTS:Style x:Key="NativeDefaultButton"
 				TargetType="Button"
 				BasedOn="{StaticResource XamlDefaultButton}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="Button"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultButton}" />
 
 	<!-- Default native CheckBox styles -->
@@ -132,13 +132,13 @@
 		TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
-	<net461:Style x:Key="NativeDefaultCheckBox"
+	<IS_UNIT_TESTS:Style x:Key="NativeDefaultCheckBox"
 				TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="CheckBox"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultCheckBox}" />
 
 	<!-- Default native RadioButton styles -->
@@ -199,9 +199,9 @@
 		TargetType="ToggleSwitch"
 		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="ToggleSwitch"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultToggleSwitch}" />
 
 	<!-- Default native Slider styles -->
@@ -248,9 +248,9 @@
 		TargetType="Slider"
 		BasedOn="{StaticResource XamlDefaultSlider}" />
 
-	<xamarin:Style
+	<not_win:Style
 		BasedOn="{StaticResource NativeDefaultSlider}"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		TargetType="Slider" />
 
 	<converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
@@ -307,13 +307,13 @@
 		TargetType="ProgressBar"
 		BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="ProgressBar"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultProgressBar}" />
 
 	<!-- Default native TextBox styles -->
-	<xamarin:Style x:Key="NativeDefaultTextBox"
+	<not_win:Style x:Key="NativeDefaultTextBox"
 				   TargetType="TextBox">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -343,14 +343,14 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<not_wasm:Style BasedOn="{StaticResource NativeDefaultTextBox}"
-					xamarin:IsNativeStyle="True"
+					not_win:IsNativeStyle="True"
 					TargetType="TextBox" />
 
 	<!-- Default native Pivot styles -->
-	<xamarin:Style x:Key="NativeDefaultPivot"
+	<not_win:Style x:Key="NativeDefaultPivot"
 				   TargetType="Pivot">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -359,7 +359,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default native Pivot styles -->
 	<ios:Style TargetType="NativePivotPresenter">
@@ -393,12 +393,12 @@
 
 	<not_wasm:Style
 		TargetType="Pivot"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultPivot}" />
 
 	<wasm:Style
 		TargetType="Pivot"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource XamlDefaultPivot}" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
@@ -461,9 +461,9 @@
 		TargetType="CommandBar"
 		BasedOn="{StaticResource XamlCommandBar}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="CommandBar"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultCommandBar}" />
 
 	<ios:Style x:Key="NativeDefaultAppBarButton"
@@ -497,9 +497,9 @@
 		TargetType="AppBarButton"
 		BasedOn="{StaticResource XamlAppBarButton}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="AppBarButton"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultAppBarButton}" />
 
 	<!-- Default native Frame styles -->
@@ -543,13 +543,13 @@
 				BasedOn="{StaticResource XamlDefaultFrame}" />
 
 	<!-- Default native Frame styles -->
-	<net461:Style x:Key="NativeDefaultFrame"
+	<IS_UNIT_TESTS:Style x:Key="NativeDefaultFrame"
 				TargetType="Frame"
 				BasedOn="{StaticResource XamlDefaultFrame}" />
 
-	<xamarin:Style
+	<not_win:Style
 		TargetType="Frame"
-		xamarin:IsNativeStyle="True"
+		not_win:IsNativeStyle="True"
 		BasedOn="{StaticResource NativeDefaultFrame}" />
 
 	<!--
@@ -814,7 +814,7 @@
 		</Setter>
 	</ios:Style>
 
-	<xamarin:Style TargetType="TimePickerSelector">
+	<not_win:Style TargetType="TimePickerSelector">
 		<ios:Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="TimePickerSelector">
@@ -838,7 +838,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</android:Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!--#endregion-->
 

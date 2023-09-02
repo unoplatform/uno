@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using CoreGraphics;
+﻿using CoreGraphics;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -44,5 +43,3 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 	}
 }
-
-#endif

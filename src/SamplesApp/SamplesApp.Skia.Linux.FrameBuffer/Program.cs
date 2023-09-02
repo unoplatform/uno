@@ -15,7 +15,7 @@ namespace SkiaSharpExample
 		{
 			try
 			{
-				SamplesApp.App.ConfigureFilters(); // Enable tracing of the host
+				SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
 				Console.CursorVisible = false;
 				var host = new FrameBufferHost(() =>
@@ -29,7 +29,7 @@ namespace SkiaSharpExample
 					};
 
 					return new SamplesApp.App();
-				}, args);
+				});
 				host.Run();
 			}
 			finally

@@ -4,6 +4,7 @@
 			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
 			 mc:Ignorable="d"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
@@ -14,8 +15,8 @@
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 
-		<MenuBar>
-			<MenuBarItem x:Name="fileMenu" Title="File">
+		<muxc:MenuBar>
+			<muxc:MenuBarItem x:Name="fileMenu" Title="File">
 				<MenuFlyoutSubItem x:Name="newMenu" Text="New">
 					<MenuFlyoutItem x:Name="plainTextMenu" Text="Plain Text Document"
 									Command="{x:Bind MyCommand}" CommandParameter="Plain Text" />
@@ -50,9 +51,9 @@
 								Text="Exit"
 								Click="MenuFlyoutItem_Click"
 								AccessKey="X" />
-			</MenuBarItem>
+			</muxc:MenuBarItem>
 
-			<MenuBarItem x:Name="editMenu" Title="Edit">
+			<muxc:MenuBarItem x:Name="editMenu" Title="Edit">
 				<MenuFlyoutItem Text="Undo" 
 								Click="MenuFlyoutItem_Click"/>
 				<MenuFlyoutItem Text="Cut" 
@@ -65,13 +66,13 @@
 								Click="MenuFlyoutItem_Click"  />
 				<ToggleMenuFlyoutItem x:Name="ShuffleToggleMenuFlyoutItem" Text="Shuffle" IsChecked="False"
 								Click="MenuFlyoutItem_Click"  />
-			</MenuBarItem>
+			</muxc:MenuBarItem>
 
-			<MenuBarItem x:Name="helpMenu" Title="Help">
+			<muxc:MenuBarItem x:Name="helpMenu" Title="Help">
 				<MenuFlyoutItem Text="About" 
 								Click="MenuFlyoutItem_Click"/>
-			</MenuBarItem>
-		</MenuBar>
+			</muxc:MenuBarItem>
+		</muxc:MenuBar>
 		<StackPanel Grid.Row="1">
 			<TextBlock x:Name="result" />
 		</StackPanel>

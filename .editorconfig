@@ -24,13 +24,6 @@ indent_size = 2
 [*.md]
 indent_style = space
 
-# Workaround https://github.com/unoplatform/uno/issues/6883
-[**/Generated/**/*.cs]
-generated_code = true
-
-[CyclomaticComplexityWalker.cs]
-generated_code = true
-
 [*.cs]
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_block_contents
 csharp_indent_block_contents = true
@@ -40,6 +33,9 @@ csharp_indent_braces = false
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_case_contents
 csharp_indent_case_contents = true
+
+# https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/csharp-formatting-options#csharp_indent_case_contents_when_block
+csharp_indent_case_contents_when_block = false:suggestion
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#csharp_indent_labels
 csharp_indent_labels = one_less_than_current
@@ -220,6 +216,8 @@ dotnet_style_qualification_for_method = false:suggestion
 
 # http://kent-boogaart.com/blog/editorconfig-reference-for-c-developers#dotnet_style_qualification_for_property
 dotnet_style_qualification_for_property = false:suggestion
+
+csharp_style_namespace_declarations = file_scoped
 
 ## Naming styles
 

@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
 using System.IO;
-using Windows.Foundation;
-using Windows.Storage.Streams;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Android.Graphics;
-using Android.Graphics.Drawables;
+using Java.Nio;
+using Uno.Extensions;
 using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -32,6 +34,24 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 			image = ImageData.FromBitmap(Bitmap.CreateBitmap(drawableBuffer, PixelWidth, PixelHeight, Bitmap.Config.Argb8888));
 			return image.HasData;
+		}
+
+		private void DecodeStreamIntoBuffer()
+		{
+			if (Stream.CanSeek)
+			{
+				Stream.Position = 0;
+			}
+
+			var image = BitmapFactory.DecodeStream(Stream);
+
+			var pixels = new int[PixelWidth * PixelHeight];
+			image.GetPixels(pixels, 0, PixelWidth, 0, 0, PixelWidth, PixelHeight);
+
+			var pixelsBytes = MemoryMarshal.Cast<int, byte>(pixels.AsSpan());
+
+			pixelsBytes.CopyTo(_buffer.Span);
+			Debug.Assert(_buffer.Span.Length == PixelWidth * PixelHeight * 4);
 		}
 	}
 }

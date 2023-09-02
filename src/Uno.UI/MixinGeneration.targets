@@ -2,12 +2,6 @@
 <Project>
 
 	<PropertyGroup>
-		<IsCatalyst>false</IsCatalyst>
-		<IsCatalyst Condition="'$(TargetFramework)'=='net6.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">true</IsCatalyst>
-
-		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
-		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
-
 		<_T4ToolVersion>2.3.1</_T4ToolVersion>
 	</PropertyGroup>
 
@@ -68,37 +62,32 @@
 	</ItemGroup>
 
 	<!--
-	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for
+	DispatchToInnerBuilds is used for direct builds, CoreCompile is for
 	project dependency induced builds.
 	-->
 	<Target Name="GenerateMixins"
 		  Inputs="@(MixinInput)"
 		  Outputs="@(MixinOutput)"
-		  BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
+		  BeforeTargets="DispatchToInnerBuilds;Build;CoreCompile;_GenerateCompileDependencyCache"
 		  Condition="'$(DesignTimeBuild)' != 'true'">
-
-		<PropertyGroup>
-			<FirstTargetFramework Condition=" '$(TargetFrameworks)' == '' ">$(TargetFramework)</FirstTargetFramework>
-			<FirstTargetFramework Condition=" '$(FirstTargetFrameworks)' == '' ">$(TargetFrameworks.Split(';')[0])</FirstTargetFramework>
-		</PropertyGroup>
 
 		<ItemGroup>
 			<_t4Path Include="$(NuGetPackageRoot)/dotnet-t4/$(_T4ToolVersion)/**/t4.dll" />
 
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsAndroid)">
-				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework);IsAndroid=$(IsAndroid);IsIOS=$(IsIOS);IsMacOS=$(IsMacOS)</Properties>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsAndroid) or $(TargetFrameworks.Contains('-android'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\BaseActivity.Callbacks.g.cs</Properties>
 			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsAndroid)">
-				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework);IsAndroid=$(IsAndroid);IsIOS=$(IsIOS);IsMacOS=$(IsMacOS)</Properties>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsAndroid) or $(TargetFrameworks.Contains('-android'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\Android\FrameworkElementMixins.g.cs</Properties>
 			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
-				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework);IsAndroid=$(IsAndroid);IsIOS=$(IsIOS);IsMacOS=$(IsMacOS)</Properties>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\DependencyPropertyMixins.g.cs</Properties>
 			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsIOSOrCatalyst)">
-				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework);IsAndroid=$(IsAndroid);IsIOS=$(IsIOS);IsMacOS=$(IsMacOS)</Properties>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsIOSOrCatalyst) or $(TargetFrameworks.Contains('-ios')) or $(TargetFrameworks.Contains('-maccatalyst'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\iOS\FrameworkElementMixins.g.cs</Properties>
 			</MixinDefinition>
-			<MixinDefinition Include="$(MSBuildThisFileFullPath)" Condition="$(IsMacOS)">
-				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.cs;Configuration=$(Configuration);Platform=$(Platform);TargetFramework=$(FirstTargetFramework);IsAndroid=$(IsAndroid);IsIOS=$(IsIOS);IsMacOS=$(IsMacOS)</Properties>
+			<MixinDefinition Include="$(MSBuildThisFileDirectory)MixinGenerationCore.targets" Condition="$(IsMacOS) or $(TargetFrameworks.Contains('-macos'))">
+				<Properties>_t4Path=@(_t4Path);InputFile=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.tt;OutputPath=$(MSBuildThisFileDirectory)Mixins\macOS\FrameworkElementMixins.g.cs</Properties>
 			</MixinDefinition>
 		</ItemGroup>
 
@@ -120,7 +109,4 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="_InnerGenerateMixins">
-		<Exec Command="dotnet &quot;$(_t4Path)&quot; $(InputFile) -o $(OutputPath)" />
-	</Target>
 </Project>

@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml
 			IsDragAndDropEvent = flag.IsDragAndDropEvent();
 
 			IsAlwaysBubbled = IsPointerEvent || IsGestureEvent || IsManipulationEvent || IsDragAndDropEvent;
+			IsTunnelingEvent = flag.IsTunnelingEvent();
 		}
 
 		[Pure]
@@ -47,7 +48,8 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		[Pure]
 		internal bool IsAlwaysBubbled { get; }
-
+		[Pure]
+		internal bool IsTunnelingEvent { get; }
 		[Pure]
 		internal bool IsPointerEvent { get; }
 		[Pure]

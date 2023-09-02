@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.Graphics;
+﻿using Android.Graphics;
 using Uno.Helpers;
 using Windows.UI.StartScreen;
 using Android.Graphics.Drawables;
@@ -51,4 +50,3 @@ namespace Uno.UI.StartScreen.Extensions
 		}
 	}
 }
-#endif

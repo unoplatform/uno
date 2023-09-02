@@ -1,19 +1,17 @@
-﻿#if XAMARIN_ANDROID
+﻿using System;
+using Windows.UI.Xaml.Markup;
+
+#if __ANDROID__
 using Android.Views;
 using Android.Graphics;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using UIKit;
 using Windows.UI;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-using MonoTouch.UIKit;
 #elif __MACOS__
 using Color = Windows.UI.Color;
 #else
@@ -22,12 +20,15 @@ using Windows.UI;
 
 namespace Windows.UI.Xaml.Media
 {
+	[ContentProperty(Name = nameof(Color))]
 	public partial class GradientStop : DependencyObject
 	{
 		public GradientStop()
 		{
 			InitializeBinder();
 		}
+
+		internal event Action InvalidateRender;
 
 		public Windows.UI.Color Color
 		{
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Media
 				"Color",
 				typeof(Windows.UI.Color),
 				typeof(GradientStop),
-				new FrameworkPropertyMetadata(Colors.Transparent)
+				new FrameworkPropertyMetadata(Colors.Transparent, propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
 			);
 
 		public double Offset
@@ -52,7 +53,7 @@ namespace Windows.UI.Xaml.Media
 				"Offset",
 				typeof(double),
 				typeof(GradientStop),
-				new FrameworkPropertyMetadata(default(double))
+				new FrameworkPropertyMetadata(default(double), propertyChangedCallback: (s, _) => ((GradientStop)s).InvalidateRender?.Invoke())
 			);
 	}
 }

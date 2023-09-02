@@ -1,4 +1,8 @@
-﻿namespace Windows.UI.Xaml.Documents
+﻿using Uno.UI;
+using Uno.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+
+namespace Windows.UI.Xaml.Documents
 {
 	partial class TextElement
 	{
@@ -45,6 +49,19 @@
 		partial void OnTextDecorationsChangedPartial()
 		{
 			this.SetTextDecorations(ReadLocalValue(TextDecorationsProperty));
+		}
+
+		partial void OnNameChangedPartial(string newValue)
+		{
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				AutomationProperties.SetAutomationId(this, newValue);
+			}
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlName)
+			{
+				WindowManagerInterop.SetName(HtmlId, newValue);
+			}
 		}
 	}
 }

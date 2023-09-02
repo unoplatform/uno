@@ -4,16 +4,11 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml.Input;
-
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public abstract partial class ButtonBase : ContentControl
+	public partial class ButtonBase : ContentControl
 	{
 		private readonly SerialDisposable _clickSubscription = new SerialDisposable();
 
@@ -62,7 +57,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			//
 			// Bind the enabled handler
-			// 
+			//
 			void enabledHandler(object e, DependencyPropertyChangedEventArgs s)
 			{
 				uiControl.Enabled = IsEnabled;

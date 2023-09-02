@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		#endregion
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 		protected IRandomAccessStream _stream;
 #endif
 
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 			// The source has to be cloned before leaving the "SetSource[Async]".
 			var clonedStreamSource = streamSource.CloneStream();
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			_stream = clonedStreamSource;
 			UpdatePixelWidthAndHeightPartial(_stream.CloneStream().AsStream());
 #else
@@ -101,16 +101,15 @@ namespace Windows.UI.Xaml.Media.Imaging
 		}
 
 		partial void UpdatePixelWidthAndHeightPartial(Stream stream);
-
 		private protected virtual void OnSetSource() { }
 
 		private
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			async
 #endif
 			Task ForceLoad(CancellationToken ct)
 		{
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			var tcs = new TaskCompletionSource<object>();
 			using var r = ct.Register(() => tcs.TrySetCanceled());
 			using var s = Subscribe(OnChanged);
@@ -129,7 +128,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #endif
 		}
 
-#if !__NETSTD__
+#if !__CROSSRUNTIME__
 		internal event EventHandler StreamLoaded;
 #endif
 
@@ -140,7 +139,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 				return $"{GetType().Name}/{uri}";
 			}
 
-#if __NETSTD__
+#if __CROSSRUNTIME__
 			if (_stream is { } stream)
 			{
 				return $"{GetType().Name}/{stream.GetType()}";

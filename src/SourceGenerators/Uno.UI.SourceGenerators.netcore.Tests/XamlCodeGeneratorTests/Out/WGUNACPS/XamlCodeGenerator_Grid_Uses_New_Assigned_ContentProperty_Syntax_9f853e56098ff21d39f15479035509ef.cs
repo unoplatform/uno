@@ -27,7 +27,7 @@ using _View = Android.Views.View;
 using _View = UIKit.UIView;
 #elif __MACOS__
 using _View = AppKit.NSView;
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -39,12 +39,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 		private const string __baseUri_prefix_Grid_Uses_New_Assigned_ContentProperty_Syntax_9f853e56098ff21d39f15479035509ef = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Grid_Uses_New_Assigned_ContentProperty_Syntax_9f853e56098ff21d39f15479035509ef = "ms-appx:///TestProject/";
-				global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+		global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
-		{
-			InitializeComponent_C5AAB2A5();
-		}
-		private void InitializeComponent_C5AAB2A5()
 		{
 			NameScope.SetNameScope(this, __nameScope);
 			var __that = this;
@@ -168,7 +164,6 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 				_gridSubject.ElementInstance = value;
 			}
 		}
-
 	}
 }
 namespace MyProject

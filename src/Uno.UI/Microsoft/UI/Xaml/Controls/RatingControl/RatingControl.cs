@@ -31,9 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 	/// </summary>
 	public partial class RatingControl : Control
 	{
-#pragma warning disable IDE0051 // Remove unused private members
-		private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
-#pragma warning restore IDE0051 // Remove unused private members
+		//private const float c_horizontalScaleAnimationCenterPoint = 0.5f;
 		private const float c_verticalScaleAnimationCenterPoint = 0.8f;
 		private readonly Thickness c_focusVisualMargin = new Thickness(-8, -7, -8, 0);
 		private const int c_defaultRatingFontSizeForRendering = 32; // (32 = 2 * [default fontsize] -- because of double size rendering), remove when MSFT #10030063 is done

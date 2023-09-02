@@ -4,10 +4,6 @@
 
 #define TARGET_64BIT // Use runtime detection of 64bits target
 
-#if !NET5_0_OR_GREATER // https://github.com/dotnet/designs/blob/be793b557255c9ed1276ecdd23119b64f45453bf/accepted/2020/or-greater-defines/or-greater-defines.md
-#define HAS_CUSTOM_ISNULLREF
-#endif
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -169,11 +165,7 @@ namespace Windows.UI.Xaml
 			get
 			{
 				ref object value = ref FindValue(key);
-#if HAS_CUSTOM_ISNULLREF
-				if (!IsNullRef(ref value))
-#else
 				if (!Unsafe.IsNullRef(ref value))
-#endif
 				{
 					return value;
 				}
@@ -210,12 +202,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public bool ContainsKey(in ResourceKey key) =>
-#if HAS_CUSTOM_ISNULLREF
-			!IsNullRef(ref FindValue(key));
-#else
-			!Unsafe.IsNullRef(ref FindValue(key));
-#endif
+		public bool ContainsKey(in ResourceKey key) => !Unsafe.IsNullRef(ref FindValue(key));
 
 		public bool ContainsValue(object value)
 		{
@@ -263,11 +250,7 @@ namespace Windows.UI.Xaml
 
 		private ref object FindValue(in ResourceKey key)
 		{
-#if HAS_CUSTOM_ISNULLREF
-			ref Entry entry = ref NullRef<Entry>();
-#else
 			ref Entry entry = ref Unsafe.NullRef<Entry>();
-#endif
 
 			if (_buckets != null)
 			{
@@ -313,11 +296,7 @@ namespace Windows.UI.Xaml
 		Return:
 			return ref value;
 		ReturnNotFound:
-#if HAS_CUSTOM_ISNULLREF
-			value = ref NullRef<object>();
-#else
 			value = ref Unsafe.NullRef<object>();
-#endif
 			goto Return;
 		}
 
@@ -595,11 +574,7 @@ namespace Windows.UI.Xaml
 		public bool TryGetValue(in ResourceKey key, out object value)
 		{
 			ref object valRef = ref FindValue(key);
-#if HAS_CUSTOM_ISNULLREF
-			if (!IsNullRef(ref valRef))
-#else
 			if (!Unsafe.IsNullRef(ref valRef))
-#endif
 			{
 				value = valRef;
 				return true;
@@ -726,27 +701,6 @@ namespace Windows.UI.Xaml
             return ref buckets[hashCode % (uint)buckets.Length];
 #endif
 		}
-
-#if HAS_CUSTOM_ISNULLREF
-		//
-		// These two methods are extracted from Unsafe.IsNullRef and Unsafe.NullRef v5.0.0
-		// to avoid depending on previous versions of the binaries on Xamarin iOS/macOS/Android.
-		// Those are disabled on net5.0 or greater as the methods exist for those versions.
-		//
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		private static unsafe bool IsNullRef<T>(ref T source)
-		{
-			return Unsafe.AsPointer(ref source) == null;
-		}
-
-		[MethodImpl(MethodImplOptions.AggressiveInlining)]
-		public unsafe static ref T NullRef<T>()
-		{
-			return ref Unsafe.AsRef<T>(null);
-		}
-#endif
-
 
 		private struct Entry
 		{

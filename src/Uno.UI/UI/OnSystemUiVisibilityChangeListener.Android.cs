@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using Android.App;
+﻿using Android.App;
 using Android.Runtime;
 using Android.Views;
 using Window = Windows.UI.Xaml.Window;
@@ -41,4 +40,3 @@ namespace Uno.UI
 		}
 	}
 }
-#endif

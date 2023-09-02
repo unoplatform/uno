@@ -19,7 +19,10 @@ public partial class PathIconSource : IconSource
 	public static DependencyProperty DataProperty { get; } =
 		DependencyProperty.Register(nameof(Data), typeof(Geometry), typeof(PathIconSource), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-	private protected override IconElement CreateIconElementCore()
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override IconElement CreateIconElementCore()
 	{
 		var pathIcon = new PathIcon();
 
@@ -36,13 +39,16 @@ public partial class PathIconSource : IconSource
 		return pathIcon;
 	}
 
-	private protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected override DependencyProperty GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == DataProperty)
+		if (iconSourceProperty == DataProperty)
 		{
 			return PathIcon.DataProperty;
 		}
 
-		return base.GetIconElementPropertyCore(sourceProperty);
+		return base.GetIconElementPropertyCore(iconSourceProperty);
 	}
 }

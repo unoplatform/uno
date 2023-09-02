@@ -91,6 +91,8 @@ You will be able to build the UWP project, however, Rider currently does not sup
 
 [![Getting Started Rider Video](Assets/rider-cover.JPG)](http://www.youtube.com/watch?v=HgwL0al5bfo)
 
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+
 ### Troubleshooting Uno Platform Installation Issues
 
 If you're not sure whether your environment is correctly configured for Uno Platform development, running the [`uno-check` command-line tool](external/uno.check/doc/using-uno-check.md) should be your first step.

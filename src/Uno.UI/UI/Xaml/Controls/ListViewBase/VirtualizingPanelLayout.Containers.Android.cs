@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 		/// A row or column.
 		/// </summary>
 		[DebuggerDisplay("{DebugDisplay,nq}")]
-		protected class Line
+		private protected class Line
 		{
 			public int NumberOfViews { get; set; }
 			/// <summary>
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			public RelativeHeaderPlacement RelativeHeaderPlacement { get; set; }
 
 			/// <summary>
-			/// The extent of the header, in physical units. 
+			/// The extent of the header, in physical units.
 			/// </summary>
 			public int HeaderExtent { get; set; }
 

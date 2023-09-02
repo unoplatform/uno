@@ -21,10 +21,14 @@ using Com.Nostra13.Universalimageloader.Core;
 [assembly: UsesPermission("android.permission.READ_CONTACTS")]
 [assembly: UsesPermission("android.permission.INTERNET")]
 
+[assembly: UsesFeature("android.software.leanback", Required = false)]
+[assembly: UsesFeature("android.hardware.touchscreen", Required = false)]
+
 namespace SamplesApp.Droid
 {
 	[global::Android.App.ApplicationAttribute(
 		Label = "@string/ApplicationName",
+		Banner = "@drawable/banner",
 		LargeHeap = true,
 		HardwareAccelerated = true,
 		Theme = "@style/AppTheme"

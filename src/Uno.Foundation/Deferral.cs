@@ -6,7 +6,7 @@ namespace Windows.Foundation;
 /// <summary>
 /// Stores a DeferralCompletedHandler to be invoked upon completion of the deferral and manipulates the state of the deferral.
 /// </summary>
-public sealed partial class Deferral : IClosable
+public sealed partial class Deferral
 {
 	private readonly DeferralCompletedHandler _handler;
 

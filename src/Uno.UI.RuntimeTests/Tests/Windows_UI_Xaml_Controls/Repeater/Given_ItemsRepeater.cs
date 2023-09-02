@@ -8,7 +8,9 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.UI.Extensions;
@@ -121,6 +123,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#elif __ANDROID__
+		[Ignore("Currently fails https://github.com/unoplatform/uno/issues/9080")]
 #endif
 		public async Task When_NestedIRSlowlyChangeViewport_Then_MaterializedNeededItems()
 		{

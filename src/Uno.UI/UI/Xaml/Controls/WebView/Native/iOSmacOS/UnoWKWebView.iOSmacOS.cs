@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Windows.Web;
 using System.IO;
 using System.Linq;
 using Windows.ApplicationModel.Resources;
@@ -14,11 +13,8 @@ using Uno.UI.Xaml.Controls;
 using System.Net.Http;
 using Microsoft.Web.WebView2.Core;
 using Uno.UI.Extensions;
-using Windows.Foundation;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Text;
-using System.Net;
 using Windows.UI.Core;
 
 #if !__MACOS__ && !__MACCATALYST__ // catalyst https://github.com/xamarin/xamarin-macios/issues/13935
@@ -48,6 +44,8 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 
 	private readonly string OkString;
 	private readonly string CancelString;
+
+	private bool _isHistoryChangeQueued;
 
 	public UnoWKWebView() : base(CGRect.Empty, new WebKit.WKWebViewConfiguration())
 	{
@@ -423,7 +421,23 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	private void RaiseNavigationCompleted(Uri uri, bool isSuccess, int httpStatusCode, CoreWebView2WebErrorStatus errorStatus)
 	{
 		_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+		QueueHistoryChange();
 		_coreWebView.RaiseNavigationCompleted(uri, isSuccess, httpStatusCode, errorStatus);
+	}
+
+	private void QueueHistoryChange()
+	{
+		if (!_isHistoryChangeQueued)
+		{
+			_isHistoryChangeQueued = true;
+			_ = _coreWebView.Owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseQueuedHistoryChange);
+		}
+	}
+
+	private void RaiseQueuedHistoryChange()
+	{
+		_coreWebView.RaiseHistoryChanged();
+		_isHistoryChangeQueued = false;
 	}
 
 #if __IOS__
@@ -571,6 +585,24 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		_isCancelling = false;
 	}
 
+	public override void DidChangeValue(string forKey)
+	{
+		base.DidChangeValue(forKey);
+
+		if (forKey.Equals(nameof(Title), StringComparison.OrdinalIgnoreCase))
+		{
+			_coreWebView.DocumentTitle = Title;
+		}
+		else if (
+			forKey.Equals(nameof(Url), StringComparison.OrdinalIgnoreCase) ||
+			forKey.Equals(nameof(CanGoBack), StringComparison.OrdinalIgnoreCase) ||
+			forKey.Equals(nameof(CanGoForward), StringComparison.OrdinalIgnoreCase))
+		{
+			_coreWebView.SetHistoryProperties(CanGoBack, CanGoForward);
+			QueueHistoryChange();
+		}
+	}
+
 	public override bool CanGoBack => base.CanGoBack && GetNearestValidHistoryItem(direction: -1) != null;
 
 	public override bool CanGoForward => base.CanGoForward && GetNearestValidHistoryItem(direction: 1) != null;
@@ -616,7 +648,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			}
 			else
 			{
-				if (NSJsonSerialization.IsValidJSONObject(result))
+				if (result is not null && NSJsonSerialization.IsValidJSONObject(result))
 				{
 					var serializedData = NSJsonSerialization.Serialize(result, default, out var serializationError);
 					if (serializationError != null)

@@ -1,11 +1,7 @@
 ﻿using System;
 using Windows.UI.Xaml.Controls;
 
-#if XAMARIN_IOS_UNIFIED
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.UIKit;
-#endif
 
 namespace Uno.UI.Views.Controls
 {

@@ -16,7 +16,7 @@ namespace Windows.System
 		private static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
 #endif
 
-		public static Task<bool> LaunchUriAsync(Uri uri)
+		public static IAsyncOperation<bool> LaunchUriAsync(Uri uri)
 		{
 #if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__ || __SKIA__
 
@@ -38,14 +38,14 @@ namespace Windows.System
 			}
 #endif
 
-			return LaunchUriPlatformAsync(uri);
+			return LaunchUriPlatformAsync(uri).AsAsyncOperation();
 #else
 			if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
 			{
 				typeof(Launcher).Log().Error($"{nameof(LaunchUriAsync)} is not implemented on this platform.");
 			}
 
-			return Task.FromResult(false);
+			return Task.FromResult(false).AsAsyncOperation();
 #endif
 		}
 

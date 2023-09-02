@@ -14,10 +14,7 @@ using Uno;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls;
 using Uno.Foundation.Logging;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using SystemVersion = global::System.Version;
 
@@ -43,12 +42,7 @@ namespace Windows.ApplicationModel
 
 		private long GetVersionCode()
 		{
-#if __ANDROID_28__
 			return AndroidX.Core.Content.PM.PackageInfoCompat.GetLongVersionCode(_packageInfo);
-#else
-			return _packageInfo.VersionCode;
-#endif
 		}
 	}
 }
-#endif

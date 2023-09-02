@@ -1,20 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
+using Private.Infrastructure;
 using Windows.System;
 using Windows.UI.Core;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml;
+using UnhandledExceptionEventArgs = Windows.UI.Xaml.UnhandledExceptionEventArgs;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_System
 {
 	[TestClass]
+	[RunsOnUIThread]
 	public class Given_DispatcherQueueTimer
 	{
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ScheduleWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -40,7 +40,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ScheduleRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -75,7 +74,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_ScheduleNonRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<bool>();
@@ -106,7 +104,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 
 #if !WINDOWS_UWP && !__WASM__ // CoreDispatcher.Main.HasThreadAccess is always false on WASM ...
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_Tick_Then_RunningOnDispatcher()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -136,7 +133,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 #endif
 
 		[TestMethod]
-		[RunsOnUIThread]
 		public async Task When_StartAndStopFromBackgroundThread()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
@@ -158,13 +154,149 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
 		[ExpectedException(typeof(ArgumentException))]
 		public void When_SetNegativeInterval()
 		{
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 
 			timer.Interval = TimeSpan.FromMilliseconds(-100);
+		}
+
+		[TestMethod]
+		public async Task When_No_Interval_Set()
+		{
+			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+			try
+			{
+				int tickCounter = 0;
+				dispatcherTimer.Tick += (s, e) =>
+				{
+					tickCounter++;
+				};
+				dispatcherTimer.Start();
+				await TestServices.WindowHelper.WaitFor(() => tickCounter > 0);
+				await TestServices.WindowHelper.WaitFor(() => tickCounter > 5);
+			}
+			finally
+			{
+				dispatcherTimer.Stop();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Sleep_In_Tick()
+		{
+			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+			dispatcherTimer.Interval = TimeSpan.FromMilliseconds(200);
+			try
+			{
+				var firstTick = true;
+				Stopwatch stopwatch = new Stopwatch();
+				dispatcherTimer.Tick += (s, e) =>
+				{
+					if (!firstTick)
+					{
+						stopwatch.Stop();
+						dispatcherTimer.Stop();
+					}
+					Thread.Sleep(100);
+					if (firstTick)
+					{
+						stopwatch.Start();
+						firstTick = false;
+					}
+				};
+				dispatcherTimer.Start();
+				await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsRunning);
+
+				// The second tick must be scheduled only after the first one finishes completely -
+				// around 200ms must have elapsed on the stopwatch.
+				Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 180);
+			}
+			finally
+			{
+				dispatcherTimer.Stop();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Change_Interval_Higher()
+		{
+			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+			dispatcherTimer.Interval = TimeSpan.FromMilliseconds(300);
+			try
+			{
+				int repeats = 0;
+				Stopwatch stopwatch = new();
+				dispatcherTimer.Tick += (s, e) =>
+				{
+					repeats++;
+					if (repeats == 1)
+					{
+						// We increased the interval to 600ms after about 100ms elapsed,
+						// but this should not reset the existing scheduled tick.
+						Assert.IsTrue(stopwatch.ElapsedMilliseconds <= 400);
+						stopwatch.Restart();
+					}
+					else if (repeats == 2)
+					{
+						// The second tick should be scheduled after 600ms
+						Assert.IsTrue(stopwatch.ElapsedMilliseconds >= 400);
+						stopwatch.Stop();
+						dispatcherTimer.Stop();
+					}
+				};
+				dispatcherTimer.Start();
+				await Task.Delay(100);
+				dispatcherTimer.Interval = TimeSpan.FromMilliseconds(600);
+				stopwatch.Start();
+
+				await TestServices.WindowHelper.WaitFor(() => !dispatcherTimer.IsRunning, timeoutMS: 2000);
+			}
+			finally
+			{
+				dispatcherTimer.Stop();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Exception_In_Tick()
+		{
+			var dispatcherTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+			var simulatedExceptionMessage = "Simulated exception";
+			void HandleException(object s, UnhandledExceptionEventArgs e)
+			{
+				if (e.Exception.Message == simulatedExceptionMessage)
+				{
+					e.Handled = true;
+				}
+			}
+
+			Application.Current.UnhandledException += HandleException;
+
+			dispatcherTimer.Interval = TimeSpan.FromMilliseconds(50);
+			try
+			{
+				int tickCounter = 0;
+				dispatcherTimer.Tick += (s, e) =>
+				{
+					tickCounter++;
+					throw new InvalidOperationException(simulatedExceptionMessage);
+				};
+				dispatcherTimer.Start();
+				await TestServices.WindowHelper.WaitFor(() => tickCounter > 0);
+				await Task.Delay(200);
+
+				// The time keeps ticking even after an exception
+				Assert.IsTrue(dispatcherTimer.IsRunning);
+				Assert.IsTrue(dispatcherTimer.IsRepeating);
+				Assert.IsTrue(tickCounter > 1);
+			}
+			finally
+			{
+				dispatcherTimer.Stop();
+				Application.Current.UnhandledException -= HandleException;
+			}
 		}
 	}
 }

@@ -3,10 +3,8 @@ parameters:
 
 jobs:
 - job: skia_package_build
-  displayName: 'Build Skia Package Binaries'
+  displayName: 'Skia Package Binaries'
   container: nv-bionic-wasm
-
-  dependsOn: winui_convert_tree
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -25,10 +23,6 @@ jobs:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
 
-    # Disable .NET 5 build on CI for package generation
-    # Build validation is performed on other jobs
-    UnoUIDisableNet7Build: true
-
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
 
     # We're building packages on linux, so we need to enable WPF support
@@ -46,6 +40,11 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/gitversion.yml
+  
+  - script: |
+      cp global.json global-net7.json
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
 
   - template: templates/dotnet-install.yml
 

@@ -9,7 +9,7 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Controls.Primitives;
 #endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;

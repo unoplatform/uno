@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;
@@ -16,7 +15,6 @@ using Uno.Disposables;
 using Uno.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
-using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
 using System.Threading;

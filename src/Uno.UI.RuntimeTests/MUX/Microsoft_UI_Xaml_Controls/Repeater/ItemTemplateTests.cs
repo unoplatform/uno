@@ -12,7 +12,9 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common;
 using Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common.Mocks;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using System;
 using Private.Infrastructure;
 using System.Threading.Tasks;
@@ -42,6 +44,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 
 	[TestClass]
 	[RequiresFullWindow]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class ItemTemplateTests : MUXApiTestBase
 	{
 		[TestMethod]

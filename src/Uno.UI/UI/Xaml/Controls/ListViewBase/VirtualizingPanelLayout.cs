@@ -1,4 +1,4 @@
-﻿#if !NET461
+﻿#if !IS_UNIT_TESTS
 #nullable enable
 
 using System;
@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the index of the next item that has not yet been materialized in the nominated fill direction. Returns null if there are no more available items in the source.
 		/// </summary>
-		protected Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, Uno.UI.IndexPath? currentMaterializedItem)
+		private protected Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, Uno.UI.IndexPath? currentMaterializedItem)
 		{
 			var direction = fillDirection == GeneratorDirection.Forward ? 1 : -1;
 			var index = XamlParent?.GetNextItemIndex(currentMaterializedItem, direction);
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 				throw new NotSupportedException($"{nameof(VirtualizingPanelLayouter)} is only used for measuring and arranging child views.");
 			}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			protected override void MeasureChild(Android.Views.View view, int widthSpec, int heightSpec)
 			{
 				view.Measure(widthSpec, heightSpec);

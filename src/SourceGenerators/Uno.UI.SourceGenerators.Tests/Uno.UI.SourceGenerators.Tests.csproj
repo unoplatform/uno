@@ -1,7 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<!-- There is no need to multi-target this test project -->
+		<!-- We keep it on the oldest supported TFM -->
+		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
+		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<IsPackable>false</IsPackable>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
@@ -24,7 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.1" />
 		<PackageReference Include="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
 		<PackageReference Include="coverlet.collector" Version="6.0.0" />

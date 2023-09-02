@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Documents
 {
-	[ContentProperty(Name = "Text")]
+	[ContentProperty(Name = nameof(Text))]
 	public partial class Run : Inline
 	{
 		#region Text Dependency Property

@@ -16,8 +16,8 @@
 			<_IsRCClientRemote>false</_IsRCClientRemote>
 			<_IsRCClientRemote Condition="'$(PkgUno_Wasm_Bootstrap_DevServer)'!=''">true</_IsRCClientRemote>
 
-			<_UnoRCHostVersionPath>net6.0</_UnoRCHostVersionPath>
-			<_UnoRCHostVersionPath Condition="'$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))' &gt; 6">net7.0</_UnoRCHostVersionPath>
+			<_UnoRCHostVersionPath>net7.0</_UnoRCHostVersionPath>
+			<_UnoRCHostVersionPath Condition="'$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))' &gt; 7">net8.0</_UnoRCHostVersionPath>
 		</PropertyGroup>
 
 

@@ -20,7 +20,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	{
 		private const string _sample = "UITests.Windows_UI_Input.PointersTests.Nested_Sequence";
 
+#pragma warning disable SYSLIB1045
 		private static readonly Regex _resultRegex = new Regex(@"\s*\[(?<element>\w+)\]\s+(?<evt>\w+)\s*(\((?<param>(?<key>\w+)\s*=\s*(?<value>\w+)|\s*\|\s*)+\))?");
+#pragma warning restore SYSLIB1045
 
 		private static KeyValuePair<string, string> _inRange = new("in_range", "true");
 		private static KeyValuePair<string, string> _inContact = new("in_contact", "true");

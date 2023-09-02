@@ -62,11 +62,21 @@ public partial class IconSource : DependencyObject
 		}
 	}
 
-	private protected virtual IconElement? CreateIconElementCore() => default;
+	// Note: Both CreateIconElementCore and GetIconElementPropertyCore are 'protected' only on WinUI 3
+	// https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.iconsource.createiconelementcore?view=windows-app-sdk-1.3
+	// https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.controls.iconsource.geticonelementpropertycore?view=windows-app-sdk-1.3
+	// We make them private protected for UWP build.
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected virtual IconElement? CreateIconElementCore() => default;
 
-	private protected virtual DependencyProperty? GetIconElementPropertyCore(DependencyProperty sourceProperty)
+#if !HAS_UNO_WINUI
+	private
+#endif
+	protected virtual DependencyProperty? GetIconElementPropertyCore(DependencyProperty iconSourceProperty)
 	{
-		if (sourceProperty == ForegroundProperty)
+		if (iconSourceProperty == ForegroundProperty)
 		{
 			return IconElement.ForegroundProperty;
 		}

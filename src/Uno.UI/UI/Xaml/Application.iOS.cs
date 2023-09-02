@@ -1,13 +1,12 @@
-﻿#if XAMARIN_IOS
-using Foundation;
+﻿using Foundation;
 using System;
 using System.Linq;
 using UIKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
 using ObjCRuntime;
+using Windows.Globalization;
 using Windows.Graphics.Display;
-using Uno.UI.Services;
 using Uno.Extensions;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
@@ -20,26 +19,16 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 namespace Windows.UI.Xaml
 {
 	[Register("UnoAppDelegate")]
 	public partial class Application : UIApplicationDelegate
 	{
-		private bool _suspended;
-		internal bool IsSuspended => _suspended;
-
 		private bool _preventSecondaryActivationHandling;
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
 			SetCurrentLanguage();
-			InitializeSystemTheme();
-			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 
 			SubscribeBackgroundNotifications();
 		}
@@ -136,18 +125,7 @@ namespace Windows.UI.Xaml
 			_preventSecondaryActivationHandling = false;
 		}
 
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(10), () => _suspended = true);
-
-		partial void OnResumingPartial()
-		{
-			if (_suspended)
-			{
-				_suspended = false;
-
-				Resuming?.Invoke(this, null);
-			}
-		}
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now.AddSeconds(10);
 
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)
 		{
@@ -230,7 +208,7 @@ namespace Windows.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(() => RaiseSuspending());
 		}
@@ -238,22 +216,21 @@ namespace Windows.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		private void SetCurrentLanguage()
 		{
-#if NET6_0_OR_GREATER
 			// net6.0-iOS does not automatically set the thread and culture info
 			// https://github.com/xamarin/xamarin-macios/issues/14740
 			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
@@ -270,8 +247,6 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Error($"Failed to set current culture for language: {language}", ex);
 			}
-#endif
 		}
 	}
 }
-#endif

@@ -33,6 +33,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public (int start, int length) SelectionBeforeKeyDown =>
+			(_textBoxExtension!.GetSelectionStartBeforeKeyDown(), _textBoxExtension.GetSelectionLengthBeforeKeyDown());
+
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
 		public TextBox? TextBox
@@ -98,6 +101,12 @@ namespace Windows.UI.Xaml.Controls
 				_textBoxExtension?.EndEntry();
 				DisplayBlock.Opacity = 1;
 			}
+		}
+
+		internal void OnFontFamilyChanged(FontFamily fontFamily)
+		{
+			DisplayBlock.FontFamily = fontFamily;
+			// TODO: Propagate font family to the native InputWidget via _textBoxExtension.
 		}
 
 		internal void SetPasswordRevealState(PasswordRevealState revealState)

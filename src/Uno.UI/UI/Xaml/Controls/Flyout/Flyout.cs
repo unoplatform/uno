@@ -9,9 +9,9 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
 using Microsoft.UI.Xaml.Controls;
 
-#if XAMARIN_IOS
+#if __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 using Android.Views;
 #else
 using View = Windows.UI.Xaml.UIElement;
@@ -19,7 +19,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Content")]
+	[ContentProperty(Name = nameof(Content))]
 	public partial class Flyout : FlyoutBase
 	{
 		public Style FlyoutPresenterStyle

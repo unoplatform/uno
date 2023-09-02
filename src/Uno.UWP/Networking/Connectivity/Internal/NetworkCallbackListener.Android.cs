@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using Android.Net;
 using AndroidConnectivityManager = Android.Net.ConnectivityManager;
 
@@ -48,4 +47,3 @@ namespace Windows.Networking.Connectivity.Internal
 		}
 	}
 }
-#endif

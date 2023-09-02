@@ -7,6 +7,10 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno;
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
@@ -15,7 +19,7 @@ namespace Windows.UI.Xaml.Shapes
 		private (Brush, Thickness) _border;
 		private CornerRadius _cornerRadius;
 
-		private SerialDisposable _backgroundSubscription;
+		private Action _backgroundChanged;
 
 		public void UpdateLayer(
 			UIElement element,
@@ -28,11 +32,10 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			if (_background != background && element is FrameworkElement fwElt)
 			{
+				var oldValue = _background;
 				_background = background;
-				var subscription = _backgroundSubscription ??= new SerialDisposable();
 
-				subscription.Disposable = null;
-				subscription.Disposable = SetAndObserveBackgroundBrush(fwElt, background);
+				SetAndObserveBackgroundBrush(fwElt, oldValue, background, ref _backgroundChanged);
 			}
 
 			if (_border != (borderBrush, borderThickness))
@@ -94,6 +97,15 @@ namespace Windows.UI.Xaml.Shapes
 							("border-width", borderWidth),
 							("border-image-slice", "1"));
 						break;
+					case RadialGradientBrush radialGradientBrush:
+						var radialBorder = radialGradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+						element.SetStyle(
+							("border-style", "solid"),
+							("border-color", ""),
+							("border-image", radialBorder),
+							("border-width", borderWidth),
+							("border-image-slice", "1"));
+						break;
 					case AcrylicBrush acrylicBrush:
 						var acrylicFallbackColor = acrylicBrush.FallbackColorWithOpacity;
 						element.SetStyle(
@@ -109,15 +121,27 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		public static IDisposable SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush)
+		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush oldValue, Brush newValue, ref Action brushChanged)
 		{
-			SetBackgroundBrush(element, brush);
-
-			if (brush is ImageBrush imgBrush)
+			if (oldValue is AcrylicBrush oldAcrylic)
 			{
+				AcrylicBrush.ResetStyle(element);
+			}
+
+			Action newOnInvalidateRender;
+
+			if (newValue is ImageBrush imgBrush)
+			{
+				SetBackgroundBrush(element, newValue);
+
 				RecalculateBrushOnSizeChanged(element, false);
-				return imgBrush.Subscribe(img =>
+				newOnInvalidateRender = () =>
 				{
+					if (imgBrush.ImageDataCache is not { } img)
+					{
+						return;
+					}
+
 					switch (img.Kind)
 					{
 						case ImageDataKind.Empty:
@@ -138,15 +162,30 @@ namespace Windows.UI.Xaml.Shapes
 							);
 							break;
 					}
-				});
+				};
 			}
-			else if (brush is AcrylicBrush acrylicBrush)
+			else if (newValue is AcrylicBrush acrylicBrush)
 			{
-				return acrylicBrush.Subscribe(element);
+				SetBackgroundBrush(element, newValue);
+
+				newOnInvalidateRender = () => acrylicBrush.Apply(element);
 			}
 			else
 			{
-				return Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(element, brush));
+				SetBackgroundBrush(element, newValue);
+				if (newValue is not null)
+				{
+					newOnInvalidateRender = () => SetBackgroundBrush(element, newValue);
+				}
+				else
+				{
+					newOnInvalidateRender = null;
+				}
+			}
+
+			if (newOnInvalidateRender is not null)
+			{
+				Brush.SetupBrushChanged(oldValue, newValue, ref brushChanged, newOnInvalidateRender);
 			}
 		}
 
@@ -161,6 +200,10 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 				case GradientBrush gradientBrush:
 					WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, gradientBrush.ToCssString(element.RenderSize));
+					RecalculateBrushOnSizeChanged(element, true);
+					break;
+				case RadialGradientBrush radialGradientBrush:
+					WindowManagerInterop.SetElementBackgroundGradient(element.HtmlId, radialGradientBrush.ToCssString(element.RenderSize));
 					RecalculateBrushOnSizeChanged(element, true);
 					break;
 				case XamlCompositionBrushBase unsupportedCompositionBrush:
@@ -192,6 +235,13 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				element.SizeChanged -= _onSizeChangedForBrushCalculation;
 			}
+		}
+
+		internal void Clear()
+		{
+			_background = null;
+			_border = default;
+
 		}
 	}
 }

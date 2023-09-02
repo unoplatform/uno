@@ -338,9 +338,9 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualState();
 		}
 
-		internal override void OnItemClicked(int clickedIndex)
+		internal override void OnItemClicked(int clickedIndex, VirtualKeyModifiers modifiers)
 		{
-			base.OnItemClicked(clickedIndex);
+			base.OnItemClicked(clickedIndex, modifiers);
 			IsDropDownOpen = false;
 		}
 
@@ -682,29 +682,10 @@ namespace Windows.UI.Xaml.Controls
 				{
 					FocusState.Unfocused => "Unfocused",
 					FocusState.Pointer => "PointerFocused",
-					FocusState.Keyboard => IsPointerPressed ? "FocusedPressed" : "Focused",
-					FocusState.Programmatic => throw new NotImplementedException(),
-					_ => "Unfocused"
+					_ => IsPointerPressed ? "FocusedPressed" : "Focused",
 				};
-				GoToState(useTransitions, focusVisualState);
-				var focusState = FocusState;
 
-				if (focusState == FocusState.Unfocused)
-				{
-					GoToState(useTransitions, "Unfocused");
-				}
-				else if (IsPointerPressed)
-				{
-					GoToState(useTransitions, "FocusedPressed");
-				}
-				else if (focusState == FocusState.Pointer)
-				{
-					GoToState(useTransitions, "PointerFocused");
-				}
-				else
-				{
-					GoToState(useTransitions, "Focused");
-				}
+				GoToState(useTransitions, focusVisualState);
 			}
 		}
 

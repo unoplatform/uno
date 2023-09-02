@@ -13,7 +13,7 @@ using Windows.UI.Xaml;
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
 	[TestClass]
-#if !NET461
+#if !IS_UNIT_TESTS
 	[RuntimeTests.RunsOnUIThread]
 #endif
 	public partial class Given_FrameworkElement
@@ -136,7 +136,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 		{
 			var grid = new UserControl();
 
-			grid.SetValue(FrameworkElement.IsEnabledProperty, null);
+			grid.SetValue(Control.IsEnabledProperty, null);
 		}
 	}
 

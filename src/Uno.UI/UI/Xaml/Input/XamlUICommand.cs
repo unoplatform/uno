@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public string Label
 		{
-			get => (string)GetValue(LabelProperty);
+			get => (string)GetValue(LabelProperty) ?? "";
 			set => SetValue(LabelProperty, value);
 		}
 
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public string Description
 		{
-			get => (string)GetValue(DescriptionProperty);
+			get => (string)GetValue(DescriptionProperty) ?? "";
 			set => SetValue(DescriptionProperty, value);
 		}
 
@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Input
 		/// </summary>
 		public string AccessKey
 		{
-			get => (string)GetValue(AccessKeyProperty);
+			get => (string)GetValue(AccessKeyProperty) ?? "";
 			set => SetValue(AccessKeyProperty, value);
 		}
 

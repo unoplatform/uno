@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Data;
@@ -73,7 +71,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
+			IDisposable? localPrecedenceDisposable = null;
 
 			EnsureSetterMap();
 
@@ -82,6 +80,7 @@ namespace Windows.UI.Xaml
 #endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
+				localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
 
 				if (_flattenedSetters != null)
 				{
@@ -91,15 +90,18 @@ namespace Windows.UI.Xaml
 					}
 				}
 
+				localPrecedenceDisposable?.Dispose();
+				localPrecedenceDisposable = null;
+
 				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
-				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.StaticResourceLoading);
+				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY
 			finally
 #endif
 			{
-				ResourceResolver.PopScope();
 				localPrecedenceDisposable?.Dispose();
+				ResourceResolver.PopScope();
 			}
 		}
 
@@ -175,31 +177,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider) => RegisterDefaultStyleForType(type, styleProvider, isNative: false);
-
-		/// <summary>
-		/// Register lazy default style provider for the nominated type.
-		/// </summary>
-		/// <param name="type">The type to which the style applies</param>
-		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
-		/// <param name="isNative">True if it is the native default style, false if it is the UWP default style.</param>
-		/// <remarks>
-		/// This is public for backward compatibility, but isn't called from Xaml-generated code any longer. 
-		/// </remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
-		{
-			if (isNative)
-			{
-				_nativeLookup[type] = styleProvider;
-			}
-			else
-			{
-				_lookup[type] = styleProvider;
-			}
-		}
-
 		/// <summary>
 		///  Register lazy default style provider for the nominated type.
 		/// </summary>
@@ -210,7 +187,14 @@ namespace Windows.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, IXamlResourceDictionaryProvider dictionaryProvider, bool isNative)
 		{
-			RegisterDefaultStyleForType(type, ProvideStyle, isNative);
+			if (isNative)
+			{
+				_nativeLookup[type] = ProvideStyle;
+			}
+			else
+			{
+				_lookup[type] = ProvideStyle;
+			}
 
 			Style ProvideStyle()
 			{
@@ -225,7 +209,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Returns the default Style for given type. 
+		/// Returns the default Style for given type.
 		/// </summary>
 		internal static Style? GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
 

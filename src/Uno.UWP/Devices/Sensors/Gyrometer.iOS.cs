@@ -1,4 +1,3 @@
-#if __IOS__
 using CoreMotion;
 using Foundation;
 using Uno.Devices.Sensors.Helpers;
@@ -54,4 +53,3 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
-#endif

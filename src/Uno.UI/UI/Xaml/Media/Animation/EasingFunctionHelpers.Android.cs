@@ -8,14 +8,14 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	internal static class EasingFunctionHelpers
 	{
-		internal static ITimeInterpolator GetPowerTimeInterpolator(float power, EasingMode mode)
+		internal static ITimeInterpolator GetPowerTimeInterpolator(double power, EasingMode mode)
 		{
 			switch (mode)
 			{
 				case EasingMode.EaseIn:
-					return new AccelerateInterpolator(power * 0.5f);
+					return new AccelerateInterpolator((float)(power * 0.5));
 				case EasingMode.EaseOut:
-					return new DecelerateInterpolator(power * 0.5f);
+					return new DecelerateInterpolator((float)(power * 0.5));
 				case EasingMode.EaseInOut:
 					//We cannot set the power for AccelerateDecelerateInterpolator therefore we use the default one.
 					return new AccelerateDecelerateInterpolator();

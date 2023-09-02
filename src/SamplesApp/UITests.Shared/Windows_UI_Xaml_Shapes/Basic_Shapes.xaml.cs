@@ -26,6 +26,10 @@ using System.IO;
 using Uno.UI;
 using Windows.Graphics.Display;
 
+#if !WINDOWS_UWP
+using Uno.UI.Controls.Legacy;
+#endif
+
 #if __IOS__
 using UIKit;
 #endif
@@ -295,11 +299,20 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				{
 					var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
 					var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
+					var loaded = new TaskCompletionSource<object>();
+					grid.SizeChanged += (snd, e) =>
+					{
+						if (e.NewSize != default)
+						{
+							loaded.SetResult(default);
+						}
+					};
 					_testZone.Child = grid;
+					await loaded.Task;
 					await Task.Yield();
 
 					var renderer = new RenderTargetBitmap();
-					await renderer.RenderAsync(grid);
+					await renderer.RenderAsync(grid, (int)grid.ActualWidth, (int)grid.ActualHeight); // We explicitly set the size to ignore the screen scaling
 
 					var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
 					using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
@@ -340,7 +353,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					try
 					{
 						var elt = await RenderById(test);
-						await renderer.RenderAsync(elt); ;
+						await renderer.RenderAsync(elt, (int)elt.ActualWidth, (int)elt.ActualHeight); // We explicitly set the size to ignore the screen scaling
 						var pixels = await renderer.GetPixelsAsync();
 						byte[] testResult = default;
 
@@ -410,7 +423,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			FrameworkElement GetElement()
 			{
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				var parsedId = Regex.Match(id, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				if (!parsedId.Success)
 				{
 					return new TextBlock { Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red) };
@@ -578,7 +593,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				_alter = alter;
 				Name = name;
+#pragma warning disable SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 				Id = Regex.Replace(name, @"([^\w]|[ ])(?<first>[a-z])", m => m.Groups["first"].Value.ToUpperInvariant());
+#pragma warning restore SYSLIB1045 // Convert to 'GeneratedRegexAttribute'.
 
 				var desc = !details.IsNullOrEmpty() ? $"{name} ({details})" : name;
 				Option = new ToggleSwitch { OnContent = desc, OffContent = desc, IsOn = isEnabled };

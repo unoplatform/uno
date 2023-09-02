@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Windows.System;
 using Uno.UI;
 using Windows.UI.Xaml.Data;
 using UIKit;
@@ -90,6 +91,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Gets or sets whether the focus should be kept on the TextBox when the user taps outside of it.
+		/// </summary>
+		/// <remarks>
+		/// In some cases, like when the TextBox is inside an <see cref="AutoSuggestBox"/>,
+		/// the focus must be kept on the TextBox when making a selection.
+		/// </remarks>
+		/// Fix issue # https://github.com/unoplatform/uno/issues/11961
+		internal bool IsKeepingFocusOnEndEditing { get; set; }
+
 		private void UpdateTextBoxView()
 		{
 			if (_contentElement != null)
@@ -125,7 +136,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool OnKey(char key)
 		{
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
+			// TODO: include modifier info
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey(), VirtualKeyModifiers.None)
 			{
 				CanBubbleNatively = true
 			};
@@ -297,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			);
 
 
-		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue)
+		private static object CoerceReturnKeyType(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? UIReturnKeyType.Search

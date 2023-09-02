@@ -414,12 +414,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			return true;
 		}
 
-		protected virtual void Dispose(bool disposing)
+		private protected virtual void Dispose(bool disposing)
 		{
 			Target = null;
 		}
 
-		public void Dispose()
+		internal void Dispose()
 		{
 			Dispose(true);
 			GC.SuppressFinalize(this);
@@ -431,7 +431,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		~Timeline()
 		{
-			Dispose(false);
+			_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => Dispose(false));
 		}
 	}
 }

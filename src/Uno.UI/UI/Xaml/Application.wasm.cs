@@ -1,12 +1,13 @@
 ﻿#nullable enable
 
-#if __WASM__
 using System;
+using System.Runtime.InteropServices.JavaScript;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.ApplicationModel;
+using Windows.Globalization;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Uno.Foundation;
@@ -28,11 +29,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-
 using NativeMethods = __Windows.UI.Xaml.Application.NativeMethods;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -40,16 +37,12 @@ namespace Windows.UI.Xaml
 	{
 		private static bool _startInvoked;
 
-		public Application()
+		partial void InitializePartial()
 		{
 			if (!_startInvoked)
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
-
-			Current = this;
-			InitializeSystemTheme();
-			Package.SetEntryAssembly(this.GetType().Assembly);
 
 			global::Uno.Foundation.Extensibility.ApiExtensibility.Register(
 				typeof(global::Windows.ApplicationModel.DataTransfer.DragDrop.Core.IDragDropExtension),
@@ -60,9 +53,7 @@ namespace Windows.UI.Xaml
 			ObserveApplicationVisibility();
 		}
 
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		public static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;
@@ -71,14 +62,14 @@ namespace Windows.UI.Xaml
 			{
 				application?.RaiseLeavingBackground(() =>
 				{
-					window?.OnVisibilityChanged(true);
-					window?.OnActivated(CoreWindowActivationState.CodeActivated);
+					window?.OnNativeVisibilityChanged(true);
+					window?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.OnActivated(CoreWindowActivationState.Deactivated);
-				window?.OnVisibilityChanged(false);
+				window?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				window?.OnNativeVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
 
@@ -119,7 +110,7 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
-				var arguments = WindowManagerInterop.FindLaunchArguments();
+				var arguments = WindowManagerInterop.BeforeLaunch();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
@@ -143,9 +134,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Dispatch method from Javascript
 		/// </summary>
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		internal static void DispatchSuspending()
 		{
 			Current?.RaiseSuspending();
@@ -153,12 +142,7 @@ namespace Windows.UI.Xaml
 
 		private void ObserveApplicationVisibility()
 		{
-#if NET7_0_OR_GREATER
 			NativeMethods.ObserveVisibility();
-#else
-			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeVisibility()");
-#endif
 		}
 	}
 }
-#endif

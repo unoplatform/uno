@@ -1,9 +1,9 @@
-#if __WASM__
 using System;
 using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.InteropServices.JavaScript;
 using System.Threading;
 using Uno;
 using Uno.Disposables;
@@ -21,10 +21,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
-
-#if NET7_0_OR_GREATER
-using System.Runtime.InteropServices.JavaScript;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -98,21 +94,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if NET7_0_OR_GREATER
 		[JSExport]
-#endif
 		[Preserve]
-		public static void Resize(double width, double height)
-		{
-			var window = Current?._rootVisual;
-			if (window == null)
-			{
-				typeof(Window).Log().Error($"Resize ignore, no current window defined");
-				return; // nothing to measure
-			}
-
-			Current.OnNativeSizeChanged(new Size(width, height));
-		}
+		public static void Resize(double width, double height) => Current.OnNativeSizeChanged(new Size(width, height));
 
 		private void OnNativeSizeChanged(Size size)
 		{
@@ -138,10 +122,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void ActivatingPartial()
-		{
-			WindowManagerInterop.WindowActivate();
-		}
+		partial void ShowPartial() => WindowManagerInterop.WindowActivate();
 
 		private void InternalSetContent(UIElement content)
 		{
@@ -173,6 +154,7 @@ namespace Windows.UI.Xaml
 				}
 
 				WindowManagerInterop.SetRootElement(_rootVisual.HtmlId);
+				DispatchInvalidateMeasure();
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded)
 				{
@@ -219,4 +201,3 @@ namespace Windows.UI.Xaml
 		}
 	}
 }
-#endif

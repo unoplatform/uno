@@ -1,10 +1,7 @@
-﻿using Uno.Disposables;
+﻿using Android.Graphics;
+using Uno.Disposables;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-
-#if __ANDROID__
-using Android.Graphics;
-#endif
 
 namespace Windows.UI.Xaml;
 

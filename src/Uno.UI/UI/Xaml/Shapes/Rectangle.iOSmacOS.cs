@@ -13,29 +13,19 @@ using AppKit;
 using _BezierPath = AppKit.NSBezierPath;
 #endif
 
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
+
 
 namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Rectangle
 	{
-		static Rectangle()
-		{
-			StretchProperty.OverrideMetadata(typeof(Rectangle), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
-		}
-
 		public Rectangle()
 		{
 #if __IOS__
 			ClipsToBounds = true;
 #endif
 		}
-
-		/// <inheritdoc />
-		protected override Size MeasureOverride(Size availableSize)
-			=> base.MeasureRelativeShape(availableSize);
 
 		/// <inheritdoc />
 		protected override Size ArrangeOverride(Size finalSize)

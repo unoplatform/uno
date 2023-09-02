@@ -44,14 +44,14 @@ public partial class ItemsSourceView : INotifyCollectionChanged
 	public object GetAt(int index)
 		=> GetAtCore(index);
 
-	public int IndexFromKey(string id)
-		=> IndexFromKeyCore(id);
+	public int IndexFromKey(string key)
+		=> IndexFromKeyCore(key);
 
 	public string KeyFromIndex(int index)
 		=> KeyFromIndexCore(index);
 
-	internal int IndexOf(object value)
-		=> IndexOfCore(value);
+	internal int IndexOf(object item)
+		=> IndexOfCore(item);
 	#endregion
 
 	#region IDataSourceProtected

@@ -1,35 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#if __SKIA__
+using System;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
-using Uno.Extensions;
-using Windows.UI.Xaml;
+using Uno.UI.Xaml;
+using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Controls.Primitives;
-using System.Linq;
-using static Private.Infrastructure.TestServices;
-using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.ContentControlPages;
-using Windows_UI_Xaml_Controls;
-
-#if NETFX_CORE
-using Uno.UI.Extensions;
-#elif __IOS__
-using UIKit;
-#elif __MACOS__
-using AppKit;
-#else
-using Uno.UI;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ContentControl
 	{
-#if __SKIA__
 		[TestMethod]
 		public void When_Native_Element()
 		{
@@ -45,7 +25,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Content = nativeControl;
 
 			TestServices.WindowHelper.WindowContent = SUT;
+
+			var coreWindow = CoreWindow.GetForCurrentThread();
+			Assert.IsTrue(coreWindow.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
 		}
-#endif
+
+		[TestMethod]
+		public async Task When_Native_Element_Detached()
+		{
+			var checkButtonType =
+				Type.GetType("Gtk.CheckButton, GtkSharp", false)
+				?? Type.GetType("System.Windows.Controls.CheckBox, PresentationFramework", false);
+
+			Assert.IsNotNull(checkButtonType);
+
+			var nativeControl = Activator.CreateInstance(checkButtonType);
+
+			ContentPresenter SUT = new();
+			SUT.Content = nativeControl;
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var coreWindow = CoreWindow.GetForCurrentThread();
+
+			Assert.IsTrue(coreWindow.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+
+			TestServices.WindowHelper.WindowContent = null;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsFalse(coreWindow.IsNativeElementAttached(SUT.XamlRoot, nativeControl));
+		}
 	}
 }
+#endif

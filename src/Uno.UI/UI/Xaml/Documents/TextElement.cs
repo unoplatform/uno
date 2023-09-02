@@ -1,4 +1,4 @@
-﻿#if NET461
+﻿#if IS_UNIT_TESTS
 #pragma warning disable CS0067
 #endif
 
@@ -19,18 +19,14 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
 #elif __MACOS__
 using View = Windows.UI.Xaml.UIElement;
 using Color = Windows.UI.Color;
@@ -48,13 +44,13 @@ namespace Windows.UI.Xaml.Documents
 {
 	public abstract partial class TextElement : BaseClass, IThemeChangeAware
 	{
-#if !__WASM__
 		public TextElement()
 		{
 			SetDefaultForeground(ForegroundProperty);
+#if !__WASM__
 			InitializeBinder();
-		}
 #endif
+		}
 
 		#region FontFamily Dependency Property
 		public FontFamily FontFamily
@@ -171,6 +167,7 @@ namespace Windows.UI.Xaml.Documents
 
 		protected virtual void OnForegroundChanged()
 		{
+			// TODO: This is missing listening for brush changes?
 			OnForegroundChangedPartial();
 		}
 
@@ -246,8 +243,8 @@ namespace Windows.UI.Xaml.Documents
 
 		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
+				nameof(TextDecorations),
+				typeof(TextDecorations),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
@@ -273,7 +270,7 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(BaseLineAlignmentProperty, value);
 		}
 
-		public static DependencyProperty BaseLineAlignmentProperty =
+		public static DependencyProperty BaseLineAlignmentProperty { get; } =
 			DependencyProperty.Register(
 				"BaseLineAlignment",
 				typeof(BaseLineAlignment),
@@ -313,11 +310,24 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-#if !__WASM__ // WASM version is inheriting from UIElement, so it's already implementing it.
-		public string Name { get; set; }
-#endif
+		private string _name;
 
-		/// <summary>	
+		public string Name
+		{
+			get => _name;
+			set
+			{
+				if (_name != value)
+				{
+					_name = value;
+					OnNameChangedPartial(value);
+				}
+			}
+		}
+
+		partial void OnNameChangedPartial(string newValue);
+
+		/// <summary>
 		/// Retrieves the parent RichTextBox/CRichTextBlock/TextBlock.
 		/// </summary>
 		/// <returns>FrameworkElement or <see langword="null"/>.</returns>
@@ -338,12 +348,27 @@ namespace Windows.UI.Xaml.Documents
 
 		public void OnThemeChanged() => SetDefaultForeground(ForegroundProperty);
 
-#if !__WASM__
-		private void SetDefaultForeground(DependencyProperty foregroundProperty)
+		private protected virtual Brush DefaultTextForegroundBrush => DefaultBrushes.TextForegroundBrush;
+
+#if __WASM__ // On Wasm, we inherit UIElement, and so we need to shadow UIElement.SetDefaultForeground.
+		private protected new
+#else
+		private
+#endif
+		void SetDefaultForeground(DependencyProperty foregroundProperty)
 		{
-			this.SetValue(foregroundProperty, DefaultBrushes.TextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			if (this is Hyperlink)
+			{
+				// Hyperlink doesn't appear to inherit foreground from the parent.
+				// So, we set this with ImplicitStyle precedence which is a higher precedence than Inheritance.
+				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.ImplicitStyle);
+			}
+			else
+			{
+				this.SetValue(foregroundProperty, DefaultTextForegroundBrush, DependencyPropertyValuePrecedences.DefaultValue);
+			}
+
 			((IDependencyObjectStoreProvider)this).Store.SetLastUsedTheme(Application.Current?.RequestedThemeForResources);
 		}
-#endif
 	}
 }

@@ -1,6 +1,4 @@
-﻿#if __ANDROID__
-
-namespace Windows.Storage
+﻿namespace Windows.Storage
 {
 	public static partial class KnownFolders
 	{
@@ -14,5 +12,3 @@ namespace Windows.Storage
 
 	}
 }
-
-#endif

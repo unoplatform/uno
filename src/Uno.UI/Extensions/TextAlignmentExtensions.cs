@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 {
 	internal static class TextAlignmentExtensions
 	{
-#if XAMARIN_IOS
+#if __IOS__
 
 		internal static UIKit.UITextAlignment ToNativeTextAlignment(this TextAlignment textAlignment)
 		{
@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#elif XAMARIN_ANDROID
+#elif __ANDROID__
 
 		internal static Android.Views.GravityFlags ToGravity(this TextAlignment textAlignment)
 		{

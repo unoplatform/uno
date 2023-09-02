@@ -13,30 +13,19 @@ using Uno.Storage.Internal;
 using Uno.Storage.Pickers;
 using Uno.Storage.Pickers.Internal;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Storage.Pickers.FileOpenPicker.NativeMethods;
-#endif
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Windows.Storage.Pickers.FileOpenPicker";
-#endif
-
 		private static bool? _fileSystemAccessApiSupported;
 
 		internal static bool IsNativePickerSupported()
 		{
 			if (_fileSystemAccessApiSupported is null)
 			{
-#if NET7_0_OR_GREATER
 				_fileSystemAccessApiSupported = NativeMethods.IsNativeSupported();
-#else
-				var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-				_fileSystemAccessApiSupported = bool.TryParse(isSupportedString, out var isSupported) && isSupported;
-#endif
 			}
 
 			return _fileSystemAccessApiSupported.Value;
@@ -79,15 +68,7 @@ namespace Windows.Storage.Pickers
 			var fileTypeAcceptTypesJson = JsonHelper.Serialize(fileTypeAcceptTypes);
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
-#if NET7_0_OR_GREATER
 			var nativeStorageItemInfosJson = await NativeMethods.PickFilesAsync(multiple, FileTypeFilter.Contains("*"), fileTypeAcceptTypesJson, SettingsIdentifier, startIn);
-#else
-			var multipleParameter = multiple ? "true" : "false";
-			var showAllEntryParameter = FileTypeFilter.Contains("*") ? "true" : "false";
-			var fileTypeMapParameter = WebAssemblyRuntime.EscapeJs(fileTypeAcceptTypesJson);
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
-			var nativeStorageItemInfosJson = await WebAssemblyRuntime.InvokeAsync($"{JsType}.nativePickFilesAsync({multipleParameter},{showAllEntryParameter},'{fileTypeMapParameter}','{id}','{startIn}')");
-#endif
 
 			var infos = JsonHelper.Deserialize<NativeStorageItemInfo[]>(nativeStorageItemInfosJson);
 
@@ -157,15 +138,7 @@ namespace Windows.Storage.Pickers
 			}
 			var targetFolder = Directory.CreateDirectory(Path.Combine(temporaryFolder.Path, Guid.NewGuid().ToString()));
 
-#if NET7_0_OR_GREATER
 			var fileCountString = await NativeMethods.UploadPickFilesAsync(multiple, targetFolder.FullName, BuildAcceptString());
-#else
-			var multipleParameter = multiple ? "true" : "false";
-			var targetFolderParameter = WebAssemblyRuntime.EscapeJs(targetFolder.FullName);
-			var acceptParameter = WebAssemblyRuntime.EscapeJs(BuildAcceptString());
-			var jsUploadQuery = $"{JsType}.uploadPickFilesAsync({multipleParameter},'{targetFolderParameter}','{acceptParameter}')";
-			var fileCountString = await WebAssemblyRuntime.InvokeAsync(jsUploadQuery);
-#endif
 
 			if (int.TryParse(fileCountString, out var fileCount))
 			{

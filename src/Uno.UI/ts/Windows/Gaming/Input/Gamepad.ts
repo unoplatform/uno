@@ -1,8 +1,8 @@
 ﻿namespace Windows.Gaming.Input {
 	export class Gamepad {
 
-		private static dispatchGamepadAdded: (id: string) => number;
-		private static dispatchGamepadRemoved: (id: string) => number;
+		private static dispatchGamepadAdded: (id: number) => number;
+		private static dispatchGamepadRemoved: (id: number) => number;
 
 		public static getConnectedGamepadIds(): string {
 			const gamepads = navigator.getGamepads();
@@ -65,18 +65,26 @@
 
 		private static onGamepadConnected(e: any) {
 			if (!Gamepad.dispatchGamepadAdded) {
-				Gamepad.dispatchGamepadAdded = (<any>Module).mono_bind_static_method(
-					"[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					Gamepad.dispatchGamepadAdded = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadAdded;
+				} else {
+					Gamepad.dispatchGamepadAdded = (<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadAdded");
+				}
 			}
-			Gamepad.dispatchGamepadAdded(e.gamepad.index.toString());
+			Gamepad.dispatchGamepadAdded(e.gamepad.index);
 		}
 
 		private static onGamepadDisconnected(e: any) {
 			if (!Gamepad.dispatchGamepadRemoved) {
-				Gamepad.dispatchGamepadRemoved = (<any>Module).mono_bind_static_method(
-					"[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					Gamepad.dispatchGamepadRemoved = (<any>globalThis).DotnetExports.Uno.Windows.Gaming.Input.Gamepad.DispatchGamepadRemoved;
+				} else {
+					Gamepad.dispatchGamepadRemoved = (<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Gaming.Input.Gamepad:DispatchGamepadRemoved");
+				}
 			}
-			Gamepad.dispatchGamepadRemoved(e.gamepad.index.toString());
+			Gamepad.dispatchGamepadRemoved(e.gamepad.index);
 		}
 	}
 }

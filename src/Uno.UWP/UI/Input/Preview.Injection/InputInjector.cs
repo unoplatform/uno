@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
 using Uno.Extensions.Specialized;
 
 namespace Windows.UI.Input.Preview.Injection;
@@ -16,7 +17,7 @@ public partial class InputInjector
 	internal static void SetTargetForCurrentThread(IInputInjectorTarget manager)
 		=> _inputManager = manager;
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()
 		=> _inputManager is not null ? new InputInjector(_inputManager) : null;
 
@@ -35,7 +36,7 @@ public partial class InputInjector
 		_target = target;
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InitializeTouchInjection(InjectedInputVisualizationMode visualMode)
 	{
 		UninitializeTouchInjection();
@@ -43,7 +44,7 @@ public partial class InputInjector
 		_touch = (new InjectedInputState(PointerDeviceType.Touch), isAdded: false);
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void UninitializeTouchInjection()
 	{
 		if (_touch is not null)
@@ -56,7 +57,7 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectTouchInput(IEnumerable<InjectedInputTouchInfo> input)
 	{
 		if (_touch is null)
@@ -87,12 +88,23 @@ public partial class InputInjector
 		}
 	}
 
-	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public void InjectMouseInput(IEnumerable<InjectedInputMouseInfo> input)
 	{
 		foreach (var info in input)
 		{
-			var args = info.ToEventArgs(_mouse!);
+			var args = info.ToEventArgs(_mouse!, VirtualKeyModifiers.None);
+			_mouse!.Update(args);
+
+			_target.InjectPointerUpdated(args);
+		}
+	}
+
+	internal void InjectMouseInput(IEnumerable<(InjectedInputMouseInfo, VirtualKeyModifiers)> input)
+	{
+		foreach (var (info, modifiers) in input)
+		{
+			var args = info.ToEventArgs(_mouse!, modifiers);
 			_mouse!.Update(args);
 
 			_target.InjectPointerUpdated(args);

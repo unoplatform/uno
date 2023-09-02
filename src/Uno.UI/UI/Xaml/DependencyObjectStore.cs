@@ -18,12 +18,10 @@ using System.Collections;
 using System.Globalization;
 using Windows.ApplicationModel.Calls;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
-#elif XAMARIN_IOS
-using View = MonoTouch.UIKit.UIView;
 #endif
 
 namespace Windows.UI.Xaml
@@ -470,9 +468,10 @@ namespace Windows.UI.Xaml
 					var previousValue = GetValue(propertyDetails);
 					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
 
-					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
+					// Coercion must be applied before we set the new value
+					// see https://github.com/unoplatform/uno/pull/12884
+					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value, precedence);
 
-					// Set even if they are different to make sure the value is now set on the right precedence
 					SetValueInternal(value, precedence, propertyDetails);
 
 					if (!isPersistentResourceBinding && !_isSettingPersistentResourceBinding)
@@ -620,7 +619,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails, object? previousValue, object? baseValue)
+		private void ApplyCoercion(DependencyObject actualInstanceAlias, DependencyPropertyDetails propertyDetails,
+			object? previousValue, object? baseValue, DependencyPropertyValuePrecedences precedence)
 		{
 			if (baseValue is UnsetValue)
 			{
@@ -638,13 +638,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (!propertyDetails.Metadata.CoerceWhenUnchanged && Equals(previousValue, baseValue))
+			var options = (propertyDetails.Metadata as FrameworkPropertyMetadata)?.Options ?? FrameworkPropertyMetadataOptions.Default;
+
+			if (Equals(previousValue, baseValue) && options.HasFlag(FrameworkPropertyMetadataOptions.CoerceOnlyWhenChanged))
 			{
 				// Value hasn't changed, don't coerce.
 				return;
 			}
 
-			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue);
+			var coercedValue = coerceValueCallback(actualInstanceAlias, baseValue, precedence);
 			if (coercedValue is UnsetValue)
 			{
 				// The property system will treat any CoerceValueCallback that returns the value UnsetValue as a special case.
@@ -654,7 +656,7 @@ namespace Windows.UI.Xaml
 				// Source: https://msdn.microsoft.com/en-us/library/ms745795%28v=vs.110%29.aspx?f=255&MSPPError=-2147217396
 				SetValueInternal(previousValue, DependencyPropertyValuePrecedences.Coercion, propertyDetails);
 			}
-			else if (!Equals(coercedValue, baseValue))
+			else if (!Equals(coercedValue, baseValue) || options.HasFlag(FrameworkPropertyMetadataOptions.KeepCoercedWhenEquals))
 			{
 				// The base value and the coerced value are different, which means that coercion must be applied.
 				// Set value using DependencyPropertyValuePrecedences.Coercion, which has the highest precedence.
@@ -1077,7 +1079,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
-		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
+		HashSet<DependencyProperty>? _updatedProperties;
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
@@ -1090,10 +1092,10 @@ namespace Windows.UI.Xaml
 				if (
 					localProperty != _dataContextProperty &&
 					localProperty != _templatedParentProperty &&
-					!_updatedProperties.Contains(localProperty)
+					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
 				)
 				{
-					_updatedProperties.Add(localProperty);
+					(_updatedProperties ??= new HashSet<DependencyProperty>(DependencyPropertyComparer.Default)).Add(localProperty);
 				}
 
 				SetValue(localProperty, newValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
@@ -1214,14 +1216,18 @@ namespace Windows.UI.Xaml
 
 				if (ActualInstance != null)
 				{
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var propertiesEnumerator = _updatedProperties.GetEnumerator();
-					while (propertiesEnumerator.MoveNext())
+					if (_updatedProperties is not null)
 					{
-						var dp = propertiesEnumerator.Current;
-						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						// This block is a manual enumeration to avoid the foreach pattern
+						// See https://github.com/dotnet/runtime/issues/56309 for details
+						var propertiesEnumerator = _updatedProperties.GetEnumerator();
+						while (propertiesEnumerator.MoveNext())
+						{
+							var dp = propertiesEnumerator.Current;
+							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						}
 					}
+
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);

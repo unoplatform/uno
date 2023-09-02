@@ -10,16 +10,12 @@ using Uno.Extensions;
 #if __IOS__
 using UIKit;
 using Path = UIKit.UIBezierPath;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __MACOS__
 using AppKit;
 using Path = AppKit.NSBezierPath;
 using CoreGraphics;
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 #elif __ANDROID__
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
@@ -247,10 +243,20 @@ namespace Uno.Media
 			{
 				if (closed)
 				{
-#if __IOS__
+#if __IOS__ || __MACOS__
 					bezierPath.ClosePath();
 #elif __ANDROID__
 					bezierPath.Close();
+#elif __SKIA__
+					bezierPath.Geometry.Close();
+#elif __WASM__
+					// TODO: In most cases, the path is handled by the browser.
+					// But it might still be possible to hit this code path on Wasm?
+					// This needs to be revisited.
+#elif IS_UNIT_TESTS
+					// Empty on unit tests.
+#else
+					throw new NotSupportedException("SetClosedState is not supported on this platform.");
 #endif
 				}
 			}

@@ -379,7 +379,7 @@ namespace Windows.UI.Xaml
 				return Disposable.Empty;
 			}
 
-			return properties
+			var disposables = properties
 				.Where(Enumerable.Any)
 				.GroupBy(Enumerable.First, propertyPath => propertyPath.Skip(1).ToArray())
 				.Where(Enumerable.Any)
@@ -407,8 +407,8 @@ namespace Windows.UI.Xaml
 					});
 
 					return new CompositeDisposable(disposable, childDisposable);
-				})
-				.Apply(disposables => new CompositeDisposable(disposables));
+				});
+			return new CompositeDisposable(disposables);
 		}
 
 		/// <summary>

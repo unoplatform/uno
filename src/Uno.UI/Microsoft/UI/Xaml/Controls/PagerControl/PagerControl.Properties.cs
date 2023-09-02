@@ -123,7 +123,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PrefixTextProperty { get; } =
-			DependencyProperty.Register(nameof(PrefixText), typeof(string), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(PrefixText), typeof(string), typeof(PagerControl), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 		public ICommand PreviousButtonCommand
 		{
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SuffixTextProperty { get; } =
-			DependencyProperty.Register(nameof(SuffixText), typeof(string), typeof(PagerControl), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+			DependencyProperty.Register(nameof(SuffixText), typeof(string), typeof(PagerControl), new FrameworkPropertyMetadata(string.Empty, OnPropertyChanged));
 
 		public PagerControlTemplateSettings TemplateSettings
 		{

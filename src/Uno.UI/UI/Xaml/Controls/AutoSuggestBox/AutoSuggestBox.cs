@@ -63,6 +63,13 @@ namespace Windows.UI.Xaml.Controls
 			_popup.DisableFocus();
 #endif
 
+#if __IOS__
+			if (_textBox is { } textbox)
+			{
+				textbox.IsKeepingFocusOnEndEditing = true;
+			}
+#endif
+
 			UpdateQueryButton();
 			UpdateTextBox();
 			UpdateDescriptionVisibility(true);
@@ -104,6 +111,11 @@ namespace Windows.UI.Xaml.Controls
 			base.OnItemsSourceSingleCollectionChanged(sender, args, section);
 
 			UpdateSuggestionList();
+		}
+
+		protected override DependencyObject GetContainerForItemOverride()
+		{
+			return new ListViewItem() { IsGeneratedContainer = true };
 		}
 
 		internal override void OnItemsSourceGroupsChanged(object sender, NotifyCollectionChangedEventArgs args)

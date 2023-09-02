@@ -410,7 +410,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			if (!isCloseButtonEnabled)
 			{
 				var disabledStyle = new Style(typeof(Button));
-				disabledStyle.Setters.Add(new Setter(FrameworkElement.IsEnabledProperty, false));
+				disabledStyle.Setters.Add(new Setter(Control.IsEnabledProperty, false));
 
 				SUT.CloseButtonStyle = disabledStyle;
 			}
@@ -553,7 +553,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			_ = dialog.ShowAsync();
 			await WindowHelper.WaitFor(() => dialog.BackgroundElement != null);
 #if !NETFX_CORE
-			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on current version of Uno because the template is materialized too early  
+			await WindowHelper.WaitFor(() => dialog.BackgroundElement.ActualHeight > 0); // This is necessary on the current version of Uno because the template is materialized too early
 #endif
 		}
 

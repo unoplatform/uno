@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial struct KeyTime : IEquatable<KeyTime>, IComparable<KeyTime>
 	{
-		public TimeSpan TimeSpan { get; private set; }
+		public TimeSpan TimeSpan;
 
 		public static KeyTime FromTimeSpan(TimeSpan timeSpan)
 			=> new KeyTime() { TimeSpan = timeSpan };

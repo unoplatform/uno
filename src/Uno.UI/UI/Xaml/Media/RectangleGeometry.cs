@@ -1,6 +1,6 @@
 ﻿using System;
 using Windows.Foundation;
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 
 		#region Geometry implementation (not implemented)
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		public override Android.Graphics.Path ToPath()
 		{
 			throw new NotImplementedException();
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media
 			throw new NotImplementedException();
 		}
 
-#if XAMARIN_IOS
+#if __IOS__
 		public override UIImage ToNativeImage()
 		{
 			throw new NotImplementedException();

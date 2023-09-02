@@ -19,7 +19,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
-		private SerialDisposable _brushChanged = new SerialDisposable();
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Border()
@@ -95,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

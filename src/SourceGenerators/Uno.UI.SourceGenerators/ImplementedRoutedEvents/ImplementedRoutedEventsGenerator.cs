@@ -11,10 +11,6 @@ using System.Text;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.CSharp;
 
-#if NETFRAMEWORK
-using Uno.SourceGeneration;
-#endif
-
 namespace Uno.UI.SourceGenerators.ImplementedRoutedEvents;
 
 [Generator]
@@ -100,6 +96,8 @@ public class ImplementedRoutedEventsGenerator : ISourceGenerator
 			_events.Add("OnDrop", dragEventArgs);
 
 			var keyRoutedEventArgs = GetRequiredTypeByMetadataName(XamlConstants.Types.KeyRoutedEventArgs);
+			_events.Add("OnPreviewKeyDown", keyRoutedEventArgs);
+			_events.Add("OnPreviewKeyUp", keyRoutedEventArgs);
 			_events.Add("OnKeyDown", keyRoutedEventArgs);
 			_events.Add("OnKeyUp", keyRoutedEventArgs);
 

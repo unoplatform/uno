@@ -29,6 +29,8 @@ What kind of change does this PR introduce?
 
 ## Copilot Summary
 
+<!-- This allows GitHub Copilot to provide a summary for your PR -->
+<!-- Please do not touch the next line, it will be replaced with the generated summary -->
 copilot:summary
 
 ## PR Checklist

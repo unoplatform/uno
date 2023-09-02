@@ -35,10 +35,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 			// Disable re-ordering
 			mode.SetDependencyPropertyValue("IsChecked", "False");
 
+			// Tap outside the ListView to get rid of PointerOver visual from the step above
+			var sutBounds = _app.Query(sut).Single().Rect;
+			_app.TapCoordinates(sutBounds.CenterX, sutBounds.Bottom + 10);
+
 			var before = TakeScreenshot("Before", ignoreInSnapshotCompare: true);
 
 			// Attempt to re-order by dragging from item1 (orange) to item3 (green)
-			var sutBounds = _app.Query(sut).Single().Rect;
 			var x = sutBounds.X + 50;
 			var srcY = Item(sutBounds, 1);
 			var dstY = Item(sutBounds, 3);
@@ -85,7 +88,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.DragAndDropTests
 		public void When_Reorder_To_Last() => Test_Reorder(3, 5);
 
 		[Test]
-		[Ignore("Flaky test. Tracked by https://github.com/unoplatform/uno/issues/9080")]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] // TODO: support drag-and-drop testing on mobile https://github.com/unoplatform/Uno.UITest/issues/31
 		public void When_Reorder_To_Last_2() => Test_Reorder(3, 6 /* out of range */, expectedTo: 5);

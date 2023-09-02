@@ -1,5 +1,5 @@
 ﻿<#@template language="C#" hostspecific="True" #>
-<#@output extension="g.cs" #>
+<#@output extension=".cs" #>
 <#@ import namespace="System.Linq" #>
 <#@ import namespace="System.IO" #>
 <#@ import namespace="System.Text" #>

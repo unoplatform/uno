@@ -3,7 +3,7 @@ using System;
 using AppKit;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel;
-using Uno.UI.Services;
+using Windows.Globalization;
 using System.Globalization;
 using Uno.Foundation.Logging;
 using System.Linq;
@@ -19,11 +19,7 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#else
 using NativeHandle = ObjCRuntime.NativeHandle;
-#endif
 
 namespace Windows.UI.Xaml
 {
@@ -37,12 +33,9 @@ namespace Windows.UI.Xaml
 			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)((Windows.UI.Xaml.Window)host).NativeWindow));
 		}
 
-		public Application()
+		partial void InitializePartial()
 		{
-			Current = this;
 			SetCurrentLanguage();
-			InitializeSystemTheme();
-			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 
 			SubscribeBackgroundNotifications();
 		}
@@ -53,8 +46,6 @@ namespace Windows.UI.Xaml
 		}
 
 		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
-
-		internal bool Suspended { get; private set; }
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
@@ -90,12 +81,6 @@ namespace Windows.UI.Xaml
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, argumentsString));
 			}
 		}
-
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), () =>
-			{
-				Suspended = true;
-			});
 
 		/// <summary>
 		/// This method enables UI Tests to get the output path
@@ -154,7 +139,7 @@ namespace Windows.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(false);
+			Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(null);
 		}
@@ -162,17 +147,17 @@ namespace Windows.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnVisibilityChanged(true));
+			RaiseLeavingBackground(() => Windows.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.CodeActivated);
+			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			Windows.UI.Xaml.Window.Current?.OnActivated(CoreWindowActivationState.Deactivated);
+			Windows.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }

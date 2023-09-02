@@ -26,7 +26,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal IViewParent NativeVisualParent => (this as View).Parent;
 
-		public FrameworkElement()
+		protected FrameworkElement()
 		{
 			Initialize();
 		}

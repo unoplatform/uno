@@ -20,11 +20,11 @@ using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
@@ -34,12 +34,7 @@ using View = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using CoreGraphics;
-#elif XAMARIN_IOS
-using CoreGraphics;
-using View = MonoTouch.UIKit.UIView;
-using Color = MonoTouch.UIKit.UIColor;
-using Font = MonoTouch.UIKit.UIFont;
-#elif NET461 || __WASM__
+#elif IS_UNIT_TESTS || __WASM__
 using View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -740,10 +735,11 @@ namespace Windows.UI.Xaml.Controls
 				childSize += childMarginSize;
 			}
 
-			return childSize
-				.Min(frameSize) // at most
-				.Min(max) // at most
-				.Max(min); // at least
+			return Math.Max(
+				Math.Min(
+					Math.Min(childSize, frameSize),
+					max),
+				min);
 		}
 
 		/// <summary>

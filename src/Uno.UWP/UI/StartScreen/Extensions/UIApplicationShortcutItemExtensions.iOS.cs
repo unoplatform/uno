@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using Foundation;
+﻿using Foundation;
 using System;
 using UIKit;
 using Windows.UI.StartScreen;
@@ -37,4 +36,3 @@ namespace Uno.UI.StartScreen.Extensions
 		}
 	}
 }
-#endif

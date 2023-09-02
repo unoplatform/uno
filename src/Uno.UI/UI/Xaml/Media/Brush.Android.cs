@@ -13,13 +13,14 @@ using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Windows.UI.Xaml.Media.Imaging;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using System.Runtime.CompilerServices;
+
 namespace Windows.UI.Xaml.Media
 {
 	//Android partial for Brush
 	public partial class Brush
 	{
-		internal delegate void ColorSetterHandler(Android.Graphics.Color color);
-
 		private static Paint.Style _strokeCache;
 		private static Paint.Style _fillCache;
 
@@ -51,130 +52,6 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
-
-		internal static IDisposable AssignAndObserveBrush(Brush b, ColorSetterHandler colorSetter, Action imageBrushCallback = null)
-		{
-			if (b is SolidColorBrush colorBrush)
-			{
-				var disposables = new CompositeDisposable(2);
-
-				colorSetter(colorBrush.ColorWithOpacity);
-
-				colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.ColorProperty,
-					(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
-				).DisposeWith(disposables);
-
-				colorBrush.RegisterDisposablePropertyChangedCallback(
-					SolidColorBrush.OpacityProperty,
-					(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
-				).DisposeWith(disposables);
-
-				return disposables;
-			}
-			else if (b is GradientBrush gradientBrush)
-			{
-				var disposables = new CompositeDisposable(2);
-				colorSetter(gradientBrush.FallbackColorWithOpacity);
-
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.FallbackColorProperty,
-					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
-				).DisposeWith(disposables);
-
-				gradientBrush.RegisterDisposablePropertyChangedCallback(
-					GradientBrush.OpacityProperty,
-					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
-				).DisposeWith(disposables);
-
-				return disposables;
-			}
-			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
-			{
-				void ImageBrushCallback(DependencyObject sender, DependencyPropertyChangedEventArgs e) => imageBrushCallback();
-
-				var disposables = new CompositeDisposable(5);
-				imageBrushCallback();
-
-				var imageBrushSource = imageBrush.ImageSource;
-				if (imageBrushSource is SvgImageSource svgImageSource)
-				{
-					svgImageSource
-						.RegisterDisposablePropertyChangedCallback(SvgImageSource.UriSourceProperty, ImageBrushCallback)
-						.DisposeWith(disposables);
-				}
-				else if (imageBrushSource is BitmapImage bitmapImage)
-				{
-					bitmapImage
-						.RegisterDisposablePropertyChangedCallback(BitmapImage.UriSourceProperty, ImageBrushCallback)
-						.DisposeWith(disposables);
-				}
-
-				imageBrush
-					.RegisterDisposablePropertyChangedCallback(ImageBrush.ImageSourceProperty, ImageBrushCallback)
-					.DisposeWith(disposables);
-
-				imageBrush
-					.RegisterDisposablePropertyChangedCallback(ImageBrush.StretchProperty, ImageBrushCallback)
-					.DisposeWith(disposables);
-
-				imageBrush.
-					RegisterDisposablePropertyChangedCallback(ImageBrush.AlignmentXProperty, ImageBrushCallback)
-					.DisposeWith(disposables);
-
-				imageBrush
-					.RegisterDisposablePropertyChangedCallback(ImageBrush.AlignmentYProperty, ImageBrushCallback)
-					.DisposeWith(disposables);
-
-				imageBrush
-					.RegisterDisposablePropertyChangedCallback(ImageBrush.RelativeTransformProperty, ImageBrushCallback)
-					.DisposeWith(disposables);
-
-				return disposables;
-			}
-			else if (b is AcrylicBrush acrylicBrush)
-			{
-				var disposables = new CompositeDisposable(2);
-
-				colorSetter(acrylicBrush.FallbackColorWithOpacity);
-
-				acrylicBrush.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.FallbackColorProperty,
-					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
-					.DisposeWith(disposables);
-
-				acrylicBrush.RegisterDisposablePropertyChangedCallback(
-					AcrylicBrush.OpacityProperty,
-					(s, args) => colorSetter((s as AcrylicBrush).FallbackColorWithOpacity))
-					.DisposeWith(disposables);
-
-				return disposables;
-			}
-			else if (b is XamlCompositionBrushBase unsupportedCompositionBrush)
-			{
-				var disposables = new CompositeDisposable(2);
-
-				colorSetter(unsupportedCompositionBrush.FallbackColorWithOpacity);
-
-				unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
-					XamlCompositionBrushBase.FallbackColorProperty,
-					(s, args) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity))
-					.DisposeWith(disposables);
-
-				unsupportedCompositionBrush.RegisterDisposablePropertyChangedCallback(
-					OpacityProperty,
-					(s, args) => colorSetter((s as XamlCompositionBrushBase).FallbackColorWithOpacity))
-					.DisposeWith(disposables);
-
-				return disposables;
-			}
-			else
-			{
-				colorSetter(SolidColorBrushHelper.Transparent.Color);
-			}
-
-			return Disposable.Empty;
-		}
 
 		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{

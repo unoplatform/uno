@@ -36,6 +36,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 #if UNO_REFERENCE_API
 			InvalidateSource();
 #endif
+			InvalidateImageSource();
 		}
 
 		#endregion

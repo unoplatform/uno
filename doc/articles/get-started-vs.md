@@ -39,7 +39,7 @@ uid: Uno.GetStarted.vs
 
     ![Visual Studio - Manage Extensions from the Menu Bar](Assets/tutorial01/manage-extensions.png)
 
-2. In the Extension Manager expand the **Online** node and search for `Uno Platform Templates`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) extension, then restart Visual Studio.
+2. In the Extension Manager expand the **Online** node and search for `Uno Platform Templates`, install the <code>Uno Platform Solution Templates</code> extension or download it from the [Visual Studio Marketplace](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) extension, then restart Visual Studio.
 
     ![Visual Studio - Uno Platform Templates Extension](Assets/tutorial01/uno-extensions.PNG)
 

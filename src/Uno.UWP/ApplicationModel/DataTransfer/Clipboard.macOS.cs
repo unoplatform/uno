@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -54,4 +53,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static void StopContentChanged() => _timer?.Invalidate();
 	}
 }
-#endif

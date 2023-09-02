@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -132,4 +131,3 @@ namespace Windows.Storage
 		}
 	}
 }
-#endif

@@ -2,8 +2,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Documents
@@ -20,7 +18,7 @@ namespace Windows.UI.Xaml.Documents
 
 		private void OnCollectionChanged()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			_preorderTree = null;
 
 			switch (_collection.GetParent())

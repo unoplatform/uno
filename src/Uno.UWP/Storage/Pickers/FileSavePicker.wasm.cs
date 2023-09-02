@@ -13,30 +13,19 @@ using Uno.Storage.Internal;
 using Uno.Storage.Pickers;
 using Uno.Storage.Pickers.Internal;
 
-#if NET7_0_OR_GREATER
 using NativeMethods = __Windows.Storage.Pickers.FileSavePicker.NativeMethods;
-#endif
 
 namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
-#if !NET7_0_OR_GREATER
-		private const string JsType = "Windows.Storage.Pickers.FileSavePicker";
-#endif
-
 		private static bool? _fileSystemAccessApiSupported;
 
 		internal static bool IsNativePickerSupported()
 		{
 			if (_fileSystemAccessApiSupported is null)
 			{
-#if NET7_0_OR_GREATER
 				_fileSystemAccessApiSupported = NativeMethods.IsNativeSupported();
-#else
-				var isSupportedString = WebAssemblyRuntime.InvokeJS($"{JsType}.isNativeSupported()");
-				_fileSystemAccessApiSupported = bool.TryParse(isSupportedString, out var isSupported) && isSupported;
-#endif
 			}
 
 			return _fileSystemAccessApiSupported.Value;
@@ -67,16 +56,7 @@ namespace Windows.Storage.Pickers
 			var fileTypeMapParameter = JsonHelper.Serialize(BuildFileTypesMap());
 			var startIn = SuggestedStartLocation.ToStartInDirectory();
 
-#if NET7_0_OR_GREATER
 			var nativeStorageItemInfo = await NativeMethods.PickSaveFileAsync(true, fileTypeMapParameter, SuggestedFileName, SettingsIdentifier, startIn);
-#else
-			var suggestedFileName = SuggestedFileName != "" ? WebAssemblyRuntime.EscapeJs(SuggestedFileName) : "";
-
-			var id = WebAssemblyRuntime.EscapeJs(SettingsIdentifier);
-
-			var promise = $"{JsType}.nativePickSaveFileAsync(true,'{WebAssemblyRuntime.EscapeJs(fileTypeMapParameter)}','{suggestedFileName}','{id}','{startIn}')";
-			var nativeStorageItemInfo = await WebAssemblyRuntime.InvokeAsync(promise);
-#endif
 			if (nativeStorageItemInfo is null)
 			{
 				return null;

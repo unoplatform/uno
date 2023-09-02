@@ -7,6 +7,7 @@ using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -15,6 +16,10 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+
+using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 {
@@ -103,7 +108,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var itemsPanel = listView?.ItemsPanel;
 			Assert.IsNotNull(itemsPanel);
 
-			var content = itemsPanel.LoadContent() as StackPanel;
+			var content = ((IFrameworkTemplateInternal)itemsPanel).LoadContent() as StackPanel;
 			Assert.IsNotNull(content);
 			Assert.AreEqual(content.Name, "InnerStackPanel");
 
@@ -1236,9 +1241,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Implicit_Add_Item()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeItems>("""
-				<SwipeItems>
-					<SwipeItem Text="asd" />
-				</SwipeItems>
+				<muxc:SwipeItems>
+					<muxc:SwipeItem Text="asd" />
+				</muxc:SwipeItems>
 				""");
 
 			Assert.AreEqual(1, SUT.Count);
@@ -1249,13 +1254,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Property_Nest_Collection()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
-				<SwipeControl>
-					<SwipeControl.LeftItems>
-						<SwipeItems Mode="Execute">
-							<SwipeItem Text="asd" />
-						</SwipeItems>
-					</SwipeControl.LeftItems>
-				</SwipeControl>
+				<muxc:SwipeControl>
+					<muxc:SwipeControl.LeftItems>
+						<muxc:SwipeItems Mode="Execute">
+							<muxc:SwipeItem Text="asd" />
+						</muxc:SwipeItems>
+					</muxc:SwipeControl.LeftItems>
+				</muxc:SwipeControl>
 				""");
 
 			Assert.IsNotNull(SUT.LeftItems);
@@ -1268,17 +1273,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		public void When_Collection_Property_Nest_Multiple_Collections()
 		{
 			var SUT = XamlHelper.LoadXaml<SwipeControl>("""
-				<SwipeControl>
-					<SwipeControl.LeftItems>
+				<muxc:SwipeControl>
+					<muxc:SwipeControl.LeftItems>
 						<!-- This is actually allowed, however only the last will be kept -->
-						<SwipeItems>
-							<SwipeItem Text="asd" />
-						</SwipeItems>
-						<SwipeItems Mode="Execute">
-							<SwipeItem Text="qwe" />
-						</SwipeItems>
-					</SwipeControl.LeftItems>
-				</SwipeControl>
+						<muxc:SwipeItems>
+							<muxc:SwipeItem Text="asd" />
+						</muxc:SwipeItems>
+						<muxc:SwipeItems Mode="Execute">
+							<muxc:SwipeItem Text="qwe" />
+						</muxc:SwipeItems>
+					</muxc:SwipeControl.LeftItems>
+				</muxc:SwipeControl>
 				""");
 
 			Assert.IsNotNull(SUT.LeftItems);
@@ -1618,77 +1623,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				{
 					return streamReader.ReadToEnd();
 				}
-			}
-		}
-
-		private static class XamlHelper
-		{
-			/// <summary>
-			/// Matches right before the &gt; or \&gt; tail of any tag.
-			/// </summary>
-			/// <remarks>
-			/// It will match an opening or closing or self-closing tag.
-			/// </remarks>
-			private static readonly Regex EndOfTagRegex = new Regex(@"(?=( ?/)?>)");
-
-			/// <summary>
-			/// Matches any tag without xmlns prefix.
-			/// </summary>
-			private static readonly Regex NonXmlnsTagRegex = new Regex(@"<\w+[ />]");
-
-			private static readonly IReadOnlyDictionary<string, string> KnownXmlnses = new Dictionary<string, string>
-			{
-				[string.Empty] = "http://schemas.microsoft.com/winfx/2006/xaml/presentation",
-				["x"] = "http://schemas.microsoft.com/winfx/2006/xaml",
-				["local"] = "Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests",
-				["toolkit"] = "using:Uno.UI.Toolkit",
-				["muxc"] = "using:Microsoft.UI.Xaml.Controls",
-			};
-
-			/// <summary>
-			/// XamlReader.Load the xaml and type-check result.
-			/// </summary>
-			/// <param name="xaml">Xaml with single or double quotes</param>
-			/// <param name="autoInjectXmlns">Toggle automatic detection of xmlns required and inject to the xaml</param>
-			public static T LoadXaml<T>(string xaml, bool autoInjectXmlns = true) where T : class
-			{
-				var xmlnses = new Dictionary<string, string>();
-
-				if (autoInjectXmlns)
-				{
-					foreach (var xmlns in KnownXmlnses)
-					{
-						var match = xmlns.Key == string.Empty
-							? NonXmlnsTagRegex.IsMatch(xaml)
-							: xaml.Contains($"<{xmlns.Key}:");
-						if (match)
-						{
-							xmlnses.Add(xmlns.Key, xmlns.Value);
-						}
-					}
-				}
-
-				return LoadXaml<T>(xaml, xmlnses);
-			}
-
-			/// <summary>
-			/// XamlReader.Load the xaml and type-check result.
-			/// </summary>
-			/// <param name="xaml">Xaml with single or double quotes</param>
-			/// <param name="xmlnses">Xmlns to inject; use string.Empty for the default xmlns' key</param>
-			public static T LoadXaml<T>(string xaml, Dictionary<string, string> xmlnses) where T : class
-			{
-				var injection = " " + string.Join(" ", xmlnses
-					.Select(x => $"xmlns{(string.IsNullOrEmpty(x.Key) ? "" : $":{x.Key}")}=\"{x.Value}\"")
-				);
-
-				xaml = EndOfTagRegex.Replace(xaml, injection.TrimEnd(), 1);
-
-				var result = Windows.UI.Xaml.Markup.XamlReader.Load(xaml);
-				Assert.IsNotNull(result, "XamlReader.Load returned null");
-				Assert.IsInstanceOfType(result, typeof(T), "XamlReader.Load did not return the expected type");
-
-				return (T)result;
 			}
 		}
 	}

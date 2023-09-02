@@ -553,7 +553,7 @@ namespace Windows.UI.Xaml
 			{
 				if (IsGestureRecognizerCreated)
 				{
-					GestureRecognizer.PreventHolding(((HoldingRoutedEventArgs)args).PointerId);
+					GestureRecognizer.PreventEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
 				}
 			}
 			else
@@ -576,6 +576,17 @@ namespace Windows.UI.Xaml
 			{
 				GestureRecognizer.CompleteGesture();
 			}
+		}
+
+		private void UpdateRaisedEventFlags(PointerRoutedEventArgs args)
+		{
+			if (!IsGestureRecognizerCreated)
+			{
+				return;
+			}
+
+			var pointerId = args.Pointer.PointerId;
+			args.GestureEventsAlreadyRaised |= GestureRecognizer.PreventEvents(pointerId, args.GestureEventsAlreadyRaised);
 		}
 		#endregion
 
@@ -891,6 +902,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			var handledInManaged = SetOver(args, true, ctx);
 
 			return handledInManaged;
@@ -914,6 +926,7 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			var handledInManaged = SetPressed(args, true, ctx);
 
 			if (PointerRoutedEventArgs.PlatformSupportsNativeBubbling && !ctx.IsInternal && !isOverOrCaptured)
@@ -981,7 +994,7 @@ namespace Windows.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
 				if (gestures.IsDragging)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 				}
 			}
 
@@ -995,6 +1008,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isOverOrCaptured = ValidateAndUpdateCapture(args);
 
+			UpdateRaisedEventFlags(args);
 			if (!ctx.IsInternal && isOverOrCaptured)
 			{
 				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
@@ -1012,7 +1026,7 @@ namespace Windows.UI.Xaml
 				gestures.ProcessMoveEvents(args.GetIntermediatePoints(this), !ctx.IsInternal || isOverOrCaptured);
 				if (gestures.IsDragging)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 				}
 			}
 
@@ -1038,6 +1052,7 @@ namespace Windows.UI.Xaml
 			if (IsGestureRecognizerCreated)
 			{
 				currentPoint = args.GetCurrentPoint(this);
+				UpdateRaisedEventFlags(args);
 				GestureRecognizer.ProcessBeforeUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 			}
 
@@ -1054,7 +1069,7 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.ProcessUpEvent(currentPoint, !ctx.IsInternal || isOverOrCaptured);
 				if (isDragging && !ctx.IsInternal)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessDropped(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessDropped(args);
 				}
 			}
 
@@ -1085,11 +1100,12 @@ namespace Windows.UI.Xaml
 				ctx = ctx.WithMode(ctx.Mode | BubblingMode.IgnoreElement);
 			}
 
+			UpdateRaisedEventFlags(args);
 			handledInManaged |= SetOver(args, false, ctx);
 
 			if (IsGestureRecognizerCreated && GestureRecognizer.IsDragging)
 			{
-				global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessMoved(args);
+				XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessMoved(args);
 			}
 
 #if !UNO_HAS_MANAGED_POINTERS && !__ANDROID__ && !__WASM__ // Captures release are handled a root level (RootVisual for Android and WASM)
@@ -1121,6 +1137,8 @@ namespace Windows.UI.Xaml
 		{
 			var isOverOrCaptured = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
 
+			UpdateRaisedEventFlags(args);
+
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			// We update only local state as the Cancel is bubbling itself
 			SetPressed(args, false, ctx: BubblingContext.NoBubbling);
@@ -1131,7 +1149,7 @@ namespace Windows.UI.Xaml
 				GestureRecognizer.CompleteGesture();
 				if (GestureRecognizer.IsDragging)
 				{
-					global::Windows.UI.Xaml.Window.Current.DragDrop.ProcessAborted(args);
+					XamlRoot.VisualTree.ContentRoot.InputManager.DragDrop.ProcessAborted(args);
 				}
 			}
 

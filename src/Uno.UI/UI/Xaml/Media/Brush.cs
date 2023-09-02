@@ -1,25 +1,96 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#nullable enable
+
+using System;
 using System.ComponentModel;
 using System.Diagnostics.Contracts;
-using Windows.UI.Xaml.Controls;
-using Windows.UI;
+using Uno.Disposables;
+using Uno.UI.Helpers;
 using Uno.UI.Xaml;
+
+#if HAS_UNO_WINUI
+using Windows.UI;
+#endif
 
 namespace Windows.UI.Xaml.Media
 {
 	[TypeConverter(typeof(BrushConverter))]
 	public partial class Brush : DependencyObject
 	{
-		public Brush()
+		private readonly WeakEventManager _weakEventManager = new();
+
+		internal event Action? InvalidateRender
+		{
+			add => _weakEventManager.AddEventHandler(value);
+			remove => _weakEventManager.RemoveEventHandler(value);
+		}
+
+		protected Brush()
 		{
 			InitializeBinder();
 		}
 
-		public static implicit operator Brush(Color uiColor) => SolidColorBrushHelper.FromARGB(uiColor.A, uiColor.R, uiColor.G, uiColor.B);
+#if __ANDROID__ || __IOS__ || __MACOS__
+		internal static Color GetFallbackColor(Brush brush)
+		{
+			return brush switch
+			{
+				SolidColorBrush scb => scb.ColorWithOpacity,
+				GradientBrush gb => gb.FallbackColorWithOpacity,
+				XamlCompositionBrushBase xamlCompositionBrushBase => xamlCompositionBrushBase.FallbackColorWithOpacity,
+				_ => SolidColorBrushHelper.Transparent.Color,
+			};
+		}
+#endif
+
+		public static implicit operator Brush(Color uiColor) => new SolidColorBrush(uiColor);
 
 		public static implicit operator Brush(string colorCode) => SolidColorBrushHelper.Parse(colorCode);
+
+		internal static void SetupBrushChanged(Brush? oldValue, Brush? newValue, ref Action? onInvalidateRender, Action newOnInvalidateRender)
+		{
+			if (oldValue is not null && onInvalidateRender is not null)
+			{
+				oldValue.InvalidateRender -= onInvalidateRender;
+			}
+
+			newOnInvalidateRender();
+			if (newValue is not null)
+			{
+				onInvalidateRender = newOnInvalidateRender;
+				newValue.InvalidateRender += onInvalidateRender;
+			}
+			else
+			{
+				onInvalidateRender = null;
+			}
+		}
+
+		private protected void OnInvalidateRender() => _weakEventManager.HandleEvent(nameof(InvalidateRender));
+
+		internal virtual void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			if (args.Property == DataContextProperty || args.Property == TemplatedParentProperty)
+			{
+				return;
+			}
+
+			OnInvalidateRender();
+
+			if (args.Property == TransformProperty || args.Property == RelativeTransformProperty)
+			{
+				if (args.NewValue is Transform newTransform)
+				{
+					newTransform.Changed += OnTransformChange;
+				}
+
+				if (args.OldValue is Transform oldTransform)
+				{
+					oldTransform.Changed -= OnTransformChange;
+				}
+			}
+		}
+
+		private void OnTransformChange(object? sender, EventArgs args) => OnInvalidateRender();
 
 		#region Opacity Dependency Property
 
@@ -38,11 +109,11 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		[GeneratedDependencyProperty(DefaultValue = null)]
 		public static DependencyProperty TransformProperty { get; } = CreateTransformProperty();
 
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public Windows.UI.Xaml.Media.Transform Transform
 		{
 			get => GetTransformValue();
@@ -68,13 +139,13 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		[Pure]
-		internal static Color? GetColorWithOpacity(Brush brush, Color? defaultColor = null)
+		internal static Color? GetColorWithOpacity(Brush? brush, Color? defaultColor = null)
 		{
 			return TryGetColorWithOpacity(brush, out var c) ? c : defaultColor;
 		}
 
 		[Pure]
-		internal static bool TryGetColorWithOpacity(Brush brush, out Color color)
+		internal static bool TryGetColorWithOpacity(Brush? brush, out Color color)
 		{
 			switch (brush)
 			{
@@ -92,10 +163,5 @@ namespace Windows.UI.Xaml.Media
 					return false;
 			}
 		}
-
-#if !__WASM__
-		// TODO: Refactor brush handling to a cleaner unified approach - https://github.com/unoplatform/uno/issues/5192
-		internal bool SupportsAssignAndObserveBrush => true;
-#endif
 	}
 }

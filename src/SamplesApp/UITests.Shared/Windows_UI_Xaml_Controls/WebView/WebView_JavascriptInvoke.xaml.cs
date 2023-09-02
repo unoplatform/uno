@@ -32,7 +32,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 
 		private static string GetReloadJavascript()
 		{
-#if XAMARIN_IOS
+#if __IOS__
 			return "location.reload(true);";
 #else
 			return "window.location.reload()";

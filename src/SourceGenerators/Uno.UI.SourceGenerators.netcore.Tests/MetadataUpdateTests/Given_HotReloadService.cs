@@ -34,7 +34,8 @@ public class Given_HotReloadService
 				Assert.AreEqual(
 					resultValidation.Diagnostics?.Length ?? 0,
 					results[i].Diagnostics.Length,
-					$"Diagnostics: {string.Join("\n", results[i].Diagnostics)}");
+					$"Diagnostics: {string.Join("\n", results[i].Diagnostics)}, " +
+					$"expected {string.Join("\n", resultValidation.Diagnostics?.Select(d => d.Id) ?? Array.Empty<string>())}");
 				Assert.AreEqual(resultValidation.MetadataUpdates, results[i].MetadataUpdates.Length);
 			}
 		}

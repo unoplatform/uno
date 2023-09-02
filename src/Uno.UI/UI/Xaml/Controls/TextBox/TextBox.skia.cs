@@ -14,6 +14,8 @@ public partial class TextBox
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
+	partial void UpdateFontPartial() => TextBoxView?.OnFontFamilyChanged(FontFamily);
+
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
 	private void UpdateTextBoxView()

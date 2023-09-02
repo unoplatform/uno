@@ -1,8 +1,13 @@
 ﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Microsoft.Toolkit.Uwp.UI.Lottie;
 using Uno.Foundation.Extensibility;
+
+#if HAS_UNO_WINUI
+using CommunityToolkit.WinUI.Lottie;
+#else
+using Microsoft.Toolkit.Uwp.UI.Lottie;
+#endif
 
 #pragma warning disable 105
 using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
@@ -18,11 +23,11 @@ namespace Uno.UI.Lottie
 		{
 		}
 
-		public Windows.UI.Xaml.Controls.IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile) => new LottieVisualSource { UriSource = sourceFile };
+		public IAnimatedVisualSource CreateFromLottieAsset(Uri sourceFile) => new LottieVisualSource { UriSource = sourceFile };
 
-		public Windows.UI.Xaml.Controls.IThemableAnimatedVisualSource CreateTheamableFromLottieAsset(Uri sourceFile) => new ThemableLottieVisualSource { UriSource = sourceFile };
+		public IThemableAnimatedVisualSource CreateThemableFromLottieAsset(Uri sourceFile) => new ThemableLottieVisualSource { UriSource = sourceFile };
 
-		public bool TryCreateThemableFromAnimatedVisualSource(Windows.UI.Xaml.Controls.IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource? themableAnimatedVisualSource)
+		public bool TryCreateThemableFromAnimatedVisualSource(IAnimatedVisualSource animatedVisualSource, out IThemableAnimatedVisualSource? themableAnimatedVisualSource)
 		{
 			themableAnimatedVisualSource = default;
 			if (animatedVisualSource is ThemableLottieVisualSource themable)
@@ -33,7 +38,7 @@ namespace Uno.UI.Lottie
 
 			if (animatedVisualSource is LottieVisualSource lottieVisualSource)
 			{
-				themableAnimatedVisualSource = CreateTheamableFromLottieAsset(lottieVisualSource.UriSource);
+				themableAnimatedVisualSource = CreateThemableFromLottieAsset(lottieVisualSource.UriSource);
 				return true;
 			}
 

@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string DateFormat
 		{
-			get => (string)GetValue(DateFormatProperty);
+			get => (string)GetValue(DateFormatProperty) ?? "";
 			set => SetValue(DateFormatProperty, value);
 		}
 
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string DayOfWeekFormat
 		{
-			get => (string)GetValue(DayOfWeekFormatProperty);
+			get => (string)GetValue(DayOfWeekFormatProperty) ?? "";
 			set => SetValue(DayOfWeekFormatProperty, value);
 		}
 
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty PlaceholderTextProperty { get; } = DependencyProperty.Register(
-			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata(default(string)));
+			"PlaceholderText", typeof(string), typeof(CalendarDatePicker), new FrameworkPropertyMetadata("select a date")); // TODO: Localize?
 
 		public string PlaceholderText
 		{

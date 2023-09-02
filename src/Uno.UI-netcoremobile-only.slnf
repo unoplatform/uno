@@ -21,6 +21,7 @@
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.netcoremobile.csproj",
       "Uno.UI.Composition\\Uno.UI.Composition.netcoremobile.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
+      "Uno.UI.Maps\\Uno.UI.Maps.netcoremobile.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.netcoremobile.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.netcoremobile.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.netcoremobile.csproj",

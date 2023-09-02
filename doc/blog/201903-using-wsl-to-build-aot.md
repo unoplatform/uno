@@ -63,7 +63,7 @@ For each shell you're opening afterwards, you'll have to do the following:
     ```bash
     source ~/emsdk/emsdk_env.sh
     ```
-- Create an Cross-platform Application using the [Uno Platform VSIX](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin), follow the [getting started guide](https://github.com/unoplatform/uno/blob/master/doc/articles/get-started.md
+- Create an Cross-platform Application using the [Uno Platform VSIX](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022), follow the [getting started guide](https://github.com/unoplatform/uno/blob/master/doc/articles/get-started.md
 ) for more details.
 - Make sure that the following property is added in the Wasm csproj :
     ```xml

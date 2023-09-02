@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public DataTemplate HeaderTemplate { get; set; }
 
-#if false || false || NET461 || __WASM__
+#if false || false || IS_UNIT_TESTS || __WASM__
 		[Uno.NotImplemented]
 #endif
 		public DataTemplateSelector HeaderTemplateSelector { get; set; }

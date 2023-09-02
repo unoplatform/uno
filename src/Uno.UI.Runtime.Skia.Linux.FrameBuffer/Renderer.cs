@@ -8,23 +8,28 @@ using WUX = Windows.UI.Xaml;
 using Uno.UI.Runtime.Skia.Native;
 using Uno.Foundation.Logging;
 using Windows.Graphics.Display;
+using System.Runtime.InteropServices.JavaScript;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia
 {
 	class Renderer
 	{
+		private readonly IXamlRootHost _host;
 		private FrameBufferDevice _fbDev;
 		private SKBitmap? _bitmap;
 		private bool _needsScanlineCopy;
 		private int renderCount;
 		private DisplayInformation? _displayInformation;
+		private bool _isWindowInitialized;
 
-		public Renderer()
+		public Renderer(IXamlRootHost host)
 		{
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
 
 			WUX.Window.Current.ToString();
+			_host = host;
 		}
 
 		public FrameBufferDevice FrameBufferDevice => _fbDev;
@@ -57,15 +62,23 @@ namespace Uno.UI.Runtime.Skia
 				_needsScanlineCopy = _fbDev.RowBytes != _bitmap.BytesPerPixel * width;
 
 				WUX.Window.Current.OnNativeSizeChanged(new Size(rawScreenSize.Width / scale, rawScreenSize.Height / scale));
+
+				if (!_isWindowInitialized)
+				{
+					_isWindowInitialized = true;
+					WUX.Window.Current.OnNativeWindowCreated();
+				}
 			}
 
 			using (var surface = SKSurface.Create(info, _bitmap.GetPixels(out _)))
 			{
 				surface.Canvas.Clear(SKColors.White);
-
 				surface.Canvas.Scale((float)scale);
 
-				WUX.Window.Current.Compositor.Render(surface);
+				if (_host.RootElement?.Visual is { } rootVisual)
+				{
+					WUX.Window.Current.Compositor.RenderRootVisual(surface, rootVisual);
+				}
 
 				_fbDev.VSync();
 

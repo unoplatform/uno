@@ -1,7 +1,10 @@
 ﻿#if HAS_UNO_WINUI
 
+using System;
+
 namespace Microsoft.UI.Input
 {
+	[Flags]
 	public enum InputPointerSourceDeviceKinds : uint
 	{
 		None = 0x0,

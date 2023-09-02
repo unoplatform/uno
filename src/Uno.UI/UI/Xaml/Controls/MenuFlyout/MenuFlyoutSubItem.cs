@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Items")]
+	[ContentProperty(Name = nameof(Items))]
 	public partial class MenuFlyoutSubItem : MenuFlyoutItemBase, ISubMenuOwner
 	{
 		// Popup for the MenuFlyoutSubItem
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public string Text
 		{
-			get => (string)this.GetValue(TextProperty);
+			get => (string)this.GetValue(TextProperty) ?? "";
 			set => SetValue(TextProperty, value);
 		}
 
@@ -535,8 +535,7 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
-#if false
-		void Open()
+		internal void Open()
 		{
 #if MFSI_DEBUG
 			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Open.", this));
@@ -545,7 +544,7 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.OpenSubMenu();
 		}
 
-		void Close()
+		internal void Close()
 		{
 #if MFSI_DEBUG
 			IGNOREHR(DebugTrace(XCP_TRACE_OUTPUT_MSG /*traceType*/, "MFSI[0x%p]: Close.", this));
@@ -554,7 +553,6 @@ namespace Windows.UI.Xaml.Controls
 			m_menuHelper.CloseSubMenu();
 
 		}
-#endif
 
 		private protected override void ChangeVisualState(bool bUseTransitions)
 		{

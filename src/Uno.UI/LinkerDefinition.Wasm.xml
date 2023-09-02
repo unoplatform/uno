@@ -1,7 +1,5 @@
 ﻿<linker>
 	<assembly fullname="Uno.UI">
-		<type fullname="Uno.UI.Wasm.WasmHttpHandler" />
-
 		<type fullname="Windows.UI.Xaml.UIElement" />
 		<type fullname="Windows.UI.Xaml.Window" />
 		<type fullname="Windows.UI.Xaml.Media.BrushConverter" />
@@ -52,6 +50,11 @@
 		</type>
 		<type fullname="Windows.Devices.Sensors.LightSensor" required="false">
 			<method name="DispatchReading" />
+		</type>
+		<type fullname="Windows.System.Power.PowerManager">
+	  		<method name="DispatchRemainingDischargeTimeChanged" />
+	  		<method name="DispatchRemainingChargePercentChanged" />
+	  		<method name="DispatchChargingChanged" />
 		</type>
 		<type fullname="Windows.Networking.Connectivity.NetworkInformation" required="false">
 			<method name="DispatchStatusChanged" />

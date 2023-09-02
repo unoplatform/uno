@@ -20,13 +20,13 @@ using Uno.UI.Dispatching;
 using Windows.Foundation.Metadata;
 using Windows.System;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -57,17 +57,17 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	/// <remarks>
 	/// The pooling is particularly important on iOS and Android where the memory management is less than ideal because of the
-	/// pinning of native instances, and the inability of the GC to determine that two instances refer to each other via a 
+	/// pinning of native instances, and the inability of the GC to determine that two instances refer to each other via a
 	/// native storage (Subviews for instance), and reclaim their memory properly.
-	/// 
+	///
 	/// The pooling is also important because creating a control is particularly expensive on Android and iOS.
-	/// 
+	///
 	/// This Xaml implementation relies on unloaded controls to release their templated parent by setting it to null, which always resets
 	/// content template of a ContentControl, as well as the template of a Control. This forces recycled controls to re-create their
 	/// templates even if it was previously the same. This can make lists particularly jittery.
 	/// This class allows for templates to be reused, based on the fact that controls created via a FrameworkTemplate that lose their
 	/// DependencyObject.Parent value are considered orhpans. Those instances can then later on be reused.
-	/// 
+	///
 	///	This behavior is not following windows' implementation, as this requires a control to be stateless. This is pretty easy to do when controls
 	///	are strictly databound, but not if the control is using stateful code-behind. This is why this behavior can be disabled via <see cref="IsPoolingEnabled"/>
 	///	if the pooling interferes with the normal behavior of a control.
@@ -116,6 +116,11 @@ namespace Windows.UI.Xaml
 		public static bool IsPoolingEnabled { get; set; } = true;
 
 		/// <summary>
+		/// Gets a value indicating whether the pool is currently recycling a template.
+		/// </summary>
+		internal static bool IsRecycling { get; private set; }
+
+		/// <summary>
 		/// Defines the ratio of memory usage at which the pools starts to stop pooling elligible views.
 		/// </summary>
 		internal static float HighMemoryThreshold { get; set; } = .8f;
@@ -138,7 +143,7 @@ namespace Windows.UI.Xaml
 
 		private FrameworkTemplatePool()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			_platformProvider.Schedule(Scavenger);
 #endif
 		}
@@ -204,7 +209,7 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
-				instance = template.LoadContent();
+				instance = ((IFrameworkTemplateInternal)template).LoadContent();
 
 				if (IsPoolingEnabled && instance is IFrameworkElement)
 				{
@@ -346,7 +351,9 @@ namespace Windows.UI.Xaml
 			// If DataContext is not null, it means it has been explicitly set (not inherited). Resetting the view could push an invalid value through 2-way binding in this case.
 			if (instance is IFrameworkTemplatePoolAware templateAwareElement && (instance as IFrameworkElement)!.DataContext == null)
 			{
+				IsRecycling = true;
 				templateAwareElement.OnTemplateRecycled();
+				IsRecycling = false;
 			}
 
 			//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations

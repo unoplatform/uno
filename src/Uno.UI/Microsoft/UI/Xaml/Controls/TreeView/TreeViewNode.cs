@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	[Bindable]
 	public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, IStringable
 	{
 		private WeakReference<TreeViewNode> m_parentNode;

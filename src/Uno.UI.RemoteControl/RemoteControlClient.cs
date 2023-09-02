@@ -122,7 +122,7 @@ namespace Uno.UI.RemoteControl
 								var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
 								var targetParts = currentHost.Split('-');
 
-								endpoint = originParts[0] + '-' + currentHost.Substring(targetParts[0].Length + 1);
+								endpoint = string.Concat(originParts[0].AsSpan(), "-", currentHost.AsSpan().Slice(targetParts[0].Length + 1));
 							}
 #endif
 
@@ -388,9 +388,9 @@ namespace Uno.UI.RemoteControl
 
 		public async Task SendMessage(IMessage message)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogError($"Sending message: {message} {message.Name}");
+				this.Log().Trace($"Sending message: {message} {message.Name}");
 			}
 
 			if (_webSocket != null)

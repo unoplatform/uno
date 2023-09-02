@@ -54,6 +54,10 @@ namespace Uno.UI.Tests.Resources
 	{
 		[TestMethod]
 		[DataRow(@"logo", @"logo")]
+		[DataRow(@"", @"")]
+		[DataRow(null, @"")]
+		[DataRow(" ", @"_")]
+		[DataRow("  ", @"__")]
 		public void When_Encode(string input, string expected)
 		{
 			Assert.AreEqual(expected, AndroidResourceNameEncoder.Encode(input));
@@ -68,6 +72,9 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"test/test2/logo-1.png", @"test/test2/logo_1.png")]
 		[DataRow(@"test/test2/test-3/logo-1.png", @"test/test2/test_3/logo_1.png")]
 		[DataRow(@"1test/logo-1.png", @"__1test/logo_1.png")]
+		[DataRow(@".png", @".png")]
+		[DataRow(@"test space/logo.png", @"test_space/logo.png")]
+		[DataRow(@"test space/.png", @"test_space/.png")]
 		public void When_EncodeResourcePath(string input, string expected)
 		{
 			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeResourcePath(input));
@@ -82,6 +89,9 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"test\test2\logo-1.png", @"Assets\test\test2\logo_1.png")]
 		[DataRow(@"test\test2\test-3\logo-1.png", @"Assets\test\test2\test_3\logo_1.png")]
 		[DataRow(@"1test\logo-1.png", @"Assets\__1test\logo_1.png")]
+		[DataRow(@".png", @"Assets\.png")]
+		[DataRow(@"test\.png", @"Assets\test\.png")]
+		[DataRow(@"test with spaces\.png", @"Assets\test_with_spaces\.png")]
 		public void When_EncodeFileSystemPath(string input, string expected)
 		{
 			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeFileSystemPath(input));
@@ -95,7 +105,9 @@ namespace Uno.UI.Tests.Resources
 		[DataRow(@"test/logo-1.png", @"test_logo_1.png")]
 		[DataRow(@"test/test2/logo-1.png", @"test_test2_logo_1.png")]
 		[DataRow(@"test/test2/test-3/logo-1.png", @"test_test2_test_3_logo_1.png")]
-		[DataRow(@"1test/logo-1.png", @"__1test_logo_1.png")]
+		[DataRow(@".png", @".png")]
+		[DataRow(@"test/.png", @"test_.png")]
+		[DataRow(@"test with spaces/.png", @"test_with_spaces_.png")]
 		public void When_EncodeDrawablePath(string input, string expected)
 		{
 			Assert.AreEqual(expected, AndroidResourceNameEncoder.EncodeDrawablePath(input));

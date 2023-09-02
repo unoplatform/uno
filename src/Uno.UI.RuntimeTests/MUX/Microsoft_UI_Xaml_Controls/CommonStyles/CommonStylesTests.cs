@@ -18,7 +18,9 @@ using System.Collections.Generic;
 using XamlControlsResources = Microsoft.UI.Xaml.Controls.XamlControlsResources;
 using Windows.UI.Xaml.Markup;
 using System;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using System.Text;
 
 #if USING_TAEF
@@ -33,6 +35,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class CommonStylesApiTests : MUXApiTestBase
 	{
 		// TODO: Many tests from MUX CommonStylesApiTests.cpp are missing here and should be added in the future to Uno Platform.

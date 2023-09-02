@@ -35,18 +35,18 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty SourceProperty { get; } =
 			DependencyProperty.Register(nameof(Source), typeof(IAnimatedVisualSource2), typeof(AnimatedIcon), new FrameworkPropertyMetadata(null, OnSourcePropertyChanged));
 
-		public static string GetState(DependencyObject obj)
+		public static string GetState(DependencyObject @object)
 		{
-			return (string)obj.GetValue(StateProperty);
+			return (string)@object.GetValue(StateProperty);
 		}
 
-		public static void SetState(DependencyObject obj, string value)
+		public static void SetState(DependencyObject @object, string value)
 		{
-			obj.SetValue(StateProperty, value);
+			@object.SetValue(StateProperty, value);
 		}
 
 		public static DependencyProperty StateProperty { get; } =
-			DependencyProperty.RegisterAttached("State", typeof(string), typeof(AnimatedIcon), new FrameworkPropertyMetadata(null, OnAnimatedIconStatePropertyChanged));
+			DependencyProperty.RegisterAttached("State", typeof(string), typeof(AnimatedIcon), new FrameworkPropertyMetadata(string.Empty, OnAnimatedIconStatePropertyChanged));
 
 		private static void OnFallbackIconSourcePropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{

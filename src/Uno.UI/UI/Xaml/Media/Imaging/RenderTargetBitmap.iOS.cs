@@ -4,9 +4,11 @@ using System;
 using System.Buffers;
 using System.Diagnostics.CodeAnalysis;
 using Windows.Foundation;
+using Windows.Graphics.Display;
 using CoreGraphics;
 using Foundation;
 using UIKit;
+using Uno.UI;
 using Uno.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Media.Imaging
@@ -45,8 +47,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		private static (int ByteCount, int Width, int Height) RenderAsBgra8_Premul(UIElement element, ref byte[]? buffer, Size? scaledSize = null)
 		{
 			var size = new Size(element.ActualSize.X, element.ActualSize.Y);
-
-			if (size.IsEmpty)
+			if (size == default)
 			{
 				return (0, 0, 0);
 			}
@@ -54,7 +55,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 			UIImage uiImage;
 			try
 			{
-				UIGraphics.BeginImageContextWithOptions(size, false, 1f);
+				var scale = (float)(DisplayInformation.GetForCurrentView()?.RawPixelsPerViewPixel ?? 1.0);
+				UIGraphics.BeginImageContextWithOptions(size, false, scale);
 				var ctx = UIGraphics.GetCurrentContext();
 				ctx.SetFillColor(Colors.Transparent); // This is only for pixels not used, but the bitmap as the same size of the element. We keep it only for safety!
 				element.Layer.RenderInContext(ctx);

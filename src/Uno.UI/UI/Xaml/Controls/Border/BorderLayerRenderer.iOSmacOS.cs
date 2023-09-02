@@ -9,15 +9,13 @@ using CoreAnimation;
 using CoreGraphics;
 using CoreImage;
 using Foundation;
+using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Media;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 #if __IOS__
 using UIKit;
@@ -30,6 +28,8 @@ using _View = AppKit.NSView;
 using _Color = AppKit.NSColor;
 using _Image = AppKit.NSImage;
 #endif
+
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -170,7 +170,14 @@ namespace Windows.UI.Xaml.Shapes
 
 				var insertionIndex = 0;
 
-				if (background is GradientBrush gradientBackground)
+				var caLayer = background switch
+				{
+					GradientBrush gradientBackground => gradientBackground.GetLayer(backgroundArea.Size),
+					RadialGradientBrush radialBackground => radialBackground.GetLayer(backgroundArea.Size),
+					_ => null,
+				};
+
+				if (caLayer is not null)
 				{
 					var fillMask = new CAShapeLayer()
 					{
@@ -180,12 +187,7 @@ namespace Windows.UI.Xaml.Shapes
 						FillColor = _Color.White.CGColor,
 					};
 
-					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
-				}
-				else if (background is SolidColorBrush scbBackground)
-				{
-					Brush.AssignAndObserveBrush(scbBackground, color => backgroundLayer.FillColor = color)
-						.DisposeWith(disposables);
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, caLayer, fillMask);
 				}
 				else if (background is ImageBrush imgBackground)
 				{
@@ -219,10 +221,12 @@ namespace Windows.UI.Xaml.Shapes
 					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask)
 						.DisposeWith(disposables);
 				}
-				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				else if (background is XamlCompositionBrushBase or SolidColorBrush)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
-						.DisposeWith(disposables);
+					Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
+					onInvalidateRender();
+					background.InvalidateRender += onInvalidateRender;
+					new DisposableAction(() => background.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
 				}
 				else
 				{
@@ -237,20 +241,14 @@ namespace Windows.UI.Xaml.Shapes
 				parent.AddSublayer(outerLayer);
 				parent.InsertSublayer(backgroundLayer, insertionIndex);
 
-				if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+				var borderCALayer = borderBrush switch
 				{
-					Brush.AssignAndObserveBrush(borderBrush, color =>
-					{
-						outerLayer.StrokeColor = color;
-						outerLayer.FillColor = color;
+					GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+					RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
+					_ => null,
+				};
 
-						// Make sure to hold native object ref until it has been retained by native itself
-						// https://github.com/unoplatform/uno/issues/10283
-						GC.KeepAlive(color);
-					})
-					.DisposeWith(disposables);
-				}
-				else if (borderBrush is GradientBrush gradientBorder)
+				if (borderCALayer is not null)
 				{
 					var fillMask = new CAShapeLayer()
 					{
@@ -261,7 +259,31 @@ namespace Windows.UI.Xaml.Shapes
 					};
 
 					var borderLayerIndex = parent.Sublayers.Length;
-					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
+					CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
+				}
+				else if (borderBrush is SolidColorBrush scbBorder || borderBrush == null)
+				{
+					Action onInvalidateRender = () =>
+					{
+						CGColor color = Brush.GetFallbackColor(borderBrush);
+						outerLayer.StrokeColor = color;
+						outerLayer.FillColor = color;
+
+						// Make sure to hold native object ref until it has been retained by native itself
+						// https://github.com/unoplatform/uno/issues/10283
+						GC.KeepAlive(color);
+					};
+
+					if (borderBrush is null)
+					{
+						onInvalidateRender();
+					}
+					else
+					{
+						onInvalidateRender();
+						borderBrush.InvalidateRender += onInvalidateRender;
+						new DisposableAction(() => borderBrush.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					}
 				}
 
 				parent.Mask = new CAShapeLayer()
@@ -293,13 +315,24 @@ namespace Windows.UI.Xaml.Shapes
 
 				var insertionIndex = 0;
 
-				if (background is GradientBrush gradientBackground)
+				var caLayer = background switch
 				{
-					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
+					GradientBrush gradientBackground => gradientBackground.GetLayer(backgroundArea.Size),
+					RadialGradientBrush radialBackground => radialBackground.GetLayer(backgroundArea.Size),
+					_ => null,
+				};
+
+				if (caLayer is not null)
+				{
+					CreateGradientBrushLayers(area, backgroundArea, parent, sublayers, ref insertionIndex, caLayer, fillMask: null);
 				}
-				else if (background is SolidColorBrush scbBackground)
+				else if (background is SolidColorBrush)
 				{
-					Brush.AssignAndObserveBrush(scbBackground, c => backgroundLayer.FillColor = c)
+					Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
+
+					onInvalidateRender();
+					background.InvalidateRender += onInvalidateRender;
+					new DisposableAction(() => background.InvalidateRender -= onInvalidateRender)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing
@@ -323,9 +356,12 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					acrylicBrush.Subscribe(owner, area, backgroundArea, parent, sublayers, ref insertionIndex, fillMask: null);
 				}
-				else if (background is XamlCompositionBrushBase unsupportedCompositionBrush)
+				else if (background is XamlCompositionBrushBase)
 				{
-					Brush.AssignAndObserveBrush(unsupportedCompositionBrush, color => backgroundLayer.FillColor = color)
+					Action onInvalidateRender = () => backgroundLayer.FillColor = Brush.GetFallbackColor(background);
+					background.InvalidateRender += onInvalidateRender;
+					onInvalidateRender();
+					new DisposableAction(() => background.InvalidateRender -= onInvalidateRender)
 						.DisposeWith(disposables);
 
 					// This is required because changing the CornerRadius changes the background drawing
@@ -353,13 +389,14 @@ namespace Windows.UI.Xaml.Shapes
 					sublayers.Add(layer);
 					parent.AddSublayer(layer);
 
-					if (borderBrush is SolidColorBrush scbBorder)
+					var borderCALayer = borderBrush switch
 					{
-						Brush.AssignAndObserveBrush(borderBrush, c => layer.FillColor = c)
-							.DisposeWith(disposables);
+						GradientBrush gradientBorder => gradientBorder.GetLayer(area.Size),
+						RadialGradientBrush radialBorder => radialBorder.GetLayer(area.Size),
+						_ => null,
+					};
 
-					}
-					else if (borderBrush is GradientBrush gradientBorder)
+					if (borderCALayer is not null)
 					{
 						var fillMask = new CAShapeLayer()
 						{
@@ -370,9 +407,15 @@ namespace Windows.UI.Xaml.Shapes
 						};
 
 						var borderLayerIndex = parent.Sublayers.Length;
-						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, gradientBorder, fillMask);
+						CreateGradientBrushLayers(area, area, parent, sublayers, ref borderLayerIndex, borderCALayer, fillMask);
 					}
-
+					else if (borderBrush is SolidColorBrush scbBorder)
+					{
+						Action onInvalidateRender = () => layer.FillColor = Brush.GetFallbackColor(borderBrush);
+						onInvalidateRender();
+						scbBorder.InvalidateRender += onInvalidateRender;
+						new DisposableAction(() => scbBorder.InvalidateRender -= onInvalidateRender).DisposeWith(disposables);
+					}
 				}
 
 				backgroundLayer.Path = backgroundPath;
@@ -591,9 +634,9 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="layer">The layer in which the gradient layers will be added</param>
 		/// <param name="sublayers">List of layers to keep all references</param>
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
-		/// <param name="gradientBrush">The xxGradientBrush</param>
+		/// <param name="gradientLayer">The CALayer retrieved by brush.GetLayer(insideArea.Size)</param>
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
-		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
+		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, CALayer gradientLayer, CAShapeLayer fillMask)
 		{
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var gradientContainerLayer = new CALayer
@@ -607,7 +650,6 @@ namespace Windows.UI.Xaml.Shapes
 			var gradientFrame = new CGRect(new CGPoint(insideArea.X, insideArea.Y), insideArea.Size);
 
 			// This is the layer with the actual gradient in it. Its frame is the inside of the border.
-			var gradientLayer = gradientBrush.GetLayer(insideArea.Size);
 			gradientLayer.Frame = gradientFrame;
 			gradientLayer.MasksToBounds = true;
 

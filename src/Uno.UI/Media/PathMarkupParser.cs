@@ -6,7 +6,7 @@
 // Copyright (c) The Avalonia Project. All rights reserved.
 //
 // Modified work:
-// Copyright (c) 2018 nventive inc. All rights reserved.
+// Copyright (c) 2018 Uno Platform Inc. All rights reserved.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -566,8 +566,11 @@ namespace Uno.Media
 			{
 				throw new InvalidDataException("Invalid double value");
 			}
-
+#if NET7_0_OR_GREATER
+			return double.Parse(doubleValue, CultureInfo.InvariantCulture);
+#else
 			return double.Parse(doubleValue.ToString(), CultureInfo.InvariantCulture);
+#endif
 		}
 
 		private Size ReadSize(ref ReadOnlySpan<char> span)

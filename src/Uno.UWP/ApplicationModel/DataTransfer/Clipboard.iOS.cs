@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using Foundation;
 using UIKit;
@@ -67,4 +66,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		private static void PasteboardChanged(NSNotification notification) => OnContentChanged();
 	}
 }
-#endif

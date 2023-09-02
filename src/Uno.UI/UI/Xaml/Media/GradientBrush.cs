@@ -1,5 +1,10 @@
-﻿using Windows.UI.Xaml.Markup;
+﻿#nullable enable
+
+using Windows.UI.Xaml.Markup;
+
+#if HAS_UNO_WINUI
 using Windows.UI;
+#endif
 
 namespace Windows.UI.Xaml.Media
 {
@@ -29,6 +34,52 @@ namespace Windows.UI.Xaml.Media
 					options: FrameworkPropertyMetadataOptions.ValueInheritsDataContext | FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsArrange
 				)
 		);
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == GradientStopsProperty)
+			{
+				OnGradientStopsChanged(this, args);
+			}
+		}
+
+		private static void OnGradientStopsChanged(GradientBrush @this, DependencyPropertyChangedEventArgs args)
+		{
+			if (args.OldValue is GradientStopCollection oldValue)
+			{
+				oldValue.Added -= @this.OnAdded;
+				oldValue.Removed -= @this.OnRemoved;
+
+				foreach (var stop in oldValue)
+				{
+					stop.InvalidateRender -= @this.OnInvalidateRender;
+				}
+			}
+
+			if (args.NewValue is GradientStopCollection newValue)
+			{
+				newValue.Added += @this.OnAdded;
+				newValue.Removed += @this.OnRemoved;
+
+				foreach (var stop in newValue)
+				{
+					stop.InvalidateRender += @this.OnInvalidateRender;
+				}
+			}
+		}
+
+		private void OnAdded(GradientStop addedStop)
+		{
+			OnInvalidateRender();
+			addedStop.InvalidateRender += OnInvalidateRender;
+		}
+
+		private void OnRemoved(GradientStop removedStop)
+		{
+			OnInvalidateRender();
+			removedStop.InvalidateRender -= OnInvalidateRender;
+		}
 
 		public GradientStopCollection GradientStops
 		{

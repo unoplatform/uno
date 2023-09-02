@@ -9,10 +9,7 @@ using UIKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {

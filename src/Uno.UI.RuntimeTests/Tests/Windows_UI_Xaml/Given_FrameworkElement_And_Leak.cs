@@ -11,7 +11,9 @@ using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
+#if !HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
+#endif
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
@@ -29,10 +31,6 @@ using UIKit;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
-#if NET6_0_OR_GREATER && __ANDROID__
-	[Ignore("Disabled until https://github.com/dotnet/runtime/pull/55681 is released. See https://github.com/unoplatform/uno/issues/5873")]
-#endif
-
 	[TestClass]
 	[RunsOnUIThread]
 #if __MACOS__
@@ -63,7 +61,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(Slider), 15)]
 		[DataRow(typeof(SymbolIcon), 15)]
 		[DataRow(typeof(Viewbox), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.MenuBar), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.MenuBar), 15)]
 		[DataRow(typeof(ComboBox), 15)]
 		[DataRow(typeof(Canvas), 15)]
 		[DataRow(typeof(AutoSuggestBox), 15)]
@@ -75,16 +73,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(RelativePanel), 15)]
 		[DataRow(typeof(FlipView), 15)]
 		[DataRow(typeof(DatePicker), 15)]
+#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(CalendarView), 15)]
+#endif
 		[DataRow(typeof(Page), 15)]
 		[DataRow(typeof(Image), 15)]
 		[DataRow(typeof(ToggleSwitch), 15)]
-		[DataRow(typeof(Windows.UI.Xaml.Controls.SwipeControl), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
+#if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.ColorPicker), 15)]
+#endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorPickerSlider), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Primitives.ColorSpectrum), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.Expander), 15)]
@@ -208,7 +210,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			var retainedMessage = "";
 
-#if NET5_0 || __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 			if (activeControls != 0)
 			{
 				var retainedTypes = _holders.AsEnumerable().Select(ExtractTargetName).JoinBy(";");
@@ -228,7 +230,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(0, activeControls, retainedMessage);
 #endif
 
-#if NET5_0 || __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__
 			static string? ExtractTargetName(KeyValuePair<DependencyObject, Holder> p)
 			{
 				if (p.Key is FrameworkElement fe)

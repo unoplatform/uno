@@ -11,10 +11,7 @@ using Windows.UI.Text;
 using AppKit;
 using Uno.UI;
 using Windows.UI;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -66,11 +63,7 @@ namespace Windows.UI.Xaml.Controls
 				// While DrawBackgroundForGlyphRange will draw the background mark for specified Glyphs DrawGlyphsForGlyphRange will draw the actual Glyphs.
 
 				// Note: This part of the code is called only under very specific situations. For most of the scenarios DrawString is used to draw the text.
-#if NET6_0_OR_GREATER
 				_layoutManager?.DrawGlyphs
-#else
-				_layoutManager?.DrawGlyphsForGlyphRange
-#endif
 					(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
 			}
 			else
@@ -360,12 +353,7 @@ namespace Windows.UI.Xaml.Controls
 				// Required for GetUsedRectForTextContainer to return a value.
 				_layoutManager.GetGlyphRange(_textContainer);
 				return _layoutManager
-#if NET6_0_OR_GREATER
-					.GetUsedRect
-#else
-					.GetUsedRectForTextContainer
-#endif
-						(_textContainer).Size;
+					.GetUsedRect(_textContainer).Size;
 			}
 			else
 			{
@@ -389,15 +377,8 @@ namespace Windows.UI.Xaml.Controls
 			var partialFraction = (nfloat)0;
 			var pointInTextContainer = new CGPoint(point.X - _drawRect.X, point.Y - _drawRect.Y);
 
-#if NET6_0_OR_GREATER
 			var characterIndex = (int)_layoutManager.GetCharacterIndex
 				(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), out partialFraction);
-#else
-#pragma warning disable CS0618 // Type or member is obsolete (For VS2017 compatibility)
-			var characterIndex = (int)_layoutManager.CharacterIndexForPoint
-				(pointInTextContainer, _layoutManager.TextContainers.FirstOrDefault(), ref partialFraction);
-#pragma warning restore CS0618 // Type or member is obsolete
-#endif
 
 			return characterIndex;
 		}

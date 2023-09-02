@@ -97,5 +97,36 @@ namespace Windows.UI.Composition
 
 			return ret;
 		}
+
+		public static SKMatrix ToSKMatrix(this Matrix4x4 m)
+			=> new(
+				m.M11, m.M21, m.M41,
+				m.M12, m.M22, m.M42,
+				m.M14, m.M24, m.M44);
+
+		/// <summary>
+		/// This is an alternative to the built-in SKBitmap.FromImage.
+		/// The problem with SKBitmap.FromImage is that it ignores the color type of the input image, and
+		/// uses SKImageInfo.PlatformColorType.
+		/// The code is the same as SKBitmap.FromImage except for respecting color type.
+		/// See https://github.com/mono/SkiaSharp/blob/7d7766532a4666f56944e65bee1c2158c320f09c/binding/Binding/SKBitmap.cs#L830-L843
+		/// </summary>
+		public static SKBitmap ToSKBitmap(this SKImage image)
+		{
+			if (image == null)
+			{
+				throw new ArgumentNullException(nameof(image));
+			}
+
+			var info = new SKImageInfo(image.Width, image.Height, image.ColorType, image.AlphaType);
+			var bmp = new SKBitmap(info);
+			if (!image.ReadPixels(info, bmp.GetPixels(), info.RowBytes, 0, 0))
+			{
+				bmp.Dispose();
+				bmp = null;
+			}
+
+			return bmp!;
+		}
 	}
 }

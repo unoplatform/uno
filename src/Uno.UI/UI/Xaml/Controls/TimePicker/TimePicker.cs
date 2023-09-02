@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker()
 		{
-			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "TimePickerLightDismissOverlayBackground", isThemeResourceExtension: true);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "TimePickerLightDismissOverlayBackground", isThemeResourceExtension: true, isHotReloadSupported: false);
 
 			DefaultStyleKey = typeof(TimePicker);
 		}
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 					defaultValue: new TimeSpan(-1),
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnTimeChanged((TimeSpan)e.OldValue, (TimeSpan)e.NewValue),
-					coerceValueCallback: (s, e) => ((TimePicker)s)?.CoerceTime((TimeSpan)e))
+					coerceValueCallback: (s, e, _) => ((TimePicker)s)?.CoerceTime((TimeSpan)e))
 				);
 
 		private static void ValidateTimeSpanForTimeProperty(TimeSpan span)
@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 					defaultValue: null,
 					FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnSelectedTimeChanged((TimeSpan?)e.OldValue, (TimeSpan?)e.NewValue),
-					coerceValueCallback: (s, e) => ((TimePicker)s)?.CoerceSelectedTime((TimeSpan?)e))
+					coerceValueCallback: (s, e, _) => ((TimePicker)s)?.CoerceSelectedTime((TimeSpan?)e))
 				);
 
 		private static void ValidateTimeSpanForSelectedTimeProperty(TimeSpan? span)
@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 					defaultValue: 1,
 					options: FrameworkPropertyMetadataOptions.None,
 					propertyChangedCallback: (s, e) => ((TimePicker)s)?.OnMinuteIncrementChanged((int)e.OldValue, (int)e.NewValue),
-					coerceValueCallback: (s, e) =>
+					coerceValueCallback: (s, e, _) =>
 					{
 						var value = (int)e;
 

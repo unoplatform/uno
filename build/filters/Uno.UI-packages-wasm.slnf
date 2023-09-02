@@ -29,7 +29,6 @@
       "Uno.UI.RemoteControl.Server\\Uno.UI.RemoteControl.Server.csproj",
       "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
       "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.Wasm.csproj",
-      "Uno.UI.Runtime.WebAssembly.Compatibility\\Uno.UI.Runtime.WebAssembly.Compatibility.csproj",
       "Uno.UI.Runtime.WebAssembly\\Uno.UI.Runtime.WebAssembly.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Wasm.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Wasm.csproj",

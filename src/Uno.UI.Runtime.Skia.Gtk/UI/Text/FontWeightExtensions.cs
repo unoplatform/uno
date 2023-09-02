@@ -1,9 +1,9 @@
 ﻿using Windows.UI.Text;
 using Pango;
 
-namespace Uno.UI.Runtime.Skia.GTK.UI.Text
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Text
 {
-	public static class FontWeightExtensions
+	internal static class FontWeightExtensions
 	{
 		/// <summary>
 		/// Based on <see href="https://github.com/GNOME/pango/blob/master/pango/pango-font.h" />

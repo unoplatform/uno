@@ -1,5 +1,4 @@
-﻿#if __SKIA__
-#nullable enable
+﻿#nullable enable
 
 namespace Windows.UI.Xaml.Input
 {
@@ -11,4 +10,3 @@ namespace Windows.UI.Xaml.Input
 		}
 	}
 }
-#endif

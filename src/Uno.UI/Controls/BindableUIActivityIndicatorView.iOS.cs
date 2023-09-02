@@ -7,10 +7,6 @@ using Windows.UI.Xaml;
 using CoreGraphics;
 using ObjCRuntime;
 
-#if !NET6_0_OR_GREATER
-using NativeHandle = System.IntPtr;
-#endif
-
 namespace Uno.UI.Views.Controls
 {
 	public partial class BindableUIActivityIndicatorView : UIActivityIndicatorView, DependencyObject

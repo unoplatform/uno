@@ -197,7 +197,7 @@ namespace Windows.UI.Input
 				public void Dispose()
 					=> _timer.Stop();
 
-#if NET461
+#if IS_UNIT_TESTS
 				/// <summary>
 				/// For test purposes only!
 				/// </summary>

@@ -97,7 +97,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsEnabledProperty, value); }
 		}
 
-		public static DependencyProperty IsEnabledProperty =
+		public static DependencyProperty IsEnabledProperty { get; } =
 			DependencyProperty.Register(
 				"IsEnabled",
 				typeof(bool),
@@ -189,7 +189,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(ContentProperty, value); }
 		}
 
-		public static DependencyProperty ContentProperty =
+		public static DependencyProperty ContentProperty { get; } =
 			DependencyProperty.Register(
 				"Content",
 				typeof(UIElement),
@@ -227,7 +227,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(RightPaneProperty, value); }
 		}
 
-		public static DependencyProperty RightPaneProperty =
+		public static DependencyProperty RightPaneProperty { get; } =
 			DependencyProperty.Register(
 				"RightPane",
 				typeof(UIElement),
@@ -263,7 +263,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(RightPaneOpenLengthProperty, value); }
 		}
 
-		public static DependencyProperty RightPaneOpenLengthProperty =
+		public static DependencyProperty RightPaneOpenLengthProperty { get; } =
 			DependencyProperty.Register(
 				"RightPaneOpenLength",
 				typeof(double),
@@ -289,7 +289,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsRightPaneOpenProperty, value); }
 		}
 
-		public static DependencyProperty IsRightPaneOpenProperty =
+		public static DependencyProperty IsRightPaneOpenProperty { get; } =
 			DependencyProperty.Register(
 				"IsRightPaneOpen",
 				typeof(bool),
@@ -322,7 +322,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(RightPaneBackgroundProperty, value); }
 		}
 
-		public static DependencyProperty RightPaneBackgroundProperty =
+		public static DependencyProperty RightPaneBackgroundProperty { get; } =
 			DependencyProperty.Register(
 				"RightPaneBackground",
 				typeof(Brush),
@@ -351,7 +351,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(LeftPaneProperty, value); }
 		}
 
-		public static DependencyProperty LeftPaneProperty =
+		public static DependencyProperty LeftPaneProperty { get; } =
 			DependencyProperty.Register(
 				"LeftPane",
 				typeof(UIElement),
@@ -387,7 +387,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(LeftPaneOpenLengthProperty, value); }
 		}
 
-		public static DependencyProperty LeftPaneOpenLengthProperty =
+		public static DependencyProperty LeftPaneOpenLengthProperty { get; } =
 			DependencyProperty.Register(
 				"LeftPaneOpenLength",
 				typeof(double),
@@ -413,7 +413,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(IsLeftPaneOpenProperty, value); }
 		}
 
-		public static DependencyProperty IsLeftPaneOpenProperty =
+		public static DependencyProperty IsLeftPaneOpenProperty { get; } =
 			DependencyProperty.Register(
 				"IsLeftPaneOpen",
 				typeof(bool),
@@ -446,7 +446,7 @@ namespace Uno.UI.Controls
 			set { this.SetValue(LeftPaneBackgroundProperty, value); }
 		}
 
-		public static DependencyProperty LeftPaneBackgroundProperty =
+		public static DependencyProperty LeftPaneBackgroundProperty { get; } =
 			DependencyProperty.Register(
 				"LeftPaneBackground",
 				typeof(Brush),

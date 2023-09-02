@@ -26,13 +26,14 @@ using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
 #endif
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
-#elif XAMARIN_IOS
+using Windows.UI.Xaml.Controls;
+#elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
 using UIKit;
@@ -48,6 +49,9 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
+	/// <summary>
+	/// Encapsulates the app and its available services.
+	/// </summary>
 	public partial class Application
 	{
 		private bool _initializationComplete;
@@ -76,6 +80,23 @@ namespace Windows.UI.Xaml
 
 			InitializePartialStatic();
 		}
+
+		/// <summary>
+		/// Initializes a new instance of the Application class.
+		/// </summary>
+		public Application()
+		{
+#if __SKIA__ || __WASM__
+			Package.SetEntryAssembly(this.GetType().Assembly);
+#endif
+			Current = this;
+			ApplicationLanguages.ApplyCulture();
+			InitializeSystemTheme();
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		private static void RegisterExtensions()
 		{
@@ -120,6 +141,8 @@ namespace Windows.UI.Xaml
 				SetExplicitRequestedTheme(value);
 			}
 		}
+
+		internal bool IsSuspended { get; set; }
 
 		private void InitializeSystemTheme()
 		{
@@ -214,7 +237,7 @@ namespace Windows.UI.Xaml
 		public event UnhandledExceptionEventHandler UnhandledException;
 
 #if !__ANDROID__ && !__MACOS__ && !__SKIA__
-		[NotImplemented("__IOS__", "NET461", "__WASM__", "__NETSTD_REFERENCE__")]
+		[NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__")]
 		public void Exit()
 		{
 			if (this.Log().IsEnabled(LogLevel.Warning))
@@ -231,7 +254,6 @@ namespace Windows.UI.Xaml
 
 		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{
-			ApplicationLanguages.ApplyCulture();
 			StartPartial(callback);
 		}
 
@@ -339,17 +361,24 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseResuming()
 		{
+			if (!IsSuspended)
+			{
+				return;
+			}
+
 			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
-
-			OnResumingPartial();
+			IsSuspended = false;
 		}
-
-		partial void OnResumingPartial();
 
 		internal void RaiseSuspending()
 		{
-			var suspendingOperation = CreateSuspendingOperation();
+			if (IsSuspended)
+			{
+				return;
+			}
+
+			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
 			Suspending?.Invoke(this, suspendingEventArgs);
@@ -367,23 +396,13 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__ && !__MACOS__
+#if !__IOS__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
 		/// </summary>
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
 #endif
-
-		protected virtual void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
-		{
-		}
-
-		internal void RaiseWindowCreated(Windows.UI.Xaml.Window window)
-		{
-			OnWindowCreated(new WindowCreatedEventArgs(window));
-		}
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
 		{
@@ -457,6 +476,17 @@ namespace Windows.UI.Xaml
 			}
 			else if (instance is ViewGroup g)
 			{
+#if __ANDROID__
+				// We need to propagate for list view items that were materialized but not visible.
+				// Without this, theme changes will not propagate properly to all list view items.
+				if (instance is NativeListViewBase nativeListViewBase)
+				{
+					foreach (var selectorItem in nativeListViewBase.CachedItemViews)
+					{
+						PropagateResourcesChanged(selectorItem, updateReason);
+					}
+				}
+#endif
 				foreach (object o in g.GetChildren())
 				{
 					PropagateResourcesChanged(o, updateReason);

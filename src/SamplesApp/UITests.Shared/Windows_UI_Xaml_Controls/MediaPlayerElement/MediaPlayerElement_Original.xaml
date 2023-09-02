@@ -8,7 +8,7 @@
 	<!--<MediaPlayerElement x:Name="mediaPlayerElement" Source="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4"-->
 	<!--<MediaPlayerElement Source="https://www.youtube.com/embed/DDtzqzIqgdw"-->
 
-	<MediaPlayerElement Source="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4"
+	<MediaPlayerElement x:Name="MpeOriginal" Source="https://test-videos.co.uk/vids/bigbuckbunny/mp4/h264/720/Big_Buck_Bunny_720_10s_5MB.mp4"
 						AreTransportControlsEnabled="True"
 		AutoPlay="True" />
 </UserControl>

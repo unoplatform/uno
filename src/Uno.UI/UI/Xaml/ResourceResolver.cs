@@ -110,7 +110,7 @@ namespace Uno.UI
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		[System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.AggressiveInlining)]
-		public static bool ResolveResourceStatic(object key, out object value, object context = null)
+		internal static bool ResolveResourceStatic(object key, out object value, object context = null)
 			=> TryStaticRetrieval(new SpecializedResourceDictionary.ResourceKey(key), context, out value);
 
 		/// <summary>
@@ -233,10 +233,6 @@ namespace Uno.UI
 
 			return fallbackValue;
 		}
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		// This overload is kept for backwards compatibility
-		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
-			=> ApplyResource(owner, property, resourceKey, isThemeResourceExtension, false, context);
 
 		/// <summary>
 		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally

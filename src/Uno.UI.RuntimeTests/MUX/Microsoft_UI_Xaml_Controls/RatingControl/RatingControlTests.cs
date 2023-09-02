@@ -32,6 +32,7 @@ using Private.Infrastructure;
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class RatingControlTests : MUXApiTestBase
 	{
 		[TestMethod]

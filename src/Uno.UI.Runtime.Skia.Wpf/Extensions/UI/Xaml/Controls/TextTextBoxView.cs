@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Uno.Disposables;
-using Uno.UI.Runtime.Skia.Wpf.Controls;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using Windows.UI.Xaml.Controls;
 using static Uno.UI.FeatureConfiguration;
 using PasswordBox = Windows.UI.Xaml.Controls.PasswordBox;
@@ -14,9 +15,11 @@ namespace Uno.UI.Runtime.Skia.Wpf.Extensions.UI.Xaml.Controls;
 internal class TextTextBoxView : WpfTextBoxView
 {
 	private readonly WpfTextViewTextBox _textBox = new();
+	private (int start, int length) _selectionBeforeKeyDown;
 
 	public TextTextBoxView()
 	{
+		_textBox.PreviewKeyDown += OnPreviewKeyDown;
 	}
 
 	public override string Text
@@ -31,6 +34,12 @@ internal class TextTextBoxView : WpfTextBoxView
 	{
 		get => (_textBox.SelectionStart, _textBox.SelectionLength);
 		set => (_textBox.SelectionStart, _textBox.SelectionLength) = value;
+	}
+
+	public override (int start, int length) SelectionBeforeKeyDown
+	{
+		get => (_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length);
+		protected set => (_selectionBeforeKeyDown.start, _selectionBeforeKeyDown.length) = value;
 	}
 
 	public override void SetFocus() => _textBox.Focus();
@@ -48,5 +57,11 @@ internal class TextTextBoxView : WpfTextBoxView
 	{
 		SetControlProperties(_textBox, winUITextBox);
 		SetTextBoxProperties(_textBox, winUITextBox);
+	}
+
+	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+	{
+		// On WPF, KeyDown is fired AFTER Selection is already changed to the new value
+		SelectionBeforeKeyDown = Selection;
 	}
 }

@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-#pragma warning disable CS0618 // obsolete members
+﻿#pragma warning disable CS0618 // obsolete members
 
 using System;
 using System.Collections.Generic;
@@ -231,4 +230,3 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		}
 	}
 }
-#endif

@@ -1,29 +1,33 @@
 ﻿using System;
+using System.Threading;
 using Android.App;
-using Android.Content.PM;
+using Android.OS;
 using Android.Views;
 using Java.Interop;
-using Windows.UI.Core;
-using Windows.UI.ViewManagement;
-using Microsoft.Identity.Client;
 using Uno.UI;
-using System.Threading;
-using Android.OS;
 
 namespace SamplesApp.Droid
 {
 	[Activity(
+			Exported = true,
 			MainLauncher = true,
 			ConfigurationChanges = ActivityHelper.AllConfigChanges,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
+	// Ensure ActionMain intent filter is first in order, otherwise the app won't launch for debugging.
+	[IntentFilter(
+		new[] { Android.Content.Intent.ActionMain },
+		Categories = new[] {
+			Android.Content.Intent.CategoryLauncher,
+			Android.Content.Intent.CategoryLeanbackLauncher
+		})]
 	[IntentFilter(
 		new[] {
 			Android.Content.Intent.ActionView
 		},
 		Categories = new[] {
 			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
+			Android.Content.Intent.CategoryBrowsable,
 		},
 		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
@@ -100,9 +104,6 @@ namespace SamplesApp.Droid
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
-#if !NET6_0_OR_GREATER
-			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
-#endif
 		}
 
 
@@ -121,22 +122,5 @@ namespace SamplesApp.Droid
 			}
 		}
 	}
-
-#if !NET6_0_OR_GREATER
-	[Activity]
-	[IntentFilter(
-		new[] {
-			Android.Content.Intent.ActionView
-		},
-		Categories = new[] {
-			Android.Content.Intent.CategoryDefault,
-			Android.Content.Intent.CategoryBrowsable
-		},
-		DataScheme = "msauth")]
-	public class MsalActivity : BrowserTabActivity
-	{
-	}
-#endif
-
 }
 

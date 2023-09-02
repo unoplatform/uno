@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.System;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
@@ -12,7 +13,7 @@ using Uno.UI.DataBinding;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
-[ContentProperty(Name = "Child")]
+[ContentProperty(Name = nameof(Child))]
 public partial class Popup
 {
 	private PopupPlacementMode _actualPlacement;
@@ -63,6 +64,16 @@ public partial class Popup
 	public Popup()
 	{
 		Initialize();
+		KeyDown += OnKeyDown;
+	}
+
+	private void OnKeyDown(object sender, KeyRoutedEventArgs args)
+	{
+		if (args.Key == VirtualKey.Escape)
+		{
+			args.Handled = true;
+			IsOpen = false;
+		}
 	}
 
 	internal override bool GetDefaultValue2(DependencyProperty property, out object defaultValue)
@@ -221,7 +232,7 @@ public partial class Popup
 			)
 		);
 
-	protected virtual void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
+	private void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
 	{
 		OnHorizontalOffsetChangedPartial(oldHorizontalOffset, newHorizontalOffset);
 		OnHorizontalOffsetChangedPartialNative(oldHorizontalOffset, newHorizontalOffset);
@@ -254,7 +265,7 @@ public partial class Popup
 			)
 		);
 
-	protected virtual void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+	private void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
 	{
 		OnVerticalOffsetChangedPartial(oldVerticalOffset, newVerticalOffset);
 		OnVerticalOffsetChangedPartialNative(oldVerticalOffset, newVerticalOffset);

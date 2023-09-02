@@ -8,10 +8,10 @@ using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)

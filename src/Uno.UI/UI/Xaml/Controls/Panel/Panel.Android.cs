@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Controls;
+using Uno.UI.Helpers;
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -20,8 +21,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private readonly SerialDisposable _backgroundBrushChanged = new SerialDisposable();
-		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
+		private Action _backgroundBrushChanged;
+		private Action _borderBrushChanged;
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Panel()
@@ -97,8 +98,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder(), UpdateBorder);
-			UpdateBorder();
+			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
@@ -114,8 +115,8 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, just update the filling color.
-			_backgroundBrushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, _ => UpdateBorder(), UpdateBorder);
-			UpdateBorder();
+			var newOnInvalidateRender = _backgroundBrushChanged ?? (() => UpdateBorder());
+			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _backgroundBrushChanged, newOnInvalidateRender);
 		}
 
 		protected override void OnBeforeArrange()

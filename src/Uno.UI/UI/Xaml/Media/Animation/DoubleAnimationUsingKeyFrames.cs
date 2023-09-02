@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				_wasBeginScheduled = true;
 				_wasRequestedToStop = false;
 
-#if !NET461
+#if !IS_UNIT_TESTS
 #if __ANDROID__
 				_ = Dispatcher.RunAnimation(() =>
 #else
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					//Start the animation
 					Play();
 				}
-#if !NET461
+#if !IS_UNIT_TESTS
 				);
 #endif
 			}
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				var i = index;
 
-#if __ANDROID_19__
+#if __ANDROID__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 				{
 					animator.AnimationPause += (a, _) => OnFrame((IValueAnimator)a);
@@ -353,7 +353,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Dispose the Double animation.
 		/// </summary>
-		protected override void Dispose(bool disposing)
+		private protected override void Dispose(bool disposing)
 		{
 			if (disposing)
 			{
@@ -370,7 +370,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET461
+#if IS_UNIT_TESTS
 		private bool ReportEachFrame() => true;
 #endif
 	}

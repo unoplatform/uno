@@ -87,6 +87,7 @@ To create an Uno Platform app:
 1. To run the **WebAssembly** (Wasm) head:
     - Right click on the `MyApp.Wasm` project, select **Set as startup project**
     - Press the `MyApp.Wasm` button to deploy the app
+    - To run/debug your WebAssembly app on a mobile device, you can utilize the Dev Tunnels feature of Visual Studio 2022 - see [Microsoft Learn documentation](https://learn.microsoft.com/aspnet/core/test/dev-tunnels) to get started
 1. To run the ASP.NET Hosted **WebAssembly** (Server) head:
     - Right click on the `MyApp.Server` project, select **Set as startup project**
     - Press the `MyApp.Server` button to deploy the app
@@ -96,7 +97,9 @@ To create an Uno Platform app:
 
       ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
       
-    - Select an active device
+    - Select:
+      - An active device, if your IDE is connected to a macOS Host
+      - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
 1. To debug the **Android** platform:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the **Debug toolbar** drop down, select framework `net7.0-android`

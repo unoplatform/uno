@@ -1,6 +1,7 @@
 using CoreGraphics;
 using ObjCRuntime;
 using Uno.UI.DataBinding;
+using Uno.UI.Helpers;
 using Uno.UI.Views.Controls;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SinglelineTextBoxDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
-		private readonly SerialDisposable _foregroundChanged = new();
+		private Action _foregroundChanged;
 
 		public SinglelineTextBoxView(TextBox textBox)
 		{
@@ -182,17 +183,12 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundChanged.Disposable = null;
 			var textBox = _textBox.GetTarget();
-
 			if (textBox != null)
 			{
-				var scb = newValue as SolidColorBrush;
-
-				if (scb != null)
+				if (newValue is SolidColorBrush scb)
 				{
-					_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(scb, _ => ApplyColor());
-					ApplyColor();
+					Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 					void ApplyColor()
 					{

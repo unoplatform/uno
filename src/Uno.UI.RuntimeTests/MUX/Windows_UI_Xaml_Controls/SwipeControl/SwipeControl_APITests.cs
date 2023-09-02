@@ -22,15 +22,16 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
-//using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
-//using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
-//using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
-//using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
-//using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
+using SwipeMode = Microsoft.UI.Xaml.Controls.SwipeMode;
+using SwipeItem = Microsoft.UI.Xaml.Controls.SwipeItem;
+using SwipeItems = Microsoft.UI.Xaml.Controls.SwipeItems;
+using SwipeControl = Microsoft.UI.Xaml.Controls.SwipeControl;
+using FontIconSource = Microsoft.UI.Xaml.Controls.FontIconSource;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
 	[TestClass]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class SwipeControlTests : MUXApiTestBase
 	{
 		[TestMethod]

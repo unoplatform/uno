@@ -1,4 +1,3 @@
-#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,11 +39,7 @@ namespace Windows.Devices.Geolocation
 
 		internal CLLocationManager LocationManager => _locationManager;
 
-#if __IOS__
-		public Task<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync(); //will be removed with #2240
-#else
 		public IAsyncOperation<Geoposition> GetGeopositionAsync() => GetGeopositionInternalAsync().AsAsyncOperation();
-#endif
 
 		public Task<Geoposition> GetGeopositionInternalAsync()
 
@@ -92,22 +87,14 @@ namespace Windows.Devices.Geolocation
 				)
 			);
 
-#if __IOS__
-		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) //will be removed with #2240
-			=> await GetGeopositionAsync();
-#else
 		public IAsyncOperation<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 			=> GetGeopositionAsync();
-#endif
 
 
 		private static List<CLLocationManager> _requestManagers = new List<CLLocationManager>();
 
-#if __IOS__
-		public static Task<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync(); //will be removed with #2240
-#else
 		public static IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync() => RequestAccessInternalAsync().AsAsyncOperation();
-#endif
+
 		private static async Task<GeolocationAccessStatus> RequestAccessInternalAsync()
 
 		{
@@ -180,10 +167,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public static Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime) { return Task.FromResult<IList<Geoposition>>(new List<Geoposition>()); }
-
-		public static Task<IList<Geoposition>> GetGeopositionHistoryAsync(DateTime startTime, TimeSpan duration) { return Task.FromResult<IList<Geoposition>>(new List<Geoposition>()); }
-
 		private static GeolocationAccessStatus TranslateStatus(CLAuthorizationStatus status)
 		{
 			switch (status)
@@ -219,4 +202,3 @@ namespace Windows.Devices.Geolocation
 #endif
 	}
 }
-#endif

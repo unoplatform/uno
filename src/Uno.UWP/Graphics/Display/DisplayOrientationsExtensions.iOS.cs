@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using UIKit;
@@ -74,4 +73,3 @@ namespace Windows.Graphics.Display
 		}
 	}
 }
-#endif

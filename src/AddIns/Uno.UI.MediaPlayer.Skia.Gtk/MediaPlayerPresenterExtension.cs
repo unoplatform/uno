@@ -10,7 +10,6 @@ using Uno.Foundation.Logging;
 using Uno.Media.Playback;
 using Windows.Foundation;
 using Windows.Media.Playback;
-using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -19,6 +18,8 @@ using Windows.UI.Xaml.Media;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI;
+#else
+using Windows.UI;
 #endif
 
 [assembly: ApiExtension(typeof(IMediaPlayerPresenterExtension), typeof(Uno.UI.Media.MediaPlayerPresenterExtension))]

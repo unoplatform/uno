@@ -1,5 +1,4 @@
-﻿#if __ANDROID__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Content;
@@ -60,9 +59,7 @@ namespace Windows.ApplicationModel.Calls
 		{
 			if (Build.VERSION.SdkInt >= BuildVersionCodes.N)
 			{
-#if __ANDROID_24__
 				phoneNumber = PhoneNumberUtils.FormatNumber(phoneNumber, Java.Util.Locale.GetDefault(Java.Util.Locale.Category.Format).Country);
-#endif
 			}
 			else if (Build.VERSION.SdkInt >= BuildVersionCodes.Lollipop)
 			{
@@ -87,4 +84,3 @@ namespace Windows.ApplicationModel.Calls
 		}
 	}
 }
-#endif

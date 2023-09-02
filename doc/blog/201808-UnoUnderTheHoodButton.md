@@ -69,7 +69,7 @@ namespace UnoExtTestbed
 ````
 
 
-I made a blank app using the [Uno Solution template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) and put this code on the main page. Whenever the [Button](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.button) is clicked, the number goes up. Add a bit more chrome and we could have a [viral hit](https://en.wikipedia.org/wiki/Cow_Clicker).
+I made a blank app using the [Uno Solution template](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) and put this code on the main page. Whenever the [Button](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.button) is clicked, the number goes up. Add a bit more chrome and we could have a [viral hit](https://en.wikipedia.org/wiki/Cow_Clicker).
 
 Note that the XAML is useful here but not obligatory, either on UWP or Uno. We could have defined and created all our views in C#, had we really wanted to. That flexibility is handy to have.
 

@@ -23,7 +23,7 @@ If you want to use the native Pivot style for either Android or iOS, you'll need
 
 ```xml
 <!-- Default native Pivot styles (for both Android and iOS) -->
-<xamarin:Style x:Key="NativeDefaultPivot"
+<not_win:Style x:Key="NativeDefaultPivot"
                 TargetType="Pivot">
     <Setter Property="Template">
         <Setter.Value>
@@ -32,7 +32,7 @@ If you want to use the native Pivot style for either Android or iOS, you'll need
             </ControlTemplate>
         </Setter.Value>
     </Setter>
-</xamarin:Style>
+</not_win:Style>
 ```
 
 #### NativePivotPresenter Android Style

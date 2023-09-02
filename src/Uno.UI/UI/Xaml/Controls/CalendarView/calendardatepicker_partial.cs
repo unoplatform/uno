@@ -283,13 +283,13 @@ namespace Windows.UI.Xaml.Controls
 			void OnFlyoutOpened(object sender, object eventArgs)
 			{
 				IsCalendarOpen = true;
-				_opened?.Invoke(this, new object());
+				Opened?.Invoke(this, new object());
 			}
 
 			void OnFlyoutClosed(object sender, object eventArgs)
 			{
 				IsCalendarOpen = false;
-				_closed?.Invoke(this, new object());
+				Closed?.Invoke(this, new object());
 			}
 
 			void OnCalendarViewDayChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
@@ -404,7 +404,7 @@ namespace Windows.UI.Xaml.Controls
 			//GetDateChangedEventSourceNoRef(&pEventSource));
 
 			//pEventSource.Raise(this, spArgs);
-			_dateChanged?.Invoke(this, spArgs);
+			DateChanged?.Invoke(this, spArgs);
 		}
 
 		public void SetYearDecadeDisplayDimensions(int columns, int rows)

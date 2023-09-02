@@ -7,97 +7,86 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Uno.ApplicationModel.DataTransfer;
-using Uno.UI.Skia.Platform;
+using Uno.UI.Runtime.Skia.Wpf;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-using Clipboard = System.Windows.Clipboard;
+using WpfApplication = System.Windows.Application;
+using WpfClipboard = System.Windows.Clipboard;
+using WpfFrameworkElement = System.Windows.FrameworkElement;
 
 namespace Uno.Extensions.ApplicationModel.DataTransfer
 {
 	internal class ClipboardExtensions : IClipboardExtension
 	{
-		const int WM_CLIPBOARDUPDATE = 0x031D;
-
-		private readonly WpfHost _host;
-		private HwndSource _hwndSource;
-		private bool _pendingStartContentChanged;
-
-		public event EventHandler<object> ContentChanged;
+		private const int WM_CLIPBOARDUPDATE = 0x031D;
 
 		public ClipboardExtensions(object owner)
 		{
-			_host = WpfHost.Current;
+		}
 
-			// This class may be accessed before the Window is loaded
-			// if the Clipboard is somehow accessed really early.
-			if (_host.IsLoaded)
-			{
-				HostLoaded(null, null);
-			}
-			else
-			{
-				// Hook for native events
-				_host.Loaded += HostLoaded;
-			}
+		public event EventHandler<object> ContentChanged;
 
-			void HostLoaded(object sender, RoutedEventArgs e)
-			{
-				_host.Loaded -= HostLoaded;
-
-				var win = Window.GetWindow(_host);
-
-				var fromDependencyObject = PresentationSource.FromDependencyObject(win);
-				_hwndSource = fromDependencyObject as HwndSource;
-
-				if (_pendingStartContentChanged)
-				{
-					StartContentChanged();
-				}
-			}
+		private HwndSource GetHwnd(WpfFrameworkElement host)
+		{
+			var fromDependencyObject = PresentationSource.FromDependencyObject(host as DependencyObject);
+			return fromDependencyObject as HwndSource;
 		}
 
 		public void StartContentChanged()
 		{
-			if (_hwndSource != null)
+			if (WpfApplication.Current.MainWindow is not null)
 			{
-				_hwndSource.AddHook(OnWmMessage);
-				ClipboardNativeFunctions.AddClipboardFormatListener(_hwndSource.Handle);
+				RegisterClipboardListener();
 			}
-			else
+			else if (WpfHost.Current is not null)
 			{
 				// Signals the app to hook when it's ready
-				_pendingStartContentChanged = true;
+				WpfHost.Current.MainWindowShown += OnMainWindowShown;
 			}
+		}
+
+		private void RegisterClipboardListener()
+		{
+			var hwndSource = GetHwnd(WpfApplication.Current.MainWindow);
+			hwndSource.AddHook(OnWmMessage);
+			ClipboardNativeFunctions.AddClipboardFormatListener(hwndSource.Handle);
+		}
+
+		private void OnMainWindowShown(object sender, EventArgs e)
+		{
+			RegisterClipboardListener();
+			WpfHost.Current.MainWindowShown -= OnMainWindowShown;
 		}
 
 		public void StopContentChanged()
 		{
-			if (_hwndSource != null)
+			if (WpfApplication.Current.MainWindow is not null)
 			{
-				ClipboardNativeFunctions.RemoveClipboardFormatListener(_hwndSource.Handle);
-				_hwndSource.RemoveHook(OnWmMessage);
+				var hwndSource = GetHwnd(WpfApplication.Current.MainWindow);
+				hwndSource.RemoveHook(OnWmMessage);
+				ClipboardNativeFunctions.RemoveClipboardFormatListener(hwndSource.Handle);
 			}
 			else
 			{
-				_pendingStartContentChanged = false;
+				WpfHost.Current.MainWindowShown -= OnMainWindowShown;
 			}
 		}
 
-		public void Flush() => Clipboard.Flush();
+		public void Flush() => WpfClipboard.Flush();
 
-		public void Clear() => Clipboard.Clear();
+		public void Clear() => WpfClipboard.Clear();
 
 		public DataPackageView GetContent()
 		{
 			var dataPackage = new DataPackage();
 
-			if (Clipboard.ContainsImage())
+			if (WpfClipboard.ContainsImage())
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Bitmap, ct =>
 				{
-					var bitmap = Clipboard.GetImage();
+					var bitmap = WpfClipboard.GetImage();
 					var bitmapStream = new MemoryStream();
 
 					var bitmapEncoder = new BmpBitmapEncoder();
@@ -109,34 +98,34 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 					return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(bitmapStream.AsRandomAccessStream()));
 				});
 			}
-			if (Clipboard.ContainsText())
+			if (WpfClipboard.ContainsText())
 			{
 				// Copying significant amounts of text still makes Clipboard.GetText() slow, so
 				// we'll still use the SetDataProvider
 				dataPackage.SetDataProvider(StandardDataFormats.Text, ct =>
 				{
-					return Task.FromResult<object>(Clipboard.GetText());
+					return Task.FromResult<object>(WpfClipboard.GetText());
 				});
 			}
-			if (Clipboard.ContainsData(DataFormats.Html))
+			if (WpfClipboard.ContainsData(DataFormats.Html))
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Html, ct =>
 				{
-					return Task.FromResult<object>(Clipboard.GetData(DataFormats.Html));
+					return Task.FromResult<object>(WpfClipboard.GetData(DataFormats.Html));
 				});
 			}
-			if (Clipboard.ContainsData(DataFormats.Rtf))
+			if (WpfClipboard.ContainsData(DataFormats.Rtf))
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Rtf, ct =>
 				{
-					return Task.FromResult<object>(Clipboard.GetData(DataFormats.Rtf));
+					return Task.FromResult<object>(WpfClipboard.GetData(DataFormats.Rtf));
 				});
 			}
-			if (Clipboard.ContainsFileDropList())
+			if (WpfClipboard.ContainsFileDropList())
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
 				{
-					var list = Clipboard.GetFileDropList();
+					var list = WpfClipboard.GetFileDropList();
 					var storageItemList = new List<IStorageItem>(list.Count);
 					foreach (var path in list)
 					{
@@ -210,7 +199,7 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 				wpfData.SetFileDropList(list);
 			}
 
-			Clipboard.SetDataObject(wpfData);
+			WpfClipboard.SetDataObject(wpfData);
 		}
 
 		private IntPtr OnWmMessage(IntPtr hwnd, int msg, IntPtr wparamOriginal, IntPtr lparamOriginal, ref bool handled)

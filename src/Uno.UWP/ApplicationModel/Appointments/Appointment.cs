@@ -20,6 +20,12 @@ public partial class Appointment
 	{
 	}
 
+	internal Appointment(string calendarId, string localId)
+	{
+		CalendarId = calendarId;
+		LocalId = localId;
+	}
+
 	/// <summary>
 	/// Gets or sets a Boolean value that indicates whether the appointment will last all day.
 	/// The default is false for won't last all day.
@@ -29,7 +35,7 @@ public partial class Appointment
 	/// <summary>
 	/// Gets the unique identifier for the calendar associated with the appointment.
 	/// </summary>
-	public string CalendarId { get; set; } = "";
+	public string CalendarId { get; } = "";
 
 	/// <summary>
 	/// Gets or sets a string value. The string contains extended details
@@ -48,7 +54,7 @@ public partial class Appointment
 	/// <summary>
 	/// Gets a string that uniquely identifies the appointment on the local device.
 	/// </summary>
-	public string LocalId { get; set; } = "";
+	public string LocalId { get; } = "";
 
 	/// <summary>
 	/// Gets or sets a string that communicates the physical location of the appointment.

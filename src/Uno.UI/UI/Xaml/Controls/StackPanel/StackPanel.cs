@@ -9,9 +9,9 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using Android.Views;
-#elif XAMARIN_IOS
+#elif __IOS__
 using View = UIKit.UIView;
 #elif __MACOS__
 using View = AppKit.NSView;
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static Thickness GetPaddingDefaultValue() => Thickness.Empty;
 
-		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged))]
+		[GeneratedDependencyProperty(ChangedCallbackName = nameof(OnPaddingPropertyChanged), Options = FrameworkPropertyMetadataOptions.AffectsMeasure)]
 		public static DependencyProperty PaddingProperty { get; } = CreatePaddingProperty();
 
 		private void OnPaddingPropertyChanged(Thickness oldValue, Thickness newValue)
@@ -137,6 +137,8 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region Orientation DependencyProperty
+
+		internal override Orientation? InternalOrientation => Orientation;
 
 		public Orientation Orientation
 		{

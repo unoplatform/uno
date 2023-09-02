@@ -1,5 +1,4 @@
-﻿#if __MACOS__
-#nullable enable
+﻿#nullable enable
 
 using System;
 using System.Collections.Generic;
@@ -13,10 +12,7 @@ using Windows.Foundation;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-
-#if NET6_0_OR_GREATER
 using NSDraggingInfo = AppKit.INSDraggingInfo;
-#endif
 
 namespace Windows.ApplicationModel.DataTransfer
 {
@@ -516,5 +512,3 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 	}
 }
-
-#endif

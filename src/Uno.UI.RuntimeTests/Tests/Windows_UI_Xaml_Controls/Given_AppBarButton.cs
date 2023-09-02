@@ -33,10 +33,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				page.DataContext = new MyContext();
 				await WindowHelper.WaitForIdle();
 				var tb = page.innerTextBlock;
+				var icon = page.innerIcon;
 				Assert.IsNotNull(tb);
+				Assert.IsNotNull(icon);
 				Assert.AreEqual("Archaeopteryx", tb.Text);
 				Assert.IsTrue(tb.ActualWidth > 0);
 				Assert.IsTrue(tb.ActualHeight > 0);
+			}
+		}
+
+		[TestMethod]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task Check_Binding_No_DataContext()
+		{
+			using (StyleHelper.UseNativeFrameNavigation())
+			{
+				var frame = new Frame();
+				WindowHelper.WindowContent = frame;
+				await WindowHelper.WaitForIdle();
+				frame.Navigate(typeof(Page_With_AppBarButton_Visibility_Bound));
+				await WindowHelper.WaitForIdle();
+				var page = frame.Content as Page_With_AppBarButton_Visibility_Bound;
+				page.DataContext = null;
+				Assert.IsNotNull(page);
+				await WindowHelper.WaitForIdle();
+				var tb = page.innerTextBlock;
+				var icon = page.innerIcon;
+				var barButton1 = page.innerBarButton;
+				Assert.IsNotNull(tb);
+				Assert.IsNotNull(icon);
+				Assert.IsNotNull(barButton1);
+				Assert.AreEqual(Visibility.Collapsed, barButton1.Visibility);
 			}
 		}
 
@@ -44,6 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			public Visibility ButtonVisibility => Visibility.Visible;
 			public string ButtonText => "Archaeopteryx";
+			public string CommandBarIcon => "ms-appx:///Assets/linux.png";
 		}
 	}
 }

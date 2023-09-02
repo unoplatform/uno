@@ -4,6 +4,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Controls;
+using Uno.UI.Helpers;
 using Foundation;
 using System.Collections;
 using System.Linq;
@@ -19,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxViewDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private Action _foregroundChanged;
 
 		public TextBoxView(TextBox textBox)
 		{
@@ -176,10 +177,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundChanged.Disposable = null;
-
-			_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => ApplyColor());
-			ApplyColor();
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, () => ApplyColor());
 
 			void ApplyColor()
 			{

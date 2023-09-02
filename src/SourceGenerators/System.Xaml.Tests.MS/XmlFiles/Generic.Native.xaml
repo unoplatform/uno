@@ -7,13 +7,13 @@
 					xmlns:local="using:GenericApp.Views.Controls"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://uno.ui/ios#using:Uno.UI.Views.Controls;Uno.UI.Controls;UIKit"
 					xmlns:android="http://uno.ui/android#using:Uno.UI.Controls"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
-					mc:Ignorable="d win xamarin android">
+					mc:Ignorable="d win not_win android">
 
     <!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
@@ -46,7 +46,7 @@
     </ios:Style>
     <ios:Style x:Key="iOSButtonStyle" BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
 
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultButton}" TargetType="Button" />
 
     <!-- Default native CheckBox styles -->
     <android:Style x:Key="NativeDefaultCheckBox"
@@ -79,7 +79,7 @@
             </Setter.Value>
         </Setter>
     </ios:Style>
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultCheckBox}" TargetType="CheckBox" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultCheckBox}" TargetType="CheckBox" />
 
     <!-- Default native RadioButton styles -->
     <android:Style x:Key="AndroidRadioButtonStyle"
@@ -130,7 +130,7 @@
         </Setter>
     </android:Style>
 
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultToggleSwitch}" TargetType="ToggleSwitch" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultToggleSwitch}" TargetType="ToggleSwitch" />
 
     <!-- Default native Slider styles -->
     <ios:Style x:Key="NativeDefaultSlider" TargetType="Slider">
@@ -159,7 +159,7 @@
             </Setter.Value>
         </Setter>
     </android:Style>
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultSlider}" TargetType="Slider" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultSlider}" TargetType="Slider" />
 
     <converters:UnoNativeDefaultProgressBarReverseBoolConverter x:Key="nativeDefaultProgressBarReverseBool" />
 
@@ -197,10 +197,10 @@
             </Setter.Value>
         </Setter>
     </android:Style>
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultProgressBar}" TargetType="ProgressBar" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultProgressBar}" TargetType="ProgressBar" />
 
     <!-- Default native TextBox styles -->
-    <xamarin:Style x:Key="NativeDefaultTextBox"  TargetType="TextBox">
+    <not_win:Style x:Key="NativeDefaultTextBox"  TargetType="TextBox">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="TextBox">
@@ -229,8 +229,8 @@
                 </ControlTemplate>
             </Setter.Value>
         </Setter>
-    </xamarin:Style>
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultTextBox}" TargetType="TextBox" />
+    </not_win:Style>
+    <not_win:Style BasedOn="{StaticResource NativeDefaultTextBox}" TargetType="TextBox" />
 
     <!-- Default native Pivot styles -->
     <ios:Style x:Key="NativeDefaultPivot" TargetType="Pivot">
@@ -262,7 +262,7 @@
         </Setter>
     </android:Style>
 
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultPivot}" TargetType="Pivot" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultPivot}" TargetType="Pivot" />
 
 	<ios:Style x:Key="NativeDefaultCommandBar"
 			   TargetType="CommandBar">
@@ -307,7 +307,7 @@
 		</Setter>
 	</android:Style>
 
-	<xamarin:Style TargetType="CommandBar"
+	<not_win:Style TargetType="CommandBar"
 				   BasedOn="{StaticResource NativeDefaultCommandBar}" />
 
 	<ios:Style x:Key="NativeDefaultAppBarButton"
@@ -326,7 +326,7 @@
 					Value="{x:Null}" />
 	</android:Style>
 
-	<xamarin:Style TargetType="AppBarButton"
+	<not_win:Style TargetType="AppBarButton"
 				   BasedOn="{StaticResource NativeDefaultAppBarButton}" />
 
 	<!-- Default native Frame styles -->
@@ -352,7 +352,7 @@
         </Setter>
     </android:Style>
 
-    <xamarin:Style BasedOn="{StaticResource NativeDefaultFrame}" TargetType="Frame" />
+    <not_win:Style BasedOn="{StaticResource NativeDefaultFrame}" TargetType="Frame" />
 
 	<!--
 		Official recommendation:

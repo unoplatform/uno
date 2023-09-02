@@ -49,10 +49,15 @@ internal class UnoFocusInputHandler
 			e.Handled = TryHandleTabFocus(_isShiftDown);
 		}
 
-		if (e.OriginalKey == VirtualKey.Up ||
-			e.OriginalKey == VirtualKey.Down ||
-			e.OriginalKey == VirtualKey.Left ||
-			e.OriginalKey == VirtualKey.Right)
+		if (e.OriginalKey is
+			VirtualKey.Up or
+			VirtualKey.GamepadDPadUp or
+			VirtualKey.Down or
+			VirtualKey.GamepadDPadDown or
+			VirtualKey.Left or
+			VirtualKey.GamepadDPadLeft or
+			VirtualKey.Right or
+			VirtualKey.GamepadDPadRight)
 		{
 			e.Handled = TryHandleDirectionalFocus(e.OriginalKey);
 		}
@@ -87,14 +92,16 @@ internal class UnoFocusInputHandler
 		contentRoot.InputManager.LastInputDeviceType = InputDeviceType.Keyboard;
 
 		var focusManager = VisualTree.GetFocusManagerForElement(_rootElement);
-		var focusDirection = FocusSelection.GetNavigationDirectionForKeyboardArrow(originalKey);
+		// Uno specific: We are handling Gamepad input along with keyboard here.
+		var focusDirection = FocusSelection.GetNavigationDirection(originalKey);
 
 		if (focusManager == null || focusDirection == FocusNavigationDirection.None)
 		{
 			return false;
 		}
 
-		var source = focusManager.FocusedElement; // Uno specific: This should actually bubble up with the event from the source element to the root visual.
+		// Uno specific: This should actually bubble up with the event from the source element to the root visual.
+		var source = focusManager.FocusedElement;
 
 		var directionalFocusEnabled = false;
 		var focusCandidateFound = false;

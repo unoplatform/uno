@@ -7,8 +7,8 @@ namespace Windows.UI.Xaml
 {
 	public enum TextWrapping
 	{
-		NoWrap,
-		Wrap,
-		WrapWholeWords,
+		NoWrap = 1,
+		Wrap = 2,
+		WrapWholeWords = 3,
 	}
 }

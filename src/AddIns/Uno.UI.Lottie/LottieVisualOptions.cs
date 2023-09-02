@@ -1,6 +1,10 @@
 ﻿using Uno;
 
+#if HAS_UNO_WINUI
+namespace CommunityToolkit.WinUI.Lottie
+#else
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
+#endif
 {
 	[NotImplemented]
 	public enum LottieVisualOptions

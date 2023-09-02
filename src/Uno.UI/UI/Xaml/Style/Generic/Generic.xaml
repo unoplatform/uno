@@ -5,7 +5,7 @@
 					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 					xmlns:u="using:Uno.UI.Controls"
-					xmlns:xamarin="http://uno.ui/xamarin"
+					xmlns:not_win="http://uno.ui/not_win"
 					xmlns:ios="http://uno.ui/ios"
 					xmlns:android="http://uno.ui/android"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
@@ -21,10 +21,10 @@
 					xmlns:uwpOnly="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsTypeNotPresent(Microsoft.UI.Xaml.FrameworkElement)"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					xmlns:mux="using:Microsoft.UI.Xaml.Controls"
-					mc:Ignorable="d xamarin ios android not_wasm wasm netstdref not_netstdref macos skia">
+					mc:Ignorable="d not_win ios android not_wasm wasm netstdref not_netstdref macos skia">
 
 	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
-	<xamarin:Style TargetType="ItemsControl">
+	<not_win:Style TargetType="ItemsControl">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ItemsControl">
@@ -32,7 +32,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
 	<Style TargetType="ContentControl">
@@ -86,7 +86,7 @@
 		<Setter Property="TextLineBounds"
 				Value="Full" />
 	</Style>
-	<xamarin:Style x:Key="HeaderTextBlockStyle"
+	<not_win:Style x:Key="HeaderTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontSize"
@@ -95,8 +95,8 @@
 				Value="Light" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="SubheaderTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="SubheaderTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontSize"
@@ -105,8 +105,8 @@
 				Value="Light" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="TitleTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="TitleTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontWeight"
@@ -115,8 +115,8 @@
 				Value="24" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="SubtitleTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="SubtitleTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontWeight"
@@ -125,26 +125,26 @@
 				Value="20" />
 		<Setter Property="OpticalMarginAlignment"
 				Value="TrimSideBearings" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="BodyTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="BodyTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontWeight"
 				Value="Normal" />
 		<Setter Property="FontSize"
 				Value="14" />
-	</xamarin:Style>
-	<xamarin:Style x:Key="CaptionTextBlockStyle"
+	</not_win:Style>
+	<not_win:Style x:Key="CaptionTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
 		<Setter Property="FontSize"
 				Value="12" />
 		<Setter Property="FontWeight"
 				Value="Normal" />
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.HyperlinkButton -->
-	<xamarin:Style TargetType="HyperlinkButton">
+	<not_win:Style TargetType="HyperlinkButton">
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlHyperlinkTextBrush}" />
 		<Setter Property="BorderThickness"
@@ -214,7 +214,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!--  Default style for Windows.UI.Xaml.Controls.TextBox  -->
 	<Thickness x:Key="TextBoxTopHeaderMargin">0,0,0,4</Thickness>
@@ -440,7 +440,7 @@
 	</Style>
 
 	<!--Style for the textbox's delete button-->
-	<xamarin:Style x:Key="DeleteButtonStyle"
+	<not_win:Style x:Key="DeleteButtonStyle"
 				   TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -498,10 +498,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ComboBox -->
-	<xamarin:Style x:Key="DefaultComboBoxStyle"
+	<not_win:Style x:Key="DefaultComboBoxStyle"
 				   TargetType="ComboBox">
 		<Setter Property="Padding"
 				Value="12,5,0,7" />
@@ -807,7 +807,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<Style TargetType="ComboBox"
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
@@ -816,7 +816,7 @@
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ComboBoxItem -->
-	<xamarin:Style x:Key="DefaultComboBoxItemStyle"
+	<not_win:Style x:Key="DefaultComboBoxItemStyle"
 				   TargetType="ComboBoxItem">
 		<Setter Property="Background"
 				Value="Transparent" />
@@ -983,13 +983,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="ComboBoxItem"
+	<not_win:Style TargetType="ComboBoxItem"
 				   BasedOn="{StaticResource DefaultComboBoxItemStyle}" />
 
 	<!-- Style for Windows.UI.Xaml.Controls.ListViewItem -->
-	<xamarin:Style TargetType="ListViewItem"
+	<not_win:Style TargetType="ListViewItem"
 				   x:Key="ListViewItemExpanded">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -1348,7 +1348,7 @@
 							<ContentPresenter x:Name="ContentPresenter"
 											  ContentTransitions="{TemplateBinding ContentTransitions}"
 											  ContentTemplate="{TemplateBinding ContentTemplate}"
-											  xamarin:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+											  not_win:ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
 											  Content="{TemplateBinding Content}"
 											  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 											  VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -1394,7 +1394,7 @@
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
 									  win:Glyph="&#xE73E;"
-									  xamarin:Glyph="&#xE081;"
+									  not_win:Glyph="&#xE081;"
 									  FontSize="16"
 									  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
 									  Visibility="Collapsed"
@@ -1416,13 +1416,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="ListViewItem"
+	<not_win:Style TargetType="ListViewItem"
 				   BasedOn="{StaticResource ListViewItemExpanded}" />
 
 	<!-- Style for Windows.UI.Xaml.Controls.GridViewItem -->
-	<xamarin:Style TargetType="GridViewItem"
+	<not_win:Style TargetType="GridViewItem"
 				   x:Key="GridViewItemExpanded">
 		<Setter Property="FontFamily"
 				Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -1806,7 +1806,7 @@
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
 									  win:Glyph="&#xE73E;"
-									  xamarin:Glyph="&#xE081;"
+									  not_win:Glyph="&#xE081;"
 									  FontSize="16"
 									  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
 									  Opacity="0" />
@@ -1843,14 +1843,14 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="GridViewItem"
+	<not_win:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
 	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
-	<xamarin:Style TargetType="TimePicker">
+	<not_win:Style TargetType="TimePicker">
 		<Setter Property="IsTabStop"
                 Value="False" />
 		<Setter Property="MinWidth"
@@ -2058,13 +2058,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<SolidColorBrush x:Key="SplitViewDismissBackgroundColor"
 					 Color="Black"
 					 Opacity="0.5" />
 
-	<xamarin:Style x:Key="DefaultSplitViewStyle"
+	<not_win:Style x:Key="DefaultSplitViewStyle"
 				   TargetType="SplitView">
 		<Setter Property="HorizontalContentAlignment"
 				Value="Stretch" />
@@ -2097,7 +2097,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 From="{Binding TemplateSettings.NegativeOpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 																	 To="0"
@@ -2148,7 +2148,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 From="{Binding TemplateSettings.OpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 																	 To="0"
@@ -2285,7 +2285,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 From="0"
 																	 To="{Binding TemplateSettings.NegativeOpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
@@ -2327,7 +2327,7 @@
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="Visible" />
 											</ObjectAnimationUsingKeyFrames>
-											<xamarin:DoubleAnimation Storyboard.TargetName="PaneTransform"
+											<not_win:DoubleAnimation Storyboard.TargetName="PaneTransform"
 																	 Storyboard.TargetProperty="TranslateX"
 																	 To="{Binding TemplateSettings.OpenPaneLength, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 																	 Duration="0:0:0.12" />
@@ -2386,11 +2386,11 @@
 									<VisualTransition From="OpenCompactOverlayRight"
 													  To="ClosedCompactRight">
 										<Storyboard>
-											<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+											<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																				   Storyboard.TargetName="PaneRoot">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																		Value="{Binding TemplateSettings.RightClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-											</xamarin:ObjectAnimationUsingKeyFrames>
+											</not_win:ObjectAnimationUsingKeyFrames>
 											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																		   Storyboard.TargetProperty="Width">
 												<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2457,11 +2457,11 @@
 										<Setter Target="PaneTransform.TranslateX" Value="0" />
 									</VisualState.Setters>
 									<Storyboard>
-										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+										<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="{Binding TemplateSettings.LeftClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-										</xamarin:ObjectAnimationUsingKeyFrames>
+										</not_win:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																	   Storyboard.TargetProperty="Width">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2490,11 +2490,11 @@
 								</VisualState>
 								<VisualState x:Name="ClosedCompactRight">
 									<Storyboard>
-										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+										<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="{Binding TemplateSettings.RightClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
-										</xamarin:ObjectAnimationUsingKeyFrames>
+										</not_win:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																	   Storyboard.TargetProperty="Width">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2584,11 +2584,11 @@
 										<Setter Target="PaneTransform.TranslateX" Value="0" />
 									</VisualState.Setters>
 									<Storyboard>
-										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+										<not_win:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
 																			   Storyboard.TargetName="PaneRoot">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
 																	Value="{x:Null}" />
-										</xamarin:ObjectAnimationUsingKeyFrames>
+										</not_win:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentRoot"
 																	   Storyboard.TargetProperty="(Grid.Column)">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"
@@ -2755,7 +2755,7 @@
 							<win:Rectangle x:Name="LightDismissLayer"
 										   Fill="{StaticResource SplitViewDismissBackgroundColor}"
 										   Visibility="Collapsed" />
-							<xamarin:Button x:Name="LightDismissLayer"
+							<not_win:Button x:Name="LightDismissLayer"
 											Visibility="Collapsed"
 											HorizontalAlignment="Stretch"
 											VerticalAlignment="Stretch">
@@ -2764,7 +2764,7 @@
 										<Border Background="{StaticResource SplitViewDismissBackgroundColor}" />
 									</ControlTemplate>
 								</Button.Template>
-							</xamarin:Button>
+							</not_win:Button>
 						</Grid>
 
 						<!--Pane Content Area-->
@@ -2796,9 +2796,9 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
-	<xamarin:Style TargetType="SplitView"
+	<not_win:Style TargetType="SplitView"
 				   BasedOn="{StaticResource DefaultSplitViewStyle}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Button -->
@@ -3769,7 +3769,7 @@
 	</Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
-	<xamarin:Style TargetType="Thumb"
+	<not_win:Style TargetType="Thumb"
 				   x:Key="SliderThumbStyle">
 		<Setter Property="ManipulationMode"
 				Value="None" />
@@ -3787,7 +3787,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<Style x:Key="XamlDefaultSlider"
 				   TargetType="Slider">
@@ -4047,7 +4047,7 @@
 
 	<!--This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
 	while delegating to a native implementation for performance.-->
-	<xamarin:Style TargetType="ScrollViewer"
+	<not_win:Style TargetType="ScrollViewer"
 				   x:Key="ListViewBaseScrollViewerStyle">
 		<ios:Setter Property="Template">
 			<Setter.Value>
@@ -4071,10 +4071,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</android:Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ListView -->
-	<xamarin:Style TargetType="ListView">
+	<not_win:Style TargetType="ListView">
 		<Setter Property="IsTabStop"
 				Value="False" />
 		<Setter Property="TabNavigation"
@@ -4151,10 +4151,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.GridView -->
-	<xamarin:Style TargetType="GridView">
+	<not_win:Style TargetType="GridView">
 		<Setter Property="Padding"
 				Value="0,0,0,10" />
 		<Setter Property="IsTabStop"
@@ -4233,7 +4233,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<ControlTemplate TargetType="ScrollViewer"
 					 x:Name="ScrollViewerScrollBarlessTemplate">
@@ -4335,7 +4335,7 @@
 														   FontStyle="Normal"
 														   FontSize="16"
 														   win:Text="&#xE052;"
-														   xamarin:Text="&#xE18B;"
+														   not_win:Text="&#xE18B;"
 														   FontFamily="{ThemeResource SymbolThemeFontFamily}"
 														   AutomationProperties.AccessibilityView="Raw" />
 											</Grid>
@@ -4512,7 +4512,7 @@
 	</Style>
 
 	<!--This is used by PasswordBox but must be declared outside of the control because of a limitation in the way the Uno xaml code generation handles styles.-->
-	<xamarin:Style x:Key="RevealButtonStyle"
+	<not_win:Style x:Key="RevealButtonStyle"
 				   TargetType="Button">
 		<Setter Property="Template">
 			<Setter.Value>
@@ -4564,14 +4564,14 @@
 								   FontStyle="Normal"
 								   FontSize="16"
 								   win:Text="&#xE052;"
-								   xamarin:Text="&#xE18B;"
+								   not_win:Text="&#xE18B;"
 								   FontFamily="{ThemeResource SymbolThemeFontFamily}"
 								   AutomationProperties.AccessibilityView="Raw" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</not_win:Style>
 
 	<!-- Default UWP style for Windows.UI.Xaml.Controls.Frame -->
 	<Style x:Key="XamlDefaultFrame"
@@ -7614,7 +7614,7 @@
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<NativeFlipView />
+					<NativeFlipView Background="{TemplateBinding Background}" />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>

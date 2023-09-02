@@ -15,12 +15,13 @@ using Uno.UI;
 using Uno.Disposables;
 using Uno.UI.Xaml;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
-		private SerialDisposable _backgroundSubscription;
+		private Action _backgroundChanged;
 		public T FindFirstParent<T>() where T : class => FindFirstParent<T>(includeCurrent: false);
 
 		public T FindFirstParent<T>(bool includeCurrent) where T : class
@@ -40,15 +41,15 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
-		public FrameworkElement() : this(DefaultHtmlTag, false)
+		protected FrameworkElement() : this(DefaultHtmlTag, false)
 		{
 		}
 
-		public FrameworkElement(string htmlTag) : this(htmlTag, false)
+		protected FrameworkElement(string htmlTag) : this(htmlTag, false)
 		{
 		}
 
-		public FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
+		protected FrameworkElement(string htmlTag, bool isSvg) : base(htmlTag, isSvg)
 		{
 			Initialize();
 
@@ -111,14 +112,11 @@ namespace Windows.UI.Xaml
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 			// Warning some controls (eg. CalendarViewBaseItem) takes ownership of the background rendering.
 			// They override the OnBackgroundChanged and explicitly do not invokes that base method.
-			=> SetAndObserveBackgroundBrush(e.NewValue as Brush);
+			=> SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
 
-		private protected void SetAndObserveBackgroundBrush(Brush brush)
+		private protected void SetAndObserveBackgroundBrush(Brush oldValue, Brush newValue)
 		{
-			var subscription = _backgroundSubscription ??= new SerialDisposable();
-
-			subscription.Disposable = null;
-			subscription.Disposable = BorderLayerRenderer.SetAndObserveBackgroundBrush(this, brush);
+			BorderLayerRenderer.SetAndObserveBackgroundBrush(this, oldValue, newValue, ref _backgroundChanged);
 		}
 		#endregion
 

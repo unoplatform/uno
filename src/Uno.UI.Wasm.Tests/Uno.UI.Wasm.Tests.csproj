@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>netstandard2.0;</TargetFrameworks>
+		<TargetFrameworks>$(NetWasmPreviousAndCurrent)</TargetFrameworks>
 
 		<TSBindingsPath>$(MSBuildThisFileDirectory)tsbindings</TSBindingsPath>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
@@ -9,14 +9,9 @@
 		<!-- Required for TSBinding tests -->
 		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
 
-		<UnoUIUseRoslynSourceGenerators>true</UnoUIUseRoslynSourceGenerators>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 
 		<EnableDefaultTypeScriptItems>false</EnableDefaultTypeScriptItems>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(MSBuildRuntimeType)'=='Core'">
-		<TargetFrameworks>$(TargetFrameworks);net7.0</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -39,7 +34,6 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.2" />
-		<PackageReference Include="Uno.SourceGenerationTasks" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -21,8 +21,8 @@ namespace Uno.ReferenceImplComparer
 			Console.WriteLine($"Validating package {args[0]}");
 
 			var referenceTargetFrameworks = new[] {
-				"netstandard2.0",
-				"net7.0"
+				"net7.0",
+				"net8.0"
 			};
 
 			foreach (var targetFramework in referenceTargetFrameworks)
@@ -46,10 +46,10 @@ namespace Uno.ReferenceImplComparer
 			return hasErrors ? 1 : 0;
 		}
 
-		private static bool CompareAssemblies(AssemblyDefinition referenceAssemby, AssemblyDefinition runtimeAssembly, string identifier)
+		private static bool CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
 		{
 			var hasError = false;
-			var referenceTypes = referenceAssemby.MainModule.GetTypes();
+			var referenceTypes = referenceAssembly.MainModule.GetTypes();
 			var runtimeTypes = runtimeAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
 			foreach (var referenceType in referenceTypes.Where(t => t.IsPublic))
@@ -73,10 +73,10 @@ namespace Uno.ReferenceImplComparer
 						hasError = true;
 					}
 
-					hasError |= CompareMembers(referenceType.Methods.Where(m => m.IsPublic), runtimeType.Methods, identifier);
-					hasError |= CompareMembers(referenceType.Properties.Where(m => m.GetMethod?.IsPublic ?? false), runtimeType.Properties, identifier);
-					hasError |= CompareMembers(referenceType.Fields.Where(m => m.IsPublic), runtimeType.Fields, identifier);
-					hasError |= CompareMembers(referenceType.Events.Where(m => m.AddMethod?.IsPublic ?? false), runtimeType.Events, identifier);
+					hasError |= CompareMembers(referenceType.Methods.Where(m => m.IsPublic), runtimeType.Methods.Where(m => m.IsPublic), identifier);
+					hasError |= CompareMembers(referenceType.Properties.Where(m => m.GetMethod?.IsPublic ?? false), runtimeType.Properties.Where(m => m.GetMethod?.IsPublic ?? false), identifier);
+					hasError |= CompareMembers(referenceType.Fields.Where(m => m.IsPublic), runtimeType.Fields.Where(m => m.IsPublic), identifier);
+					hasError |= CompareMembers(referenceType.Events.Where(m => m.AddMethod?.IsPublic ?? false), runtimeType.Events.Where(m => m.AddMethod?.IsPublic ?? false), identifier);
 				}
 				else
 				{

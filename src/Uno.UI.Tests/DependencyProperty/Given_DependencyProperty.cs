@@ -627,7 +627,7 @@ namespace Uno.UI.Tests.BinderTests
 
 			Action callback = null;
 
-			object Coerce(object dependencyObject, object baseValue)
+			object Coerce(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 			{
 				callback?.Invoke();
 
@@ -928,45 +928,45 @@ namespace Uno.UI.Tests.BinderTests
 
 		#region CoerceValueCallbacks
 
-		private object PreventSet(object dependencyObject, object baseValue)
+		private object PreventSet(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return DependencyProperty.UnsetValue;
 		}
 
-		private object DoNothing(object dependencyObject, object baseValue)
+		private object DoNothing(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return baseValue;
 		}
 
-		private object ReturnNull(object dependencyObject, object baseValue)
+		private object ReturnNull(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return null;
 		}
 
-		private object AbsoluteInteger(object dependencyObject, object baseValue)
+		private object AbsoluteInteger(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return Math.Abs((int)baseValue);
 		}
 
-		private object IgnoreNegative(object dependencyObject, object baseValue)
+		private object IgnoreNegative(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return (int)baseValue < 0
 				? DependencyProperty.UnsetValue
 				: baseValue;
 		}
 
-		private object StringTake10(object dependencyObject, object baseValue)
+		private object StringTake10(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return new string(((string)baseValue).Take(10).ToArray());
 		}
 
-		private object Now(object dependencyObject, object baseValue)
+		private object Now(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			return DateTime.Now;
 		}
 
 		private static object _customCoercion;
-		private object Custom(object dependencyObject, object baseValue)
+		private object Custom(object dependencyObject, object baseValue, DependencyPropertyValuePrecedences _)
 		{
 			if (_customCoercion != null)
 			{
@@ -2029,8 +2029,7 @@ namespace Uno.UI.Tests.BinderTests
 				new PropertyMetadata(
 					"default1",
 					(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue); },
-					(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion1: " + baseValue; }
-
+					(s, baseValue, _) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion1: " + baseValue; }
 				)
 			);
 
@@ -2046,7 +2045,7 @@ namespace Uno.UI.Tests.BinderTests
 				"default2",
 				FrameworkPropertyMetadataOptions.Inherits,
 				(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed2: " + e.NewValue); },
-				(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion2: " + baseValue; }
+				(s, baseValue, _) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion2: " + baseValue; }
 			);
 
 			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), metadata);
@@ -2062,7 +2061,7 @@ namespace Uno.UI.Tests.BinderTests
 			var metadata = new FrameworkPropertyMetadata(
 				"default3",
 				(s, e) => { (s as MyDependencyObject1).PropertyChangedCallbacks.Add("changed3: " + e.NewValue); },
-				(s, baseValue) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion3: " + baseValue; }
+				(s, baseValue, _) => { (s as MyDependencyObject1).CoerceValueCallbackCount++; return "coercion3: " + baseValue; }
 			);
 
 			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject3), metadata);

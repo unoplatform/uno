@@ -6,26 +6,12 @@ using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
-
-#if NET6_0_OR_GREATER
 using ObjCRuntime;
-#endif
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
 using CoreGraphics;
 using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using nint = System.Int32;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
-#endif
 
 namespace Uno.UI.Controls.Legacy
 {

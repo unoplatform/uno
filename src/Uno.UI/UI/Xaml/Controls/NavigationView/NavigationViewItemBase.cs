@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 #endif
 
-#if XAMARIN_IOS_UNIFIED
+#if __IOS__
 using UIKit;
 #elif __MACOS__
 using AppKit;

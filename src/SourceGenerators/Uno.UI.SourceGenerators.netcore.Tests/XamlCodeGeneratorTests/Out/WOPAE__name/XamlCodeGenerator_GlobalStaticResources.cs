@@ -53,9 +53,6 @@ namespace MyProject
 		{
 		}
 		static partial void RegisterDefaultStyles_MainPage_d6cd66944958ced0c513e0a04797b51d();
-		[global::System.Obsolete("This method is provided for binary backward compatibility. It will always return null.")]
-		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
-		public static object FindResource(string name) => null;
 		
 	}
 }

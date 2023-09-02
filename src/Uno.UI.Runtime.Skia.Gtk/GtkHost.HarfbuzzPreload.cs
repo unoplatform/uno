@@ -4,9 +4,9 @@ using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
 using System.Runtime.InteropServices;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
-	public partial class GtkHost : ISkiaHost
+	public partial class GtkHost : ISkiaApplicationHost
 	{
 		private void PreloadHarfBuzz()
 		{

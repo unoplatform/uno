@@ -18,7 +18,7 @@ While it is easier to create apps using Uno Platform on Windows, you can also cr
 In order to create a new Uno Project, you'll need to install the [`dotnet new` Uno Platform templates](get-started-dotnet-new.md).
 
 ## Create a new project using the IDE
-1. To create a new project, from the command line:
+1. To create a new project, from the command line, where `src` is your own development folder.
     ```
     cd src
     dotnet new unoapp -o MyApp01
@@ -61,5 +61,27 @@ Building for WebAssembly takes a few more steps:
     ```
 1. Once installed type `dotnet serve` (or `~/.dotnet/tools/dotnet-serve`).
 1. Navigate to the URL presented by the tool to run your application
+
+### Using Visual Studio Code snippets to add new XAML files
+
+There is no similar extension at the moment available for Visual Studio for Mac, so we invite you to use the [Uno Platform Visual Studio Code](https://marketplace.visualstudio.com/items?itemName=unoplatform.vscode) Extension.
+This extension comes with [snippets](get-started-vscode.md#using-code-snippets) to easily add new files like `Page`, `UserControl`, and `ResourceDictionary` in addition to other additional useful snippets to enhance your coding experience on Mac for the `XAML` files.
+
+Visit [our getting started section with Visual Studio Code](get-started-vscode.md) for more details.
+
+You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+
+## Troubleshooting
+
+### SDK iOS version incompatible with Xcode version
+Sometimes the SDK iOS version is incompatible with the Xcode version. To workaround this issue you can open a terminal, and type the following command:
+
+```bash
+sudo dotnet workload update
+```
+
+### iOS Simulators do not appear
+The issue is related to Visual Studio for Mac that changes a general TFM, like `net7.0-ios`, to a version-specific TFM, like `net7.0-ios16.1`, which causes Visual Studio to not be able to load the list of simulators.
+A workaround for this will be to roll back to `net7.0-ios` for the `TargetFrameworks` and you will be able to see the simulators again. To do that, you will need to edit the `NameOfMyProject.iOS.csproj` or `NameOfMyProject.Mobile.csproj` file by right-clicking the associated project head, and selecting `Edit Project File`.
 
 [!include[getting-help](getting-help.md)]

@@ -130,21 +130,21 @@ namespace Microsoft.UI.Xaml.Controls
 		/// <summary>
 		/// Expands a given node.
 		/// </summary>
-		/// <param name="node">Node.</param>
-		public void Expand(TreeViewNode node)
+		/// <param name="value">Node.</param>
+		public void Expand(TreeViewNode value)
 		{
 			var vm = ListControl.ListViewModel;
-			vm.ExpandNode(node);
+			vm.ExpandNode(value);
 		}
 
 		/// <summary>
 		/// Collapses a given node.
 		/// </summary>
-		/// <param name="node">Node.</param>
-		public void Collapse(TreeViewNode node)
+		/// <param name="value">Node.</param>
+		public void Collapse(TreeViewNode value)
 		{
 			var vm = ListControl.ListViewModel;
-			vm.CollapseNode(node);
+			vm.CollapseNode(value);
 		}
 
 		/// <summary>

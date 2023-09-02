@@ -15,7 +15,7 @@ using ObjCRuntime;
 #elif __MACOS__
 using _View = AppKit.NSView;
 using ObjCRuntime;
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using _View = Windows.UI.Xaml.UIElement;
 #endif
 
@@ -45,19 +45,19 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (child is _View childView)
 				{
-					var childAsDO = child as DependencyObject;
+					var childAsUIElement = child as UIElement;
 					var desiredSize = GetElementDesiredSize(childView);
 
 					var childRect = new Rect
 					{
-						X = GetLeft(childAsDO),
-						Y = GetTop(childAsDO),
+						X = GetLeft(childAsUIElement),
+						Y = GetTop(childAsUIElement),
 						Width = desiredSize.Width,
 						Height = desiredSize.Height,
 					};
 
 #if __IOS__
-					child.Layer.ZPosition = (nfloat)GetZIndex(childAsDO);
+					child.Layer.ZPosition = (nfloat)GetZIndex(childAsUIElement);
 #endif
 
 					ArrangeElement(child, childRect);

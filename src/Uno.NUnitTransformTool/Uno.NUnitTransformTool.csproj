@@ -2,7 +2,11 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
-		<TargetFramework>net6.0</TargetFramework>
+		<!-- There is no need to multi-target this project -->
+		<!-- We keep it on the oldest supported TFM -->
+		<!-- Though we could use UnoTargetFrameworkOverride to choose between NetPrevious and NetCurrent -->
+		<!-- As of writing this comment, we don't see a need to do that, so we keep it simple -->
+		<TargetFramework>$(NetPrevious)</TargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<RollForward>major</RollForward>
 	</PropertyGroup>

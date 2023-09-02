@@ -127,7 +127,7 @@ namespace Uno.UI {
 		private containerElement: HTMLDivElement;
 		private rootElement: HTMLElement;
 
-		private cursorStyleElement: HTMLElement;
+		private cursorStyleRule: CSSStyleRule;
 
 		private allActiveElementsById: { [id: string]: HTMLElement | SVGElement } = {};
 		private uiElementRegistrations: {
@@ -194,7 +194,9 @@ namespace Uno.UI {
 			* Reads the window's search parameters
 			* 
 			*/
-		static findLaunchArguments(): string {
+		static beforeLaunch(): string {
+			WindowManager.resize();
+
 			if (typeof URLSearchParams === "function") {
 				return new URLSearchParams(window.location.search).toString();
 			}
@@ -470,6 +472,29 @@ namespace Uno.UI {
 				else {
 					(element as any)[pairs[i]] = setVal;
 				}
+			}
+		}
+
+		public setSinglePropertyNative(pParams: number): boolean {
+
+			const params = WindowManagerSetSinglePropertyParams.unmarshal(pParams);
+
+			this.setSinglePropertyNativeFast(params.HtmlId, params.Name, params.Value);
+
+			return true;
+		}
+
+		public setSinglePropertyNativeFast(htmlId: number, name: string, value: string) {
+
+			const element = this.getView(htmlId);
+			if (value === "true") {
+				(element as any)[name] = true;
+			}
+			else if (value === "false") {
+				(element as any)[name] = false;
+			}
+			else {
+				(element as any)[name] = value;
 			}
 		}
 
@@ -895,7 +920,7 @@ namespace Uno.UI {
 					? `${eventExtractor(event)}`
 					: "";
 
-				const result = this.dispatchEvent(element, eventName, eventPayload);
+				const result = this.dispatchEvent(element, eventName, eventPayload, onCapturePhase);
 				if (result & HtmlEventDispatchResult.StopPropagation) {
 					event.stopPropagation();
 				}
@@ -1033,8 +1058,6 @@ namespace Uno.UI {
 				this.dispatchEvent(this.rootElement, "loaded");
 			}
 			this.setAsArranged(newRootElement); // patch because root is not measured/arranged
-
-			this.resize();
 		}
 
 		/**
@@ -1540,7 +1563,11 @@ namespace Uno.UI {
 		 */
 		public GetDependencyPropertyValue(elementId: number, propertyName: string): string {
 			if (!WindowManager.getDependencyPropertyValueMethod) {
-				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					WindowManager.getDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.GetDependencyPropertyValue;
+				} else {
+					WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
+				}
 			}
 
 			const element = this.getView(elementId) as HTMLElement;
@@ -1556,7 +1583,11 @@ namespace Uno.UI {
 		 */
 		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string {
 			if (!WindowManager.setDependencyPropertyValueMethod) {
-				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+				if ((<any>globalThis).DotnetExports !== undefined) {
+					WindowManager.setDependencyPropertyValueMethod = (<any>globalThis).DotnetExports.UnoUI.Uno.UI.Helpers.Automation.SetDependencyPropertyValue;
+				} else {
+					WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+				}
 			}
 
 			const element = this.getView(elementId) as HTMLElement;
@@ -1625,7 +1656,7 @@ namespace Uno.UI {
 			document.body.addEventListener("focusin", this.onfocusin);
 			document.body.appendChild(this.containerElement);
 
-			window.addEventListener("resize", x => this.resize());
+			window.addEventListener("resize", x => WindowManager.resize());
 			window.addEventListener("contextmenu", x => {
 				if (!(x.target instanceof HTMLInputElement) ||
 					x.target.classList.contains("context-menu-disabled")) {
@@ -1648,7 +1679,7 @@ namespace Uno.UI {
 			}
 		}
 
-		private resize() {
+		private static resize() {
 			WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
 		}
 
@@ -1664,7 +1695,7 @@ namespace Uno.UI {
 			WindowManager.focusInMethod(-1);
 		}
 
-		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): HtmlEventDispatchResult {
+		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null, onCapturePhase: boolean = false): HtmlEventDispatchResult {
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
 			// console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
@@ -1673,7 +1704,7 @@ namespace Uno.UI {
 				throw `No attribute XamlHandle on element ${element}. Can't raise event.`;
 			}
 
-			return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "");
+			return WindowManager.dispatchEventMethod(htmlId, eventName, eventPayload || "", onCapturePhase);
 		}
 
 		private getIsConnectedToRootElement(element: HTMLElement | SVGElement): boolean {
@@ -1700,21 +1731,15 @@ namespace Uno.UI {
 
 			if (unoBody) {
 
-				//always cleanup
-				if (this.cursorStyleElement != undefined) {
-					this.cursorStyleElement.remove();
-					this.cursorStyleElement = undefined
+				if (this.cursorStyleRule === undefined) {
+					const styleSheet = document.styleSheets[document.styleSheets.length - 1];
+
+					const ruleId = styleSheet.insertRule(".uno-buttonbase { }", styleSheet.cssRules.length);
+
+					this.cursorStyleRule = <CSSStyleRule>styleSheet.cssRules[ruleId];
 				}
 
-				//only add custom overriding style if not auto 
-				if (cssCursor != "auto") {
-
-					// this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
-
-					this.cursorStyleElement = document.createElement("style");
-					this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
-					document.body.appendChild(this.cursorStyleElement);
-				}
+				this.cursorStyleRule.style.cursor = cssCursor !== "auto" ? cssCursor : null;
 
 				unoBody.style.cursor = cssCursor;
 			}

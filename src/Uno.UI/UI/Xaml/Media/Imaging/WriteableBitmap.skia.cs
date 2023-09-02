@@ -1,11 +1,9 @@
-using System;
 using System.IO;
 using System.Runtime.InteropServices;
-using Windows.Foundation;
-using Windows.Storage.Streams;
-using Uno.Foundation;
+using System.Threading.Tasks;
 using Windows.UI.Composition;
 using Uno.UI.Xaml.Media;
+using SkiaSharp;
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -22,6 +20,17 @@ namespace Windows.UI.Xaml.Media.Imaging
 			image = ImageData.FromCompositionSurface(_surface);
 
 			return true;
+		}
+
+		private unsafe void DecodeStreamIntoBuffer()
+		{
+			using var img = SKImage.FromEncodedData(_stream.AsStream());
+			var info = img.Info;
+
+			fixed (byte* data = &MemoryMarshal.GetReference(_buffer.Span))
+			{
+				img.ReadPixels(info.WithColorType(SKColorType.Bgra8888), (nint)data, PixelWidth * 4);
+			}
 		}
 	}
 }

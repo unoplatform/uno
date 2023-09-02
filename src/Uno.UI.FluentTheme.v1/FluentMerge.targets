@@ -35,7 +35,7 @@
 	<Message Text="Theme resources XAML file was generated" />
   </Target>
 
-  <PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0' and '$(UnoRuntimeIdentifier)'=='Reference'">
+  <PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
     <EnableAutomaticXamlPageInclusion>false</EnableAutomaticXamlPageInclusion>
   </PropertyGroup>
 

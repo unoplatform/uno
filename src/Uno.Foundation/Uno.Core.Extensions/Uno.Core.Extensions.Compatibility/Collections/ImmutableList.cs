@@ -1,5 +1,6 @@
+#if NET7_0_OR_GREATER
 // ******************************************************************
-// Copyright � 2015-2018 nventive inc. All rights reserved.
+// Copyright � 2015-2018 Uno Platform Inc. All rights reserved.
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,13 +15,10 @@
 // limitations under the License.
 //
 // ******************************************************************
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices;
 
 namespace Uno.Collections
 {
@@ -296,8 +294,10 @@ namespace Uno.Collections
 		public ImmutableList<T> Add(T value)
 		{
 			var newData = new T[_data.Length + 1];
-			Array.Copy(_data, newData, _data.Length);
-			newData[_data.Length] = value;
+			Span<T> newDataSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(newData), newData.Length);
+			Span<T> dataSpan = MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_data), _data.Length);
+			dataSpan.CopyTo(newDataSpan);
+			newDataSpan[_data.Length] = value;
 			return new ImmutableList<T>(newData, copyData: false);
 		}
 
@@ -391,3 +391,4 @@ namespace Uno.Collections
 		public T this[int index] => _data[index];
 	}
 }
+#endif

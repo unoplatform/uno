@@ -55,5 +55,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 			Assert.AreEqual(43, siblingBorder.ActualWidth, delta);
 			Assert.AreEqual(22, siblingBorder.ActualHeight);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_RevealBrush_GetPaint()
+		{
+			try
+			{
+				var revealBorderBrush = new Windows.UI.Xaml.Media.RevealBorderBrush();
+				var revealBackgroundBrush = new Windows.UI.Xaml.Media.RevealBackgroundBrush();
+				var muxRevealBorderBrush = new Microsoft.UI.Xaml.Media.RevealBorderBrush();
+				var muxRevealBackgroundBrush = new Microsoft.UI.Xaml.Media.RevealBackgroundBrush();
+
+				revealBorderBrush.GetStrokePaint(default);
+				revealBackgroundBrush.GetStrokePaint(default);
+				muxRevealBorderBrush.GetStrokePaint(default);
+				muxRevealBackgroundBrush.GetStrokePaint(default);
+				revealBorderBrush.GetFillPaint(default);
+				revealBackgroundBrush.GetFillPaint(default);
+				muxRevealBorderBrush.GetFillPaint(default);
+				muxRevealBackgroundBrush.GetFillPaint(default);
+			}
+			catch
+			{
+				Assert.Fail("RevealBrush.GetPaintInner() should not throw");
+			}
+		}
+#endif
 	}
 }

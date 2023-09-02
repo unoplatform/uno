@@ -15,12 +15,13 @@ using Uno.UI;
 using Windows.UI.Xaml.Media;
 
 using View = Windows.UI.Xaml.UIElement;
+using Uno.UI.Helpers;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private readonly SerialDisposable _borderBrushChanged = new SerialDisposable();
+		private Action _borderBrushChanged;
 
 		public Panel()
 		{
@@ -46,13 +47,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChanged.Disposable = null;
-			if (newValue?.SupportsAssignAndObserveBrush ?? false)
-			{
-				_borderBrushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => UpdateBorder());
-			}
-
-			UpdateBorder();
+			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)

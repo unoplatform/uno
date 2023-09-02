@@ -22,19 +22,21 @@ using Windows.UI.Xaml.Automation.Peers;
 using Uno;
 using Uno.Foundation.Logging;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
 
-#if XAMARIN_IOS
+#if __IOS__
 using UIKit;
 #endif
 
 namespace Windows.UI.Xaml.Controls
 {
-	[ContentProperty(Name = "Text")]
+	[ContentProperty(Name = nameof(Inlines))]
 	public partial class TextBlock : DependencyObject
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
-		private readonly SerialDisposable _foregroundChanged = new SerialDisposable();
+		private Action _foregroundChanged;
 
 		private Run _reusableRun;
 		private bool _skipInlinesChangedTextSetter;
@@ -212,7 +214,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Text Dependency Property
 
 		public
-#if XAMARIN_IOS
+#if __IOS__
 			new
 #endif
 			string Text
@@ -234,7 +236,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		internal static object CoerceText(DependencyObject dependencyObject, object baseValue) =>
+		internal static object CoerceText(DependencyObject dependencyObject, object baseValue, DependencyPropertyValuePrecedences _) =>
 			baseValue is string
 				? baseValue
 				: string.Empty;
@@ -253,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region FontFamily Dependency Property
 
-#if XAMARIN_IOS
+#if __IOS__
 		/// <summary>
 		/// Supported font families: http://iosfonts.com/
 		/// </summary>
@@ -377,7 +379,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 			Brush Foreground
@@ -386,7 +388,7 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 #if !__WASM__
-				if (value is SolidColorBrush || value is GradientBrush || value is null)
+				if (value is SolidColorBrush || value is GradientBrush || value is RadialGradientBrush || value is null)
 				{
 					SetValue(ForegroundProperty, value);
 				}
@@ -408,47 +410,41 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					defaultValue: SolidColorBrushHelper.Black,
 					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnForegroundChanged()
+					propertyChangedCallback: (s, e) => ((TextBlock)s).Subscribe((Brush)e.OldValue, (Brush)e.NewValue)
 				)
 			);
 
+		private void Subscribe(Brush oldValue, Brush newValue)
+		{
+			var newOnInvalidateRender = _foregroundChanged ?? (() => OnForegroundChanged());
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundChanged, newOnInvalidateRender);
+		}
+
 		private void OnForegroundChanged()
 		{
-			void refreshForeground()
-			{
-				// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
-				// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
-				// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
-				// on the native side, but not yet collected on the managed side (for Xamarin targets).
+			// The try-catch here is primarily for the benefit of Android. This callback is raised when (say) the brush color changes,
+			// which may happen when the system theme changes from light to dark. For app-level resources, a large number of views may
+			// be subscribed to changes on the brush, including potentially some that have been removed from the visual tree, collected
+			// on the native side, but not yet collected on the managed side (for Xamarin targets).
 
-				// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
-				// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
+			// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
+			// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
 #if !HAS_EXPENSIVE_TRYFINALLY
-				try
+			try
 #endif
-				{
-					OnForegroundChangedPartial();
-					InvalidateTextBlock();
-				}
-#if !HAS_EXPENSIVE_TRYFINALLY
-				catch (Exception e)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
-					}
-				}
-#endif
-			}
-
-			_foregroundChanged.Disposable = null;
-
-			if (Foreground?.SupportsAssignAndObserveBrush ?? false)
 			{
-				_foregroundChanged.Disposable = Brush.AssignAndObserveBrush(Foreground, c => refreshForeground(), refreshForeground);
+				OnForegroundChangedPartial();
+				InvalidateTextBlock();
 			}
-
-			refreshForeground();
+#if !HAS_EXPENSIVE_TRYFINALLY
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
+				}
+			}
+#endif
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -458,7 +454,7 @@ namespace Windows.UI.Xaml.Controls
 		#region IsTextSelectionEnabled Dependency Property
 
 #if !__WASM__
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public bool IsTextSelectionEnabled
 		{
@@ -467,7 +463,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if !__WASM__
-		[NotImplemented("__ANDROID__", "__IOS__", "NET461", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		[NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 #endif
 		public static DependencyProperty IsTextSelectionEnabledProperty { get; } =
 			DependencyProperty.Register(
@@ -654,8 +650,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty TextDecorationsProperty { get; } =
 			DependencyProperty.Register(
-				"TextDecorations",
-				typeof(uint),
+				nameof(TextDecorations),
+				typeof(TextDecorations),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextDecorations.None,
@@ -986,6 +982,14 @@ namespace Windows.UI.Xaml.Controls
 			base.UpdateThemeBindings(updateReason);
 
 			SetDefaultForeground(ForegroundProperty);
+
+			if (_inlines is not null)
+			{
+				foreach (var inline in _inlines)
+				{
+					((IDependencyObjectStoreProvider)inline).Store.UpdateResourceBindings(updateReason);
+				}
+			}
 		}
 
 		internal override bool CanHaveChildren() => true;

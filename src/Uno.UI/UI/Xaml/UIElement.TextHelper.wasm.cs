@@ -12,6 +12,9 @@ using Uno.Extensions;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Media;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using Uno.UI.Helpers;
+
 namespace Windows.UI.Xaml
 {
 	partial class UIElement
@@ -143,15 +146,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private SerialDisposable _brushSubscription;
-
 		internal void SetForeground(object localValue)
 		{
-			if (_brushSubscription != null)
-			{
-				_brushSubscription.Disposable = null;
-			}
-
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
@@ -165,39 +161,47 @@ namespace Windows.UI.Xaml
 					);
 					break;
 
+				case RadialGradientBrush radialGradient:
+					this.SetStyle(
+						("background", radialGradient.ToCssString(this.RenderSize)),
+						("color", "transparent"),
+						("background-clip", "text")
+					);
+					break;
+
 				case ImageBrush imageBrush:
-					_brushSubscription ??= new SerialDisposable();
-
-					_brushSubscription.Disposable = imageBrush.Subscribe(img =>
+					if (imageBrush.ImageDataCache is not { } img)
 					{
-						switch (img.Kind)
-						{
-							case ImageDataKind.Empty:
-							case ImageDataKind.Error:
-								this.ResetStyle(
-									"background-color",
-									"background-image",
-									"background-size");
-								this.SetStyle(
-									("color", "transparent"),
-									("background-clip", "text"));
-								break;
+						return;
+					}
 
-							case ImageDataKind.DataUri:
-							case ImageDataKind.Url:
-							default:
-								this.SetStyle(
-									("color", "transparent"),
-									("background-clip", "text"),
-									("background-color", ""),
-									("background-origin", "content-box"),
-									("background-position", imageBrush.ToCssPosition()),
-									("background-size", imageBrush.ToCssBackgroundSize()),
-									("background-image", "url(" + img.Value + ")")
-								);
-								break;
-						}
-					});
+					switch (img.Kind)
+					{
+						case ImageDataKind.Empty:
+						case ImageDataKind.Error:
+							this.ResetStyle(
+								"background-color",
+								"background-image",
+								"background-size");
+							this.SetStyle(
+								("color", "transparent"),
+								("background-clip", "text"));
+							break;
+
+						case ImageDataKind.DataUri:
+						case ImageDataKind.Url:
+						default:
+							this.SetStyle(
+								("color", "transparent"),
+								("background-clip", "text"),
+								("background-color", ""),
+								("background-origin", "content-box"),
+								("background-position", imageBrush.ToCssPosition()),
+								("background-size", imageBrush.ToCssBackgroundSize()),
+								("background-image", "url(" + img.Value + ")")
+							);
+							break;
+					}
 					break;
 				case AcrylicBrush acrylic:
 					acrylic.Apply(this);

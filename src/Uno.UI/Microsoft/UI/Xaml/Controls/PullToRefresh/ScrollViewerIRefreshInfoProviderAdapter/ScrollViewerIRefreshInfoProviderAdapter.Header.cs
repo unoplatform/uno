@@ -24,7 +24,6 @@ internal partial class ScrollViewerIRefreshInfoProviderAdapter
 	private bool m_visualInteractionSourceIsAttached = false;
 
 	private SerialDisposable m_scrollViewer_LoadedToken = new SerialDisposable();
-	private SerialDisposable m_scrollViewer_PointerPressedToken = new SerialDisposable();
 	private SerialDisposable m_scrollViewer_DirectManipulationCompletedToken = new SerialDisposable();
 	private SerialDisposable m_scrollViewer_ViewChangingToken = new SerialDisposable();
 	private SerialDisposable m_infoProvider_RefreshStartedToken = new SerialDisposable();

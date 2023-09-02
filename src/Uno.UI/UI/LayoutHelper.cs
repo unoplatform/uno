@@ -5,7 +5,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using static System.Double;
 
-#if NET6_0_OR_GREATER && (__IOS__ || __MACOS__)
+#if __IOS__ || __MACOS__
 using ObjCRuntime;
 #endif
 

@@ -1,7 +1,10 @@
 ﻿#nullable enable
 
+using System;
+
 namespace Windows.Devices.Bluetooth.Advertisement
 {
+	[Flags]
 	public enum BluetoothLEAdvertisementFlags : uint
 	{
 		None = 0,

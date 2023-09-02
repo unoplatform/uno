@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 			return disposables;
 		}
 
-		private void OnRegionChanged(object sender, MKMapViewChangeEventArgs e)
+		private void OnRegionChanged(object? sender, MKMapViewChangeEventArgs e)
 		{
 			if (!_changingCenter)
 			{
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 				foreach (var child in allItems)
 				{
-					MapControlAnnotation annotation;
+					MapControlAnnotation? annotation;
 
 					if (!_elements.TryGetValue(child, out annotation))
 					{
@@ -198,7 +198,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenters
 
 		private MKOverlayRenderer OnGetOverlayRenderer(MKMapView mapView, IMKOverlay overlay)
 		{
-			return _overlayRenderers.GetValueOrDefault(overlay);
+			return _overlayRenderers.GetValueOrDefault(overlay)!;
 		}
 
 		private MKAnnotationView? OnGetViewForAnnotation(MKMapView mapView, AnnotationAlias annotation)

@@ -23,9 +23,7 @@ namespace Uno.UI
 			ConfigChanges.ScreenSize |
 			ConfigChanges.SmallestScreenSize |
 			ConfigChanges.Touchscreen |
-#if __ANDROID_17__
 			ConfigChanges.LayoutDirection |
-#endif
 			ConfigChanges.UiMode;
 	}
 }

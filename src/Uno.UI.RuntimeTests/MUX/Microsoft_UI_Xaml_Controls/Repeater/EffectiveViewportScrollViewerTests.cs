@@ -42,6 +42,7 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 {
 	[TestClass]
 	[Ignore("Test are currently failing after target contract was raised (see issue #4830)")]
+	[Uno.UI.RuntimeTests.RunsOnUIThread]
 	public class EffectiveViewportTests : MUXApiTestBase
 	{
 		[TestMethod]

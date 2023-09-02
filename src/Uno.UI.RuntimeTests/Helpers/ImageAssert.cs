@@ -1,22 +1,13 @@
 ﻿#nullable enable
 using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using FluentAssertions;
 using FluentAssertions.Execution;
-using NUnit.Framework;
-using Uno.UITest;
 using Windows.UI;
 using static System.Math;
 
 using Rectangle = System.Drawing.Rectangle;
-using Size = System.Drawing.Size;
-using Point = System.Drawing.Point;
 using SamplesApp.UITests;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml;
@@ -27,11 +18,17 @@ using Windows.Foundation;
 namespace Uno.UI.RuntimeTests.Helpers;
 
 /// <summary>
-/// Screenshot based assertions, to validate individual colors of an image
+/// Screen shot based assertions, to validate individual colors of an image
 /// </summary>
 public static partial class ImageAssert
 {
 	#region HasColorAt
+	public static void HasColorAt(RawBitmap screenshot, Windows.Foundation.Point location, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		=> HasColorAtImpl(screenshot, (int)location.X, (int)location.Y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode), tolerance, line);
+
+	public static void HasColorAt(RawBitmap screenshot, Windows.Foundation.Point location, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
+		=> HasColorAtImpl(screenshot, (int)location.X, (int)location.Y, expectedColor, tolerance, line);
+
 	public static void HasColorAt(RawBitmap screenshot, float x, float y, string expectedColorCode, byte tolerance = 0, [CallerLineNumber] int line = 0)
 		=> HasColorAtImpl(screenshot, (int)x, (int)y, (Color)XamlBindingHelper.ConvertValue(typeof(Color), expectedColorCode), tolerance, line);
 
@@ -53,19 +50,24 @@ public static partial class ImageAssert
 	public static void HasColorInRectangle(RawBitmap screenshot, Rectangle rect, Color expectedColor, byte tolerance = 0, [CallerLineNumber] int line = 0)
 	{
 		var bitmap = screenshot;
+		(int x, int y, int diff, Color color) min = (-1, -1, int.MaxValue, default);
 		for (var x = rect.Left; x < rect.Right; x++)
 		{
 			for (var y = rect.Top; y < rect.Bottom; y++)
 			{
 				var pixel = bitmap.GetPixel(x, y);
-				if (AreSameColor(expectedColor, pixel, tolerance, out _))
+				if (AreSameColor(expectedColor, pixel, tolerance, out var diff))
 				{
 					return;
+				}
+				else if (diff < min.diff)
+				{
+					min = (x, y, diff, pixel);
 				}
 			}
 		}
 
-		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}'.");
+		Assert.Fail($"Expected '{ToArgbCode(expectedColor)}' in rectangle '{rect}', but no pixel has this color. The closest pixel found is '{ToArgbCode(min.color)}' at '{min.x},{min.y}' with a (exclusive) difference of {min.diff}.");
 	}
 
 	/// <summary>
@@ -79,9 +81,9 @@ public static partial class ImageAssert
 			for (var y = rect.Top; y < rect.Bottom; y++)
 			{
 				var pixel = bitmap.GetPixel(x, y);
-				if (AreSameColor(excludedColor, pixel, tolerance, out _))
+				if (AreSameColor(excludedColor, pixel, tolerance, out var diff))
 				{
-					Assert.Fail($"Color '{ToArgbCode(excludedColor)}' was found at ({x}, {y}) in rectangle '{rect}'.");
+					Assert.Fail($"Color '{ToArgbCode(excludedColor)}' was found at ({x}, {y}) in rectangle '{rect}' (Exclusive difference of {diff}).");
 				}
 			}
 		}
@@ -212,8 +214,6 @@ public static partial class ImageAssert
 
 		using var reader1 = DataReader.FromBuffer(buffer1);
 		using var reader2 = DataReader.FromBuffer(buffer2);
-		var reader1Window = new byte[1024];
-		var reader2Window = new byte[1024];
 		while (reader1.UnconsumedBufferLength > 0 && reader2.UnconsumedBufferLength > 0)
 		{
 			if (reader1.ReadByte() != reader2.ReadByte())
@@ -223,5 +223,64 @@ public static partial class ImageAssert
 		}
 
 		return true;
+	}
+
+	/// <summary>
+	/// Asserts that two image are similar within the given <see href="https://en.wikipedia.org/wiki/Root-mean-square_deviation">RMSE</see>
+	/// The method it based roughly on ImageMagick implementation to ensure consistency.
+	/// If the error is greater than or equal to 0.022, the differences are visible to human eyes.
+	/// <paramref name="actual">The image to compare with reference</paramref>
+	/// <paramref name="expected">Reference image.</paramref>
+	/// <paramref name="imperceptibilityThreshold">It is the threshold beyond which the compared images are not considered equal. Default value is 0.022.</paramref>>
+	/// </summary>
+	public static async Task AreSimilarAsync(RawBitmap actual, RawBitmap expected, double imperceptibilityThreshold = 0.022)
+	{
+		await actual.Populate();
+		await expected.Populate();
+
+		using var assertionScope = new AssertionScope("ImageAssert");
+
+		if (actual.Width != expected.Width || actual.Height != expected.Height)
+		{
+			assertionScope.FailWith($"Images have different resolutions. {Environment.NewLine}expected:({expected.Width},{expected.Height}){Environment.NewLine}actual  :({actual.Width},{actual.Height})");
+		}
+
+		var quantity = actual.Width * actual.Height;
+		double squaresError = 0;
+
+		const double scale = 1 / 255d;
+
+		for (var x = 0; x < actual.Width; x++)
+		{
+			double localError = 0;
+
+			for (var y = 0; y < actual.Height; y++)
+			{
+				var expectedAlpha = expected[x, y].A * scale;
+				var actualAlpha = actual[x, y].A * scale;
+
+				var r = scale * (expectedAlpha * expected[x, y].R - actualAlpha * actual[x, y].R);
+				var g = scale * (expectedAlpha * expected[x, y].G - actualAlpha * actual[x, y].G);
+				var b = scale * (expectedAlpha * expected[x, y].B - actualAlpha * actual[x, y].B);
+				var a = expectedAlpha - actualAlpha;
+
+				var error = r * r + g * g + b * b + a * a;
+
+				localError += error;
+			}
+
+			squaresError += localError;
+		}
+
+		var meanSquaresError = squaresError / quantity;
+
+		const int channelCount = 4;
+
+		meanSquaresError = meanSquaresError / channelCount;
+		var sqrtMeanSquaresError = Sqrt(meanSquaresError);
+		if (sqrtMeanSquaresError >= imperceptibilityThreshold)
+		{
+			assertionScope.FailWith($"the actual image is not the same as the expected one.{Environment.NewLine}actual RSMD: {sqrtMeanSquaresError}{Environment.NewLine}threshold: {imperceptibilityThreshold}");
+		}
 	}
 }

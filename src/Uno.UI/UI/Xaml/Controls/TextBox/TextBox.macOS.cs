@@ -1,4 +1,5 @@
-﻿using AppKit;
+﻿using Windows.System;
+using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
@@ -99,7 +100,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool OnKey(char key)
 		{
-			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey())
+			// TODO: include modifier info
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, key.ToVirtualKey(), VirtualKeyModifiers.None)
 			{
 				CanBubbleNatively = true
 			};
@@ -186,17 +188,6 @@ namespace Windows.UI.Xaml.Controls
 					securedtv.SelectWithFrame(securedtv.Frame, securedtv.CurrentEditor, null, _textBoxView.SelectedRange.Location, value);
 				}
 			}
-		}
-
-		public override NSView HitTest(CGPoint point)
-		{
-			var view = base.HitTest(point);
-			if (view != null)
-			{
-				Uno.UI.Controls.Window.SetNeedsKeyboard(view, true);
-			}
-
-			return view;
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue)

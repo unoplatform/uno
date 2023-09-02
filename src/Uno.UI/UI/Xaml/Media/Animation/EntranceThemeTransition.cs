@@ -20,29 +20,29 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		#region FromHorizontalOffset Property
 
-		public float FromHorizontalOffset
+		public double FromHorizontalOffset
 		{
-			get { return (float)this.GetValue(FromHorizontalOffsetProperty); }
+			get { return (double)this.GetValue(FromHorizontalOffsetProperty); }
 			set { this.SetValue(FromHorizontalOffsetProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for FromHorizontalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromHorizontalOffsetProperty { get; } =
-			DependencyProperty.Register("FromHorizontalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40f));
+			DependencyProperty.Register("FromHorizontalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(40f));
 
 		#endregion
 
 		#region FromVerticalOffset Property
 
-		public float FromVerticalOffset
+		public double FromVerticalOffset
 		{
-			get { return (float)this.GetValue(FromVerticalOffsetProperty); }
+			get { return (double)this.GetValue(FromVerticalOffsetProperty); }
 			set { this.SetValue(FromVerticalOffsetProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for FromVerticalOffset.  This enables animation, styling, binding, etc...
 		public static DependencyProperty FromVerticalOffsetProperty { get; } =
-			DependencyProperty.Register("FromVerticalOffset", typeof(float), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0f));
+			DependencyProperty.Register("FromVerticalOffset", typeof(double), typeof(EntranceThemeTransition), new FrameworkPropertyMetadata(0f));
 
 		#endregion
 

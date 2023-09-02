@@ -15,12 +15,12 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Uno.UI.Xaml;
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 using View = Android.Views.View;
 using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
-#elif XAMARIN_IOS_UNIFIED
+#elif __IOS__
 using UIKit;
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -32,7 +32,7 @@ using View = AppKit.NSView;
 using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
-#elif UNO_REFERENCE_API || NET461
+#elif UNO_REFERENCE_API || IS_UNIT_TESTS
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Content DependencyProperty
 
-		public virtual object Content
+		public object Content
 		{
 			get { return (object)GetValue(ContentProperty); }
 			set { SetValue(ContentProperty, value); }
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Controls
 		#region Foreground Dependency Property
 
 		public
-#if __ANDROID_23__
+#if __ANDROID__
 		new
 #endif
 		Brush Foreground
@@ -381,7 +381,7 @@ namespace Windows.UI.Xaml.Controls
 		#region TextAlignment Dependency Property
 
 		public
-#if XAMARIN_ANDROID
+#if __ANDROID__
 			new
 #endif
 			TextAlignment TextAlignment
@@ -483,6 +483,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -666,7 +667,7 @@ namespace Windows.UI.Xaml.Controls
 			SetImplicitContent();
 		}
 
-		protected virtual void OnContentTemplateChanged(DataTemplate oldTemplate, DataTemplate newTemplate)
+		protected virtual void OnContentTemplateChanged(DataTemplate oldContentTemplate, DataTemplate newContentTemplate)
 		{
 			if (ContentTemplateRoot != null)
 			{
@@ -676,13 +677,13 @@ namespace Windows.UI.Xaml.Controls
 			SetUpdateTemplate();
 		}
 
-		private void OnContentTemplateSelectorChanged(DataTemplateSelector dataTemplateSelector1, DataTemplateSelector dataTemplateSelector2)
+		protected virtual void OnContentTemplateSelectorChanged(DataTemplateSelector oldContentTemplateSelector, DataTemplateSelector newContentTemplateSelector)
 		{
 		}
 
 		partial void UnregisterContentTemplateRoot();
 
-		public virtual View ContentTemplateRoot
+		public View ContentTemplateRoot
 		{
 			get
 			{
@@ -1001,6 +1002,9 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 
 			UpdateBorder();
+#if __WASM__
+			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
+#endif
 		}
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
@@ -1009,7 +1013,7 @@ namespace Windows.UI.Xaml.Controls
 			SetDefaultForeground(ForegroundProperty);
 		}
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 		// Support for the C# collection initializer style.
 		public void Add(View view)
 		{

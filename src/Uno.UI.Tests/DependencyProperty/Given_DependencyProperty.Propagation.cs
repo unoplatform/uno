@@ -2,7 +2,6 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Extensions;
-using Uno.Presentation.Resources;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 using System;

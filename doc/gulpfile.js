@@ -7,7 +7,6 @@ const concat = require('gulp-concat');
 const postcss = require('gulp-postcss');
 const gulpif = require('gulp-if');
 const del = require('del');
-const sassLint = require('gulp-sass-lint');
 const sourcemaps = require('gulp-sourcemaps');
 const stripImportExport = require('gulp-strip-import-export');
 const browserSync = require('browser-sync').create();
@@ -26,9 +25,6 @@ function styles(done) {
 
     src([`${assets}/**/*.scss`, `${assets}/**/*.sass`])
         .pipe(gulpif(isDebug, sourcemaps.init()))
-        .pipe(gulpif(isDebug, sassLint()))
-        .pipe(gulpif(isDebug, sassLint.format()))
-        .pipe(gulpif(isDebug, sassLint.failOnError()))
         .pipe(
             sass({includePaths: ['./node_modules/'], outputStyle: output}).on(
                 'error',

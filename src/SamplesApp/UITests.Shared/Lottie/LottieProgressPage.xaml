@@ -18,7 +18,7 @@
 		<!--#region IntroText-->
 		<TextBlock Grid.Row="0">
 					Here, instead of playing
-					<Span FontFamily="Consolas">AnimatedVisuals/LightBulb.json</Span> , 
+					<Span FontFamily="Consolas">AnimatedVisuals/LightBulb.json</Span> ,
 					we display individual frames from the Lottie animation.
 					<LineBreak/>
 					<Run FontWeight="SemiBold">Use</Run>

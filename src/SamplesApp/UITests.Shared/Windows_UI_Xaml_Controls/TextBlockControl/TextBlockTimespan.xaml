@@ -6,8 +6,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:converters="using:Uno.UI.Samples.Converters"
 	xmlns:u="using:Uno.UI.Samples.Controls"
-	xmlns:xamarin="urn:xamarin"
-	mc:Ignorable="d xamarin"
+	xmlns:not_win="http://uno.ui/not_win"
+	mc:Ignorable="d not_win"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 

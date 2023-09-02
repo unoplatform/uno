@@ -13,13 +13,13 @@ namespace Windows.Globalization
 	{
 		private static string _primaryLanguageOverride = string.Empty;
 
-#if !NET461
+#if !IS_UNIT_TESTS
 		private const string PrimaryLanguageOverrideSettingKey = "__Uno.PrimaryLanguageOverride";
 #endif
 
 		static ApplicationLanguages()
 		{
-#if !NET461
+#if !IS_UNIT_TESTS
 			if (ApplicationData.Current.LocalSettings.Values.TryGetValue(PrimaryLanguageOverrideSettingKey, out var savedValue)
 				&& savedValue is string stringSavedValue)
 			{
@@ -90,7 +90,7 @@ namespace Windows.Globalization
 					ApplyCulture();
 				}
 
-#if !NET461
+#if !IS_UNIT_TESTS
 				ApplicationData.Current.LocalSettings.Values[PrimaryLanguageOverrideSettingKey] = _primaryLanguageOverride;
 #endif
 			}
@@ -160,9 +160,7 @@ namespace Windows.Globalization
 			}
 			catch (CultureNotFoundException)
 			{
-				_cultureFormatRegex ??= new Regex(
-					@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?",
-					RegexOptions.CultureInvariant | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.IgnoreCase);
+				_cultureFormatRegex ??= CultureRegex();
 
 				var match = _cultureFormatRegex.Match(cultureId);
 				try
@@ -189,5 +187,15 @@ namespace Windows.Globalization
 				throw;
 			}
 		}
+
+#if !DISABLE_GENERATED_REGEX
+		[GeneratedRegex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+#endif
+		private static partial Regex CultureRegex();
+
+#if DISABLE_GENERATED_REGEX
+		private static partial Regex CultureRegex()
+			=> new Regex(@"(?<lang>[a-z]{2,8})(?:(?:\-(?<script>[a-zA-Z]+))?\-(?<reg>[A-Z]+))?", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant);
+#endif
 	}
 }
