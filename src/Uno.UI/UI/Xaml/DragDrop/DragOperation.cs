@@ -6,6 +6,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
@@ -42,14 +43,14 @@ namespace Windows.UI.Xaml
 			Completed
 		}
 
-		public DragOperation(Window window, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
+		public DragOperation(InputManager inputManager, IDragDropExtension? extension, CoreDragInfo info, ICoreDropOperationTarget? target = null)
 		{
 			_extension = extension;
 			Info = info;
 
-			_target = target ?? new DropUITarget(window); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
+			_target = target ?? new DropUITarget(); // The DropUITarget must be re-created for each drag operation! (Caching of the drag ui-override)
 			_view = new DragView(info.DragUI as DragUI);
-			_viewHandle = window.OpenDragAndDrop(_view);
+			_viewHandle = inputManager.OpenDragAndDrop(_view);
 			_viewOverride = new CoreDragUIOverride(); // UWP does re-use the same instance for each update on _target
 		}
 

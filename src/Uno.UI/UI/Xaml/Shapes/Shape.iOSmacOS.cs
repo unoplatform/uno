@@ -56,6 +56,10 @@ namespace Windows.UI.Xaml.Shapes
 			Layer.AddSublayer(_shapeLayer);
 		}
 
+		private void OnFillBrushChanged() => UpdateRender();
+
+		private void OnStrokeBrushChanged() => UpdateRender();
+
 		private void UpdateRender()
 		{
 			if (_shapeLayer is null)

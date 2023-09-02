@@ -1473,7 +1473,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_isMeasureCommandBarRunning = true;
 					ResetMargins();
-					AddMarginsBetweenGroups();
 					var desiredSize = m_tpCommandBar.DesiredSize;
 
 					var availableSize = this.ActualWidth - this.Margin.Left - this.Margin.Right;

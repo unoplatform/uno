@@ -69,6 +69,7 @@ svg.uno-uielement {
   */
   pointer-events: none;
   stroke-width: 1px; /* default value of Shape.StrokeThickness */
+  overflow: visible
 }
 
 .uno-frameworkelement.uno-unarranged {
@@ -136,6 +137,12 @@ embed.uno-frameworkelement.uno-unarranged {
   overflow: hidden;
 }
 
+/* This fixes the issue for https://github.com/unoplatform/uno/issues/4563, but caused issues for ui tests */
+/*.uno-shape {
+    width: auto !important;
+    height: auto !important;
+}*/
+
 [data-use-hand-cursor-interaction="true"] .uno-buttonbase,
 [data-use-hand-cursor-interaction="true"] .uno-toggleswitch {
   cursor: pointer;
@@ -164,6 +171,10 @@ embed.uno-frameworkelement.uno-unarranged {
 
 .uno-textelement {
   position: relative;
+}
+
+.uno-svgelement {
+  vector-effect: non-scaling-stroke
 }
 
 .uno-htmlimage {

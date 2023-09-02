@@ -862,6 +862,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingWithOpacity.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\CornerRadiusControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -922,7 +926,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-	<Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TreeView.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TreeView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -5764,6 +5768,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Clipping652.xaml.cs">
       <DependentUpon>Clipping652.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingWithOpacity.xaml.cs">
+      <DependentUpon>ClippingWithOpacity.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElement_Clipping.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\AutoSuggestBoxTests\AutoSuggestBox_SoftKeboard.xaml.cs">
       <DependentUpon>AutoSuggestBox_SoftKeboard.xaml</DependentUpon>
@@ -5834,7 +5841,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView.xaml.cs">
       <DependentUpon>DragDrop_ListView.xaml</DependentUpon>
     </Compile>
-	<Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TreeView.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_TreeView.xaml.cs">
       <DependentUpon>DragDrop_TreeView.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DragAndDrop\DragDrop_ListView_Custom_States.xaml.cs">
