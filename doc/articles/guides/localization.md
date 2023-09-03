@@ -57,7 +57,11 @@ This guide will walk you through the necessary steps to localize an Uno Platform
     |-|-|-|
     |MainPage_IntroText.Text|`Hello Uno`|`Bonjour Uno`|
     |MainPage_CodeBehindString|`String from code-behind`|`Texte provenant du code-behind`|
-    > Note: Be sure to hit Ctrl+S for both files, to save the changes.
+    > [!NOTE]
+    > Make sure to hit Ctrl+S for both files, to save the changes.
+
+    > [!IMPORTANT]
+    > The `ResourceLoader` will search for resources in the current language, then the default language. The default language is defined by the MSBuild property `DefaultLanguage`, which defaults to `en`.
 
 1. You can now try to run the app.
 
