@@ -9,11 +9,16 @@ namespace Windows.Devices.Sensors
 		private TypedEventHandler<SimpleOrientationSensor, SimpleOrientationSensorOrientationChangedEventArgs> _orientationChanged;
 
 		#region Static
-
 		private static SimpleOrientationSensor _instance;
 		private static bool _initialized;
 		private readonly static object _syncLock = new();
 
+		/// <summary>
+		/// Gets the default simple orientation sensor.
+		/// </summary>
+		/// <returns>
+		/// The default simple orientation sensor or null if no simple orientation sensors are found.
+		/// </returns>
 		public static SimpleOrientationSensor GetDefault()
 		{
 			if (_initialized)
