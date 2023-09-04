@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetUWPOrWinUI)</TargetFrameworks>
 	</PropertyGroup>
@@ -26,7 +26,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.0.0" Condition="'$(UNO_UWP_BUILD)'!='true'" />
+		<PackageReference Include="Microsoft.WindowsAppSDK" Version="1.4.230822000" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 		<PackageReference Include="Microsoft.Windows.SDK.BuildTools" Version="10.0.22000.196" Condition="'$(UNO_UWP_BUILD)'!='true'" />
 
 		<FrameworkReference Update="Microsoft.Windows.SDK.NET.Ref" RuntimeFrameworkVersion="10.0.19041.21" Condition="'$(UNO_UWP_BUILD)'!='true'" />
