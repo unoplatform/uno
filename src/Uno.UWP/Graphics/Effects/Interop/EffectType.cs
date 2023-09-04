@@ -20,6 +20,7 @@
 		CompositeEffect,
 		ContrastEffect,
 		CrossFadeEffect,
+		//DisplacementMapEffect, // Note: DisplacementMapEffect is implemented by Composition but it's not enabled yet (as of 10.0.25941.1000), uncomment this member when it gets enabled
 		DistantDiffuseEffect,
 		DistantSpecularEffect,
 		ExposureEffect,

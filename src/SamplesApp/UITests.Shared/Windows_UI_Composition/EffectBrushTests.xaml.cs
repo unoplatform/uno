@@ -3,11 +3,16 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Graphics.Effects;
+
+#if !WINDOWS_UWP // Making the sample buildable on UWP
 using Windows.Graphics.Effects.Interop;
+#endif
+
 using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
@@ -34,6 +39,7 @@ namespace UITests.Windows_UI_Composition
 
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
 		{
+#if !WINDOWS_UWP
 			var compositor = Window.Current.Compositor;
 
 			var effect = new SimpleBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
@@ -53,6 +59,27 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush3 = factory3.CreateBrush();
 
 			invertGrid.Background = new EffectTesterBrush(effectBrush3);
+
+			var effect4 = new SimpleHueRotationEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Angle = (float)MathEx.ToRadians(45) };
+			var factory4 = compositor.CreateEffectFactory(effect4);
+			var effectBrush4 = factory4.CreateBrush();
+
+			hueGrid.Background = new EffectTesterBrush(effectBrush4);
+
+			// Aggregation Test
+
+			var effect5 = new SimpleGrayscaleEffect() { Source = effect };
+			var factory5 = compositor.CreateEffectFactory(effect5);
+			var effectBrush5 = factory5.CreateBrush();
+
+			aggregationGrid.Background = new EffectTesterBrush(effectBrush5);
+
+			var effect6 = new SimpleTintEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Color = Color.FromArgb(127, 66, 135, 245) };
+			var factory6 = compositor.CreateEffectFactory(effect6);
+			var effectBrush6 = factory6.CreateBrush();
+
+			tintGrid.Background = new EffectTesterBrush(effectBrush6);
+#endif
 		}
 
 		private class EffectTesterBrush : XamlCompositionBrushBase
@@ -78,8 +105,9 @@ namespace UITests.Windows_UI_Composition
 			}
 		}
 
-#if WINDOWS_UWP
+#if WINDOWS_UWP // Making the sample buildable on UWP
 		private interface IGraphicsEffectD2D1Interop { }
+		private enum GraphicsEffectPropertyMapping { Direct, RadiansToDegrees, ColorToVector4 }
 #endif
 
 		[Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5")]
@@ -201,6 +229,112 @@ namespace UITests.Windows_UI_Composition
 			public object GetProperty(uint index) => throw new NotSupportedException();
 
 			public uint GetPropertyCount() => 0;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("0F4458EC-4B32-491B-9E85-BD73F44D3EB6")]
+		private class SimpleHueRotationEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleHueRotationEffect";
+			private Guid _id = new Guid("0F4458EC-4B32-491B-9E85-BD73F44D3EB6");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Angle { get; set; } = 0.0f; // Radians
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Angle":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Angle;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("36312B17-F7DD-4014-915D-FFCA768CF211")]
+		private class SimpleTintEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleHueRotationEffect";
+			private Guid _id = new Guid("36312B17-F7DD-4014-915D-FFCA768CF211");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public Color Color { get; set; } = Color.FromArgb(255, 255, 255, 255);
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Color":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.ColorToVector4;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Color;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}
