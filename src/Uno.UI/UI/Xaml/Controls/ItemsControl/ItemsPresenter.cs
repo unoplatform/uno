@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 using System.Linq;
 using Uno.UI.DataBinding;
@@ -27,7 +28,16 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
+		private ContentControl _headerContentControl;
 
+		private ContentControl _footerContentControl;
+
+		private Rect _headerRect;
+		private Rect _footerRect;
+
+		private new readonly UIElementCollection _children;
+
+		private Orientation Orientation => (Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
 
 		public object Header
 		{
@@ -42,14 +52,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is UIElement)
+			if (_headerContentControl is { })
 			{
-				RemoveChildView(0);
-			}
-
-			if (args.NewValue is UIElement h)
-			{
-				AddChildView(new ContentControl{ Content = h, ContentTemplate = HeaderTemplate, ContentTransitions = HeaderTransitions }, 0);
+				_headerContentControl.Content = args.NewValue;
 			}
 		}
 
@@ -66,14 +71,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnFooterChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (args.OldValue is UIElement)
+			if (_footerContentControl is { })
 			{
-				RemoveChildView(_children.Count - 1);
-			}
-
-			if (args.NewValue is UIElement f)
-			{
-				AddChildView(new ContentControl{ Content = f, ContentTemplate = HeaderTemplate, ContentTransitions = FooterTransitions }, _children.Count);
+				_footerContentControl.Content = args.NewValue;
 			}
 		}
 
@@ -90,9 +90,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (Header is UIElement)
+			if (_headerContentControl is { })
 			{
-				((ContentControl)_children[0]).ContentTemplate = (DataTemplate)args.NewValue;
+				_headerContentControl.ContentTemplate = (DataTemplate)args.NewValue;
 			}
 		}
 
@@ -109,9 +109,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnFooterTemplateChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (Footer is UIElement)
+			if (_footerContentControl is { })
 			{
-				((ContentControl)_children[^1]).ContentTemplate = (DataTemplate)args.NewValue;
+				_footerContentControl.ContentTemplate = (DataTemplate)args.NewValue;
 			}
 		}
 
@@ -128,9 +128,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnHeaderTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (Header is UIElement)
+			if (_headerContentControl is { })
 			{
-				((ContentControl)_children[0]).ContentTransitions = (TransitionCollection)args.NewValue;
+				_headerContentControl.Transitions = (TransitionCollection)args.NewValue;
 			}
 		}
 
@@ -147,9 +147,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnFooterTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (Footer is UIElement)
+			if (_footerContentControl is { })
 			{
-				((ContentControl)_children[^1]).ContentTransitions = (TransitionCollection)args.NewValue;
+				_footerContentControl.Transitions = (TransitionCollection)args.NewValue;
 			}
 		}
 
@@ -315,7 +315,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var isHorizontal = ((Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal) == Orientation.Horizontal;
+			// Most of this is inspired by StackPanel's ArrangeOverride
+
+			var isHorizontal = Orientation == Orientation.Horizontal;
 
 			var padding = AppliedPadding;
 
@@ -347,10 +349,26 @@ namespace Windows.UI.Xaml.Controls
 					childRect.Width = Math.Max(finalSize.Width, desiredChildSize.Width);
 				}
 
-				if (i != count || Footer is not UIElement) // not footer
+				if (view == _headerContentControl)
 				{
-					ArrangeElement(view, childRect);
+					_headerRect = childRect;
 				}
+
+				if (view == _footerContentControl)
+				{
+					if (isHorizontal)
+					{
+						childRect.X = childRect.X.AtLeast(finalSize.Width);
+					}
+					else
+					{
+						childRect.Y = childRect.Y.AtLeast(finalSize.Height);
+					}
+
+					_footerRect = childRect;
+				}
+
+				ArrangeElement(view, childRect);
 			}
 
 			if (Footer is UIElement)
@@ -373,6 +391,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size size)
 		{
+			// Most of this is inspired by StackPanel's MeasureOverride
+
 			var padding = AppliedPadding;
 
 			var unpaddedSize = new Size(
@@ -382,21 +402,28 @@ namespace Windows.UI.Xaml.Controls
 
 			var isHorizontal = ((Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal) == Orientation.Horizontal;
 
-			if (isHorizontal)
-			{
-				unpaddedSize.Width = float.PositiveInfinity;
-			}
-			else
-			{
-				unpaddedSize.Height = float.PositiveInfinity;
-			}
-
 			var desiredSize = default(Size);
 
 			var count = _children.Count;
 			for (var i = 0; i < count; i++)
 			{
 				var view = _children[i];
+
+
+				var availableSize = unpaddedSize;
+				if (view != _itemsPanel)
+				{
+					// On Windows, every child gets an infinite length along the orientation dimension
+					// except the panel, which doesn't get this treatment.
+					if (isHorizontal)
+					{
+						availableSize.Width = float.PositiveInfinity;
+					}
+					else
+					{
+						availableSize.Height = float.PositiveInfinity;
+					}
+				}
 
 				var measuredSize = MeasureElement(view, unpaddedSize);
 
@@ -418,17 +445,64 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
-		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment) => SnapPointsProvider?.GetIrregularSnapPoints(orientation, alignment);
-
-		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset)
+		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
-			if (SnapPointsProvider == null)
+			if (orientation != Orientation || SnapPointsProvider is null)
 			{
-				throw new InvalidOperationException();
+				return null;
 			}
 
-			return SnapPointsProvider.GetRegularSnapPoints(orientation, alignment, out offset);
+			var result = new List<float>(2 + (Panel as Panel)?.Children.Count ?? 0);
+
+			var panelSnapPoints = SnapPointsProvider.GetIrregularSnapPoints(orientation, alignment);
+
+			if (orientation == Orientation.Horizontal)
+			{
+				switch (alignment)
+				{
+					case SnapPointsAlignment.Near:
+						result.Add((float)_headerRect.Left);
+						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
+						result.Add((float)_footerRect.Left);
+						break;
+					case SnapPointsAlignment.Center:
+						result.Add((float)_headerRect.GetMidX());
+						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
+						result.Add((float)_footerRect.GetMidX());
+						break;
+					case SnapPointsAlignment.Far:
+						result.Add((float)_headerRect.Right);
+						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
+						result.Add((float)_footerRect.Right);
+						break;
+				}
+			}
+			else
+			{
+				switch (alignment)
+				{
+					case SnapPointsAlignment.Near:
+						result.Add(0); // _headerRect.Top
+						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
+						result.Add((float)_footerRect.Top);
+						break;
+					case SnapPointsAlignment.Center:
+						result.Add((float)_headerRect.GetMidY());
+						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
+						result.Add((float)_footerRect.GetMidY());
+						break;
+					case SnapPointsAlignment.Far:
+						result.Add((float)_headerRect.Bottom);
+						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
+						result.Add((float)_footerRect.Bottom);
+						break;
+				}
+			}
+
+			return result;
 		}
+
+		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) => throw new NotSupportedException("Regular snap points are not supported.");
 
 		internal override bool CanHaveChildren() => true;
 
