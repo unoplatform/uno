@@ -175,6 +175,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public ItemsPresenter()
 		{
+			_children = new UIElementCollection(this);
+
 			// A content presenter does not propagate its own templated
 			// parent. The content's TemplatedParent has already been set by the
 			// content presenter to its own templated parent.
@@ -256,18 +258,19 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var index = Header is UIElement ? 1 : 0;
+			// This is only called after (or while) the header and footer are created and added to the visual tree.
+			Debug.Assert(_headerContentControl is { });
 
 			if (_itemsPanel is { })
 			{
-				RemoveChildView(index);
+				_children.Remove(_itemsPanel);
 			}
 
 			_itemsPanel = panel;
 
 			if (_itemsPanel != null)
 			{
-				AddChildView(_itemsPanel, index);
+				_children.Insert(1, _itemsPanel);
 
 				PropagateLayoutValues();
 			}
@@ -275,31 +278,39 @@ namespace Windows.UI.Xaml.Controls
 			this.InvalidateMeasure();
 		}
 
-		private void RemoveChildView(int index)
+		internal void LoadChildren(View panel)
 		{
-#if __IOS__ || __MACOS__
-			this.Subviews[index].RemoveFromSuperview();
-#elif __ANDROID__
-			// TODO: how do I remove a view at a certain index
-			this.RemoveAllViews();
-#elif UNO_REFERENCE_API
-			RemoveChild(_children[index]);
-#endif
+			if (_headerContentControl is null)
+			{
+				_headerContentControl = new ContentControl
+				{
+					Content = Header,
+					ContentTemplate = HeaderTemplate,
+					ContentTransitions = HeaderTransitions,
+					VerticalContentAlignment = VerticalAlignment.Stretch,
+					HorizontalContentAlignment = HorizontalAlignment.Stretch
+				};
+
+				_children.Add(_headerContentControl);
+			}
+
+			SetItemsPanel(panel);
+
+			if (_footerContentControl is null)
+			{
+				_footerContentControl = new ContentControl
+				{
+					Content = Footer,
+					ContentTemplate = FooterTemplate,
+					ContentTransitions = FooterTransitions,
+					VerticalContentAlignment = VerticalAlignment.Stretch,
+					HorizontalContentAlignment = HorizontalAlignment.Stretch
+				};
+
+				_children.Add(_footerContentControl);
+			}
 		}
 
-		private void AddChildView(View view, int index)
-		{
-#if __IOS__ || __MACOS__
-			// TODO: how do I add a subview at a certain index
-			this.AddSubview(view);
-#elif __ANDROID__
-			this.AddView(view, index);
-#elif UNO_REFERENCE_API || IS_UNIT_TESTS
-			AddChild(view, index);
-#endif
-		}
-
-		// TODO: why do we need this?
 		private void PropagateLayoutValues()
 		{
 #if XAMARIN && !__MACOS__
@@ -318,13 +329,10 @@ namespace Windows.UI.Xaml.Controls
 			// Most of this is inspired by StackPanel's ArrangeOverride
 
 			var isHorizontal = Orientation == Orientation.Horizontal;
-
 			var padding = AppliedPadding;
 
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
-
 			var previousChildSize = 0.0;
-
 			var count = _children.Count;
 
 			for (var i = 0; i < count; i++)
@@ -336,17 +344,31 @@ namespace Windows.UI.Xaml.Controls
 				{
 					childRect.X += previousChildSize;
 
-					previousChildSize = desiredChildSize.Width;
 					childRect.Width = desiredChildSize.Width;
 					childRect.Height = Math.Max(finalSize.Height, desiredChildSize.Height);
+
+					if (view == _itemsPanel)
+					{
+						// the panel should stretch to a width big enough such that the footer is at the very right
+						childRect.Width = childRect.Width.AtLeast(finalSize.Width - GetElementDesiredSize(_footerContentControl).Width - childRect.X);
+					}
+
+					previousChildSize = childRect.Width;
 				}
 				else
 				{
 					childRect.Y += previousChildSize;
 
-					previousChildSize = desiredChildSize.Height;
 					childRect.Height = desiredChildSize.Height;
 					childRect.Width = Math.Max(finalSize.Width, desiredChildSize.Width);
+
+					if (view == _itemsPanel)
+					{
+						// the panel should stretch to a height big enough such that the footer is at the very bottom
+						childRect.Height = childRect.Height.AtLeast(finalSize.Height - GetElementDesiredSize(_footerContentControl).Height - childRect.Y);
+					}
+
+					previousChildSize = childRect.Height;
 				}
 
 				if (view == _headerContentControl)
@@ -356,34 +378,10 @@ namespace Windows.UI.Xaml.Controls
 
 				if (view == _footerContentControl)
 				{
-					if (isHorizontal)
-					{
-						childRect.X = childRect.X.AtLeast(finalSize.Width);
-					}
-					else
-					{
-						childRect.Y = childRect.Y.AtLeast(finalSize.Height);
-					}
-
 					_footerRect = childRect;
 				}
 
 				ArrangeElement(view, childRect);
-			}
-
-			if (Footer is UIElement)
-			{
-				var child = _children[^1];
-				var desiredChildSize = GetElementDesiredSize(child);
-				if (isHorizontal)
-				{
-					childRect.X = childRect.X.AtLeast(finalSize.Width - desiredChildSize.Width);
-				}
-				else
-				{
-					childRect.X = childRect.Y.AtLeast(finalSize.Height - desiredChildSize.Height);
-				}
-				ArrangeElement(child, childRect);
 			}
 
 			return finalSize;
@@ -456,6 +454,10 @@ namespace Windows.UI.Xaml.Controls
 
 			var panelSnapPoints = SnapPointsProvider.GetIrregularSnapPoints(orientation, alignment);
 
+			var panelStretch = Orientation == Orientation.Horizontal ?
+				_footerRect.Left - _headerRect.Right - GetElementDesiredSize(_itemsPanel).Width :
+				_footerRect.Top - _headerRect.Bottom - GetElementDesiredSize(_itemsPanel).Height;
+
 			if (orientation == Orientation.Horizontal)
 			{
 				switch (alignment)
@@ -463,17 +465,17 @@ namespace Windows.UI.Xaml.Controls
 					case SnapPointsAlignment.Near:
 						result.Add((float)_headerRect.Left);
 						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
-						result.Add((float)_footerRect.Left);
+						result.Add((float)(_footerRect.Left - panelStretch));
 						break;
 					case SnapPointsAlignment.Center:
 						result.Add((float)_headerRect.GetMidX());
 						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
-						result.Add((float)_footerRect.GetMidX());
+						result.Add((float)(_footerRect.GetMidX() - panelStretch));
 						break;
 					case SnapPointsAlignment.Far:
 						result.Add((float)_headerRect.Right);
 						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
-						result.Add((float)_footerRect.Right);
+						result.Add((float)(_footerRect.Right - panelStretch));
 						break;
 				}
 			}
@@ -482,24 +484,24 @@ namespace Windows.UI.Xaml.Controls
 				switch (alignment)
 				{
 					case SnapPointsAlignment.Near:
-						result.Add(0); // _headerRect.Top
+						result.Add((float)_headerRect.Top);
 						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
-						result.Add((float)_footerRect.Top);
+						result.Add((float)(_footerRect.Top - panelStretch));
 						break;
 					case SnapPointsAlignment.Center:
 						result.Add((float)_headerRect.GetMidY());
 						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
-						result.Add((float)_footerRect.GetMidY());
+						result.Add((float)(_footerRect.GetMidY() - panelStretch));
 						break;
 					case SnapPointsAlignment.Far:
 						result.Add((float)_headerRect.Bottom);
 						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
-						result.Add((float)_footerRect.Bottom);
+						result.Add((float)(_footerRect.Bottom - panelStretch));
 						break;
 				}
 			}
 
-			return result;
+			return result.Distinct().ToList(); // this takes care of missing header/footer/etc cases
 		}
 
 		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) => throw new NotSupportedException("Regular snap points are not supported.");

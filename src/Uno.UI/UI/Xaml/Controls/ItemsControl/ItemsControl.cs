@@ -1686,7 +1686,7 @@ namespace Windows.UI.Xaml.Controls
 			if (_itemsPresenter != itemsPresenter)
 			{
 				_itemsPresenter = itemsPresenter;
-				_itemsPresenter?.SetItemsPanel(InternalItemsPanelRoot);
+				_itemsPresenter?.LoadChildren(InternalItemsPanelRoot);
 			}
 		}
 
