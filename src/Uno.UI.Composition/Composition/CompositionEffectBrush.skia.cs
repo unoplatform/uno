@@ -201,6 +201,96 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
+							case EffectType.BlendEffect: // TODO: Replace this with a pixel shader to get the same output as Windows
+								{
+									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource bg && effectInterop.GetSource(1) is IGraphicsEffectSource fg)
+									{
+										SKImageFilter bgFilter = GenerateEffectFilter(bg, bounds);
+										if (bgFilter is null)
+											return null;
+
+										SKImageFilter fgFilter = GenerateEffectFilter(fg, bounds);
+										if (fgFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
+										D2D1BlendEffectMode mode = (D2D1BlendEffectMode)effectInterop.GetProperty(modeProp);
+										SKBlendMode skMode = mode.ToSkia();
+
+										if (skMode == (SKBlendMode)0xFF) // Unsupported mode
+											return null;
+
+										return SKImageFilter.CreateBlendMode(skMode, bgFilter, fgFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.CompositeEffect:
+								{
+									if (effectInterop.GetSourceCount() > 1 && effectInterop.GetPropertyCount() == 1)
+									{
+										SKImageFilter currentFilter = GenerateEffectFilter(effectInterop.GetSource(0), bounds);
+										if (currentFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
+										D2D1CompositeMode mode = (D2D1CompositeMode)effectInterop.GetProperty(modeProp);
+										SKBlendMode skMode = mode.ToSkia();
+
+										if (skMode == (SKBlendMode)0xFF) // Unsupported mode
+											return null;
+
+										for (uint idx = 1; idx < effectInterop.GetSourceCount(); idx++)
+										{
+											SKImageFilter nextFilter = GenerateEffectFilter(effectInterop.GetSource(idx), bounds);
+
+											if (nextFilter is not null)
+												currentFilter = SKImageFilter.CreateBlendMode(skMode, currentFilter, nextFilter, new(bounds));
+										}
+
+										return currentFilter;
+									}
+
+									return null;
+								}
+							case EffectType.ColorSourceEffect:
+								{
+									if (effectInterop.GetPropertyCount() >= 1 /* only the Color property is required */)
+									{
+										// Note: ColorHdr isn't supported by Composition (as of 10.0.25941.1000)
+										effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										return SKImageFilter.CreatePaint(new SKPaint() { Color = color.ToSKColor() }, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.OpacityEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Opacity", out uint opacityProp, out _);
+										float opacity = (float)effectInterop.GetProperty(opacityProp);
+
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // Opacity Matrix
+												{
+													1, 0, 0, 0,       0,
+													0, 1, 0, 0,       0,
+													0, 0, 1, 0,       0,
+													0, 0, 0, opacity, 0
+												}),
+											sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
 							case EffectType.Unsupported:
 							default:
 								return null;

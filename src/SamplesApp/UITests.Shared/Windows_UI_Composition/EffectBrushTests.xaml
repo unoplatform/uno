@@ -10,11 +10,15 @@
     d:DesignWidth="400">
 
 	<GridView SelectionMode="None" Padding="20">
-		<Grid x:Name="blurGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-		<Grid x:Name="grayGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-		<Grid x:Name="invertGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-		<Grid x:Name="hueGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-		<Grid x:Name="aggregationGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-		<Grid x:Name="tintGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+		<Grid x:Name="blurGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="GaussianBlurEffect"/>
+		<Grid x:Name="grayGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="GrayscaleEffect"/>
+		<Grid x:Name="invertGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="InvertEffect"/>
+		<Grid x:Name="hueGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="HueRotationEffect"/>
+		<Grid x:Name="aggregationGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="Blur-Grayscale Aggregation Test"/>
+		<Grid x:Name="tintGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="TintEffect"/>
+		<Grid x:Name="blendGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="BlendEffect"/>
+		<Grid x:Name="compositeGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="CompositeEffect"/>
+		<Grid x:Name="colorGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ColorSourceEffect"/>
+		<Grid x:Name="opacityGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="OpacityEffect"/>
 	</GridView>
 </UserControl>

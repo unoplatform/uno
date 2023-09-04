@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using ShimSkiaSharp;
+using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
@@ -79,6 +81,39 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush6 = factory6.CreateBrush();
 
 			tintGrid.Background = new EffectTesterBrush(effectBrush6);
+
+			var effect7 = new SimpleBlendEffect() { Background = new CompositionEffectSourceParameter("sourceBrush"), Foreground = new CompositionEffectSourceParameter("secondaryBrush"), Mode = D2D1BlendEffectMode.Color };
+			var factory7 = compositor.CreateEffectFactory(effect7);
+			var effectBrush7 = factory7.CreateBrush();
+
+			blendGrid.Background = new EffectTesterBrushWithSecondaryBrush(effectBrush7, compositor.CreateColorBrush(Colors.LightBlue));
+
+			var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Logo-winui.svg/200px-Logo-winui.svg.png"));
+			surface.LoadCompleted += (s, o) =>
+			{
+				if (o.Status == LoadedImageSourceLoadStatus.Success)
+				{
+					var brush = compositor.CreateSurfaceBrush(surface);
+
+					var effect8 = new SimpleCompositeEffect() { Sources = { new CompositionEffectSourceParameter("secondaryBrush"), new CompositionEffectSourceParameter("sourceBrush") }, Mode = D2D1CompositeMode.SourceOver };
+					var factory8 = compositor.CreateEffectFactory(effect8);
+					var effectBrush8 = factory8.CreateBrush();
+
+					compositeGrid.Background = new EffectTesterBrushWithSecondaryBrush(effectBrush8, brush);
+				}
+			};
+
+			var effect9 = new SimpleColorSourceEffect() { Color = Color.FromArgb(127, 66, 135, 245) };
+			var factory9 = compositor.CreateEffectFactory(effect9);
+			var effectBrush9 = factory9.CreateBrush();
+
+			colorGrid.Background = new EffectTesterBrush(effectBrush9);
+
+			var effect10 = new SimpleOpacityEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Opacity = 0.2f };
+			var factory10 = compositor.CreateEffectFactory(effect10);
+			var effectBrush10 = factory10.CreateBrush();
+
+			opacityGrid.Background = new EffectTesterBrush(effectBrush10);
 #endif
 		}
 
@@ -105,11 +140,36 @@ namespace UITests.Windows_UI_Composition
 			}
 		}
 
-#if WINDOWS_UWP // Making the sample buildable on UWP
-		private interface IGraphicsEffectD2D1Interop { }
-		private enum GraphicsEffectPropertyMapping { Direct, RadiansToDegrees, ColorToVector4 }
-#endif
+		private class EffectTesterBrushWithSecondaryBrush : XamlCompositionBrushBase
+		{
+			private CompositionEffectBrush _effectBrush;
+			private CompositionBrush _secondaryBrush;
 
+			public EffectTesterBrushWithSecondaryBrush(CompositionEffectBrush effectBrush, CompositionBrush secondaryBrush)
+			{
+				_effectBrush = effectBrush;
+				_secondaryBrush = secondaryBrush;
+			}
+
+			protected override void OnConnected()
+			{
+				var compositor = Window.Current.Compositor;
+				var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://avatars.githubusercontent.com/u/52228309?s=200&v=4"));
+				surface.LoadCompleted += (s, o) =>
+				{
+					if (o.Status == LoadedImageSourceLoadStatus.Success)
+					{
+						var brush = compositor.CreateSurfaceBrush(surface);
+
+						_effectBrush.SetSourceParameter("sourceBrush", brush);
+						_effectBrush.SetSourceParameter("secondaryBrush", _secondaryBrush);
+						CompositionBrush = _effectBrush;
+					}
+				};
+			}
+		}
+
+#if !WINDOWS_UWP
 		[Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5")]
 		private class SimpleBlurEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
 		{
@@ -289,7 +349,7 @@ namespace UITests.Windows_UI_Composition
 		[Guid("36312B17-F7DD-4014-915D-FFCA768CF211")]
 		private class SimpleTintEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
 		{
-			private string _name = "SimpleHueRotationEffect";
+			private string _name = "SimpleTintEffect";
 			private Guid _id = new Guid("36312B17-F7DD-4014-915D-FFCA768CF211");
 
 			public string Name
@@ -338,5 +398,222 @@ namespace UITests.Windows_UI_Composition
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}
+
+		[Guid("81C5B77B-13F8-4CDD-AD20-C890547AC65D")]
+		private class SimpleBlendEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleBlendEffect";
+			private Guid _id = new Guid("81C5B77B-13F8-4CDD-AD20-C890547AC65D");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public D2D1BlendEffectMode Mode { get; set; } = D2D1BlendEffectMode.Multiply;
+
+			public IGraphicsEffectSource Background { get; set; }
+
+			public IGraphicsEffectSource Foreground { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Mode":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Mode;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+
+			public IGraphicsEffectSource GetSource(uint index) => index is 0 ? Background : Foreground;
+
+			public uint GetSourceCount() => 2;
+		}
+
+		[Guid("48FC9F51-F6AC-48F1-8B58-3B28AC46F76D")]
+		private class SimpleCompositeEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleCompositeEffect";
+			private Guid _id = new Guid("48FC9F51-F6AC-48F1-8B58-3B28AC46F76D");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public D2D1CompositeMode Mode { get; set; } = D2D1CompositeMode.SourceOver;
+
+			public List<IGraphicsEffectSource> Sources { get; set; } = new();
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Mode":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Mode;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+
+			public IGraphicsEffectSource GetSource(uint index) => index < Sources.Count ? Sources[(int)index] : null;
+
+			public uint GetSourceCount() => (uint)Sources.Count;
+		}
+
+		[Guid("61C23C20-AE69-4D8E-94CF-50078DF638F2")]
+		private class SimpleColorSourceEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleColorSourceEffect";
+			private Guid _id = new Guid("61C23C20-AE69-4D8E-94CF-50078DF638F2");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public Color Color { get; set; } = Color.FromArgb(255, 255, 255, 255);
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Color":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.ColorToVector4;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Color;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => throw new InvalidOperationException();
+			public uint GetSourceCount() => 0;
+		}
+
+		[Guid("811D79A4-DE28-4454-8094-C64685F8BD4C")]
+		private class SimpleOpacityEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleOpacityEffect";
+			private Guid _id = new Guid("811D79A4-DE28-4454-8094-C64685F8BD4C");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Opacity { get; set; } = 1.0f;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Opacity":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Opacity;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+#endif
 	}
 }
