@@ -9,9 +9,12 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<StackPanel Orientation="Horizontal" Spacing="25">
+	<GridView SelectionMode="None" Padding="20">
 		<Grid x:Name="blurGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
 		<Grid x:Name="grayGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
 		<Grid x:Name="invertGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
-	</StackPanel>
+		<Grid x:Name="hueGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+		<Grid x:Name="aggregationGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+		<Grid x:Name="tintGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+	</GridView>
 </UserControl>
