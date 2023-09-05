@@ -254,6 +254,139 @@ partial class Shape
 		return size;
 	}
 
+	private protected (Size shapeSize, Rect renderingArea) ArrangeRelativeShape(Size finalSize)
+	{
+		var horizontal = HorizontalAlignment;
+		var vertical = VerticalAlignment;
+		var stretch = Stretch;
+		var userMinSize = new Size(MinWidth, MinHeight);
+		var userMaxSize = new Size(MaxWidth, MaxHeight);
+		var userSize = new Size(Width, Height);
+
+		var size = userSize;
+
+		// Like for the measure, if no user size defined on a given axis, we try to stretch along this axis
+		if (IsNaN(size.Width))
+		{
+			size.Width = stretch == Stretch.UniformToFill || HorizontalAlignment == HorizontalAlignment.Stretch
+				? finalSize.Width
+				: 0;
+		}
+		if (IsNaN(size.Height))
+		{
+			size.Height = stretch == Stretch.UniformToFill || VerticalAlignment == VerticalAlignment.Stretch
+				? finalSize.Height
+				: 0;
+		}
+
+		// Like for the measure, in case userSize was not defined, we still have to apply the min size
+		size = size
+			.AtLeast(userMinSize)
+			.NumberOrDefault(userMinSize);
+
+		// The area that will be used to render the rectangle/ellipse as path
+		var renderingArea = new Rect(new Point(), size);
+
+		// Apply the stretch mode, as it might change the "shape" of a "relative shape"
+		switch (stretch)
+		{
+			case Stretch.None:
+				renderingArea.Height = renderingArea.Width = 0;
+				break;
+
+			default:
+			case Stretch.Fill:
+				// size is already valid ... nothing to do!
+				break;
+
+			case Stretch.Uniform when renderingArea.Width < renderingArea.Height:
+				renderingArea.Height = renderingArea.Width;
+				break;
+
+			case Stretch.Uniform: // when pathArea.Width >= pathArea.Height:
+				renderingArea.Width = renderingArea.Height;
+				break;
+
+			case Stretch.UniformToFill when renderingArea.Width < renderingArea.Height:
+				renderingArea.Width = renderingArea.Height;
+				break;
+
+			case Stretch.UniformToFill: // when pathArea.Width >= pathArea.Height:
+				renderingArea.Height = renderingArea.Width;
+				break;
+		}
+
+		// The path will be injected as a Layer, so we also have to apply the horizontal and vertical alignments
+		// Note: We have to make this adjustment only if the shape is overflowing the container bounds,
+		//		 otherwise the alignment will be correctly applied by the container.
+		(bool horizontally, bool vertically) shouldAlign;
+		switch (stretch)
+		{
+			case Stretch.UniformToFill:
+				userSize = userSize
+					.NumberOrDefault(userMaxSize)
+					.AtLeast(userMinSize);
+
+				// By default we align if UniformToFill, EXCEPT if the the userSize (or max, lowered by min) is lower than the finalSize
+				// For reference, it's almost equivalent to:
+				// var horizontally = IsNaN(userSize.Width) || (!IsInfinity(userSize.Width) && userSize.Width > finalSize.Width) || userMinSize.Width > 0;
+				// shouldAlign = (horizontally || vertically, horizontally || vertically);
+				var notHorizontally = userSize.Width <= finalSize.Width;
+				var notVertically = userSize.Height <= finalSize.Height;
+
+				shouldAlign = (!notHorizontally && !notVertically, !notHorizontally && !notVertically);
+				break;
+
+			default:
+				// WinUI does not adjust alignment if the shape was smaller than the finalSize
+				shouldAlign = (userSize.Width > finalSize.Width, userSize.Height > finalSize.Height);
+				break;
+		}
+
+
+		var alignmentWidth = Math.Max(size.Width, renderingArea.Width);
+		var horizontalOverflow = alignmentWidth - finalSize.Width;
+		if (horizontalOverflow > 0 && shouldAlign.horizontally)
+		{
+			switch (horizontal)
+			{
+				case HorizontalAlignment.Center:
+					renderingArea.X -= horizontalOverflow / 2.0;
+					break;
+
+				case HorizontalAlignment.Right:
+					renderingArea.X -= horizontalOverflow;
+					break;
+			}
+		}
+		var alignmentHeight = Math.Max(size.Height, renderingArea.Height);
+		var verticalOverflow = alignmentHeight - finalSize.Height;
+		if (verticalOverflow > 0 && shouldAlign.vertically)
+		{
+			switch (vertical)
+			{
+				case VerticalAlignment.Center:
+					renderingArea.Y -= verticalOverflow / 2.0;
+					break;
+
+				case VerticalAlignment.Bottom:
+					renderingArea.Y -= verticalOverflow;
+					break;
+			}
+		}
+
+		size = LayoutRound(size);
+		renderingArea = LayoutRound(renderingArea);
+
+		var twoHalfStrokeThickness = ActualStrokeThickness;
+		var halfStrokeThickness = twoHalfStrokeThickness / 2.0;
+		renderingArea.X += halfStrokeThickness;
+		renderingArea.Y += halfStrokeThickness;
+		renderingArea.Width -= twoHalfStrokeThickness;
+		renderingArea.Height -= twoHalfStrokeThickness;
+
+		return (size, renderingArea);
+	}
 	#region Helper methods
 
 	private
