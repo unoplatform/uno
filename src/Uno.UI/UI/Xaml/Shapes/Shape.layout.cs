@@ -246,7 +246,7 @@ namespace Windows.UI.Xaml.Shapes
 				return default;
 			}
 
-			// Workaround until https://github.com/unoplatform/uno/pull/13391 is merged.
+			// Workaround. This should be happening by FrameworkElement.
 			availableSize = availableSize.AtLeast(this.GetMinMax().min);
 
 			// Compute the final size of the Shape and the render properties
@@ -357,121 +357,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			return size;
 		}
-
-		private protected Size ArrangeAbsoluteShape(Size finalSize, NativePath? path, FillRule fillRule = FillRule.EvenOdd)
-		{
-			if (path! == null!)
-			{
-				Render(null);
-				return default;
-			}
-
-			var stretch = Stretch;
-			var stroke = Stroke;
-			var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
-			var pathBounds = GetPathBoundingBox(path); // The BoundingBox shouldn't include the control points.
-			var pathSize = (Size)pathBounds.Size;
-
-			if (NativeSingle.IsInfinity(pathBounds.Right) || NativeSingle.IsInfinity(pathBounds.Bottom))
-			{
-				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug($"Ignoring path with invalid bounds {pathBounds}");
-				}
-
-				return default;
-			}
-
-			GetStretchMetrics(stretch, strokeThickness, finalSize, pathBounds, out var xScale, out var yScale, out var dX, out var dY, out var stretchedSize);
-
-#if __IOS__ || __MACOS__
-			// Finally render the shape in a Layer
-			var renderTransform = new CoreGraphics.CGAffineTransform(
-				(nfloat)xScale, 0,
-				0, (nfloat)yScale,
-				(nfloat)dX, (nfloat)dY);
-
-			var renderPath = new CoreGraphics.CGPath(path, renderTransform);
-
-			Render(renderPath, fillRule);
-#elif __SKIA__
-			Render(path, xScale, yScale, dX, dY);
-#elif __ANDROID__ || __WASM__
-			Render(path, stretchedSize, xScale, yScale, dX, dY);
-#endif
-
-			return stretchedSize;
-		}
-		#endregion
-
-		#region Helper methods
-
-		// NOTE: The logic is mostly from https://github.com/dotnet/wpf/blob/2ff355a607d79eef5fea7796de1f29cf9ea4fbed/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Shapes/Shape.cs
-		// But with few adjustments to match UWP.
-		internal void GetStretchMetrics(Stretch mode, double strokeThickness, Size availableSize, Rect geometryBounds,
-			out double xScale, out double yScale, out double dX, out double dY, out Size stretchedSize)
-		{
-			if (mode == Stretch.None)
-			{
-				xScale = 1;
-				yScale = 1;
-				dX = 0;
-				dY = 0;
-				stretchedSize = availableSize;
-				return;
-			}
-
-			if (!geometryBounds.IsEmpty)
-			{
-				double margin = strokeThickness / 2;
-
-				xScale = Math.Max(availableSize.Width - strokeThickness, 0);
-				yScale = Math.Max(availableSize.Height - strokeThickness, 0);
-
-				if (geometryBounds.Width > xScale * Double.Epsilon)
-				{
-					xScale /= geometryBounds.Width;
-				}
-				else
-				{
-					xScale = 1;
-				}
-
-				if (geometryBounds.Height > yScale * Double.Epsilon)
-				{
-					yScale /= geometryBounds.Height;
-				}
-				else
-				{
-					yScale = 1;
-				}
-
-				if (mode == Stretch.Uniform)
-				{
-					var uniformScale = Math.Min(xScale, yScale);
-					xScale = yScale = uniformScale;
-				}
-				else if (mode == Stretch.UniformToFill)
-				{
-					var uniformScale = Math.Max(xScale, yScale);
-					xScale = yScale = uniformScale;
-				}
-
-				dX = margin - geometryBounds.Left * xScale;
-				dY = margin - geometryBounds.Top * yScale;
-
-				stretchedSize = new Size(
-					geometryBounds.Width * xScale + strokeThickness, geometryBounds.Height * yScale + strokeThickness);
-			}
-			else
-			{
-				xScale = yScale = 1;
-				dX = dY = 0;
-				stretchedSize = new Size(0, 0);
-			}
-		}
-
-
 		#endregion
 	}
 }
