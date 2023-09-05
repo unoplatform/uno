@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit c50eb27
+// MUX Reference NavigationView.cpp, commit 9f7c129
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -14,10 +14,10 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.DataBinding;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.UI.Composition;
@@ -1402,96 +1402,108 @@ public partial class NavigationView : ContentControl
 				nvi.PropagateDepthToChildren(childDepth);
 
 				SetNavigationViewItemRevokers(nvi);
-			}
+
+				var item = MenuItemFromContainer(nvi);
+
+				if (SelectedItem == item && IsVisible(nvi))
+				{
+					if (m_isSelectionChangedPending && m_pendingSelectionChangedItem is not null)
+					{
+						MUX_ASSERT(m_pendingSelectionChangedItem == item);
+					}
+
+					nvi.LayoutUpdated += OnSelectedItemLayoutUpdated;
+					m_selectedItemLayoutUpdatedRevoker.Disposable = Disposable.Create(() => nvi.LayoutUpdated -= OnSelectedItemLayoutUpdated);
+				}
 
 #if IS_UNO
-			// TODO: Uno specific - remove when #4689 is fixed
-			// This ensures the item is properly initialized and the selected item is displayed
-			nvibImpl.Reinitialize();
-			if (SelectedItem != null && m_activeIndicator == null)
-			{
-				AnimateSelectionChanged(SelectedItem);
-			}
-#endif
-		}
-	}
-
-	private void ApplyCustomMenuItemContainerStyling(NavigationViewItemBase nvib, ItemsRepeater ir, int index)
-	{
-		var menuItemContainerStyle = MenuItemContainerStyle;
-		var menuItemContainerStyleSelector = MenuItemContainerStyleSelector;
-		if (menuItemContainerStyle != null)
-		{
-			nvib.Style = menuItemContainerStyle;
-		}
-		else if (menuItemContainerStyleSelector != null)
-		{
-			var itemsSourceView = ir.ItemsSourceView;
-			if (itemsSourceView != null)
-			{
-				var item = itemsSourceView.GetAt(index);
-				if (item != null)
+				// TODO: Uno specific - remove when #4689 is fixed
+				// This ensures the item is properly initialized and the selected item is displayed
+				nvibImpl.Reinitialize();
+				if (SelectedItem != null && m_activeIndicator == null)
 				{
-					var selectedStyle = menuItemContainerStyleSelector.SelectStyle(item, nvib);
-					if (selectedStyle != null)
+					AnimateSelectionChanged(SelectedItem);
+				}
+#endif
+			}
+		}
+
+		private void ApplyCustomMenuItemContainerStyling(NavigationViewItemBase nvib, ItemsRepeater ir, int index)
+		{
+			var menuItemContainerStyle = MenuItemContainerStyle;
+			var menuItemContainerStyleSelector = MenuItemContainerStyleSelector;
+			if (menuItemContainerStyle != null)
+			{
+				nvib.Style = menuItemContainerStyle;
+			}
+			else if (menuItemContainerStyleSelector != null)
+			{
+				var itemsSourceView = ir.ItemsSourceView;
+				if (itemsSourceView != null)
+				{
+					var item = itemsSourceView.GetAt(index);
+					if (item != null)
 					{
-						nvib.Style = selectedStyle;
+						var selectedStyle = menuItemContainerStyleSelector.SelectStyle(item, nvib);
+						if (selectedStyle != null)
+						{
+							nvib.Style = selectedStyle;
+						}
 					}
 				}
 			}
 		}
-	}
 
-	internal void OnRepeaterElementClearing(ItemsRepeater ir, ItemsRepeaterElementClearingEventArgs args)
-	{
-		if (args.Element is NavigationViewItemBase nvib)
+		internal void OnRepeaterElementClearing(ItemsRepeater ir, ItemsRepeaterElementClearingEventArgs args)
 		{
-			var nvibImpl = nvib;
-			nvibImpl.Depth = 0;
-			nvibImpl.IsTopLevelItem = false;
-			if (nvib is NavigationViewItem nvi)
+			if (args.Element is NavigationViewItemBase nvib)
 			{
-				// Revoke all the events that we were listing to on the item
-				ClearNavigationViewItemRevokers(nvi);
+				var nvibImpl = nvib;
+				nvibImpl.Depth = 0;
+				nvibImpl.IsTopLevelItem = false;
+				if (nvib is NavigationViewItem nvi)
+				{
+					// Revoke all the events that we were listing to on the item
+					ClearNavigationViewItemRevokers(nvi);
+				}
 			}
 		}
-	}
 
-	// Hook up the Settings Item Invoked event listener
-	private void CreateAndHookEventsToSettings()
-	{
-		if (m_settingsItem == null)
+		// Hook up the Settings Item Invoked event listener
+		private void CreateAndHookEventsToSettings()
 		{
-			return;
+			if (m_settingsItem == null)
+			{
+				return;
+			}
+
+			var settingsItem = m_settingsItem;
+			var settingsIcon = new AnimatedIcon();
+			settingsIcon.Source = new AnimatedSettingsVisualSource();
+			var settingsFallbackIcon = new SymbolIconSource();
+			settingsFallbackIcon.Symbol = Symbol.Setting;
+			settingsIcon.FallbackIconSource = settingsFallbackIcon;
+			settingsItem.Icon = settingsIcon;
+
+			// Do localization for settings item label and Automation Name
+			var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
+			AutomationProperties.SetName(settingsItem, localizedSettingsName);
+			settingsItem.Tag = c_settingsItemTag;
+			UpdateSettingsItemToolTip();
+
+			// Add the name only in case of horizontal nav
+			if (!IsTopNavigationView())
+			{
+				settingsItem.Content = localizedSettingsName;
+			}
+			else
+			{
+				settingsItem.Content = null;
+			}
+
+			// hook up SettingsItem
+			SetValue(SettingsItemProperty, settingsItem);
 		}
-
-		var settingsItem = m_settingsItem;
-		var settingsIcon = new AnimatedIcon();
-		settingsIcon.Source = new AnimatedSettingsVisualSource();
-		var settingsFallbackIcon = new SymbolIconSource();
-		settingsFallbackIcon.Symbol = Symbol.Setting;
-		settingsIcon.FallbackIconSource = settingsFallbackIcon;
-		settingsItem.Icon = settingsIcon;
-
-		// Do localization for settings item label and Automation Name
-		var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
-		AutomationProperties.SetName(settingsItem, localizedSettingsName);
-		settingsItem.Tag = c_settingsItemTag;
-		UpdateSettingsItemToolTip();
-
-		// Add the name only in case of horizontal nav
-		if (!IsTopNavigationView())
-		{
-			settingsItem.Content = localizedSettingsName;
-		}
-		else
-		{
-			settingsItem.Content = null;
-		}
-
-		// hook up SettingsItem
-		SetValue(SettingsItemProperty, settingsItem);
-	}
 
 	protected override Size MeasureOverride(Size availableSize)
 	{
@@ -2355,7 +2367,7 @@ public partial class NavigationView : ContentControl
 				OnAnimationComplete(null, null);
 #endif
 			}
-			else
+			else if (prevIndicator != nextIndicator)
 			{
 				// if all else fails, or if animations are turned off, attempt to correctly set the positions and opacities of the indicators.
 				ResetElementAnimationProperties(prevIndicator, 0.0f);
@@ -2553,6 +2565,7 @@ public partial class NavigationView : ContentControl
 					// Indicator was not found, so maybe the layout hasn't updated yet.
 					// So let's do that now.
 					container.UpdateLayout();
+					container.ApplyTemplate();
 					return container.GetSelectionIndicator();
 				}
 			}
@@ -2565,10 +2578,17 @@ public partial class NavigationView : ContentControl
 		var eventArgs = new NavigationViewSelectionChangedEventArgs();
 		eventArgs.SelectedItem = nextItem;
 		eventArgs.IsSettingsSelected = isSettingsItem;
-		var container = NavigationViewItemBaseOrSettingsContentFromData(nextItem);
-		if (container != null)
+		if (nextItem is not null)
 		{
-			eventArgs.SelectedItemContainer = container;
+			if (NavigationViewItemBaseOrSettingsContentFromData(nextItem) is { } container)
+			{
+				eventArgs.SelectedItemContainer = container;
+			}
+			else if (container = GetContainerForIndexPath(m_selectionModel.SelectedIndex, false /* lastVisible */, true /* forceRealize */))
+			{
+				MUX_ASSERT(MenuItemFromContainer(container) == nextItem);
+				eventArgs.SelectedItemContainer = container;
+			}
 		}
 		eventArgs.RecommendedNavigationTransitionInfo = CreateNavigationTransitionInfo(recommendedDirection);
 		SelectionChanged?.Invoke(this, eventArgs);
@@ -2628,43 +2648,95 @@ public partial class NavigationView : ContentControl
 			}
 			UnselectPrevItem(prevItem, nextItem);
 			ChangeSelectStatusForItem(nextItem, true /*selected*/);
+			IndexPath indexPath = null;
 
+			if (NavigationViewItemBaseOrSettingsContentFromData(nextItem) is { } container)
 			{
-				try
+				indexPath = GetIndexPathForContainer(container);
+			}
+			else
+			{
+				indexPath = GetIndexPathOfItem(nextItem);
+			}
+
+			if (indexPath is not null && indexPath.GetSize() > 0)
+			{
+				// The SelectedItem property has already been updated. So we want to block any logic from executing
+				// in the SelectionModel selection changed callback.
+				using var scopeGuard = Disposable.Create(() => m_shouldIgnoreNextSelectionChange = false);
+				m_shouldIgnoreNextSelectionChange = true;
+				UpdateSelectionModelSelection(indexPath);
+			}
+
+			using (_ = Disposable.Create(() => m_shouldIgnoreUIASelectionRaiseAsExpandCollapseWillRaise = false))
+			{
+				// Selection changed and we need to notify UIA
+				// HOWEVER expand collapse can also trigger if an item can expand/collapse
+				// There are multiple cases when selection changes:
+				// - Through click on item with no children . No expand/collapse change
+				// - Through click on item with children . Expand/collapse change
+				// - Through API with item without children . No expand/collapse change
+				// - Through API with item with children . No expand/collapse change
+				if (!m_shouldIgnoreUIASelectionRaiseAsExpandCollapseWillRaise)
 				{
-					// Selection changed and we need to notify UIA
-					// HOWEVER expand collapse can also trigger if an item can expand/collapse
-					// There are multiple cases when selection changes:
-					// - Through click on item with no children . No expand/collapse change
-					// - Through click on item with children . Expand/collapse change
-					// - Through API with item without children . No expand/collapse change
-					// - Through API with item with children . No expand/collapse change
-					if (!m_shouldIgnoreUIASelectionRaiseAsExpandCollapseWillRaise)
+					AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
+					if (peer != null)
 					{
-						AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
-						if (peer != null)
-						{
-							var navViewItemPeer = (NavigationViewAutomationPeer)peer;
-							navViewItemPeer.RaiseSelectionChangedEvent(
-								prevItem, nextItem
-							);
-						}
+						var navViewItemPeer = (NavigationViewAutomationPeer)peer;
+						navViewItemPeer.RaiseSelectionChangedEvent(
+							prevItem, nextItem
+						);
 					}
 				}
-				finally
-				{
-					m_shouldIgnoreUIASelectionRaiseAsExpandCollapseWillRaise = false;
-				}
 			}
 
-			RaiseSelectionChangedEvent(nextItem, isSettingsItem, recommendedDirection);
-			AnimateSelectionChanged(nextItem);
-
-			var nvi = NavigationViewItemOrSettingsContentFromData(nextItem);
-			if (nvi != null)
+			// If this item has an associated container, we'll raise the SelectionChanged event on it immediately.
+			if (NavigationViewItemOrSettingsContentFromData(nextItem) is { } nvi)
 			{
+				AnimateSelectionChanged(nvi);
+				RaiseSelectionChangedEvent(nextItem, isSettingsItem, recommendedDirection);
 				ClosePaneIfNeccessaryAfterItemIsClicked(nvi);
 			}
+			else
+			{
+				// Otherwise, we'll wait until a container gets realized for this item and raise it then.
+				m_isSelectionChangedPending = true;
+				m_pendingSelectionChangedItem = nextItem;
+				m_pendingSelectionChangedDirection = recommendedDirection;
+
+				var weakThis = WeakReferencePool.RentSelfWeakReference(this);
+				Action completePendingSelectionChange = () =>
+				{
+					if (weakThis.IsAlive && weakThis.Target is NavigationView strongThis)
+					{
+						strongThis.CompletePendingSelectionChange();
+					}
+				};
+
+				SharedHelpers.ScheduleActionAfterWait(completePendingSelectionChange, 100);
+			}
+		}
+	}
+
+	private void CompletePendingSelectionChange()
+	{
+		// It may be the case that this item is in a collapsed repeater, in which case
+		// no container will be realized for it.  We'll assume that this this is the case
+		// if the UI thread has fallen idle without any SelectionChanged being raised.
+		// In this case, we'll raise the SelectionChanged at that time, as otherwise it'll never be raised.
+		if (m_isSelectionChangedPending)
+		{
+			AnimateSelectionChanged(FindLowestLevelContainerToDisplaySelectionIndicator());
+
+			m_isSelectionChangedPending = false;
+
+			var item = m_pendingSelectionChangedItem;
+			var direction = m_pendingSelectionChangedDirection;
+
+			m_pendingSelectionChangedItem = null;
+			m_pendingSelectionChangedDirection = NavigationRecommendedTransitionDirection.Default;
+
+			RaiseSelectionChangedEvent(item, IsSettingsItem(item), direction);
 		}
 	}
 
@@ -5461,6 +5533,11 @@ public partial class NavigationView : ContentControl
 							}
 						}
 					}
+					else
+					{
+						// We found an unrealized child, so we'll want to manually realize and search if we don't find the item.
+						areChildrenRealized = false;
+					}
 				}
 			}
 		}
@@ -5681,7 +5758,7 @@ public partial class NavigationView : ContentControl
 		return null;
 	}
 
-	private NavigationViewItemBase GetContainerForIndexPath(IndexPath ip, bool lastVisible = false)
+	private NavigationViewItemBase GetContainerForIndexPath(IndexPath ip, bool lastVisible = false, bool forceRealize = false)
 	{
 		if (ip != null && ip.GetSize() > 0)
 		{
@@ -5704,14 +5781,14 @@ public partial class NavigationView : ContentControl
 				// This will return null if requesting children containers of
 				// items in the primary list, or unrealized items in the overflow popup.
 				// However this should not happen.
-				return GetContainerForIndexPath(container, ip, lastVisible);
+				return GetContainerForIndexPath(container, ip, lastVisible, forceRealize);
 			}
 		}
 		return null;
 	}
 
 
-	private NavigationViewItemBase GetContainerForIndexPath(UIElement firstContainer, IndexPath ip, bool lastVisible)
+	private NavigationViewItemBase GetContainerForIndexPath(UIElement firstContainer, IndexPath ip, bool lastVisible, bool forceRealize = false)
 	{
 		var container = firstContainer;
 		if (ip.GetSize() > 2)
@@ -5729,8 +5806,8 @@ public partial class NavigationView : ContentControl
 					var nviRepeater = nvi.GetRepeater();
 					if (nviRepeater != null)
 					{
-						var nextContainer = nviRepeater.TryGetElement(ip.GetAt(i));
-						if (nextContainer != null)
+						var index = ip.GetAt(i);
+						if ((forceRealize ? nviRepeater.GetOrCreateElement(index) : nviRepeater.TryGetElement(index)) is { } nextContainer)
 						{
 							container = nextContainer;
 							succeededGettingNextContainer = true;
@@ -6063,27 +6140,51 @@ public partial class NavigationView : ContentControl
 		return IsRootItemsRepeater(GetParentItemsRepeaterForContainer(nvib));
 	}
 
-	#region Uno specific
-
-	//TODO: Uno specific - remove when #4689 is fixed
-
-	private void OnRepeaterUnoBeforeElementPrepared(ItemsRepeater itemsRepeater, ItemsRepeaterElementPreparedEventArgs args) =>
-		OnRepeaterElementPrepared(itemsRepeater, args);
-
-	//TODO: Uno specific - remove when #4727 is fixed
-
-	private Grid m_paneHeaderContentBorderWrapper;
-
-	private void SetHeaderContentMinHeight(double minHeight)
+	private bool IsVisible(DependencyObject obj)
 	{
-		m_paneHeaderContentBorderWrapper ??= GetTemplateChild("PaneHeaderContentBorderWrapper") as Grid;
-		if (m_paneHeaderContentBorderWrapper != null)
+		// We'll go up the visual tree until we find this NavigationView.
+		// If everything up the tree was visible, then this object was visible.
+		DependencyObject current = obj;
+		NavigationView navView = this;
+
+		while (current is not null && current != navView)
 		{
-			m_paneHeaderContentBorderWrapper.MinHeight = minHeight;
+			if (current is UIElement currentAsUIE)
+			{
+				if (currentAsUIE.Visibility != Visibility.Visible)
+				{
+					return false;
+				}
+			}
+
+			current = VisualTreeHelper.GetParent(current);
 		}
+
+		// If we found this NavigationView, then this is both in the visual tree and visible.
+		// Otherwise, it's not in the visual tree, and thus is not visible.
+		return current == navView;
 	}
 
-	private bool IsThemeShadowSupported() => ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
+	private void OnSelectedItemLayoutUpdated(object sender, object args)
+	{
+		if (m_isSelectionChangedPending)
+		{
+			m_isSelectionChangedPending = false;
 
-	#endregion
+			var item = m_pendingSelectionChangedItem;
+			var direction = m_pendingSelectionChangedDirection;
+
+			m_pendingSelectionChangedItem = null;
+			m_pendingSelectionChangedDirection = NavigationRecommendedTransitionDirection.Default;
+
+			m_selectedItemLayoutUpdatedRevoker.Disposable = null;
+
+			if (NavigationViewItemOrSettingsContentFromData(item) is { } nvi)
+			{
+				AnimateSelectionChanged(nvi);
+			}
+
+			RaiseSelectionChangedEvent(item, IsSettingsItem(item), direction);
+		}
+	}
 }

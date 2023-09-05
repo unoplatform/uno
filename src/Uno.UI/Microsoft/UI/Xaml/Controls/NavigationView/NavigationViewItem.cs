@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit 18a981d
+// MUX reference NavigationViewItem.cpp, commit 9f7c129
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -220,6 +220,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		{
 			PrepNavigationViewItem(splitView);
 		}
+
+		UpdateVisualStateForChevron();
 	}
 
 	private void UpdateRepeaterItemsSource()
@@ -821,6 +823,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		if (m_navigationViewItemPresenter != null)
 		{
 			presenter = m_navigationViewItemPresenter;
+			presenter.ApplyTemplate();
 		}
 		return presenter;
 	}
