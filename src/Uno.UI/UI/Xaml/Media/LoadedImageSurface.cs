@@ -1,4 +1,6 @@
 ﻿#nullable enable
+#pragma warning disable 649 // Field is never assigned to
+#pragma warning disable 67 // The event is never used
 
 using System;
 using Windows.Foundation;

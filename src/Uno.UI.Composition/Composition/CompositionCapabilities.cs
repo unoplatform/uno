@@ -1,4 +1,5 @@
 ﻿#nullable enable
+#pragma warning disable 67 // The event is never used
 
 using System;
 using System.Collections.Generic;
