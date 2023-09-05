@@ -2581,11 +2581,11 @@ public partial class NavigationView : ContentControl
 		eventArgs.IsSettingsSelected = isSettingsItem;
 		if (nextItem is not null)
 		{
-			if (NavigationViewItemBaseOrSettingsContentFromData(nextItem) is { } container)
+			if (NavigationViewItemBaseOrSettingsContentFromData(nextItem) is { } fromDataContainer)
 			{
-				eventArgs.SelectedItemContainer = container;
+				eventArgs.SelectedItemContainer = fromDataContainer;
 			}
-			else if (container = GetContainerForIndexPath(m_selectionModel.SelectedIndex, false /* lastVisible */, true /* forceRealize */))
+			else if (GetContainerForIndexPath(m_selectionModel.SelectedIndex, false /* lastVisible */, true /* forceRealize */) is { } container)
 			{
 				MUX_ASSERT(MenuItemFromContainer(container) == nextItem);
 				eventArgs.SelectedItemContainer = container;

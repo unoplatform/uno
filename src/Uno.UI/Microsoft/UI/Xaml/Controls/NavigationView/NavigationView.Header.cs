@@ -212,7 +212,7 @@ public partial class NavigationView
 
 	private bool m_isLeftPaneTitleEmpty;
 
-	private double m_OpenPaneLength = 320.0;
+	private double m_openPaneLength = 320.0;
 
 	#region Uno specific
 
