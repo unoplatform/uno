@@ -330,7 +330,12 @@ namespace Windows.UI.Xaml.Controls
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
 
-			var collection = new [] { _headerContentControl, _itemsPanel, _footerContentControl };
+			var collection = new[]
+			{
+				_headerContentControl,
+				_itemsPanel,
+				_footerContentControl
+			};
 
 			for (var i = 0; i < 3; i++)
 			{
@@ -389,7 +394,12 @@ namespace Windows.UI.Xaml.Controls
 
 			var desiredSize = default(Size);
 
-			var collection = new [] { _headerContentControl, _itemsPanel, _footerContentControl };
+			var collection = new[]
+			{
+				_headerContentControl,
+				_itemsPanel,
+				_footerContentControl
+			};
 
 			for (var i = 0; i < 3; i++)
 			{

@@ -49,9 +49,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
 
-			TestServices.WindowHelper.WindowContent = SUT;
-			await TestServices.WindowHelper.WaitForLoaded(SUT);
-			await TestServices.WindowHelper.WaitForIdle();
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
 
 			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
 			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
