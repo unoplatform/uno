@@ -60,6 +60,44 @@ partial class Shape
 		return stretchedSize;
 	}
 
+	private protected (Size shapeSize, Rect renderingArea) ArrangeRelativeShape(Size finalSize)
+	{
+		var stroke = Stroke;
+		var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
+		var halfStrokeThickness = strokeThickness / 2;
+		var renderingArea = new Rect(halfStrokeThickness, halfStrokeThickness, Math.Max(0, finalSize.Width - strokeThickness), Math.Max(0, finalSize.Height - strokeThickness));
+		switch (Stretch)
+		{
+			case Stretch.None:
+				renderingArea.Height = renderingArea.Width = 0;
+				break;
+			case Stretch.Fill:
+				// size is already valid ... nothing to do!
+				break;
+			case Stretch.Uniform:
+				if (renderingArea.Width > renderingArea.Height)
+				{
+					renderingArea.Width = renderingArea.Height;
+				}
+				else
+				{
+					renderingArea.Height = renderingArea.Width;
+				}
+				break;
+			case Stretch.UniformToFill:
+				if (renderingArea.Width < renderingArea.Height)
+				{
+					renderingArea.Width = renderingArea.Height;
+				}
+				else
+				{
+					renderingArea.Height = renderingArea.Width;
+				}
+				break;
+		}
+
+		return (finalSize, renderingArea);
+	}
 	#region Helper methods
 
 	// NOTE: The logic is mostly from https://github.com/dotnet/wpf/blob/2ff355a607d79eef5fea7796de1f29cf9ea4fbed/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/Shapes/Shape.cs
