@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 3ac8fc1
+// MUX Reference NavigationView.cpp, commit 05a0b06
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -59,6 +59,7 @@ public partial class NavigationView : ContentControl
 	private const string c_navViewCloseButtonToolTip = "NavigationViewCloseButtonToolTip";
 	private const string c_paneShadowReceiverCanvas = "PaneShadowReceiver";
 	private const string c_flyoutRootGrid = "FlyoutRootGrid";
+	private const string c_settingsItemTag = "Settings";
 
 	// DisplayMode Top specific items
 	private const string c_topNavMenuItemsHost = "TopNavMenuItemsHost";
@@ -1474,7 +1475,7 @@ public partial class NavigationView : ContentControl
 		// Do localization for settings item label and Automation Name
 		var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
 		AutomationProperties.SetName(settingsItem, localizedSettingsName);
-		settingsItem.Tag = localizedSettingsName;
+		settingsItem.Tag = c_settingsItemTag;
 		UpdateSettingsItemToolTip();
 
 		// Add the name only in case of horizontal nav
