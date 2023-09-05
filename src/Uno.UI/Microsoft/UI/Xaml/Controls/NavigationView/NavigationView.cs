@@ -1546,21 +1546,21 @@ public partial class NavigationView : ContentControl
 	private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 	{
 		var width = args.NewSize.Width;
-		UpdateOpenPaneWidth(width);
+		UpdateOpenPaneLength(width);
 		UpdateAdaptiveLayout(width);
 		UpdateTitleBarPadding();
 		UpdateBackAndCloseButtonsVisibility();
 		UpdatePaneLayout();
 	}
 
-	private void UpdateOpenPaneWidth(double width)
+	private void UpdateOpenPaneLength(double width)
 	{
 		if (!IsTopNavigationView() && m_rootSplitView != null)
 		{
-			m_openPaneWidth = Math.Max(0.0, Math.Min(width, OpenPaneLength));
+			m_openPaneLength = Math.Max(0.0, Math.Min(width, OpenPaneLength));
 
 			var templateSettings = GetTemplateSettings();
-			templateSettings.OpenPaneWidth = m_openPaneWidth;
+			templateSettings.OpenPaneLength = m_openPaneLength;
 		}
 	}
 
@@ -4392,7 +4392,7 @@ public partial class NavigationView : ContentControl
 		}
 		else if (property == OpenPaneLengthProperty)
 		{
-			UpdateOpenPaneWidth(ActualWidth);
+			UpdateOpenPaneLength(ActualWidth);
 		}
 	}
 
@@ -4771,13 +4771,13 @@ public partial class NavigationView : ContentControl
 				{
 					if (splitView.DisplayMode == SplitViewDisplayMode.Overlay && IsPaneOpen)
 					{
-						width = m_openPaneWidth;
-						togglePaneButtonWidth = m_openPaneWidth - ((ShouldShowBackButton() || ShouldShowCloseButton()) ? c_backButtonWidth : 0);
+						width = m_openPaneLength;
+						togglePaneButtonWidth = m_openPaneLength - ((ShouldShowBackButton() || ShouldShowCloseButton()) ? c_backButtonWidth : 0);
 					}
 					else if (!(splitView.DisplayMode == SplitViewDisplayMode.Overlay && !IsPaneOpen))
 					{
-						width = m_openPaneWidth;
-						togglePaneButtonWidth = m_openPaneWidth;
+						width = m_openPaneLength;
+						togglePaneButtonWidth = m_openPaneLength;
 					}
 				}
 
@@ -5285,11 +5285,11 @@ public partial class NavigationView : ContentControl
 			// Ensure shadow is as wide as the pane when it is open
 			if (DisplayMode == NavigationViewDisplayMode.Compact)
 			{
-				shadowReceiver.Width = m_openPaneWidth;
+				shadowReceiver.Width = m_openPaneLength;
 			}
 			else
 			{
-				shadowReceiver.Width = m_openPaneWidth - shadowReceiverMargin.Right;
+				shadowReceiver.Width = m_openPaneLength - shadowReceiverMargin.Right;
 			}
 			shadowReceiver.Margin(shadowReceiverMargin);
 		}

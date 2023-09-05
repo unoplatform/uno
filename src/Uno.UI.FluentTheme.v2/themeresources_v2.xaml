@@ -17979,7 +17979,7 @@
                 <Border x:Name="TopNavContentOverlayAreaGrid" Child="{TemplateBinding ContentOverlay}" />
               </StackPanel>
               <!-- Displaymode (compact/minimal/normal) left -->
-              <SplitView x:Name="RootSplitView" Background="{TemplateBinding Background}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" BorderThickness="{ThemeResource NavigationViewBorderThickness}" CompactPaneLength="{TemplateBinding CompactPaneLength}" DisplayMode="Inline" IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}" IsTabStop="False" OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}" PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}" Grid.Row="1" contract7Present:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
+              <SplitView x:Name="RootSplitView" Background="{TemplateBinding Background}" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" BorderThickness="{ThemeResource NavigationViewBorderThickness}" CompactPaneLength="{TemplateBinding CompactPaneLength}" DisplayMode="Inline" IsPaneOpen="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=IsPaneOpen, Mode=TwoWay}" IsTabStop="False" OpenPaneLength="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" PaneBackground="{ThemeResource NavigationViewDefaultPaneBackground}" Grid.Row="1" contract7Present:CornerRadius="{Binding Source={ThemeResource OverlayCornerRadius}, Converter={StaticResource RightCornerRadiusFilterConverter}}">
                 <SplitView.Pane>
                   <Grid x:Name="PaneContentGrid" BorderBrush="{ThemeResource NavigationViewItemSeparatorForeground}" HorizontalAlignment="Left" Margin="{ThemeResource NavigationViewPaneContentGridMargin}" Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.LeftPaneVisibility}">
                     <Grid.RowDefinitions>
@@ -18096,7 +18096,7 @@
                   </Grid>
                 </SplitView.Content>
               </SplitView>
-              <Grid x:Name="ShadowCaster" Grid.RowSpan="2" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneWidth}" HorizontalAlignment="Left">
+              <Grid x:Name="ShadowCaster" Grid.RowSpan="2" Width="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.OpenPaneLength}" HorizontalAlignment="Left">
                 <Grid.RenderTransform>
                   <CompositeTransform x:Name="ShadowCasterTransform" />
                 </Grid.RenderTransform>

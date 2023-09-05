@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationViewTemplateSettings.properties.cpp, commit 991c831
+// MUX Reference NavigationViewTemplateSettings.properties.cpp, commit bace2c5
 
 using Windows.UI.Xaml;
 
@@ -52,17 +52,17 @@ public partial class NavigationViewTemplateSettings : DependencyObject
 	/// <summary>
 	/// Gets the width of open pane.
 	/// </summary>
-	public double OpenPaneWidth
+	public double OpenPaneLength
 	{
-		get => (double)GetValue(OpenPaneWidthProperty);
-		set => SetValue(OpenPaneWidthProperty, value);
+		get => (double)GetValue(OpenPaneLengthProperty);
+		set => SetValue(OpenPaneLengthProperty, value);
 	}
 
 	/// <summary>
-	/// Identifies the OpenPaneWidth dependency property.
+	/// Identifies the OpenPaneLength dependency property.
 	/// </summary>
-	public static DependencyProperty OpenPaneWidthProperty { get; } =
-		DependencyProperty.Register(nameof(OpenPaneWidth), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(320.0));
+	public static DependencyProperty OpenPaneLengthProperty { get; } =
+		DependencyProperty.Register(nameof(OpenPaneLength), typeof(double), typeof(NavigationViewTemplateSettings), new FrameworkPropertyMetadata(320.0));
 
 	/// <summary>
 	/// Gets the visibility of the overflow button.
