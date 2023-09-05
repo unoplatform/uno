@@ -84,7 +84,7 @@ public partial class NavigationViewItemPresenter : ContentControl
 		UpdateMargin();
 	}
 
-	private void LoadChevron()
+	internal void LoadChevron()
 	{
 		if (m_expandCollapseChevron is null)
 		{

@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit d3fef08
+// MUX reference NavigationViewItem.cpp, commit 5116379
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -198,11 +198,18 @@ public partial class NavigationViewItem : NavigationViewItemBase
 			{
 				m_repeater = repeater;
 
-				// Primary element setup happens in NavigationView
-				m_repeaterElementPreparedRevoker = repeater.ElementPrepared(winrt::auto_revoke, { nvImpl,  &NavigationView::OnRepeaterElementPrepared });
-				m_repeaterElementClearingRevoker = repeater.ElementClearing(winrt::auto_revoke, { nvImpl, &NavigationView::OnRepeaterElementClearing });
+				if (repeater.Layout is StackLayout stackLayout)
+				{
+					stackLayout.DisableVirtualization = true;
+				}
 
-				repeater.ItemTemplate(*(nvImpl->GetNavigationViewItemsFactory()));
+				// Primary element setup happens in NavigationView
+				repeater.ElementPrepared += nvImpl.OnRepeaterElementPrepared;
+				m_repeaterElementPreparedRevoker.Disposable = Disposable.Create(() => repeater.ElementPrepared -= nvImpl.OnRepeaterElementPrepared);
+				repeater.ElementClearing += nvImpl.OnRepeaterElementClearing;
+				m_repeaterElementClearingRevoker.Disposable = Disposable.Create(() => repeater.ElementClearing -= nvImpl.OnRepeaterElementClearing);
+
+				repeater.ItemTemplate = nvImpl.GetNavigationViewItemsFactory();
 			}
 		}
 	}
@@ -748,7 +755,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		}
 	}
 
-	internal bool HasChildren() => 
+	internal bool HasChildren() =>
 		(MenuItems is not null && MenuItems.Count > 0) ||
 		(MenuItemsSource is not null && m_repeater is not null && m_repeater.ItemsSourceView is not null && m_repeater.ItemsSourceView.Count > 0) ||
 		HasUnrealizedChildren;
