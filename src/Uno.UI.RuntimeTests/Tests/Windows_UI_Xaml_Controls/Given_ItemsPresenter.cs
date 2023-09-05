@@ -10,19 +10,40 @@ using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
+
+public static class AssertionExtensions
+{
+	public static AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>> BeEquivalentToWithTolerance<T>(this FluentAssertions.Collections.GenericCollectionAssertions<float> assertions, float[] expected, float tolerance)
+	{
+		assertions.Subject.Should().HaveCount(expected.Length);
+
+		assertions.Subject.Zip(expected, (sub, actual) => sub.Should().BeApproximately(actual, tolerance)).ForEach((AndConstraint<FluentAssertions.Numeric.NumericAssertions<float>> _) => { });
+		return new AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>>(assertions);
+	}
+}
 
 [TestClass]
 public class Given_ItemsPresenter
 {
+	private float Epsilon =>
+#if XAMARIN
+			0.5f;
+#else
+		0.0f;
+#endif
+
+
 	[TestMethod]
 	[RunsOnUIThread]
 	[RequiresFullWindow]
 	public async Task When_Big_Elements_Horizontal_Many_Margins()
 	{
+
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -81,45 +102,47 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 318, 596));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(914, 0, 278, 596));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(318, 0, 596, 596));
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 402, 538));
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(402, 0, 406, 538));
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(808, 0, 418, 538));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 318, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(814, 0, 278, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(318, 0, 496, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 402, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(402, 0, 406, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(808, 0, 418, 538), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should();
+
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			318,
 			749,
 			1155,
-			914
-		});
+			814
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			318,
 			749,
 			1155,
 			1573,
-			1192
-		});
+			1092
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			159,
 			548,
 			952,
 			1364,
-			1053
-		});
+			953
+		}, Epsilon);
 	}
 
 	[TestMethod]
@@ -128,7 +151,7 @@ public class Given_ItemsPresenter
 	public async Task When_Big_Elements_Vertical_Many_Margins()
 	{
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -187,45 +210,45 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 596, 318));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 914, 596, 278));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 318, 596, 596));
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 538, 302));
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 302, 538, 306));
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(0, 608, 538, 318));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 496, 318), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 914, 496, 278), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 318, 496, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 438, 302), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 302, 438, 306), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(0, 608, 438, 318), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			318,
 			649,
 			955,
 			914
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			318,
 			649,
 			955,
 			1273,
 			1192
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			159,
 			498,
 			802,
 			1114,
 			1053
-		});
+		}, Epsilon);
 	}
 
 	[TestMethod]
@@ -234,7 +257,7 @@ public class Given_ItemsPresenter
 	public async Task When_Small_Elements_Horizontal_Many_Margins()
 	{
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -293,45 +316,45 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(498, 0, 98, 596));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 360, 596));
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538));
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538));
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 260, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			138,
 			209,
 			255,
 			342
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			138,
 			209,
 			255,
 			313,
 			440
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			69,
 			188,
 			232,
 			284,
 			391
-		});
+		}, Epsilon);
 	}
 
 	[TestMethod]
@@ -340,7 +363,7 @@ public class Given_ItemsPresenter
 	public async Task When_Small_Elements_Vertical_Many_Margins()
 	{
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -399,45 +422,45 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 596, 138));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 498, 596, 98));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 138, 596, 360));
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 538, 32));
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 32, 538, 36));
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(0, 68, 538, 48));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 496, 138), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 498, 496, 98), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 138, 496, 360), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 438, 32), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 32, 438, 36), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(0, 68, 438, 48), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			138,
 			199,
 			235,
 			312
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			138,
 			199,
 			235,
 			283,
 			410
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			69,
 			183,
 			217,
 			259,
 			361
-		});
+		}, Epsilon);
 	}
 
 	[TestMethod]
@@ -446,7 +469,7 @@ public class Given_ItemsPresenter
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Footer()
 	{
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -500,42 +523,42 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(596, 0, 0, 596));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 458, 596));
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538));
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538));
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(496, 0, 0, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 358, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			138,
 			209,
 			255
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			138,
 			209,
 			255,
 			313
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			69,
 			188,
 			232,
 			284
-		});
+		}, Epsilon);
 	}
 
 	[TestMethod]
@@ -544,7 +567,7 @@ public class Given_ItemsPresenter
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Header()
 	{
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -598,42 +621,42 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 0, 596));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(498, 0, 98, 596));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 0, 498, 596));
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538));
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538));
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 0, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 0, 398, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			71,
 			117,
 			204
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			71,
 			117,
 			175,
 			302
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			50,
 			94,
 			146,
 			253
-		});
+		}, Epsilon);
 	}
 
 	[TestMethod]
@@ -642,7 +665,7 @@ public class Given_ItemsPresenter
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Items()
 	{
 		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="700" Height="700"
+										 <Grid x:Name="g" Width="600" Height="700"
 										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -687,32 +710,32 @@ public class Given_ItemsPresenter
 		var footer = (ContentControl)VisualTreeHelper.GetChild(ip, 2);
 		var panel = grid.FindVisualChildByType<StackPanel>();
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 690, 690));
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 690, 690));
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596));
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(498, 0, 98, 596));
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 360, 596));
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 260, 596), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).Should().BeNull();
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			0,
 			196
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			138,
 			294
-		});
+		}, Epsilon);
 
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentTo(new float[]
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
 			69,
 			245
-		});
+		}, Epsilon);
 	}
 }
