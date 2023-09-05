@@ -12,6 +12,9 @@
 
     <Style x:Key="DefaultPersonPictureStyle" TargetType="local:PersonPicture">
         <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
+        <Setter Property="Background" Value="{ThemeResource PersonPictureEllipseFillThemeBrush}"/>
+        <Setter Property="BorderBrush" Value="{ThemeResource SystemColorButtonTextColor}"/>
+        <Setter Property="BorderThickness" Value="{ThemeResource PersonPictureEllipseStrokeThickness}"/>
         <Setter Property="Width" Value="100" />
         <Setter Property="Height" Value="100" />
         <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -73,9 +76,9 @@
                         </VisualStateManager.VisualStateGroups>
 
                         <Ellipse
-                            Fill="{ThemeResource PersonPictureEllipseFillThemeBrush}"
-                            Stroke="{ThemeResource SystemColorButtonTextColor}"
-                            StrokeThickness="{ThemeResource PersonPictureEllipseStrokeThickness}"
+                            Fill="{TemplateBinding Background}"
+                            Stroke="{TemplateBinding BorderBrush}"
+                            StrokeThickness="{TemplateBinding BorderThickness}"
                             Width="{TemplateBinding Width}"
                             Height="{TemplateBinding Height}" />
 
