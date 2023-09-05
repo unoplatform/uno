@@ -170,6 +170,9 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 - Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
 - Either press `F5` or press the green arrow
 
+> [!TIP]
+> When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
+
 # [**Mac Catalyst**](#tab/catalystdebug)
 
 > [!NOTE]
