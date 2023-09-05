@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit 5116379
+// MUX reference NavigationViewItem.cpp, commit 608ec43
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -381,6 +381,7 @@ public partial class NavigationViewItem : NavigationViewItemBase
 	private void OnMenuItemsVectorChanged(IObservableVector<object> sender, IVectorChangedEventArgs args)
 	{
 		LoadElementsForDisplayingChildren();
+		UpdateRepeaterItemsSource();
 	}
 
 	private void OnMenuItemsPropertyChanged(DependencyPropertyChangedEventArgs args)
