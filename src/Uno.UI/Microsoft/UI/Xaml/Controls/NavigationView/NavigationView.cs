@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 05a0b06
+// MUX Reference NavigationView.cpp, commit 4e2990d
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -4332,6 +4332,7 @@ public partial class NavigationView : ContentControl
 			UpdatePaneTitleFrameworkElementParents();
 			UpdateBackAndCloseButtonsVisibility();
 			UpdatePaneToggleButtonVisibility();
+			UpdateTitleBarPadding();
 			UpdateVisualState();
 		}
 		else if (property == IsSettingsVisibleProperty)
