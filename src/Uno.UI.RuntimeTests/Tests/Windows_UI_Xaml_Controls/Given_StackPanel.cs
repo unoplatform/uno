@@ -15,6 +15,9 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
+using Windows.UI.Xaml.Media.Animation;
+using Windows.UI;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -286,7 +289,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 		public async Task When_No_Children_SnapPoints()
 		{
-			var SUT = new StackPanel();
+			var SUT = new StackPanel()
+			{
+				Width = 100,
+				Height = 100,
+				BorderThickness = new Windows.UI.Xaml.Thickness(5),
+				BorderBrush = new SolidColorBrush(Colors.Bisque)
+			};
 
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
@@ -295,6 +304,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
+			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
+			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
+			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
 		}
 	}
 }

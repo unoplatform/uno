@@ -29,13 +29,9 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
 		private ContentControl _headerContentControl;
-
 		private ContentControl _footerContentControl;
 
-		private Rect _headerRect;
-		private Rect _footerRect;
-
-		private new readonly UIElementCollection _children;
+		private readonly UIElementCollection _collection;
 
 		private Orientation Orientation => (Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
 
@@ -175,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ItemsPresenter()
 		{
-			_children = new UIElementCollection(this);
+			_collection = new UIElementCollection(this);
 
 			// A content presenter does not propagate its own templated
 			// parent. The content's TemplatedParent has already been set by the
@@ -263,14 +259,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_itemsPanel is { })
 			{
-				_children.Remove(_itemsPanel);
+				_collection.Remove(_itemsPanel);
 			}
 
 			_itemsPanel = panel;
 
 			if (_itemsPanel != null)
 			{
-				_children.Insert(1, _itemsPanel);
+				_collection.Insert(1, _itemsPanel);
 
 				PropagateLayoutValues();
 			}
@@ -291,7 +287,7 @@ namespace Windows.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch
 				};
 
-				_children.Add(_headerContentControl);
+				_collection.Add(_headerContentControl);
 			}
 
 			SetItemsPanel(panel);
@@ -307,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch
 				};
 
-				_children.Add(_footerContentControl);
+				_collection.Add(_footerContentControl);
 			}
 		}
 
@@ -333,11 +329,11 @@ namespace Windows.UI.Xaml.Controls
 
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
-			var count = _children.Count;
+			var count = _collection.Count;
 
 			for (var i = 0; i < count; i++)
 			{
-				var view = _children[i];
+				var view = _collection[i];
 				var desiredChildSize = GetElementDesiredSize(view);
 
 				if (isHorizontal)
@@ -371,16 +367,6 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = childRect.Height;
 				}
 
-				if (view == _headerContentControl)
-				{
-					_headerRect = childRect;
-				}
-
-				if (view == _footerContentControl)
-				{
-					_footerRect = childRect;
-				}
-
 				ArrangeElement(view, childRect);
 			}
 
@@ -402,10 +388,10 @@ namespace Windows.UI.Xaml.Controls
 
 			var desiredSize = default(Size);
 
-			var count = _children.Count;
+			var count = _collection.Count;
 			for (var i = 0; i < count; i++)
 			{
-				var view = _children[i];
+				var view = _collection[i];
 
 
 				var availableSize = unpaddedSize;
@@ -445,7 +431,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
-			if (orientation != Orientation || SnapPointsProvider is null)
+			if (orientation != Orientation || SnapPointsProvider is null || _headerContentControl is null || _footerContentControl is null)
 			{
 				return null;
 			}
@@ -454,28 +440,52 @@ namespace Windows.UI.Xaml.Controls
 
 			var panelSnapPoints = SnapPointsProvider.GetIrregularSnapPoints(orientation, alignment);
 
+			var hasHeader = _headerContentControl.FindFirstChild<ContentPresenter>().FindFirstChild() is { };
+			var hasFooter = _footerContentControl.FindFirstChild<ContentPresenter>().FindFirstChild() is { };
+
+			var headerRect = LayoutInformation.GetLayoutSlot(_headerContentControl);
+			var footerRect = LayoutInformation.GetLayoutSlot(_footerContentControl);
+
 			var panelStretch = Orientation == Orientation.Horizontal ?
-				_footerRect.Left - _headerRect.Right - GetElementDesiredSize(_itemsPanel).Width :
-				_footerRect.Top - _headerRect.Bottom - GetElementDesiredSize(_itemsPanel).Height;
+				footerRect.Left - headerRect.Right - GetElementDesiredSize(_itemsPanel).Width :
+				footerRect.Top - headerRect.Bottom - GetElementDesiredSize(_itemsPanel).Height;
 
 			if (orientation == Orientation.Horizontal)
 			{
 				switch (alignment)
 				{
 					case SnapPointsAlignment.Near:
-						result.Add((float)_headerRect.Left);
-						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
-						result.Add((float)(_footerRect.Left - panelStretch));
+						if (hasHeader)
+						{
+							result.Add((float)headerRect.Left);
+						}
+						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
+						if (hasFooter)
+						{
+							result.Add((float)(footerRect.Left - panelStretch));
+						}
 						break;
 					case SnapPointsAlignment.Center:
-						result.Add((float)_headerRect.GetMidX());
-						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
-						result.Add((float)(_footerRect.GetMidX() - panelStretch));
+						if (hasHeader)
+						{
+							result.Add((float)headerRect.GetMidX());
+						}
+						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
+						if (hasFooter)
+						{
+							result.Add((float)(footerRect.GetMidX() - panelStretch));
+						}
 						break;
 					case SnapPointsAlignment.Far:
-						result.Add((float)_headerRect.Right);
-						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Right));
-						result.Add((float)(_footerRect.Right - panelStretch));
+						if (hasHeader)
+						{
+							result.Add((float)headerRect.Right);
+						}
+						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
+						if (hasFooter)
+						{
+							result.Add((float)(footerRect.Right - panelStretch));
+						}
 						break;
 				}
 			}
@@ -484,24 +494,42 @@ namespace Windows.UI.Xaml.Controls
 				switch (alignment)
 				{
 					case SnapPointsAlignment.Near:
-						result.Add((float)_headerRect.Top);
-						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
-						result.Add((float)(_footerRect.Top - panelStretch));
+						if (hasHeader)
+						{
+							result.Add((float)headerRect.Top);
+						}
+						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
+						if (hasFooter)
+						{
+							result.Add((float)(footerRect.Top - panelStretch));
+						}
 						break;
 					case SnapPointsAlignment.Center:
-						result.Add((float)_headerRect.GetMidY());
-						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
-						result.Add((float)(_footerRect.GetMidY() - panelStretch));
+						if (hasHeader)
+						{
+							result.Add((float)headerRect.GetMidY());
+						}
+						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
+						if (hasFooter)
+						{
+							result.Add((float)(footerRect.GetMidY() - panelStretch));
+						}
 						break;
 					case SnapPointsAlignment.Far:
-						result.Add((float)_headerRect.Bottom);
-						result.AddRange(panelSnapPoints.Select(i => i + (float)_headerRect.Bottom));
-						result.Add((float)(_footerRect.Bottom - panelStretch));
+						if (hasHeader)
+						{
+							result.Add((float)headerRect.Bottom);
+						}
+						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
+						if (hasFooter)
+						{
+							result.Add((float)(footerRect.Bottom - panelStretch));
+						}
 						break;
 				}
 			}
 
-			return result.Distinct().ToList(); // this takes care of missing header/footer/etc cases
+			return result;
 		}
 
 		public float GetRegularSnapPoints(Orientation orientation, SnapPointsAlignment alignment, out float offset) => throw new NotSupportedException("Regular snap points are not supported.");
