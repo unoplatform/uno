@@ -19,10 +19,6 @@ public partial class Compass
 	private SensorListener? _listener;
 	private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
-	private Compass()
-	{
-	}
-
 	/// <summary>
 	/// Gets or sets the current report interval for the compass.
 	/// </summary>
