@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">Destination rect.</param>
 		/// <returns></returns>
-		protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
+		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
 			paint.Color = FallbackColorWithOpacity;
 		}

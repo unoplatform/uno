@@ -5,7 +5,7 @@ namespace Windows.UI.Xaml.Media;
 
 partial class RevealBrush
 {
-	protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
+	private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 	{
 		var color = this.IsDependencyPropertySet(FallbackColorProperty) ?
 			GetColorWithOpacity(FallbackColor) :

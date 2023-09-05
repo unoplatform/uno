@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Media
 	// Android partial for SolidColorBrush
 	public partial class SolidColorBrush : Brush
 	{
-		protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
+		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
 			paint.Color = ColorWithOpacity;
 		}

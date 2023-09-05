@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class GradientBrush
 	{
-		protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
+		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
 			paint.SetShader(GetShader(destinationRect.Size));
 			paint.SetStyle(Paint.Style.Stroke);

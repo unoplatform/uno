@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media
 			_onImageLoaded?.Invoke();
 		}
 
-		protected override void ApplyToPaintInner(Rect drawRect, Paint paint)
+		private protected override void ApplyToPaintInner(Rect drawRect, Paint paint)
 		{
 			throw new NotSupportedException($"{nameof(ApplyToPaintInner)} is not supported for ImageBrush.");
 		}
