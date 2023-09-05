@@ -240,7 +240,7 @@ namespace Windows.UI.Xaml
 
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
 
-			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize; // TODO: Verify if this is correct or if we should always use innerInkSize
+			RenderSize = innerInkSize;
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
@@ -250,6 +250,12 @@ namespace Windows.UI.Xaml
 
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
+
+			if (IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height))
+			{
+				needsClipToSlot = true;
+			}
 
 			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
