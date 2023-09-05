@@ -51,6 +51,7 @@ using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Media;
+using Windows.Foundation.Metadata;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -1599,9 +1600,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_warnedAboutZoomedContentAlignment = true;
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (this.Log().IsEnabled(ApiInformation.NotImplementedLogLevel))
 			{
-				this.Log().LogWarning("Zoom-based content alignment is not implemented on this platform.");
+				this.Log().Log(ApiInformation.NotImplementedLogLevel, "Zoom-based content alignment is not implemented on this platform.");
 			}
 		}
 #endif
