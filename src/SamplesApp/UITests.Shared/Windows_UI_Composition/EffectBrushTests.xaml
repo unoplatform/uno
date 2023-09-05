@@ -20,5 +20,6 @@
 		<Grid x:Name="compositeGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="CompositeEffect"/>
 		<Grid x:Name="colorGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ColorSourceEffect"/>
 		<Grid x:Name="opacityGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="OpacityEffect"/>
+		<Grid x:Name="contrastGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ContrastEffect"/>
 	</GridView>
 </UserControl>
