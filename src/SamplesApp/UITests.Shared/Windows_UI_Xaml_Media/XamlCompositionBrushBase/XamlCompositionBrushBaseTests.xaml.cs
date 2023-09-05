@@ -25,7 +25,7 @@ namespace UITests.Windows_UI_Xaml_Media.XamlCompositionBrushBase
 	{
 		protected override void OnConnected()
 		{
-			var compositor = Window.Current.Compositor;
+			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 			var brush = compositor.CreateLinearGradientBrush();
 			brush.ColorStops.Add(compositor.CreateColorGradientStop(0.0f, Colors.Black));
 			brush.ColorStops.Add(compositor.CreateColorGradientStop(1.0f, Colors.White));

@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void VisualSurfaceTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			var compositor = Window.Current.Compositor;
+			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 			var visualSurface = compositor.CreateVisualSurface();
 			visualSurface.SourceVisual = ElementCompositionPreview.GetElementVisual(player0);
 			visualSurface.SourceSize = new(200, 100);

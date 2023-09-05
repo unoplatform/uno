@@ -30,7 +30,7 @@ namespace UITests.Shared.Windows_UI_Composition
 
 		private void RedirectVisualTests_Loaded(object sender, RoutedEventArgs e)
 		{
-			var compositor = Window.Current.Compositor;
+			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 			var redirectVisual = compositor.CreateRedirectVisual(ElementCompositionPreview.GetElementVisual(img));
 			ElementCompositionPreview.SetElementChildVisual(canvas, redirectVisual);
 

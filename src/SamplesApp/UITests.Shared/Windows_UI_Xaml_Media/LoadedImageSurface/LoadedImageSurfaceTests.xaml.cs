@@ -37,7 +37,7 @@ namespace UITests.Windows_UI_Xaml_Media.LoadedImageSurface
 			{
 				if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
 				{
-					var compositor = Window.Current.Compositor;
+					var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 					var brush = compositor.CreateSurfaceBrush(surface);
 
 					CompositionBrush = brush;
