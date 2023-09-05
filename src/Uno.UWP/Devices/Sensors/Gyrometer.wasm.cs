@@ -12,10 +12,6 @@ namespace Windows.Devices.Sensors
 	{
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		private Gyrometer()
-		{
-		}
-
 		public uint ReportInterval { get; set; }
 
 		private static Gyrometer TryCreateInstance()

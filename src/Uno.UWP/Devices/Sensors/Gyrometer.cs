@@ -14,6 +14,13 @@ namespace Windows.Devices.Sensors
 
 		private TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> _readingChanged;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
+		private Gyrometer()
+		{
+		}
+
 		public static Gyrometer GetDefault()
 		{
 			if (_initializationAttempted)
