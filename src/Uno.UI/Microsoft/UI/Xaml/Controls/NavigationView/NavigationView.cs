@@ -1427,83 +1427,84 @@ public partial class NavigationView : ContentControl
 #endif
 			}
 		}
+	}
 
-		private void ApplyCustomMenuItemContainerStyling(NavigationViewItemBase nvib, ItemsRepeater ir, int index)
+	private void ApplyCustomMenuItemContainerStyling(NavigationViewItemBase nvib, ItemsRepeater ir, int index)
+	{
+		var menuItemContainerStyle = MenuItemContainerStyle;
+		var menuItemContainerStyleSelector = MenuItemContainerStyleSelector;
+		if (menuItemContainerStyle != null)
 		{
-			var menuItemContainerStyle = MenuItemContainerStyle;
-			var menuItemContainerStyleSelector = MenuItemContainerStyleSelector;
-			if (menuItemContainerStyle != null)
+			nvib.Style = menuItemContainerStyle;
+		}
+		else if (menuItemContainerStyleSelector != null)
+		{
+			var itemsSourceView = ir.ItemsSourceView;
+			if (itemsSourceView != null)
 			{
-				nvib.Style = menuItemContainerStyle;
-			}
-			else if (menuItemContainerStyleSelector != null)
-			{
-				var itemsSourceView = ir.ItemsSourceView;
-				if (itemsSourceView != null)
+				var item = itemsSourceView.GetAt(index);
+				if (item != null)
 				{
-					var item = itemsSourceView.GetAt(index);
-					if (item != null)
+					var selectedStyle = menuItemContainerStyleSelector.SelectStyle(item, nvib);
+					if (selectedStyle != null)
 					{
-						var selectedStyle = menuItemContainerStyleSelector.SelectStyle(item, nvib);
-						if (selectedStyle != null)
-						{
-							nvib.Style = selectedStyle;
-						}
+						nvib.Style = selectedStyle;
 					}
 				}
 			}
 		}
+	}
 
-		internal void OnRepeaterElementClearing(ItemsRepeater ir, ItemsRepeaterElementClearingEventArgs args)
+	internal void OnRepeaterElementClearing(ItemsRepeater ir, ItemsRepeaterElementClearingEventArgs args)
+	{
+		if (args.Element is NavigationViewItemBase nvib)
 		{
-			if (args.Element is NavigationViewItemBase nvib)
+			var nvibImpl = nvib;
+			nvibImpl.Depth = 0;
+			nvibImpl.IsTopLevelItem = false;
+			if (nvib is NavigationViewItem nvi)
 			{
-				var nvibImpl = nvib;
-				nvibImpl.Depth = 0;
-				nvibImpl.IsTopLevelItem = false;
-				if (nvib is NavigationViewItem nvi)
-				{
-					// Revoke all the events that we were listing to on the item
-					ClearNavigationViewItemRevokers(nvi);
-				}
+				// Revoke all the events that we were listing to on the item
+				ClearNavigationViewItemRevokers(nvi);
 			}
 		}
+	}
 
-		// Hook up the Settings Item Invoked event listener
-		private void CreateAndHookEventsToSettings()
+	// Hook up the Settings Item Invoked event listener
+	private void CreateAndHookEventsToSettings()
+	{
+		if (m_settingsItem == null)
 		{
-			if (m_settingsItem == null)
-			{
-				return;
-			}
-
-			var settingsItem = m_settingsItem;
-			var settingsIcon = new AnimatedIcon();
-			settingsIcon.Source = new AnimatedSettingsVisualSource();
-			var settingsFallbackIcon = new SymbolIconSource();
-			settingsFallbackIcon.Symbol = Symbol.Setting;
-			settingsIcon.FallbackIconSource = settingsFallbackIcon;
-			settingsItem.Icon = settingsIcon;
-
-			// Do localization for settings item label and Automation Name
-			var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
-			AutomationProperties.SetName(settingsItem, localizedSettingsName);
-			settingsItem.Tag = c_settingsItemTag;
-			UpdateSettingsItemToolTip();
-
-			// Add the name only in case of horizontal nav
-			if (!IsTopNavigationView())
-			{
-				settingsItem.Content = localizedSettingsName;
-			}
-			else
-			{
-				settingsItem.Content = null;
-			}
-
-			// hook up SettingsItem
-			SetValue(SettingsItemProperty, settingsItem);
+			return;
 		}
+
+		var settingsItem = m_settingsItem;
+		var settingsIcon = new AnimatedIcon();
+		settingsIcon.Source = new AnimatedSettingsVisualSource();
+		var settingsFallbackIcon = new SymbolIconSource();
+		settingsFallbackIcon.Symbol = Symbol.Setting;
+		settingsIcon.FallbackIconSource = settingsFallbackIcon;
+		settingsItem.Icon = settingsIcon;
+
+		// Do localization for settings item label and Automation Name
+		var localizedSettingsName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_SettingsButtonName);
+		AutomationProperties.SetName(settingsItem, localizedSettingsName);
+		settingsItem.Tag = c_settingsItemTag;
+		UpdateSettingsItemToolTip();
+
+		// Add the name only in case of horizontal nav
+		if (!IsTopNavigationView())
+		{
+			settingsItem.Content = localizedSettingsName;
+		}
+		else
+		{
+			settingsItem.Content = null;
+		}
+
+		// hook up SettingsItem
+		SetValue(SettingsItemProperty, settingsItem);
+	}
 
 	protected override Size MeasureOverride(Size availableSize)
 	{
