@@ -3,10 +3,6 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Barometer
 	{
-		private Barometer()
-		{
-		}
-
 		/// <summary>
 		/// API not supported, always returns null.
 		/// </summary>
