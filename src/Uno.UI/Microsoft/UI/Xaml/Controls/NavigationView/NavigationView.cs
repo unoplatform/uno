@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit d8d4f4f
+// MUX Reference NavigationView.cpp, commit c50eb27
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -4597,25 +4597,33 @@ public partial class NavigationView : ContentControl
 
 		UpdatePaneDisplayMode();
 
-		// For better user experience, We help customer to Open/Close Pane automatically when we switch between LeftMinimal <. Left.
+		// For better user experience, We help customer to Open/Close Pane automatically when we switch between LeftMinimal <-> Left.
 		// From other navigation PaneDisplayMode to LeftMinimal, we expect pane is closed.
 		// From LeftMinimal to Left, it is expected the pane is open. For other configurations, this seems counterintuitive.
 		// See #1702 and #1787
 		if (!IsTopNavigationView())
 		{
-			if (IsPaneOpen)
+			// In rare cases it is possible to end up in a state where two calls to OnPropertyChanged for PaneDisplayMode can end up on the stack
+			// Calls above to UpdatePaneDisplayMode() can result in further property updates.
+			// As a result of this reentrancy, we can end up with an incorrect result for IsPaneOpen as the later OnPropertyChanged for PaneDisplayMode
+			// will complete during the OnPropertyChanged of the earlier one. 
+			// To avoid this, we only call OpenPane()/ClosePane() if PaneDisplayMode has not changed.
+			if (newDisplayMode == PaneDisplayMode)
 			{
-				if (newDisplayMode == NavigationViewPaneDisplayMode.LeftMinimal)
+				if (IsPaneOpen)
 				{
-					ClosePane();
+					if (newDisplayMode == NavigationViewPaneDisplayMode.LeftMinimal)
+					{
+						ClosePane();
+					}
 				}
-			}
-			else
-			{
-				if (oldDisplayMode == NavigationViewPaneDisplayMode.LeftMinimal
-					&& newDisplayMode == NavigationViewPaneDisplayMode.Left)
+				else
 				{
-					OpenPane();
+					if (oldDisplayMode == NavigationViewPaneDisplayMode.LeftMinimal
+						&& newDisplayMode == NavigationViewPaneDisplayMode.Left)
+					{
+						OpenPane();
+					}
 				}
 			}
 		}
