@@ -12,7 +12,7 @@ using static System.Double;
 using Windows.Phone.Media.Devices;
 using System.Diagnostics;
 
-if __SKIA__
+#if __SKIA__
 using NativePath = Windows.UI.Composition.SkiaGeometrySource2D;
 using NativeSingle = System.Double;
 
@@ -59,7 +59,6 @@ partial class Shape
 
 		return stretchedSize;
 	}
-	#endregion
 
 	#region Helper methods
 
