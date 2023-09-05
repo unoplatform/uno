@@ -18,10 +18,6 @@ namespace Windows.Devices.Sensors
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		private Accelerometer()
-		{
-		}
-
 		public uint ReportInterval { get; set; }
 
 		private static Accelerometer TryCreateInstance()

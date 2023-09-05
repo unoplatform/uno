@@ -24,6 +24,13 @@ namespace Windows.Devices.Sensors
 		[Uno.NotImplemented]
 		public Graphics.Display.DisplayOrientations ReadingTransform { get; set; } = Graphics.Display.DisplayOrientations.Portrait;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
+		private Accelerometer()
+		{
+		}
+
 		public static Accelerometer GetDefault()
 		{
 			if (_initializationAttempted)

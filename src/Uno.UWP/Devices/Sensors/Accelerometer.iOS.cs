@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using CoreMotion;
 using Foundation;
 using UIKit;
@@ -8,17 +10,28 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private readonly CMMotionManager _motionManager;
+		private CMMotionManager? _motionManager;
 
-		private Accelerometer(CMMotionManager motionManager)
-		{
-			_motionManager = motionManager;
-		}
-
+		private uint _reportInterval;
 		public uint ReportInterval
 		{
-			get => (uint)_motionManager.AccelerometerUpdateInterval * 1000;
-			set => _motionManager.AccelerometerUpdateInterval = value / 1000.0;
+			get
+			{
+				if (_motionManager != null)
+				{
+					return (uint)_motionManager.AccelerometerUpdateInterval * 1000;
+				}
+
+				return _reportInterval;
+			}
+			set
+			{
+				_reportInterval = value;
+				if (_motionManager != null)
+				{
+					_motionManager.AccelerometerUpdateInterval = value / 1000.0;
+				}
+			}
 		}
 
 		internal static void HandleShake()
@@ -26,22 +39,31 @@ namespace Windows.Devices.Sensors
 			_instance?.OnShaken(DateTimeOffset.UtcNow);
 		}
 
-		private static Accelerometer TryCreateInstance()
+		private static Accelerometer? TryCreateInstance()
 		{
 			var motionManager = new CMMotionManager();
 			return !motionManager.AccelerometerAvailable ?
 				null :
-				new Accelerometer(motionManager);
+				new Accelerometer();
 		}
 
 		private void StartReadingChanged()
 		{
+			_motionManager = new CMMotionManager();
 			_motionManager.StartAccelerometerUpdates(new NSOperationQueue(), AccelerometerDataReceived);
 		}
 
 		private void StopReadingChanged()
 		{
+			if (_motionManager == null)
+			{
+				return;
+			}
+
 			_motionManager.StopAccelerometerUpdates();
+
+			_motionManager.Dispose();
+			_motionManager = null;
 		}
 
 		private void StartShaken()
