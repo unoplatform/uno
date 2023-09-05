@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItem.cpp, commit 608ec43
+// MUX reference NavigationViewItem.cpp, commit 18a981d
 
 #if __ANDROID__
 // For performance considerations, we prefer to delay pressed and over state in order to avoid
@@ -1181,7 +1181,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		// What this flag tracks is complicated because of the NavigationView sub items and the m_capturedPointers that are being tracked..
 		// We do this check because PointerCaptureLost can sometimes take the place of PointerReleased events.
 		// In these cases we need to test if the pointer is over the item to maintain the proper state.
-		if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position))
+		// In the case of touch input, we want to cancel anyway since there will be no pointer exited due to the pointer being cancelled.
+		if (IsOutOfControlBounds(args.GetCurrentPoint(this).Position) || args.Pointer.PointerDeviceType == PointerDeviceType.Touch)
 #endif
 		{
 			m_isPointerOver = false;
