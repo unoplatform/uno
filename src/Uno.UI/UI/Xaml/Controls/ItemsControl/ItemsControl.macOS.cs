@@ -23,11 +23,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InvalidateMeasure();
 		}
-
-		partial void RemoveViewPartial(NSView current)
-		{
-			current.RemoveFromSuperview();
-		}
 	}
 }
 

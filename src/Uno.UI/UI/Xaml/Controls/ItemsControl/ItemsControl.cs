@@ -19,18 +19,19 @@ using Uno.UI.Extensions;
 
 #if __ANDROID__
 using Android.Graphics;
-
 using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 #elif __IOS__
 using UIKit;
-
 using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
-
 using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -115,13 +116,12 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial();
 		partial void RequestLayoutPartial();
-		partial void RemoveViewPartial(View current);
 
-		private View _internalItemsPanelRoot;
+		private ViewGroup _internalItemsPanelRoot;
 		/// <summary>
 		/// The actual View that acts as the ItemsPanelRoot (used by FlipView and ListView, which don't use actual Panels)
 		/// </summary>
-		internal View InternalItemsPanelRoot
+		internal ViewGroup InternalItemsPanelRoot
 		{
 			get { return _internalItemsPanelRoot; }
 			set
@@ -979,7 +979,7 @@ namespace Windows.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() ?? new StackPanel();
+			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() as ViewGroup ?? new StackPanel();
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
@@ -993,7 +993,7 @@ namespace Windows.UI.Xaml.Controls
 		/// Resolve the view to use as <see cref="InternalItemsPanelRoot"/>. Inheriting classes should
 		/// override this method if the 'real' displaying panel is different from the panel nominated by ItemsPanelTemplate.
 		/// </summary>
-		protected virtual View ResolveInternalItemsPanel(View itemsPanel)
+		protected virtual ViewGroup ResolveInternalItemsPanel(ViewGroup itemsPanel)
 		{
 			return itemsPanel;
 		}
@@ -1695,7 +1695,7 @@ namespace Windows.UI.Xaml.Controls
 			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, this);
 		}
 
-		internal protected virtual void CleanUpInternalItemsPanel(View panel) { }
+		internal protected virtual void CleanUpInternalItemsPanel(ViewGroup panel) { }
 
 		/// <summary>
 		/// Resets internal cached state of the collection.

@@ -9,19 +9,22 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Media;
 
 #if __ANDROID__
 using Android.Widget;
 using Android.Views;
-using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 #elif __IOS__
+using Windows.UI.Xaml.Media;
 using UIKit;
-using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
 #elif __MACOS__
+using Windows.UI.Xaml.Media;
 using AppKit;
-using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -30,8 +33,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private ContentControl _headerContentControl;
 		private ContentControl _footerContentControl;
-
-		private readonly UIElementCollection _collection;
 
 		private Orientation Orientation => (Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
 
@@ -171,7 +172,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public ItemsPresenter()
 		{
-			_collection = new UIElementCollection(this);
 
 			// A content presenter does not propagate its own templated
 			// parent. The content's TemplatedParent has already been set by the
@@ -237,9 +237,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
-		private View _itemsPanel;
+		private ViewGroup _itemsPanel;
 
-		internal View Panel => _itemsPanel;
+		internal ViewGroup Panel => _itemsPanel;
 
 		private IScrollSnapPointsInfo SnapPointsProvider => Panel as IScrollSnapPointsInfo;
 
@@ -247,7 +247,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool AreVerticalSnapPointsRegular => SnapPointsProvider?.AreVerticalSnapPointsRegular ?? false;
 
-		internal void SetItemsPanel(View panel)
+		internal void SetItemsPanel(ViewGroup panel)
 		{
 			if (_itemsPanel == panel)
 			{
@@ -255,18 +255,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// This is only called after (or while) the header and footer are created and added to the visual tree.
-			Debug.Assert(_headerContentControl is { });
+			global::System.Diagnostics.Debug.Assert(_headerContentControl is { });
 
 			if (_itemsPanel is { })
 			{
-				_collection.Remove(_itemsPanel);
+				VisualTreeHelper.RemoveView(this, _itemsPanel);
 			}
 
 			_itemsPanel = panel;
 
 			if (_itemsPanel != null)
 			{
-				_collection.Insert(1, _itemsPanel);
+				VisualTreeHelper.AddView(this, _itemsPanel, 1);
 
 				PropagateLayoutValues();
 			}
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 			this.InvalidateMeasure();
 		}
 
-		internal void LoadChildren(View panel)
+		internal void LoadChildren(ViewGroup panel)
 		{
 			if (_headerContentControl is null)
 			{
@@ -287,7 +287,7 @@ namespace Windows.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch
 				};
 
-				_collection.Add(_headerContentControl);
+				VisualTreeHelper.AddChild(this, _headerContentControl);
 			}
 
 			SetItemsPanel(panel);
@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 					HorizontalContentAlignment = HorizontalAlignment.Stretch
 				};
 
-				_collection.Add(_footerContentControl);
+				VisualTreeHelper.AddChild(this, _footerContentControl);
 			}
 		}
 
@@ -329,11 +329,12 @@ namespace Windows.UI.Xaml.Controls
 
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
-			var count = _collection.Count;
 
-			for (var i = 0; i < count; i++)
+			var collection = new [] { _headerContentControl, _itemsPanel, _footerContentControl };
+
+			for (var i = 0; i < 3; i++)
 			{
-				var view = _collection[i];
+				var view = collection[i];
 				var desiredChildSize = GetElementDesiredSize(view);
 
 				if (isHorizontal)
@@ -388,11 +389,11 @@ namespace Windows.UI.Xaml.Controls
 
 			var desiredSize = default(Size);
 
-			var count = _collection.Count;
-			for (var i = 0; i < count; i++)
-			{
-				var view = _collection[i];
+			var collection = new [] { _headerContentControl, _itemsPanel, _footerContentControl };
 
+			for (var i = 0; i < 3; i++)
+			{
+				var view = collection[i];
 
 				var availableSize = unpaddedSize;
 				if (view != _itemsPanel)
@@ -436,12 +437,16 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			var result = new List<float>(2 + (Panel as Panel)?.Children.Count ?? 0);
+			var result = new List<float>(2 + VisualTreeHelper.GetViewGroupChildrenCount(_itemsPanel));
 
 			var panelSnapPoints = SnapPointsProvider.GetIrregularSnapPoints(orientation, alignment);
 
-			var hasHeader = _headerContentControl.FindFirstChild<ContentPresenter>().FindFirstChild() is { };
-			var hasFooter = _footerContentControl.FindFirstChild<ContentPresenter>().FindFirstChild() is { };
+			var hasHeader = !_headerContentControl.IsContentPresenterBypassEnabled ?
+				VisualTreeHelper.GetChildrenCount(_headerContentControl.FindFirstChild<ContentPresenter>()) > 0 :
+				VisualTreeHelper.GetChildrenCount(_headerContentControl) > 0;
+			var hasFooter = !_footerContentControl.IsContentPresenterBypassEnabled ?
+				VisualTreeHelper.GetChildrenCount(_footerContentControl.FindFirstChild<ContentPresenter>()) > 0 :
+				VisualTreeHelper.GetChildrenCount(_footerContentControl) > 0;
 
 			var headerRect = LayoutInformation.GetLayoutSlot(_headerContentControl);
 			var footerRect = LayoutInformation.GetLayoutSlot(_footerContentControl);
