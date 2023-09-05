@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference NavigationView.cpp, commit 4e2990d
+// MUX Reference NavigationView.cpp, commit d8d4f4f
 
 #pragma warning disable 105 // remove when moving to WinUI tree
 
@@ -13,6 +13,7 @@ using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Uno.Disposables;
+using Uno.Foundation.Logging;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -3699,6 +3700,8 @@ public partial class NavigationView : ContentControl
 
 	private void ClearNavigationViewItemRevokers(NavigationViewItem nvi)
 	{
+		RevokeNavigationViewItemRevokers(nvi);
+
 		nvi.EventRevoker.Disposable = null;
 		m_itemsWithRevokerObjects.Remove(nvi);
 	}
@@ -3707,9 +3710,33 @@ public partial class NavigationView : ContentControl
 	{
 		foreach (var nvi in m_itemsWithRevokerObjects)
 		{
-			nvi.EventRevoker.Disposable = null;
+			// ClearAllNavigationViewItemRevokers is only called in the destructor, where exceptions cannot be thrown.
+			// If the associated NV has not yet been cleaned up, we must detach these revokers or risk a call into freed
+			// memory being made.  However if they have been cleaned up these calls will throw. In this case we can ignore
+			// those exceptions.
+			try
+			{
+				RevokeNavigationViewItemRevokers(nvi);
+
+#if !HAS_UNO // TODO Uno specific: Revokers are implemented differently than in WinUI.
+				nvi.SetValue(s_NavigationViewItemRevokersProperty, nullptr);
+#endif
+			}
+			catch (Exception ex)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Failed to clear revokers for NavigationViewItem.", ex);
+				}
+			}
 		}
 		m_itemsWithRevokerObjects.Clear();
+	}
+
+	private void RevokeNavigationViewItemRevokers(NavigationViewItem nvi)
+	{
+		// TODO Uno specific: Revokers are implemented differently than in WinUI.
+		nvi.EventRevoker.Disposable = null;
 	}
 
 	private void InvalidateTopNavPrimaryLayout()
