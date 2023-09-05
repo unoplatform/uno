@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference NavigationViewItemAutomationPeer.cpp, commit 2ec9b1c
+// MUX reference NavigationViewItemAutomationPeer.cpp, commit a564c49
 
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Helpers.WinUI;
@@ -50,6 +50,9 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 
 	protected override object GetPatternCore(PatternInterface pattern)
 	{
+		// Note: We are intentionally not supporting Invoke Pattern, since supporting both SelectionItem and Invoke was
+		// causing problems. 
+		// See this Issue for more details: https://github.com/microsoft/microsoft-ui-xaml/issues/2702
 		if (pattern == PatternInterface.SelectionItem ||
 			// Only provide expand collapse pattern if we have children!
 			(pattern == PatternInterface.ExpandCollapse && HasChildren()))
@@ -393,6 +396,11 @@ public partial class NavigationViewItemAutomationPeer : FrameworkElementAutomati
 
 	void ChangeSelection(bool isSelected)
 	{
+		// If the item is being selected, we trigger an invoke as if the user had clicked on the item:
+		if (isSelected)
+		{
+			Invoke();
+		}
 		var nvi = Owner as NavigationViewItem;
 		if (nvi != null)
 		{
