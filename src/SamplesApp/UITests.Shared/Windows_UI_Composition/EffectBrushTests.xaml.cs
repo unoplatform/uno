@@ -114,6 +114,12 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush10 = factory10.CreateBrush();
 
 			opacityGrid.Background = new EffectTesterBrush(effectBrush10);
+
+			var effect11 = new SimpleContrastEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Contrast = 2.0f };
+			var factory11 = compositor.CreateEffectFactory(effect11);
+			var effectBrush11 = factory11.CreateBrush();
+
+			contrastGrid.Background = new EffectTesterBrush(effectBrush11);
 #endif
 		}
 
@@ -605,6 +611,59 @@ namespace UITests.Windows_UI_Composition
 				{
 					case 0:
 						return Opacity;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("B648A78A-0ED5-4F80-A94A-8E825ACA6B77")]
+		private class SimpleContrastEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleContrastEffect";
+			private Guid _id = new Guid("B648A78A-0ED5-4F80-A94A-8E825ACA6B77");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Contrast { get; set; } = 0.0f;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Contrast":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Contrast;
 					default:
 						return null;
 				}
