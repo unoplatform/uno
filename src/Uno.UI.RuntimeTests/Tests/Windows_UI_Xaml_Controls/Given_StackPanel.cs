@@ -150,7 +150,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				if (!double.IsInfinity(maxConstraints.Width))
 				{
-#if WINDOWS_UWP
+#if WINDOWS_UWP || __CROSSRUNTIME__
 					Assert.AreEqual(constrained.ActualWidth, orientation == Orientation.Horizontal ? 1000 : maxConstraints.Width);
 #else
 					// TODO: Align Uno with Windows behavior.
@@ -161,7 +161,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 				if (!double.IsInfinity(maxConstraints.Height))
 				{
-#if WINDOWS_UWP
+#if WINDOWS_UWP || __CROSSRUNTIME__
 					Assert.AreEqual(constrained.ActualHeight, orientation == Orientation.Vertical ? 1000 : maxConstraints.Height);
 #else
 					// TODO: Align Uno with Windows behavior.
