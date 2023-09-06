@@ -9,7 +9,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class LightSensor
 	{
-		private Sensor _sensor = null!;
+		private Sensor? _sensor;
 		private LightSensorListener? _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
@@ -21,6 +21,11 @@ namespace Windows.Devices.Sensors
 			get => _reportInterval;
 			set
 			{
+				if (_reportInterval == value)
+				{
+					return;
+				}
+
 				lock (_readingChangedWrapper.SyncLock)
 				{
 					_reportInterval = value;
@@ -39,19 +44,16 @@ namespace Windows.Devices.Sensors
 		{
 			var sensorManager = SensorHelpers.GetSensorManager();
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Light);
-			if (sensor != null)
-			{
-				return new LightSensor()
-				{
-					_sensor = sensor
-				};
-			}
-			return null;
+
+			return sensor == null ? null : new();
 		}
 
 		private void StartReading()
 		{
-			_listener = new LightSensorListener(this);
+			var sensorManager = SensorHelpers.GetSensorManager();
+			_sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Light);
+
+			_listener = new LightSensorListener();
 			SensorHelpers.GetSensorManager().RegisterListener(
 				_listener,
 				_sensor,
@@ -66,17 +68,13 @@ namespace Windows.Devices.Sensors
 				_listener.Dispose();
 				_listener = null;
 			}
+
+			_sensor?.Dispose();
+			_sensor = null;
 		}
 
 		private class LightSensorListener : Java.Lang.Object, ISensorEventListener, IDisposable
 		{
-			private readonly LightSensor _lightSensor;
-
-			public LightSensorListener(LightSensor lightSensor)
-			{
-				_lightSensor = lightSensor;
-			}
-
 			void ISensorEventListener.OnAccuracyChanged(Sensor? sensor, [GeneratedEnum] SensorStatus accuracy)
 			{
 			}
