@@ -14,7 +14,11 @@
  */
 
 .visibility-opacity-transition {
+<<<<<<< HEAD
   @include media-breakpoint-up(lg) {
+=======
+  @media (min-width: 1112px) {
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
     visibility: hidden;
 
     list-style: none;
@@ -47,13 +51,21 @@
   #menu-menu-principal {
     float: right;
 
+<<<<<<< HEAD
     list-style: none;
 
     @include media-breakpoint-down(lg) {
+=======
+    @media (max-width: 1112px) {
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
       width: 100%;
     }
 
+<<<<<<< HEAD
     @include media-breakpoint-up(lg) {
+=======
+    @media (min-width: 1112px) {
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
       display: flex;
     }
   }
@@ -67,8 +79,13 @@
       width: 100%;
     }
 
+<<<<<<< HEAD
     @include media-breakpoint-up(lg) {
       width: 120px;
+=======
+    @media (min-width: 1113px) {
+      min-width: 120px;
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
     }
   }
 
@@ -86,7 +103,11 @@
       margin-top: 3px;
     }
 
+<<<<<<< HEAD
     @media (max-width: 979px) {
+=======
+    @media (max-width: 1112px) {
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
       display: block !important;
     }
   }
@@ -110,8 +131,17 @@
 
       &:hover,
       &:focus {
+<<<<<<< HEAD
         border-radius: 4px;
         background-color: transparentize($turquoise, 0.8);
+=======
+        color: $purple;
+      }
+
+      @media (min-width: 1113px) {
+        font-size: 19px;
+        line-height: 17px;
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
       }
     }
 
@@ -119,8 +149,17 @@
      * Top level menu items
      */
     & > ul > li {
+<<<<<<< HEAD
       margin: 0 16px;
       align-self: center;
+=======
+
+      @media (min-width: 1113px) {
+        margin: 0 16px;
+        align-self: center;
+        min-width: max-content;
+      }
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
 
       /**
        * has-children means there is a submenu
@@ -129,11 +168,39 @@
         // actual submenu
         position: relative;
 
+<<<<<<< HEAD
+=======
+        & > a {
+
+
+          &::after {
+            display: inline-block;
+            text-rendering: auto;
+            -webkit-font-smoothing: antialiased;
+            font: normal normal normal 10px/1 FontAwesome;
+            content: "\f078";
+            line-height: 12px;
+            margin-left: 12px;
+            vertical-align: top;
+
+            @media (min-width: 1113px) {
+              line-height: 21px;
+              font: normal normal normal 15px/1 FontAwesome;
+            }
+          }
+        }
+
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
         & > ul {
           @extend .visibility-opacity-transition;
           width: inherit;
 
+<<<<<<< HEAD
           @include media-breakpoint-up(lg) {
+=======
+          @media (min-width: 1113px) {
+            width: max-content;
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
             display: flex;
             position: absolute;
             padding: 24px 48px;
@@ -149,6 +216,16 @@
 
           li {
             display: flex;
+<<<<<<< HEAD
+=======
+            border-bottom: 1px solid $lightblue;
+            background: $white;
+
+            @media (min-width: 1113px) {
+              border: none;
+            }
+
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
           }
 
           a {
@@ -259,7 +336,11 @@
 }
 
 #navbar {
+<<<<<<< HEAD
   @media (max-width: 979px) {
+=======
+  @media (max-width: 1112px) {
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
 
     overflow: auto !important;
     

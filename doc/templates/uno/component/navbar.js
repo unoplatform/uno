@@ -78,7 +78,11 @@ function initializeNavbar() {
 function updateLogo() {
     const curWidth = window.innerWidth;
     const headerLogo = document.getElementById('logo');
+<<<<<<< HEAD
     if (curWidth < 980) {
+=======
+    if (curWidth < 1112) {
+>>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
         const mobileLogo = new URL('UnoLogoSmall.png', headerLogo.src).href;
         headerLogo.src = mobileLogo;
     } else {
