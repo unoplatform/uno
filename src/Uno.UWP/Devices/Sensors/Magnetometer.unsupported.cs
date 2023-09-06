@@ -3,10 +3,6 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer
 	{
-		private Magnetometer()
-		{
-		}
-
 		/// <summary>
 		/// API not supported, always returns null.
 		/// </summary>

@@ -12,10 +12,6 @@ namespace Windows.Devices.Sensors
 	{
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		private Magnetometer()
-		{
-		}
-
 		public uint ReportInterval { get; set; }
 
 		private static Magnetometer TryCreateInstance()

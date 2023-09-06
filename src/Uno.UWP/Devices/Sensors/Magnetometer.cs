@@ -17,6 +17,13 @@ namespace Windows.Devices.Sensors
 
 		private TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> _readingChanged;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
+		private Magnetometer()
+		{
+		}
+
 		public static Magnetometer GetDefault()
 		{
 			if (_initializationAttempted)
