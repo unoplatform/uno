@@ -313,7 +313,7 @@ namespace Windows.UI.Xaml
 		{
 			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
 			{
-				if (fe.FlowDirection != feParent.FlowDirection)
+				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
 				{
 					return true;
 				}
