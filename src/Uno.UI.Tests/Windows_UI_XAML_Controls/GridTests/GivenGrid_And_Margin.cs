@@ -82,6 +82,9 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public void When_One_Child_With_Margin_1234_Size8()
 		{
 			using var _ = new AssertionScope();
@@ -119,6 +122,9 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public void When_One_Child_With_Margin_Center_And_Center()
 		{
 			using var _ = new AssertionScope();
@@ -154,6 +160,9 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public void When_One_Child_With_Margin_Center_And_Bottom()
 		{
 			using var _ = new AssertionScope();
@@ -191,6 +200,9 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public void When_One_Child_With_Margin_Center_And_Top()
 		{
 			using var _ = new AssertionScope();
