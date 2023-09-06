@@ -1,5 +1,4 @@
 ﻿#nullable enable
-#pragma warning disable 67 // The event is never used
 
 using System;
 using System.Collections.Generic;
@@ -17,7 +16,5 @@ namespace Windows.UI.Composition
 		internal CompositionCapabilities(Compositor? compositor) => _compositor = compositor;
 
 		public static CompositionCapabilities GetForCurrentView() => new CompositionCapabilities(Compositor.Current);
-
-		public TypedEventHandler<CompositionCapabilities, object>? Changed;
 	}
 }
