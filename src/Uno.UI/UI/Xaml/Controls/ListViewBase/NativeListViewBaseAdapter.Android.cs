@@ -75,9 +75,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var isGroupHeader = parent.GetIsGroupHeader(position);
-			var isHeader = parent.GetIsHeader(position);
-			var isFooter = parent.GetIsFooter(position);
-			if (isGroupHeader || isHeader || isFooter)
+			if (isGroupHeader)
 			{
 				var item = parent.GetElementFromDisplayPosition(position);
 
@@ -93,21 +91,10 @@ namespace Windows.UI.Xaml.Controls
 				var dataTemplate = GetDataTemplateFromItem(parent, item, viewType, isGroupHeader);
 				container.ContentTemplate = dataTemplate;
 
-				if (!isHeader && !isFooter)
+				container.DataContext = item;
+				if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
 				{
-					container.DataContext = item;
-					if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
-					{
-						container.SetBinding(ContentControl.ContentProperty, new Binding());
-					}
-				}
-				else
-				{
-					// When showing the header/footer, the datacontext must be the listview's 
-					// datacontext. We only need to set the content of the container, not its
-					// datacontext.
-
-					container.Content = item;
+					container.SetBinding(ContentControl.ContentProperty, new Binding());
 				}
 			}
 			else if (viewType == IsOwnContainerType)

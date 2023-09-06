@@ -31,8 +31,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
-		private ContentControl _headerContentControl;
-		private ContentControl _footerContentControl;
+		internal ContentControl FooterContentControl { get; private set; }
+
+		internal ContentControl HeaderContentControl { get; private set; }
 
 		private Orientation Orientation => (Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
 
@@ -49,9 +50,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnHeaderChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (_headerContentControl is { })
+			if (HeaderContentControl is { })
 			{
-				_headerContentControl.Content = args.NewValue;
+				HeaderContentControl.Content = args.NewValue;
 			}
 		}
 
@@ -68,9 +69,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnFooterChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (_footerContentControl is { })
+			if (FooterContentControl is { })
 			{
-				_footerContentControl.Content = args.NewValue;
+				FooterContentControl.Content = args.NewValue;
 			}
 		}
 
@@ -87,9 +88,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnHeaderTemplateChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (_headerContentControl is { })
+			if (HeaderContentControl is { })
 			{
-				_headerContentControl.ContentTemplate = (DataTemplate)args.NewValue;
+				HeaderContentControl.ContentTemplate = (DataTemplate)args.NewValue;
 			}
 		}
 
@@ -106,9 +107,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnFooterTemplateChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (_footerContentControl is { })
+			if (FooterContentControl is { })
 			{
-				_footerContentControl.ContentTemplate = (DataTemplate)args.NewValue;
+				FooterContentControl.ContentTemplate = (DataTemplate)args.NewValue;
 			}
 		}
 
@@ -125,9 +126,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnHeaderTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (_headerContentControl is { })
+			if (HeaderContentControl is { })
 			{
-				_headerContentControl.Transitions = (TransitionCollection)args.NewValue;
+				HeaderContentControl.Transitions = (TransitionCollection)args.NewValue;
 			}
 		}
 
@@ -144,9 +145,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnFooterTransitionsChanged(DependencyPropertyChangedEventArgs args)
 		{
-			if (_footerContentControl is { })
+			if (FooterContentControl is { })
 			{
-				_footerContentControl.Transitions = (TransitionCollection)args.NewValue;
+				FooterContentControl.Transitions = (TransitionCollection)args.NewValue;
 			}
 		}
 
@@ -255,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// This is only called after (or while) the header and footer are created and added to the visual tree.
-			global::System.Diagnostics.Debug.Assert(_headerContentControl is { });
+			global::System.Diagnostics.Debug.Assert(HeaderContentControl is { });
 
 			if (_itemsPanel is { })
 			{
@@ -276,9 +277,9 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void LoadChildren(ViewGroup panel)
 		{
-			if (_headerContentControl is null)
+			if (HeaderContentControl is null)
 			{
-				_headerContentControl = new ContentControl
+				HeaderContentControl = new ContentControl
 				{
 					Content = Header,
 					ContentTemplate = HeaderTemplate,
@@ -288,14 +289,14 @@ namespace Windows.UI.Xaml.Controls
 					IsTabStop = false
 				};
 
-				VisualTreeHelper.AddChild(this, _headerContentControl);
+				VisualTreeHelper.AddChild(this, HeaderContentControl);
 			}
 
 			SetItemsPanel(panel);
 
-			if (_footerContentControl is null)
+			if (FooterContentControl is null)
 			{
-				_footerContentControl = new ContentControl
+				FooterContentControl = new ContentControl
 				{
 					Content = Footer,
 					ContentTemplate = FooterTemplate,
@@ -305,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 					IsTabStop = false
 				};
 
-				VisualTreeHelper.AddChild(this, _footerContentControl);
+				VisualTreeHelper.AddChild(this, FooterContentControl);
 			}
 		}
 
@@ -334,9 +335,9 @@ namespace Windows.UI.Xaml.Controls
 
 			var collection = new[]
 			{
-				_headerContentControl,
+				HeaderContentControl,
 				_itemsPanel,
-				_footerContentControl
+				FooterContentControl
 			};
 
 			for (var i = 0; i < 3; i++)
@@ -354,7 +355,7 @@ namespace Windows.UI.Xaml.Controls
 					if (view == _itemsPanel)
 					{
 						// the panel should stretch to a width big enough such that the footer is at the very right
-						childRect.Width = childRect.Width.AtLeast(finalSize.Width - GetElementDesiredSize(_footerContentControl).Width - childRect.X);
+						childRect.Width = childRect.Width.AtLeast(finalSize.Width - GetElementDesiredSize(FooterContentControl).Width - childRect.X);
 					}
 
 					previousChildSize = childRect.Width;
@@ -369,7 +370,7 @@ namespace Windows.UI.Xaml.Controls
 					if (view == _itemsPanel)
 					{
 						// the panel should stretch to a height big enough such that the footer is at the very bottom
-						childRect.Height = childRect.Height.AtLeast(finalSize.Height - GetElementDesiredSize(_footerContentControl).Height - childRect.Y);
+						childRect.Height = childRect.Height.AtLeast(finalSize.Height - GetElementDesiredSize(FooterContentControl).Height - childRect.Y);
 					}
 
 					previousChildSize = childRect.Height;
@@ -398,9 +399,9 @@ namespace Windows.UI.Xaml.Controls
 
 			var collection = new[]
 			{
-				_headerContentControl,
+				HeaderContentControl,
 				_itemsPanel,
-				_footerContentControl
+				FooterContentControl
 			};
 
 			for (var i = 0; i < 3; i++)
@@ -444,7 +445,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
-			if (orientation != Orientation || SnapPointsProvider is null || _headerContentControl is null || _footerContentControl is null)
+			if (orientation != Orientation || SnapPointsProvider is null || HeaderContentControl is null || FooterContentControl is null)
 			{
 				return null;
 			}
@@ -453,15 +454,11 @@ namespace Windows.UI.Xaml.Controls
 
 			var panelSnapPoints = SnapPointsProvider.GetIrregularSnapPoints(orientation, alignment);
 
-			var hasHeader = !_headerContentControl.IsContentPresenterBypassEnabled ?
-				VisualTreeHelper.GetChildrenCount(_headerContentControl.FindFirstChild<ContentPresenter>()) > 0 :
-				VisualTreeHelper.GetChildrenCount(_headerContentControl) > 0;
-			var hasFooter = !_footerContentControl.IsContentPresenterBypassEnabled ?
-				VisualTreeHelper.GetChildrenCount(_footerContentControl.FindFirstChild<ContentPresenter>()) > 0 :
-				VisualTreeHelper.GetChildrenCount(_footerContentControl) > 0;
+			var hasHeader = Header != null || HeaderTemplate != null;
+			var hasFooter = Footer != null || FooterTemplate != null;
 
-			var headerRect = LayoutInformation.GetLayoutSlot(_headerContentControl);
-			var footerRect = LayoutInformation.GetLayoutSlot(_footerContentControl);
+			var headerRect = LayoutInformation.GetLayoutSlot(HeaderContentControl);
+			var footerRect = LayoutInformation.GetLayoutSlot(FooterContentControl);
 
 			var panelStretch = Orientation == Orientation.Horizontal ?
 				footerRect.Left - headerRect.Right - GetElementDesiredSize(_itemsPanel).Width :
