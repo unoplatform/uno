@@ -204,7 +204,15 @@ namespace Private.Infrastructure
 
 				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, RoutedEventArgs args)
 				{
-					if (element.Dispatcher.HasThreadAccess)
+					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
+#if __WASM__
+					if (!Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported)
+					{
+						raiseSynchronously = true;
+					}
+#endif
+
+					if (raiseSynchronously)
 					{
 						element.SafeRaiseEvent(routedEvent, args);
 					}
