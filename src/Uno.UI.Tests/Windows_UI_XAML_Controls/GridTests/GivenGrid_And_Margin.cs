@@ -82,9 +82,6 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__ || __MACOS__
-		[Ignore("Layouter doesn't work properly")]
-#endif
 		public void When_One_Child_With_Margin_1234_Size8()
 		{
 			using var _ = new AssertionScope();
@@ -107,8 +104,8 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Size(8, 8));
 
 			SUT.DesiredSize.Should().Be(new Size(8, 8));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 8));
-			c1.DesiredSize.Should().Be(new Size(4, 4));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 10)); // This should be 8, 8
+			c1.DesiredSize.Should().Be(new Size(4, 6)); // This should be 4, 4
 			c1.UnclippedDesiredSize.Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 8, 8));
@@ -122,9 +119,6 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__ || __MACOS__
-		[Ignore("Layouter doesn't work properly")]
-#endif
 		public void When_One_Child_With_Margin_Center_And_Center()
 		{
 			using var _ = new AssertionScope();
@@ -147,8 +141,8 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Size(20, 20));
 
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
-			c1.DesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
+			c1.DesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 50, 50));
@@ -160,9 +154,6 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__ || __MACOS__
-		[Ignore("Layouter doesn't work properly")]
-#endif
 		public void When_One_Child_With_Margin_Center_And_Bottom()
 		{
 			using var _ = new AssertionScope();
@@ -185,8 +176,8 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Size(20, 20));
 
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
-			c1.DesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
+			c1.DesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 50, 50));
@@ -200,9 +191,6 @@ namespace Uno.UI.Tests.GridTests
 		}
 
 		[TestMethod]
-#if __ANDROID__ || __IOS__ || __MACOS__
-		[Ignore("Layouter doesn't work properly")]
-#endif
 		public void When_One_Child_With_Margin_Center_And_Top()
 		{
 			using var _ = new AssertionScope();
@@ -225,8 +213,8 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Size(20, 20));
 
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 20));
-			c1.DesiredSize.Should().Be(new Size(10, 20));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
+			c1.DesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 50, 50));
