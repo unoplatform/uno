@@ -11,6 +11,7 @@ namespace Windows.UI.Composition
 		private SKImageFilter GenerateEffectFilter(object effect, SKRect bounds)
 		{
 			// TODO: https://user-images.githubusercontent.com/34550324/264485558-d7ee5062-b0e0-4f6e-a8c7-0620ec561d3d.png
+			// TODO: Cache pixel shaders (see dwmcore.dll!CCompiledEffectCache)
 
 			switch (effect)
 			{
@@ -22,7 +23,7 @@ namespace Windows.UI.Composition
 							SKPaint paint = new SKPaint() { IsAntialias = true, IsAutohinted = true, FilterQuality = SKFilterQuality.High };
 							brush.UpdatePaint(paint, bounds);
 
-							return SKImageFilter.CreatePaint(paint, new SKImageFilter.CropRect(bounds));
+							return SKImageFilter.CreatePaint(paint, new(bounds));
 						}
 
 						return null;
@@ -452,6 +453,81 @@ namespace Windows.UI.Composition
 										}
 
 										return SKImageFilter.CreateArithmetic(multiplyAmount.Value, source1Amount.Value, source2Amount.Value, offset.Value, false, bgFilter, fgFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.ExposureEffect: // TODO: We can probably replace the pixel shader with a color matrix filter instead?
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Exposure", out uint exposureProp, out _);
+
+										float exposure = (float)effectInterop.GetProperty(exposureProp);
+										float multiplier = MathF.Pow(2.0f, exposure);
+
+										string shader = $@"
+											uniform shader input;
+											uniform half multiplier;
+
+											half4 main() 
+											{{
+												half4 inputColor = sample(input);
+												return half4(inputColor.rgb * multiplier, inputColor.a);
+											}}
+										";
+
+										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+										if (errors is not null)
+											return null;
+
+										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
+										{
+											{ "multiplier", multiplier }
+										};
+										SKRuntimeEffectChildren children = new(runtimeEffect)
+										{
+											{ "input", null }
+										};
+
+										return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+
+										// Reference (wuceffects.dll):
+										/*
+											void Windows::UI::Composition::ExposureEffectType::GenerateCode(const Windows::UI::Composition::EffectNode *node, Windows::UI::Composition::EffectGenerator *pGenerator, const char *pszOutputPixelName)
+											{
+												Windows::UI::Composition::StringBuilder *pStringBuilder;
+												std::string strInputPixel;
+												std::string strMultiplierProperty;
+												bool isPropertyDynamic;
+
+												strInputPixel = pGenerator->GetInputPixelName(node, 0);
+
+												isPropertyDynamic = node->IsPropertyDynamic(0); // ExposureValue
+												pGenerator->DeclareShaderVariable(
+													&strMultiplierProperty,
+													DCOMPOSITION_EXPRESSION_TYPE_SCALAR,
+													"Multiplier",
+													isPropertyDynamic,
+													[](void** defaultProperties, void** output) { *(float*)*output = pow(2.0, *(float*)(defaultProperties[0])); }
+												);
+  
+												pStringBuilder = pGenerator->BeginPSLine();
+												pStringBuilder->(pszOutputPixelName);
+												pStringBuilder->(" = minfloat4(");
+												pStringBuilder->(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->(".rgb * ");
+												pStringBuilder->(strMultiplierProperty.c_str(), strMultiplierProperty.size());
+												pStringBuilder->(", ");
+												pStringBuilder->(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->(".a);");
+												pStringBuilder->('\n');
+											}
+										*/
 									}
 
 									return null;
