@@ -4,7 +4,7 @@
 	<PropertyGroup>
 		<!-- Wrap WinAppSDK detection until a stable property can be used -->
 		<_UnoIsWinAppSDKDefined>false</_UnoIsWinAppSDKDefined>
-		<_UnoIsWinAppSDKDefined Condition="'$(WindowsAppSDKWinUI)'!='true' and '$(UseWinUITools)'!='true'">true</_UnoIsWinAppSDKDefined>
+		<_UnoIsWinAppSDKDefined Condition="'$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true'">true</_UnoIsWinAppSDKDefined>
 	</PropertyGroup>
 
 	<Import Project="../uno.winui.common.props" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
