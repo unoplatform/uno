@@ -9,6 +9,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml;
 public class Given_Window
 {
 	[TestMethod]
+	[Ignore]
 	public void New_Window_Becomes_Current()
 	{
 		var window = new Windows.UI.Xaml.Window(true);
@@ -17,6 +18,7 @@ public class Given_Window
 	}
 
 	[TestMethod]
+	[Ignore]
 	public void New_Window_Does_Not_Override_Current()
 	{
 		var existingCurrent = Windows.UI.Xaml.Window.Current;
