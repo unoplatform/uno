@@ -14,38 +14,28 @@
  */
 
 .visibility-opacity-transition {
-<<<<<<< HEAD
-<<<<<<< HEAD
   @include media-breakpoint-up(lg) {
-=======
-  @media (min-width: 1112px) {
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
-=======
-  @include media-breakpoint-up(lg) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
     visibility: hidden;
+    opacity: 0;
+    transition: visibility 100ms, opacity 100ms ease-in-out;
 
     list-style: none;
-
-    transition: visibility 100ms, opacity 100ms ease-in-out;
-    opacity: 0;
   }
 }
 
 #header-container {
-  display: flex;
-  position: fixed;
+  padding: 16px 32px;
+  z-index: 9999;
   background: #fff;
 
+  display: flex;
+  position: fixed;
   width: 100%;
-  min-height: 75px;
-
-  padding: 16px 32px;
+  min-height: 67px;
+  max-height: 67px;
   border-bottom: 1px solid #f4f2f3;
-
   justify-content: space-between;
 
-  z-index: 9999;
 
   &::after,
   &::before {
@@ -54,32 +44,16 @@
 
   #menu-menu-principal {
     float: right;
-<<<<<<< HEAD
-
-<<<<<<< HEAD
     list-style: none;
 
     @include media-breakpoint-down(lg) {
-=======
-    @media (max-width: 1112px) {
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
-=======
-    list-style: none;
-
-    @include media-breakpoint-down(lg) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       width: 100%;
+      // 70vh is a magic value found by trial and error.
+      max-height: 70vh;
+      overflow-y: auto;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     @include media-breakpoint-up(lg) {
-=======
-    @media (min-width: 1112px) {
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
-=======
-    @include media-breakpoint-up(lg) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       display: flex;
     }
   }
@@ -88,22 +62,15 @@
   #header-logo-container {
     width: 36px;
     vertical-align: middle;
+    z-index: 9;
+
 
     img {
       width: 100%;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     @include media-breakpoint-up(lg) {
-      width: 120px;
-=======
-    @media (min-width: 1113px) {
-=======
-    @include media-breakpoint-up(lg) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       min-width: 120px;
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
     }
   }
 
@@ -111,6 +78,7 @@
     padding: 0;
     margin: 10px 0;
     display: none !important;
+    z-index: 9;
 
     .icon-bar {
       background: $darkgray;
@@ -121,15 +89,7 @@
       margin-top: 3px;
     }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
     @media (max-width: 979px) {
-=======
-    @media (max-width: 1112px) {
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
-=======
-    @media (max-width: 979px) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       display: block !important;
     }
   }
@@ -141,29 +101,23 @@
   nav {
     a {
       padding: 10px;
-
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 600;
       font-stretch: normal;
       font-style: normal;
-      line-height: 16px;
+      line-height: 14px;
       letter-spacing: normal;
       text-transform: uppercase;
       color: $black;
 
       &:hover,
       &:focus {
-<<<<<<< HEAD
-        border-radius: 4px;
-        background-color: transparentize($turquoise, 0.8);
-=======
         color: $purple;
       }
 
       @include media-breakpoint-up(lg) {
         font-size: 19px;
         line-height: 17px;
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
       }
     }
 
@@ -171,17 +125,12 @@
      * Top level menu items
      */
     & > ul > li {
-<<<<<<< HEAD
-      margin: 0 16px;
-      align-self: center;
-=======
 
       @include media-breakpoint-up(lg) {
         margin: 0 16px;
         align-self: center;
         min-width: max-content;
       }
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
 
       /**
        * has-children means there is a submenu
@@ -190,8 +139,6 @@
         // actual submenu
         position: relative;
 
-<<<<<<< HEAD
-=======
         & > a {
 
 
@@ -212,38 +159,27 @@
           }
         }
 
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
         & > ul {
           @extend .visibility-opacity-transition;
-          width: inherit;
+          width: 100%;
 
-<<<<<<< HEAD
-<<<<<<< HEAD
           @include media-breakpoint-up(lg) {
-=======
-          @media (min-width: 1113px) {
-=======
-          @include media-breakpoint-up(lg) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
             width: max-content;
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
             display: flex;
             position: absolute;
-            padding: 24px 48px;
+            padding: 20px;
             top: 170% !important;
-            left: -100% !important;
+            left: -25% !important;
 
             flex-direction: column;
 
-            border-radius: 4px;
+            //border-radius: 4px;
             box-shadow: 0 0 20px 2px rgba(36, 36, 36, 0.2);
             background-color: $white;
           }
 
           li {
             display: flex;
-<<<<<<< HEAD
-=======
             border-bottom: 1px solid $lightblue;
             background: $white;
 
@@ -251,7 +187,6 @@
               border: none;
             }
 
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
           }
 
           a {
@@ -267,16 +202,8 @@
             flex-direction: column;
 
             & > a {
-              cursor: default;
-
               font-weight: 700;
               line-height: normal !important;
-              color: $black;
-
-              &:hover,
-              &:focus {
-                background-color: transparent;
-              }
             }
 
             ul {
@@ -341,6 +268,7 @@
       padding: 8px 32px;
 
       font-size: 16px;
+      line-height: 24px;
       font-weight: 700;
       min-width: 125px;
       text-align: center;
@@ -350,47 +278,47 @@
       background-color: $turquoise;
       background: linear-gradient(to top, $blue 50%, $turquoise 50%);
       background-size: 100% 200%;
-      background-position:left top;
-      transition:all 0.5s cubic-bezier(.69,.04,.9,.65);
+      background-position: left top;
+      transition: all 0.5s cubic-bezier(.69, .04, .9, .65);
 
       &:hover {
         color: $white;
-        background-position:bottom left;
+        background-position: bottom left;
       }
     }
   }
 }
 
 #navbar {
-<<<<<<< HEAD
-<<<<<<< HEAD
   @media (max-width: 979px) {
-=======
-  @media (max-width: 1112px) {
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
-=======
-  @media (max-width: 979px) {
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
 
     overflow: auto !important;
-    
+
     position: fixed;
     width: 100%;
-    margin: 0;
+    margin: -16px 0 0 0;
     padding: 0;
 
-    top: 75px;
+    padding-top: 67px;
     left: 0;
 
     text-align: left;
 
-    background: #fff;
+    background: $lightblue;
+
+    transition: height .4s ease .1s, opacity .6s ease;
+    opacity: 0;
 
     &.collapse {
-      display: none!important;
+      height: 67px !important;
+      display: none !important;
     }
+
+
     &.collapse.in {
-      display: block!important;
+      display: block !important;
+      height: 100vh !important;
+      opacity: 1;
     }
 
     .menu {
@@ -401,6 +329,13 @@
       li {
         display: block;
         padding: 0;
+
+        &.get-started-btn {
+          position: absolute;
+          padding: 0 16px;
+          bottom: 10%;
+          width: 100%;
+        }
 
         &.has-children {
           position: relative;
@@ -425,9 +360,6 @@
       a {
         display: block;
         padding: 10px 25px;
-
-        line-height: 1.4;
-        font-weight: 700;
       }
     }
   }
@@ -435,7 +367,7 @@
 
 .subnav {
   position: fixed;
-  top: 75px;
+  top: 67px;
   width: 100%;
   z-index: 999;
   background-color: #f8f8f8;

@@ -11,15 +11,7 @@ document.addEventListener(
             function (e) {
                 const t = e.target;
                 if (
-<<<<<<< HEAD
-<<<<<<< HEAD
                     window.innerWidth >= 980 ||
-=======
-                    window.innerWidth >= 1112 ||
->>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
-=======
-                    window.innerWidth >= 980 ||
->>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
                     !t.matches("#navbar .has-children a")
                 )
                     return;
