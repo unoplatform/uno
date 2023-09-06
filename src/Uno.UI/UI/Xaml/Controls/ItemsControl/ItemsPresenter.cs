@@ -284,7 +284,8 @@ namespace Windows.UI.Xaml.Controls
 					ContentTemplate = HeaderTemplate,
 					ContentTransitions = HeaderTransitions,
 					VerticalContentAlignment = VerticalAlignment.Stretch,
-					HorizontalContentAlignment = HorizontalAlignment.Stretch
+					HorizontalContentAlignment = HorizontalAlignment.Stretch,
+					IsTabStop = false
 				};
 
 				VisualTreeHelper.AddChild(this, _headerContentControl);
@@ -300,7 +301,8 @@ namespace Windows.UI.Xaml.Controls
 					ContentTemplate = FooterTemplate,
 					ContentTransitions = FooterTransitions,
 					VerticalContentAlignment = VerticalAlignment.Stretch,
-					HorizontalContentAlignment = HorizontalAlignment.Stretch
+					HorizontalContentAlignment = HorizontalAlignment.Stretch,
+					IsTabStop = false
 				};
 
 				VisualTreeHelper.AddChild(this, _footerContentControl);
