@@ -45,7 +45,7 @@ partial class InputManager
 
 		private void InitiateKeyDownBubblingFlow(KeyEventArgs args)
 		{
-			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.XamlRoot.Content;
+			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
@@ -75,7 +75,7 @@ partial class InputManager
 
 		private void InitiateKeyUpBubblingFlow(KeyEventArgs args)
 		{
-			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.XamlRoot.Content;
+			var originalSource = FocusManager.GetFocusedElement(_inputManager.ContentRoot.XamlRoot) as UIElement ?? _inputManager.ContentRoot.VisualTree.RootElement;
 
 			if (originalSource is null)
 			{
