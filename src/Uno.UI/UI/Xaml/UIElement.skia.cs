@@ -22,6 +22,7 @@ using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 
 namespace Windows.UI.Xaml
@@ -269,7 +270,8 @@ namespace Windows.UI.Xaml
 
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
-			if (oldRect != newRect || oldClip != newClip)
+
+			if (oldRect != newRect || oldClip != newClip || Visual.TransformMatrix != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
@@ -305,6 +307,22 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private Matrix4x4 GetFlowDirectionTransform()
+			=> ShouldMirrorVisual() ? new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)) : Matrix4x4.Identity;
+
+		private bool ShouldMirrorVisual()
+		{
+			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			{
+				if (fe.FlowDirection != feParent.FlowDirection)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
 		{
 			var roundedRect = LayoutRound(rect);
@@ -313,6 +331,7 @@ namespace Windows.UI.Xaml
 			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			Visual.TransformMatrix = GetFlowDirectionTransform();
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
 			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
