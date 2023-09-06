@@ -158,8 +158,19 @@ namespace Windows.UI.Xaml.Media
 			parent.InsertSubview(child, index);
 #elif __ANDROID__
 			parent.AddView(child, index);
-#else
+#elif __ANDROID__
 			parent.AddChild(child, index);
+#elif IS_UNIT_TESTS
+			if (parent is FrameworkElement fe)
+			{
+				fe.AddChild(child, index);
+			}
+			else
+			{
+				throw new NotImplementedException("AddChild on UIElement is not implemented on IS_UNIT_TESTS.");
+			}
+#else
+			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
 		}
 
@@ -180,8 +191,10 @@ namespace Windows.UI.Xaml.Media
 			child.RemoveFromSuperview();
 #elif __ANDROID__
 			parent.RemoveView(child);
-#else
+#elif __CROSSRUNTIME__
 			parent.RemoveChild(child);
+#else
+			throw new NotImplementedException("AddChild not implemented on this platform.");
 #endif
 		}
 
