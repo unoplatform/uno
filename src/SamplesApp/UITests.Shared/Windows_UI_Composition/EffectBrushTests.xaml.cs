@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
-using ShimSkiaSharp;
-using SkiaSharp;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
@@ -88,7 +86,7 @@ namespace UITests.Windows_UI_Composition
 
 			blendGrid.Background = new EffectTesterBrushWithSecondaryBrush(effectBrush7, compositor.CreateColorBrush(Colors.LightBlue));
 
-			var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://upload.wikimedia.org/wikipedia/commons/thumb/e/ee/Logo-winui.svg/200px-Logo-winui.svg.png"));
+			var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://user-images.githubusercontent.com/34550324/266135095-71c9ce0a-4e49-408f-b2ff-670a53adef10.png"));
 			surface.LoadCompleted += (s, o) =>
 			{
 				if (o.Status == LoadedImageSourceLoadStatus.Success)
@@ -120,6 +118,12 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush11 = factory11.CreateBrush();
 
 			contrastGrid.Background = new EffectTesterBrush(effectBrush11);
+
+			var effect12 = new SimpleExposureEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Exposure = -1.0f };
+			var factory12 = compositor.CreateEffectFactory(effect12);
+			var effectBrush12 = factory12.CreateBrush();
+
+			exposureGrid.Background = new EffectTesterBrush(effectBrush12);
 #endif
 		}
 
@@ -664,6 +668,60 @@ namespace UITests.Windows_UI_Composition
 				{
 					case 0:
 						return Contrast;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("B56C8CFA-F634-41EE-BEE0-FFA617106004")]
+		private class SimpleExposureEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleExposureEffect";
+			private Guid _id = new Guid("B56C8CFA-F634-41EE-BEE0-FFA617106004");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Exposure { get; set; } = 0.0f;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Exposure":
+					case "ExposureValue":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Exposure;
 					default:
 						return null;
 				}
