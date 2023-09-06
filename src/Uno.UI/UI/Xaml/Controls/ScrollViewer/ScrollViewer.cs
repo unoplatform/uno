@@ -22,7 +22,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-
+using Windows.Foundation.Metadata;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -51,7 +51,6 @@ using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Media;
-using Windows.Foundation.Metadata;
 #endif
 
 namespace Windows.UI.Xaml.Controls
