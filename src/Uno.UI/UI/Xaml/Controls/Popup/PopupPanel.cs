@@ -24,17 +24,7 @@ namespace Windows.UI.Xaml.Controls.Primitives;
 
 internal partial class PopupPanel : Panel
 {
-	private ManagedWeakReference _popup;
-
-	public Popup Popup
-	{
-		get => _popup?.Target as Popup;
-		set
-		{
-			WeakReferencePool.ReturnWeakReference(this, _popup);
-			_popup = WeakReferencePool.RentWeakReference(this, value);
-		}
-	}
+	public Popup Popup { get; }
 
 	public PopupPanel(Popup popup)
 	{
