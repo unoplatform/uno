@@ -555,9 +555,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			//We need to force a keypress event on editor action.
 			//the key press event is not triggered if we press the enter key depending on the ime.options
+<<<<<<< HEAD
 
 			// TODO: include modifier info in KeyEvent constructor
 			OnKeyPress(v, new KeyEventArgs(true, Keycode.Enter, new KeyEvent(KeyEventActions.Up, Keycode.Enter)));
+=======
+			var modifiers = e is not null ? VirtualKeyHelper.FromModifiers(e.Modifiers) : VirtualKeyModifiers.None;
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
+>>>>>>> d023bb1f58 (fix(TextBox): Avoid NRE on Android on virtual keyboard enter)
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.
 			// Otherwise we return true to allow the focus to change correctly.
