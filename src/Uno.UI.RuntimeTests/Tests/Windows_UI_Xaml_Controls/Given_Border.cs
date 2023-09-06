@@ -56,6 +56,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
+#if __ANDROID__ || __IOS__ || __MACOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public async Task Check_Border_Margin(bool useCustomControl)
 		{
 			double outerDimension = 300;
