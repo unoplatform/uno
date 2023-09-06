@@ -22,7 +22,7 @@ using Uno;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
-
+using Windows.Foundation.Metadata;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -1599,9 +1599,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_warnedAboutZoomedContentAlignment = true;
-			if (this.Log().IsEnabled(LogLevel.Warning))
+			if (this.Log().IsEnabled(ApiInformation.NotImplementedLogLevel))
 			{
-				this.Log().LogWarning("Zoom-based content alignment is not implemented on this platform.");
+				this.Log().Log(ApiInformation.NotImplementedLogLevel, "Zoom-based content alignment is not implemented on this platform.");
 			}
 		}
 #endif
