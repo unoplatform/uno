@@ -15,10 +15,14 @@
 
 .visibility-opacity-transition {
 <<<<<<< HEAD
+<<<<<<< HEAD
   @include media-breakpoint-up(lg) {
 =======
   @media (min-width: 1112px) {
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
+=======
+  @include media-breakpoint-up(lg) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
     visibility: hidden;
 
     list-style: none;
@@ -50,6 +54,7 @@
 
   #menu-menu-principal {
     float: right;
+<<<<<<< HEAD
 
 <<<<<<< HEAD
     list-style: none;
@@ -58,14 +63,23 @@
 =======
     @media (max-width: 1112px) {
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
+=======
+    list-style: none;
+
+    @include media-breakpoint-down(lg) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       width: 100%;
     }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
     @include media-breakpoint-up(lg) {
 =======
     @media (min-width: 1112px) {
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
+=======
+    @include media-breakpoint-up(lg) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       display: flex;
     }
   }
@@ -80,10 +94,14 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @include media-breakpoint-up(lg) {
       width: 120px;
 =======
     @media (min-width: 1113px) {
+=======
+    @include media-breakpoint-up(lg) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       min-width: 120px;
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
     }
@@ -104,10 +122,14 @@
     }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
     @media (max-width: 979px) {
 =======
     @media (max-width: 1112px) {
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
+=======
+    @media (max-width: 979px) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
       display: block !important;
     }
   }
@@ -138,7 +160,7 @@
         color: $purple;
       }
 
-      @media (min-width: 1113px) {
+      @include media-breakpoint-up(lg) {
         font-size: 19px;
         line-height: 17px;
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
@@ -154,7 +176,7 @@
       align-self: center;
 =======
 
-      @media (min-width: 1113px) {
+      @include media-breakpoint-up(lg) {
         margin: 0 16px;
         align-self: center;
         min-width: max-content;
@@ -183,7 +205,7 @@
             margin-left: 12px;
             vertical-align: top;
 
-            @media (min-width: 1113px) {
+            @include media-breakpoint-up(lg) {
               line-height: 21px;
               font: normal normal normal 15px/1 FontAwesome;
             }
@@ -196,9 +218,13 @@
           width: inherit;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
           @include media-breakpoint-up(lg) {
 =======
           @media (min-width: 1113px) {
+=======
+          @include media-breakpoint-up(lg) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
             width: max-content;
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
             display: flex;
@@ -221,7 +247,7 @@
             border-bottom: 1px solid $lightblue;
             background: $white;
 
-            @media (min-width: 1113px) {
+            @include media-breakpoint-up(lg) {
               border: none;
             }
 
@@ -337,10 +363,14 @@
 
 #navbar {
 <<<<<<< HEAD
+<<<<<<< HEAD
   @media (max-width: 979px) {
 =======
   @media (max-width: 1112px) {
 >>>>>>> 4a1dfe8fa0 (chore: Revert "docs: add breakpoint variable")
+=======
+  @media (max-width: 979px) {
+>>>>>>> 77842f60e4 (chore: Revert "docs: fix menu layout")
 
     overflow: auto !important;
     
