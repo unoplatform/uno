@@ -11,8 +11,8 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionCapabilities
 	{
-		public partial bool AreEffectsSupported() => true;
+		public bool AreEffectsSupported() => true;
 
-		public partial bool AreEffectsFast() => _compositor?.IsSoftwareRenderer is not true;
+		public bool AreEffectsFast() => _compositor?.IsSoftwareRenderer is not true;
 	}
 }

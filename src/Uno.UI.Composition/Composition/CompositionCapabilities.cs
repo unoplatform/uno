@@ -18,10 +18,6 @@ namespace Windows.UI.Composition
 
 		public static CompositionCapabilities GetForCurrentView() => new CompositionCapabilities(Compositor.Current);
 
-		public partial bool AreEffectsSupported();
-
-		public partial bool AreEffectsFast();
-
 		public TypedEventHandler<CompositionCapabilities, object>? Changed;
 	}
 }
