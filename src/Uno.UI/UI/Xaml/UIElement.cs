@@ -509,6 +509,7 @@ namespace Windows.UI.Xaml
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
 				elt.ApplyElementCustomTransform(ref matrix);
+				elt.ApplyFlowDirectionTransform(ref matrix);
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			if (to is not null && elt != to)
@@ -587,6 +588,21 @@ namespace Windows.UI.Xaml
 			{
 				matrix.M31 -= (float)ScrollOffsets.X;
 				matrix.M32 -= (float)ScrollOffsets.Y;
+			}
+#endif
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
+		{
+#if SUPPORTS_RTL
+			if (this is FrameworkElement fe && VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			{
+				if (fe.FlowDirection != parent.FlowDirection)
+				{
+					matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f);
+					matrix *= Matrix3x2.CreateTranslation((float)parent.RenderSize.Width, 0);
+				}
 			}
 #endif
 		}

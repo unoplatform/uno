@@ -18,6 +18,16 @@ public partial class TextBox
 
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
+	partial void OnFlowDirectionChangedPartial()
+	{
+		TextBoxView?.SetFlowDirectionAndTextAlignment();
+	}
+
+	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
+	{
+		TextBoxView?.SetFlowDirectionAndTextAlignment();
+	}
+
 	private void UpdateTextBoxView()
 	{
 		_textBoxView ??= new TextBoxView(this);
