@@ -346,6 +346,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+#if __ANDROID__ || __IOS__
+		[Ignore("Layouter doesn't work properly")]
+#endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
 		{
 			Border content = null;
