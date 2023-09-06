@@ -1,6 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<Import Project="../uno.winui.common.props" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
+	<PropertyGroup>
+		<!-- Wrap WinAppSDK detection until a stable property can be used -->
+		<_UnoIsWinAppSDKDefined>false</_UnoIsWinAppSDKDefined>
+		<_UnoIsWinAppSDKDefined Condition="'$(WindowsAppSDKWinUI)'!='true' and '$(UseWinUITools)'!='true'">false</_UnoIsWinAppSDKDefined>
+	</PropertyGroup>
+
+	<Import Project="../uno.winui.common.props" Condition="'$()'!='true'" />
 
 </Project>
