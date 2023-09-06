@@ -14,6 +14,13 @@ namespace Windows.Devices.Sensors
 
 		private TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> _readingChanged;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
+		private Pedometer()
+		{
+		}
+
 		public static IAsyncOperation<Pedometer> GetDefaultAsync() => GetDefaultImplAsync().AsAsyncOperation();
 
 		private static async Task<Pedometer> GetDefaultImplAsync()

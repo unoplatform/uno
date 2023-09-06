@@ -7,10 +7,6 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Pedometer
 	{
-		private Pedometer()
-		{
-		}
-
 		/// <summary>
 		/// API not supported, always returns null.
 		/// </summary>
