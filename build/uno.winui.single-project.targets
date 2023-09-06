@@ -100,7 +100,7 @@
 	</ItemGroup>
 
 	<Choose>
-		<When Condition="'$(WindowsAppSDKWinUI)'!='true'">
+		<When Condition="'$(_UnoIsWinAppSDKDefined)'!='true'">
 			<!-- IDE capabilities -->
 
 			<!-- Sync with https://github.com/dotnet/maui/blob/ffab30545ac146710a9ee61138be33e52ca4b326/src/Templates/src/templates/maui-mobile/Directory.Build.targets -->
@@ -148,7 +148,7 @@
 		</When>
 	</Choose>
 
-	<Target Name="_RemoveRoslynUnoSourceGenerationWinUI" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(WindowsAppSDKWinUI)'=='true'">
+	<Target Name="_RemoveRoslynUnoSourceGenerationWinUI" BeforeTargets="CoreCompile;XamlPreCompile" Condition="'$(_UnoIsWinAppSDKDefined)'=='true'">
 		<!---
 		Remove uno source generators when building under WinAppSDK
 		-->
