@@ -112,7 +112,7 @@ namespace Windows.UI.Core
 		/// Use this instead of Window.Current throughout this codebase
 		/// to prove it is intentional (the property is null throughout Uno.WinUI).
 		/// </summary>
-		public static CoreWindow? GetForCurrentThreadSafe() => GetForCurrentThread();
+		internal static CoreWindow? GetForCurrentThreadSafe() => GetForCurrentThread();
 #pragma warning restore RS0030
 
 		internal static CoreWindow? IShouldntUseGetForCurrentThread() => GetForCurrentThreadSafe();

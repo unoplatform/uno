@@ -55,6 +55,7 @@ namespace SamplesApp
 		private static ILogger? _log;
 #endif
 
+		private static Windows.UI.Xaml.Window? _mainWindow;
 		private bool _wasActivated;
 		private bool _isSuspended;
 
@@ -88,7 +89,7 @@ namespace SamplesApp
 			this.Resuming += OnResuming;
 		}
 
-		internal static Windows.UI.Xaml.Window? MainWindow { get; private set; }
+		internal static Windows.UI.Xaml.Window? MainWindow => _mainWindow;
 
 		/// <summary>
 		/// Invoked when the application is launched normally by the end user.  Other entry points
