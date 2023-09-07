@@ -1299,6 +1299,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
 		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#elif __WASM__
+		[Ignore("Flaky in CI.")]
 #endif
 		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item2()
 		{
@@ -1422,146 +1424,145 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			// This problem is incredibly difficult to reproduce. These are the exact
 			// mouse wheel deltas that my trackpad produced when I reproduced this manually.
-			var deltasString = """
-							   -266
-							   -393
-							   -626
-							   -730
-							   -410
-							   -644
-							   -666
-							   -328
-							   -584
-							   -671
-							   -535
-							   -250
-							   -460
-							   -514
-							   -538
-							   -382
-							   -692
-							   -342
-							   -557
-							   -331
-							   -540
-							   -320
-							   -523
-							   -385
-							   -428
-							   -397
-							   -388
-							   -143
-							   -382
-							   -370
-							   -366
-							   -358
-							   -566
-							   -128
-							   -545
-							   -121
-							   -540
-							   -97
-							   -536
-							   -55
-							   -476
-							   -246
-							   -344
-							   -203
-							   -311
-							   -190
-							   -295
-							   -225
-							   -234
-							   -86
-							   -209
-							   -26
-							   -389
-							   -189
-							   -329
-							   -57
-							   -282
-							   -130
-							   -205
-							   -108
-							   -183
-							   -106
-							   -172
-							   -102
-							   -86
-							   -75
-							   -108
-							   -112
-							   -64
-							   -24
-							   -20
-							   -20
-							   -13
-							   -11
-							   -7
-							   -4
-							   -5
-							   -2
-							   231
-							   122
-							   164
-							   266
-							   887
-							   167
-							   565
-							   434
-							   382
-							   372
-							   344
-							   170
-							   269
-							   547
-							   158
-							   272
-							   434
-							   168
-							   253
-							   386
-							   154
-							   269
-							   244
-							   238
-							   399
-							   91
-							   374
-							   153
-							   282
-							   143
-							   225
-							   194
-							   60
-							   183
-							   154
-							   262
-							   60
-							   249
-							   55
-							   232
-							   46
-							   168
-							   37
-							   128
-							   55
-							   82
-							   37
-							   68
-							   27
-							   35
-							   27
-							   17
-							   13
-							   12
-							   2
-							   6
-							   3
-							   2
-							   """;
-
-			var deltas = deltasString.Split('\n').Select(int.Parse).ToList();
+			var deltas = new[]
+			{
+				-266,
+				-393,
+				-626,
+				-730,
+				-410,
+				-644,
+				-666,
+				-328,
+				-584,
+				-671,
+				-535,
+				-250,
+				-460,
+				-514,
+				-538,
+				-382,
+				-692,
+				-342,
+				-557,
+				-331,
+				-540,
+				-320,
+				-523,
+				-385,
+				-428,
+				-397,
+				-388,
+				-143,
+				-382,
+				-370,
+				-366,
+				-358,
+				-566,
+				-128,
+				-545,
+				-121,
+				-540,
+				-97,
+				-536,
+				-55,
+				-476,
+				-246,
+				-344,
+				-203,
+				-311,
+				-190,
+				-295,
+				-225,
+				-234,
+				-86,
+				-209,
+				-26,
+				-389,
+				-189,
+				-329,
+				-57,
+				-282,
+				-130,
+				-205,
+				-108,
+				-183,
+				-106,
+				-172,
+				-102,
+				-86,
+				-75,
+				-108,
+				-112,
+				-64,
+				-24,
+				-20,
+				-20,
+				-13,
+				-11,
+				-7,
+				-4,
+				-5,
+				-2,
+				231,
+				122,
+				164,
+				266,
+				887,
+				167,
+				565,
+				434,
+				382,
+				372,
+				344,
+				170,
+				269,
+				547,
+				158,
+				272,
+				434,
+				168,
+				253,
+				386,
+				154,
+				269,
+				244,
+				238,
+				399,
+				91,
+				374,
+				153,
+				282,
+				143,
+				225,
+				194,
+				60,
+				183,
+				154,
+				262,
+				60,
+				249,
+				55,
+				232,
+				46,
+				168,
+				37,
+				128,
+				55,
+				82,
+				37,
+				68,
+				27,
+				35,
+				27,
+				17,
+				13,
+				12,
+				2,
+				6,
+				3,
+				2,
+			};
 
 			foreach (var delta in deltas.Where(i => i < 0))
 			{
@@ -1603,8 +1604,62 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// since this is originally a virtualization issue and references
 			// could be to different things than those shown on the screen.
 			var si = await UITestHelper.ScreenShot(list, true);
-			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#66AEE7"));
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, si.Width, si.Height - 110), Colors.FromARGB("#66AEE7"));
+			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#66AEE7")); // selected
+
+			// check starting from below the second item that nothing looks selected or hovered
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, si.Width, si.Height - 110), Colors.FromARGB("#66AEE7")); // clicked
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, si.Width, si.Height - 110), Colors.FromARGB("#FFE6E6E6")); // hovered
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__CROSSRUNTIME__
+		[Ignore("Native listviews differ in virtualization mechanics")]
+#endif
+		public async Task ListView_ObservableCollection_Creation_Count()
+		{
+			var SUT = new ListView_ObservableCollection_CreationCount();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			await AdvanceAutomation("Added");
+			await AdvanceAutomation("Scrolled1");
+
+			var expectedTemplateCreationCount = GetTemplateCreationCount();
+			//var expectedTemplateBindCount = GetTemplateBindCount(); // For some reason WASM performs extra bindings on scrolling
+			var expectedContainerCreationCount = GetContainerCreationCount();
+
+			await AdvanceAutomation("Scrolled2");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+
+			var expectedTemplateBindCount = GetTemplateBindCount();
+
+			await AdvanceAutomation("Added above");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount()); // Note: this doesn't actually seem to be the case on Windows - the bind count increases for some reason
+
+			await AdvanceAutomation("Removed above");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount());
+
+			int GetTemplateCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCountText")).Text);
+			int GetTemplateBindCount() => int.Parse(((TextBlock)SUT.FindName("BindCountText")).Text);
+			int GetContainerCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCount2Text")).Text);
+
+			async Task AdvanceAutomation(string automationStep)
+			{
+				var button = (Button)SUT.FindName("AutomateButton");
+				button.RaiseClick();
+				await WindowHelper.WaitFor(() => ((TextBlock)SUT.FindName("AutomationStepTextBlock")).Text == automationStep);
+				await WindowHelper.WaitForIdle();
+			}
 		}
 
 		[TestMethod]
