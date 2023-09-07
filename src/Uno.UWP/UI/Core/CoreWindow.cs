@@ -118,7 +118,7 @@ namespace Windows.UI.Core
 		internal static CoreWindow? IShouldntUseGetForCurrentThread() => GetForCurrentThreadSafe();
 
 		public CoreVirtualKeyStates GetAsyncKeyState(System.VirtualKey virtualKey)
-			=> KeyboardStateTracker.GetKeyState(virtualKey);
+			=> KeyboardStateTracker.GetAsyncKeyState(virtualKey);
 
 		public CoreVirtualKeyStates GetKeyState(System.VirtualKey virtualKey)
 			=> KeyboardStateTracker.GetKeyState(virtualKey);

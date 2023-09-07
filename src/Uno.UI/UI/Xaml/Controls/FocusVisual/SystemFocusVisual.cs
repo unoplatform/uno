@@ -7,12 +7,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-#if HAS_UNO_WINUI
-using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
-#else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
-#endif
-
 namespace Uno.UI.Xaml.Controls;
 
 internal partial class SystemFocusVisual : Control
@@ -23,7 +17,24 @@ internal partial class SystemFocusVisual : Control
 	public SystemFocusVisual()
 	{
 		DefaultStyleKey = typeof(SystemFocusVisual);
-		Windows.UI.Xaml.Window.IShouldntUseCurrentWindow!.SizeChanged += WindowSizeChanged;
+		Loaded += OnLoaded;
+		Unloaded += OnUnloaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed += XamlRootChanged;
+		}
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		if (XamlRoot is not null)
+		{
+			XamlRoot.Changed -= XamlRootChanged;
+		}
 	}
 
 	public UIElement? FocusedElement
@@ -82,7 +93,7 @@ internal partial class SystemFocusVisual : Control
 
 	partial void SetLayoutPropertiesPartial();
 
-	private void WindowSizeChanged(object sender, WindowSizeChangedEventArgs e) => SetLayoutProperties();
+	private void XamlRootChanged(object sender, XamlRootChangedEventArgs e) => SetLayoutProperties();
 
 	private void FocusedElementUnloaded(object sender, RoutedEventArgs e) => FocusedElement = null;
 
@@ -100,7 +111,8 @@ internal partial class SystemFocusVisual : Control
 
 	private void SetLayoutProperties()
 	{
-		if (FocusedElement == null ||
+		if (XamlRoot is null ||
+			FocusedElement is null ||
 			FocusedElement.Visibility == Visibility.Collapsed ||
 			(FocusedElement is Control control && !control.IsEnabled && !control.AllowFocusWhenDisabled))
 		{
@@ -110,7 +122,7 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(Windows.UI.Xaml.Window.IShouldntUseCurrentWindow!.RootElement);
+		var transformToRoot = FocusedElement.TransformToVisual(XamlRoot.Content);
 		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 
