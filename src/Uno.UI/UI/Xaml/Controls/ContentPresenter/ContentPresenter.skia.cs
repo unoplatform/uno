@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
+using Uno.Foundation.Extensibility;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
@@ -19,6 +21,8 @@ namespace Windows.UI.Xaml.Controls
 	/// </remarks>
 	public partial class ContentPresenter : FrameworkElement
 	{
+		private static Lazy<INativeElementHostingExtension> _nativeElementHostingExtension = new Lazy<INativeElementHostingExtension>(() => ApiExtensibility.CreateInstance<INativeElementHostingExtension>(typeof(ContentPresenter)));
+
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 		private Rect? _lastArrangeRect;
 		private Rect _lastGlobalRect;
@@ -50,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void TryRegisterNativeElement(object newValue)
 		{
-			if (CoreWindow.Main.IsNativeElement(newValue))
+			if (IsNativeElement(newValue))
 			{
 				IsNativeHost = true;
 
@@ -136,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsNativeHost)
 			{
-				CoreWindow.Main.AttachNativeElement(XamlRoot, Content);
+				AttachNativeElement(XamlRoot, Content);
 			}
 		}
 
@@ -144,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsNativeHost)
 			{
-				CoreWindow.Main.DetachNativeElement(XamlRoot, Content);
+				DetachNativeElement(XamlRoot, Content);
 			}
 		}
 
@@ -152,7 +156,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (IsNativeHost)
 			{
-				return CoreWindow.Main.MeasureNativeElement(XamlRoot, Content, size);
+				return MeasureNativeElement(XamlRoot, Content, size);
 			}
 			else
 			{
@@ -171,9 +175,21 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_lastGlobalRect = globalRect;
 
-					CoreWindow.Main.ArrangeNativeElement(XamlRoot, Content, globalRect);
+					_nativeElementHostingExtension.Value.ArrangeNativeElement(XamlRoot, Content, globalRect);
 				}
 			}
 		}
+
+		internal bool IsNativeElement(object content) => _nativeElementHostingExtension.Value?.IsNativeElement(content) ?? false;
+
+		internal void AttachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.AttachNativeElement(owner, content);
+
+		internal void DetachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.DetachNativeElement(owner, content);
+
+		internal void ArrangeNativeElement(object owner, object content, Rect arrangeRect) => _nativeElementHostingExtension.Value?.ArrangeNativeElement(owner, content, arrangeRect);
+
+		internal Size MeasureNativeElement(object owner, object content, Size size) => _nativeElementHostingExtension.Value?.MeasureNativeElement(owner, content, size) ?? size;
+
+		internal bool IsNativeElementAttached(object owner, object nativeElement) => _nativeElementHostingExtension.Value?.IsNativeElementAttached(owner, nativeElement) ?? false;
 	}
 }

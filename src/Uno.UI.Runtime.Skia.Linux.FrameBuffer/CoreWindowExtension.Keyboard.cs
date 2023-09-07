@@ -18,7 +18,7 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia
 {
-	unsafe internal partial class CoreWindowExtension : ICoreWindowExtension
+	unsafe internal partial class CoreWindowExtension : INativeElementHostingExtension
 	{
 		private HashSet<libinput_key> _pressedKeys = new HashSet<libinput_key>();
 

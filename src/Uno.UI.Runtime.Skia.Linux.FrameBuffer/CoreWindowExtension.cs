@@ -22,7 +22,7 @@ using Uno.Foundation.Logging;
 
 namespace Uno.UI.Runtime.Skia;
 
-unsafe internal partial class CoreWindowExtension : ICoreWindowExtension, IDisposable
+unsafe internal partial class CoreWindowExtension : INativeElementHostingExtension, IDisposable
 {
 	private readonly CoreWindow _owner;
 	private readonly IntPtr _libInputContext;

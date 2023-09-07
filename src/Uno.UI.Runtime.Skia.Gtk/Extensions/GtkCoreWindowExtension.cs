@@ -13,13 +13,10 @@ using Uno.UI.Runtime.Skia.Gtk;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
-	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
+	internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
 	{
-		private readonly CoreWindow _owner;
-
-		public GtkCoreWindowExtension(object owner)
+		public GtkNativeElementHostingExtension()
 		{
-			_owner = (CoreWindow)owner;
 		}
 
 		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
