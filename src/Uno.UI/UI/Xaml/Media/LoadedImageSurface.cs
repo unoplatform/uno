@@ -19,13 +19,6 @@ namespace Windows.UI.Xaml.Media
 		public Size? DecodedSize { get => _decodedSize; }
 		public Size? NaturalSize { get => _naturalPhysicalSize; }
 
-		public static partial LoadedImageSurface StartLoadFromUri(Uri uri);
-		public static partial LoadedImageSurface StartLoadFromUri(Uri uri, Size desiredMaxSize);
-		public static partial LoadedImageSurface StartLoadFromStream(IRandomAccessStream stream);
-		public static partial LoadedImageSurface StartLoadFromStream(IRandomAccessStream stream, Size desiredMaxSize);
-
 		public event TypedEventHandler<LoadedImageSurface, LoadedImageSourceLoadCompletedEventArgs>? LoadCompleted;
-
-		public partial void Dispose();
 	}
 }

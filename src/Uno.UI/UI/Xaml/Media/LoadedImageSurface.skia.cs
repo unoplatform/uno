@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 			Task.Run(() => loadAction(this));
 		}
 
-		public static partial LoadedImageSurface StartLoadFromUri(Uri uri)
+		public static LoadedImageSurface StartLoadFromUri(Uri uri)
 		{
 			var retVal = new LoadedImageSurface(async (LoadedImageSurface imgSurf) =>
 			{
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Media
 			return retVal;
 		}
 
-		public static partial LoadedImageSurface StartLoadFromUri(Uri uri, Size desiredMaxSize)
+		public static LoadedImageSurface StartLoadFromUri(Uri uri, Size desiredMaxSize)
 		{
 			var retVal = new LoadedImageSurface(async (LoadedImageSurface imgSurf) =>
 			{
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Media
 			return retVal;
 		}
 
-		public static partial LoadedImageSurface StartLoadFromStream(IRandomAccessStream stream)
+		public static LoadedImageSurface StartLoadFromStream(IRandomAccessStream stream)
 		{
 			var retVal = new LoadedImageSurface((LoadedImageSurface imgSurf) =>
 			{
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Media
 			return retVal;
 		}
 
-		public static partial LoadedImageSurface StartLoadFromStream(IRandomAccessStream stream, Size desiredMaxSize)
+		public static LoadedImageSurface StartLoadFromStream(IRandomAccessStream stream, Size desiredMaxSize)
 		{
 			var retVal = new LoadedImageSurface((LoadedImageSurface imgSurf) =>
 			{
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Media
 			return retVal;
 		}
 
-		public partial void Dispose()
+		public void Dispose()
 		{
 			_httpClient?.Dispose();
 			InternalSurface?.Image?.Dispose();

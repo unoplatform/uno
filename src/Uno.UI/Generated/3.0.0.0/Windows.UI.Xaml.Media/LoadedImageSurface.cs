@@ -20,35 +20,35 @@ namespace Windows.UI.Xaml.Media
 		// Forced skipping of method Windows.UI.Xaml.Media.LoadedImageSurface.LoadCompleted.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public partial void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.LoadedImageSurface", "void LoadedImageSurface.Dispose()");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static partial global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromUri(global::System.Uri uri, global::Windows.Foundation.Size desiredMaxSize)
+		public static global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromUri(global::System.Uri uri, global::Windows.Foundation.Size desiredMaxSize)
 		{
 			throw new global::System.NotImplementedException("The member LoadedImageSurface LoadedImageSurface.StartLoadFromUri(Uri uri, Size desiredMaxSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoadedImageSurface%20LoadedImageSurface.StartLoadFromUri%28Uri%20uri%2C%20Size%20desiredMaxSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static partial global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromUri(global::System.Uri uri)
+		public static global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromUri(global::System.Uri uri)
 		{
 			throw new global::System.NotImplementedException("The member LoadedImageSurface LoadedImageSurface.StartLoadFromUri(Uri uri) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoadedImageSurface%20LoadedImageSurface.StartLoadFromUri%28Uri%20uri%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static partial global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream, global::Windows.Foundation.Size desiredMaxSize)
+		public static global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream, global::Windows.Foundation.Size desiredMaxSize)
 		{
 			throw new global::System.NotImplementedException("The member LoadedImageSurface LoadedImageSurface.StartLoadFromStream(IRandomAccessStream stream, Size desiredMaxSize) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoadedImageSurface%20LoadedImageSurface.StartLoadFromStream%28IRandomAccessStream%20stream%2C%20Size%20desiredMaxSize%29");
 		}
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static partial global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream)
+		public static global::Windows.UI.Xaml.Media.LoadedImageSurface StartLoadFromStream(global::Windows.Storage.Streams.IRandomAccessStream stream)
 		{
 			throw new global::System.NotImplementedException("The member LoadedImageSurface LoadedImageSurface.StartLoadFromStream(IRandomAccessStream stream) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LoadedImageSurface%20LoadedImageSurface.StartLoadFromStream%28IRandomAccessStream%20stream%29");
 		}
