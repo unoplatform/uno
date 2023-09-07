@@ -1,31 +1,16 @@
 ﻿#nullable enable
 
-using System.Windows.Input;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
-using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using WpfCanvas = System.Windows.Controls.Canvas;
-using WpfUIElement = System.Windows.UIElement;
 
 namespace Uno.UI.Runtime.Skia.Wpf
 {
-	internal partial class WpfCoreWindowExtension : ICoreWindowExtension
+	internal partial class WpfNativeElementHostingExtension : INativeElementHostingExtension
 	{
-		private readonly WpfHost? _host;
-		private readonly CoreWindow _owner;
-
-		public CoreCursor PointerCursor
+		public WpfNativeElementHostingExtension()
 		{
-			get => Mouse.OverrideCursor.ToCoreCursor();
-			set => Mouse.OverrideCursor = value.ToCursor();
-		}
-
-		public WpfCoreWindowExtension(object owner)
-		{
-			_owner = (CoreWindow)owner;
-			_host = WpfHost.Current;
 		}
 
 		internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>
