@@ -261,6 +261,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return state;
 		}
 
+		internal override void PrepareForRecycle()
+		{
+			// It's important to clear the index on the way out (recycle) and not wait to set it on the way in (reuse)
+			// because this property is used e.g. in ItemsControl.ContainerFromIndexInner which is used by e.g.
+			// ListView to get a clicked container.
+			ClearValue(ItemsControl.IndexForItemContainerProperty);
+
+			// Reset visual state so that the container doesn't come back looking like it's hovered or clicked.
+			UpdateCommonStates();
+
+			base.PrepareForRecycle();
+		}
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

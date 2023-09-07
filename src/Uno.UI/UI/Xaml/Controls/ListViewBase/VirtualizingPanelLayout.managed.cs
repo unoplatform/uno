@@ -514,7 +514,7 @@ namespace Windows.UI.Xaml.Controls
 				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(firstMaterializedLine, clearContainer: true);
+					RecycleLine(firstMaterializedLine, clearContainer: false);
 					_materializedLines.RemoveFromFront();
 					firstMaterializedLine = GetFirstMaterializedLine();
 				}
@@ -526,7 +526,7 @@ namespace Windows.UI.Xaml.Controls
 				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
-					RecycleLine(lastMaterializedLine, clearContainer: true);
+					RecycleLine(lastMaterializedLine, clearContainer: false);
 					_materializedLines.RemoveFromBack();
 					lastMaterializedLine = GetLastMaterializedLine();
 				}
