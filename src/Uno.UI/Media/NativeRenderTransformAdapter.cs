@@ -36,12 +36,18 @@ namespace Uno.UI.Media
 
 			// For backward compatibility we set the "View" property on the transform
 			// This is used only by animations
-			transform.View = owner;
+			if (transform is not null)
+			{
+				transform.View = owner;
+			}
 
 			// Partial constructor
 			Initialized();
 
-			Transform.Changed += UpdateOnTransformPropertyChanged;
+			if (Transform is not null)
+			{
+				Transform.Changed += UpdateOnTransformPropertyChanged;
+			}
 		}
 
 		partial void Initialized();
@@ -55,6 +61,8 @@ namespace Uno.UI.Media
 		/// The render transform
 		/// </summary>
 		public Transform Transform { get; }
+
+		public Matrix4x4 FlowDirectionTransform { get; private set; } = Matrix4x4.Identity;
 
 		/// <summary>
 		/// The current relative origin of this render transform.
@@ -76,6 +84,11 @@ namespace Uno.UI.Media
 		{
 			CurrentSize = size;
 			Update(isSizeChanged: true);
+		}
+
+		public void UpdateFlowDirectionTransform()
+		{
+			Update();
 		}
 
 		private void UpdateOnTransformPropertyChanged(object snd, EventArgs args)

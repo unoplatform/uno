@@ -24,6 +24,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
+using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -271,7 +272,7 @@ namespace Windows.UI.Xaml
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
 
-			if (oldRect != newRect || oldClip != newClip || Visual.TransformMatrix != GetFlowDirectionTransform())
+			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix4x4.Identity) != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
@@ -307,7 +308,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Matrix4x4 GetFlowDirectionTransform()
+		internal Matrix4x4 GetFlowDirectionTransform()
 			=> ShouldMirrorVisual() ? new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)) : Matrix4x4.Identity;
 
 		private bool ShouldMirrorVisual()
@@ -331,7 +332,12 @@ namespace Windows.UI.Xaml
 			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
-			Visual.TransformMatrix = GetFlowDirectionTransform();
+			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
+			{
+				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
+			
+			_renderTransform?.UpdateFlowDirectionTransform();
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
 			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
