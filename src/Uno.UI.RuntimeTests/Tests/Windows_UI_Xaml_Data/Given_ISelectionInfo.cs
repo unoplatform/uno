@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using static Private.Infrastructure.TestServices;
@@ -42,6 +43,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Data
 			Assert.AreEqual(expectedRange.FirstIndex, selectionRanges[0].FirstIndex, "selectionRanges[0] == { 3..3, count = 1 }");
 			Assert.AreEqual(expectedRange.LastIndex, selectionRanges[0].LastIndex, "selectionRanges[0] == { 3..3, count = 1 }");
 			Assert.AreEqual(expectedRange.Length, selectionRanges[0].Length, "selectionRanges[0] == { 3..3, count = 1 }");
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public void When_PropertyPath_Empty()
+		{
+			var propertyPath = new PropertyPath(string.Empty);
+			var sut = new Binding
+			{
+				Path = propertyPath
+			};
+
+			Assert.IsNull(sut.Path);
 		}
 
 #if HAS_UNO // On Windows this test fails, because the SelectedIndex remains -1, even though visually the item is selected
