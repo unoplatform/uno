@@ -1,125 +1,111 @@
 ﻿#nullable enable
 //#define TRACE_NATIVE_POINTER_EVENTS
 
-using System.Linq;
 using Gtk;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
-using Microsoft.UI.Xaml;
-using Windows.System;
-using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.Gtk.Hosting;
-using Uno.UI.Runtime.Skia.Gtk;
-using Windows.Graphics.Display;
+using Windows.UI.Xaml;
 
-namespace Uno.UI.Runtime.Skia.Gtk
+namespace Uno.UI.Runtime.Skia.Gtk;
+
+internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
 {
-	internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
+	public GtkNativeElementHostingExtension()
 	{
-		public GtkNativeElementHostingExtension()
+	}
+
+	internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
+		GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
+
+	public bool IsNativeElement(object content)
+		=> content is Widget;
+
+	public void AttachNativeElement(object owner, object content)
+	{
+		if (content is Widget widget
+			&& owner is XamlRoot xamlRoot
+			&& GetOverlayLayer(xamlRoot) is { } overlay)
 		{
+			widget.ShowAll();
+			overlay.Put(widget, 0, 0);
 		}
-
-		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
-			GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;
-
-		public bool IsNativeElement(object content)
-			=> content is Widget;
-
-		public void AttachNativeElement(object owner, object content)
+		else
 		{
-			if (content is Widget widget
-				&& owner is XamlRoot xamlRoot
-				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				widget.ShowAll();
-				overlay.Put(widget, 0, 0);
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Unable to attach native element {content} to {owner}.");
-				}
+				this.Log().Debug($"Unable to attach native element {content} to {owner}.");
 			}
 		}
+	}
 
-		public void DetachNativeElement(object owner, object content)
+	public void DetachNativeElement(object owner, object content)
+	{
+		if (content is Widget widget
+			&& owner is XamlRoot xamlRoot
+			&& GetOverlayLayer(xamlRoot) is { } overlay)
 		{
-			if (content is Widget widget
-				&& owner is XamlRoot xamlRoot
-				&& GetOverlayLayer(xamlRoot) is { } overlay)
+			overlay.Remove(widget);
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				overlay.Remove(widget);
+				this.Log().LogDebug($"Unable to detach native element {content} from {owner}.");
 			}
-			else
+		}
+	}
+
+	public bool IsNativeElementAttached(object owner, object nativeElement) =>
+		nativeElement is Widget widget
+			&& owner is XamlRoot xamlRoot
+			&& GetOverlayLayer(xamlRoot) is { } overlay
+			&& widget.Parent == overlay;
+
+	public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
+	{
+		if (content is Widget widget
+			&& owner is XamlRoot xamlRoot
+			&& GetOverlayLayer(xamlRoot) is { } overlay)
+		{
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Unable to detach native element {content} from {owner}.");
-				}
+				this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
+			}
+
+			widget.SizeAllocate(new((int)arrangeRect.X, (int)arrangeRect.Y, (int)arrangeRect.Width, (int)arrangeRect.Height));
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
+			}
+		}
+	}
+
+	public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
+	{
+		if (content is Widget widget
+			&& owner is XamlRoot xamlRoot
+			&& GetOverlayLayer(xamlRoot) is { } overlay)
+		{
+			widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
+			}
+
+			return new(naturalSize.Width, naturalSize.Height);
+		}
+		else
+		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().Debug($"Unable to measure native element {content} in {owner}.");
 			}
 		}
 
-		public bool IsNativeElementAttached(object owner, object nativeElement) =>
-			nativeElement is Widget widget
-				&& owner is XamlRoot xamlRoot
-				&& GetOverlayLayer(xamlRoot) is { } overlay
-				&& widget.Parent == overlay;
-
-		public void ArrangeNativeElement(object owner, object content, Windows.Foundation.Rect arrangeRect)
-		{
-			if (content is Widget widget
-				&& owner is XamlRoot xamlRoot
-				&& GetOverlayLayer(xamlRoot) is { } overlay)
-			{
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"ArrangeNativeElement({owner}, {arrangeRect})");
-				}
-
-				var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
-				widget.SizeAllocate(
-					new(
-						(int)(arrangeRect.X * scaleAdjustment),
-						(int)(arrangeRect.Y * scaleAdjustment),
-						(int)(arrangeRect.Width * scaleAdjustment),
-						(int)(arrangeRect.Height * scaleAdjustment)));
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Unable to arrange native element {content} in {owner}.");
-				}
-			}
-		}
-
-		public Windows.Foundation.Size MeasureNativeElement(object owner, object content, Windows.Foundation.Size size)
-		{
-			if (content is Widget widget
-				&& owner is XamlRoot xamlRoot
-				&& GetOverlayLayer(xamlRoot) is { } overlay)
-			{
-				widget.GetPreferredSize(out var minimum_Size, out var naturalSize);
-
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().Trace($"MeasureNativeElement({minimum_Size.Width}x{minimum_Size.Height}, {naturalSize.Width}x{naturalSize.Height})");
-				}
-
-				var scaleAdjustment = _displayInformation.FractionalScaleAdjustment;
-				return new(naturalSize.Width / scaleAdjustment, naturalSize.Height / scaleAdjustment);
-			}
-			else
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().Debug($"Unable to measure native element {content} in {owner}.");
-				}
-			}
-
-			return new(0, 0);
-		}
+		return new(0, 0);
 	}
 }
