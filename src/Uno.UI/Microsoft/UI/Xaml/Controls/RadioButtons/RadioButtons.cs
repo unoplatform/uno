@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using System.Collections.ObjectModel;
+using Uno.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -114,7 +115,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 					// Focus was already in the repeater: in On RS3+ Selection follows focus unless control is held down.
 					else if (SharedHelpers.IsRS3OrHigher() &&
-						(Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow.GetKeyState(VirtualKey.Control) &
+						(KeyboardStateTracker.GetKeyState(VirtualKey.Control) &
 							CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 					{
 						var newFocusedElementAsUIE = args.NewFocusedElement as UIElement;
