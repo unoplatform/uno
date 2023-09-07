@@ -21,6 +21,7 @@ using Windows.System;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Windows.UI.Core;
+using Uno.UI.Core;
 #if HAS_UNO_WINUI
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml;
@@ -1570,7 +1571,7 @@ namespace Windows.UI.Xaml.Controls
 					handled = BumperNavigation(1);
 					break;
 				case VirtualKey.Left:
-					var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					var altState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 					if (isAltPressed && IsPaneOpen && IsLightDismissible())
