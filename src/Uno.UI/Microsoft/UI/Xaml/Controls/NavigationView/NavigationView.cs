@@ -13,6 +13,7 @@ using System.Numerics;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Microsoft.UI.Xaml.Controls.AnimatedVisuals;
 using Uno.Disposables;
+using Uno.UI.Core;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -3203,7 +3204,7 @@ namespace Microsoft.UI.Xaml.Controls
 					m_TabKeyPrecedesFocusChange = true;
 					break;
 				case VirtualKey.Left:
-					var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
+					var altState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 					bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 					if (isAltPressed && IsPaneOpen && IsLightDismissible())

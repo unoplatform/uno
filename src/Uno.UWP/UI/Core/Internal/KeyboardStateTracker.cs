@@ -31,6 +31,13 @@ namespace Uno.UI.Core
 			return CoreVirtualKeyStates.None;
 		}
 
+		/// <remarks>
+		/// Currently this uses the same implementation as GetKeyState, 
+		/// but kept separate to be able to differentiate between original calls
+		/// to CoreWindow.GetKeyState and CoreWindow.GetAsyncKeyState.
+		/// </remarks>
+		internal static CoreVirtualKeyStates GetAsyncKeyState(VirtualKey key) => GetKeyState(key);
+
 		internal static void OnKeyDown(VirtualKey key)
 		{
 			if (!_keyStates.ContainsKey(key))

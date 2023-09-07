@@ -17,6 +17,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
+using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -196,8 +197,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Windows.UI.Xaml.Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			ColorPickerHsvChannel incrementChannel = ColorPickerHsvChannel.Hue;
 
