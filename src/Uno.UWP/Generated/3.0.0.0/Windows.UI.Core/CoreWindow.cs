@@ -6,7 +6,7 @@ namespace Windows.UI.Core
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CoreWindow : global::Windows.UI.Core.ICoreWindow,global::Windows.UI.Core.ICorePointerRedirector
+	public partial class CoreWindow : global::Windows.UI.Core.ICoreWindow, global::Windows.UI.Core.ICorePointerRedirector
 	{
 		// Skipping already declared property PointerPosition
 		// Skipping already declared property PointerCursor

@@ -486,9 +486,7 @@ namespace Windows.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to) => GetTransform(from, to, new());
-
-		private static Matrix3x2 GetTransform(UIElement from, UIElement to, TransformToVisualContext context)
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
 			if (from == to)
 			{
@@ -511,25 +509,17 @@ namespace Windows.UI.Xaml
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
 				elt.ApplyElementCustomTransform(ref matrix);
-			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix, ref context) && elt != to); // If possible we stop as soon as we reach 'to'
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			if (to is not null && elt != to)
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
-				var toContext = new TransformToVisualContext();
-				var toToRoot = GetTransform(to, null, toContext);
+				var toToRoot = GetTransform(to, null);
 
-#if __IOS__
-				// On iOS, the `from` and `to` may be coming from different ViewController.
-				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
-				if (context.ViewController == toContext.ViewController)
-#endif
-				{
-					var rootToTo = toToRoot.Inverse();
-					matrix *= rootToTo;
-				}
+				var rootToTo = toToRoot.Inverse();
+				matrix *= rootToTo;
 			}
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
@@ -606,7 +596,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _, ref TransformToVisualContext __)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _)
 		{
 			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
@@ -1242,8 +1232,6 @@ namespace Windows.UI.Xaml
 			set;
 		}
 #endif
-
-		private partial struct TransformToVisualContext { }
 
 		/// <summary>
 		/// This event is not yet implemented in Uno Platform.

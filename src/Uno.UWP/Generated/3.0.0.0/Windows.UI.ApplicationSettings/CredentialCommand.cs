@@ -30,7 +30,7 @@ namespace Windows.UI.ApplicationSettings
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CredentialCommand(global::Windows.Security.Credentials.PasswordCredential passwordCredential) 
+		public CredentialCommand(global::Windows.Security.Credentials.PasswordCredential passwordCredential)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialCommand.CredentialCommand(PasswordCredential passwordCredential)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.UI.ApplicationSettings
 		// Forced skipping of method Windows.UI.ApplicationSettings.CredentialCommand.CredentialCommand(Windows.Security.Credentials.PasswordCredential)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public CredentialCommand(global::Windows.Security.Credentials.PasswordCredential passwordCredential, global::Windows.UI.ApplicationSettings.CredentialCommandCredentialDeletedHandler deleted) 
+		public CredentialCommand(global::Windows.Security.Credentials.PasswordCredential passwordCredential, global::Windows.UI.ApplicationSettings.CredentialCommandCredentialDeletedHandler deleted)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ApplicationSettings.CredentialCommand", "CredentialCommand.CredentialCommand(PasswordCredential passwordCredential, CredentialCommandCredentialDeletedHandler deleted)");
 		}

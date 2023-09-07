@@ -30,7 +30,7 @@ namespace Windows.Security.Authentication.OnlineId
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public OnlineIdServiceTicketRequest(string service, string policy) 
+		public OnlineIdServiceTicketRequest(string service, string policy)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest", "OnlineIdServiceTicketRequest.OnlineIdServiceTicketRequest(string service, string policy)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Security.Authentication.OnlineId
 		// Forced skipping of method Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest.OnlineIdServiceTicketRequest(string, string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public OnlineIdServiceTicketRequest(string service) 
+		public OnlineIdServiceTicketRequest(string service)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.OnlineId.OnlineIdServiceTicketRequest", "OnlineIdServiceTicketRequest.OnlineIdServiceTicketRequest(string service)");
 		}

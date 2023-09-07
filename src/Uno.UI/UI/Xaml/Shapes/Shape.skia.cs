@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
-			=> path.Geometry.Bounds.ToRect();
+			=> path.Geometry.TightBounds.ToRect();
 
 		private bool IsFinite(double value) => !double.IsInfinity(value);
 
@@ -64,12 +64,12 @@ namespace Windows.UI.Xaml.Shapes
 
 		private void UpdateRender()
 		{
-			UpdateFill();
-			UpdateStroke();
+			OnFillBrushChanged();
+			OnStrokeBrushChanged();
 			UpdateStrokeThickness();
 		}
 
-		private void UpdateFill()
+		private void OnFillBrushChanged()
 		{
 			_fillSubscription.Disposable = null;
 
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Shapes
 			_shape.StrokeThickness = (float)ActualStrokeThickness;
 		}
 
-		private void UpdateStroke()
+		private void OnStrokeBrushChanged()
 		{
 			_strokeSubscription.Disposable = null;
 

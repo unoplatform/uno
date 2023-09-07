@@ -9,6 +9,8 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Shapes;
+using Windows.UI;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 {
@@ -118,6 +120,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			VisualStateManager.GoToState(SUT.root, "Normal", false);
 			await TestServices.WindowHelper.WaitForIdle();
 			Assert.AreEqual(43, testTransform.TranslateY);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__CROSSRUNTIME__
+		[Ignore("We override <Measure|Arrange>Override to include padding in ContentControl which is a superclass of UserControl on Uno")]
+#endif
+		public async Task When_Padding_Set_In_SizeChanged()
+		{
+			var SUT = new UserControl()
+			{
+				Width = 200,
+				Height = 200,
+				Content = new Border()
+				{
+					Child = new Ellipse()
+					{
+						Fill = new SolidColorBrush(Colors.DarkOrange)
+					}
+				}
+			};
+
+			SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
+			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
+#if __IOS__ || __ANDROID__
+			SUT.InvalidateMeasure();
+			SUT.UpdateLayout();
+#endif
+
+			// Padding shouldn't affect measure
+			Assert.AreEqual(0, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
 		}
 	}
 }

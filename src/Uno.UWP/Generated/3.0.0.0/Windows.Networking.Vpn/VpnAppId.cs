@@ -38,7 +38,7 @@ namespace Windows.Networking.Vpn
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public VpnAppId(global::Windows.Networking.Vpn.VpnAppIdType type, string value) 
+		public VpnAppId(global::Windows.Networking.Vpn.VpnAppIdType type, string value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.Vpn.VpnAppId", "VpnAppId.VpnAppId(VpnAppIdType type, string value)");
 		}

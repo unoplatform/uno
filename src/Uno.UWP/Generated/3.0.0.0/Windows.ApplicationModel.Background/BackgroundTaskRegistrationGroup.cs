@@ -40,7 +40,7 @@ namespace Windows.ApplicationModel.Background
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BackgroundTaskRegistrationGroup(string id) 
+		public BackgroundTaskRegistrationGroup(string id)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup", "BackgroundTaskRegistrationGroup.BackgroundTaskRegistrationGroup(string id)");
 		}
@@ -48,7 +48,7 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup.BackgroundTaskRegistrationGroup(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public BackgroundTaskRegistrationGroup(string id, string name) 
+		public BackgroundTaskRegistrationGroup(string id, string name)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskRegistrationGroup", "BackgroundTaskRegistrationGroup.BackgroundTaskRegistrationGroup(string id, string name)");
 		}

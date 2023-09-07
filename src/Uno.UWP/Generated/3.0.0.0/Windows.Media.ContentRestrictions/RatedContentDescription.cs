@@ -80,7 +80,7 @@ namespace Windows.Media.ContentRestrictions
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RatedContentDescription(string id, string title, global::Windows.Media.ContentRestrictions.RatedContentCategory category) 
+		public RatedContentDescription(string id, string title, global::Windows.Media.ContentRestrictions.RatedContentCategory category)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.ContentRestrictions.RatedContentDescription", "RatedContentDescription.RatedContentDescription(string id, string title, RatedContentCategory category)");
 		}

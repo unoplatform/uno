@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class TreeViewItemDataAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemAutomationPeer,global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
+	public partial class TreeViewItemDataAutomationPeer : global::Windows.UI.Xaml.Automation.Peers.ItemAutomationPeer, global::Windows.UI.Xaml.Automation.Provider.IExpandCollapseProvider
 	{
 		// Skipping already declared property ExpandCollapseState
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

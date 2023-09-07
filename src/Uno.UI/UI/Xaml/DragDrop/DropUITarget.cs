@@ -41,11 +41,8 @@ namespace Windows.UI.Xaml
 		private readonly Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)> _pendingDropTargets
 			= new Dictionary<UIElement, (DragUIOverride uiOverride, DataPackageOperation acceptedOperation)>();
 
-		private readonly Window _window;
-
-		public DropUITarget(Window window)
+		public DropUITarget()
 		{
-			_window = window;
 		}
 
 		/// <inheritdoc />

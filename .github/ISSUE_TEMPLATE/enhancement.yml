@@ -1,0 +1,38 @@
+name: Enhancement Request
+description: Suggest an enhancement to Uno Platform
+labels: [kind/enhancement, triage/untriaged, difficulty/tbd]
+body:
+  - type: textarea
+    id: enhancement-description
+    attributes:
+      label: What would you like to be added
+      description: Describe in detail what is the feature or functionality you are missing
+
+  - type: textarea
+    id: enhancement-use-case
+    attributes:
+      label: Why is this needed
+      description: Describe the use case of this enhancement
+
+  - type: dropdown
+    id: enhancement-platforms
+    attributes:
+      label: For which platform
+      multiple: true
+      options:
+        - WebAssembly
+        - Android
+        - iOS
+        - macOS (AppKit)
+        - Mac Catalyst
+        - Skia (WPF)
+        - Skia (GTK on Linux/macOS/Windows)
+        - Skia (Linux Framebuffer)
+        - Windows
+        - Build tasks
+
+  - type: textarea
+    id: enhancement-additional-info
+    attributes:
+      label: Anything else we need to know?
+      description: Notes for contributors, further explanations, or any other information

@@ -34,7 +34,7 @@ namespace Windows.UI.Notifications
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public NotificationData(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> initialValues, uint sequenceNumber) 
+		public NotificationData(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> initialValues, uint sequenceNumber)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData(IEnumerable<KeyValuePair<string, string>> initialValues, uint sequenceNumber)");
 		}
@@ -42,7 +42,7 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>, uint)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public NotificationData(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> initialValues) 
+		public NotificationData(global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>> initialValues)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData(IEnumerable<KeyValuePair<string, string>> initialValues)");
 		}
@@ -50,7 +50,7 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.NotificationData.NotificationData(System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, string>>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public NotificationData() 
+		public NotificationData()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.NotificationData", "NotificationData.NotificationData()");
 		}

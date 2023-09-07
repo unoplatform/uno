@@ -38,11 +38,9 @@ public partial class CompositionShape
 			session.Surface.Canvas.Translate(offset.X, offset.Y);
 		}
 
-		if (transform is { IsIdentity: false })
-		{
-			var skTransform = transform.ToSKMatrix();
-			session.Surface.Canvas.Concat(ref skTransform);
-		}
+		// Intentionally not applying transform here.
+		// Derived classes should be responsible to call GetTransform and use it appropriately.
+		// For example, CompositionSpriteShape shouldn't "scale" the stroke thickness.
 
 		return session;
 	}

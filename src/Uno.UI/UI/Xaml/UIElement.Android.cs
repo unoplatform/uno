@@ -249,7 +249,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'ViewGroup' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml
 					matrix.M32 += (float)offset.Y;
 
 					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
-					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix, ref context);
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix);
 
 				case View view: // Android.View and Android.IViewParent
 					var windowToFirstParent = new int[2];

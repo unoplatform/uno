@@ -123,6 +123,9 @@ This change has no effect on Controls behavior.
 #### Change `RenderSurfaceType` namespace
 There used two be two `RenderSurfaceType`s, `Uno.UI.Runtime.Skia.RenderSurfaceType` (for Gtk) and `Uno.UI.Skia.RenderSurfaceType` (for Skia). They are now `Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType` and `Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType` respectively.
 
+### Uno Platform 4.10
+This release does not require upgrade steps.
+
 ### Uno Platform 4.9
 This release does not require upgrade steps.
 

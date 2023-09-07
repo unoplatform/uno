@@ -8,7 +8,7 @@
 	<PropertyGroup>
 
 		<ShouldRunGenerator>true</ShouldRunGenerator>
-		<ShouldRunGenerator Condition="'$(WindowsAppSDKWinUI)'=='true' or $(TargetFramework.StartsWith('uap10.0'))">false</ShouldRunGenerator>
+		<ShouldRunGenerator Condition="'$(_UnoIsWinAppSDKDefined)'=='true' or $(TargetFramework.StartsWith('uap10.0'))">false</ShouldRunGenerator>
 
 		<!--
 		MSBuild below 17.0 implies C# 7.3 or below, which does not support lambda parameters shadowing (https://github.com/dotnet/csharplang/blob/main/meetings/2019/LDM-2019-01-16.md).

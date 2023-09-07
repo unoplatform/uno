@@ -6,7 +6,7 @@ namespace Windows.Storage
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial interface IStorageFile : global::Windows.Storage.IStorageItem,global::Windows.Storage.Streams.IRandomAccessStreamReference,global::Windows.Storage.Streams.IInputStreamReference
+	public partial interface IStorageFile : global::Windows.Storage.IStorageItem, global::Windows.Storage.Streams.IRandomAccessStreamReference, global::Windows.Storage.Streams.IInputStreamReference
 	{
 		// Skipping already declared property ContentType
 		// Skipping already declared property FileType
