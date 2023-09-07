@@ -386,7 +386,8 @@ namespace Windows.UI.Xaml
 				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin);
 				OnRenderTransformSet();
 			}
-			else
+			// If we have a FlowDirectionTransform, we want to keep _renderTransform.
+			else if (_renderTransform.FlowDirectionTransform != Matrix4x4.Identity)
 			{
 				// Sanity
 				_renderTransform = null;
