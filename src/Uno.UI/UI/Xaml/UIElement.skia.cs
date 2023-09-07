@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml
 			{
 				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
 			}
-			
+
 			_renderTransform?.UpdateFlowDirectionTransform();
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
