@@ -52,7 +52,7 @@ namespace UITests.Windows_UI_Core
 
 		public WindowActivationViewModel(Private.Infrastructure.UnitTestDispatcherCompat dispatcher) : base(dispatcher)
 		{
-			var coreWindow = CoreWindow.GetForCurrentThreadSafe();
+			var coreWindow = CoreWindowAccessor.GetForCurrentThreadSafe();
 			if (coreWindow is not null)
 			{
 				coreWindow.Activated += CoreWindowActivated;
@@ -258,7 +258,7 @@ namespace UITests.Windows_UI_Core
 			ChangeTime = DateTime.Now.ToLongTimeString();
 			var historyItem =
 				$"{DateTime.Now.ToLongTimeString()} | {eventName} | State: {CoreWindowActivationState} " +
-				$"| Mode: {CoreWindow.GetForCurrentThreadSafe()?.ActivationMode} | Visibility: {XamlWindow.Current.Visible}";
+				$"| Mode: {CoreWindowAccessor.GetForCurrentThreadSafe()?.ActivationMode} | Visibility: {XamlWindow.Current.Visible}";
 			History.Insert(0, historyItem);
 		}
 

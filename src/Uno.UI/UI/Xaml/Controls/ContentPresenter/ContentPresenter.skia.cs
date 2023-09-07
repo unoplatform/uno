@@ -176,16 +176,16 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		internal bool IsNativeElement(object content) => _nativeElementHostingExtension.Value?.IsNativeElement(content) ?? false;
+		internal static bool IsNativeElement(object content) => _nativeElementHostingExtension.Value?.IsNativeElement(content) ?? false;
 
-		internal void AttachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.AttachNativeElement(owner, content);
+		internal static void AttachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.AttachNativeElement(owner, content);
 
-		internal void DetachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.DetachNativeElement(owner, content);
+		internal static void DetachNativeElement(object owner, object content) => _nativeElementHostingExtension.Value?.DetachNativeElement(owner, content);
 
-		internal void ArrangeNativeElement(object owner, object content, Rect arrangeRect) => _nativeElementHostingExtension.Value?.ArrangeNativeElement(owner, content, arrangeRect);
+		internal static void ArrangeNativeElement(object owner, object content, Rect arrangeRect) => _nativeElementHostingExtension.Value?.ArrangeNativeElement(owner, content, arrangeRect);
 
-		internal Size MeasureNativeElement(object owner, object content, Size size) => _nativeElementHostingExtension.Value?.MeasureNativeElement(owner, content, size) ?? size;
+		internal static Size MeasureNativeElement(object owner, object content, Size size) => _nativeElementHostingExtension.Value?.MeasureNativeElement(owner, content, size) ?? size;
 
-		internal bool IsNativeElementAttached(object owner, object nativeElement) => _nativeElementHostingExtension.Value?.IsNativeElementAttached(owner, nativeElement) ?? false;
+		internal static bool IsNativeElementAttached(object owner, object nativeElement) => _nativeElementHostingExtension.Value?.IsNativeElementAttached(owner, nativeElement) ?? false;
 	}
 }

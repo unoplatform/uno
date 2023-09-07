@@ -16,7 +16,7 @@ namespace UITests.Windows_UI_ViewManagement
 		public ApplicationViewSizing()
 		{
 			this.InitializeComponent();
-			var coreWindow = CoreWindow.GetForCurrentThreadSafe();
+			var coreWindow = CoreWindowAccessor.GetForCurrentThreadSafe();
 			if (coreWindow is not null)
 			{
 				coreWindow.SizeChanged += ApplicationViewSizing_SizeChanged;
@@ -32,7 +32,7 @@ namespace UITests.Windows_UI_ViewManagement
 
 		private void ApplicationViewSizing_Unloaded(object sender, RoutedEventArgs e)
 		{
-			var coreWindow = CoreWindow.GetForCurrentThreadSafe();
+			var coreWindow = CoreWindowAccessor.GetForCurrentThreadSafe();
 			if (coreWindow is not null)
 			{
 				coreWindow.SizeChanged -= ApplicationViewSizing_SizeChanged;
