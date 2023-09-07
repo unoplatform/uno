@@ -186,6 +186,30 @@ public static partial class ImageAssert
 	}
 	#endregion
 
+	internal static Rect GetColorBounds(RawBitmap rawBitmap, Color color, byte tolerance = 0)
+	{
+		var minX = int.MaxValue;
+		var minY = int.MaxValue;
+		var maxX = int.MinValue;
+		var maxY = int.MinValue;
+
+		for (int x = 0; x < rawBitmap.Width; x++)
+		{
+			for (int y = 0; y < rawBitmap.Height; y++)
+			{
+				if (AreSameColor(color, rawBitmap.GetPixel(x, y), tolerance, out _))
+				{
+					minX = Math.Min(minX, x);
+					minY = Math.Min(minY, y);
+					maxX = Math.Max(maxX, x);
+					maxY = Math.Max(maxY, y);
+				}
+			}
+		}
+
+		return new Rect(new Point(minX, minY), new Size(maxX - minX, maxY - minY));
+	}
+
 	public static async Task AreEqualAsync(RawBitmap actual, RawBitmap expected)
 	{
 		if (!await AreRenderTargetBitmapsEqualAsync(actual.Bitmap, expected.Bitmap))
