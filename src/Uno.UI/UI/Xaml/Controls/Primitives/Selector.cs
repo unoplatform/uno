@@ -733,16 +733,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RefreshPartial();
 		}
 
-		protected override void ClearContainerForItemOverride(DependencyObject element, object item)
-		{
-			base.ClearContainerForItemOverride(element, item);
-
-			if (element is SelectorItem s)
-			{
-				VisualStateManager.GoToState(s, "Normal", false);
-			}
-		}
-
 		public bool IsSelectionActive { get; set; }
 
 		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()
