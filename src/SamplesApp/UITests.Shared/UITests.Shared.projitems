@@ -5182,6 +5182,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Reference.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>    
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
@@ -9107,6 +9111,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\BackButtonImage\CommandBar_Page2.xaml.cs">
       <DependentUpon>CommandBar_Page2.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_DataContext_Reference.xaml.cs" >
+        <DependentUpon>ListView_DataContext_Reference.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
