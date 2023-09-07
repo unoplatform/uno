@@ -39,10 +39,8 @@ namespace Windows.UI.Xaml.Media
 				throw new ArgumentNullException(nameof(paint));
 			}
 
-			paint.Reset();
-			paint.AntiAlias = true;
+			BrushNative.ResetPaintForFill(paint);
 			ApplyToPaintInner(destinationRect, paint);
-			paint.SetStyle(SystemFill);
 		}
 
 		/// <summary>
@@ -57,10 +55,8 @@ namespace Windows.UI.Xaml.Media
 				throw new ArgumentNullException(nameof(paint));
 			}
 
-			paint.Reset();
-			paint.AntiAlias = true;
+			BrushNative.ResetPaintForStroke(paint);
 			ApplyToPaintInner(destinationRect, paint);
-			paint.SetStyle(SystemStroke);
 		}
 
 		private protected virtual void ApplyToPaintInner(Rect destinationRect, Paint paint) => throw new InvalidOperationException();
