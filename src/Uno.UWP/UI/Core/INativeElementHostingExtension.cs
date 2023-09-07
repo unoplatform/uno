@@ -1,11 +1,8 @@
-using System;
-using System.Linq;
-using Windows.Devices.Input;
 using Windows.Foundation;
 
 namespace Windows.UI.Core;
 
-internal interface ICoreWindowExtension
+internal interface INativeElementHostingExtension
 {
 #if UNO_SUPPORTS_NATIVEHOST
 	bool IsNativeElement(object content);

@@ -14,15 +14,10 @@ using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
-	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
+	internal partial class GtkNativeElementHostingExtension : INativeElementHostingExtension
 	{
-		private readonly CoreWindow _owner;
-		private readonly DisplayInformation _displayInformation;
-
-		public GtkCoreWindowExtension(object owner)
+		public GtkNativeElementHostingExtension()
 		{
-			_owner = (CoreWindow)owner;
-			_displayInformation = DisplayInformation.GetForCurrentView();
 		}
 
 		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
