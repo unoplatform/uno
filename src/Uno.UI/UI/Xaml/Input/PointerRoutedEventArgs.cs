@@ -9,6 +9,7 @@ using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -117,16 +118,15 @@ namespace Microsoft.UI.Xaml.Input
 				mods |= DragDropModifiers.RightButton;
 			}
 
-			var window = Window.IShouldntUseCurrentWindow.IShouldntUseCoreWindow;
-			if (window.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Shift) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Shift;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Control) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Control;
 			}
-			if (window.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
+			if (KeyboardStateTracker.GetAsyncKeyState(VirtualKey.Menu) == CoreVirtualKeyStates.Down)
 			{
 				mods |= DragDropModifiers.Alt;
 			}

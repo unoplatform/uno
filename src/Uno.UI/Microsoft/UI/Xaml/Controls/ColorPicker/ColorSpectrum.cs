@@ -196,8 +196,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			ColorPickerHsvChannel incrementChannel = ColorPickerHsvChannel.Hue;
 

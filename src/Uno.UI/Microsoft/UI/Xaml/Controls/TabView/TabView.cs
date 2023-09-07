@@ -1325,7 +1325,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
-			var coreWindow = CoreWindow.IShouldntUseGetForCurrentThread();
+			var coreWindow = CoreWindow.GetForCurrentThreadSafe();
 			if (coreWindow != null)
 			{
 				if (args.Key == VirtualKey.F4)

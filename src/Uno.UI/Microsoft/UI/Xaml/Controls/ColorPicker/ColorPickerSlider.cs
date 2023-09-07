@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using Uno.UI.Core;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI;
@@ -65,8 +66,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Uno Doc: Window must be fully qualified for iOS/macOS where NSWindow maps to Window
-			bool isControlDown = (Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+			bool isControlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			double minBound = 0;
 			double maxBound = 0;
