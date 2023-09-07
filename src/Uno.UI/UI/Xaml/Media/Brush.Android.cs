@@ -21,12 +21,6 @@ namespace Windows.UI.Xaml.Media
 	//Android partial for Brush
 	public partial class Brush
 	{
-		private static Paint.Style _strokeCache;
-		private static Paint.Style _fillCache;
-
-		private static Paint.Style SystemStroke => _strokeCache ??= Paint.Style.Stroke;
-		private static Paint.Style SystemFill => _fillCache ??= Paint.Style.Fill;
-
 		/// <summary>
 		/// Return a paint with Fill style
 		/// </summary>
