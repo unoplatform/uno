@@ -131,8 +131,8 @@ public class Given_FlowDirection
 		var rendererRoot = new RenderTargetBitmap();
 		await rendererRoot.RenderAsync(rootGrid);
 		var bitmapRoot = await RawBitmap.From(rendererRoot, rootGrid);
-		Assert.AreEqual(Window.Current.Bounds.Width, bitmapRoot.Width);
-		Assert.AreEqual(Window.Current.Bounds.Height, bitmapRoot.Height);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width, bitmapRoot.Width);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height, bitmapRoot.Height);
 
 		var dX = (bitmapRoot.Width - 200) / 2;
 		var dY = (bitmapRoot.Height - 200) / 2;
@@ -179,8 +179,8 @@ public class Given_FlowDirection
 		var blueTransformToGrid = (MatrixTransform)blue.TransformToVisual(grid);
 		Assert.AreEqual("1,0,0,1,0,100", blueTransformToGrid.Matrix.ToString());
 
-		var m31 = Window.Current.Bounds.Width - (Window.Current.Bounds.Width - 200) / 2;
-		var m32 = (Window.Current.Bounds.Height - 200) / 2;
+		var m31 = TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - 200) / 2;
+		var m32 = (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height - 200) / 2;
 		var gridTransformToRoot = (MatrixTransform)grid.TransformToVisual(null);
 		Assert.AreEqual($"-1,0,0,1,{m31},{m32}", gridTransformToRoot.Matrix.ToString());
 
@@ -294,8 +294,8 @@ public class Given_FlowDirection
 		var rendererRoot = new RenderTargetBitmap();
 		await rendererRoot.RenderAsync(rootGrid);
 		var bitmapRoot = await RawBitmap.From(rendererRoot, rootGrid);
-		Assert.AreEqual(Window.Current.Bounds.Width, bitmapRoot.Width);
-		Assert.AreEqual(Window.Current.Bounds.Height, bitmapRoot.Height);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width, bitmapRoot.Width);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height, bitmapRoot.Height);
 
 		// We have a render transform of x=30 and y=30
 		// Since the grid is RTL, the transform effect on x-axis will be negative.
@@ -344,8 +344,8 @@ public class Given_FlowDirection
 		var blueTransformToGrid = (MatrixTransform)blue.TransformToVisual(grid);
 		Assert.AreEqual("1,0,0,1,0,100", blueTransformToGrid.Matrix.ToString());
 
-		var m31 = Window.Current.Bounds.Width - (Window.Current.Bounds.Width - 200) / 2 - 30;
-		var m32 = (Window.Current.Bounds.Height - 200) / 2 + 30;
+		var m31 = TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - 200) / 2 - 30;
+		var m32 = (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height - 200) / 2 + 30;
 		var gridTransformToRoot = (MatrixTransform)grid.TransformToVisual(null);
 		Assert.AreEqual($"-1,0,0,1,{m31},{m32}", gridTransformToRoot.Matrix.ToString());
 
@@ -459,8 +459,8 @@ public class Given_FlowDirection
 		var rendererRoot = new RenderTargetBitmap();
 		await rendererRoot.RenderAsync(rootGrid);
 		var bitmapRoot = await RawBitmap.From(rendererRoot, rootGrid);
-		Assert.AreEqual(Window.Current.Bounds.Width, bitmapRoot.Width);
-		Assert.AreEqual(Window.Current.Bounds.Height, bitmapRoot.Height);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width, bitmapRoot.Width);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height, bitmapRoot.Height);
 
 		// The "(bitmapRoot.Width - 200) / 2" part is the dX from the right direction (because of RTL)
 		// So to get dX from the left, we get the total width, and subtract the space
@@ -510,8 +510,8 @@ public class Given_FlowDirection
 		var blueTransformToGrid = (MatrixTransform)blue.TransformToVisual(grid);
 		Assert.AreEqual("1,0,0,1,0,100", blueTransformToGrid.Matrix.ToString());
 
-		var m31 = Window.Current.Bounds.Width - (Window.Current.Bounds.Width - 200) / 2;
-		var m32 = (Window.Current.Bounds.Height - 200) / 2;
+		var m31 = TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - 200) / 2;
+		var m32 = (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height - 200) / 2;
 		var gridTransformToRoot = (MatrixTransform)grid.TransformToVisual(null);
 		Assert.AreEqual($"-0.5,0,0,0.5,{m31},{m32}", gridTransformToRoot.Matrix.ToString());
 
@@ -627,8 +627,8 @@ public class Given_FlowDirection
 		var rendererRoot = new RenderTargetBitmap();
 		await rendererRoot.RenderAsync(rootGrid);
 		var bitmapRoot = await RawBitmap.From(rendererRoot, rootGrid);
-		Assert.AreEqual(Window.Current.Bounds.Width, bitmapRoot.Width);
-		Assert.AreEqual(Window.Current.Bounds.Height, bitmapRoot.Height);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width, bitmapRoot.Width);
+		Assert.AreEqual(TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height, bitmapRoot.Height);
 
 		// The "(bitmapRoot.Width - 200) / 2" part is the dX from the right direction (because of RTL)
 		// So to get dX from the left, we get the total width, and subtract the space
@@ -680,8 +680,8 @@ public class Given_FlowDirection
 		var blueTransformToGrid = (MatrixTransform)blue.TransformToVisual(grid);
 		Assert.AreEqual("1,0,0,1,0,100", blueTransformToGrid.Matrix.ToString());
 
-		var m31 = Window.Current.Bounds.Width - (Window.Current.Bounds.Width - 200) / 2 - 30;
-		var m32 = (Window.Current.Bounds.Height - 200) / 2 + 30;
+		var m31 = TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Width - 200) / 2 - 30;
+		var m32 = (TestServices.WindowHelper.WindowContent.XamlRoot.Bounds.Height - 200) / 2 + 30;
 		var gridTransformToRoot = (MatrixTransform)grid.TransformToVisual(null);
 		Assert.AreEqual($"-0.5,0,0,0.5,{m31},{m32}", gridTransformToRoot.Matrix.ToString());
 
