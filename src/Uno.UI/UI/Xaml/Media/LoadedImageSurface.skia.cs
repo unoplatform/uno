@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Media
 							imgSurf.InternalSurface = surface;
 
 							imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
-							imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Value.Width * imgSurf._dpi, imgSurf._decodedSize.Value.Height * imgSurf._dpi);
+							imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 							imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 						}
 
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Media
 							imgSurf.InternalSurface = surface;
 
 							imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
-							imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Value.Width * imgSurf._dpi, imgSurf._decodedSize.Value.Height * imgSurf._dpi);
+							imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 							imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 						}
 
@@ -185,7 +185,7 @@ namespace Windows.UI.Xaml.Media
 					imgSurf.InternalSurface = surface;
 
 					imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
-					imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Value.Width * imgSurf._dpi, imgSurf._decodedSize.Value.Height * imgSurf._dpi);
+					imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 					imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 				}
 
@@ -208,7 +208,7 @@ namespace Windows.UI.Xaml.Media
 					imgSurf.InternalSurface = surface;
 
 					imgSurf._decodedSize = new Size((double?)surface.Image?.Width ?? 0, (double?)surface.Image?.Height ?? 0);
-					imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Value.Width * imgSurf._dpi, imgSurf._decodedSize.Value.Height * imgSurf._dpi);
+					imgSurf._decodedPhysicalSize = new Size(imgSurf._decodedSize.Width * imgSurf._dpi, imgSurf._decodedSize.Height * imgSurf._dpi);
 					imgSurf._naturalPhysicalSize = imgSurf._decodedPhysicalSize;
 				}
 

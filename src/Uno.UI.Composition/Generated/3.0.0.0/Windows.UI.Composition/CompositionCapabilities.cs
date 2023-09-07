@@ -22,7 +22,21 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member bool CompositionCapabilities.AreEffectsFast() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=bool%20CompositionCapabilities.AreEffectsFast%28%29");
 		}
 #endif
-
-		public global::Windows.Foundation.TypedEventHandler<CompositionCapabilities, object> Changed;
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Composition.CompositionCapabilities, object> Changed
+		{
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionCapabilities", "event TypedEventHandler<CompositionCapabilities, object> CompositionCapabilities.Changed");
+			}
+			[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionCapabilities", "event TypedEventHandler<CompositionCapabilities, object> CompositionCapabilities.Changed");
+			}
+		}
+#endif
 	}
 }
