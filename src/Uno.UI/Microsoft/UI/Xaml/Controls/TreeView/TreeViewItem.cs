@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Automation.Peers;
 using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
+using Uno.UI.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -420,13 +421,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsInReorderMode(VirtualKey key)
 		{
-			var ctrlState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Control);
+			var ctrlState = KeyboardStateTracker.GetKeyState(VirtualKey.Control);
 			bool isControlPressed = (ctrlState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
+			var altState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 			bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var shiftState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Shift);
+			var shiftState = KeyboardStateTracker.GetKeyState(VirtualKey.Shift);
 			bool isShiftPressed = (shiftState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			bool isDirectionPressed = IsDirectionalKey(key);
@@ -584,13 +585,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsExpandCollapse(VirtualKey key)
 		{
-			var ctrlState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Control);
+			var ctrlState = KeyboardStateTracker.GetKeyState(VirtualKey.Control);
 			bool isControlPressed = (ctrlState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var altState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
+			var altState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 			bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-			var shiftState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Shift);
+			var shiftState = KeyboardStateTracker.GetKeyState(VirtualKey.Shift);
 			bool isShiftPressed = (shiftState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 			bool isDirectionPressed = IsDirectionalKey(key);
