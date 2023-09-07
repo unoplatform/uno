@@ -366,7 +366,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				var pointerPoint = args.GetCurrentPoint(this);
 				if (pointerPoint.Properties.IsLeftButtonPressed)
 				{
-					var isCtrlDown = (Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow.CoreWindow.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
+					var isCtrlDown = (KeyboardStateTracker.GetKeyState(VirtualKey.Control) & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 					if (isCtrlDown)
 					{
 						// Return here so the base class will not pick it up, but let it remain unhandled so someone else could handle it.

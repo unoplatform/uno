@@ -352,7 +352,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 			else if (key == VirtualKey.Down)
 			{
-				CoreVirtualKeyStates menuState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
+				CoreVirtualKeyStates menuState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 				bool menuKeyDown = (menuState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 				if (IsEnabled && menuKeyDown)

@@ -149,12 +149,12 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 
 	public void UpdatePosition()
 	{
-		if (_contentElement is null || _textBoxView is not { IsDisplayed: true })
+		if (_contentElement?.XamlRoot is null || _textBoxView is not { IsDisplayed: true })
 		{
 			return;
 		}
 
-		var transformToRoot = _contentElement.TransformToVisual(Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow!.Content);
+		var transformToRoot = _contentElement.TransformToVisual(_contentElement.XamlRoot.VisualTree.RootElement);
 		var point = transformToRoot.TransformPoint(new Point(_contentElement.Padding.Left, _contentElement.Padding.Top));
 		var pointX = _owner?.TextBox?.FlowDirection is FlowDirection.RightToLeft
 			? (int)(point.X - _contentElement.RenderSize.Width)
