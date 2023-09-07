@@ -5952,6 +5952,9 @@
   <Style TargetType="controls:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
   <Style x:Key="DefaultPersonPictureStyle" TargetType="controls:PersonPicture">
     <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
+    <Setter Property="Background" Value="{ThemeResource PersonPictureEllipseFillThemeBrush}" />
+    <Setter Property="BorderBrush" Value="{ThemeResource SystemColorButtonTextColor}" />
+    <Setter Property="BorderThickness" Value="{ThemeResource PersonPictureEllipseStrokeThickness}" />
     <Setter Property="Width" Value="100" />
     <Setter Property="Height" Value="100" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -6010,7 +6013,7 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Ellipse Fill="{ThemeResource PersonPictureEllipseFillThemeBrush}" Stroke="{ThemeResource SystemColorButtonTextColor}" StrokeThickness="{ThemeResource PersonPictureEllipseStrokeThickness}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" />
+            <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{TemplateBinding BorderThickness}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" />
             <TextBlock x:Name="InitialsTextBlock" AutomationProperties.AccessibilityView="Raw" FontSize="36" FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" TextLineBounds="Tight" VerticalAlignment="Center" HorizontalAlignment="Center" IsTextScaleFactorEnabled="False" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
             <Ellipse x:Name="PersonPictureEllipse" x:DeferLoadStrategy="Lazy" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" FlowDirection="LeftToRight" />
             <!-- ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
