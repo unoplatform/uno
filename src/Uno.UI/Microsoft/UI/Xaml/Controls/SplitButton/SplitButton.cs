@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Uno.UI.Core;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -352,7 +353,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else if (key == VirtualKey.Down)
 			{
-				CoreVirtualKeyStates menuState = CoreWindow.IShouldntUseGetForCurrentThread().GetKeyState(VirtualKey.Menu);
+				CoreVirtualKeyStates menuState = KeyboardStateTracker.GetKeyState(VirtualKey.Menu);
 				bool menuKeyDown = (menuState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
 				if (IsEnabled && menuKeyDown)

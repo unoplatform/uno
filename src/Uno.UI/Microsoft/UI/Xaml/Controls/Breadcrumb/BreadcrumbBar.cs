@@ -6,6 +6,7 @@
 
 using System.Collections.ObjectModel;
 using Uno.Disposables;
+using Uno.UI.Core;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI.Core;
@@ -479,7 +480,7 @@ public partial class BreadcrumbBar : Control
 
 				// Focus was already in the repeater: in RS3+ Selection follows focus unless control is held down.
 				else if (SharedHelpers.IsRS3OrHigher() &&
-					(global::Windows.UI.Xaml.Window.IShouldntUseCurrentWindow!.IShouldntUseCoreWindow?.GetKeyState(VirtualKey.Control) &
+					(KeyboardStateTracker.GetKeyState(VirtualKey.Control) &
 						CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 				{
 					if (args.NewFocusedElement is UIElement newFocusedElementAsUIE)
