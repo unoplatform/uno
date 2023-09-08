@@ -525,7 +525,7 @@ namespace Windows.UI.Xaml.Controls
 				case ScrollBarVisibility.Auto:
 				case ScrollBarVisibility.Hidden:
 				case ScrollBarVisibility.Visible:
-					return nfloat.PositiveInfinity;
+					return nfloat.NaN;
 
 				default:
 				case ScrollBarVisibility.Disabled:

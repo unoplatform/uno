@@ -96,8 +96,7 @@ namespace Windows.UI.Xaml
 			var frameworkAvailableSize = availableSize
 				.Subtract(marginSize)
 				.AtLeastZero()
-				.AtMost(maxSize)
-				.AtLeast(minSize);
+				.AtMost(maxSize);
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
@@ -191,14 +190,11 @@ namespace Windows.UI.Xaml
 				{
 					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
-					arrangeSize.Width = _unclippedDesiredSize.Width;
 				}
-
-				if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
+				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 				{
 					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
-					arrangeSize.Height = _unclippedDesiredSize.Height;
 				}
 			}
 
@@ -240,7 +236,7 @@ namespace Windows.UI.Xaml
 
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
 
-			RenderSize = innerInkSize;
+			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
@@ -250,12 +246,6 @@ namespace Windows.UI.Xaml
 
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
-
-			if (IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
-				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height))
-			{
-				needsClipToSlot = true;
-			}
 
 			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
@@ -287,8 +277,7 @@ namespace Windows.UI.Xaml
 				var layoutFrame = new Rect(offset, clippedInkSize);
 
 				// Calculate clipped frame.
-				var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
-				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
+				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRect.DeflateBy(margin)) ?? Rect.Empty;
 
 				// Rebase the origin of the clipped frame to layout
 				var clippedFrame = new Rect(

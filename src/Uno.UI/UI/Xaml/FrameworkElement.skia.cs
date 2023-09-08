@@ -37,6 +37,8 @@ namespace Windows.UI.Xaml
 			return Parent != null;
 		}
 
+		internal void SetActualSize(Size size) => AssignedActualSize = size;
+
 		public double ActualWidth => GetActualWidth();
 
 		public double ActualHeight => GetActualHeight();
@@ -51,6 +53,12 @@ namespace Windows.UI.Xaml
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 		public event SizeChangedEventHandler SizeChanged;
+
+		internal void RaiseSizeChanged(SizeChangedEventArgs args)
+		{
+			SizeChanged?.Invoke(this, args);
+			_renderTransform?.UpdateSize(args.NewSize);
+		}
 
 		#region Name Dependency Property
 
