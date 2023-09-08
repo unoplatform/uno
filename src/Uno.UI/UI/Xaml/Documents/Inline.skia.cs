@@ -110,6 +110,11 @@ namespace Windows.UI.Xaml.Documents
 				var filePath = global::System.IO.Path.Combine(Windows.Application­Model.Package.Current.Installed­Location.Path, path.TrimStart('/')
 					.Replace('/', global::System.IO.Path.DirectorySeparatorChar));
 
+				if (!global::System.IO.File.Exists(filePath))
+				{
+					throw new global::System.IO.FileNotFoundException($"Can not find {name}", filePath);
+				}
+
 				skTypeFace = SKTypeface.FromFile(filePath);
 			}
 			else
