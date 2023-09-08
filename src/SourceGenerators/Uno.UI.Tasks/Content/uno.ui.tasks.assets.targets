@@ -32,6 +32,7 @@
 			<_AllChildProjectItemsWithTargetPath Include="$(ProjectUnoPriFullPath)">
 				<TargetPath>$(ProjectUnoPriFileName)</TargetPath>
 				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<PublishFolderType>None</PublishFolderType>
 			</_AllChildProjectItemsWithTargetPath>
 		</ItemGroup>
 
@@ -198,7 +199,7 @@
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
-	BeforeTargets="GetCopyToPublishDirectoryItems">
+			BeforeTargets="GetCopyToPublishDirectoryItems;_UnoGeneratePriMarker">
 		<ItemGroup>
 			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
 				<TargetPath>%(TargetPath)</TargetPath>
