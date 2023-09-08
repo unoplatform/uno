@@ -893,31 +893,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
 
-		private Size _size;
-
-		/// <summary>
-		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
-		/// </summary>
-		public Size RenderSize
-		{
-			get => Visibility == Visibility.Collapsed ? new Size() : _size;
-			internal set
-			{
-				global::System.Diagnostics.Debug.Assert(value.Width >= 0, "Invalid width");
-				global::System.Diagnostics.Debug.Assert(value.Height >= 0, "Invalid height");
-				var previousSize = _size;
-				_size = value;
-				if (_size != previousSize)
-				{
-					if (this is FrameworkElement frameworkElement)
-					{
-						frameworkElement.SetActualSize(_size);
-						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
-					}
-				}
-			}
-		}
-
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
@@ -927,6 +902,10 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public Size DesiredSize => ((IUIElement)this).DesiredSize;
 
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize { get; internal set; }
 
 #if !UNO_REFERENCE_API
 		/// <summary>

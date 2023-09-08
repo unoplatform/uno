@@ -43,6 +43,8 @@ namespace Windows.UI.Xaml.Shapes
 		private Rect GetPathBoundingBox(SkiaGeometrySource2D path)
 			=> path.Geometry.TightBounds.ToRect();
 
+		private bool IsFinite(double value) => !double.IsInfinity(value);
+
 		private protected void Render(Windows.UI.Composition.SkiaGeometrySource2D? path, double? scaleX = null, double? scaleY = null, double? renderOriginX = null, double? renderOriginY = null)
 		{
 			if (path is null)
