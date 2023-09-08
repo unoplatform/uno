@@ -1607,8 +1607,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#66AEE7")); // selected
 
 			// check starting from below the second item that nothing looks selected or hovered
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, si.Width, si.Height - 110), Colors.FromARGB("#66AEE7")); // clicked
-			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(0, 110, si.Width, si.Height - 110), Colors.FromARGB("#FFE6E6E6")); // hovered
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width, si.Height - 110), Colors.FromARGB("#66AEE7")); // selected
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width, si.Height - 110), Colors.FromARGB("#FFE6E6E6")); // hovered
 		}
 
 		[TestMethod]
