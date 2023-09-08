@@ -125,6 +125,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal Lazy<INamedTypeSymbol> CreateFromStringAttributeSymbol { get; }
 		internal Lazy<INamedTypeSymbol> UserControlSymbol { get; }
 		internal Lazy<INamedTypeSymbol?> NativePageSymbol { get; }
+		internal Lazy<INamedTypeSymbol?> WindowSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ApplicationSymbol { get; }
 		internal Lazy<INamedTypeSymbol> ResourceDictionarySymbol { get; }
 		internal Lazy<INamedTypeSymbol> TextBlockSymbol { get; }
@@ -290,6 +291,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			CreateFromStringAttributeSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.CreateFromStringAttribute);
 			UserControlSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.UserControl);
 			NativePageSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.NativePage);
+			WindowSymbol = GetOptionalSymbolAsLazy(XamlConstants.Types.Window);
 			ApplicationSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.Application);
 			ResourceDictionarySymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.ResourceDictionary);
 			TextBlockSymbol = GetMandatorySymbolAsLazy(XamlConstants.Types.TextBlock);
