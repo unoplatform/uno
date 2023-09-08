@@ -751,9 +751,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
 			RegisterPartial("void OnInitializeCompleted()");
 
-			writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
-			writer.AppendLineIndented("var __that = this;");
 			var topLevelControlType = GetType(topLevelControl.Type);
+			if (!IsWindow(topLevelControlType)) // Window is not a DependencyObject
+			{
+				writer.AppendLineIndented("NameScope.SetNameScope(this, __nameScope);");
+			}
+			writer.AppendLineIndented("var __that = this;");
 			TrySetParsing(writer, topLevelControlType, isInitializer: false);
 
 			using (TrySetDefaultBindMode(topLevelControl))
@@ -786,6 +789,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			writer.AppendLineIndented(";");
+
+			if (IsWindow(topLevelControlType)) // Window is not a DependencyObject
+			{
+				writer.AppendLineIndented("if (__that.Content != null)");
+				using var _ = writer.Block();
+				writer.AppendLineIndented("NameScope.SetNameScope(__that.Content, __nameScope);");
+			}
 
 			writer.AppendLineIndented("OnInitializeCompleted();");
 		}
@@ -2676,6 +2686,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		private bool IsPage(INamedTypeSymbol? symbol) => IsType(symbol, Generation.NativePageSymbol.Value);
+
+		private bool IsWindow(INamedTypeSymbol? symbol) => IsType(symbol, Generation.WindowSymbol.Value);
 
 		private bool IsApplication(INamedTypeSymbol symbol) => IsType(symbol, Generation.ApplicationSymbol.Value);
 
