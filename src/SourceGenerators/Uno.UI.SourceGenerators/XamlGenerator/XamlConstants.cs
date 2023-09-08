@@ -109,6 +109,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string ColorHelper = RootMUINamespace + ".ColorHelper";
 			public const string Thickness = BaseXamlNamespace + ".Thickness";
 			public const string Application = BaseXamlNamespace + ".Application";
+			public const string Window = BaseXamlNamespace + ".Window";
 
 			// Media
 			public const string LinearGradientBrush = Namespaces.Media + ".LinearGradientBrush";
