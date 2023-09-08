@@ -17,32 +17,21 @@ namespace Uno.UI.Media
 
 		partial void Apply(bool isSizeChanged, bool isOriginChanged)
 		{
-			var flowDirectionTransform = Matrix4x4.Identity;
-
-#if !__ANDROID__ && !__IOS__ && !__MACOS__
-			UIElement uiElement = Owner;
-#else
-			if (Owner is UIElement uiElement)
-#endif
-			{
-				flowDirectionTransform = uiElement.GetFlowDirectionTransform();
-			}
-
-			FlowDirectionTransform = flowDirectionTransform;
+			FlowDirectionTransform = Owner.GetFlowDirectionTransform();
 
 			if (Transform is null)
 			{
-				Owner.Visual.TransformMatrix = flowDirectionTransform;
+				Owner.Visual.TransformMatrix = new Matrix4x4(FlowDirectionTransform);
 			}
 			else
 			{
-				Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize)) * flowDirectionTransform;
+				Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize) * flowDirectionTransform);
 			}
 		}
 
 		partial void Cleanup()
 		{
-			FlowDirectionTransform = Matrix4x4.Identity;
+			FlowDirectionTransform = Matrix3x2.Identity;
 			Owner.Visual.TransformMatrix = Matrix4x4.Identity;
 		}
 	}

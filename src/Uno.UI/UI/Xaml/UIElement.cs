@@ -90,6 +90,24 @@ namespace Windows.UI.Xaml
 			SubscribeToOverridenRoutedEvents();
 		}
 
+#if SUPPORTS_RTL
+		internal Matrix3x2 GetFlowDirectionTransform()
+			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+
+		private bool ShouldMirrorVisual()
+		{
+			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			{
+				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+#endif
+
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
@@ -379,15 +397,16 @@ namespace Windows.UI.Xaml
 
 		private void OnRenderTransformChanged(Transform _, Transform transform)
 		{
+			var flowDirectionTransform = _renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity;
+
 			_renderTransform?.Dispose();
 
-			if (transform is not null)
+			if (transform is not null || !flowDirectionTransform.IsIdentity)
 			{
-				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin);
+				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin, flowDirectionTransform);
 				OnRenderTransformSet();
 			}
-			// If we have a FlowDirectionTransform, we want to keep _renderTransform.
-			else if (_renderTransform.FlowDirectionTransform != Matrix4x4.Identity)
+			else
 			{
 				// Sanity
 				_renderTransform = null;
