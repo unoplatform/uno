@@ -1534,6 +1534,11 @@
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="Transparent" />
 										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectSquare"
+																	   Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+										</ObjectAnimationUsingKeyFrames>
 										<win:PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
 									</Storyboard>
 								</VisualState>
@@ -1562,6 +1567,11 @@
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="Transparent" />
 										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectSquare"
+																	   Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+										</ObjectAnimationUsingKeyFrames>
 										<win:PointerUpThemeAnimation Storyboard.TargetName="ContentPresenter" />
 									</Storyboard>
 								</VisualState>
@@ -1589,6 +1599,11 @@
 																	   Storyboard.TargetProperty="Stroke">
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="Transparent" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectSquare"
+																	   Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="{ThemeResource SystemControlHighlightAccentBrush}" />
 										</ObjectAnimationUsingKeyFrames>
 										<win:PointerDownThemeAnimation TargetName="ContentPresenter" />
 									</Storyboard>
@@ -1796,10 +1811,9 @@
 								Visibility="Collapsed">
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-									  win:Glyph="&#xE73E;"
-									  not_win:Glyph="&#xE73E;"
-									  FontSize="16"
-									  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+									  Glyph="&#xE001;"
+									  FontSize="20"
+									  Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
 									  Visibility="Collapsed"
 									  Opacity="0" />
 						</Border>
