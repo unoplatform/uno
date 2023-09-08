@@ -731,10 +731,10 @@ namespace Windows.UI.Composition
 	
 												strInputPixel = pGenerator->GetInputPixelName(node, 0);
 	
-												for ( int i = 0; i < 13; i += 3 )
+												for ( int i,k = 0; i < 12; i += 3, k += 2 )
 												{
-													rgstrPropertyNames[i] = pGenerator->DeclareShaderVariableForProperty(i); // Offset
-													rgstrPropertyNames[i + 1] = pGenerator->DeclareShaderVariableForProperty(i + 1); // Slope
+													rgstrPropertyNames[k] = pGenerator->DeclareShaderVariableForProperty(i); // Offset
+													rgstrPropertyNames[k + 1] = pGenerator->DeclareShaderVariableForProperty(i + 1); // Slope
 												}
 	
 												pStringBuilder = pGenerator->BeginPSLine();
@@ -790,6 +790,220 @@ namespace Windows.UI.Composition
 												pStringBuilder->Append('\n');
 	
 												if (*(bool*)&node->m_uprgbDefaultProperties[36]) // ClampOutput
+												{
+													pStringBuilder->Append(pszOutputPixelName);
+													pStringBuilder->Append(" = saturate(");
+													pStringBuilder->Append(pszOutputPixelName);
+													pStringBuilder->Append(");");
+													pStringBuilder->Append('\n');
+												}
+											}
+										*/
+									}
+
+									return null;
+								}
+							case EffectType.GammaTransferEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 17 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("RedAmplitude", out uint redAmplitudeProp, out _);
+										effectInterop.GetNamedPropertyMapping("RedExponent", out uint redExponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("RedOffset", out uint redOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("RedDisable", out uint redDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("GreenAmplitude", out uint greenAmplitudeProp, out _);
+										effectInterop.GetNamedPropertyMapping("GreenExponent", out uint greenExponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("GreenOffset", out uint greenOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("GreenDisable", out uint greenDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("BlueAmplitude", out uint blueAmplitudeProp, out _);
+										effectInterop.GetNamedPropertyMapping("BlueExponent", out uint blueExponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("BlueOffset", out uint blueOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("BlueDisable", out uint blueDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("AlphaAmplitude", out uint alphaAmplitudeProp, out _);
+										effectInterop.GetNamedPropertyMapping("AlphaExponent", out uint alphaExponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("AlphaOffset", out uint alphaOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("AlphaDisable", out uint alphaDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("ClampOutput", out uint clampProp, out _);
+
+										float redAmplitude = (float)effectInterop.GetProperty(redAmplitudeProp);
+										float redExponent = (float)effectInterop.GetProperty(redExponentProp);
+										float redOffset = (float)effectInterop.GetProperty(redOffsetProp);
+										bool redDisable = (bool)effectInterop.GetProperty(redDisableProp);
+
+										float greenAmplitude = (float)effectInterop.GetProperty(greenAmplitudeProp);
+										float greenExponent = (float)effectInterop.GetProperty(greenExponentProp);
+										float greenOffset = (float)effectInterop.GetProperty(greenOffsetProp);
+										bool greenDisable = (bool)effectInterop.GetProperty(greenDisableProp);
+
+										float blueAmplitude = (float)effectInterop.GetProperty(blueAmplitudeProp);
+										float blueExponent = (float)effectInterop.GetProperty(blueExponentProp);
+										float blueOffset = (float)effectInterop.GetProperty(blueOffsetProp);
+										bool blueDisable = (bool)effectInterop.GetProperty(blueDisableProp);
+
+										float alphaAmplitude = (float)effectInterop.GetProperty(alphaAmplitudeProp);
+										float alphaExponent = (float)effectInterop.GetProperty(alphaExponentProp);
+										float alphaOffset = (float)effectInterop.GetProperty(alphaOffsetProp);
+										bool alphaDisable = (bool)effectInterop.GetProperty(alphaDisableProp);
+
+										bool clamp = clampProp != 0xFF ? (bool)effectInterop.GetProperty(clampProp) : false;
+
+										string shader = $@"
+											uniform shader input;
+
+											uniform half redAmplitude;
+											uniform half redExponent;
+											uniform half redOffset;
+
+											uniform half greenAmplitude;
+											uniform half greenExponent;
+											uniform half greenOffset;
+
+											uniform half blueAmplitude;
+											uniform half blueExponent;
+											uniform half blueOffset;
+
+											uniform half alphaAmplitude;
+											uniform half alphaExponent;
+											uniform half alphaOffset;
+
+											half4 Premultiply(half4 color)
+											{{
+												color.rgb *= color.a;
+												return color;
+											}}
+
+											half4 UnPremultiply(half4 color)
+											{{
+												color.rgb = (color.a == 0) ? half3(0, 0, 0) : (color.rgb / color.a);
+												return color;
+											}}
+
+											half4 main()
+											{{
+												half4 color = UnPremultiply(sample(input));
+												color = half4(
+													{(redDisable ? "color.r" : "redAmplitude * pow(abs(color.r), redExponent) + redOffset")},
+													{(greenDisable ? "color.g" : "greenAmplitude * pow(abs(color.g), greenExponent) + greenOffset")},
+													{(blueDisable ? "color.b" : "blueAmplitude * pow(abs(color.b), blueExponent) + blueOffset")},
+													{(alphaDisable ? "color.a" : "alphaAmplitude * pow(abs(color.a), alphaExponent) + alphaOffset")}
+												);
+
+												return {(clamp ? "clamp(" : String.Empty)}Premultiply(color){(clamp ? ", 0.0, 1.0)" : String.Empty)};
+											}}
+										";
+
+										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+										if (errors is not null)
+											return null;
+
+										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
+										{
+											{ "redAmplitude", redAmplitude },
+											{ "redExponent", redExponent },
+											{ "redOffset", redOffset },
+
+											{ "greenAmplitude", greenAmplitude },
+											{ "greenExponent", greenExponent },
+											{ "greenOffset", greenOffset },
+
+											{ "blueAmplitude", blueAmplitude },
+											{ "blueExponent", blueExponent },
+											{ "blueOffset", blueOffset },
+
+											{ "alphaAmplitude", alphaAmplitude },
+											{ "alphaExponent", alphaExponent },
+											{ "alphaOffset", alphaOffset }
+										};
+										SKRuntimeEffectChildren children = new(runtimeEffect)
+										{
+											{ "input", null }
+										};
+
+										return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+
+										// Reference (wuceffects.dll):
+										/*
+											void Windows::UI::Composition::GammaTransferEffectType::GenerateCode(const Windows::UI::Composition::EffectNode *node, Windows::UI::Composition::EffectGenerator *pGenerator, const char *pszOutputPixelName)
+											{
+												bool rgfDisable[4];
+												std::string strInputPixel;
+												std::string rgstrPropertyNames[12];
+												Windows::UI::Composition::StringBuilder *pStringBuilder;
+	
+												strInputPixel = pGenerator->GetInputPixelName(node, 0);
+	
+												for ( int i = 2, k = 0; i < 15; i += 4, k += 3 )
+												{
+													rgstrPropertyNames[k] = pGenerator->DeclareShaderVariableForProperty(i - 1); // Amplitude
+													rgstrPropertyNames[k + 1] = pGenerator->DeclareShaderVariableForProperty(i); // Exponent
+													rgstrPropertyNames[k + 2] = pGenerator->DeclareShaderVariableForProperty(i + 1); // Offset
+												}
+	
+												pStringBuilder = pGenerator->BeginPSLine();
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = UnPremultiply(");
+												pStringBuilder->Append(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->Append(");");
+												pStringBuilder->Append('\n');
+	
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = minfloat4(");
+												pStringBuilder->Append('\n');
+	
+												rgfDisable[0] = *(bool*)&node->m_uprgbDefaultProperties[48]; // RedDisable
+												rgfDisable[1] = *(bool*)&node->m_uprgbDefaultProperties[49]; // GreenDisable
+												rgfDisable[2] = *(bool*)&node->m_uprgbDefaultProperties[50]; // BlueDisable
+												rgfDisable[3] = *(bool*)&node->m_uprgbDefaultProperties[51]; // AlphaDisable
+	
+												const char* RGBA = "rgba";
+												for ( int i,k = 0; i < 4; i++, k += 3 )
+												{
+													if (i)
+													{
+														pStringBuilder->Append(",");
+														pStringBuilder->Append('\n');
+													}
+		
+													if ( rgfDisable[i] )
+													{
+														pStringBuilder->Append(pszOutputPixelName);
+														pStringBuilder->Append('.');
+														pStringBuilder->Append(RGBA[i]);
+													}
+													else
+													{
+														pStringBuilder->Append(rgstrPropertyNames[k]); // Amplitude
+														pStringBuilder->Append(" * pow(");
+														pStringBuilder->Append("abs(");
+														pStringBuilder->Append(pszOutputPixelName);
+														pStringBuilder->Append('.');
+														pStringBuilder->Append(RGBA[i]);
+														pStringBuilder->Append(')');
+														pStringBuilder->Append(", ");
+														pStringBuilder->Append(rgstrPropertyNames[k + 1]); // Exponent
+														pStringBuilder->Append(") + ");
+														pStringBuilder->Append(rgstrPropertyNames[k + 2]); // Offset
+													}
+												}
+	
+												pStringBuilder->Append(");");
+												pStringBuilder->Append('\n');
+	
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = Premultiply(");
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(");");
+												pStringBuilder->Append('\n');
+	
+												if (*(bool*)&node->m_uprgbDefaultProperties[52]) // ClampOutput
 												{
 													pStringBuilder->Append(pszOutputPixelName);
 													pStringBuilder->Append(" = saturate(");
