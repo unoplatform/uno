@@ -297,6 +297,8 @@ namespace Windows.UI.Xaml
 					clippedFrameWithParentOrigin.Width,
 					clippedFrameWithParentOrigin.Height);
 
+				clippedFrame = clippedFrame.AtMost(clientSize);
+
 				ArrangeNative(offset, true, clippedFrame);
 			}
 			else
