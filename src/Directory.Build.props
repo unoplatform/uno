@@ -34,7 +34,7 @@
 		<Deterministic>true</Deterministic>
 
 		<UNO_UWP_BUILD>false</UNO_UWP_BUILD>
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI;WINUI_WINDOWING</DefineConstants>
 
 		<!-- Resizetizer codegen is not supported in UWP -->
 		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>
