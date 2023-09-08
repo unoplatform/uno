@@ -50,6 +50,12 @@ namespace Uno.UI.Media
 			}
 		}
 
+		internal NativeRenderTransformAdapter(_View owner, Transform transform, Point origin, Matrix3x2 flowDirectionTransform)
+			: this(owner, transform, origin)
+		{
+			FlowDirectionTransform = flowDirectionTransform;
+		}
+
 		partial void Initialized();
 
 		/// <summary>
@@ -62,7 +68,7 @@ namespace Uno.UI.Media
 		/// </summary>
 		public Transform Transform { get; }
 
-		public Matrix4x4 FlowDirectionTransform { get; private set; } = Matrix4x4.Identity;
+		public Matrix3x2 FlowDirectionTransform { get; private set; } = Matrix3x2.Identity;
 
 		/// <summary>
 		/// The current relative origin of this render transform.

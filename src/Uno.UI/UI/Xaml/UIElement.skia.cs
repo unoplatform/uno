@@ -272,7 +272,7 @@ namespace Windows.UI.Xaml
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
 
-			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix4x4.Identity) != GetFlowDirectionTransform())
+			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
@@ -306,22 +306,6 @@ namespace Windows.UI.Xaml
 					this.Log().Debug($"{this}: ArrangeVisual({_currentFinalRect}) -- SKIPPED (no change)");
 				}
 			}
-		}
-
-		internal Matrix4x4 GetFlowDirectionTransform()
-			=> ShouldMirrorVisual() ? new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f)) : Matrix4x4.Identity;
-
-		private bool ShouldMirrorVisual()
-		{
-			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
-			{
-				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
-				{
-					return true;
-				}
-			}
-
-			return false;
 		}
 
 		internal virtual void OnArrangeVisual(Rect rect, Rect? clip)
