@@ -19,6 +19,7 @@ using Windows.System;
 using Color = Windows.UI.Color;
 using System.Globalization;
 using Microsoft.UI.Input;
+using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -236,6 +237,13 @@ namespace Windows.UI.Xaml
 
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
 			OnViewportUpdated(clipRect ?? Rect.Empty);
+
+			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
+			{
+				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
+
+			_renderTransform?.UpdateFlowDirectionTransform();
 
 #if DEBUG
 			var count = ++_arrangeCount;

@@ -14,6 +14,7 @@ using Uno.UI.Xaml.Media;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno.UI.Helpers;
+using System.Numerics;
 
 namespace Windows.UI.Xaml
 {
@@ -146,6 +147,21 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal void ApplyFlowDirection(bool isRtl)
+		{
+			// TODO: This will break if RenderTransform is used on the TextBlock.
+			// One of the transforms will override the other.
+			// TODO: Verify whether this breaks TextBlock if RTL FlowDirection is set "locally" (not inherited)
+			if (isRtl)
+			{
+				this.SetNativeTransform(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f));
+			}
+			else
+			{
+				this.SetNativeTransform(Matrix3x2.Identity);
+			}
+		}
+
 		internal void SetForeground(object localValue)
 		{
 			switch (localValue)
@@ -260,6 +276,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 				var value = (TextAlignment)localValue;
+
 				switch (value)
 				{
 					case TextAlignment.Left:

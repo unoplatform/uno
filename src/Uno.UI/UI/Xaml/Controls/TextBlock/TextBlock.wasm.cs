@@ -10,6 +10,7 @@ using System.Linq;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using System.Numerics;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -148,6 +149,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return base.ArrangeOverride(arrangeSize);
+		}
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FlowDirectionProperty)
+			{
+				OnTextAlignmentChanged();
+				ApplyFlowDirection(FlowDirection == FlowDirection.RightToLeft);
+			}
 		}
 
 		partial void OnFontStyleChangedPartial() => _fontStyleChanged = true;

@@ -62,7 +62,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;SUPPORTS_RTL</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">

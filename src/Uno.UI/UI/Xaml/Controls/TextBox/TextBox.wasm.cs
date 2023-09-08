@@ -12,6 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		internal TextBoxView TextBoxView => _textBoxView;
 
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
+
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
 
@@ -48,6 +49,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
+			ApplyFlowDirection(FlowDirection == FlowDirection.RightToLeft);
+
 			if (_header != null)
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
@@ -62,6 +65,12 @@ namespace Windows.UI.Xaml.Controls
 		private void OnHeaderClick(object sender, object args)
 		{
 			FocusTextView();
+		}
+
+		partial void OnFlowDirectionChangedPartial()
+		{
+			OnTextAlignmentChanged(TextAlignment);
+			_textBoxView?.ApplyFlowDirection(FlowDirection == FlowDirection.RightToLeft);
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue)

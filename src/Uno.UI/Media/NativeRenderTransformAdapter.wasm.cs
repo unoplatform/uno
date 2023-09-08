@@ -35,12 +35,22 @@ namespace Uno.UI.Media
 			}
 			else
 			{
-				Owner.SetNativeTransform(Transform.MatrixCore);
+				FlowDirectionTransform = Owner.GetFlowDirectionTransform();
+
+				if (Transform is null)
+				{
+					Owner.SetNativeTransform(FlowDirectionTransform);
+				}
+				else
+				{
+					Owner.SetNativeTransform(Transform.MatrixCore * FlowDirectionTransform);
+				}
 			}
 		}
 
 		partial void Cleanup()
 		{
+			FlowDirectionTransform = Matrix3x2.Identity;
 			Owner.ResetStyle("transform");
 		}
 	}
