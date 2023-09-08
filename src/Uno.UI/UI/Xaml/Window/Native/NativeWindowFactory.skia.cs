@@ -2,6 +2,7 @@
 
 using System;
 using Uno.Foundation.Extensibility;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -17,13 +18,13 @@ partial class NativeWindowFactory
 		return factory;
 	});
 
-	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window)
+	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot)
 	{
 		if (_nativeWindowFactory.Value is not { } factory)
 		{
 			return null;
 		}
 
-		return factory.CreateWindow(window);
+		return factory.CreateWindow(window, xamlRoot);
 	}
 }
