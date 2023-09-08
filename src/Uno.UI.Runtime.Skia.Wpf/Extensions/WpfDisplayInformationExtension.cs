@@ -46,7 +46,8 @@ namespace Uno.UI.Runtime.Skia.Wpf
 
 		private float GetDpi()
 		{
-			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.MainWindow);
+			//TODO:MZ: Get DPI for each window separately
+			var dpi = VisualTreeHelper.GetDpi(WpfApplication.Current.Windows[0]);
 			return (float)Math.Max(dpi.DpiScaleX, dpi.DpiScaleY) * DisplayInformation.BaseDpi;
 		}
 	}

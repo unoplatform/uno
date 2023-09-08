@@ -13,7 +13,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 // TODO:MZ: Avoid MainRootVisual
 namespace Windows.UI.Xaml;
 
-public sealed partial class Window
+partial class Window
 {
 #pragma warning disable CS0067 // The field is never used
 #pragma warning disable CS0414 // The field is never used
