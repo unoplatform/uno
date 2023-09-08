@@ -25,7 +25,7 @@ namespace Uno.UI.Media
 			}
 			else
 			{
-				Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize) * flowDirectionTransform);
+				Owner.Visual.TransformMatrix = new Matrix4x4(Transform.ToMatrix(CurrentOrigin, CurrentSize) * FlowDirectionTransform);
 			}
 		}
 
