@@ -124,6 +124,21 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush12 = factory12.CreateBrush();
 
 			exposureGrid.Background = new EffectTesterBrush(effectBrush12);
+
+			var surface2 = LoadedImageSurface.StartLoadFromUri(new Uri("https://user-images.githubusercontent.com/34550324/266135095-71c9ce0a-4e49-408f-b2ff-670a53adef10.png"));
+			surface2.LoadCompleted += (s, o) =>
+			{
+				if (o.Status == LoadedImageSourceLoadStatus.Success)
+				{
+					var brush = compositor.CreateSurfaceBrush(surface2);
+
+					var effect13 = new SimpleCrossfadeEffect() { Source1 = new CompositionEffectSourceParameter("sourceBrush"), Source2 = new CompositionEffectSourceParameter("secondaryBrush"), CrossFade = 0.5f };
+					var factory13 = compositor.CreateEffectFactory(effect13);
+					var effectBrush13 = factory13.CreateBrush();
+
+					crossfadeGrid.Background = new EffectTesterBrushWithSecondaryBrush(effectBrush13, brush);
+				}
+			};
 #endif
 		}
 
@@ -730,6 +745,63 @@ namespace UITests.Windows_UI_Composition
 			public uint GetPropertyCount() => 1;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("12F575E8-4DB1-485F-9A84-03A07DD3829F")]
+		private class SimpleCrossfadeEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleCrossfadeEffect";
+			private Guid _id = new Guid("12F575E8-4DB1-485F-9A84-03A07DD3829F");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float CrossFade { get; set; } = 0.5f;
+
+			public IGraphicsEffectSource Source1 { get; set; }
+
+			public IGraphicsEffectSource Source2 { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Weight":
+					case "CrossFade":
+					case "Crossfade":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return CrossFade;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => index is 0 ? Source1 : Source2;
+			public uint GetSourceCount() => 2;
 		}
 #endif
 	}

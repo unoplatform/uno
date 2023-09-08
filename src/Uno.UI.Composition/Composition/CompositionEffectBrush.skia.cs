@@ -241,6 +241,7 @@ namespace Windows.UI.Composition
 										if (skMode == (SKBlendMode)0xFF) // Unsupported mode
 											return null;
 
+										// We have to do this manually because SKImageFilter.CreateMerge(SKImageFilter, SKImageFilter, SKBlendMode, SKImageFilter.CropRect) is obsolete.
 										for (uint idx = 1; idx < effectInterop.GetSourceCount(); idx++)
 										{
 											SKImageFilter nextFilter = GenerateEffectFilter(effectInterop.GetSource(idx), bounds);
@@ -277,6 +278,7 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("Opacity", out uint opacityProp, out _);
 										float opacity = (float)effectInterop.GetProperty(opacityProp);
+
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -528,6 +530,69 @@ namespace Windows.UI.Composition
 												pStringBuilder->('\n');
 											}
 										*/
+									}
+
+									return null;
+								}
+							case EffectType.CrossFadeEffect: // TODO: We should use SkColorFilters::Lerp instead once SkiaSharp includes it
+								{
+									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource sourceA && effectInterop.GetSource(1) is IGraphicsEffectSource sourceB)
+									{
+										SKImageFilter sourceFilter1 = GenerateEffectFilter(sourceB, bounds);
+										if (sourceFilter1 is null)
+											return null;
+
+										SKImageFilter sourceFilter2 = GenerateEffectFilter(sourceA, bounds);
+										if (sourceFilter2 is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("CrossFade", out uint crossfadeProp, out _);
+
+										float crossfade = (float)effectInterop.GetProperty(crossfadeProp);
+
+										if (crossfade <= 0.0f)
+											return sourceFilter1;
+										else if (crossfade >= 1.0f)
+											return sourceFilter2;
+
+										SKImageFilter fbFilter = SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[]
+												{
+													crossfade, 0,         0,         0,         0,
+													0,         crossfade, 0,         0,         0,
+													0,         0,         crossfade, 0,         0,
+													0,         0,         0,         crossfade, 0
+												}),
+											sourceFilter2);
+
+										string shader = $@"
+											uniform shader input;
+											uniform half crossfade;
+
+											half4 main() 
+											{{
+												half4 inputColor = sample(input);
+												return inputColor - (inputColor * crossfade);
+											}}
+										";
+
+										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+										if (errors is not null)
+											return null;
+
+										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
+										{
+											{ "crossfade", crossfade }
+										};
+										SKRuntimeEffectChildren children = new(runtimeEffect)
+										{
+											{ "input", null }
+										};
+
+										SKImageFilter amafFilter = SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter1);
+
+										return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, new(bounds));
 									}
 
 									return null;

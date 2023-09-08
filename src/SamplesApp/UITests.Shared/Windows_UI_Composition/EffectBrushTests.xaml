@@ -22,5 +22,6 @@
 		<Grid x:Name="opacityGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="OpacityEffect"/>
 		<Grid x:Name="contrastGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ContrastEffect"/>
 		<Grid x:Name="exposureGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ExposureEffect (Negative Value, -1)"/>
+		<Grid x:Name="crossfadeGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="CrossFadeEffect"/>
 	</GridView>
 </UserControl>
