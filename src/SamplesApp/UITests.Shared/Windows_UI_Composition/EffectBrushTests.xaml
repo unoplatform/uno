@@ -25,5 +25,6 @@
 		<Grid x:Name="crossfadeGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="CrossFadeEffect"/>
 		<Grid x:Name="lumaGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="LuminanceToAlphaEffect"/>
 		<Grid x:Name="linearXferGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="LinearTransferEffect"/>
+		<Grid x:Name="gammaXferGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="GammaTransferEffect"/>
 	</GridView>
 </UserControl>
