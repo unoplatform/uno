@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ClearValue(ItemsControl.IndexForItemContainerProperty);
 
 			// Reset visual state so that the container doesn't come back looking like it's hovered or clicked.
-			UpdateCommonStates();
+			VisualStateManager.GoToState(this, "Normal", false);
 
 			base.PrepareForRecycle();
 		}
