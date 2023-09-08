@@ -41,7 +41,7 @@
 		<Deterministic>true</Deterministic>
 
 		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI;WINUI_WINDOWING</DefineConstants>
 
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 
