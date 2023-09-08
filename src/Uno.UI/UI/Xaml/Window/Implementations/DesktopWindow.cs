@@ -26,7 +26,7 @@ internal partial class DesktopWindow : IWindowImplementation
 		_desktopWindowXamlSource.AttachToWindow(window);
 		_desktopWindowXamlSource.Content = _windowChrome;
 
-		_nativeWindowWrapper = NativeWindowFactory.CreateWindow(window);
+		_nativeWindowWrapper = NativeWindowFactory.CreateWindow(window, _desktopWindowXamlSource.XamlIsland!.XamlRoot!);
 		if (_nativeWindowWrapper is null)
 		{
 			throw new InvalidOperationException("This platform does not support creating multiple windows yet.");
