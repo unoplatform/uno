@@ -66,11 +66,13 @@ namespace UITests.Windows_UI_Composition
 
 			hueGrid.Background = new EffectTesterBrush(effectBrush4);
 
-			// Aggregation Test
+			// BEGIN: Aggregation Test
 
 			var effect5 = new SimpleGrayscaleEffect() { Source = effect };
 			var factory5 = compositor.CreateEffectFactory(effect5);
 			var effectBrush5 = factory5.CreateBrush();
+
+			// END: Aggregation Test
 
 			aggregationGrid.Background = new EffectTesterBrush(effectBrush5);
 
@@ -139,6 +141,18 @@ namespace UITests.Windows_UI_Composition
 					crossfadeGrid.Background = new EffectTesterBrushWithSecondaryBrush(effectBrush13, brush);
 				}
 			};
+
+			var effect14 = new SimpleLuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") };
+			var factory14 = compositor.CreateEffectFactory(effect14);
+			var effectBrush14 = factory14.CreateBrush();
+
+			lumaGrid.Background = new EffectTesterBrush(effectBrush14);
+
+			var effect15 = new SimpleLinearTransferEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), RedOffset = -1.0f, RedSlope = 2.5f, GreenOffset = -1.0f, GreenSlope = 5.0f };
+			var factory15 = compositor.CreateEffectFactory(effect15);
+			var effectBrush15 = factory15.CreateBrush();
+
+			linearXferGrid.Background = new EffectTesterBrush(effectBrush15);
 #endif
 		}
 
@@ -802,6 +816,209 @@ namespace UITests.Windows_UI_Composition
 			public uint GetPropertyCount() => 1;
 			public IGraphicsEffectSource GetSource(uint index) => index is 0 ? Source1 : Source2;
 			public uint GetSourceCount() => 2;
+		}
+
+		[Guid("41251AB7-0BEB-46F8-9DA7-59E93FCCE5DE")]
+		private class SimpleLuminanceToAlphaEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleLuminanceToAlphaEffect";
+			private Guid _id = new Guid("41251AB7-0BEB-46F8-9DA7-59E93FCCE5DE");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping) => throw new NotSupportedException();
+
+			public object GetProperty(uint index) => throw new NotSupportedException();
+
+			public uint GetPropertyCount() => 0;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("AD47C8FD-63EF-4ACC-9B51-67979C036C06")]
+		private class SimpleLinearTransferEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleLinearTransferEffect";
+			private Guid _id = new Guid("AD47C8FD-63EF-4ACC-9B51-67979C036C06");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float RedOffset { get; set; } = 0.0f;
+
+			public float RedSlope { get; set; } = 1.0f;
+
+			public bool RedDisable { get; set; } = false;
+
+
+			public float GreenOffset { get; set; } = 0.0f;
+
+			public float GreenSlope { get; set; } = 1.0f;
+
+			public bool GreenDisable { get; set; } = false;
+
+
+			public float BlueOffset { get; set; } = 0.0f;
+
+			public float BlueSlope { get; set; } = 1.0f;
+
+			public bool BlueDisable { get; set; } = false;
+
+
+			public float AlphaOffset { get; set; } = 0.0f;
+
+			public float AlphaSlope { get; set; } = 1.0f;
+
+			public bool AlphaDisable { get; set; } = false;
+
+
+			public bool ClampOutput { get; set; } = false;
+
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "RedOffset":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "RedSlope":
+						{
+							index = 1;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "RedDisable":
+						{
+							index = 2;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "GreenOffset":
+						{
+							index = 3;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "GreenSlope":
+						{
+							index = 4;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "GreenDisable":
+						{
+							index = 5;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "BlueOffset":
+						{
+							index = 6;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "BlueSlope":
+						{
+							index = 7;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "BlueDisable":
+						{
+							index = 8;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "AlphaOffset":
+						{
+							index = 9;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "AlphaSlope":
+						{
+							index = 10;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "AlphaDisable":
+						{
+							index = 11;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "ClampOutput":
+						{
+							index = 12;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return RedOffset;
+					case 1:
+						return RedSlope;
+					case 2:
+						return RedDisable;
+					case 3:
+						return GreenOffset;
+					case 4:
+						return GreenSlope;
+					case 5:
+						return GreenDisable;
+					case 6:
+						return BlueOffset;
+					case 7:
+						return BlueSlope;
+					case 8:
+						return BlueDisable;
+					case 9:
+						return AlphaOffset;
+					case 10:
+						return AlphaSlope;
+					case 11:
+						return AlphaDisable;
+					case 12:
+						return ClampOutput;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 13;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
 		}
 #endif
 	}
