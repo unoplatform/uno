@@ -1811,8 +1811,8 @@
 								Visibility="Collapsed">
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-									  Glyph="&#xE001;"
-									  FontSize="20"
+									  Glyph="&#xE73E;"
+									  FontSize="16"
 									  Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
 									  Visibility="Collapsed"
 									  Opacity="0" />
