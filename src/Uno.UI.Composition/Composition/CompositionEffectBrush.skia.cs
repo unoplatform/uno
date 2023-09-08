@@ -179,22 +179,22 @@ namespace Windows.UI.Composition
   
 												pStringBuilder = pGenerator->BeginPSLine();
 												pStringBuilder->Append("    ");
-												pStringBuilder->(pszOutputPixelName);
-												pStringBuilder->(" = ");
-												pStringBuilder->(strInputPixel.c_str(), strInputPixel.size());
-												pStringBuilder->(" * ");
-												pStringBuilder->(strColorProperty.c_str(), strColorProperty.size());
-												pStringBuilder->(";");
-												pStringBuilder->('\n');
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = ");
+												pStringBuilder->Append(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->Append(" * ");
+												pStringBuilder->Append(strColorProperty.c_str(), strColorProperty.size());
+												pStringBuilder->Append(";");
+												pStringBuilder->Append('\n');
   
 												if (*(bool*)&node->m_uprgbDefaultProperties[16]) // ClampOutput, 16 = GetPropertyMetadata(1, &metatdata) ==> metatdata.cbStructOffset
 												{
 													Windows::UI::Composition::StringBuilder* builder = pGenerator->BeginPSLine();
-													builder->(pszOutputPixelName);
-													builder->(" = saturate(");
-													builder->(pszOutputPixelName);
-													builder->(");");
-													builder->('\n');
+													builder->Append(pszOutputPixelName);
+													builder->Append(" = saturate(");
+													builder->Append(pszOutputPixelName);
+													builder->Append(");");
+													builder->Append('\n');
 												}
 											}
 										*/
@@ -383,30 +383,30 @@ namespace Windows.UI.Composition
 												pGenerator->AddPSInclude("D2DContrast.hlsl");
 												pStringBuilder = pGenerator->BeginPSLine();
 												pStringBuilder->Append("    ");
-												pStringBuilder->(pszOutputPixelName);
-												pStringBuilder->(" = ");
-												pStringBuilder->(strInputPixel.c_str(), strInputPixel.size());
-												pStringBuilder->(";");
-												pStringBuilder->('\n');
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = ");
+												pStringBuilder->Append(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->Append(";");
+												pStringBuilder->Append('\n');
   
 												if (*(bool*)&node->m_uprgbDefaultProperties[4]) // ClampSource, 4 = GetPropertyMetadata(1, &metatdata) ==> metatdata.cbStructOffset
 												{
 													Windows::UI::Composition::StringBuilder* builder = pGenerator->BeginPSLine();
-													builder->(pszOutputPixelName);
-													builder->(" = saturate(");
-													builder->(pszOutputPixelName);
-													builder->(");");
-													builder->('\n');
+													builder->Append(pszOutputPixelName);
+													builder->Append(" = saturate(");
+													builder->Append(pszOutputPixelName);
+													builder->Append(");");
+													builder->Append('\n');
 												}
 
 												Windows::UI::Composition::StringBuilder* builder = pGenerator->BeginPSLine();
-												builder->(pszOutputPixelName);
-												builder->(" = D2DContrast(");
-												builder->(pszOutputPixelName);
-												builder->(", ");
-												builder->(strContrastProperty.c_str(), strContrastProperty.size());
-												builder->(");");
-												builder->('\n');
+												builder->Append(pszOutputPixelName);
+												builder->Append(" = D2DContrast(");
+												builder->Append(pszOutputPixelName);
+												builder->Append(", ");
+												builder->Append(strContrastProperty.c_str(), strContrastProperty.size());
+												builder->Append(");");
+												builder->Append('\n');
 											}
 										*/
 									}
@@ -519,15 +519,15 @@ namespace Windows.UI.Composition
 												);
   
 												pStringBuilder = pGenerator->BeginPSLine();
-												pStringBuilder->(pszOutputPixelName);
-												pStringBuilder->(" = minfloat4(");
-												pStringBuilder->(strInputPixel.c_str(), strInputPixel.size());
-												pStringBuilder->(".rgb * ");
-												pStringBuilder->(strMultiplierProperty.c_str(), strMultiplierProperty.size());
-												pStringBuilder->(", ");
-												pStringBuilder->(strInputPixel.c_str(), strInputPixel.size());
-												pStringBuilder->(".a);");
-												pStringBuilder->('\n');
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = minfloat4(");
+												pStringBuilder->Append(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->Append(".rgb * ");
+												pStringBuilder->Append(strMultiplierProperty.c_str(), strMultiplierProperty.size());
+												pStringBuilder->Append(", ");
+												pStringBuilder->Append(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->Append(".a);");
+												pStringBuilder->Append('\n');
 											}
 										*/
 									}
@@ -593,6 +593,212 @@ namespace Windows.UI.Composition
 										SKImageFilter amafFilter = SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter1);
 
 										return SKImageFilter.CreateBlendMode(SKBlendMode.Plus, fbFilter, amafFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.LuminanceToAlphaEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.LinearTransferEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 13 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("RedOffset", out uint redOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("RedSlope", out uint redSlopeProp, out _);
+										effectInterop.GetNamedPropertyMapping("RedDisable", out uint redDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("GreenOffset", out uint greenOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("GreenSlope", out uint greenSlopeProp, out _);
+										effectInterop.GetNamedPropertyMapping("GreenDisable", out uint greenDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("BlueOffset", out uint blueOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("BlueSlope", out uint blueSlopeProp, out _);
+										effectInterop.GetNamedPropertyMapping("BlueDisable", out uint blueDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("AlphaOffset", out uint alphaOffsetProp, out _);
+										effectInterop.GetNamedPropertyMapping("AlphaSlope", out uint alphaSlopeProp, out _);
+										effectInterop.GetNamedPropertyMapping("AlphaDisable", out uint alphaDisableProp, out _);
+
+										effectInterop.GetNamedPropertyMapping("ClampOutput", out uint clampProp, out _);
+
+										float redOffset = (float)effectInterop.GetProperty(redOffsetProp);
+										float redSlope = (float)effectInterop.GetProperty(redSlopeProp);
+										bool redDisable = (bool)effectInterop.GetProperty(redDisableProp);
+
+										float greenOffset = (float)effectInterop.GetProperty(greenOffsetProp);
+										float greenSlope = (float)effectInterop.GetProperty(greenSlopeProp);
+										bool greenDisable = (bool)effectInterop.GetProperty(greenDisableProp);
+
+										float blueOffset = (float)effectInterop.GetProperty(blueOffsetProp);
+										float blueSlope = (float)effectInterop.GetProperty(blueSlopeProp);
+										bool blueDisable = (bool)effectInterop.GetProperty(blueDisableProp);
+
+										float alphaOffset = (float)effectInterop.GetProperty(alphaOffsetProp);
+										float alphaSlope = (float)effectInterop.GetProperty(alphaSlopeProp);
+										bool alphaDisable = (bool)effectInterop.GetProperty(alphaDisableProp);
+
+										bool clamp = clampProp != 0xFF ? (bool)effectInterop.GetProperty(clampProp) : false;
+
+										string shader = $@"
+											uniform shader input;
+
+											uniform half redOffset;
+											uniform half redSlope;
+
+											uniform half greenOffset;
+											uniform half greenSlope;
+
+											uniform half blueOffset;
+											uniform half blueSlope;
+
+											uniform half alphaOffset;
+											uniform half alphaSlope;
+
+											half4 Premultiply(half4 color)
+											{{
+												color.rgb *= color.a;
+												return color;
+											}}
+
+											half4 UnPremultiply(half4 color)
+											{{
+												color.rgb = (color.a == 0) ? half3(0, 0, 0) : (color.rgb / color.a);
+												return color;
+											}}
+
+											half4 main()
+											{{
+												half4 color = UnPremultiply(sample(input));
+												color = half4(
+													{(redDisable ? "color.r" : "redOffset + color.r * redSlope")},
+													{(greenDisable ? "color.g" : "greenOffset + color.g * greenSlope")},
+													{(blueDisable ? "color.b" : "blueOffset + color.b * blueSlope")},
+													{(alphaDisable ? "color.a" : "alphaOffset + color.a * alphaSlope")}
+												);
+
+												return {(clamp ? "clamp(" : String.Empty)}Premultiply(color){(clamp ? ", 0.0, 1.0)" : String.Empty)};
+											}}
+										";
+
+										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+										if (errors is not null)
+											return null;
+
+										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
+										{
+											{ "redOffset", redOffset },
+											{ "redSlope", redSlope },
+
+											{ "greenOffset", greenOffset },
+											{ "greenSlope", greenSlope },
+
+											{ "blueOffset", blueOffset },
+											{ "blueSlope", blueSlope },
+
+											{ "alphaOffset", alphaOffset },
+											{ "alphaSlope", alphaSlope }
+										};
+										SKRuntimeEffectChildren children = new(runtimeEffect)
+										{
+											{ "input", null }
+										};
+
+										return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+
+										// Reference (wuceffects.dll):
+										/*
+											void Windows::UI::Composition::LinearTransferEffectType::GenerateCode(const Windows::UI::Composition::EffectNode *node, Windows::UI::Composition::EffectGenerator *pGenerator, const char *pszOutputPixelName)
+											{
+												bool rgfDisable[4];
+												std::string strInputPixel;
+												std::string rgstrPropertyNames[8];
+												Windows::UI::Composition::StringBuilder *pStringBuilder;
+	
+												strInputPixel = pGenerator->GetInputPixelName(node, 0);
+	
+												for ( int i = 0; i < 13; i += 3 )
+												{
+													rgstrPropertyNames[i] = pGenerator->DeclareShaderVariableForProperty(i); // Offset
+													rgstrPropertyNames[i + 1] = pGenerator->DeclareShaderVariableForProperty(i + 1); // Slope
+												}
+	
+												pStringBuilder = pGenerator->BeginPSLine();
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = UnPremultiply(");
+												pStringBuilder->Append(strInputPixel.c_str(), strInputPixel.size());
+												pStringBuilder->Append(");");
+												pStringBuilder->Append('\n');
+	
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = minfloat4(");
+												pStringBuilder->Append('\n');
+	
+												rgfDisable[0] = *(bool*)&node->m_uprgbDefaultProperties[32]; // RedDisable
+												rgfDisable[1] = *(bool*)&node->m_uprgbDefaultProperties[33]; // GreenDisable
+												rgfDisable[2] = *(bool*)&node->m_uprgbDefaultProperties[34]; // BlueDisable
+												rgfDisable[3] = *(bool*)&node->m_uprgbDefaultProperties[35]; // AlphaDisable
+	
+												const char* RGBA = "rgba";
+												for ( int i,k = 0; i < 4; i++, k += 2 )
+												{
+													if (i)
+													{
+														pStringBuilder->Append(",");
+														pStringBuilder->Append('\n');
+													}
+		
+													if ( rgfDisable[i] )
+													{
+														pStringBuilder->Append(pszOutputPixelName);
+														pStringBuilder->Append('.');
+														pStringBuilder->Append(RGBA[i]);
+													}
+													else
+													{
+														pStringBuilder->Append(rgstrPropertyNames[k]); // Offset
+														pStringBuilder->Append(" + ");
+														pStringBuilder->Append(pszOutputPixelName);
+														pStringBuilder->Append('.');
+														pStringBuilder->Append(RGBA[i]);
+														pStringBuilder->Append(" * ");
+														pStringBuilder->Append(rgstrPropertyNames[k + 1]); // Slope
+													}
+												}
+	
+												pStringBuilder->Append(");");
+												pStringBuilder->Append('\n');
+	
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(" = Premultiply(");
+												pStringBuilder->Append(pszOutputPixelName);
+												pStringBuilder->Append(");");
+												pStringBuilder->Append('\n');
+	
+												if (*(bool*)&node->m_uprgbDefaultProperties[36]) // ClampOutput
+												{
+													pStringBuilder->Append(pszOutputPixelName);
+													pStringBuilder->Append(" = saturate(");
+													pStringBuilder->Append(pszOutputPixelName);
+													pStringBuilder->Append(");");
+													pStringBuilder->Append('\n');
+												}
+											}
+										*/
 									}
 
 									return null;

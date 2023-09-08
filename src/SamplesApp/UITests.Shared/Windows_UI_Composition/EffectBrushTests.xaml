@@ -23,5 +23,7 @@
 		<Grid x:Name="contrastGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ContrastEffect"/>
 		<Grid x:Name="exposureGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ExposureEffect (Negative Value, -1)"/>
 		<Grid x:Name="crossfadeGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="CrossFadeEffect"/>
+		<Grid x:Name="lumaGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="LuminanceToAlphaEffect"/>
+		<Grid x:Name="linearXferGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="LinearTransferEffect"/>
 	</GridView>
 </UserControl>
