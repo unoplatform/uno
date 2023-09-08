@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Runtime.InteropServices.JavaScript;
 using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.UI.Core;
@@ -11,6 +12,7 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
+using XamlRoot = Windows.UI.Xaml.XamlRoot;
 using IOPath = System.IO.Path;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
@@ -25,7 +27,7 @@ internal class UnoGtkWindow : Window
 
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
 
-	public UnoGtkWindow(WinUIWindow winUIWindow) : base(WindowType.Toplevel)
+	public UnoGtkWindow(WinUIWindow winUIWindow, XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 		_winUIWindow.Showing += OnShowing;
@@ -53,6 +55,7 @@ internal class UnoGtkWindow : Window
 		WindowStateEvent += OnWindowStateChanged;
 
 		Host = new UnoGtkWindowHost(this, winUIWindow);
+		GtkManager.XamlRootMap.Register(xamlRoot, Host);
 
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}

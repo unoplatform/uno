@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml
 	/// Represents an application window.
 	/// </summary>
 	[ContentProperty(Name = nameof(Content))]
-	public sealed partial class Window
+	public partial class Window
 	{
 		private static Window? _current;
 

@@ -60,7 +60,9 @@ public class WpfHost : IWpfApplicationHost
 		// otherwise the initially focused input element would cause exception.
 		StartApp();
 
+#if !WINUI_WINDOWING
 		SetupMainWindow();
+#endif
 	}
 
 	private void InitializeDispatcher()
@@ -69,6 +71,7 @@ public class WpfHost : IWpfApplicationHost
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
 	}
 
+#if !WINUI_WINDOWING
 	private void SetupMainWindow()
 	{
 		var unoWpfWindow = NativeWindowFactory.CreateWindow(WinUI.Window.Current) as WpfWindowWrapper;
@@ -80,6 +83,7 @@ public class WpfHost : IWpfApplicationHost
 		WpfApplication.Current.MainWindow = unoWpfWindow.NativeWindow;
 		unoWpfWindow.NativeWindow.Activated += MainWindow_Activated;
 	}
+#endif
 
 	internal event EventHandler? MainWindowShown;
 
