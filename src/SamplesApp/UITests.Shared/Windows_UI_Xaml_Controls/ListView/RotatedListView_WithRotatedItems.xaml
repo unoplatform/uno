@@ -109,8 +109,7 @@
 								</Border.RenderTransform>
 								<FontIcon x:Name="MultiSelectCheck"
 										  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-										  win:Glyph="&#xE73E;"
-										  not_win:Glyph="&#xE081;"
+										  Glyph="&#xE73E;"
 										  FontSize="16"
 										  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
 										  Visibility="Collapsed"
