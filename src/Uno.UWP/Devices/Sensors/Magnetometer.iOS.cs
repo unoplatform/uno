@@ -11,6 +11,10 @@ namespace Windows.Devices.Sensors
 		private CMMotionManager? _motionManager;
 
 		private uint _reportInterval;
+
+		/// <summary>
+		/// Gets or sets the current report interval for the magnetometer.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get

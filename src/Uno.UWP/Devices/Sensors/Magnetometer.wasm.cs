@@ -12,6 +12,10 @@ namespace Windows.Devices.Sensors
 	{
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
+		/// <summary>
+		/// This method is not supported directly. An approximation in the form of raising the 
+		/// ReadingChanged event only when enough time has passed since the last report.
+		/// </summary>
 		public uint ReportInterval { get; set; }
 
 		private static Magnetometer TryCreateInstance()

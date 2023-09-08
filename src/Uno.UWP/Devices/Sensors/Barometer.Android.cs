@@ -13,6 +13,9 @@ namespace Windows.Devices.Sensors
 		private BarometerListener? _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
+		/// <summary>
+		/// 
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// This sensor returns G-force values with respect to the x, y, and z axes.
+	/// </summary>
 	public partial class Accelerometer
 	{
 		private readonly static object _syncLock = new object();
@@ -31,6 +34,10 @@ namespace Windows.Devices.Sensors
 		{
 		}
 
+		/// <summary>
+		/// Returns the default accelerometer.
+		/// </summary>
+		/// <returns>The default accelerometer or null if no integrated accelerometers are found.</returns>
 		public static Accelerometer GetDefault()
 		{
 			if (_initializationAttempted)
@@ -48,6 +55,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs each time the accelerometer reports a new sensor reading.
+		/// </summary>
 		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> ReadingChanged
 		{
 			add
@@ -75,6 +85,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs when the accelerometer detects that the device has been shaken.
+		/// </summary>
 		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> Shaken
 		{
 			add

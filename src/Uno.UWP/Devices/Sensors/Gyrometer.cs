@@ -5,6 +5,9 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Represents a gyrometer sensor that provides angular velocity values with respect to the x, y, and z axes.
+	/// </summary>
 	public partial class Gyrometer
 	{
 		private readonly static object _syncLock = new object();
@@ -21,6 +24,10 @@ namespace Windows.Devices.Sensors
 		{
 		}
 
+		/// <summary>
+		/// Returns the default gyrometer.
+		/// </summary>
+		/// <returns>Null if no integrated gyrometers are found.</returns>
 		public static Gyrometer GetDefault()
 		{
 			if (_initializationAttempted)
@@ -38,6 +45,9 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
+		/// <summary>
+		/// Occurs each time the gyrometer reports the current sensor reading.
+		/// </summary>
 		public event TypedEventHandler<Gyrometer, GyrometerReadingChangedEventArgs> ReadingChanged
 		{
 			add

@@ -5,6 +5,10 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Represents a pedometer sensor.
+	/// This sensor returns the number of steps taken with the device.
+	/// </summary>
 	public partial class Pedometer
 	{
 		private readonly static object _syncLock = new object();

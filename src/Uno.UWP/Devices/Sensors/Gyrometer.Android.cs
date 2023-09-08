@@ -14,6 +14,9 @@ namespace Windows.Devices.Sensors
 
 		private GyrometerListener? _listener;
 
+		/// <summary>
+		/// Gets or sets the current report interval for the gyrometer.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;

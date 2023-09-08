@@ -13,6 +13,9 @@ namespace Windows.Devices.Sensors
 		private StepCounterListener? _listener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
+		/// <summary>
+		/// Gets or sets the current report interval for the pedometer.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;

@@ -14,6 +14,9 @@ namespace Windows.Devices.Sensors
 		private ShakeListener? _shakeListener;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
+		/// <summary>
+		/// Gets or sets the current report interval for the accelerometer.
+		/// </summary>
 		public uint ReportInterval
 		{
 			get => _reportInterval;
