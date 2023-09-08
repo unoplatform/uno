@@ -50,8 +50,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 		Loaded += WpfHost_Loaded;
 
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 		RegisterForBackgroundColor();
 	}
 
@@ -98,25 +96,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		{
 			control.FocusVisualStyle = null;
 		}
-	}
-
-	private void OnCoreWindowContentRootSet(object? sender, object e)
-	{
-		var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-
-		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-		if (xamlRoot is null)
-		{
-			throw new InvalidOperationException("XamlRoot was not properly initialized");
-		}
-
-		contentRoot!.SetHost(this);
-		WpfManager.XamlRootMap.Register(xamlRoot, this);
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
 	private void RegisterForBackgroundColor()

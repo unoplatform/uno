@@ -1,9 +1,11 @@
-﻿namespace Uno.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml;
+
+namespace Uno.UI.Xaml.Controls;
 
 /// <summary>
 /// Extension providing the ability to create a native window wrapper.
 /// </summary>
 internal interface INativeWindowFactoryExtension
 {
-	INativeWindowWrapper CreateWindow(Windows.UI.Xaml.Window window);
+	INativeWindowWrapper CreateWindow(Windows.UI.Xaml.Window window, XamlRoot xamlRoot);
 }

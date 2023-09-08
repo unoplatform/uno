@@ -4,7 +4,9 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Core;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
@@ -17,10 +19,10 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly WinUI.Window _winUIWindow;
-	private readonly UnoWpfWindowHost _host;
+	private IWpfWindowHost _host;
 	private bool _isVisible;
 
-	public UnoWpfWindow(WinUI.Window winUIWindow)
+	public UnoWpfWindow(WinUI.Window winUIWindow, XamlRoot xamlRoot)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 		_winUIWindow.Showing += OnShowing;
@@ -34,6 +36,7 @@ internal class UnoWpfWindow : WpfWindow
 		}
 
 		Content = _host = new UnoWpfWindowHost(this, winUIWindow);
+		WpfManager.XamlRootMap.Register(xamlRoot, _host);
 
 		Closing += OnClosing;
 		Activated += OnActivated;
@@ -43,6 +46,26 @@ internal class UnoWpfWindow : WpfWindow
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 
 		winUIWindow.OnNativeWindowCreated();
+	}
+
+	//TODO:MZ: Call this?
+	private void OnCoreWindowContentRootSet(object? sender, object e)
+	{
+		var contentRoot = CoreServices.Instance
+				.ContentRootCoordinator
+				.CoreWindowContentRoot;
+
+		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
+
+		if (xamlRoot is null)
+		{
+			throw new InvalidOperationException("XamlRoot was not properly initialized");
+		}
+
+		contentRoot!.SetHost(this);
+		WpfManager.XamlRootMap.Register(xamlRoot, _host);
+
+		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
 	private void OnShowing(object? sender, EventArgs e) => Show();
