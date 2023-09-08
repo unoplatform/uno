@@ -237,9 +237,6 @@ namespace Windows.UI.Xaml
 					);
 				}
 
-				var previousSize = AssignedActualSize;
-				AssignedActualSize = finalRect.Size;
-
 				if (
 					// If the layout has changed, but the final size has not, this is just a translation.
 					// So unless there was a layout requested, we can skip arranging the children.
@@ -257,12 +254,6 @@ namespace Windows.UI.Xaml
 					_layouter.Arrange(finalRect);
 
 					OnAfterArrange();
-				}
-
-				if (previousSize != finalRect.Size)
-				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, finalRect.Size));
-					_renderTransform?.UpdateSize(finalRect.Size);
 				}
 			}
 			catch (Exception e)

@@ -10,8 +10,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private Size _size;
-
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElement)this).DesiredSize;
 
 		/// <summary>
@@ -441,28 +439,6 @@ namespace Windows.UI.Xaml
 		internal virtual void ArrangeCore(Rect finalRect)
 		{
 			throw new NotSupportedException("UIElement doesn't implement ArrangeCore. Inherit from FrameworkElement, which properly implements ArrangeCore.");
-		}
-
-		public Size RenderSize
-		{
-			get => Visibility == Visibility.Collapsed ? new Size() : _size;
-			internal set
-			{
-				Debug.Assert(value.Width >= 0, "Invalid width");
-				Debug.Assert(value.Height >= 0, "Invalid height");
-
-				var previousSize = _size;
-				_size = value;
-
-				if (_size != previousSize)
-				{
-					if (this is FrameworkElement frameworkElement)
-					{
-						frameworkElement.SetActualSize(_size);
-						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
-					}
-				}
-			}
 		}
 	}
 }

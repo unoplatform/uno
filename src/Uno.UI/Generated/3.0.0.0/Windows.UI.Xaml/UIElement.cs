@@ -120,16 +120,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 		// Skipping already declared property PointerCaptures
-#if false || false || false || false || false || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
-		public global::Windows.Foundation.Size RenderSize
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Size UIElement.RenderSize is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Size%20UIElement.RenderSize");
-			}
-		}
-#endif
+		// Skipping already declared property RenderSize
 		// Skipping already declared property XamlRoot
 		// Skipping already declared property Shadow
 		// Skipping already declared property ActualOffset
