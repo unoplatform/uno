@@ -29,7 +29,7 @@ namespace Windows.Devices.Sensors
 				_reportInterval = value;
 				if (_motionManager != null)
 				{
-					_motionManager.AccelerometerUpdateInterval = value / 1000.0;
+					_motionManager.AccelerometerUpdateInterval = UpdateAccelerometer(value);
 				}
 			}
 		}
@@ -49,7 +49,9 @@ namespace Windows.Devices.Sensors
 
 		private void StartReadingChanged()
 		{
-			_motionManager = new CMMotionManager();
+			_motionManager ??= new();
+
+			_motionManager.AccelerometerUpdateInterval = UpdateAccelerometer(_reportInterval);
 			_motionManager.StartAccelerometerUpdates(new NSOperationQueue(), AccelerometerDataReceived);
 		}
 
@@ -75,6 +77,8 @@ namespace Windows.Devices.Sensors
 		{
 			UIApplication.SharedApplication.ApplicationSupportsShakeToEdit = false;
 		}
+
+		private double UpdateAccelerometer(uint value) => value / 1000.0;
 
 		private void AccelerometerDataReceived(CMAccelerometerData data, NSError error)
 		{

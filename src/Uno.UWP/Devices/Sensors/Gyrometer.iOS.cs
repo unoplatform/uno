@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 				_reportInterval = value;
 				if (_motionManager != null)
 				{
-					_motionManager.GyroUpdateInterval = value / 1000.0;
+					_motionManager.GyroUpdateInterval = UpdateGyrometer(value);
 				}
 			}
 		}
@@ -44,7 +44,7 @@ namespace Windows.Devices.Sensors
 		{
 			_motionManager ??= new();
 
-			_motionManager.GyroUpdateInterval = _reportInterval / 1000.0;
+			_motionManager.GyroUpdateInterval = UpdateGyrometer(_reportInterval);
 			_motionManager.StartGyroUpdates(new NSOperationQueue(), GyrometerUpdateReceived);
 		}
 
@@ -59,6 +59,8 @@ namespace Windows.Devices.Sensors
 			_motionManager.Dispose();
 			_motionManager = null;
 		}
+
+		private double UpdateGyrometer(uint value) => value / 1000.0;
 
 		private void GyrometerUpdateReceived(CMGyroData data, NSError error)
 		{

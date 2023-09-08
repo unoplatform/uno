@@ -27,7 +27,7 @@ namespace Windows.Devices.Sensors
 				_reportInterval = value;
 				if (_motionManager != null)
 				{
-					_motionManager.MagnetometerUpdateInterval = value / 1000.0;
+					_motionManager.MagnetometerUpdateInterval = UpdateMagnetometer(value);
 				}
 			}
 		}
@@ -44,6 +44,7 @@ namespace Windows.Devices.Sensors
 		{
 			_motionManager ??= new();
 
+			_motionManager.MagnetometerUpdateInterval = UpdateMagnetometer(_reportInterval);
 			_motionManager.StartMagnetometerUpdates(new NSOperationQueue(), MagnetometerUpdateReceived);
 		}
 
@@ -58,6 +59,8 @@ namespace Windows.Devices.Sensors
 			_motionManager.Dispose();
 			_motionManager = null;
 		}
+
+		private double UpdateMagnetometer(uint value) => value / 1000.0;
 
 		private void MagnetometerUpdateReceived(CMMagnetometerData data, NSError error)
 		{
