@@ -510,7 +510,7 @@
 		</Methods>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="4.9">
+	<IgnoreSet baseVersion="4.10">
 		<Types>
 			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Not present in WinUI" />
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />

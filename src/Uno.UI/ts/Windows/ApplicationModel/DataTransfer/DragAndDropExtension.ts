@@ -164,7 +164,7 @@
 			});
 		}
 
-		public static async retrieveFiles(...itemIds: number[]): Promise<string> {
+		public static async retrieveFiles(itemIds: number[]): Promise<string> {
 
 			const data = DragDropExtension._current?._pendingDropData;
 			if (data == null) {
