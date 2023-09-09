@@ -42,6 +42,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private readonly Deque<Group> _groups = new Deque<Group>();
 		private bool _isInitialGroupHeaderCreated;
+		private bool _areHeaderAndFooterCreated;
 		private bool _isInitialHeaderExtentOffsetApplied;
 		private bool _isInitialPaddingExtentOffsetApplied;
 		//The previous item to the old first visible item, used when a lightweight layout rebuild is called
@@ -78,14 +79,12 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal int ItemViewCount { get; set; }
 		private int GroupHeaderViewCount { get; set; }
-
-		private bool HasHeader => XamlParent?.ShouldShowHeader ?? false;
-		private bool HasFooter => XamlParent?.ShouldShowFooter ?? false;
-
+		private int HeaderViewCount { get; set; }
+		private int FooterViewCount { get; set; }
 		/// <summary>
 		/// The index of the first child view that is an item (ie not a header/footer/group header).
 		/// </summary>
-		private int FirstItemView => HasHeader ? 1 : 0;
+		private int FirstItemView => HeaderViewCount;
 
 		internal int CacheHalfLengthInViews { get; private set; }
 
@@ -429,6 +428,8 @@ namespace Windows.UI.Xaml.Controls
 			ResetLayoutInfo();
 
 			GroupHeaderViewCount = 0;
+			HeaderViewCount = 0;
+			FooterViewCount = 0;
 			ItemViewCount = 0;
 
 			_pendingScrollToPositionRequest = null;
@@ -739,8 +740,8 @@ namespace Windows.UI.Xaml.Controls
 			var remainingLines = remainingItems / leadingLine.NumberOfViews;
 			var remainingItemExtent = remainingLines * leadingLine.Extent;
 
-			int headerExtent = HasHeader ? GetChildExtentWithMargins(GetChildAt(GetHeaderViewIndex())) : 0;
-			int footerExtent = HasFooter ? GetChildExtentWithMargins(GetChildAt(GetFooterViewIndex())) : 0;
+			int headerExtent = HeaderViewCount > 0 ? GetChildExtentWithMargins(GetChildAt(GetHeaderViewIndex())) : 0;
+			int footerExtent = FooterViewCount > 0 ? GetChildExtentWithMargins(GetChildAt(GetFooterViewIndex())) : 0;
 
 			int remainingGroupExtent = 0;
 			if (XamlParent.NumberOfDisplayGroups > 0 && RelativeGroupHeaderPlacement == RelativeHeaderPlacement.Inline)
@@ -812,14 +813,14 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (HasHeader)
+			if (HeaderViewCount > 0)
 			{
 				var header = GetChildAt(GetHeaderViewIndex());
 				var delta = GetTrailingGroup(GeneratorDirection.Forward).Start - GetChildEndWithMargin(header);
 				OffsetChildAlongExtent(header, delta);
 			}
 
-			if (HasFooter)
+			if (FooterViewCount > 0)
 			{
 				var footer = GetChildAt(GetFooterViewIndex());
 				var delta = GetLeadingGroup(GeneratorDirection.Forward).End - GetChildStartWithMargin(footer);
@@ -919,6 +920,7 @@ namespace Windows.UI.Xaml.Controls
 			_groups.AddToBack(new Group(groupIndex: 0));
 
 			_isInitialGroupHeaderCreated = false;
+			_areHeaderAndFooterCreated = false;
 			_isInitialHeaderExtentOffsetApplied = false;
 			_needsHeaderAndFooterUpdate = false;
 			_isInitialPaddingExtentOffsetApplied = false;
@@ -1051,7 +1053,8 @@ namespace Windows.UI.Xaml.Controls
 			var frame = new Windows.Foundation.Rect(new Windows.Foundation.Point(left, top), size);
 			_layouter.ArrangeChild(child, frame);
 
-			Debug.Assert(direction == GeneratorDirection.Forward || GetChildEndWithMargin(child) == extentOffset, GetAssertMessage("Extent offset not applied correctly"));
+			// Due to conversions between physical and logical coordinates, the actual child end can differ from the end we sent to the layouter by a little bit.
+			Debug.Assert(direction == GeneratorDirection.Forward || Math.Abs(GetChildEndWithMargin(child) - extentOffset) < 2, GetAssertMessage("Extent offset not applied correctly"));
 		}
 
 		/// <summary>
@@ -1090,6 +1093,14 @@ namespace Windows.UI.Xaml.Controls
 			if (viewType == ViewType.GroupHeader)
 			{
 				GroupHeaderViewCount++;
+			}
+			if (viewType == ViewType.Header)
+			{
+				HeaderViewCount++;
+			}
+			if (viewType == ViewType.Footer)
+			{
+				FooterViewCount++;
 			}
 			if (viewType == ViewType.Item)
 			{
@@ -1357,10 +1368,15 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void FillLayout(GeneratorDirection direction, int scrollOffset, int availableExtent, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
+			int extentOffset = scrollOffset;
 			var isGrouping = XamlParent?.IsGrouping ?? false;
 			var headerOffset = 0;
-
-			headerOffset = GetHeaderOffset();
+			if (!_areHeaderAndFooterCreated)
+			{
+				headerOffset = CreateHeaderAndFooter(extentOffset, InitialBreadthPadding, availableBreadth, recycler, state);
+				extentOffset += headerOffset;
+				_areHeaderAndFooterCreated = true;
+			}
 
 			AssertValidState();
 
@@ -1654,20 +1670,28 @@ namespace Windows.UI.Xaml.Controls
 		/// Materialize header and footer views, if they should be shown.
 		/// </summary>
 		/// <returns>The extent of the header (used for layouting).</returns>
-		private int GetHeaderOffset()
+		private int CreateHeaderAndFooter(int extentOffset, int breadthOffset, int availableBreadth, RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
 			if (XamlParent == null)
 			{
 				return 0;
 			}
 
-			if (HasHeader)
+			int headerExtent = 0;
+			if (XamlParent.ShouldShowHeader)
 			{
-				var header = (XamlParent as DependencyObject).FindFirstChild<ItemsPresenter>()?.HeaderContentControl;
-				return header is { } ? GetChildExtentWithMargins(header) : 0;
+				var header = recycler.GetViewForPosition(0, state);
+				AddViewAtOffset(header, GeneratorDirection.Forward, extentOffset, breadthOffset, availableBreadth, viewType: ViewType.Header);
+				headerExtent = GetChildExtentWithMargins(header);
 			}
 
-			return 0;
+			if (XamlParent.ShouldShowFooter)
+			{
+				var footer = recycler.GetViewForPosition(XamlParent.ShouldShowHeader ? 1 : 0, state);
+				AddViewAtOffset(footer, GeneratorDirection.Forward, extentOffset + headerExtent, breadthOffset, availableBreadth, viewType: ViewType.Footer);
+			}
+
+			return headerExtent;
 		}
 
 		/// <summary>
@@ -1730,8 +1754,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Debug.Assert(GroupHeaderViewCount >= 0, "GroupHeaderViewCount >= 0");
 			Debug.Assert(ItemViewCount >= 0, "ItemViewCount >= 0");
-			Debug.Assert(ItemViewCount + GroupHeaderViewCount == ChildCount,
-				"ItemViewCount + GroupHeaderViewCount == ChildCount");
+			Debug.Assert(HeaderViewCount >= 0, "HeaderViewCount >= 0");
+			Debug.Assert(HeaderViewCount <= 1, "HeaderViewCount <= 1");
+			Debug.Assert(FooterViewCount >= 0, "FooterViewCount >= 0");
+			Debug.Assert(FooterViewCount <= 1, "FooterViewCount <= 1");
+			Debug.Assert(ItemViewCount + GroupHeaderViewCount + HeaderViewCount + FooterViewCount == ChildCount,
+				"ItemViewCount + GroupHeaderViewCount + HeaderViewCount + FooterViewCount == ChildCount");
 
 			if (XamlParent?.CanReorderItems ?? false)
 			{
@@ -1772,7 +1800,9 @@ namespace Windows.UI.Xaml.Controls
 			//Get 'seed' information for recreating layout
 			var adjustedFirstItem = GetAdjustedFirstItem(firstVisibleItem);
 
-			if (HasHeader &&
+			var headerViewCount = HeaderViewCount;
+
+			if (HeaderViewCount > 0 &&
 				(!adjustedFirstItem.HasValue || adjustedFirstItem == Uno.UI.IndexPath.Zero)
 			)
 			{
@@ -1805,16 +1835,20 @@ namespace Windows.UI.Xaml.Controls
 			{
 				RemoveTrailingGroup(direction, recycler, detachOnly: true);
 			}
+
+			HeaderViewCount = 0;
+			FooterViewCount = 0;
+			_areHeaderAndFooterCreated = false;
 		}
 
 		// If there are no groups, this probably means that the source is grouped and Header or Footer are pushing all items completely out of view.
 		int? GetDynamicStartFromHeader()
 		{
-			if (HasHeader)
+			if (HeaderViewCount > 0)
 			{
 				return GetChildEndWithMargin(GetHeaderViewIndex());
 			}
-			if (HasFooter)
+			if (FooterViewCount > 0)
 			{
 				return GetChildStartWithMargin(GetFooterViewIndex());
 			}
@@ -1920,7 +1954,7 @@ namespace Windows.UI.Xaml.Controls
 		private void ResetHeaderAndFooter(RecyclerView.Recycler recycler)
 		{
 			//remove existing header and footer, create, update positions
-			if (HasHeader)
+			if (HeaderViewCount > 0)
 			{
 				var headerIndex = GetHeaderViewIndex();
 				_previousHeaderExtent = GetChildExtentWithMargins(headerIndex);
@@ -1928,17 +1962,20 @@ namespace Windows.UI.Xaml.Controls
 				// Here we use position: 0 because the header is always at index 0 from the collection's perspective.
 				recycler.BindViewToPosition(GetChildAt(headerIndex), position: 0);
 				base.RemoveAndRecycleViewAt(headerIndex, recycler);
+				HeaderViewCount = 0;
 			}
 
-			if (HasFooter)
+			if (FooterViewCount > 0)
 			{
 				var footerIndex = GetFooterViewIndex();
 				// Rebind to apply changes, RecyclerView alone will recycle the view without rebinding.
 				// Here we use position: 1 or 0 because the footer is always the first or second item (depending on the header's presence) from the collection's perspective.
 				recycler.BindViewToPosition(GetChildAt(footerIndex), XamlParent.ShouldShowHeader ? 1 : 0);
 				base.RemoveAndRecycleViewAt(footerIndex, recycler);
+				FooterViewCount = 0;
 			}
 
+			_areHeaderAndFooterCreated = false;
 			_isInitialHeaderExtentOffsetApplied = false;
 		}
 
@@ -2362,7 +2399,7 @@ namespace Windows.UI.Xaml.Controls
 		private int GetItemsContentEnd()
 		{
 			int contentEnd = GetLeadingGroup(GeneratorDirection.Forward)?.End ?? GetHeaderEnd();
-			if (HasFooter)
+			if (FooterViewCount > 0)
 			{
 				contentEnd += GetChildExtentWithMargins(GetFooterViewIndex());
 			}
@@ -2371,7 +2408,7 @@ namespace Windows.UI.Xaml.Controls
 
 			int GetHeaderEnd()
 			{
-				if (HasHeader)
+				if (HeaderViewCount > 0)
 				{
 					return GetChildExtentWithMargins(GetHeaderViewIndex());
 				}
@@ -2388,7 +2425,7 @@ namespace Windows.UI.Xaml.Controls
 		private int GetContentStart()
 		{
 			int contentStart = GetLeadingGroup(GeneratorDirection.Backward)?.Start ?? 0;
-			if (HasHeader)
+			if (HeaderViewCount > 0)
 			{
 				contentStart -= GetChildExtentWithMargins(GetHeaderViewIndex());
 			}
@@ -2470,7 +2507,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetHeaderViewIndex()
 		{
-			if (!HasHeader)
+			if (HeaderViewCount < 1)
 			{
 				throw new InvalidOperationException();
 			}
@@ -2479,7 +2516,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int GetFooterViewIndex()
 		{
-			if (!HasFooter)
+			if (FooterViewCount < 1)
 			{
 				throw new InvalidOperationException();
 			}

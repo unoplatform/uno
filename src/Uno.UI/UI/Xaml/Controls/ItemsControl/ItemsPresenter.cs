@@ -31,11 +31,24 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPresenter : FrameworkElement, IScrollSnapPointsInfo
 	{
+		// TODO: support for Header/Footer when inside a ListView
+		private bool HeaderFooterEnabled =>
+#if __ANDROID__ || __IOS__
+		TemplatedParent is not ListView
+#else
+		true
+#endif
+		;
+
 		internal ContentControl FooterContentControl { get; private set; }
 
 		internal ContentControl HeaderContentControl { get; private set; }
 
-		private Orientation Orientation => (Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
+		private Orientation Orientation =>
+#if __ANDROID__ || __IOS__
+			_itemsPanel is NativeListViewBase nlvb ? nlvb.NativeLayout.Orientation :
+#endif
+				(Panel as Panel)?.InternalOrientation ?? Orientation.Horizontal;
 
 		public object Header
 		{
@@ -173,7 +186,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public ItemsPresenter()
 		{
-
 			// A content presenter does not propagate its own templated
 			// parent. The content's TemplatedParent has already been set by the
 			// content presenter to its own templated parent.
@@ -225,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 		/// for controls which delegate to a native implementation (eg <see cref="ListViewBase"/>).
 		/// </summary>
 		private bool IsWithinScrollableArea =>
-#if XAMARIN && !__MACOS__
+#if __ANDROID__ || __IOS__
 			!(_itemsPanel is NativeListViewBase);
 #else
 			true;
@@ -256,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// This is only called after (or while) the header and footer are created and added to the visual tree.
-			global::System.Diagnostics.Debug.Assert(HeaderContentControl is { });
+			global::System.Diagnostics.Debug.Assert(!HeaderFooterEnabled || HeaderContentControl is { });
 
 			if (_itemsPanel is { })
 			{
@@ -267,7 +279,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_itemsPanel != null)
 			{
-				VisualTreeHelper.AddView(this, _itemsPanel, 1);
+				if (HeaderFooterEnabled)
+				{
+					VisualTreeHelper.AddView(this, _itemsPanel, 1);
+				}
+				else
+				{
+					VisualTreeHelper.AddView(this, _itemsPanel);
+				}
 
 				PropagateLayoutValues();
 			}
@@ -277,7 +296,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void LoadChildren(ViewGroup panel)
 		{
-			if (HeaderContentControl is null)
+			if (HeaderContentControl is null && HeaderFooterEnabled)
 			{
 				HeaderContentControl = new ContentControl
 				{
@@ -294,7 +313,7 @@ namespace Windows.UI.Xaml.Controls
 
 			SetItemsPanel(panel);
 
-			if (FooterContentControl is null)
+			if (FooterContentControl is null && HeaderFooterEnabled)
 			{
 				FooterContentControl = new ContentControl
 				{
@@ -312,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void PropagateLayoutValues()
 		{
-#if XAMARIN && !__MACOS__
+#if __ANDROID__ || __IOS__
 			var asListViewBase = _itemsPanel as NativeListViewBase;
 			if (asListViewBase != null)
 			{
@@ -333,16 +352,16 @@ namespace Windows.UI.Xaml.Controls
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
 
-			var collection = new[]
+			var collection = HeaderFooterEnabled ? new[]
 			{
 				HeaderContentControl,
 				_itemsPanel,
 				FooterContentControl
-			};
+			} : new[] { _itemsPanel };
 
-			for (var i = 0; i < 3; i++)
+
+			foreach (var view in collection)
 			{
-				var view = collection[i];
 				var desiredChildSize = GetElementDesiredSize(view);
 
 				if (isHorizontal)
@@ -355,7 +374,8 @@ namespace Windows.UI.Xaml.Controls
 					if (view == _itemsPanel)
 					{
 						// the panel should stretch to a width big enough such that the footer is at the very right
-						childRect.Width = childRect.Width.AtLeast(finalSize.Width - GetElementDesiredSize(FooterContentControl).Width - childRect.X);
+						var footerWidth = HeaderFooterEnabled ? GetElementDesiredSize(FooterContentControl).Width : 0;
+						childRect.Width = childRect.Width.AtLeast(finalSize.Width - footerWidth - childRect.X);
 					}
 
 					previousChildSize = childRect.Width;
@@ -370,7 +390,8 @@ namespace Windows.UI.Xaml.Controls
 					if (view == _itemsPanel)
 					{
 						// the panel should stretch to a height big enough such that the footer is at the very bottom
-						childRect.Height = childRect.Height.AtLeast(finalSize.Height - GetElementDesiredSize(FooterContentControl).Height - childRect.Y);
+						var footerHeight = HeaderFooterEnabled ? GetElementDesiredSize(FooterContentControl).Height : 0;
+						childRect.Height = childRect.Height.AtLeast(finalSize.Height - footerHeight - childRect.Y);
 					}
 
 					previousChildSize = childRect.Height;
@@ -397,17 +418,15 @@ namespace Windows.UI.Xaml.Controls
 
 			var desiredSize = default(Size);
 
-			var collection = new[]
+			var collection = HeaderFooterEnabled ? new[]
 			{
 				HeaderContentControl,
 				_itemsPanel,
 				FooterContentControl
-			};
+			} : new [] { _itemsPanel };
 
-			for (var i = 0; i < 3; i++)
+			foreach (var view in collection)
 			{
-				var view = collection[i];
-
 				var availableSize = unpaddedSize;
 				if (view != _itemsPanel)
 				{
@@ -445,7 +464,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
-			if (orientation != Orientation || SnapPointsProvider is null || HeaderContentControl is null || FooterContentControl is null)
+			if (orientation != Orientation || SnapPointsProvider is null)
 			{
 				return null;
 			}
@@ -483,8 +502,13 @@ namespace Windows.UI.Xaml.Controls
 						if (hasHeader)
 						{
 							result.Add((float)headerRect.GetMidX());
+							result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
 						}
-						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
+						else
+						{
+							result.AddRange(panelSnapPoints);
+						}
+
 						if (hasFooter)
 						{
 							result.Add((float)(footerRect.GetMidX() - panelStretch));
@@ -494,8 +518,13 @@ namespace Windows.UI.Xaml.Controls
 						if (hasHeader)
 						{
 							result.Add((float)headerRect.Right);
+							result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
 						}
-						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Right));
+						else
+						{
+							result.AddRange(panelSnapPoints);
+						}
+
 						if (hasFooter)
 						{
 							result.Add((float)(footerRect.Right - panelStretch));
@@ -511,8 +540,13 @@ namespace Windows.UI.Xaml.Controls
 						if (hasHeader)
 						{
 							result.Add((float)headerRect.Top);
+							result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
 						}
-						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
+						else
+						{
+							result.AddRange(panelSnapPoints);
+						}
+
 						if (hasFooter)
 						{
 							result.Add((float)(footerRect.Top - panelStretch));
@@ -522,8 +556,13 @@ namespace Windows.UI.Xaml.Controls
 						if (hasHeader)
 						{
 							result.Add((float)headerRect.GetMidY());
+							result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
 						}
-						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
+						else
+						{
+							result.AddRange(panelSnapPoints);
+						}
+
 						if (hasFooter)
 						{
 							result.Add((float)(footerRect.GetMidY() - panelStretch));
@@ -533,8 +572,13 @@ namespace Windows.UI.Xaml.Controls
 						if (hasHeader)
 						{
 							result.Add((float)headerRect.Bottom);
+							result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
 						}
-						result.AddRange(panelSnapPoints.Select(i => i + (float)headerRect.Bottom));
+						else
+						{
+							result.AddRange(panelSnapPoints);
+						}
+
 						if (hasFooter)
 						{
 							result.Add((float)(footerRect.Bottom - panelStretch));

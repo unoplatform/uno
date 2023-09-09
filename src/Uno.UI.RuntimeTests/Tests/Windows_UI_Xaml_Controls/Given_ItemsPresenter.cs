@@ -20,7 +20,15 @@ public static class AssertionExtensions
 	{
 		assertions.Subject.Should().HaveCount(expected.Length);
 
-		assertions.Subject.Zip(expected, (sub, actual) => sub.Should().BeApproximately(actual, tolerance)).ForEach((AndConstraint<FluentAssertions.Numeric.NumericAssertions<float>> _) => { });
+		var subject = assertions.Subject.ToArray();
+
+		for (var i = 0; i < subject.Length; i++)
+		{
+			var sub = subject[i];
+			var actual = expected[i];
+			sub.Should().BeApproximately(actual, tolerance);
+		}
+
 		return new AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>>(assertions);
 	}
 }
@@ -28,6 +36,7 @@ public static class AssertionExtensions
 [TestClass]
 public class Given_ItemsPresenter
 {
+	// Due to physical/logical pixel conversion on Android, measurements aren't exact
 	private float Epsilon =>
 #if XAMARIN
 			0.5f;
