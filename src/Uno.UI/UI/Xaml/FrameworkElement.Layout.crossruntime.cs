@@ -251,8 +251,9 @@ namespace Windows.UI.Xaml
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
 
-			if (IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
-				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height))
+			if (allowClipToSlot &&
+				(IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height)))
 			{
 				needsClipToSlot = true;
 			}
