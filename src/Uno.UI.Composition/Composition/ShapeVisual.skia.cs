@@ -35,17 +35,6 @@ public partial class ShapeVisual
 		base.Render(in parentSession);
 	}
 
-	/// <inheritdoc />
-	private protected override void Draw(in DrawingSession session)
-	{
-		if (ViewBox is { } viewBox)
-		{
-			session.Surface.Canvas.ClipRect(viewBox.GetRect(), antialias: true);
-		}
-
-		base.Draw(in session);
-	}
-
 	private DrawingSession BeginShapesDrawing(in DrawingSession parentSession)
 	{
 		parentSession.Surface.Canvas.Save();
