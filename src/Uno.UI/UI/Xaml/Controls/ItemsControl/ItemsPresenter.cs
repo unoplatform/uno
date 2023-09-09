@@ -14,17 +14,17 @@ using Windows.UI.Xaml.Media;
 #if __ANDROID__
 using Android.Widget;
 using Android.Views;
-using ViewGroup = Android.Views.ViewGroup;
+using _ViewGroup = Android.Views.ViewGroup;
 #elif __IOS__
 using Windows.UI.Xaml.Media;
 using UIKit;
-using ViewGroup = UIKit.UIView;
+using _ViewGroup = UIKit.UIView;
 #elif __MACOS__
 using Windows.UI.Xaml.Media;
 using AppKit;
-using ViewGroup = AppKit.NSView;
+using _ViewGroup = AppKit.NSView;
 #else
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using _ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -250,9 +250,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
-		private ViewGroup _itemsPanel;
+		private _ViewGroup _itemsPanel;
 
-		internal ViewGroup Panel => _itemsPanel;
+		internal _ViewGroup Panel => _itemsPanel;
 
 		private IScrollSnapPointsInfo SnapPointsProvider => Panel as IScrollSnapPointsInfo;
 
@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool AreVerticalSnapPointsRegular => SnapPointsProvider?.AreVerticalSnapPointsRegular ?? false;
 
-		internal void SetItemsPanel(ViewGroup panel)
+		internal void SetItemsPanel(_ViewGroup panel)
 		{
 			if (_itemsPanel == panel)
 			{
@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 			this.InvalidateMeasure();
 		}
 
-		internal void LoadChildren(ViewGroup panel)
+		internal void LoadChildren(_ViewGroup panel)
 		{
 			if (HeaderContentControl is null && HeaderFooterEnabled)
 			{
@@ -352,16 +352,20 @@ namespace Windows.UI.Xaml.Controls
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
 
-			var collection = HeaderFooterEnabled ? new[]
+			var collection = new[]
 			{
 				HeaderContentControl,
 				_itemsPanel,
 				FooterContentControl
-			} : new[] { _itemsPanel };
-
+			};
 
 			foreach (var view in collection)
 			{
+				if (view is null)
+				{
+					continue;
+				}
+
 				var desiredChildSize = GetElementDesiredSize(view);
 
 				if (isHorizontal)
@@ -418,15 +422,20 @@ namespace Windows.UI.Xaml.Controls
 
 			var desiredSize = default(Size);
 
-			var collection = HeaderFooterEnabled ? new[]
+			var collection = new[]
 			{
 				HeaderContentControl,
 				_itemsPanel,
 				FooterContentControl
-			} : new [] { _itemsPanel };
+			};
 
 			foreach (var view in collection)
 			{
+				if (view is null)
+				{
+					continue;
+				}
+
 				var availableSize = unpaddedSize;
 				if (view != _itemsPanel)
 				{

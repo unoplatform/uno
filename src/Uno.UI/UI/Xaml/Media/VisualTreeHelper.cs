@@ -167,10 +167,10 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 			{
-				throw new NotImplementedException("AddView on UIElement is not implemented on IS_UNIT_TESTS.");
+				throw new NotSupportedException("AddView on UIElement is not implemented on IS_UNIT_TESTS.");
 			}
 #else
-			throw new NotImplementedException("AddView not implemented on this platform.");
+			throw new NotSupportedException("AddView not implemented on this platform.");
 #endif
 		}
 
@@ -194,7 +194,7 @@ namespace Windows.UI.Xaml.Media
 #elif __CROSSRUNTIME__
 			parent.RemoveChild(child);
 #else
-			throw new NotImplementedException("RemoveView not implemented on this platform.");
+			throw new NotSupportedException("RemoveView not implemented on this platform.");
 #endif
 		}
 

@@ -18,20 +18,19 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 
 #if __ANDROID__
-using Android.Graphics;
-using View = Android.Views.View;
-using ViewGroup = Android.Views.ViewGroup;
+using _View = Android.Views.View;
+using _ViewGroup = Android.Views.ViewGroup;
 #elif __IOS__
 using UIKit;
-using View = UIKit.UIView;
-using ViewGroup = UIKit.UIView;
+using _View = UIKit.UIView;
+using _ViewGroup = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
-using View = AppKit.NSView;
-using ViewGroup = AppKit.NSView;
+using _View = AppKit.NSView;
+using _ViewGroup = AppKit.NSView;
 #else
-using View = Windows.UI.Xaml.UIElement;
-using ViewGroup = Windows.UI.Xaml.UIElement;
+using _View = Windows.UI.Xaml.UIElement;
+using _ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -117,11 +116,11 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePartial();
 		partial void RequestLayoutPartial();
 
-		private ViewGroup _internalItemsPanelRoot;
+		private _ViewGroup _internalItemsPanelRoot;
 		/// <summary>
 		/// The actual View that acts as the ItemsPanelRoot (used by FlipView and ListView, which don't use actual Panels)
 		/// </summary>
-		internal ViewGroup InternalItemsPanelRoot
+		internal _ViewGroup InternalItemsPanelRoot
 		{
 			get { return _internalItemsPanelRoot; }
 			set
@@ -979,7 +978,7 @@ namespace Windows.UI.Xaml.Controls
 				CleanUpInternalItemsPanel(InternalItemsPanelRoot);
 			}
 
-			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() as ViewGroup ?? new StackPanel();
+			var itemsPanel = (ItemsPanel as IFrameworkTemplateInternal)?.LoadContent() as _ViewGroup ?? new StackPanel();
 			InternalItemsPanelRoot = ResolveInternalItemsPanel(itemsPanel);
 			ItemsPanelRoot = itemsPanel as Panel;
 
@@ -990,10 +989,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Resolve the view to use as <see cref="InternalItemsPanelRoot"/>. Inheriting classes should
+		/// Resolve the View to use as <see cref="InternalItemsPanelRoot"/>. Inheriting classes should
 		/// override this method if the 'real' displaying panel is different from the panel nominated by ItemsPanelTemplate.
 		/// </summary>
-		protected virtual ViewGroup ResolveInternalItemsPanel(ViewGroup itemsPanel)
+		protected virtual _ViewGroup ResolveInternalItemsPanel(_ViewGroup itemsPanel)
 		{
 			return itemsPanel;
 		}
@@ -1209,14 +1208,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private class ViewComparer : IEqualityComparer<View>
+		private class ViewComparer : IEqualityComparer<_View>
 		{
-			public bool Equals(View x, View y)
+			public bool Equals(_View x, _View y)
 			{
 				return x.Equals(y);
 			}
 
-			public int GetHashCode(View obj)
+			public int GetHashCode(_View obj)
 			{
 				return obj.GetHashCode();
 			}
@@ -1315,7 +1314,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		private void TryRepairContentConnection(ContentControl container, object item)
 		{
-			if (item is View itemView && container.DataContext == itemView && itemView.GetVisualTreeParent() == null)
+			if (item is _View itemView && container.DataContext == itemView && itemView.GetVisualTreeParent() == null)
 			{
 				container.DataContext = null;
 			}
@@ -1695,7 +1694,7 @@ namespace Windows.UI.Xaml.Controls
 			return DataTemplateHelper.ResolveTemplate(ItemTemplate, ItemTemplateSelector, item, this);
 		}
 
-		internal protected virtual void CleanUpInternalItemsPanel(ViewGroup panel) { }
+		internal protected virtual void CleanUpInternalItemsPanel(_ViewGroup panel) { }
 
 		/// <summary>
 		/// Resets internal cached state of the collection.

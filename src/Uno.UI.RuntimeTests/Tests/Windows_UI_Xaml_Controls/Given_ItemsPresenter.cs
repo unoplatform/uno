@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
@@ -10,6 +11,7 @@ using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Data;
 using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
@@ -51,52 +53,52 @@ public class Given_ItemsPresenter
 	public async Task When_Big_Elements_Horizontal_Many_Margins()
 	{
 
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.Items>
-										              <Border Width="400" Height="300" Margin="1">
-										                  <Ellipse Fill="Red" />
-										              </Border>
-										              <Border Width="400" Height="300" Margin="3">
-										                  <Ellipse Fill="Green" />
-										              </Border>
-										              <Border Width="400" Height="300" VerticalAlignment="Bottom"  Margin="9">
-										                  <Ellipse Fill="Blue" />
-										              </Border>
-										          </ItemsControl.Items>
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Horizontal" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Header>
-										                          <Border Width="200" Height="200" VerticalAlignment="Bottom" Margin="59">
-										                              <Ellipse Fill="Yellow" />
-										                          </Border>
-										                      </ItemsPresenter.Header>
-										                      <ItemsPresenter.Footer>
-										                          <Border Width="200" Height="200" VerticalAlignment="Top" Margin="39">
-										                              <Ellipse Fill="Pink" />
-										                          </Border>
-										                      </ItemsPresenter.Footer>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="400" Height="300" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="400" Height="300" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+						<Border Width="400" Height="300" VerticalAlignment="Bottom" Margin="9">
+							<Ellipse Fill="Blue" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Header>
+									<Border Width="200" Height="200" VerticalAlignment="Bottom" Margin="59">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+								<ItemsPresenter.Footer>
+									<Border Width="200" Height="200" VerticalAlignment="Top" Margin="39">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -159,52 +161,52 @@ public class Given_ItemsPresenter
 	[RequiresFullWindow]
 	public async Task When_Big_Elements_Vertical_Many_Margins()
 	{
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.Items>
-										              <Border Width="400" Height="300" Margin="1">
-										                  <Ellipse Fill="Red" />
-										              </Border>
-										              <Border Width="400" Height="300" Margin="3">
-										                  <Ellipse Fill="Green" />
-										              </Border>
-										              <Border Width="400" Height="300" VerticalAlignment="Bottom"  Margin="9">
-										                  <Ellipse Fill="Blue" />
-										              </Border>
-										          </ItemsControl.Items>
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Vertical" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Header>
-										                          <Border Width="200" Height="200" VerticalAlignment="Bottom" Margin="59">
-										                              <Ellipse Fill="Yellow" />
-										                          </Border>
-										                      </ItemsPresenter.Header>
-										                      <ItemsPresenter.Footer>
-										                          <Border Width="200" Height="200" VerticalAlignment="Top" Margin="39">
-										                              <Ellipse Fill="Pink" />
-										                          </Border>
-										                      </ItemsPresenter.Footer>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="400" Height="300" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="400" Height="300" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+						<Border Width="400" Height="300" VerticalAlignment="Bottom" Margin="9">
+							<Ellipse Fill="Blue" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Vertical" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Header>
+									<Border Width="200" Height="200" VerticalAlignment="Bottom" Margin="59">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+								<ItemsPresenter.Footer>
+									<Border Width="200" Height="200" VerticalAlignment="Top" Margin="39">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -265,52 +267,52 @@ public class Given_ItemsPresenter
 	[RequiresFullWindow]
 	public async Task When_Small_Elements_Horizontal_Many_Margins()
 	{
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.Items>
-										              <Border Width="40" Height="30" Margin="1">
-										                  <Ellipse Fill="Red" />
-										              </Border>
-										              <Border Width="40" Height="30" Margin="3">
-										                  <Ellipse Fill="Green" />
-										              </Border>
-										              <Border Width="40" Height="30" VerticalAlignment="Bottom"  Margin="9">
-										                  <Ellipse Fill="Blue" />
-										              </Border>
-										          </ItemsControl.Items>
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Horizontal" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Header>
-										                          <Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
-										                              <Ellipse Fill="Yellow" />
-										                          </Border>
-										                      </ItemsPresenter.Header>
-										                      <ItemsPresenter.Footer>
-										                          <Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
-										                              <Ellipse Fill="Pink" />
-										                          </Border>
-										                      </ItemsPresenter.Footer>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+		      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		      mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="40" Height="30" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="40" Height="30" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+						<Border Width="40" Height="30" VerticalAlignment="Bottom" Margin="9">
+							<Ellipse Fill="Blue" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Header>
+									<Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+								<ItemsPresenter.Footer>
+									<Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -371,52 +373,52 @@ public class Given_ItemsPresenter
 	[RequiresFullWindow]
 	public async Task When_Small_Elements_Vertical_Many_Margins()
 	{
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.Items>
-										              <Border Width="40" Height="30" Margin="1">
-										                  <Ellipse Fill="Red" />
-										              </Border>
-										              <Border Width="40" Height="30" Margin="3">
-										                  <Ellipse Fill="Green" />
-										              </Border>
-										              <Border Width="40" Height="30" VerticalAlignment="Bottom"  Margin="9">
-										                  <Ellipse Fill="Blue" />
-										              </Border>
-										          </ItemsControl.Items>
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Vertical" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Header>
-										                          <Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
-										                              <Ellipse Fill="Yellow" />
-										                          </Border>
-										                      </ItemsPresenter.Header>
-										                      <ItemsPresenter.Footer>
-										                          <Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
-										                              <Ellipse Fill="Pink" />
-										                          </Border>
-										                      </ItemsPresenter.Footer>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="40" Height="30" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="40" Height="30" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+						<Border Width="40" Height="30" VerticalAlignment="Bottom" Margin="9">
+							<Ellipse Fill="Blue" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Vertical" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Header>
+									<Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+								<ItemsPresenter.Footer>
+									<Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -477,47 +479,47 @@ public class Given_ItemsPresenter
 	[RequiresFullWindow]
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Footer()
 	{
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.Items>
-										              <Border Width="40" Height="30" Margin="1">
-										                  <Ellipse Fill="Red" />
-										              </Border>
-										              <Border Width="40" Height="30" Margin="3">
-										                  <Ellipse Fill="Green" />
-										              </Border>
-										              <Border Width="40" Height="30" VerticalAlignment="Bottom"  Margin="9">
-										                  <Ellipse Fill="Blue" />
-										              </Border>
-										          </ItemsControl.Items>
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Horizontal" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Header>
-										                          <Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
-										                              <Ellipse Fill="Yellow" />
-										                          </Border>
-										                      </ItemsPresenter.Header>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="40" Height="30" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="40" Height="30" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+						<Border Width="40" Height="30" VerticalAlignment="Bottom" Margin="9">
+							<Ellipse Fill="Blue" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Header>
+									<Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -575,47 +577,47 @@ public class Given_ItemsPresenter
 	[RequiresFullWindow]
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Header()
 	{
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.Items>
-										              <Border Width="40" Height="30" Margin="1">
-										                  <Ellipse Fill="Red" />
-										              </Border>
-										              <Border Width="40" Height="30" Margin="3">
-										                  <Ellipse Fill="Green" />
-										              </Border>
-										              <Border Width="40" Height="30" VerticalAlignment="Bottom"  Margin="9">
-										                  <Ellipse Fill="Blue" />
-										              </Border>
-										          </ItemsControl.Items>
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Horizontal" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Footer>
-										                          <Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
-										                              <Ellipse Fill="Pink" />
-										                          </Border>
-										                      </ItemsPresenter.Footer>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="40" Height="30" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="40" Height="30" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+						<Border Width="40" Height="30" VerticalAlignment="Bottom" Margin="9">
+							<Ellipse Fill="Blue" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Footer>
+									<Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -673,41 +675,41 @@ public class Given_ItemsPresenter
 	[RequiresFullWindow]
 	public async Task When_Small_Elements_Horizontal_Many_Margins_No_Items()
 	{
-		var grid = (Grid)XamlReader.Load("""
-										 <Grid x:Name="g" Width="600" Height="700"
-										 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-										 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-										 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-										 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-										 	mc:Ignorable="d"
-										 	>
-										 <Border BorderBrush="Bisque" BorderThickness="5">
-										      <ItemsControl x:Name="ic">
-										          <ItemsControl.ItemsPanel>
-										              <ItemsPanelTemplate>
-										                  <StackPanel Margin="29" Orientation="Horizontal" />
-										              </ItemsPanelTemplate>
-										          </ItemsControl.ItemsPanel>
-										          <ItemsControl.Template>
-										              <ControlTemplate TargetType="ItemsControl">
-										                  <ItemsPresenter Margin="47">
-										                      <ItemsPresenter.Header>
-										                          <Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
-										                              <Ellipse Fill="Yellow" />
-										                          </Border>
-										                      </ItemsPresenter.Header>
-										                      <ItemsPresenter.Footer>
-										                          <Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
-										                              <Ellipse Fill="Pink" />
-										                          </Border>
-										                      </ItemsPresenter.Footer>
-										                  </ItemsPresenter>
-										              </ControlTemplate>
-										          </ItemsControl.Template>
-										      </ItemsControl>
-										 </Border>
-										 </Grid>
-										 """);
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="600" Height="700"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Margin="29" Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Margin="47">
+								<ItemsPresenter.Header>
+									<Border Width="20" Height="20" VerticalAlignment="Bottom" Margin="59">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+								<ItemsPresenter.Footer>
+									<Border Width="20" Height="20" VerticalAlignment="Top" Margin="39">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
 
 		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForLoaded(grid);
@@ -747,4 +749,248 @@ public class Given_ItemsPresenter
 			245
 		}, Epsilon);
 	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Footer_Binding()
+	{
+		var ic = (ItemsControl)XamlReader.Load(
+			"""
+			<ItemsControl
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+				<ItemsControl.Template>
+					<ControlTemplate TargetType="ItemsControl">
+						<ItemsPresenter>
+							<ItemsPresenter.Footer>
+								<TextBlock Text="empty" />
+							</ItemsPresenter.Footer>
+						</ItemsPresenter>
+					</ControlTemplate>
+				</ItemsControl.Template>
+			</ItemsControl>
+			""");
+
+		WindowHelper.WindowContent = ic;
+		await WindowHelper.WaitForIdle();
+
+		var tb = ic.FindVisualChildByType<TextBlock>();
+
+		Assert.IsNull(tb.DataContext);
+
+		tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+
+		ic.DataContext = new MyTextModel("test value");
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ic.DataContext, tb.DataContext);
+		Assert.AreEqual("test value", tb.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Header_Binding()
+	{
+		var ic = (ItemsControl)XamlReader.Load(
+			"""
+			<ItemsControl
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d">
+				<ItemsControl.Template>
+					<ControlTemplate TargetType="ItemsControl">
+						<ItemsPresenter>
+							<ItemsPresenter.Header>
+								<TextBlock Text="empty" />
+							</ItemsPresenter.Header>
+						</ItemsPresenter>
+					</ControlTemplate>
+				</ItemsControl.Template>
+			</ItemsControl>
+			""");
+
+		WindowHelper.WindowContent = ic;
+		await WindowHelper.WaitForIdle();
+
+		var tb = ic.FindVisualChildByType<TextBlock>();
+
+		Assert.IsNull(tb.DataContext);
+
+		tb.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+
+		ic.DataContext = new MyTextModel("test value");
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(ic.DataContext, tb.DataContext);
+		Assert.AreEqual("test value", tb.Text);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Header_Height_Changed()
+	{
+		var ic = (ItemsControl)XamlReader.Load(
+		"""
+		<ItemsControl
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			mc:Ignorable="d">
+			<ItemsControl.Template>
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter>
+						<ItemsPresenter.Header>
+							<TextBlock Text="Before" Height="100" />
+						</ItemsPresenter.Header>
+					</ItemsPresenter>
+				</ControlTemplate>
+			</ItemsControl.Template>
+		</ItemsControl>
+		""");
+
+		WindowHelper.WindowContent = ic;
+		await WindowHelper.WaitForIdle();
+
+		var totalHeight = ic.ActualHeight;
+
+		ic.FindVisualChildByType<ItemsPresenter>().Header = new TextBlock
+		{
+			Text = "After",
+			Height = 200
+		};
+
+		await WindowHelper.WaitForIdle();
+
+		ic.ActualHeight.Should().BeApproximately(totalHeight + 100, Epsilon);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Footer_Height_Changed()
+	{
+		var ic = (ItemsControl)XamlReader.Load(
+		"""
+		<ItemsControl
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			mc:Ignorable="d">
+			<ItemsControl.Template>
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter>
+						<ItemsPresenter.Footer>
+							<TextBlock Text="Before" Height="100" />
+						</ItemsPresenter.Footer>
+					</ItemsPresenter>
+				</ControlTemplate>
+			</ItemsControl.Template>
+		</ItemsControl>
+		""");
+
+		WindowHelper.WindowContent = ic;
+		await WindowHelper.WaitForIdle();
+
+		var totalHeight = ic.ActualHeight;
+
+		ic.FindVisualChildByType<ItemsPresenter>().Footer = new TextBlock
+		{
+			Text = "After",
+			Height = 200
+		};
+
+		await WindowHelper.WaitForIdle();
+
+		ic.ActualHeight.Should().BeApproximately(totalHeight + 100, Epsilon);
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Header_Template()
+	{
+		var ic = (ItemsControl)XamlReader.Load(
+		"""
+		<ItemsControl
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			mc:Ignorable="d">
+			<ItemsControl.Template>
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter Header="initial header value">
+						<ItemsPresenter.HeaderTemplate>
+							<DataTemplate>
+								<Border Padding="10">
+									<TextBlock Text="{Binding}" />
+								</Border>
+							</DataTemplate>
+						</ItemsPresenter.HeaderTemplate>
+					</ItemsPresenter>
+				</ControlTemplate>
+			</ItemsControl.Template>
+		</ItemsControl>
+		""");
+
+		WindowHelper.WindowContent = ic;
+		await WindowHelper.WaitForIdle();
+
+		var SUT = ic.FindVisualChildByType<ItemsPresenter>();
+
+		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "initial header value");
+
+		SUT.Header = "updated header value";
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "updated header value");
+	}
+
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Footer_Template()
+	{
+		var ic = (ItemsControl)XamlReader.Load(
+		"""
+		<ItemsControl
+			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			mc:Ignorable="d">
+			<ItemsControl.Template>
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter Footer="initial footer value">
+						<ItemsPresenter.FooterTemplate>
+							<DataTemplate>
+								<Border Padding="10">
+									<TextBlock Text="{Binding}" />
+								</Border>
+							</DataTemplate>
+						</ItemsPresenter.FooterTemplate>
+					</ItemsPresenter>
+				</ControlTemplate>
+			</ItemsControl.Template>
+		</ItemsControl>
+		""");
+
+		WindowHelper.WindowContent = ic;
+		await WindowHelper.WaitForIdle();
+
+		var SUT = ic.FindVisualChildByType<ItemsPresenter>();
+
+		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "initial footer value");
+
+		SUT.Footer = "updated footer value";
+		await WindowHelper.WaitForIdle();
+
+		Assert.AreEqual(SUT.FindVisualChildByType<TextBlock>().Text, "updated footer value");
+	}
+
+	public record MyTextModel(string MyText);
 }
