@@ -55,7 +55,7 @@ public class Given_ItemsPresenter
 
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -113,14 +113,14 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 318, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(814, 0, 278, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(318, 0, 496, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 402, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(402, 0, 406, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(808, 0, 418, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 318, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(814, 0, 278, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(318, 0, 496, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 402, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(402, 0, 406, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(808, 0, 418, 438), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
@@ -163,7 +163,7 @@ public class Given_ItemsPresenter
 	{
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -221,11 +221,11 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
 		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 496, 318), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 914, 496, 278), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 318, 496, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 814, 496, 278), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 318, 496, 496), Epsilon);
 		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 438, 302), Epsilon);
 		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 302, 438, 306), Epsilon);
 		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(0, 608, 438, 318), Epsilon);
@@ -240,7 +240,7 @@ public class Given_ItemsPresenter
 			318,
 			649,
 			955,
-			914
+			814
 		}, Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
@@ -249,7 +249,7 @@ public class Given_ItemsPresenter
 			649,
 			955,
 			1273,
-			1192
+			1092
 		}, Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
@@ -258,7 +258,7 @@ public class Given_ItemsPresenter
 			498,
 			802,
 			1114,
-			1053
+			953
 		}, Epsilon);
 	}
 
@@ -269,7 +269,7 @@ public class Given_ItemsPresenter
 	{
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 		      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 		      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 		      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -327,14 +327,14 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 260, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 260, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 438), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
@@ -375,7 +375,7 @@ public class Given_ItemsPresenter
 	{
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -433,11 +433,11 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
 		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 496, 138), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 498, 496, 98), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 138, 496, 360), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(0, 398, 496, 98), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 138, 496, 260), Epsilon);
 		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 438, 32), Epsilon);
 		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 32, 438, 36), Epsilon);
 		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(0, 68, 438, 48), Epsilon);
@@ -481,7 +481,7 @@ public class Given_ItemsPresenter
 	{
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -534,14 +534,14 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(496, 0, 0, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 358, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(496, 0, 0, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 358, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 438), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
@@ -579,7 +579,7 @@ public class Given_ItemsPresenter
 	{
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -632,14 +632,14 @@ public class Given_ItemsPresenter
 		var item2 = (FrameworkElement)panel.Children[1];
 		var item3 = (FrameworkElement)panel.Children[2];
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 0, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 0, 398, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 538), Epsilon);
-		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 538), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 0, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(0, 0, 398, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 42, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(42, 0, 46, 438), Epsilon);
+		LayoutInformation.GetLayoutSlot(item3).Should().Be(new Rect(88, 0, 58, 438), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
@@ -677,7 +677,7 @@ public class Given_ItemsPresenter
 	{
 		var grid = (Grid)XamlReader.Load(
 		"""
-		<Grid x:Name="g" Width="600" Height="700"
+		<Grid x:Name="g" Width="600" Height="600"
 			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -721,11 +721,11 @@ public class Given_ItemsPresenter
 		var footer = (ContentControl)VisualTreeHelper.GetChild(ip, 2);
 		var panel = grid.FindVisualChildByType<StackPanel>();
 
-		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 690), Epsilon);
-		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 596), Epsilon);
-		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 260, 596), Epsilon);
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 590, 590), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(0, 0, 138, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(398, 0, 98, 496), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(138, 0, 260, 496), Epsilon);
 
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
@@ -834,32 +834,36 @@ public class Given_ItemsPresenter
 	[RunsOnUIThread]
 	public async Task When_Header_Height_Changed()
 	{
-		var ic = (ItemsControl)XamlReader.Load(
+		var grid = (Grid)XamlReader.Load(
 		"""
-		<ItemsControl
-			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			mc:Ignorable="d">
-			<ItemsControl.Template>
-				<ControlTemplate TargetType="ItemsControl">
-					<ItemsPresenter>
-						<ItemsPresenter.Header>
-							<TextBlock Text="Before" Height="100" />
-						</ItemsPresenter.Header>
-					</ItemsPresenter>
-				</ControlTemplate>
-			</ItemsControl.Template>
-		</ItemsControl>
+		<Grid Height="400"
+		      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		      mc:Ignorable="d">
+			<ItemsControl>
+				<ItemsControl.Template>
+					<ControlTemplate TargetType="ItemsControl">
+						<ItemsPresenter>
+							<ItemsPresenter.Header>
+								<TextBlock Text="Before" Height="100" />
+							</ItemsPresenter.Header>
+						</ItemsPresenter>
+					</ControlTemplate>
+				</ItemsControl.Template>
+			</ItemsControl>
+		</Grid>
 		""");
 
-		WindowHelper.WindowContent = ic;
+		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForIdle();
 
-		var totalHeight = ic.ActualHeight;
+		var tb = grid.FindVisualChildByType<TextBlock>();
 
-		ic.FindVisualChildByType<ItemsPresenter>().Header = new TextBlock
+		var height = LayoutInformation.GetLayoutSlot(grid.FindVisualChildByType<TextBlock>()).Height;
+
+		grid.FindVisualChildByType<ItemsPresenter>().Header = new TextBlock
 		{
 			Text = "After",
 			Height = 200
@@ -867,39 +871,43 @@ public class Given_ItemsPresenter
 
 		await WindowHelper.WaitForIdle();
 
-		ic.ActualHeight.Should().BeApproximately(totalHeight + 100, Epsilon);
+		LayoutInformation.GetLayoutSlot(grid.FindVisualChildByType<TextBlock>()).Height.Should().BeApproximately(height + 100, Epsilon);
 	}
 
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_Footer_Height_Changed()
 	{
-		var ic = (ItemsControl)XamlReader.Load(
+		var grid = (Grid)XamlReader.Load(
 		"""
-		<ItemsControl
-			xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			mc:Ignorable="d">
-			<ItemsControl.Template>
-				<ControlTemplate TargetType="ItemsControl">
-					<ItemsPresenter>
-						<ItemsPresenter.Footer>
-							<TextBlock Text="Before" Height="100" />
-						</ItemsPresenter.Footer>
-					</ItemsPresenter>
-				</ControlTemplate>
-			</ItemsControl.Template>
-		</ItemsControl>
+		<Grid Height="400"
+		      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+		      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		      mc:Ignorable="d">
+			<ItemsControl>
+				<ItemsControl.Template>
+					<ControlTemplate TargetType="ItemsControl">
+						<ItemsPresenter>
+							<ItemsPresenter.Footer>
+								<TextBlock Text="Before" Height="100" />
+							</ItemsPresenter.Footer>
+						</ItemsPresenter>
+					</ControlTemplate>
+				</ItemsControl.Template>
+			</ItemsControl>
+		</Grid>
 		""");
 
-		WindowHelper.WindowContent = ic;
+		WindowHelper.WindowContent = grid;
 		await WindowHelper.WaitForIdle();
 
-		var totalHeight = ic.ActualHeight;
+		var tb = grid.FindVisualChildByType<TextBlock>();
 
-		ic.FindVisualChildByType<ItemsPresenter>().Footer = new TextBlock
+		var top = grid.FindVisualChildByType<TextBlock>().TransformToVisual(grid).TransformPoint(new Point(0, 0)).Y;
+
+		grid.FindVisualChildByType<ItemsPresenter>().Footer = new TextBlock
 		{
 			Text = "After",
 			Height = 200
@@ -907,7 +915,7 @@ public class Given_ItemsPresenter
 
 		await WindowHelper.WaitForIdle();
 
-		ic.ActualHeight.Should().BeApproximately(totalHeight + 100, Epsilon);
+		grid.FindVisualChildByType<TextBlock>().TransformToVisual(grid).TransformPoint(new Point(0, 0)).Y.Should().BeApproximately(top - 100, Epsilon);
 	}
 
 	[TestMethod]

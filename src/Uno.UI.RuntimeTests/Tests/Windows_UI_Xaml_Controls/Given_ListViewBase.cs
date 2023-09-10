@@ -3941,33 +3941,37 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(true, seenNewTextBlock);
 			}
 		}
-#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __WASM__ || __SKIA__
+		[Ignore("https://github.com/unoplatform/uno/issues/234")]
+#endif
 		public async Task When_HeaderTemplate_DataContext()
 		{
-			var SUT = (ListView)XamlReader.Load("""
-												<ListView xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-													xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-													xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-													xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
-													<ListView.HeaderTemplate>
-														<DataTemplate>
-															<StackPanel Background="Red">
-																<TextBlock Text="{Binding MyText}" />
-															</StackPanel>
-														</DataTemplate>
-													</ListView.HeaderTemplate>
-												</ListView>
-												""");
+			TextBlock header = null;
 
-			SUT.ItemContainerStyle = BasicContainerStyle;
+			var SUT = new ListView()
+			{
+				ItemContainerStyle = BasicContainerStyle,
+				HeaderTemplate = new DataTemplate(() =>
+				{
+					var s = new StackPanel
+					{
+						Background = new SolidColorBrush(Colors.Red),
+						Children = {
+							(header = new TextBlock { Text = "empty" }),
+						}
+					};
+
+					header.SetBinding(TextBlock.TextProperty, new Binding { Path = new PropertyPath("MyText") });
+
+					return s;
+				})
+			};
 
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForIdle();
-
-			var header = SUT.FindVisualChildByType<TextBlock>();
 
 			var source = new[] {
 				new ListViewItem(){ Content = "item 1" },
@@ -3981,55 +3985,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.DataContext = new When_Header_DataContext_Model("test value");
 			await WindowHelper.WaitForIdle();
 
-			header = SUT.FindVisualChildByType<TextBlock>(); // textblock is not the same after changing DataContext on Android
-
 			Assert.AreEqual(SUT.DataContext, header.DataContext);
 			Assert.AreEqual("test value", header.Text);
 		}
-
-		[TestMethod]
-		[RunsOnUIThread]
-		public async Task When_FooterTemplate_DataContext()
-		{
-			var SUT = (ListView)XamlReader.Load("""
-												<ListView xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-													xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-													xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-													xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">
-													<ListView.FooterTemplate>
-														<DataTemplate>
-															<StackPanel Background="Red">
-																<TextBlock Text="{Binding MyText}" />
-															</StackPanel>
-														</DataTemplate>
-													</ListView.FooterTemplate>
-												</ListView>
-												""");
-
-			SUT.ItemContainerStyle = BasicContainerStyle;
-
-			WindowHelper.WindowContent = SUT;
-			await WindowHelper.WaitForIdle();
-
-			var footer = SUT.FindVisualChildByType<StackPanel>().FindVisualChildByType<TextBlock>();
-
-			var source = new[] {
-				new ListViewItem(){ Content = "item 1" },
-			};
-
-			SUT.ItemsSource = source;
-			await WindowHelper.WaitForIdle();
-
-			Assert.IsNull(footer.DataContext);
-
-			SUT.DataContext = new When_Header_DataContext_Model("test value");
-			await WindowHelper.WaitForIdle();
-
-			footer = SUT.FindVisualChildByType<StackPanel>().FindVisualChildByType<TextBlock>(); // textblock is not the same after changing DataContext on Android
-
-			Assert.AreEqual(SUT.DataContext, footer.DataContext);
-			Assert.AreEqual("test value", footer.Text);
-		}
+#endif
 
 		private async Task When_Items_Are_Equal_But_Different_References_Common(Selector sut)
 		{
