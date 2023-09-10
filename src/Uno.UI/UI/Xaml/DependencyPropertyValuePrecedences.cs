@@ -28,11 +28,6 @@ namespace Windows.UI.Xaml
 		Local,
 
 		/// <summary>
-		/// Values set by a Popup to its child
-		/// </summary>
-		Popup,
-
-		/// <summary>
 		/// Values inherited from the templated parent
 		/// </summary>
 		TemplatedParent,
