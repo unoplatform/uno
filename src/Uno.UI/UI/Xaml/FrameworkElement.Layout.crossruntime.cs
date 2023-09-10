@@ -219,20 +219,17 @@ namespace Windows.UI.Xaml
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect}) - effectiveMaxSize={effectiveMaxSize}, maxSize={maxSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
-			if (allowClipToSlot)
+			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 			{
-				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
-				{
-					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
-					needsClipToSlot = true;
-					arrangeSize.Width = effectiveMaxSize.Width;
-				}
-				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
-				{
-					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
-					needsClipToSlot = true;
-					arrangeSize.Height = effectiveMaxSize.Height;
-				}
+				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
+				needsClipToSlot = allowClipToSlot;
+				arrangeSize.Width = effectiveMaxSize.Width;
+			}
+			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
+			{
+				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
+				needsClipToSlot = allowClipToSlot;
+				arrangeSize.Height = effectiveMaxSize.Height;
 			}
 
 			var oldRenderSize = RenderSize;
