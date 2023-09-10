@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Drawing;
 using System.Linq;
@@ -182,6 +183,11 @@ namespace Uno.UI.Controls
 			{
 				foreach (UIPress press in presses)
 				{
+					if (press.Key is null)
+					{
+						continue;
+					}
+
 					if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardTab)
 					{
 						var shift =
