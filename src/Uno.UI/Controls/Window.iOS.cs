@@ -84,6 +84,11 @@ namespace Uno.UI.Controls
 #if __MACCATALYST__
 			foreach (UIPress press in presses)
 			{
+				if (press.Key is null)
+				{
+					continue;
+				}
+
 				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
 				var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
@@ -138,6 +143,11 @@ namespace Uno.UI.Controls
 #if __MACCATALYST__
 			foreach (UIPress press in presses)
 			{
+				if (press.Key is null)
+				{
+					continue;
+				}
+
 				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
 				var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
