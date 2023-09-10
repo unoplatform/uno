@@ -114,6 +114,7 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 	/// <summary>
 	/// Retrieves the non-uniform radii for a border.
 	/// </summary>
+	/// <param name="elementSize">Element size.</param>
 	/// <param name="borderThickness">Border thickness.</param>
 	/// <param name="outer">True to return outer corner radii, false for inner.</param>
 	/// <returns>Radii.</returns>
