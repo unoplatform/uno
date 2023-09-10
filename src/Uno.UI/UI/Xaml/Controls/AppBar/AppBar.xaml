@@ -9,7 +9,9 @@
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:local="using:Windows.UI.Xaml.Controls"
-	mc:Ignorable="d">
+	xmlns:netstdref="http://uno.ui/netstdref"
+	xmlns:not_netstdref="http://uno.ui/not_netstdref"
+	mc:Ignorable="d netstdref not_netstdref">
 
 	<ResourceDictionary.ThemeDictionaries>
 
@@ -1320,10 +1322,13 @@
 								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
 							<!-- UNO TODO The ViewBox center should be horizontal Stretch but the Grid aligns the content left -->
+							<!-- NOTE that Stretch works correctly on Skia/Wasm, so we choose between Stretch and Center conditionally -->
+							<!-- But the correct value is Stretch -->
 							<Viewbox x:Name="ContentViewbox"
                                 Height="20"
                                 Margin="{ThemeResource AppBarButtonContentViewboxCollapsedMargin}"
-                                HorizontalAlignment="Center"
+                                netstdref:HorizontalAlignment="Stretch"
+								not_netstdref:HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" >
 								<ContentPresenter x:Name="Content"
                                     Height="20"
@@ -1715,10 +1720,13 @@
                                 Visibility="Collapsed"
                                 AutomationProperties.AccessibilityView="Raw" />
 							<!-- UNO TODO The ViewBox center should be horizontal Stretch but the Grid aligns the content left -->
+							<!-- NOTE that Stretch works correctly on Skia/Wasm, so we choose between Stretch and Center conditionally -->
+							<!-- But the correct value is Stretch -->
 							<Viewbox x:Name="ContentViewbox"
                                 Height="20"
                                 Margin="{ThemeResource AppBarButtonContentViewboxCollapsedMargin}"
-                                HorizontalAlignment="Center"
+                                netstdref:HorizontalAlignment="Stretch"
+								not_netstdref:HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" >
 								<ContentPresenter x:Name="Content"
                                     Content="{TemplateBinding Icon}"
