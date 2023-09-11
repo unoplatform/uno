@@ -625,6 +625,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial();
 
 		#endregion
+#if SUPPORTS_RTL
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FrameworkElement.FlowDirectionProperty)
+			{
+				OnFlowDirectionChangedPartial();
+			}
+		}
+
+		partial void OnFlowDirectionChangedPartial();
+#endif
 
 #if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

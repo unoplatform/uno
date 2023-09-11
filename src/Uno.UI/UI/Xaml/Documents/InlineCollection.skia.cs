@@ -302,6 +302,15 @@ namespace Windows.UI.Xaml.Documents
 			var canvas = session.Surface.Canvas;
 			var parent = (IBlock)_collection.GetParent();
 			var alignment = parent.TextAlignment;
+			if (parent.FlowDirection == FlowDirection.RightToLeft)
+			{
+				alignment = alignment switch
+				{
+					TextAlignment.Left => TextAlignment.Right,
+					TextAlignment.Right => TextAlignment.Left,
+					_ => alignment,
+				};
+			}
 
 			float y = 0;
 

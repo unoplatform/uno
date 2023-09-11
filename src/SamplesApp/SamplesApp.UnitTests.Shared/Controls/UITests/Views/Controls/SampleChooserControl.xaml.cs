@@ -5,10 +5,10 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using SampleControl.Presentation;
 using Windows.Foundation;
+using Windows.UI.Xaml;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 #if NETFX_CORE
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -30,6 +30,8 @@ namespace Uno.UI.Samples.Controls
 		public SampleChooserControl()
 		{
 			this.InitializeComponent();
+			RTLCheckBox.Checked += (_, _) => this.FlowDirection = FlowDirection.RightToLeft;
+			RTLCheckBox.Unchecked += (_, _) => this.FlowDirection = FlowDirection.LeftToRight;
 		}
 
 		protected override Size MeasureOverride(Size availableSize)

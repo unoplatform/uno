@@ -147,6 +147,31 @@ namespace Windows.UI.Xaml
 
 		#endregion
 
+		#region FlowDirection Dependency Property
+#if !SUPPORTS_RTL
+		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+#endif
+		public FlowDirection FlowDirection
+		{
+			get => GetFlowDirectionValue();
+			set => SetFlowDirectionValue(value);
+		}
+
+#if !SUPPORTS_RTL
+		[NotImplemented("__ANDROID__", "__IOS__", "__WASM__", "__MACOS__")]
+#endif
+		[GeneratedDependencyProperty(DefaultValue = FlowDirection.LeftToRight, Options = FrameworkPropertyMetadataOptions.Inherits, ChangedCallback = true)]
+		public static DependencyProperty FlowDirectionProperty { get; } = CreateFlowDirectionProperty();
+
+		private void OnFlowDirectionChanged(FlowDirection oldValue, FlowDirection newValue)
+		{
+#if SUPPORTS_RTL
+			this.InvalidateArrange();
+			VisualTreeHelper.GetParent(this)?.InvalidateArrange();
+#endif
+		}
+
+		#endregion
 
 		partial void Initialize()
 		{
