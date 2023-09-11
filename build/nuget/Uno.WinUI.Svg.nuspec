@@ -28,7 +28,7 @@
 			</group>
 
 			<group targetFramework="net8.0-android">
-				<dependency id="Svg.Skia" version="1.0.0.1 />
+				<dependency id="Svg.Skia" version="1.0.0.1" />
 				<dependency id="SkiaSharp.Views.Uno" version="2.88.3" />
 				<dependency id="SkiaSharp.NativeAssets.android" version="2.88.3" />
 
