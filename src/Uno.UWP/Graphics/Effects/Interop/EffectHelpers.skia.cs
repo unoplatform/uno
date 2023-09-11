@@ -116,5 +116,20 @@ namespace Windows.Graphics.Effects.Interop
 					return (SKBlendMode)0xFF;
 			}
 		}
+
+		public static SKShaderTileMode ToSkia(this D2D1BorderEdgeMode mode)
+		{
+			switch (mode)
+			{
+				case D2D1BorderEdgeMode.Clamp:
+					return SKShaderTileMode.Clamp;
+				case D2D1BorderEdgeMode.Wrap:
+					return SKShaderTileMode.Repeat;
+				case D2D1BorderEdgeMode.Mirror:
+					return SKShaderTileMode.Mirror;
+				default:
+					return SKShaderTileMode.Clamp;
+			}
+		}
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
@@ -159,19 +160,42 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush16 = factory16.CreateBrush();
 
 			gammaXferGrid.Background = new EffectTesterBrush(effectBrush16);
+
+			var effect17 = new SimpleBorderEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Extend = D2D1BorderEdgeMode.Wrap };
+			var factory17 = compositor.CreateEffectFactory(effect17);
+			var effectBrush17 = factory17.CreateBrush();
+
+			borderGrid.Background = new EffectTesterBrush(effectBrush17, 50);
+
+			var effect18 = new SimpleTransform2DEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), TransformMatrix = Matrix3x2.CreateRotation((float)MathEx.ToRadians(45), new(100, 100)) };
+			var factory18 = compositor.CreateEffectFactory(effect18);
+			var effectBrush18 = factory18.CreateBrush();
+
+			t2dGrid.Background = new EffectTesterBrush(effectBrush18);
+
+			var effect19 = new SimpleSepiaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Intensity = 1.0f };
+			var factory19 = compositor.CreateEffectFactory(effect19);
+			var effectBrush19 = factory19.CreateBrush();
+
+			sepiaGrid.Background = new EffectTesterBrush(effectBrush19);
 #endif
 		}
 
 		private class EffectTesterBrush : XamlCompositionBrushBase
 		{
 			private CompositionEffectBrush _effectBrush;
+			private int _imgSize;
 
-			public EffectTesterBrush(CompositionEffectBrush effectBrush) => _effectBrush = effectBrush;
+			public EffectTesterBrush(CompositionEffectBrush effectBrush, int imgSize = 200)
+			{
+				_effectBrush = effectBrush;
+				_imgSize = imgSize;
+			}
 
 			protected override void OnConnected()
 			{
 				var compositor = Window.Current.Compositor;
-				var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://avatars.githubusercontent.com/u/52228309?s=200&v=4"));
+				var surface = LoadedImageSurface.StartLoadFromUri(new Uri($"https://avatars.githubusercontent.com/u/52228309?s={_imgSize}&v=4"));
 				surface.LoadCompleted += (s, o) =>
 				{
 					if (o.Status == LoadedImageSourceLoadStatus.Success)
@@ -1241,6 +1265,166 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 17;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("2A2D49C0-4ACF-43C7-8C6A-7C4A27874D27")]
+		private class SimpleBorderEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleBorderEffect";
+			private Guid _id = new Guid("2A2D49C0-4ACF-43C7-8C6A-7C4A27874D27");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public D2D1BorderEdgeMode Extend { get; set; } = D2D1BorderEdgeMode.Clamp;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "ExtendX":
+					case "ExtendY":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Extend;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 2;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("6AA97485-6354-4CFC-908C-E4A74F62C96C")]
+		private class SimpleTransform2DEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleTransform2DEffect";
+			private Guid _id = new Guid("6AA97485-6354-4CFC-908C-E4A74F62C96C");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public Matrix3x2 TransformMatrix { get; set; } = Matrix3x2.Identity;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "TransformMatrix":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return TransformMatrix;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 4;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("3A1AF410-5F1D-4DBE-84DF-915DA79B7153")]
+		private class SimpleSepiaEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleSepiaEffect";
+			private Guid _id = new Guid("3A1AF410-5F1D-4DBE-84DF-915DA79B7153");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Intensity { get; set; } = 0.5f;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Intensity":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Intensity;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}
