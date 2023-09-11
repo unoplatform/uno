@@ -9,8 +9,6 @@
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:local="using:Windows.UI.Xaml.Controls"
-	xmlns:netstdref="http://uno.ui/netstdref"
-	xmlns:not_netstdref="http://uno.ui/not_netstdref"
 	mc:Ignorable="d netstdref not_netstdref">
 
 	<ResourceDictionary.ThemeDictionaries>
@@ -1072,7 +1070,6 @@
 		<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
 		<Setter Property="AllowFocusOnInteraction" Value="False" />
 		<Setter Property="KeyboardAcceleratorPlacementMode" Value="Hidden" />
-		<Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="AppBarButton">
@@ -1322,16 +1319,12 @@
 								<RowDefinition Height="Auto" />
 							</Grid.RowDefinitions>
 							<!-- UNO TODO The ViewBox center should be horizontal Stretch but the Grid aligns the content left -->
-							<!-- NOTE that Stretch works correctly on Skia/Wasm, so we choose between Stretch and Center conditionally -->
-							<!-- But the correct value is Stretch -->
 							<Viewbox x:Name="ContentViewbox"
                                 Height="20"
                                 Margin="{ThemeResource AppBarButtonContentViewboxCollapsedMargin}"
-                                netstdref:HorizontalAlignment="Stretch"
-								not_netstdref:HorizontalAlignment="Center"
+                                HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" >
 								<ContentPresenter x:Name="Content"
-                                    Height="20"
                                     Content="{TemplateBinding Icon}"
                                     Foreground="{TemplateBinding Foreground}"/>
 							</Viewbox>
@@ -1720,13 +1713,10 @@
                                 Visibility="Collapsed"
                                 AutomationProperties.AccessibilityView="Raw" />
 							<!-- UNO TODO The ViewBox center should be horizontal Stretch but the Grid aligns the content left -->
-							<!-- NOTE that Stretch works correctly on Skia/Wasm, so we choose between Stretch and Center conditionally -->
-							<!-- But the correct value is Stretch -->
 							<Viewbox x:Name="ContentViewbox"
                                 Height="20"
                                 Margin="{ThemeResource AppBarButtonContentViewboxCollapsedMargin}"
-                                netstdref:HorizontalAlignment="Stretch"
-								not_netstdref:HorizontalAlignment="Center"
+                                HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" >
 								<ContentPresenter x:Name="Content"
                                     Content="{TemplateBinding Icon}"
