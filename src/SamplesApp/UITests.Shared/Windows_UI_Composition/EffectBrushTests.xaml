@@ -26,5 +26,8 @@
 		<Grid x:Name="lumaGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="LuminanceToAlphaEffect"/>
 		<Grid x:Name="linearXferGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="LinearTransferEffect"/>
 		<Grid x:Name="gammaXferGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="GammaTransferEffect"/>
+		<Grid x:Name="borderGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="BorderEffect"/>
+		<Grid x:Name="t2dGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="Transform2DEffect"/>
+		<Grid x:Name="sepiaGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="SepiaEffect"/>
 	</GridView>
 </UserControl>

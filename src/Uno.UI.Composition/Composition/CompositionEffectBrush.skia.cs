@@ -2,7 +2,7 @@
 using Windows.Graphics.Effects.Interop;
 using System;
 using SkiaSharp;
-using System.Reflection.Emit;
+using System.Numerics;
 
 namespace Windows.UI.Composition
 {
@@ -116,9 +116,9 @@ namespace Windows.UI.Composition
 											SKColorFilter.CreateColorMatrix(
 												new float[] // Hue Rotation Matrix
 												{
-													(0.2127f + MathF.Cos(angle) * 0.7873f - MathF.Sin(angle) * 0.2127f), (0.715f - MathF.Cos(angle) * 0.715f - MathF.Sin(angle) * 0.715f), (0.072f - MathF.Cos(angle) * 0.072f + MathF.Sin(angle) * 0.928f), 0, 0,
-													(0.2127f - MathF.Cos(angle) * 0.213f + MathF.Sin(angle) * 0.143f),   (0.715f + MathF.Cos(angle) * 0.285f + MathF.Sin(angle) * 0.140f), (0.072f - MathF.Cos(angle) * 0.072f - MathF.Sin(angle) * 0.283f), 0, 0,
-													(0.2127f - MathF.Cos(angle) * 0.213f - MathF.Sin(angle) * 0.787f),   (0.715f - MathF.Cos(angle) * 0.715f + MathF.Sin(angle) * 0.715f), (0.072f + MathF.Cos(angle) * 0.928f + MathF.Sin(angle) * 0.072f), 0, 0,
+													0.2127f + MathF.Cos(angle) * 0.7873f - MathF.Sin(angle) * 0.2127f, 0.715f - MathF.Cos(angle) * 0.715f - MathF.Sin(angle) * 0.715f, 0.072f - MathF.Cos(angle) * 0.072f + MathF.Sin(angle) * 0.928f, 0, 0,
+													0.2127f - MathF.Cos(angle) * 0.213f + MathF.Sin(angle) * 0.143f,   0.715f + MathF.Cos(angle) * 0.285f + MathF.Sin(angle) * 0.140f, 0.072f - MathF.Cos(angle) * 0.072f - MathF.Sin(angle) * 0.283f, 0, 0,
+													0.2127f - MathF.Cos(angle) * 0.213f - MathF.Sin(angle) * 0.787f,   0.715f - MathF.Cos(angle) * 0.715f + MathF.Sin(angle) * 0.715f, 0.072f + MathF.Cos(angle) * 0.928f + MathF.Sin(angle) * 0.072f, 0, 0,
 													0,                                                                   0,                                                                0,                                                                1, 0
 												}),
 											sourceFilter, new(bounds));
@@ -1013,6 +1013,96 @@ namespace Windows.UI.Composition
 												}
 											}
 										*/
+									}
+
+									return null;
+								}
+							case EffectType.Transform2DEffect: // TODO: support "InterpolationMode", "BorderMode", and "Sharpness" properties
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("TransformMatrix", out uint matrixProp, out _);
+										Matrix3x2? matrix = effectInterop.GetProperty(matrixProp) as Matrix3x2?;
+
+										if (matrix is null)
+										{
+											float[] matrixArray = effectInterop.GetProperty(matrixProp) as float[];
+
+											if (matrixArray is not null && matrixArray.Length == 6)
+												matrix = new Matrix3x2(matrixArray[0], matrixArray[1], matrixArray[2], matrixArray[3], matrixArray[4], matrixArray[5]);
+											else
+												return null;
+										}
+
+										return SKImageFilter.CreateMerge(new[] { SKImageFilter.CreateMatrix(matrix.Value.ToSKMatrix(), SKFilterQuality.High, sourceFilter) }, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.BorderEffect: // Note: Clamp and Mirror are currently broken, see https://github.com/mono/SkiaSharp/issues/866
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("ExtendX", out uint modeXProp, out _);
+										effectInterop.GetNamedPropertyMapping("ExtendY", out uint modeYProp, out _);
+										D2D1BorderEdgeMode xmode = (D2D1BorderEdgeMode)effectInterop.GetProperty(modeXProp);
+										D2D1BorderEdgeMode ymode = (D2D1BorderEdgeMode)effectInterop.GetProperty(modeYProp);
+
+										SKShaderTileMode mode;
+
+										// TODO: support separate X,Y modes
+										if (xmode != ymode)
+										{
+											if (xmode != default)
+												mode = xmode.ToSkia();
+											else
+												mode = ymode.ToSkia();
+										}
+										else
+											mode = xmode.ToSkia();
+
+										float[] identityKernel = new float[9]
+										{
+											0,0,0,
+											0,1,0,
+											0,0,0
+										};
+
+										return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(1, 1), mode, true, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.SepiaEffect: // TODO: support "AlphaMode" property maybe?
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Intensity", out uint intensityProp, out _);
+										float intensity = (float)effectInterop.GetProperty(intensityProp);
+
+
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // Sepia Matrix
+												{
+													0.393f + 0.607f * (1 - intensity), 0.769f - 0.769f * (1 - intensity), 0.189f - 0.189f * (1 - intensity), 0, 0,
+													0.349f - 0.349f * (1 - intensity), 0.686f + 0.314f * (1 - intensity), 0.168f - 0.168f * (1 - intensity), 0, 0,
+													0.272f - 0.272f * (1 - intensity), 0.534f - 0.534f * (1 - intensity), 0.131f + 0.869f * (1 - intensity), 0, 0,
+													0,                                 0,                                 0,                                 1, 0
+												}),
+											sourceFilter, new(bounds));
 									}
 
 									return null;
