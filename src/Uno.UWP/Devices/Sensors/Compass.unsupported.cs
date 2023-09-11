@@ -3,6 +3,10 @@ namespace Windows.Devices.Sensors;
 
 public partial class Compass
 {
+	private Compass()
+	{
+	}
+
 	/// <summary>
 	/// API not supported, always returns null.
 	/// </summary>

@@ -3,6 +3,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
+		private Accelerometer()
+		{
+		}
+
 		/// <summary>
 		/// API not supported, always returns null.
 		/// </summary>
