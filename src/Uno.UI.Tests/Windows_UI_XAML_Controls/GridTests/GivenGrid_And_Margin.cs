@@ -104,8 +104,8 @@ namespace Uno.UI.Tests.GridTests
 			SUT.Measure(new Size(8, 8));
 
 			SUT.DesiredSize.Should().Be(new Size(8, 8));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 10));
-			c1.DesiredSize.Should().Be(new Size(4, 6));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(8, 10)); // This should be 8, 8
+			c1.DesiredSize.Should().Be(new Size(4, 6)); // This should be 4, 4
 			c1.UnclippedDesiredSize.Should().Be(new Size(0, 0)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 8, 8));
@@ -140,17 +140,9 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Measure(new Size(20, 20));
 
-			// As it seems strange, c1.DesiredSize should be 10x30 because:
-
-			// - unclippedDesiredSize is 10x10
-			// - availableSize is 10x0 [after removing margin]
-			// - clipped desizedSize is 10x0  [unclippedDesiredSize.AtMost(availableSize)]
-			// - marginSizes is 0x30
-			// - result desized size will be 10x0 + 0x30, resulting to 10x30
-
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30));
-			c1.DesiredSize.Should().Be(new Size(10, 30));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
+			c1.DesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 50, 50));
@@ -183,17 +175,9 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Measure(new Size(20, 20));
 
-			// As it seems strange, c1.DesiredSize should be 10x30 because:
-
-			// - unclippedDesiredSize is 10x10
-			// - availableSize is 10x0 [after removing margin]
-			// - clipped desizedSize is 10x0  [unclippedDesiredSize.AtMost(availableSize)]
-			// - marginSizes is 0x30
-			// - result desized size will be 10x0 + 0x30, resulting to 10x30
-
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30));
-			c1.DesiredSize.Should().Be(new Size(10, 30));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
+			c1.DesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 50, 50));
@@ -228,17 +212,9 @@ namespace Uno.UI.Tests.GridTests
 
 			SUT.Measure(new Size(20, 20));
 
-			// As it seems strange, c1.DesiredSize should be 10x30 because:
-
-			// - unclippedDesiredSize is 10x10
-			// - availableSize is 10x0 [after removing margin]
-			// - clipped desizedSize is 10x0  [unclippedDesiredSize.AtMost(availableSize)]
-			// - marginSizes is 0x30
-			// - result desized size will be 10x0 + 0x30, resulting to 10x30
-
 			SUT.DesiredSize.Should().Be(new Size(10, 20));
-			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30));
-			c1.DesiredSize.Should().Be(new Size(10, 30));
+			SUT.UnclippedDesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
+			c1.DesiredSize.Should().Be(new Size(10, 30)); // This should be 10, 20
 			c1.UnclippedDesiredSize.Should().Be(new Size(10, 10)); // UnclippedDesiredSize excludes margins
 
 			SUT.Arrange(new Rect(0, 0, 50, 50));
