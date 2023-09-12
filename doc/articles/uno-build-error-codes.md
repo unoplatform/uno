@@ -21,6 +21,6 @@ To fix this, it is best to start from a `Cross Platform Library` project templat
 
 ## UNOB0003: Ignoring resource XX, could not determine the language
 
-This error may occur during resources (`.resw`) analysis if the framework does not recognize the language being specified.
+This error may occur during resources (`.resw`) analysis if the framework does not recognize the specified language code.
 
-For instance, the language `zh-CN` is not recognized. `zh-Hans` should be used instead.
+For instance, the language code `zh-CN` is not recognized and `zh-Hans` should be used instead.
