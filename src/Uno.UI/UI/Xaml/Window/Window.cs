@@ -51,6 +51,10 @@ namespace Microsoft.UI.Xaml
 				}
 			}
 #endif
+			if (windowType is WindowType.CoreWindow)
+			{
+				WinUICoreServices.Instance.InitCoreWindowContentRoot();
+			}
 
 			_windowImplementation = windowType switch
 			{
