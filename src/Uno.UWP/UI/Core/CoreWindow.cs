@@ -84,7 +84,7 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Gets a value that indicates whether the window is visible.
 		/// </summary>
-		public bool Visible { get; internal set; }
+		public bool Visible { get; private set; }
 
 		/// <summary>
 		/// Gets a value that indicates the activation state of the window.
@@ -159,6 +159,7 @@ namespace Windows.UI.Core
 
 		internal void OnVisibilityChanged(VisibilityChangedEventArgs visibilityChangedEventArgs)
 		{
+			Visible = visibilityChangedEventArgs.Visible;
 			UpdateActivationMode();
 
 			VisibilityChanged?.Invoke(this, visibilityChangedEventArgs);
