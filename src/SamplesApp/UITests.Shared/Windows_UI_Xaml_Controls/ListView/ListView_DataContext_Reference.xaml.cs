@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
+using System.Windows.Input;
 using System.ComponentModel;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -31,17 +32,16 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 
     public class DataContextReferenceViewModel
     {
-        public ObservableCollection<Item> Items { get; } = new ObservableCollection<Item>(Enumerable.Range(0, 10).Select(x => new Item(x)));
+        //private int nextIndex = 100;
+        public ObservableCollection<Item> Items { get; } =
+            new ObservableCollection<Item>(Enumerable.Range(0, 10).Select(x => new Item(x)));
 
-        private ICommand? _command;
+        private ICommand _command;
         public ICommand Command
         {
             get
             {
-                if (_command is null)
-                {
-                    _command = new Command<Item>(ExecuteCommand);
-                }
+                _command ??= new Command<Item>(ExecuteCommand);
 
                 return _command;
             }
@@ -49,9 +49,17 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 
         private void ExecuteCommand(Item item)
         {
+            if (item is null)
+            {
+                Console.WriteLine("Item was null");
+                return;
+            }
+
             Items.Remove(item);
-            Items.Insert(item.Index, item with { Name = "Selected item" });
-        }
+			//Items.Add(new Item(++nextIndex));
+			//Items.Add(item with { Name = $"Selected item {item.Index}" });
+			Items.Insert(item.Index, item with { Name = $"Selected item {item.Index}" });
+		}
     }
 
     public record Item
@@ -76,13 +84,18 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
             _act = act;
         }
 
-        public event EventHandler? CanExecuteChanged;
+        public event EventHandler CanExecuteChanged;
 
-        public bool CanExecute(object? parameter) => true;
+        public bool CanExecute(object parameter) => true;
 
-        public void Execute(object? parameter)
+        public void Execute(object parameter)
         {
-            _act((T)parameter!);
+            _act?.Invoke((T)parameter!);
+        }
+
+        public void UpdateCanExecuteChanged()
+        {
+            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
         }
     }	
 }
