@@ -764,6 +764,298 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_And_Closing_Nested_Flyouts()
+		{
+			var flyout1 = new Flyout();
+			var flyout2 = new Flyout();
+			var flyout3 = new Flyout();
+			var flyout4 = new Flyout();
+			var flyout5 = new Flyout();
+			try
+			{
+				var button1 = new Button
+				{
+					Content = "button1",
+					Flyout = flyout1
+				};
+
+				var button2 = new Button
+				{
+					Content = "button2",
+					Flyout = flyout2
+				};
+
+				var button3 = new Button
+				{
+					Content = "button3",
+					Flyout = flyout3
+				};
+
+				var button4 = new Button
+				{
+					Content = "button4",
+					Flyout = flyout4
+				};
+
+				var button5 = new Button
+				{
+					Content = "button5",
+					Flyout = flyout5
+				};
+
+				flyout1.Content = button2;
+				flyout2.Content = button3;
+				flyout3.Content = button4;
+				flyout4.Content = button5;
+				flyout5.Content = new TextBox { Text = "text" };
+
+				var output = "";
+
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Count} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout2.XamlRoot).Count} {args.Cancel}\n";
+				flyout3.Closing += (_, args) => output += $"closing3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout3.XamlRoot).Count} {args.Cancel}\n";
+				flyout4.Closing += (_, args) => output += $"closing4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout4.XamlRoot).Count} {args.Cancel}\n";
+				flyout5.Closing += (_, args) => output += $"closing5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout5.XamlRoot).Count} {args.Cancel}\n";
+
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Count}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout2.XamlRoot).Count}\n";
+				flyout3.Closed += (_, _) => output += $"closed3 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout3.XamlRoot).Count}\n";
+				flyout4.Closed += (_, _) => output += $"closed4 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout4.XamlRoot).Count}\n";
+				flyout5.Closed += (_, _) => output += $"closed5 {flyout1.IsOpen} {flyout2.IsOpen} {flyout3.IsOpen} {flyout4.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout5.XamlRoot).Count}\n";
+
+				TestServices.WindowHelper.WindowContent = button1;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout2.ShowAt(button2);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout3.ShowAt(button3);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout4.ShowAt(button4);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout5.ShowAt(button5);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var expected =
+				"""
+				closing1 True True True True True 5 False
+				closing2 True True True True True 5 False
+				closing3 True True True True True 5 False
+				closing4 True True True True True 5 False
+				closing5 True True True True True 5 False
+				closed1 False False False False False 0
+				closing2 False False False False False 0 False
+				closing3 False False False False False 0 False
+				closing4 False False False False False 0 False
+				closing5 False False False False False 0 False
+				closed2 False False False False False 0
+				closing3 False False False False False 0 False
+				closing4 False False False False False 0 False
+				closing5 False False False False False 0 False
+				closed3 False False False False False 0
+				closing4 False False False False False 0 False
+				closing5 False False False False False 0 False
+				closed4 False False False False False 0
+				closing5 False False False False False 0 False
+				closed5 False False False False False 0
+
+				""";
+
+				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+			}
+			finally
+			{
+				flyout1.Hide();
+				flyout2.Hide();
+				flyout3.Hide();
+				flyout4.Hide();
+				flyout5.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_And_Closing_Nested_Flyouts_Not_Open()
+		{
+			var flyout1 = new Flyout();
+			var flyout2 = new Flyout();
+			try
+			{
+				var button1 = new Button
+				{
+					Content = "button1",
+					Flyout = flyout1
+				};
+
+				var button2 = new Button
+				{
+					Content = "button2",
+					Flyout = flyout2
+				};
+
+				flyout1.Content = button2;
+				flyout2.Content = new TextBox { Text = "text" };
+
+				var output = "";
+
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout2.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Count} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout1.IsOpen} {flyout2.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout2.XamlRoot).Count} {args.Cancel}\n";
+
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout2.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Count}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout1.IsOpen} {flyout2.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout2.XamlRoot).Count}\n";
+
+				TestServices.WindowHelper.WindowContent = button1;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				// flyout2 is not open, so Closing should NOT be invoked.
+
+				flyout1.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var expected =
+				"""
+				closing1 True False 1 False
+				closed1 False False 0
+
+				""";
+
+				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+			}
+			finally
+			{
+				flyout1.Hide();
+				flyout2.Hide();
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __MACOS__
+		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#endif
+		public async Task When_Opening_And_Closing_Nested_Flyouts_Canceled()
+		{
+			var flyout1 = new Flyout();
+			var flyout2 = new Flyout();
+			var flyout3 = new Flyout();
+			var flyout4 = new Flyout();
+			var flyout5 = new Flyout();
+			var cancel = true;
+			try
+			{
+				var button1 = new Button
+				{
+					Content = "button1",
+					Flyout = flyout1
+				};
+
+				var button2 = new Button
+				{
+					Content = "button2",
+					Flyout = flyout2
+				};
+
+				var button3 = new Button
+				{
+					Content = "button3",
+					Flyout = flyout3
+				};
+
+				var button4 = new Button
+				{
+					Content = "button4",
+					Flyout = flyout4
+				};
+
+				var button5 = new Button
+				{
+					Content = "button5",
+					Flyout = flyout5
+				};
+
+				flyout1.Content = button2;
+				flyout2.Content = button3;
+				flyout3.Content = button4;
+				flyout4.Content = button5;
+				flyout5.Content = new TextBox { Text = "text" };
+
+				var output = "";
+
+				flyout1.Closing += (_, args) => output += $"closing1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Count} {args.Cancel}\n";
+				flyout2.Closing += (_, args) => output += $"closing2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout2.XamlRoot).Count} {args.Cancel}\n";
+				flyout3.Closing += (_, args) =>
+				{
+					output += $"closing3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout3.XamlRoot).Count} {args.Cancel}\n";
+					args.Cancel = cancel;
+				};
+				flyout4.Closing += (_, args) => output += $"closing4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout4.XamlRoot).Count} {args.Cancel}\n";
+				flyout5.Closing += (_, args) => output += $"closing5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout5.XamlRoot).Count} {args.Cancel}\n";
+
+				flyout1.Closed += (_, _) => output += $"closed1 {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {flyout1.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout1.XamlRoot).Count}\n";
+				flyout2.Closed += (_, _) => output += $"closed2 {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {flyout2.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout2.XamlRoot).Count}\n";
+				flyout3.Closed += (_, _) => output += $"closed3 {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {flyout3.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout3.XamlRoot).Count}\n";
+				flyout4.Closed += (_, _) => output += $"closed4 {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {flyout4.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout4.XamlRoot).Count}\n";
+				flyout5.Closed += (_, _) => output += $"closed5 {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {flyout5.IsOpen} {VisualTreeHelper.GetOpenPopupsForXamlRoot(flyout5.XamlRoot).Count}\n";
+
+				TestServices.WindowHelper.WindowContent = button1;
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.ShowAt(button1);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout2.ShowAt(button2);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout3.ShowAt(button3);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout4.ShowAt(button4);
+				await TestServices.WindowHelper.WaitForIdle();
+				flyout5.ShowAt(button5);
+				await TestServices.WindowHelper.WaitForIdle();
+
+				flyout1.Hide();
+				await TestServices.WindowHelper.WaitForIdle();
+
+				var expected =
+				"""
+				closing1 True True True True True 5 False
+				closing2 True True True True True 5 False
+				closing3 True True True True True 5 False
+				closed1 False False False False False 3
+				closing2 False False False False False 3 False
+				closing3 True True True True True 3 False
+				closed2 False False False False False 3
+				closing3 True True True True True 3 False
+				closed3 True True True True True 3
+
+				""";
+
+				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+			}
+			finally
+			{
+				cancel = false;
+				flyout1.Hide();
+				flyout2.Hide();
+				flyout3.Hide();
+				flyout4.Hide();
+				flyout5.Hide();
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Opening_XamlRootIsSet()
 		{
 			var flyout = new Flyout();
