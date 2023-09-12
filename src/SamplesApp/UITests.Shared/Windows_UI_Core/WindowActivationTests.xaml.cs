@@ -61,7 +61,7 @@ namespace UITests.Windows_UI_Core
 			CoreApplication.LeavingBackground += CoreApplicationLeavingBackground;
 			Application.Current.Suspending += ApplicationSuspending;
 			Application.Current.Resuming += ApplicationResuming;
-			CoreApplication.Suspending += CoreApplicationResuming;
+			CoreApplication.Suspending += CoreApplicationSuspending;
 			CoreApplication.Resuming += CoreApplicationResuming;
 
 			Disposables.Add(() =>
@@ -75,7 +75,7 @@ namespace UITests.Windows_UI_Core
 				CoreApplication.LeavingBackground -= CoreApplicationLeavingBackground;
 				Application.Current.Suspending -= ApplicationSuspending;
 				Application.Current.Resuming -= ApplicationResuming;
-				CoreApplication.Suspending -= CoreApplicationResuming;
+				CoreApplication.Suspending -= CoreApplicationSuspending;
 				CoreApplication.Resuming -= CoreApplicationResuming;
 			});
 		}

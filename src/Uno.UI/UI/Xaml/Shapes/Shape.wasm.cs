@@ -1,62 +1,47 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Collections.Specialized;
-using System.Globalization;
 using System.Linq;
-using System.Threading;
+using Uno;
+using Uno.Disposables;
+using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
-using Uno.Extensions;
-using Uno.Foundation;
-using Uno.Disposables;
-using Uno;
 
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+using System.Numerics;
+using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	[Markup.ContentProperty(Name = "SvgChildren")]
 	partial class Shape
 	{
 		private readonly SerialDisposable _fillBrushSubscription = new SerialDisposable();
 		private readonly SerialDisposable _strokeBrushSubscription = new SerialDisposable();
 
 		private DefsSvgElement _defs;
-
-		public UIElementCollection SvgChildren { get; }
+		private protected readonly SvgElement _mainSvgElement;
 
 		protected Shape() : base("svg", isSvg: true)
 		{
-			SvgChildren = new UIElementCollection(this);
-			SvgChildren.CollectionChanged += OnSvgChildrenChanged;
-
-			OnStretchUpdatedPartial();
+			// This constructor shouldn't be used. It exists to match WinUI API surface.
+			throw new InvalidOperationException("This constructor shouldn't be used.");
 		}
 
-		protected void InitCommonShapeProperties() // Should be called from base class constructor
+		private protected Shape(string mainSvgElementTag) : base("svg", isSvg: true)
 		{
-			// Initialize
-			OnFillUpdatedPartial(); // Required to properly update the HitTest
-									// Don't OnStrokeUpdatedPartial(); => Stroke is still at its default value in the ctor, and it will always results to ResetStyle("stroke")
-									// Don't OnStrokeThicknessUpdatedPartial(); => The default value is set in Uno.UI.css
+			_mainSvgElement = new SvgElement(mainSvgElementTag);
+			AddChild(_mainSvgElement);
 		}
 
-		protected abstract SvgElement GetMainSvgElement();
-
-		private static readonly NotifyCollectionChangedEventHandler OnSvgChildrenChanged = (object sender, NotifyCollectionChangedEventArgs args) =>
+		private protected void UpdateRender()
 		{
-			if (sender is UIElementCollection children && children.Owner is Shape shape)
-			{
-				shape.OnChildrenChanged();
-			}
-		};
-
-		protected virtual void OnChildrenChanged()
-		{
+			OnFillBrushChanged();
+			OnStrokeBrushChanged();
+			UpdateStrokeThickness();
+			UpdateStrokeDashArray();
 		}
+
 
 		private protected override void OnHitTestVisibilityChanged(HitTestability oldValue, HitTestability newValue)
 		{
@@ -64,21 +49,23 @@ namespace Windows.UI.Xaml.Shapes
 			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
 		}
 
-		partial void OnFillUpdatedPartial()
+		private void OnFillBrushChanged()
 		{
 			// We don't request an update of the HitTest (UpdateHitTest()) since this element is never expected to be hit testable.
 			// Note: We also enforce that the default hit test == false is not altered in the OnHitTestVisibilityChanged.
 
 			// Instead we explicitly set the IsHitTestVisible on each child SvgElement
 			var fill = Fill;
-			foreach (var element in SvgChildren)
+
+			// Known issue: The hit test is only linked to the Fill, but should also take in consideration the Stroke and the StrokeThickness.
+			// Note: _mainSvgElement and _defs are internal elements, so it's legit to alter the IsHitTestVisible here.
+			_mainSvgElement.IsHitTestVisible = fill != null;
+			if (_defs is not null)
 			{
-				// Known issue: The hit test is only linked to the Fill, but should also take in consideration the Stroke and the StrokeThickness.
-				// Note: SvgChildren are internal elements, so it's legit to alter the IsHitTestVisible here.
-				element.IsHitTestVisible = fill != null;
+				_defs.IsHitTestVisible = fill != null;
 			}
 
-			var svgElement = GetMainSvgElement();
+			var svgElement = _mainSvgElement;
 			switch (fill)
 			{
 				case SolidColorBrush scb:
@@ -128,11 +115,12 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		partial void OnStrokeUpdatedPartial()
+		private void OnStrokeBrushChanged()
 		{
-			var svgElement = GetMainSvgElement();
+			var svgElement = _mainSvgElement;
+			var stroke = Stroke;
 
-			switch (Stroke)
+			switch (stroke)
 			{
 				case SolidColorBrush scb:
 					svgElement.SetStyle("stroke", scb.ColorWithOpacity.ToHexString());
@@ -173,20 +161,14 @@ namespace Windows.UI.Xaml.Shapes
 					_strokeBrushSubscription.Disposable = null;
 					break;
 			}
-
-			OnStrokeThicknessUpdatedPartial();
 		}
 
-		partial void OnStrokeThicknessUpdatedPartial()
+		private void UpdateStrokeThickness()
 		{
-			var svgElement = GetMainSvgElement();
+			var svgElement = _mainSvgElement;
 			var strokeThickness = ActualStrokeThickness;
 
-			if (Stroke == null)
-			{
-				svgElement.SetStyle("stroke-width", $"{DefaultStrokeThicknessWhenNoStrokeDefined}px");
-			}
-			else if (strokeThickness != 1.0d)
+			if (strokeThickness != 1.0d)
 			{
 				svgElement.SetStyle("stroke-width", $"{strokeThickness}px");
 			}
@@ -196,17 +178,17 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		partial void OnStrokeDashArrayUpdatedPartial()
+		private void UpdateStrokeDashArray()
 		{
-			var svgElement = GetMainSvgElement();
+			var svgElement = _mainSvgElement;
 
-			if (StrokeDashArray == null)
+			if (StrokeDashArray is not { } strokeDashArray)
 			{
 				svgElement.ResetStyle("stroke-dasharray");
 			}
 			else
 			{
-				var str = string.Join(",", StrokeDashArray.Select(d => $"{d.ToStringInvariant()}px"));
+				var str = string.Join(",", strokeDashArray.Select(d => $"{d.ToStringInvariant()}px"));
 				svgElement.SetStyle("stroke-dasharray", str);
 			}
 		}
@@ -219,10 +201,25 @@ namespace Windows.UI.Xaml.Shapes
 			if (_defs == null)
 			{
 				_defs = new DefsSvgElement();
-				SvgChildren.Add(_defs);
+				AddChild(_defs);
 			}
 
 			return _defs.Defs;
 		}
+
+		private static Rect GetPathBoundingBox(Shape shape)
+		{
+			return shape._mainSvgElement.GetBBox();
+		}
+
+		private protected void Render(Shape shape, Size? size = null, double scaleX = 1d, double scaleY = 1d, double renderOriginX = 0d, double renderOriginY = 0d)
+		{
+			Debug.Assert(shape == this);
+			var scale = Matrix3x2.CreateScale((float)scaleX, (float)scaleY);
+			var translate = Matrix3x2.CreateTranslation((float)renderOriginX, (float)renderOriginY);
+			var matrix = scale * translate;
+			_mainSvgElement.SetNativeTransform(matrix);
+		}
+
 	}
 }

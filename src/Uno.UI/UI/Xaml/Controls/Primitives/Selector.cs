@@ -733,8 +733,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RefreshPartial();
 		}
 
-
-
 		public bool IsSelectionActive { get; set; }
 
 		protected virtual (Orientation PhysicalOrientation, Orientation LogicalOrientation) GetItemsHostOrientations()

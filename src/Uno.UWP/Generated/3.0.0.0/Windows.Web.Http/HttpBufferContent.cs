@@ -6,7 +6,7 @@ namespace Windows.Web.Http
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpBufferContent : global::Windows.Web.Http.IHttpContent,global::System.IDisposable,global::Windows.Foundation.IStringable
+	public partial class HttpBufferContent : global::Windows.Web.Http.IHttpContent, global::System.IDisposable, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.Web.Http
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpBufferContent(global::Windows.Storage.Streams.IBuffer content) 
+		public HttpBufferContent(global::Windows.Storage.Streams.IBuffer content)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpBufferContent", "HttpBufferContent.HttpBufferContent(IBuffer content)");
 		}
@@ -28,7 +28,7 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpBufferContent.HttpBufferContent(Windows.Storage.Streams.IBuffer)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpBufferContent(global::Windows.Storage.Streams.IBuffer content, uint offset, uint count) 
+		public HttpBufferContent(global::Windows.Storage.Streams.IBuffer content, uint offset, uint count)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpBufferContent", "HttpBufferContent.HttpBufferContent(IBuffer content, uint offset, uint count)");
 		}

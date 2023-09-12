@@ -20,7 +20,7 @@ namespace Windows.UI.Input.Spatial
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SpatialGestureRecognizer(global::Windows.UI.Input.Spatial.SpatialGestureSettings settings) 
+		public SpatialGestureRecognizer(global::Windows.UI.Input.Spatial.SpatialGestureSettings settings)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Spatial.SpatialGestureRecognizer", "SpatialGestureRecognizer.SpatialGestureRecognizer(SpatialGestureSettings settings)");
 		}

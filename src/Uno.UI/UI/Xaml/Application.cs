@@ -142,6 +142,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal bool IsSuspended { get; set; }
+
 		private void InitializeSystemTheme()
 		{
 			// just cache the theme, but do not notify about a change unnecessarily
@@ -359,17 +361,24 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseResuming()
 		{
+			if (!IsSuspended)
+			{
+				return;
+			}
+
 			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
-
-			OnResumingPartial();
+			IsSuspended = false;
 		}
-
-		partial void OnResumingPartial();
 
 		internal void RaiseSuspending()
 		{
-			var suspendingOperation = CreateSuspendingOperation();
+			if (IsSuspended)
+			{
+				return;
+			}
+
+			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
 			Suspending?.Invoke(this, suspendingEventArgs);
@@ -387,13 +396,12 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__ && !__MACOS__
+#if !__IOS__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
 		/// </summary>
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
 #endif
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)

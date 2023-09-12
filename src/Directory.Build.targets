@@ -68,8 +68,8 @@
 		<PackageReference Update="Uno.Core.Extensions.Disposables" Version="4.0.1" />
 		<PackageReference Update="Uno.Core.Extensions.Compatibility" Version="4.0.1" />
 		<PackageReference Update="Uno.Diagnostics.Eventing" Version="2.0.1" />
-		<PackageReference Update="Uno.Wasm.Bootstrap" Version="8.0.0-dev.210" />
-		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.210" />
+		<PackageReference Update="Uno.Wasm.Bootstrap" Version="8.0.0-dev.252" />
+		<PackageReference Update="Uno.Wasm.Bootstrap.DevServer" Version="8.0.0-dev.252" />
 		<PackageReference Update="xamarin.build.download" Version="0.11.4" PrivateAssets="all" />
 		<PackageReference Update="MSTest.TestAdapter" Version="2.2.10" />
 		<PackageReference Update="MSTest.TestFramework" Version="2.2.8" />
@@ -82,7 +82,7 @@
 		<PackageReference Update="Uno.UITest.Selenium" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Xamarin" Version="1.1.0-dev.70" />
 		<PackageReference Update="Uno.UITest.Helpers" Version="1.1.0-dev.70" />
-		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0-dev.6" />
+		<PackageReference Update="Uno.Fonts.Fluent" Version="2.3.0" />
 		<PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
 		<PackageReference Update="Xamarin.UITest" Version="4.1.4" />
 		<PackageReference Update="Xamarin.TestCloud.Agent" Version="0.23.2" />
@@ -100,7 +100,7 @@
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" />
-		<PackageReference Update="Svg.Skia" Version="1.0.0" />
+		<PackageReference Update="Svg.Skia" Version="1.0.0.1" />
 
 		<PackageReference Update="HarfBuzzSharp.NativeAssets.Linux" Version="2.8.2.3" />
 		<PackageReference Update="SkiaSharp.HarfBuzz" Version="2.88.3" />
@@ -110,7 +110,7 @@
 		<PackageReference Update="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Debug" Version="5.0.0" />
 		<PackageReference Update="Microsoft.Extensions.Logging.Filter" Version="1.1.2" />
-		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.4.0" />
+		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.Console" Version="1.6.0" />
 		<PackageReference Update="Uno.Extensions.Logging.WebAssembly.OSLog" Version="1.4.0" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" />
 		<PackageReference Update="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" />

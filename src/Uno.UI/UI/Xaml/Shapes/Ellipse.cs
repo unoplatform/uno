@@ -1,15 +1,16 @@
-﻿#if !__IOS__ && !__MACOS__ && !__SKIA__ && !__ANDROID__
-#define LEGACY_SHAPE_MEASURE
-#endif
-
-using Windows.Foundation;
+﻿using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Ellipse
-#if LEGACY_SHAPE_MEASURE
-		: ArbitraryShapeBase
-#endif
+	public partial class Ellipse : Shape
 	{
+		static Ellipse()
+		{
+			StretchProperty.OverrideMetadata(typeof(Ellipse), new FrameworkPropertyMetadata(defaultValue: Media.Stretch.Fill));
+		}
+
+#if __IOS__ || __MACOS__ || __SKIA__ || __ANDROID__ || __WASM__
+		protected override Size MeasureOverride(Size availableSize) => MeasureRelativeShape(availableSize);
+#endif
 	}
 }

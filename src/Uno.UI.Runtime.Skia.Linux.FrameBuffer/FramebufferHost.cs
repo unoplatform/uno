@@ -116,13 +116,22 @@ namespace Uno.UI.Runtime.Skia
 						$"DiagonalSizeInInches: {DisplayInformation.GetForCurrentView().DiagonalSizeInInches}, " +
 						$"ScreenInRawPixels: {DisplayInformation.GetForCurrentView().ScreenWidthInRawPixels}x{DisplayInformation.GetForCurrentView().ScreenHeightInRawPixels}");
 				}
+
+				// Force intialization of the DisplayInformation
+				DisplayInformation.GetForCurrentView();
+
+				if (_displayInformationExtension is null)
+				{
+					throw new InvalidOperationException("DisplayInformation is not yet initialized");
+				}
+
+				_displayInformationExtension.Renderer = _renderer;
 			}
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 
 			_renderer = new Renderer(this);
-			_displayInformationExtension!.Renderer = _renderer;
 
 			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
 

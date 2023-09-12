@@ -6,7 +6,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpLanguageHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Globalization.Language>,global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Language>,global::Windows.Foundation.IStringable
+	public partial class HttpLanguageHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Globalization.Language>, global::System.Collections.Generic.IEnumerable<global::Windows.Globalization.Language>, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal HttpLanguageHeaderValueCollection()

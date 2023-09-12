@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SurfaceImageSource(int pixelWidth, int pixelHeight) 
+		public SurfaceImageSource(int pixelWidth, int pixelHeight)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SurfaceImageSource", "SurfaceImageSource.SurfaceImageSource(int pixelWidth, int pixelHeight)");
 		}
@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 		// Forced skipping of method Windows.UI.Xaml.Media.Imaging.SurfaceImageSource.SurfaceImageSource(int, int)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque) 
+		public SurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Imaging.SurfaceImageSource", "SurfaceImageSource.SurfaceImageSource(int pixelWidth, int pixelHeight, bool isOpaque)");
 		}

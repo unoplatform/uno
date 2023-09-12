@@ -311,10 +311,10 @@ public partial class Popup
 	/// </summary>
 	internal Brush LightDismissOverlayBackground
 	{
-		get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
-		set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		get => (Brush)GetValue(LightDismissOverlayBackgroundProperty);
+		set => SetValue(LightDismissOverlayBackgroundProperty, value);
 	}
 
 	internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
-		DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+		DependencyProperty.Register(nameof(LightDismissOverlayBackground), typeof(Brush), typeof(Popup), new FrameworkPropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 }

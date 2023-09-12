@@ -118,15 +118,6 @@ namespace Windows.UI.Xaml
 
 		public event SizeChangedEventHandler SizeChanged;
 
-		internal void RaiseSizeChanged(SizeChangedEventArgs args)
-		{
-			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
-		}
-
-		internal void SetActualSize(Size size)
-			=> AssignedActualSize = size;
-
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{

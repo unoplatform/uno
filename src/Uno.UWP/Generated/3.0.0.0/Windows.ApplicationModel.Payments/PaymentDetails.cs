@@ -66,7 +66,7 @@ namespace Windows.ApplicationModel.Payments
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentDetails(global::Windows.ApplicationModel.Payments.PaymentItem total) 
+		public PaymentDetails(global::Windows.ApplicationModel.Payments.PaymentItem total)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails.PaymentDetails(PaymentItem total)");
 		}
@@ -74,7 +74,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.PaymentDetails(Windows.ApplicationModel.Payments.PaymentItem)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentDetails(global::Windows.ApplicationModel.Payments.PaymentItem total, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> displayItems) 
+		public PaymentDetails(global::Windows.ApplicationModel.Payments.PaymentItem total, global::System.Collections.Generic.IEnumerable<global::Windows.ApplicationModel.Payments.PaymentItem> displayItems)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails.PaymentDetails(PaymentItem total, IEnumerable<PaymentItem> displayItems)");
 		}
@@ -82,7 +82,7 @@ namespace Windows.ApplicationModel.Payments
 		// Forced skipping of method Windows.ApplicationModel.Payments.PaymentDetails.PaymentDetails(Windows.ApplicationModel.Payments.PaymentItem, System.Collections.Generic.IEnumerable<Windows.ApplicationModel.Payments.PaymentItem>)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public PaymentDetails() 
+		public PaymentDetails()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Payments.PaymentDetails", "PaymentDetails.PaymentDetails()");
 		}

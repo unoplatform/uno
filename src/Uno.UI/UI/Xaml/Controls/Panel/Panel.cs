@@ -65,6 +65,16 @@ namespace Windows.UI.Xaml.Controls
 			UpdateTransitions(element);
 		}
 
+		// In WinUI, the base Panel doesn't measure or arrange anything. This is likely due
+		// to FrameworkElement.<Measure|Arrange>Override itself not doing anything. In Uno,
+		// FrameworkElement.<Measure|Arrange>Override have a default implementation that assumes
+		// a single child and measures/arranges it. This is helpful as most elements have one or no
+		// children. However, since derived types of Panel can add their own Children, we need to make
+		// sure our internal FrameworkElement.<Measure|Arrange>Override isn't used by user-defined
+		// subclasses of Panel.
+		protected override Size MeasureOverride(Size availableSize) => new Size(0, 0);
+		protected override Size ArrangeOverride(Size finalSize) => finalSize;
+
 		private void UpdateTransitions(IFrameworkElement element)
 		{
 			if (_transitionHelper == null)
@@ -105,6 +115,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Panels don't have an Orientation in UWP, but many derived types do.
+		/// This should be overriden by the derived types to refer to match their
+		/// own Orientation.
+		/// </summary>
+		internal virtual Orientation? InternalOrientation { get; }
 
 		internal Thickness PaddingInternal { get; set; }
 

@@ -677,5 +677,22 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(updatedText.Length, textBox.SelectionLength);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		public async Task When_TextBox_ImeAction_Enter()
+		{
+			var textBox = new TextBox
+			{
+				Text = "Text",
+			};
+
+			WindowHelper.WindowContent = textBox;
+			await WindowHelper.WaitForLoaded(textBox);
+
+			var act = () => textBox.OnEditorAction(textBox.TextBoxView, Android.Views.InputMethods.ImeAction.Next, null);
+			act.Should().NotThrow();
+		}
+#endif
 	}
 }

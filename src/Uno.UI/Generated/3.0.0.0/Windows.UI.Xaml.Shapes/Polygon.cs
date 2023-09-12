@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Shapes
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Polygon
+	public partial class Polygon : global::Windows.UI.Xaml.Shapes.Shape
 	{
 		// Skipping already declared property Points
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

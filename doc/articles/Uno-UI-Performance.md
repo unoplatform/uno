@@ -10,8 +10,6 @@ Here's what to look for:
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible
-- When binding the `Visibility` property, make sure to always set TargetNullValue and FallbackValue to collapsed :
-	`Visibility="{Binding [IsAvailable], Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed, TargetNullValue=Collapsed}"`
 - Collapsed elements are not considered when measuring and arranging the visual tree, which makes them almost costless.
 - When binding or animating (via visual state setters) the visibility property, make sure to enable lazy loading:
 	`x:Load="False"`.

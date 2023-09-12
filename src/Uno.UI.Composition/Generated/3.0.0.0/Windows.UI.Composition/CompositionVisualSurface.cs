@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionVisualSurface : global::Windows.UI.Composition.CompositionObject,global::Windows.UI.Composition.ICompositionSurface
+	public partial class CompositionVisualSurface : global::Windows.UI.Composition.CompositionObject, global::Windows.UI.Composition.ICompositionSurface
 	{
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.get
 		// Forced skipping of method Windows.UI.Composition.CompositionVisualSurface.SourceVisual.set

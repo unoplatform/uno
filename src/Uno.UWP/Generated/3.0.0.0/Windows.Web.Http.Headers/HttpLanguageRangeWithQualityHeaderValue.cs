@@ -30,7 +30,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpLanguageRangeWithQualityHeaderValue(string languageRange) 
+		public HttpLanguageRangeWithQualityHeaderValue(string languageRange)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string languageRange)");
 		}
@@ -38,7 +38,7 @@ namespace Windows.Web.Http.Headers
 		// Forced skipping of method Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpLanguageRangeWithQualityHeaderValue(string languageRange, double quality) 
+		public HttpLanguageRangeWithQualityHeaderValue(string languageRange, double quality)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpLanguageRangeWithQualityHeaderValue", "HttpLanguageRangeWithQualityHeaderValue.HttpLanguageRangeWithQualityHeaderValue(string languageRange, double quality)");
 		}

@@ -117,7 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ApplicationDescription" xml:space="preserve">
+    <value>Una aplicación de la plataforma Uno que contiene una gran cantidad de muestras de IU y no IU. Permite probar manualmente nuevas funciones e investigar errores.</value>
+  </data>
   <data name="Given_ResourceLoader.When_LocalizedResource" xml:space="preserve">
     <value>Text in 'es-ES'</value>
+  </data>
+  <data name="PublisherDisplayName" xml:space="preserve">
+    <value>Uno Platform</value>
   </data>
 </root>

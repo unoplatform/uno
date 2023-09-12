@@ -170,6 +170,9 @@ It is also possible to use [Remote - SSH](https://marketplace.visualstudio.com/i
 - Finally, in the debugger side menu, select the `Uno Plaform Mobile` profile
 - Either press `F5` or press the green arrow
 
+> [!TIP]
+> When deploying to an iOS device, you may encounter the following error: `errSecInternalComponent`. In such case, you'll need to unlock your keychain from a terminal inside VS Code by running the following command: `security unlock-keychain`
+
 # [**Mac Catalyst**](#tab/catalystdebug)
 
 > [!NOTE]
@@ -229,7 +232,7 @@ An existing application needs additional changes to be debugged properly.
 
 1. At the root of the workspace, create a folder named `.vscode`
 2. Inside this folder, create a file named `launch.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/launch.json).
-3. Replace all instances of `UnoQuickStart` with your application's name in `launch.json`.
+3. Replace all instances of `MyExtensionsApp._1` with your application's name in `launch.json`.
 4. Inside this folder, create a file named `tasks.json` and copy the [contents of this file](https://github.com/unoplatform/uno.templates/blob/main/src/Uno.Templates/content/unoapp/.vscode/tasks.json).
 
 ### Known limitations for VS Code support
