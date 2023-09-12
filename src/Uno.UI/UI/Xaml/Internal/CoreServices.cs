@@ -56,24 +56,13 @@ namespace Uno.UI.Xaml.Core
 			_mainVisualTree = null;
 		}
 
-		internal void PutCoreWindowVisualRoot(DependencyObject? dependencyObject, ScrollViewer? rootScrollViewer)
+		internal void InitCoreWindowContentRoot()
 		{
-			ResetCoreWindowVisualTree();
-
-			InitCoreWindowContentRoot();
-
-			// Set the root visual from the parser result. If we're passed null it means
-			// we're supposed to just clear the tree.
-			// TODO: This is not currently happening, adjust when porting next time
-			if (dependencyObject != null)
+			if (_mainVisualTree is not null)
 			{
-				var root = dependencyObject as UIElement;
-				_mainVisualTree!.SetPublicRootVisual(root, rootScrollViewer, rootContentPresenter: null);
+				return;
 			}
-		}
 
-		private void InitCoreWindowContentRoot()
-		{
 			var contentRoot = ContentRootCoordinator.CreateContentRoot(ContentRootType.CoreWindow, ThemingHelper.GetRootVisualBackground(), null);
 			_mainVisualTree = contentRoot.VisualTree;
 
