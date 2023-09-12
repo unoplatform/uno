@@ -26,7 +26,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private const string NativeOverlayLayerHostPart = "NativeOverlayLayerHost";
 
 	private readonly WpfCanvas _nativeOverlayLayer = new();
-	private readonly WpfWindow _wpfWindow;
+	private readonly UnoWpfWindow _wpfWindow;
 	private readonly WinUI.Window _winUIWindow;
 	private readonly CompositeDisposable _disposables = new();
 
@@ -41,7 +41,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 			new WpfFrameworkPropertyMetadata(typeof(UnoWpfWindowHost)));
 	}
 
-	public UnoWpfWindowHost(WpfWindow wpfWindow, WinUI.Window winUIWindow)
+	public UnoWpfWindowHost(UnoWpfWindow wpfWindow, WinUI.Window winUIWindow)
 	{
 		_wpfWindow = wpfWindow;
 		_winUIWindow = winUIWindow;
@@ -57,7 +57,7 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	{
 		if (arrangeBounds != _previousArrangeBounds)
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
+			_wpfWindow.OnArrange(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
 			_previousArrangeBounds = arrangeBounds;
 		}
 		return base.ArrangeOverride(arrangeBounds);

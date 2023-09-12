@@ -18,11 +18,6 @@ namespace Microsoft.UI.Xaml
 		private Border _rootBorder;
 		private bool _isActive;
 
-		partial void InitPlatform()
-		{
-			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-		}
-
 		partial void ShowPartial()
 		{
 			_isActive = true;

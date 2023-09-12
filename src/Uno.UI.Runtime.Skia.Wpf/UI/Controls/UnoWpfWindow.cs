@@ -20,7 +20,6 @@ internal class UnoWpfWindow : WpfWindow
 {
 	private readonly WinUI.Window _winUIWindow;
 	private IWpfWindowHost _host;
-	private bool _isVisible;
 
 	public UnoWpfWindow(WinUI.Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -38,14 +37,12 @@ internal class UnoWpfWindow : WpfWindow
 		Content = _host = new UnoWpfWindowHost(this, winUIWindow);
 		WpfManager.XamlRootMap.Register(xamlRoot, _host);
 
-		Closing += OnClosing;
-		Activated += OnActivated;
-		Deactivated += OnDeactivated;
-		StateChanged += OnStateChanged;
-
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+	}
 
-		winUIWindow.OnNativeWindowCreated();
+	internal void OnArrange(Size arrangeSize)
+	{
+
 	}
 
 	//TODO:MZ: Call this?
@@ -69,50 +66,6 @@ internal class UnoWpfWindow : WpfWindow
 	}
 
 	private void OnShowing(object? sender, EventArgs e) => Show();
-
-	private void OnClosing(object? sender, CancelEventArgs e)
-	{
-		// TODO: Support multi-window approach properly #8341
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				e.Cancel = true;
-				return;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
-	}
-
-	private void OnDeactivated(object? sender, EventArgs e) =>
-		_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-
-	private void OnActivated(object? sender, EventArgs e)
-	{
-		_winUIWindow.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.PointerActivated);
-		_host.Focus();
-	}
-
-	private void OnStateChanged(object? sender, EventArgs e)
-	{
-		var application = WinUIApplication.Current;
-		var wasVisible = _isVisible;
-
-		_isVisible = WindowState != System.Windows.WindowState.Minimized;
-
-		if (wasVisible && !_isVisible)
-		{
-			_winUIWindow.OnNativeVisibilityChanged(false);
-			application?.RaiseEnteredBackground(null);
-		}
-		else if (!wasVisible && _isVisible)
-		{
-			application?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
-		}
-	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 

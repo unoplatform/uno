@@ -12,7 +12,14 @@ public sealed partial class Window
 	{
 	}
 
-	public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+	/// <summary>
+	/// Occurs when the window has closed.
+	/// </summary>
+	public event TypedEventHandler<object,WindowEventArgs> Closed
+	{
+		add => _windowImplementation.Closed += value;
+		remove => _windowImplementation.Closed -= value;
+	}
 
 #if !__IOS__ // This can be added when iOS uses SceneDelegate #8341.
 	/// <summary>

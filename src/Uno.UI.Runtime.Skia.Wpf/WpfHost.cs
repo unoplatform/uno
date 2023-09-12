@@ -59,10 +59,6 @@ public class WpfHost : IWpfApplicationHost
 		// App needs to be created after the native overlay layer is properly initialized
 		// otherwise the initially focused input element would cause exception.
 		StartApp();
-
-#if !WINUI_WINDOWING
-		SetupMainWindow();
-#endif
 	}
 
 	private void InitializeDispatcher()
@@ -70,24 +66,6 @@ public class WpfHost : IWpfApplicationHost
 		Windows.UI.Core.CoreDispatcher.DispatchOverride = d => _dispatcher.BeginInvoke(d);
 		Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = _dispatcher.CheckAccess;
 	}
-
-#if !WINUI_WINDOWING
-	private void SetupMainWindow()
-	{
-		var unoWpfWindow = NativeWindowFactory.CreateWindow(WinUI.Window.Current) as WpfWindowWrapper;
-		if (unoWpfWindow is null)
-		{
-			throw new InvalidOperationException("Window is not valid");
-		}
-
-		WpfApplication.Current.MainWindow = unoWpfWindow.NativeWindow;
-		unoWpfWindow.NativeWindow.Activated += MainWindow_Activated;
-	}
-#endif
-
-	internal event EventHandler? MainWindowShown;
-
-	private void MainWindow_Activated(object? sender, EventArgs e) => MainWindowShown?.Invoke(this, EventArgs.Empty);
 
 	private void StartApp()
 	{
