@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 using Uno;
@@ -34,6 +35,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public event EventHandler<object> Closed;
 		public event EventHandler<object> Opening;
 		public event TypedEventHandler<FlyoutBase, FlyoutBaseClosingEventArgs> Closing;
+
+		private static readonly List<FlyoutBase> _closingFlyouts = new List<FlyoutBase>();
 
 		internal bool m_isPositionedAtPoint;
 
@@ -278,22 +281,47 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void Hide(bool canCancel)
 		{
+			var cancel = false;
 			if (canCancel)
 			{
-				bool cancel = false;
 				OnClosing(ref cancel);
-				if (cancel)
-				{
-					return;
-				}
 			}
 
-			m_openingCanceled = true;
+			var indexOf = _closingFlyouts.IndexOf(this);
 
-			Close();
-			IsOpen = false;
-			OnClosed();
-			Closed?.Invoke(this, EventArgs.Empty);
+			if (indexOf == -1 && IsOpen)
+			{
+				_closingFlyouts.Add(this);
+			}
+			else if (indexOf != 0 && IsOpen)
+			{
+				return;
+			}
+
+			if (!cancel)
+			{
+				m_openingCanceled = true;
+
+				if (_popup != null)
+				{
+					_popup.IsOpen = false;
+				}
+				IsOpen = false;
+
+				OnClosed();
+			}
+
+			if (_closingFlyouts.IndexOf(this) == 0)
+			{
+				_closingFlyouts.Remove(this);
+
+				Closed?.Invoke(this, EventArgs.Empty);
+
+				if (_closingFlyouts.Count > 0)
+				{
+					_closingFlyouts[0].Hide();
+				}
+			}
 		}
 
 		public void ShowAt(FrameworkElement placementTarget)
@@ -426,6 +454,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			});
 		}
 
+		private void CurrentOnActivated(object sender, WindowActivatedEventArgs e)
+		{
+			if (e.WindowActivationState == CoreWindowActivationState.Deactivated)
+			{
+				Hide();
+			}
+		}
+
+		private void CurrentOnSizeChanged(object sender, WindowSizeChangedEventArgs e) => Hide();
+
 		private void SynchronizeContentTemplatedParent()
 		{
 			// Manual propagation of the templated parent to the content property
@@ -459,15 +497,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal virtual void OnClosing(ref bool cancel)
 		{
-
 			var closing = new FlyoutBaseClosingEventArgs();
 			Closing?.Invoke(this, closing);
 			cancel = closing.Cancel;
+
+			var flyout = _closingFlyouts.SkipWhile(f => f != this).Skip(1).FirstOrDefault();
+			if (flyout is { })
+			{
+				var newCancel = false;
+				flyout.OnClosing(ref newCancel);
+			}
 		}
 
 		private protected virtual void OnClosed()
 		{
-
 			m_isTargetPositionSet = false;
 		}
 
@@ -483,10 +526,26 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Close()
 		{
+			var indexOf = _closingFlyouts.IndexOf(this);
+
+			if (indexOf == -1)
+			{
+				Hide(canCancel: true);
+			}
+			else
+			{
+				return;
+			}
+		}
+
+		private protected virtual void Close(FlyoutBase higherFlyout)
+		{
 			if (_popup != null)
 			{
 				_popup.IsOpen = false;
 			}
+
+			higherFlyout?.Close();
 		}
 
 		protected internal virtual void Open()
