@@ -8,48 +8,35 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal partial class CoreWindowWindow : IWindowImplementation
+internal partial class CoreWindowWindow : BaseWindowImplementation
 {
-	private readonly Window _window;
 	private readonly ContentManager _contentManager;
 
-	public CoreWindowWindow(Window window)
+	public CoreWindowWindow(Window window) : base(window)
 	{
-		_window = window;
-		_contentManager = new ContentManager(_window, true);
+		_contentManager = new ContentManager(window, true);
 		CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
+
+		InitializeNativeWindow();
 	}
 
 #pragma warning disable CS0067
-	public event SizeChangedEventHandler? SizeChanged;
+	public override CoreWindow CoreWindow { get; }
 
-	public CoreWindow CoreWindow { get; }
-
-	public bool Visible => CoreWindow.Visible;
-
-	public UIElement? Content
+	public override UIElement? Content
 	{
-		get
-		{
-			if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
-			{
-				// In case of Islands, Window.Current.Content just returns null.
-				return null;
-			}
-
-			return _contentManager.Content;
-		}
+		get => _contentManager.Content;
 		set => _contentManager.Content = value;
 	}
 
-	public XamlRoot? XamlRoot => WinUICoreServices.Instance.MainVisualTree?.GetOrCreateXamlRoot();
+	public override XamlRoot? XamlRoot => WinUICoreServices.Instance.MainVisualTree?.GetOrCreateXamlRoot();
 
-	public void Activate()
+	public override void Activate()
 	{
-		if (CoreServices.Instance.MainVisualTree is null)
+		if (WinUICoreServices.Instance.MainVisualTree is null)
 		{
 			throw new InvalidOperationException("Main visual tree is not initialized.");
 		}
-		ContentManager.TryLoadRootVisual(CoreServices.Instance.MainVisualTree.GetOrCreateXamlRoot());
+		ContentManager.TryLoadRootVisual(WinUICoreServices.Instance.MainVisualTree.GetOrCreateXamlRoot());
 	}
 }
