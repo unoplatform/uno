@@ -30,7 +30,6 @@ namespace Microsoft.UI.Xaml
 
 		private readonly IWindowImplementation _windowImplementation;
 
-		private CoreWindowActivationState? _lastActivationState;
 		private Brush? _background;
 		private bool _wasActivated;
 		private bool _splashScreenDismissed;
@@ -60,18 +59,19 @@ namespace Microsoft.UI.Xaml
 				_ => throw new InvalidOperationException("Unsupported window type")
 			};
 
-			Dispatcher = CoreDispatcher.Main;
-
 			Compositor = Windows.UI.Composition.Compositor.GetSharedCompositor();
 
+			InitializeWindowingFlavor();
 			InitPlatform();
 
-			InitializeCommon();
+#if !HAS_UNO_WINUI
+			RaiseCreated();
+#endif
+
+			Background = SolidColorBrushHelper.White;
 		}
 
-#if !__ANDROID__ && !__SKIA__ && !__IOS__ && !__MACOS__
-		internal object NativeWindow => null;
-#endif
+		partial void InitializeWindowingFlavor();
 
 		partial void InitPlatform();
 
@@ -79,28 +79,45 @@ namespace Microsoft.UI.Xaml
 		/// <summary>
 		/// Occurs when the window has successfully been activated.
 		/// </summary>
-		public event WindowActivatedEventHandler? Activated;
-
-		/// <summary>
-		/// Occurs when the window has closed.
-		/// </summary>
-		public event WindowClosedEventHandler? Closed;
+		public event WindowActivatedEventHandler? Activated
+		{
+			add => _windowImplementation.Activated += value;
+			remove => _windowImplementation.Activated -= value;
+		}
 
 		/// <summary>
 		/// Occurs when the app window has first rendered or has changed its rendering size.
 		/// </summary>
-		public event WindowSizeChangedEventHandler? SizeChanged;
+		public event WindowSizeChangedEventHandler? SizeChanged
+		{
+			add => _windowImplementation.SizeChanged += value;
+			remove => _windowImplementation.SizeChanged -= value;
+		}
 
 		/// <summary>
 		/// Occurs when the value of the Visible property changes.
 		/// </summary>
-		public event WindowVisibilityChangedEventHandler? VisibilityChanged;
+		public event WindowVisibilityChangedEventHandler? VisibilityChanged
+		{
+			add => _windowImplementation.VisibilityChanged += value;
+			remove => _windowImplementation.VisibilityChanged -= value;
+		}
+
+		internal event EventHandler? Showing;
+
+		/// <summary>
+		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
+		/// </summary>
+		public Rect Bounds => _windowImplementation.Bounds;
 
 		/// <summary>
 		/// Gets the Compositor for this window.
 		/// </summary>
 		public Compositor Compositor { get; private set; }
 
+		/// <summary>
+		/// Gets or sets the visual root of an application window.
+		/// </summary>
 		public UIElement? Content
 		{
 			get => _windowImplementation.Content;
@@ -110,26 +127,6 @@ namespace Microsoft.UI.Xaml
 				TryDismissSplashScreen();
 			}
 		}
-
-		/// <summary>
-		/// This is the real root of the **managed** visual tree.
-		/// This means its the root panel which contains the <see cref="Content"/>
-		/// but also the PopupRoot, the DragRoot and all other internal UI elements.
-		/// On platforms like iOS and Android, we might still have few native controls above this.
-		/// </summary>
-		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
-		internal UIElement? RootElement => _windowImplementation.XamlRoot?.VisualTree?.RootElement; //TODO:MZ: Is it ok to change to RootElement instead of PublicRootVisual?
-
-		internal PopupRoot? PopupRoot => _windowImplementation.XamlRoot?.VisualTree?.PopupRoot;
-
-		internal FullWindowMediaRoot? FullWindowMediaRoot => _windowImplementation.XamlRoot?.VisualTree?.FullWindowMediaRoot;
-
-		internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
-
-		/// <summary>
-		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
-		/// </summary>
-		public Rect Bounds { get; private set; }
 
 #if HAS_UNO_WINUI
 		/// <summary>
@@ -153,48 +150,11 @@ namespace Microsoft.UI.Xaml
 
 		public CoreWindow? IShouldntUseCoreWindow => _windowImplementation.CoreWindow;
 
-		/// <summary>
-		/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
-		/// </summary>
-		public CoreDispatcher Dispatcher { get; private set; }
-
-		/// <summary>
-		/// Gets a value that reports whether the window is visible.
-		/// </summary>
-		public bool Visible
-		{
-			get => _windowImplementation.Visible;
-			private set
-			{
-				//TODO:MZ: Visibility should not be set here, but in window impl
-				if (Visible != value)
-				{
-					if (this.Log().IsEnabled(LogLevel.Debug))
-					{
-						this.Log().LogDebug($"Window visibility changing to {value}");
-					}
-
-					if (IShouldntUseCoreWindow is not null)
-					{
-						IShouldntUseCoreWindow.Visible = value;
-					}
-
-					var args = new VisibilityChangedEventArgs() { Visible = value };
-
-					if (IShouldntUseCoreWindow is not null) // TODO:MZ: CoreWindow may be null.
-					{
-						IShouldntUseCoreWindow.OnVisibilityChanged(args);
-					}
-					VisibilityChanged?.Invoke(this, args);
-				}
-			}
-		}
-
 #if HAS_UNO_WINUI
 		/// <summary>
 		/// Always null in Uno.WinUI.
 		/// </summary>
-		public static Window? Current { get; }
+		public static Window? Current => null;
 #else
 		/// <summary>
 		/// Gets the window of the current thread.		
@@ -210,16 +170,45 @@ namespace Microsoft.UI.Xaml
 		internal static Window? CurrentSafe => Current;
 #pragma warning restore RS0030
 
-		internal static Window? IShouldntUseCurrentWindow => CurrentSafe; // TODO: We should make sure Current returns null in case of WinUI tree.
+		internal static Window? IShouldntUseCurrentWindow => CurrentSafe;
 
-		private void InitializeCommon()
-		{
-#if !HAS_UNO_WINUI
-			RaiseCreated();
+#if HAS_UNO_WINUI
+		/// <summary>
+		/// Always null in Uno.WinUI.
+		/// </summary>
+		public CoreDispatcher Dispatcher => null;
+#else
+		/// <summary>
+		/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
+		/// </summary>
+		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 #endif
 
-			Background = SolidColorBrushHelper.White;
-		}
+#if HAS_UNO_WINUI
+		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+#else
+		internal global::Windows.System.DispatcherQueue DispatcherQueue { get; } = global::Windows.System.DispatcherQueue.GetForCurrentThread();
+#endif
+
+		/// <summary>
+		/// Gets a value that reports whether the window is visible.
+		/// </summary>
+		public bool Visible => _windowImplementation.Visible;
+
+		/// <summary>
+		/// This is the real root of the **managed** visual tree.
+		/// This means its the root panel which contains the <see cref="Content"/>
+		/// but also the PopupRoot, the DragRoot and all other internal UI elements.
+		/// On platforms like iOS and Android, we might still have few native controls above this.
+		/// </summary>
+		/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
+		internal UIElement? RootElement => _windowImplementation.XamlRoot?.VisualTree?.RootElement; //TODO:MZ: Is it ok to change to RootElement instead of PublicRootVisual?
+
+		internal PopupRoot? PopupRoot => _windowImplementation.XamlRoot?.VisualTree?.PopupRoot;
+
+		internal FullWindowMediaRoot? FullWindowMediaRoot => _windowImplementation.XamlRoot?.VisualTree?.FullWindowMediaRoot;
+
+		internal Canvas? FocusVisualLayer => _windowImplementation.XamlRoot?.VisualTree?.FocusVisualRoot;
 
 		public void Activate()
 		{
@@ -231,6 +220,8 @@ namespace Microsoft.UI.Xaml
 			}
 			TryDismissSplashScreen();
 		}
+
+		public void Close() => _windowImplementation.Close();
 
 		partial void ShowPartial();
 
@@ -245,8 +236,6 @@ namespace Microsoft.UI.Xaml
 
 		partial void DismissSplashScreenPlatform();
 
-		public void Close() { }
-
 		// The parameter name differs between UWP and WinUI.
 		// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
 		// WinUI: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window.settitlebar?view=windows-app-sdk-1.3
@@ -258,79 +247,6 @@ namespace Microsoft.UI.Xaml
 #endif
 			)
 		{
-		}
-
-		/// <summary>
-		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
-		/// </summary>
-		/// <returns>A disposable instance that will cancel the registration.</returns>
-		internal IDisposable RegisterSizeChangedEvent(Microsoft.UI.Xaml.WindowSizeChangedEventHandler handler)
-		{
-			return WeakEventHelper.RegisterEvent(
-				_sizeChangedHandlers,
-				handler,
-				(h, s, e) =>
-					(h as Microsoft.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
-			);
-		}
-
-		internal void OnNativeActivated(CoreWindowActivationState state)
-		{
-			if (!_wasActivated)
-			{
-				return;
-			}
-
-			if (_lastActivationState != state)
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Window activating with {state} state.");
-				}
-
-				_lastActivationState = state;
-				var activatedEventArgs = new WindowActivatedEventArgs(state);
-#if HAS_UNO_WINUI
-				// There are two "versions" of WindowActivatedEventArgs in Uno currently
-				// when using WinUI, we need to use "legacy" version to work with CoreWindow
-				// (which will eventually be removed as a legacy API as well.
-				var coreWindowActivatedEventArgs = new Windows.UI.Core.WindowActivatedEventArgs(state);
-#else
-				var coreWindowActivatedEventArgs = activatedEventArgs;
-#endif
-				CoreWindowSafe?.OnActivated(coreWindowActivatedEventArgs);
-				Activated?.Invoke(this, activatedEventArgs);
-			}
-		}
-
-		internal void OnNativeVisibilityChanged(bool newVisibility)
-		{
-			if (!_wasActivated)
-			{
-				return;
-			}
-
-			Visible = newVisibility;
-		}
-
-		private void RootSizeChanged(object sender, SizeChangedEventArgs args) => _windowImplementation.Content?.XamlRoot?.NotifyChanged();
-
-		private void RaiseSizeChanged(Windows.UI.Core.WindowSizeChangedEventArgs windowSizeChangedEventArgs)
-		{
-			var baseSizeChanged = new WindowSizeChangedEventArgs(windowSizeChangedEventArgs.Size) { Handled = windowSizeChangedEventArgs.Handled };
-
-			SizeChanged?.Invoke(this, baseSizeChanged);
-
-			windowSizeChangedEventArgs.Handled = baseSizeChanged.Handled;
-
-			CoreWindow.IShouldntUseGetForCurrentThread()?.OnSizeChanged(windowSizeChangedEventArgs);
-
-			baseSizeChanged.Handled = windowSizeChangedEventArgs.Handled;
-
-			foreach (var action in _sizeChangedHandlers)
-			{
-				action(this, baseSizeChanged);
-			}
 		}
 
 		internal Brush? Background
@@ -358,7 +274,18 @@ namespace Microsoft.UI.Xaml
 					(h as EventHandler)?.Invoke(s, (EventArgs)e)
 			);
 
-		private static Window InternalGetCurrentWindow() => _current ??= new Window(WindowType.CoreWindow);
-
+		/// <summary>
+		/// Provides a memory-friendly registration to the <see cref="SizeChanged" /> event.
+		/// </summary>
+		/// <returns>A disposable instance that will cancel the registration.</returns>
+		internal IDisposable RegisterSizeChangedEvent(Windows.UI.Xaml.WindowSizeChangedEventHandler handler)
+		{
+			return WeakEventHelper.RegisterEvent(
+				_sizeChangedHandlers,
+				handler,
+				(h, s, e) =>
+					(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
+			);
+		}
 	}
 }

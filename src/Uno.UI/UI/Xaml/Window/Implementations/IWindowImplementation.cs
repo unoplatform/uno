@@ -1,5 +1,7 @@
 ﻿#nullable enable
 
+using Microsoft.UI.Xaml;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 
@@ -11,21 +13,21 @@ internal interface IWindowImplementation
 
 	XamlRoot? XamlRoot { get; }
 
-	//Rect Bounds { get; }
+	Rect Bounds { get; }
 
 	CoreWindow? CoreWindow { get; }
 
 	UIElement? Content { get; set; }
 
-	//event TypedEventHandler<object, WindowActivatedEventArgs> Activated;
+	event WindowActivatedEventHandler? Activated;
 
-	//event TypedEventHandler<object, EventArgs> Closed;
+	event TypedEventHandler<object, WindowEventArgs>? Closed;
 
-	event SizeChangedEventHandler? SizeChanged;
+	event WindowSizeChangedEventHandler? SizeChanged;
 
-	//event TypedEventHandler<object, VisibilityChangedEventArgs> VisibilityChanged;
+	event WindowVisibilityChangedEventHandler? VisibilityChanged;
 
 	void Activate();
 
-	//void Close();
+	void Close();
 }

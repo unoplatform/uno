@@ -43,7 +43,8 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 			else if (WpfHost.Current is not null)
 			{
 				// Signals the app to hook when it's ready
-				WpfHost.Current.MainWindowShown += OnMainWindowShown;
+				//TODO:MZ: Replace somehow
+				//WpfHost.Current.MainWindowShown += OnMainWindowShown;
 			}
 		}
 
@@ -57,7 +58,8 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 		private void OnMainWindowShown(object sender, EventArgs e)
 		{
 			RegisterClipboardListener();
-			WpfHost.Current.MainWindowShown -= OnMainWindowShown;
+			//TODO:MZ: Replace somehow
+			//WpfHost.Current.MainWindowShown -= OnMainWindowShown;
 		}
 
 		public void StopContentChanged()
@@ -70,7 +72,8 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 			}
 			else
 			{
-				WpfHost.Current.MainWindowShown -= OnMainWindowShown;
+				//TODO:MZ: Replace somehow
+				//WpfHost.Current.MainWindowShown -= OnMainWindowShown;
 			}
 		}
 
