@@ -1,22 +1,26 @@
-﻿
+﻿#nullable enable
 
+using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
-namespace Uno.UI.Xaml
+namespace Uno.UI.Xaml;
+
+/// <summary>
+/// An Uno Platform specific <see cref="Windows.UI.Xaml.Window"/> helper.
+/// </summary>
+public static class WindowHelper
 {
 	/// <summary>
-	/// An Uno Platform specific <see cref="Windows.UI.Xaml.Window"/> helper.
+	/// Sets the Window background
 	/// </summary>
-	public static class WindowHelper
+	public static void SetBackground(this Window window, Brush? background)
 	{
-
-		/// <summary>
-		/// Sets the Window background
-		/// </summary>
-		public static void SetBackground(this Window window, Brush background)
+		if (window is null)
 		{
-			window.Background = background;
+			throw new ArgumentNullException(nameof(window));
 		}
+
+		window.Background = background;
 	}
 }

@@ -47,9 +47,13 @@ internal partial class ContentManager
 		CreateRootScrollViewer(newContent);
 #endif
 
-		if (_isCoreWindowContent && _rootVisual is null)
+		if (_isCoreWindowContent)
 		{
-			WinUICoreServices.Instance.PutCoreWindowVisualRoot(newContent, RootScrollViewer);
+			if (WinUICoreServices.Instance.MainVisualTree is not { } visualTree)
+			{
+				throw new InvalidOperationException("Main visual tree must be initialized");
+			}
+			visualTree.SetPublicRootVisual(newContent, RootScrollViewer, rootContentPresenter: null);
 			_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
 			if (_rootVisual?.XamlRoot is null)
