@@ -29,7 +29,7 @@ internal partial class XamlIsland : Panel
 
 			SetPublicRootVisual(value, null, null);
 
-			ContentManager.TryLoadRootVisual(XamlRoot!);
+			// TODO:MZ: Islands loading?
 		}
 	}
 

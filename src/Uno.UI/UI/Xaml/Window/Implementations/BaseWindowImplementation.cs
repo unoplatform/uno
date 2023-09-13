@@ -44,6 +44,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	{
 		_wasActivated = true;
 		NativeWindowWrapper!.Show();
+		ContentManager.TryLoadRootVisual(XamlRoot!);
 		// TODO:MZ: Raise activation if needed!
 		//_lastActivationState = CoreWindowActivationState.CodeActivated;
 	}
@@ -76,7 +77,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
 		Bounds = new Rect(0, 0, size.Width, size.Height);
-		XamlRoot?.InvalidateMeasure();
+		XamlRoot?.InvalidateMeasure(); // Should notify before or after?
 		XamlRoot?.NotifyChanged();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 		CoreWindow?.OnSizeChanged(windowSizeChanged);
