@@ -22,4 +22,9 @@
 			<dependency id="Uno.WinUI.DevServer" version="0.0.0.0" />
 		</dependencies>
 	</metadata>
+
+	<files>
+		<file src="..\..\src\Common\uno.png" target="/" />
+
+	</files>
 </package>
