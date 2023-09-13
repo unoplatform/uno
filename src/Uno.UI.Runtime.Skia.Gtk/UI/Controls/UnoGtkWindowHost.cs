@@ -9,6 +9,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Uno.UI.Xaml.Core;
+using Windows.Foundation;
 using WinUI = Windows.UI.Xaml;
 using WinUIWindow = Windows.UI.Xaml.Window;
 
@@ -58,16 +59,17 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_area.Realized += (s, e) =>
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
+			SizeChanged?.Invoke(this, new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
 		};
 
 		_area.SizeAllocated += (s, e) =>
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+			SizeChanged?.Invoke(this, new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			if (!_firstSizeAllocated)
 			{
 				_firstSizeAllocated = true;
-				_winUIWindow.OnNativeWindowCreated();
+				// TODO:MZ: Better place for this?
+				//_winUIWindow.OnNativeWindowCreated();
 			}
 		};
 
@@ -76,6 +78,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_eventBox.Add(overlay);
 		_gtkWindow.Add(_eventBox);
 	}
+
+	internal event EventHandler<Size> SizeChanged;
 
 	private void RegisterForBackgroundColor()
 	{
