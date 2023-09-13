@@ -14,6 +14,8 @@ namespace Windows.UI.Xaml.Media
 		private Size _decodedSize;
 		private Size _naturalPhysicalSize;
 
+		internal LoadedImageSurface() { }
+
 		public Size DecodedPhysicalSize { get => _decodedPhysicalSize; }
 		public Size DecodedSize { get => _decodedSize; }
 		public Size NaturalSize { get => _naturalPhysicalSize; }
