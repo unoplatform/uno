@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
@@ -37,15 +38,17 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	public abstract XamlRoot? XamlRoot { get; }
 
-	public Rect Bounds { get; private set; } // TODO:MZ: Set this 
+	public Rect Bounds { get; private set; }
 
 	public virtual void Activate()
 	{
 		_wasActivated = true;
+		NativeWindowWrapper!.Show();
 		// TODO:MZ: Raise activation if needed!
 		//_lastActivationState = CoreWindowActivationState.CodeActivated;
 	}
 
+	[MemberNotNull(nameof(NativeWindowWrapper))]
 	protected void InitializeNativeWindow()
 	{
 		if (XamlRoot is null)
@@ -70,12 +73,14 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeClosed(object? sender, EventArgs args) => Closed?.Invoke(this, new WindowEventArgs());
 
-	private void OnNativeSizeChanged(object sender, SizeChangedEventArgs args)
+	private void OnNativeSizeChanged(object? sender, Size size)
 	{
-		var windowSizeChanged = new WindowSizeChangedEventArgs(args.NewSize);
+		Bounds = new Rect(0, 0, size.Width, size.Height);
+		XamlRoot?.InvalidateMeasure();
+		XamlRoot?.NotifyChanged();
+		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 		CoreWindow?.OnSizeChanged(windowSizeChanged);
 		SizeChanged?.Invoke(this, windowSizeChanged);
-		XamlRoot?.NotifyChanged();
 	}
 
 	private void OnNativeVisibilityChanged(object? sender, bool isVisible)
