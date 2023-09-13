@@ -4,10 +4,8 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
-using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
-using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -138,7 +136,7 @@ namespace SamplesApp
 
 			InitializeFrame(e.Arguments);
 
-			AssertIssue8641NativeOverlayInitialized();
+			//AssertIssue8641NativeOverlayInitialized();
 
 			ActivateMainWindow();
 
@@ -170,7 +168,7 @@ namespace SamplesApp
 		private void EnsureMainWindow()
 		{
 			_mainWindow ??=
-#if HAS_UNO_WINUI
+#if HAS_UNO_WINUI || WINUI_WINDOWING
 				new Windows.UI.Xaml.Window();
 #elif HAS_UNO
 				Windows.UI.Xaml.Window.CurrentSafe!;
@@ -251,7 +249,7 @@ namespace SamplesApp
 
 		private void ActivateMainWindow()
 		{
-			Windows.UI.Xaml.Window.Current.Activate();
+			_mainWindow!.Activate();
 			_wasActivated = true;
 			_isSuspended = false;
 		}

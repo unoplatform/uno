@@ -21,7 +21,7 @@ internal partial class DesktopWindow : BaseWindowImplementation
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
 		_desktopWindowXamlSource.AttachToWindow(window);
 		_desktopWindowXamlSource.Content = _windowChrome;
-
+		var par = _windowChrome.XamlRoot;
 		InitializeNativeWindow();
 	}
 
@@ -33,10 +33,12 @@ internal partial class DesktopWindow : BaseWindowImplementation
 	public override UIElement? Content
 	{
 		get => _windowChrome.Content as UIElement;
-		set => _windowChrome.Content = value;
+		set
+		{
+			_windowChrome.Content = value;
+			var p = value!.XamlRoot;
+		}
 	}
 
 	public override XamlRoot? XamlRoot => _desktopWindowXamlSource.XamlIsland.XamlRoot;
-
-	public override void Activate() => ContentManager.TryLoadRootVisual(_windowChrome.XamlRoot!);
 }
