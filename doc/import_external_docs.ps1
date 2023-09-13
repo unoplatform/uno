@@ -15,7 +15,7 @@ $external_docs = @{
     "figma-docs"         = "9ee95d5b3627657d6e818d79e9d6e6019fc53f5b"
     "uno.resizetizer"    = "3eec4aad0b7b3480ec6c2a121911ffde844fc4f8"
     "uno.uitest"         = "555453c2985ef2745fe44503c5809a6168d063c2"
-    "uno.extensions"     = "686b1b69e312d6a82d4eab018d6dcce616196976"      
+    "uno.extensions"     = "fd39e2669674717e4f91746c5a4b8d09766e038c"      
 }
 
 $uno_git_url = "https://github.com/unoplatform/"
