@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 
@@ -10,7 +11,7 @@ internal interface INativeWindowWrapper
 {
 	bool Visible { get; }
 
-	event SizeChangedEventHandler? SizeChanged;
+	event EventHandler<Size>? SizeChanged;
 
 	event EventHandler<CoreWindowActivationState>? ActivationChanged;
 
@@ -19,4 +20,6 @@ internal interface INativeWindowWrapper
 	event EventHandler? Closed;
 
 	void Activate();
+
+	void Show();
 }

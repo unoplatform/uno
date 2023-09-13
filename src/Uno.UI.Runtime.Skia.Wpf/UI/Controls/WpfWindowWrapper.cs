@@ -3,9 +3,9 @@
 using System;
 using System.ComponentModel;
 using Uno.UI.Xaml.Controls;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Core.Preview;
-using Windows.UI.Xaml;
 using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
@@ -17,8 +17,7 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 	public WpfWindowWrapper(UnoWpfWindow wpfWindow)
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
-		_wpfWindow.SizeChanged += OnSizeChanged;
-
+		_wpfWindow.Host.SizeChanged += OnHostSizeChanged;
 		_wpfWindow.Closing += OnClosing;
 		_wpfWindow.Activated += OnActivated;
 		_wpfWindow.Deactivated += OnDeactivated;
@@ -30,7 +29,7 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 
 	public bool Visible => _wpfWindow.IsVisible;
 
-	public event SizeChangedEventHandler? SizeChanged;
+	public event EventHandler<Size>? SizeChanged;
 
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
 
@@ -38,10 +37,12 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 
 	public event EventHandler? Closed;
 
+	public void Show() => _wpfWindow.Show();
+
 	public void Activate() => _wpfWindow.Activate();
 
-	private void OnSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) =>
-		SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height)));
+	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) =>
+		SizeChanged?.Invoke(this, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
 
 	private void OnClosed(object? sender, EventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
 

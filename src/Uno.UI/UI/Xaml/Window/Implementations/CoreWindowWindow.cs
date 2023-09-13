@@ -33,6 +33,8 @@ internal partial class CoreWindowWindow : BaseWindowImplementation
 
 	public override void Activate()
 	{
+		base.Activate();
+
 		if (WinUICoreServices.Instance.MainVisualTree is null)
 		{
 			throw new InvalidOperationException("Main visual tree is not initialized.");
