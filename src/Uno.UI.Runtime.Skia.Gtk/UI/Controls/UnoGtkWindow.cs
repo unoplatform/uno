@@ -23,10 +23,6 @@ internal class UnoGtkWindow : Window
 {
 	private readonly WinUIWindow _winUIWindow;
 
-	private bool _wasShown;
-
-	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
-
 	public UnoGtkWindow(WinUIWindow winUIWindow, XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
@@ -50,9 +46,7 @@ internal class UnoGtkWindow : Window
 			Cursors.EnsureLoaded();
 		};
 
-		DeleteEvent += WindowClosing;
 
-		WindowStateEvent += OnWindowStateChanged;
 
 		Host = new UnoGtkWindowHost(this, winUIWindow);
 		GtkManager.XamlRootMap.Register(xamlRoot, Host);
@@ -68,34 +62,11 @@ internal class UnoGtkWindow : Window
 		{
 			await Host.InitializeAsync();
 			ShowAll();
-			_wasShown = true;
-			ReplayPendingWindowStateChanges();
 		}
 		catch (Exception ex)
 		{
 			this.Log().Error("Failed to initialize the UnoGtkWindow", ex);
 		}
-	}
-
-	private void WindowClosing(object sender, DeleteEventArgs args)
-	{
-		var manager = SystemNavigationManagerPreview.GetForCurrentView();
-		if (!manager.HasConfirmedClose)
-		{
-			if (!manager.RequestAppClose())
-			{
-				// App closing was prevented, handle event
-				args.RetVal = true;
-				return;
-			}
-		}
-
-		// Closing should continue, perform suspension.
-		WinUIApplication.Current.RaiseSuspending();
-
-		// All prerequisites passed, can safely close.
-		args.RetVal = false;
-		Main.Quit();
 	}
 
 	internal void UpdateWindowPropertiesFromPackage()

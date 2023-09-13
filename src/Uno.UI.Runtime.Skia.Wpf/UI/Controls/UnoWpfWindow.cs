@@ -4,11 +4,7 @@ using System;
 using System.ComponentModel;
 using System.IO;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
-using Windows.Foundation;
-using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
 using WinUI = Microsoft.UI.Xaml;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
@@ -19,13 +15,10 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly WinUI.Window _winUIWindow;
-	private IWpfWindowHost _host;
 
 	public UnoWpfWindow(WinUI.Window winUIWindow, XamlRoot xamlRoot)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Showing += OnShowing;
-		_winUIWindow.NativeWindow = this;
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
@@ -34,16 +27,13 @@ internal class UnoWpfWindow : WpfWindow
 			Height = (int)preferredWindowSize.Height;
 		}
 
-		Content = _host = new UnoWpfWindowHost(this, winUIWindow);
-		WpfManager.XamlRootMap.Register(xamlRoot, _host);
+		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
+		WpfManager.XamlRootMap.Register(xamlRoot, Host);
 
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
-	internal void OnArrange(Size arrangeSize)
-	{
-
-	}
+	internal UnoWpfWindowHost Host { get; private set; }
 
 	//TODO:MZ: Call this?
 	private void OnCoreWindowContentRootSet(object? sender, object e)
@@ -60,7 +50,7 @@ internal class UnoWpfWindow : WpfWindow
 		}
 
 		contentRoot!.SetHost(this);
-		WpfManager.XamlRootMap.Register(xamlRoot, _host);
+		WpfManager.XamlRootMap.Register(xamlRoot, Host);
 
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}

@@ -1,22 +1,20 @@
 ﻿#nullable enable
 
-using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using System;
 using System.Windows;
 using System.Windows.Media;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Extensions;
+using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Rendering;
+using RoutedEventArgs = System.Windows.RoutedEventArgs;
 using Uno.UI.Xaml.Core;
 using WinUI = Microsoft.UI.Xaml;
 using WpfCanvas = System.Windows.Controls.Canvas;
-using WpfControl = System.Windows.Controls.Control;
 using WpfContentPresenter = System.Windows.Controls.ContentPresenter;
+using WpfControl = System.Windows.Controls.Control;
 using WpfFrameworkPropertyMetadata = System.Windows.FrameworkPropertyMetadata;
-using WpfWindow = System.Windows.Window;
-using RoutedEventArgs = System.Windows.RoutedEventArgs;
-using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -29,8 +27,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 	private readonly UnoWpfWindow _wpfWindow;
 	private readonly WinUI.Window _winUIWindow;
 	private readonly CompositeDisposable _disposables = new();
-
-	private Size _previousArrangeBounds;
 
 	private IWpfRenderer? _renderer;
 
@@ -51,16 +47,6 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 		Loaded += WpfHost_Loaded;
 
 		RegisterForBackgroundColor();
-	}
-
-	protected override Size ArrangeOverride(Size arrangeBounds)
-	{
-		if (arrangeBounds != _previousArrangeBounds)
-		{
-			_wpfWindow.OnArrange(new Windows.Foundation.Size(arrangeBounds.Width, arrangeBounds.Height));
-			_previousArrangeBounds = arrangeBounds;
-		}
-		return base.ArrangeOverride(arrangeBounds);
 	}
 
 	WinUI.UIElement? IXamlRootHost.RootElement => _winUIWindow.RootElement;

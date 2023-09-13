@@ -31,7 +31,6 @@ namespace Microsoft.UI.Xaml
 		private readonly IWindowImplementation _windowImplementation;
 
 		private Brush? _background;
-		private bool _wasActivated;
 		private bool _splashScreenDismissed;
 
 		private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
@@ -106,8 +105,6 @@ namespace Microsoft.UI.Xaml
 			add => _windowImplementation.VisibilityChanged += value;
 			remove => _windowImplementation.VisibilityChanged -= value;
 		}
-
-		internal event EventHandler? Showing;
 
 		/// <summary>
 		/// Gets a Rect value containing the height and width of the application window in units of effective (view) pixels.
@@ -217,21 +214,15 @@ namespace Microsoft.UI.Xaml
 		public void Activate()
 		{
 			_windowImplementation.Activate();
-			if (!_wasActivated)
-			{
-				ShowPartial();
-				_wasActivated = true;
-			}
+
 			TryDismissSplashScreen();
 		}
 
 		public void Close() => _windowImplementation.Close();
 
-		partial void ShowPartial();
-
 		private void TryDismissSplashScreen()
 		{
-			if (_wasActivated && Content != null && !_splashScreenDismissed)
+			if (Content != null && !_splashScreenDismissed)
 			{
 				DismissSplashScreenPlatform();
 				_splashScreenDismissed = true;

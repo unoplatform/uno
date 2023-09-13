@@ -63,16 +63,17 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_area.Realized += (s, e) =>
 		{
-			UpdateWindowSize(_area.AllocatedWidth, _area.AllocatedHeight);
+			SizeChanged?.Invoke(this, new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
 		};
 
 		_area.SizeAllocated += (s, e) =>
 		{
-			UpdateWindowSize(e.Allocation.Width, e.Allocation.Height);
+			SizeChanged?.Invoke(this, new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
 			if (!_firstSizeAllocated)
 			{
 				_firstSizeAllocated = true;
-				_winUIWindow.OnNativeWindowCreated();
+				// TODO:MZ: Better place for this?
+				//_winUIWindow.OnNativeWindowCreated();
 			}
 		};
 
@@ -82,14 +83,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_gtkWindow.Add(_eventBox);
 	}
 
-	private void OnDpiChanged(DisplayInformation sender, object args) =>
-		UpdateWindowSize(_gtkWindow.AllocatedWidth, _gtkWindow.AllocatedHeight);
-
-	private void UpdateWindowSize(int nativeWidth, int nativeHeight)
-	{
-		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
-		_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(nativeWidth / sizeAdjustment, nativeHeight / sizeAdjustment));
-	}
+	internal event EventHandler<Size> SizeChanged;
 
 	private void RegisterForBackgroundColor()
 	{
