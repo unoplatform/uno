@@ -1,7 +1,6 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Windows.UI;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
@@ -9,31 +8,11 @@ using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
-using Uno.UI.RuntimeTests.Extensions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
-using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls;
-
-public static class AssertionExtensions
-{
-	public static AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>> BeEquivalentToWithTolerance<T>(this FluentAssertions.Collections.GenericCollectionAssertions<float> assertions, float[] expected, float tolerance)
-	{
-		assertions.Subject.Should().HaveCount(expected.Length);
-
-		var subject = assertions.Subject.ToArray();
-
-		for (var i = 0; i < subject.Length; i++)
-		{
-			var sub = subject[i];
-			var actual = expected[i];
-			sub.Should().BeApproximately(actual, tolerance);
-		}
-
-		return new AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>>(assertions);
-	}
-}
 
 [TestClass]
 public class Given_ItemsPresenter
@@ -125,8 +104,6 @@ public class Given_ItemsPresenter
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).Should().BeNull();
 		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).Should().BeNull();
-
-		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should();
 
 		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
 		{
