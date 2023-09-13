@@ -269,7 +269,7 @@ namespace Microsoft.UI.Xaml
 
 			_initializationComplete = true;
 
-#if !HAS_UNO_WINUI
+#if !HAS_UNO_WINUI && !WINUI_WINDOWING
 			// Delayed raise of OnWindowCreated.
 			Microsoft.UI.Xaml.Window.CurrentSafe.RaiseCreated();
 #endif
