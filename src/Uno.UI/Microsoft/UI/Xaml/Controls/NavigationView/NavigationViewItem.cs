@@ -949,8 +949,8 @@ public partial class NavigationViewItem : NavigationViewItemBase
 		// bubble up to OnNavigationViewItemTapped, which will take care of IsExpanded.
 #if !HAS_UNO
 		IsExpanded = !IsExpanded;
-		args.Handled = true;
 #endif
+		args.Handled = true;
 	}
 
 	private void OnFlyoutClosing(object sender, FlyoutBaseClosingEventArgs args)
