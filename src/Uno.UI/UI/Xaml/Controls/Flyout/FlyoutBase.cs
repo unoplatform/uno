@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public event EventHandler<object> Opening;
 		public event TypedEventHandler<FlyoutBase, FlyoutBaseClosingEventArgs> Closing;
 
-		private static readonly List<FlyoutBase> _closingFlyouts = new List<FlyoutBase>();
+		private static readonly List<FlyoutBase> _openFlyouts = new List<FlyoutBase>();
 
 		internal bool m_isPositionedAtPoint;
 
@@ -279,7 +279,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Hide(canCancel: true);
 		}
 
-		internal void Hide(bool canCancel)
+		internal bool Hide(bool canCancel)
 		{
 			var cancel = false;
 			if (canCancel)
@@ -287,15 +287,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				OnClosing(ref cancel);
 			}
 
-			var indexOf = _closingFlyouts.IndexOf(this);
-
-			if (indexOf == -1 && IsOpen)
+			if (!cancel && canCancel)
 			{
-				_closingFlyouts.Add(this);
-			}
-			else if (indexOf != 0 && IsOpen)
-			{
-				return;
+				var flyout = _openFlyouts.SkipWhile(f => f != this).Skip(1).FirstOrDefault();
+				flyout?.Hide(true);
 			}
 
 			if (!cancel)
@@ -309,19 +304,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				IsOpen = false;
 
 				OnClosed();
-			}
 
-			if (_closingFlyouts.IndexOf(this) == 0)
-			{
-				_closingFlyouts.Remove(this);
-
-				Closed?.Invoke(this, EventArgs.Empty);
-
-				if (_closingFlyouts.Count > 0)
+				if (_openFlyouts.IndexOf(this) == 0)
 				{
-					_closingFlyouts[0].Hide();
+					_openFlyouts.Remove(this);
+
+					Closed?.Invoke(this, EventArgs.Empty);
+
+					if (_openFlyouts.Count > 0)
+					{
+						_openFlyouts[0].Hide();
+					}
 				}
 			}
+
+			return cancel;
 		}
 
 		public void ShowAt(FrameworkElement placementTarget)
@@ -454,16 +451,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			});
 		}
 
-		private void CurrentOnActivated(object sender, WindowActivatedEventArgs e)
-		{
-			if (e.WindowActivationState == CoreWindowActivationState.Deactivated)
-			{
-				Hide();
-			}
-		}
-
-		private void CurrentOnSizeChanged(object sender, WindowSizeChangedEventArgs e) => Hide();
-
 		private void SynchronizeContentTemplatedParent()
 		{
 			// Manual propagation of the templated parent to the content property
@@ -495,18 +482,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Opening?.Invoke(this, EventArgs.Empty);
 		}
 
-		internal virtual void OnClosing(ref bool cancel)
+		private void OnClosing(ref bool cancel)
 		{
 			var closing = new FlyoutBaseClosingEventArgs();
 			Closing?.Invoke(this, closing);
 			cancel = closing.Cancel;
-
-			var flyout = _closingFlyouts.SkipWhile(f => f != this).Skip(1).FirstOrDefault();
-			if (flyout is { })
-			{
-				var newCancel = false;
-				flyout.OnClosing(ref newCancel);
-			}
 		}
 
 		private protected virtual void OnClosed()
@@ -526,26 +506,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Close()
 		{
-			var indexOf = _closingFlyouts.IndexOf(this);
-
-			if (indexOf == -1)
-			{
-				Hide(canCancel: true);
-			}
-			else
-			{
-				return;
-			}
-		}
-
-		private protected virtual void Close(FlyoutBase higherFlyout)
-		{
-			if (_popup != null)
-			{
-				_popup.IsOpen = false;
-			}
-
-			higherFlyout?.Close();
+			Hide(canCancel: true);
 		}
 
 		protected internal virtual void Open()
@@ -561,6 +522,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			_popup.IsOpen = true;
+
+			if (!_openFlyouts.Contains(this))
+			{
+				_openFlyouts.Add(this);
+			}
 		}
 
 		private void SetPopupPosition(FrameworkElement placementTarget, Point? positionInTarget)

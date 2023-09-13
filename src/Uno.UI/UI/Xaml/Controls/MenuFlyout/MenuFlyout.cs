@@ -172,16 +172,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnClosing(ref bool cancel)
-		{
-			base.OnClosing(ref cancel);
-
-			if (!cancel)
-			{
-				CloseSubMenu();
-			}
-		}
-
 		private protected override void OnClosed()
 		{
 			base.OnClosed();
