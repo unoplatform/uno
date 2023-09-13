@@ -153,8 +153,8 @@ namespace Windows.UI.Xaml.Controls
 				(child as ICustomScrollInfo)?.ApplyViewport(ref desired);
 
 				return new Size(
-					Math.Min(slotSize.Width, desired.Width),
-					Math.Min(slotSize.Height, desired.Height)
+					Math.Min(availableSize.Width, desired.Width),
+					Math.Min(availableSize.Height, desired.Height)
 				);
 			}
 

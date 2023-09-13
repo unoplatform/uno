@@ -55,7 +55,6 @@ public partial class NativePopupBase : Primitives.Popup
 	public new static DependencyProperty IsOpenProperty { get; } = CreateIsOpenProperty();
 	#endregion
 
-
 	#region Child Property
 	public new UIElement Child
 	{

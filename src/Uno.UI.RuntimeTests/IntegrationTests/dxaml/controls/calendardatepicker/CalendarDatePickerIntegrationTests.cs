@@ -169,7 +169,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			await helper.PrepareOpenedEvent();
 
-			TestServices.InputHelper.Tap(dateText);
+			TestServices.InputHelper.Tap(dateText
+#if NETFX_CORE
+				// On Windows, we might wait a bit after pressing for the popup to open
+				// UNO TODO: why do we need this wait?
+				, 600
+#endif
+			);
 
 			await helper.WaitForOpened();
 
@@ -351,7 +357,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 			});
 
 
-			TestServices.InputHelper.Tap(dateText);
+			TestServices.InputHelper.Tap(dateText
+#if NETFX_CORE
+				// On Windows, we might wait a bit after pressing for the popup to open
+				// UNO TODO: why do we need this wait?
+				, 600
+#endif
+			);
 
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -578,7 +590,13 @@ namespace Windows.UI.Xaml.Tests.Enterprise.CalendarDatePickerTests
 
 			await helper.PrepareOpenedEvent();
 
-			TestServices.InputHelper.Tap(dateText);
+			TestServices.InputHelper.Tap(dateText
+#if NETFX_CORE
+				// On Windows, we might wait a bit after pressing for the popup to open
+				// UNO TODO: why do we need this wait?
+				, 600
+#endif
+			);
 
 			await helper.WaitForOpened();
 

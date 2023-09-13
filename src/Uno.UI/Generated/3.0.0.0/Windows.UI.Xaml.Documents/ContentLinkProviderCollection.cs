@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Documents
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ContentLinkProviderCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Documents.ContentLinkProvider>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Documents.ContentLinkProvider>
+	public partial class ContentLinkProviderCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Documents.ContentLinkProvider>, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Documents.ContentLinkProvider>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Documents
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public ContentLinkProviderCollection() 
+		public ContentLinkProviderCollection()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.ContentLinkProviderCollection", "ContentLinkProviderCollection.ContentLinkProviderCollection()");
 		}

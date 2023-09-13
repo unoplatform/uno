@@ -96,7 +96,8 @@ namespace Windows.UI.Xaml
 			var frameworkAvailableSize = availableSize
 				.Subtract(marginSize)
 				.AtLeastZero()
-				.AtMost(maxSize);
+				.AtMost(maxSize)
+				.AtLeast(minSize);
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
@@ -190,11 +191,14 @@ namespace Windows.UI.Xaml
 				{
 					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Width = _unclippedDesiredSize.Width;
 				}
-				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
+
+				if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 				{
 					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Height = _unclippedDesiredSize.Height;
 				}
 			}
 
@@ -215,20 +219,17 @@ namespace Windows.UI.Xaml
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect}) - effectiveMaxSize={effectiveMaxSize}, maxSize={maxSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
-			if (allowClipToSlot)
+			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 			{
-				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
-				{
-					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
-					needsClipToSlot = true;
-					arrangeSize.Width = effectiveMaxSize.Width;
-				}
-				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
-				{
-					_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
-					needsClipToSlot = true;
-					arrangeSize.Height = effectiveMaxSize.Height;
-				}
+				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
+				needsClipToSlot = allowClipToSlot;
+				arrangeSize.Width = effectiveMaxSize.Width;
+			}
+			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
+			{
+				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
+				needsClipToSlot = allowClipToSlot;
+				arrangeSize.Height = effectiveMaxSize.Height;
 			}
 
 			var oldRenderSize = RenderSize;
@@ -236,7 +237,7 @@ namespace Windows.UI.Xaml
 
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
 
-			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
+			RenderSize = innerInkSize;
 
 			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
@@ -246,6 +247,13 @@ namespace Windows.UI.Xaml
 
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
+
+			if (allowClipToSlot &&
+				(IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height)))
+			{
+				needsClipToSlot = true;
+			}
 
 			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
@@ -277,7 +285,8 @@ namespace Windows.UI.Xaml
 				var layoutFrame = new Rect(offset, clippedInkSize);
 
 				// Calculate clipped frame.
-				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRect.DeflateBy(margin)) ?? Rect.Empty;
+				var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
+				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
 
 				// Rebase the origin of the clipped frame to layout
 				var clippedFrame = new Rect(
@@ -285,6 +294,8 @@ namespace Windows.UI.Xaml
 					clippedFrameWithParentOrigin.Y - layoutFrame.Y,
 					clippedFrameWithParentOrigin.Width,
 					clippedFrameWithParentOrigin.Height);
+
+				clippedFrame = clippedFrame.AtMost(clientSize);
 
 				ArrangeNative(offset, true, clippedFrame);
 			}

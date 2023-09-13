@@ -81,8 +81,6 @@ namespace Windows.UI.Xaml
 
 		private void InitializeCommon()
 		{
-			InitDragAndDrop();
-
 #if !HAS_UNO_WINUI
 			RaiseCreated();
 #endif
@@ -353,50 +351,5 @@ namespace Windows.UI.Xaml
 		private UIElement InternalGetContent() => _content!;
 
 		private UIElement InternalGetRootElement() => _rootVisual!;
-
-		#region Drag and Drop
-		private DragRoot _dragRoot;
-
-		internal DragDropManager DragDrop { get; private set; }
-
-		private void InitDragAndDrop()
-		{
-			var coreManager = CoreDragDropManager.CreateForCurrentView(); // So it's ready to be accessed by ui manager and platform extension
-			var uiManager = DragDrop = new DragDropManager(this);
-
-			coreManager.SetUIManager(uiManager);
-		}
-
-		internal IDisposable OpenDragAndDrop(DragView dragView)
-		{
-			var rootElement = _rootVisual;
-
-			if (rootElement is null)
-			{
-				return Disposable.Empty;
-			}
-
-			if (_dragRoot is null)
-			{
-				_dragRoot = new DragRoot();
-				rootElement.Children.Add(_dragRoot);
-			}
-
-			_dragRoot.Show(dragView);
-
-			return Disposable.Create(Remove);
-
-			void Remove()
-			{
-				_dragRoot.Hide(dragView);
-
-				if (_dragRoot.PendingDragCount == 0)
-				{
-					rootElement.Children.Remove(_dragRoot);
-					_dragRoot = null;
-				}
-			}
-		}
-		#endregion
 	}
 }

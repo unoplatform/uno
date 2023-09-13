@@ -330,130 +330,132 @@ namespace Windows.UI.Xaml.Controls
 
 			var implementedEvents = GetImplementedRoutedEventsForType(GetType());
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerPressed))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerPressed))
 			{
 				PointerPressed += OnPointerPressedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerReleased))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerReleased))
 			{
 				PointerReleased += OnPointerReleasedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerMoved))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerMoved))
 			{
 				PointerMoved += OnPointerMovedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerEntered))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerEntered))
 			{
 				PointerEntered += OnPointerEnteredHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerExited))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerExited))
 			{
 				PointerExited += OnPointerExitedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCanceled))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerCanceled))
 			{
 				PointerCanceled += OnPointerCanceledHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerCaptureLost))
 			{
 				PointerCaptureLost += OnPointerCaptureLostHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.PointerWheelChanged))
+			if (HasFlag(implementedEvents, RoutedEventFlag.PointerWheelChanged))
 			{
 				PointerWheelChanged += OnPointerWheelChangedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarting))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationStarting))
 			{
 				ManipulationStarting += OnManipulationStartingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarted))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationStarted))
 			{
 				ManipulationStarted += OnManipulationStartedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationDelta))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationDelta))
 			{
 				ManipulationDelta += OnManipulationDeltaHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationInertiaStarting))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationInertiaStarting))
 			{
 				ManipulationInertiaStarting += OnManipulationInertiaStartingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationCompleted))
+			if (HasFlag(implementedEvents, RoutedEventFlag.ManipulationCompleted))
 			{
 				ManipulationCompleted += OnManipulationCompletedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Tapped))
+			if (HasFlag(implementedEvents, RoutedEventFlag.Tapped))
 			{
 				Tapped += OnTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DoubleTapped))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DoubleTapped))
 			{
 				DoubleTapped += OnDoubleTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.RightTapped))
+			if (HasFlag(implementedEvents, RoutedEventFlag.RightTapped))
 			{
 				RightTapped += OnRightTappedHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragEnter))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DragEnter))
 			{
 				DragEnter += OnDragEnterHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragOver))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DragOver))
 			{
 				DragOver += OnDragOverHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.DragLeave))
+			if (HasFlag(implementedEvents, RoutedEventFlag.DragLeave))
 			{
 				DragLeave += OnDragLeaveHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Drop))
+			if (HasFlag(implementedEvents, RoutedEventFlag.Drop))
 			{
 				Drop += OnDropHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
+			if (HasFlag(implementedEvents, RoutedEventFlag.Holding))
 			{
 				Holding += OnHoldingHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
+			if (HasFlag(implementedEvents, RoutedEventFlag.KeyDown))
 			{
 				KeyDown += OnKeyDownHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.KeyUp))
+			if (HasFlag(implementedEvents, RoutedEventFlag.KeyUp))
 			{
 				KeyUp += OnKeyUpHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.GotFocus))
+			if (HasFlag(implementedEvents, RoutedEventFlag.GotFocus))
 			{
 				GotFocus += OnGotFocusHandler;
 			}
 
-			if (implementedEvents.HasFlag(RoutedEventFlag.LostFocus))
+			if (HasFlag(implementedEvents, RoutedEventFlag.LostFocus))
 			{
 				LostFocus += OnLostFocusHandler;
 			}
+
+			bool HasFlag(RoutedEventFlag implementedEvents, RoutedEventFlag flag) => (implementedEvents & flag) != 0;
 		}
 
 		private protected override void OnLoaded()
@@ -718,7 +720,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.AffectsMeasure,
+					FrameworkPropertyMetadataOptions.None,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);

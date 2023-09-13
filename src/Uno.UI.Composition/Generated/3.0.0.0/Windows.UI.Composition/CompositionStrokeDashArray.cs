@@ -6,7 +6,7 @@ namespace Windows.UI.Composition
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class CompositionStrokeDashArray : global::Windows.UI.Composition.CompositionObject,global::System.Collections.Generic.IList<float>,global::System.Collections.Generic.IEnumerable<float>
+	public partial class CompositionStrokeDashArray : global::Windows.UI.Composition.CompositionObject, global::System.Collections.Generic.IList<float>, global::System.Collections.Generic.IEnumerable<float>
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal CompositionStrokeDashArray()

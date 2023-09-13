@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>,global::System.Collections.Generic.IList<object>,global::System.Collections.Generic.IEnumerable<object>
+	public partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>, global::System.Collections.Generic.IList<object>, global::System.Collections.Generic.IEnumerable<object>
 	{
 		// Skipping already declared property Size
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.add

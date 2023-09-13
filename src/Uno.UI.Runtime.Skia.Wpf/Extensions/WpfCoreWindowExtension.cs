@@ -26,29 +26,6 @@ namespace Uno.UI.Runtime.Skia.Wpf
 		{
 			_owner = (CoreWindow)owner;
 			_host = WpfHost.Current;
-
-			WpfManager.XamlRootMap.Registered += XamlRootMap_Registered;
-			WpfManager.XamlRootMap.Unregistered += XamlRootMap_Unregistered;
-		}
-
-		private void XamlRootMap_Registered(object? sender, XamlRoot xamlRoot)
-		{
-			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot);
-			if (host is WpfUIElement uiElement)
-			{
-				uiElement.AddHandler(WpfUIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp, true);
-				uiElement.AddHandler(WpfUIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown, true);
-			}
-		}
-
-		private void XamlRootMap_Unregistered(object? sender, XamlRoot xamlRoot)
-		{
-			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot);
-			if (host is WpfUIElement uiElement)
-			{
-				uiElement.RemoveHandler(WpfUIElement.KeyUpEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyUp);
-				uiElement.RemoveHandler(WpfUIElement.KeyDownEvent, (System.Windows.Input.KeyEventHandler)HostOnKeyDown);
-			}
 		}
 
 		internal static WpfCanvas? GetOverlayLayer(XamlRoot xamlRoot) =>

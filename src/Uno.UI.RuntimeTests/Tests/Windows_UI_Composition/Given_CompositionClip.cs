@@ -15,10 +15,27 @@ using Uno.UI.RuntimeTests.Helpers;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Composition;
 
+#if WINDOWS_UWP
+public static class Ext
+{
+	public static Color WithOpacity(this Color color, double opacity)
+	{
+		return new Color()
+		{
+			A = (byte)(color.A * opacity),
+			R = color.R,
+			G = color.G,
+			B = color.B,
+		};
+	}
+}
+#endif
+
+
 [TestClass]
 internal class Given_CompositionClip
 {
-#if __SKIA__
+#if __SKIA__ || WINDOWS_UWP
 	[TestMethod]
 	[RunsOnUIThread]
 	public async Task When_TransformElementClippedByParent_Then_ClippingAppliedPostRendering()

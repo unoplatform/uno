@@ -90,6 +90,24 @@ namespace Windows.UI.Xaml
 			SubscribeToOverridenRoutedEvents();
 		}
 
+#if SUPPORTS_RTL
+		internal Matrix3x2 GetFlowDirectionTransform()
+			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+
+		private bool ShouldMirrorVisual()
+		{
+			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			{
+				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+#endif
+
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
@@ -379,11 +397,13 @@ namespace Windows.UI.Xaml
 
 		private void OnRenderTransformChanged(Transform _, Transform transform)
 		{
+			var flowDirectionTransform = _renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity;
+
 			_renderTransform?.Dispose();
 
-			if (transform is not null)
+			if (transform is not null || !flowDirectionTransform.IsIdentity)
 			{
-				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin);
+				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin, flowDirectionTransform);
 				OnRenderTransformSet();
 			}
 			else
@@ -486,9 +506,7 @@ namespace Windows.UI.Xaml
 
 		internal AutomationPeer OnCreateAutomationPeerInternal() => OnCreateAutomationPeer();
 
-		internal static Matrix3x2 GetTransform(UIElement from, UIElement to) => GetTransform(from, to, new());
-
-		private static Matrix3x2 GetTransform(UIElement from, UIElement to, TransformToVisualContext context)
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
 		{
 			if (from == to)
 			{
@@ -511,25 +529,18 @@ namespace Windows.UI.Xaml
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
 				elt.ApplyElementCustomTransform(ref matrix);
-			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix, ref context) && elt != to); // If possible we stop as soon as we reach 'to'
+				elt.ApplyFlowDirectionTransform(ref matrix);
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			if (to is not null && elt != to)
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
-				var toContext = new TransformToVisualContext();
-				var toToRoot = GetTransform(to, null, toContext);
+				var toToRoot = GetTransform(to, null);
 
-#if __IOS__
-				// On iOS, the `from` and `to` may be coming from different ViewController.
-				// In such case, their coordinates should not be "added" together, since they are from different coordinates space.
-				if (context.ViewController == toContext.ViewController)
-#endif
-				{
-					var rootToTo = toToRoot.Inverse();
-					matrix *= rootToTo;
-				}
+				var rootToTo = toToRoot.Inverse();
+				matrix *= rootToTo;
 			}
 
 			if (from.Log().IsEnabled(LogLevel.Trace))
@@ -601,12 +612,27 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
+		{
+#if SUPPORTS_RTL
+			if (this is FrameworkElement fe && VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			{
+				if (fe.FlowDirection != parent.FlowDirection)
+				{
+					matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f);
+					matrix *= Matrix3x2.CreateTranslation((float)parent.RenderSize.Width, 0);
+				}
+			}
+#endif
+		}
+
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation that does not take into consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _, ref TransformToVisualContext __)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 _)
 		{
 			var parent = VisualTreeHelper.GetParent(this);
 			switch (parent)
@@ -903,6 +929,31 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
 
+		private Size _size;
+
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize
+		{
+			get => Visibility == Visibility.Collapsed ? new Size() : _size;
+			internal set
+			{
+				global::System.Diagnostics.Debug.Assert(value.Width >= 0, "Invalid width");
+				global::System.Diagnostics.Debug.Assert(value.Height >= 0, "Invalid height");
+				var previousSize = _size;
+				_size = value;
+				if (_size != previousSize)
+				{
+					if (this is FrameworkElement frameworkElement)
+					{
+						frameworkElement.SetActualSize(_size);
+						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
+					}
+				}
+			}
+		}
+
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
@@ -912,10 +963,6 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public Size DesiredSize => ((IUIElement)this).DesiredSize;
 
-		/// <summary>
-		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
-		/// </summary>
-		public Size RenderSize { get; internal set; }
 
 #if !UNO_REFERENCE_API
 		/// <summary>
@@ -1242,8 +1289,6 @@ namespace Windows.UI.Xaml
 			set;
 		}
 #endif
-
-		private partial struct TransformToVisualContext { }
 
 		/// <summary>
 		/// This event is not yet implemented in Uno Platform.

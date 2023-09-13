@@ -1,4 +1,6 @@
-﻿//#define ENABLE_CONTAINER_VISUAL_TRACKING
+﻿#if DEBUG
+#define ENABLE_CONTAINER_VISUAL_TRACKING
+#endif
 
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
@@ -21,6 +23,8 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Controls;
+using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -36,7 +40,6 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
-			InitializeKeyboard();
 
 			UpdateHitTest();
 		}
@@ -55,8 +58,6 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(true));
 
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
-
-		partial void InitializeKeyboard();
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -227,8 +228,6 @@ namespace Windows.UI.Xaml
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		partial void InitializeCapture();
-
 		internal bool IsPointerCaptured { get; set; }
 
 		public virtual IEnumerable<UIElement> GetChildren() => _children;
@@ -272,7 +271,8 @@ namespace Windows.UI.Xaml
 
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
-			if (oldRect != newRect || oldClip != newClip)
+
+			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
@@ -316,6 +316,12 @@ namespace Windows.UI.Xaml
 			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
+			{
+				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
+
+			_renderTransform?.UpdateFlowDirectionTransform();
 
 			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
 			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).

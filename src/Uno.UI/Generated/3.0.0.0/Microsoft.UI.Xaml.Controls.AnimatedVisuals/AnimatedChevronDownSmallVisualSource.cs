@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Controls.AnimatedVisuals
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class AnimatedChevronDownSmallVisualSource : global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource,global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2
+	public partial class AnimatedChevronDownSmallVisualSource : global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource, global::Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2
 	{
 		// Skipping already declared property Markers
 		// Skipping already declared method Microsoft.UI.Xaml.Controls.AnimatedVisuals.AnimatedChevronDownSmallVisualSource.AnimatedChevronDownSmallVisualSource()

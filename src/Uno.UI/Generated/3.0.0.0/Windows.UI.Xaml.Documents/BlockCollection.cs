@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Documents
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class BlockCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Documents.Block>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Documents.Block>
+	public partial class BlockCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Documents.Block>, global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Documents.Block>
 	{
 		// Skipping already declared property Size
 		// Forced skipping of method Windows.UI.Xaml.Documents.BlockCollection.GetAt(uint)

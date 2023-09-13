@@ -6,7 +6,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpContentHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>,global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>,global::Windows.Foundation.IStringable
+	public partial class HttpContentHeaderCollection : global::System.Collections.Generic.IDictionary<string, string>, global::System.Collections.Generic.IEnumerable<global::System.Collections.Generic.KeyValuePair<string, string>>, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -152,7 +152,7 @@ namespace Windows.Web.Http.Headers
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public HttpContentHeaderCollection() 
+		public HttpContentHeaderCollection()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentHeaderCollection.HttpContentHeaderCollection()");
 		}

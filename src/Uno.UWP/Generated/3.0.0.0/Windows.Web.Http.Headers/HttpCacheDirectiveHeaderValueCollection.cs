@@ -6,7 +6,7 @@ namespace Windows.Web.Http.Headers
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class HttpCacheDirectiveHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>,global::Windows.Foundation.IStringable
+	public partial class HttpCacheDirectiveHeaderValueCollection : global::System.Collections.Generic.IList<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>, global::System.Collections.Generic.IEnumerable<global::Windows.Web.Http.Headers.HttpNameValueHeaderValue>, global::Windows.Foundation.IStringable
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal HttpCacheDirectiveHeaderValueCollection()

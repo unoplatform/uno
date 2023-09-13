@@ -88,7 +88,7 @@ namespace Windows.Graphics.Imaging
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height) 
+		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap.SoftwareBitmap(BitmapPixelFormat format, int width, int height)");
 		}
@@ -96,7 +96,7 @@ namespace Windows.Graphics.Imaging
 		// Forced skipping of method Windows.Graphics.Imaging.SoftwareBitmap.SoftwareBitmap(Windows.Graphics.Imaging.BitmapPixelFormat, int, int)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha) 
+		public SoftwareBitmap(global::Windows.Graphics.Imaging.BitmapPixelFormat format, int width, int height, global::Windows.Graphics.Imaging.BitmapAlphaMode alpha)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Graphics.Imaging.SoftwareBitmap", "SoftwareBitmap.SoftwareBitmap(BitmapPixelFormat format, int width, int height, BitmapAlphaMode alpha)");
 		}

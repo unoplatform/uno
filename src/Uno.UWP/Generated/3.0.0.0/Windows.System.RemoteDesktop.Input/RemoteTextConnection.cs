@@ -24,7 +24,7 @@ namespace Windows.System.RemoteDesktop.Input
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RemoteTextConnection(global::System.Guid connectionId, global::Windows.System.RemoteDesktop.Input.RemoteTextConnectionDataHandler pduForwarder) 
+		public RemoteTextConnection(global::System.Guid connectionId, global::Windows.System.RemoteDesktop.Input.RemoteTextConnectionDataHandler pduForwarder)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteDesktop.Input.RemoteTextConnection", "RemoteTextConnection.RemoteTextConnection(Guid connectionId, RemoteTextConnectionDataHandler pduForwarder)");
 		}

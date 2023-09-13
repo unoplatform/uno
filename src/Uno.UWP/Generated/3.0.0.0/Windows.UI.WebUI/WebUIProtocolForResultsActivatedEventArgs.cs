@@ -6,7 +6,7 @@ namespace Windows.UI.WebUI
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 	[global::Uno.NotImplemented]
 #endif
-	public partial class WebUIProtocolForResultsActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolForResultsActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs,global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.UI.WebUI.IActivatedEventArgsDeferral,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
+	public partial class WebUIProtocolForResultsActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolForResultsActivatedEventArgs, global::Windows.ApplicationModel.Activation.IActivatedEventArgs, global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs, global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData, global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs, global::Windows.UI.WebUI.IActivatedEventArgsDeferral, global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		internal WebUIProtocolForResultsActivatedEventArgs()

@@ -83,10 +83,8 @@ body:
         - Skia (WPF)
         - Skia (GTK on Linux/macOS/Windows)
         - Skia (Linux Framebuffer)
-        - Skia (Tizen)
         - Windows
         - Build tasks
-        - Solution Templates
 
   - type: dropdown
     id: ide
