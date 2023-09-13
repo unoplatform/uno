@@ -178,6 +178,12 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush19 = factory19.CreateBrush();
 
 			sepiaGrid.Background = new EffectTesterBrush(effectBrush19);
+
+			var effect20 = new SimpleTemperatureAndTintEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Temperature = 0.5f, Tint = 0.5f };
+			var factory20 = compositor.CreateEffectFactory(effect20);
+			var effectBrush20 = factory20.CreateBrush();
+
+			tempTintGrid.Background = new EffectTesterBrush(effectBrush20);
 #endif
 		}
 
@@ -1425,6 +1431,69 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("89176087-8AF9-4A08-AEB1-895F38DB1766")]
+		private class SimpleTemperatureAndTintEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleTemperatureAndTintEffect";
+			private Guid _id = new Guid("89176087-8AF9-4A08-AEB1-895F38DB1766");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Temperature { get; set; } = 0.0f;
+
+			public float Tint { get; set; } = 0.0f;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Temperature":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "Tint":
+						{
+							index = 1;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Temperature;
+					case 1:
+						return Tint;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 2;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}

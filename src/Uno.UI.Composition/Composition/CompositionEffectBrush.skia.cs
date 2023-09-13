@@ -3,6 +3,7 @@ using Windows.Graphics.Effects.Interop;
 using System;
 using SkiaSharp;
 using System.Numerics;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -1103,6 +1104,54 @@ namespace Windows.UI.Composition
 													0,                                 0,                                 0,                                 1, 0
 												}),
 											sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.TemperatureAndTintEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Temperature", out uint tempProp, out _);
+										effectInterop.GetNamedPropertyMapping("Tint", out uint tintProp, out _);
+
+										float temp = (float)effectInterop.GetProperty(tempProp);
+										float tint = (float)effectInterop.GetProperty(tintProp);
+
+										var gains = TempAndTintUtils.NormalizedTempTintToGains(temp, tint);
+
+										string shader = $@"
+											uniform shader input;
+
+											uniform half redGain;
+											uniform half blueGain;
+
+											half4 main() 
+											{{
+												half4 inputColor = sample(input);
+												return half4(inputColor.r * redGain, inputColor.g, inputColor.b * blueGain, inputColor.a);
+											}}
+										";
+
+										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+										if (errors is not null)
+											return null;
+
+										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
+										{
+											{ "redGain", gains.RedGain },
+											{ "blueGain", gains.BlueGain }
+										};
+										SKRuntimeEffectChildren children = new(runtimeEffect)
+										{
+											{ "input", null }
+										};
+
+										return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
 									}
 
 									return null;
