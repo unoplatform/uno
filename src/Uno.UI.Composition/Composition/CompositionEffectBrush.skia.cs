@@ -12,7 +12,7 @@ namespace Windows.UI.Composition
 		private SKImageFilter GenerateEffectFilter(object effect, SKRect bounds)
 		{
 			// TODO: https://user-images.githubusercontent.com/34550324/264485558-d7ee5062-b0e0-4f6e-a8c7-0620ec561d3d.png
-			// TODO: Cache pixel shaders (see dwmcore.dll!CCompiledEffectCache)
+			// TODO: Cache pixel shaders (see dwmcore.dll!CCompiledEffectCache), needed in order to implement animations and online rendering
 
 			switch (effect)
 			{
@@ -45,7 +45,6 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
 										effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _);
 
-										// TODO: Implement support for other GraphicsEffectPropertyMapping values than Direct
 										float sigma = (float)effectInterop.GetProperty(sigmaProp);
 										_ = (uint)effectInterop.GetProperty(optProp); // TODO
 										_ = (uint)effectInterop.GetProperty(borderProp); // TODO
@@ -460,7 +459,7 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
-							case EffectType.ExposureEffect: // TODO: We can probably replace the pixel shader with a color matrix filter instead?
+							case EffectType.ExposureEffect:
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
@@ -473,31 +472,16 @@ namespace Windows.UI.Composition
 										float exposure = (float)effectInterop.GetProperty(exposureProp);
 										float multiplier = MathF.Pow(2.0f, exposure);
 
-										string shader = $@"
-											uniform shader input;
-											uniform half multiplier;
-
-											half4 main() 
-											{{
-												half4 inputColor = sample(input);
-												return half4(inputColor.rgb * multiplier, inputColor.a);
-											}}
-										";
-
-										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
-										if (errors is not null)
-											return null;
-
-										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
-										{
-											{ "multiplier", multiplier }
-										};
-										SKRuntimeEffectChildren children = new(runtimeEffect)
-										{
-											{ "input", null }
-										};
-
-										return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // Exposure Matrix
+												{
+													multiplier, 0,          0,          0, 0,
+													0,          multiplier, 0,          0, 0,
+													0,          0,          multiplier, 0, 0,
+													0,          0,          0,          1, 0,
+												}),
+											sourceFilter, new(bounds));
 
 										// Reference (wuceffects.dll):
 										/*
@@ -1077,7 +1061,7 @@ namespace Windows.UI.Composition
 											0,0,0
 										};
 
-										return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(1, 1), mode, true, sourceFilter, new(bounds));
+										return SKImageFilter.CreateMatrixConvolution(new SKSizeI(3, 3), identityKernel, 1f, 0f, new(0, 0), mode, true, sourceFilter, new(bounds));
 									}
 
 									return null;
@@ -1124,34 +1108,41 @@ namespace Windows.UI.Composition
 
 										var gains = TempAndTintUtils.NormalizedTempTintToGains(temp, tint);
 
-										string shader = $@"
-											uniform shader input;
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // TemperatureAndTint Matrix
+												{
+													gains.RedGain, 0,          0,              0, 0,
+													0,             1,          0,              0, 0,
+													0,             0,          gains.BlueGain, 0, 0,
+													0,             0,          0,              1, 0,
+												}),
+											sourceFilter, new(bounds));
+									}
 
-											uniform half redGain;
-											uniform half blueGain;
-
-											half4 main() 
-											{{
-												half4 inputColor = sample(input);
-												return half4(inputColor.r * redGain, inputColor.g, inputColor.b * blueGain, inputColor.a);
-											}}
-										";
-
-										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
-										if (errors is not null)
+									return null;
+								}
+							case EffectType.ColorMatrixEffect: // TODO: support "AlphaMode" and "ClampOutput" properties
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
 											return null;
 
-										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
-										{
-											{ "redGain", gains.RedGain },
-											{ "blueGain", gains.BlueGain }
-										};
-										SKRuntimeEffectChildren children = new(runtimeEffect)
-										{
-											{ "input", null }
-										};
+										effectInterop.GetNamedPropertyMapping("ColorMatrix", out uint matrixProp, out _);
+										float[] matrix = (float[])effectInterop.GetProperty(matrixProp);
 
-										return SKImageFilter.CreateColorFilter(runtimeEffect.ToColorFilter(uniforms, children), sourceFilter, new(bounds));
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[]
+												{
+													matrix[0],  matrix[1],  matrix[2],  matrix[3],  matrix[16],
+													matrix[4],  matrix[5],  matrix[6],  matrix[7],  matrix[17],
+													matrix[8],  matrix[9],  matrix[10], matrix[11], matrix[18],
+													matrix[12], matrix[13], matrix[14], matrix[15], matrix[19],
+												}),
+											sourceFilter, new(bounds));
 									}
 
 									return null;

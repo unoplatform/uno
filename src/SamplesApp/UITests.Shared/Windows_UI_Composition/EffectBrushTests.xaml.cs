@@ -184,6 +184,21 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush20 = factory20.CreateBrush();
 
 			tempTintGrid.Background = new EffectTesterBrush(effectBrush20);
+
+			var swapRedAndBlue = new SimpleMatrix5x4
+			{
+				M11 = 0, M12 = 0, M13 = 1, M14 = 0,
+				M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+				M31 = 1, M32 = 0, M33 = 0, M34 = 0,
+				M41 = 0, M42 = 0, M43 = 0, M44 = 1,
+				M51 = 0, M52 = 0, M53 = 0, M54 = 0
+			};
+
+			var effect21 = new SimpleColorMatrixEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), ColorMatrix = swapRedAndBlue };
+			var factory21 = compositor.CreateEffectFactory(effect21);
+			var effectBrush21 = factory21.CreateBrush();
+
+			matrixGrid.Background = new EffectTesterBrush(effectBrush21);
 #endif
 		}
 
@@ -1494,6 +1509,107 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 2;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		private struct SimpleMatrix5x4
+		{
+			public float M11;
+			public float M12;
+			public float M13;
+			public float M14;
+			public float M21;
+			public float M22;
+			public float M23;
+			public float M24;
+			public float M31;
+			public float M32;
+			public float M33;
+			public float M34;
+			public float M41;
+			public float M42;
+			public float M43;
+			public float M44;
+			public float M51;
+			public float M52;
+			public float M53;
+			public float M54;
+
+			public static SimpleMatrix5x4 Identity
+			{
+				get => new SimpleMatrix5x4()
+				{
+					M11 = 1, M12 = 0, M13 = 0, M14 = 0,
+					M21 = 0, M22 = 1, M23 = 0, M24 = 0,
+					M31 = 0, M32 = 0, M33 = 1, M34 = 0,
+					M41 = 0, M42 = 0, M43 = 0, M44 = 1,
+					M51 = 0, M52 = 0, M53 = 0, M54 = 0
+				};
+			}
+
+			public float[] ToArray()
+			{
+				return new float[20]
+				{
+					M11, M12, M13, M14,
+					M21, M22, M23, M24,
+					M31, M32, M33, M34,
+					M41, M42, M43, M44,
+					M51, M52, M53, M54
+				};
+			}
+		}
+
+		[Guid("921F03D6-641C-47DF-852D-B4BB6153AE11")]
+		private class SimpleColorMatrixEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleColorMatrixEffect";
+			private Guid _id = new Guid("921F03D6-641C-47DF-852D-B4BB6153AE11");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public SimpleMatrix5x4 ColorMatrix { get; set; } = SimpleMatrix5x4.Identity;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "ColorMatrix":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return ColorMatrix.ToArray();
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}
