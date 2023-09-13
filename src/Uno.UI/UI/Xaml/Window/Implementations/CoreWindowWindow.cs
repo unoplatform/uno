@@ -30,15 +30,4 @@ internal partial class CoreWindowWindow : BaseWindowImplementation
 	}
 
 	public override XamlRoot? XamlRoot => WinUICoreServices.Instance.MainVisualTree?.GetOrCreateXamlRoot();
-
-	public override void Activate()
-	{
-		base.Activate();
-
-		if (WinUICoreServices.Instance.MainVisualTree is null)
-		{
-			throw new InvalidOperationException("Main visual tree is not initialized.");
-		}
-		ContentManager.TryLoadRootVisual(WinUICoreServices.Instance.MainVisualTree.GetOrCreateXamlRoot());
-	}
 }
