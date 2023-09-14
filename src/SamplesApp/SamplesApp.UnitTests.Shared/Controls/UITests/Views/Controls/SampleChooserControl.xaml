@@ -461,6 +461,7 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<!-- Back Button -->
@@ -558,6 +559,10 @@
 							  IsChecked="{Binding UseDarkTheme, Mode=TwoWay}">
 						<FontIcon FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xEC46;" />
 					</CheckBox>
+
+					<!-- Fluent styles check box -->
+					<CheckBox x:Name="RTLCheckBox" Content="RTL"
+							  Grid.Column="10" />
 				</Grid>
 
 				<!-- Sample Content -->

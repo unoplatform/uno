@@ -69,6 +69,19 @@
 		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
 
+		<CompilerVisibleProperty Include="SolutionFileName" />
+		<CompilerVisibleProperty Include="LangName" />
+		<CompilerVisibleProperty Include="LangID" />
+		<CompilerVisibleProperty Include="SolutionDir" />
+		<CompilerVisibleProperty Include="SolutionExt" />
+		<CompilerVisibleProperty Include="UseHostCompilerIfAvailable" />
+		<CompilerVisibleProperty Include="DefineExplicitDefaults" />
+		<CompilerVisibleProperty Include="Platform" />
+		<CompilerVisibleProperty Include="SolutionPath" />
+		<CompilerVisibleProperty Include="SolutionName" />
+		<CompilerVisibleProperty Include="VSIDEResolvedNonMSBuildProjectOutputs" />
+		<CompilerVisibleProperty Include="DevEnvDir" />
+
 		<CompilerVisibleProperty Include="UseWPF" />
 		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="UnoRemoteControlPort" />

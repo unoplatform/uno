@@ -7,6 +7,7 @@ using System.IO;
 using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.UI.Core;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
@@ -140,6 +141,12 @@ internal class UnoGtkWindow : Window
 		var appView = ApplicationView.GetForCurrentView();
 		Title = appView.Title;
 		SetSizeRequest((int)appView.PreferredMinSize.Width, (int)appView.PreferredMinSize.Height);
+	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		Decorated = !coreApplicationView.TitleBar.ExtendViewIntoTitleBar;
 	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)

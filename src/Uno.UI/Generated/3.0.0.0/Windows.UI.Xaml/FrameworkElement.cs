@@ -152,20 +152,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Xaml.FlowDirection FlowDirection
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.FlowDirection)this.GetValue(FlowDirectionProperty);
-			}
-			set
-			{
-				this.SetValue(FlowDirectionProperty, value);
-			}
-		}
-#endif
 		// Skipping already declared property ActualHeight
 		// Skipping already declared property ActualWidth
 		// Skipping already declared property BaseUri
@@ -205,14 +191,6 @@ namespace Windows.UI.Xaml
 			nameof(ActualWidth), typeof(double),
 			typeof(global::Windows.UI.Xaml.FrameworkElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty FlowDirectionProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(FlowDirection), typeof(global::Windows.UI.Xaml.FlowDirection),
-			typeof(global::Windows.UI.Xaml.FrameworkElement),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
 #endif
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]

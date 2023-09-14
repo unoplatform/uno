@@ -54,9 +54,6 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_PackageToUpdate Include="Uno.UI" />
-			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
-			<_PackageToUpdate Include="Uno.UI.RemoteControl.Messaging" />
 
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj" Exclude="**\bin\**;**\obj\**"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj" Exclude="**\bin\**;**\obj\**"/>
@@ -82,6 +79,12 @@
 							 />
 
 		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
+							 Query="//x:PackageReference[@Include='Uno.UI.DevServer']/@Version"
+							 Value="$(GitVersion_SemVer)"
+							 Namespaces="$(MSBuildDeveloperNamespace)"
+							 />
+
+		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
 							 Query="//x:PackageReference[@Include='Uno.UI']/@Version"
 							 Value="$(GitVersion_SemVer)"
 							 Namespaces="$(MSBuildDeveloperNamespace)"
@@ -101,7 +104,10 @@
 							 Query="//PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.UI.RemoteControl.Messaging']/@Version"
+							 Query="//PackageReference[@Include='Uno.UI.DevServer']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.UI.DevServer.Messaging']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.WebAssembly']/@Version"
@@ -127,10 +133,10 @@
 							 Query="//PackageReference[@Include='Uno.WinUI']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.RemoteControl']/@Version"
+							 Query="//PackageReference[@Include='Uno.WinUI.DevServer']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
-							 Query="//PackageReference[@Include='Uno.WinUI.RemoteControl.Messaging']/@Version"
+							 Query="//PackageReference[@Include='Uno.WinUI.DevServer.Messaging']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.WinUI.WebAssembly']/@Version"
@@ -283,7 +289,8 @@
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.MediaPlayer.Skia.Gtk.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Svg.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.RemoteControl.nuspec" />
-			<_NuspecFiles Include=".\nuget\Uno.WinUI.RemoteControl.Messaging.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.WinUI.DevServer.nuspec" />
+			<_NuspecFiles Include=".\nuget\Uno.WinUI.DevServer.Messaging.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Skia.Gtk.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" />
 			<_NuspecFiles Include=".\nuget\Uno.WinUI.Skia.Wpf.nuspec" />
@@ -297,8 +304,11 @@
 		<!-- Update Uno.WinUI references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
-		<!-- Update Uno.WinUI.RemoteControl.Messaging references version -->
-		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.RemoteControl.Messaging']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+		<!-- Update Uno.WinUI.DevServer.Messaging references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer.Messaging']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+
+		<!-- Update Uno.WinUI.DevServer references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
@@ -337,7 +347,8 @@
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.RemoteControl.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).RemoteControl" Namespaces="$(NugetNamespace)" />
-		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.RemoteControl.Messaging.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).RemoteControl.Messaging" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.DevServer.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).DevServer" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.DevServer.Messaging.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).DevServer.Messaging" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Gtk.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Gtk" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:id" Value="$(PackageNamePrefix).Skia.Wpf" Namespaces="$(NugetNamespace)" />
@@ -353,7 +364,8 @@
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.XamlHost.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.XamlHost.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.RemoteControl.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).RemoteControl" Namespaces="$(NugetNamespace)" />
-		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.RemoteControl.Messaging.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).RemoteControl.Messaging" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.DevServer.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).DevServer" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.DevServer.Messaging.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).DevServer.Messaging" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Gtk.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Gtk" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Linux.FrameBuffer" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Skia.Wpf.nuspec" Query="/x:package/x:metadata/x:title" Value="$(PackageNamePrefix).Skia.Wpf" Namespaces="$(NugetNamespace)" />
@@ -367,7 +379,8 @@
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.Runtime.WebAssembly']/@id" Value="$(PackageNamePrefix).Runtime.WebAssembly" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.XamlHost']/@id" Value="$(PackageNamePrefix).XamlHost" Namespaces="$(NugetNamespace)" />
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.XamlHost.Skia.Wpf']/@id" Value="$(PackageNamePrefix).XamlHost.Skia.Wpf" Namespaces="$(NugetNamespace)" />
-		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.RemoteControl.Messaging']/@id" Value="$(PackageNamePrefix).RemoteControl.Messaging" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer.Messaging']/@id" Value="$(PackageNamePrefix).DevServer.Messaging" Namespaces="$(NugetNamespace)" />
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer']/@id" Value="$(PackageNamePrefix).DevServer" Namespaces="$(NugetNamespace)" />
 
 		<!-- Rename skiasharp references for WinUI -->
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.Lottie.nuspec" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='SkiaSharp.Views.Uno']/@id" Value="SkiaSharp.Views.Uno.WinUI" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'!='true'" />
@@ -420,7 +433,7 @@
 		<XmlPoke XmlInputPath=".\nuget\Uno.WinUI.WebAssembly.nuspec" Query="/x:package/x:files/x:file[@src='Uno.WinUI.WebAssembly.props']/@src" Value="$(PackageNamePrefix).WebAssembly.props" Namespaces="$(NugetNamespace)" Condition="'$(UNO_UWP_BUILD)'=='true'"/>
 
 		<!-- remote control -->
-		<Move SourceFiles="..\src\Uno.UI.RemoteControl\buildTransitive\Uno.UI.RemoteControl.targets" DestinationFiles="..\src\Uno.UI.RemoteControl\buildTransitive\$(PackageNamePrefix).RemoteControl.targets" Condition="'$(UNO_UWP_BUILD)'!='true'"/>
+		<Move SourceFiles="..\src\Uno.UI.RemoteControl\buildTransitive\Uno.UI.DevServer.targets" DestinationFiles="..\src\Uno.UI.RemoteControl\buildTransitive\$(PackageNamePrefix).DevServer.targets" Condition="'$(UNO_UWP_BUILD)'!='true'"/>
 
 		<!-- Lottie move file -->
 		<Move SourceFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\Uno.UI.Lottie.targets" DestinationFiles="..\src\AddIns\Uno.UI.Lottie\buildTransitive\$(PackageNamePrefix).Lottie.targets" />
@@ -469,7 +482,8 @@
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.MediaPlayer.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Svg.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
-		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.RemoteControl.Messaging.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.DevServer.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
+		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.DevServer.Messaging.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Skia.Gtk.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Skia.Linux.FrameBuffer.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
 		<Exec Command="$(NuGetBin) pack nuget\Uno.WinUI.Skia.Wpf.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_SemVer)&quot; -Properties &quot;$(NuSpecProperties)&quot;" />
@@ -495,7 +509,6 @@
 			<_diffPackage Include="$(PackageNamePrefix).Maps" Other="..\..\..\NugetPackages-Artifacts-netcoremobile-$(ArtifactsPlatformName)\vslatest-netcoremobile\$(PackageNamePrefix).Maps.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).MSAL" Other="$(PackageNamePrefix).MSAL.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Svg" Other="$(PackageNamePrefix).Svg.$(GITVERSION_SemVer).nupkg" />
-			<!-- <_diffPackage Include="$(PackageNamePrefix).RemoteControl" Other="$(PackageNamePrefix).RemoteControl.$(GITVERSION_SemVer).nupkg" /> -->
 			<_diffPackage Include="$(PackageNamePrefix).Skia.Gtk" Other="$(PackageNamePrefix).Skia.Gtk.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Gtk" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Gtk.$(GITVERSION_SemVer).nupkg" />
 			<_diffPackage Include="$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer" Other="..\..\..\NugetPackages-Artifacts-skia-$(ArtifactsPlatformName)\vslatest-skia\$(PackageNamePrefix).Runtime.Skia.Linux.FrameBuffer.$(GITVERSION_SemVer).nupkg" />

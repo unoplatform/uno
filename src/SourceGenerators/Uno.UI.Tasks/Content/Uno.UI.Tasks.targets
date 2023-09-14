@@ -102,6 +102,9 @@
 
 			<!-- Clear temporary group -->
 			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
+
+			<!-- Ensure files are tracked properly for incremental build and clean targets -->
+			<FileWrites Include="@(GeneratedFiles)" />
 		</ItemGroup>
 	</Target>
 
@@ -155,10 +158,17 @@
 		<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
+
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
 		<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
 			<AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
 			<AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
+
+			<!-- Ensure files are tracked properly for incremental build and clean targets -->
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
 	</Target>
 
@@ -187,6 +197,8 @@
 
 		<ItemGroup>
 			<EmbeddedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
+			
+			<FileWrites Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 		</ItemGroup>
 
 	</Target>

@@ -1671,6 +1671,9 @@
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
 			
 			<Member fullName="Windows.Devices.Sensors.Pedometer Windows.Devices.Sensors.Pedometer.TryCreateInstance()" reason="Not available in WinUI" />
+
+			<Member fullName="Android.Graphics.Paint Windows.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
+			<Member fullName="Android.Graphics.Paint Microsoft.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 	  <!--

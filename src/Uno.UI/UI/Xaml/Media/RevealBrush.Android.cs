@@ -5,11 +5,11 @@ namespace Windows.UI.Xaml.Media;
 
 partial class RevealBrush
 {
-	protected override Paint GetPaintInner(Rect destinationRect)
+	private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 	{
 		var color = this.IsDependencyPropertySet(FallbackColorProperty) ?
 			GetColorWithOpacity(FallbackColor) :
 			GetColorWithOpacity(Color);
-		return new Paint() { Color = color, AntiAlias = true };
+		paint.Color = color;
 	}
 }

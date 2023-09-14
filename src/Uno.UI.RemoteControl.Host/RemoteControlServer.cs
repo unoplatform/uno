@@ -100,7 +100,9 @@ namespace Uno.UI.RemoteControl.Host
 						}
 					}
 
-					return context.LoadFromAssemblyName(assemblyName);
+					// We haven't found the assembly in our context, let the runtime
+					// find it using standard resolution mechanisms.
+					return null;
 				};
 
 				if (!_loadContexts.TryAdd(applicationId, (loadContext, 1)))

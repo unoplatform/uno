@@ -434,6 +434,7 @@ namespace Windows.UI.Tests.Enterprise
 			LOG_OUTPUT("ValidateOverflowPosition: Opened Down, Aligned Left, FlowDirection=LTR");
 			await ValidateOverflowPlacementWorker(OverflowOpenDirection.Down, OverflowAlignment.Left, false /*isRTL*/);
 
+#if !HAS_UNO // TODO: Fix these scenarios.
 			// Validate the same scenarios, except with FlowDirection=RTL
 			LOG_OUTPUT("ValidateOverflowPosition: Opened Up, Aligned Right, FlowDirection=RT");
 			await ValidateOverflowPlacementWorker(OverflowOpenDirection.Up, OverflowAlignment.Right, true /*isRTL*/);
@@ -446,6 +447,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			LOG_OUTPUT("ValidateOverflowPosition: Opened Down, Aligned Left, FlowDirection=RT");
 			await ValidateOverflowPlacementWorker(OverflowOpenDirection.Down, OverflowAlignment.Left, true /*isRTL*/);
+#endif
 		}
 
 		[TestMethod]

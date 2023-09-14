@@ -17,10 +17,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 	{
 		private static string MSBuildBasePath = "";
 
-		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(string projectPath, IReporter reporter, string[] metadataUpdateCapabilities, CancellationToken cancellationToken)
+		public static Task<(Solution, WatchHotReloadService)> CreateWorkspaceAsync(
+			string projectPath,
+			IReporter reporter,
+			string[] metadataUpdateCapabilities,
+			Dictionary<string, string> properties,
+			CancellationToken cancellationToken)
 		{
 			var taskCompletionSource = new TaskCompletionSource<(Solution, WatchHotReloadService)>(TaskCreationOptions.RunContinuationsAsynchronously);
-			CreateProject(taskCompletionSource, projectPath, reporter, metadataUpdateCapabilities, cancellationToken);
+			CreateProject(taskCompletionSource, projectPath, reporter, metadataUpdateCapabilities, properties, cancellationToken);
 
 			return taskCompletionSource.Task;
 		}
@@ -30,12 +35,18 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			string projectPath,
 			IReporter reporter,
 			string[] metadataUpdateCapabilities,
+			Dictionary<string, string> properties,
 			CancellationToken cancellationToken)
 		{
 			var globalProperties = new Dictionary<string, string> {
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
 			};
+
+			foreach (var property in properties)
+			{
+				globalProperties.Add(property.Key, property.Value);
+			}
 
 			var workspace = MSBuildWorkspace.Create(globalProperties);
 

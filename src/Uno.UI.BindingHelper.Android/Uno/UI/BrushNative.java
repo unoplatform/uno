@@ -24,4 +24,19 @@ public final class BrushNative
 		paint.setColor(fillPaint.getColor());
 		paint.setShader(fillPaint.getShader());
 	}
+
+	
+	public static void resetPaintForStroke(Paint paint)
+	{
+		paint.reset();
+		paint.setAntiAlias(true);
+		paint.setStyle(Paint.Style.STROKE);
+	}
+
+	public static void resetPaintForFill(Paint paint)
+	{
+		paint.reset();
+		paint.setAntiAlias(true);
+		paint.setStyle(Paint.Style.FILL);
+	}
 }

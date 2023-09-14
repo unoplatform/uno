@@ -411,6 +411,8 @@ namespace Windows.UI.Xaml.Media
 			element.ApplyRenderTransform(ref matrix);
 			element.ApplyLayoutTransform(ref matrix);
 			element.ApplyElementCustomTransform(ref matrix);
+			element.ApplyFlowDirectionTransform(ref matrix);
+
 			TRACE($"- transform to parent: [{matrix.M11:F2},{matrix.M12:F2} / {matrix.M21:F2},{matrix.M22:F2} / {matrix.M31:F2},{matrix.M32:F2}]");
 
 			// Build 'position' in the current element coordinate space
@@ -423,6 +425,7 @@ namespace Windows.UI.Xaml.Media
 			element.ApplyRenderTransform(ref matrix, ignoreOrigin: true);
 			matrix.Translation = default; //
 			element.ApplyElementCustomTransform(ref matrix);
+			element.ApplyFlowDirectionTransform(ref matrix);
 			matrix = matrix.Inverse();
 
 			// The maximum region where the current element and its children might draw themselves

@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml.Documents.TextFormatting
 
 		TextWrapping TextWrapping { get; }
 
+		FlowDirection FlowDirection { get; }
+
 		int MaxLines { get; }
 	}
 }

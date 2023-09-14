@@ -3,11 +3,13 @@
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design.Serialization;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
+using System.Text;
 using Uno.Extensions;
 using Uno.Roslyn;
 using Uno.UI.SourceGenerators.Helpers;
@@ -19,6 +21,32 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 	{
 		const string LibraryXamlSearchPathAssemblyMetadata = "Uno.RemoteControl.XamlSearchPaths";
 
+		/// <summary>
+		/// This list of properties used to capture the environment of the building project
+		/// so it can be propagated to the remote control server's hot reload workspace.
+		/// The list is derived from a extract of a build log inside Visual Studio and may
+		/// need to be updated if new properties are required.
+		/// </summary>
+		private static readonly string[] AdditionalMSProperties = new[] {
+			"SolutionFileName",
+			"LangName",
+			"Configuration",
+			"LangID",
+			"SolutionDir",
+			"SolutionExt",
+			"BuildingInsideVisualStudio",
+			"UnoRemoteControlPort",
+			"UseHostCompilerIfAvailable",
+			"TargetFramework",
+			"DefineExplicitDefaults",
+			"Platform",
+			"RuntimeIdentifier",
+			"SolutionPath",
+			"SolutionName",
+			"VSIDEResolvedNonMSBuildProjectOutputs",
+			"DevEnvDir",
+		};
+
 		public void Initialize(GeneratorInitializationContext context)
 		{
 		}
@@ -28,7 +56,12 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			if (!DesignTimeHelper.IsDesignTime(context)
 				&& context.GetMSBuildPropertyValue("Configuration") == "Debug")
 			{
-				if (IsRemoteControlClientInstalled(context)
+				if ((IsRemoteControlClientInstalled(context)
+
+					// Inside the uno solution we generate the attributes anyways, so 
+					// we can test the remote control tooling explicitly.
+					|| IsInsideUnoSolution(context))
+
 					&& PlatformHelper.IsApplication(context))
 				{
 					var sb = new IndentedStringBuilder();
@@ -53,6 +86,9 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				}
 			}
 		}
+
+		private static bool IsInsideUnoSolution(GeneratorExecutionContext context)
+			=> context.GetMSBuildPropertyValue("_IsUnoUISolution") == "true";
 
 		private static void BuildGeneratedFileHeader(IndentedStringBuilder sb)
 		{
@@ -90,9 +126,17 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 			var xamlPaths = EnumerateLocalSearchPaths(context)
 				.Concat(EnumerateLibrarySearchPaths(context));
 
-			var distictPaths = string.Join(",\n", xamlPaths.Select(p => $"@\"{p}\""));
+			var distinctPaths = string.Join(",\n", xamlPaths.Select(p => $"@\"{p}\""));
 
-			sb.AppendLineIndented($"new string[]{{{distictPaths}}}");
+			sb.AppendLineIndented($"new string[]{{{distinctPaths}}},");
+
+			// Provide additional properties so that our hot reload workspace can properly
+			// replicate the original build environment that was used (e.g. VS or dotnet build)
+			var additionalPropertiesValue = string.Join(
+				", ",
+				AdditionalMSProperties.Select(p => $"@\"{p}={Convert.ToBase64String(Encoding.UTF8.GetBytes(context.GetMSBuildPropertyValue(p)))}\""));
+
+			sb.AppendLineIndented($"new [] {{ {additionalPropertiesValue} }}");
 
 			sb.AppendLineIndented(")]");
 		}
@@ -183,26 +227,32 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			if (string.IsNullOrEmpty(unoRemoteControlHost))
 			{
-				var addresses = NetworkInterface.GetAllNetworkInterfaces()
-					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
-					.Where(x => !IPAddress.IsLoopback(x.Address));
-				//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
-
-				foreach (var addressInfo in addresses)
+				// Inside the Uno Solution we do not start the remote control
+				// client, as the location of the RC server is not coming from 
+				// a nuget package.
+				if (!IsInsideUnoSolution(context))
 				{
-					var address = addressInfo.Address;
+					var addresses = NetworkInterface.GetAllNetworkInterfaces()
+						.SelectMany(x => x.GetIPProperties().UnicastAddresses)
+						.Where(x => !IPAddress.IsLoopback(x.Address));
+					//This is not supported on linux yet: .Where(x => x.DuplicateAddressDetectionState == DuplicateAddressDetectionState.Preferred);
 
-					string addressStr;
-					if (address.AddressFamily == AddressFamily.InterNetworkV6)
+					foreach (var addressInfo in addresses)
 					{
-						address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
-						addressStr = $"[{address}]";
+						var address = addressInfo.Address;
+
+						string addressStr;
+						if (address.AddressFamily == AddressFamily.InterNetworkV6)
+						{
+							address.ScopeId = 0; // remove annoying "%xx" on IPv6 addresses
+							addressStr = $"[{address}]";
+						}
+						else
+						{
+							addressStr = address.ToString();
+						}
+						sb.AppendLineIndented($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressStr}\", {unoRemoteControlPort})]");
 					}
-					else
-					{
-						addressStr = address.ToString();
-					}
-					sb.AppendLineIndented($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressStr}\", {unoRemoteControlPort})]");
 				}
 			}
 			else
