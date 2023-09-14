@@ -14,17 +14,17 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
+		private static Paint _fallbackFillPaint;
+
 		/// <summary>
 		/// Returns the fallback solid color brush.
 		/// </summary>
 		/// <param name="destinationRect">Destination rect.</param>
 		/// <returns></returns>
-		protected override Paint GetPaintInner(Rect destinationRect) =>
-			new Paint()
-			{
-				Color = FallbackColorWithOpacity,
-				AntiAlias = true
-			};
+		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
+		{
+			paint.Color = FallbackColorWithOpacity;
+		}
 
 		internal IDisposable Subscribe(BindableView owner, Rect drawArea, Path maskingPath)
 		{
@@ -75,8 +75,9 @@ namespace Windows.UI.Xaml.Media
 				state.BlurDisposable.Disposable = null;
 
 				// Fall back to solid color
-				var fillPaint = GetFillPaint(Rect.Empty);
-				ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(this, state.DrawArea, fillPaint, state.MaskingPath, antiAlias: false)));
+				_fallbackFillPaint ??= new();
+				ApplyToFillPaint(Rect.Empty, _fallbackFillPaint);
+				ExecuteWithNoRelayout(state.Owner, v => v.SetBackgroundDrawable(Brush.GetBackgroundDrawable(this, state.DrawArea, _fallbackFillPaint, state.MaskingPath, antiAlias: false)));
 
 				if (state.FallbackDisposable.Disposable == null)
 				{
