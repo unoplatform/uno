@@ -610,6 +610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			stackPanel.Children.Add(button);
 			TestServices.WindowHelper.WindowContent = stackPanel;
 			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(button);
 
 			var flyout = new Flyout();
 			var flyoutButton = new Button() { Content = "Flyout content" };
@@ -621,6 +622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			FlyoutBase.ShowAttachedFlyout(button);
 			await TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForLoaded(flyoutButton);
 
 			Assert.AreEqual(flyoutButton, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
