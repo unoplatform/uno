@@ -26,8 +26,6 @@ internal class UnoGtkWindow : Window
 	public UnoGtkWindow(WinUIWindow winUIWindow, XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
-		_winUIWindow.Showing += OnShowing;
-		_winUIWindow.NativeWindow = this;
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)
@@ -122,80 +120,5 @@ internal class UnoGtkWindow : Window
 	{
 		var coreApplicationView = CoreApplication.GetCurrentView();
 		Decorated = !coreApplicationView.TitleBar.ExtendViewIntoTitleBar;
-	}
-
-	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
-	{
-		var newState = args.Event.NewWindowState;
-		var changedMask = args.Event.ChangedMask;
-
-		if (this.Log().IsEnabled(LogLevel.Debug))
-		{
-			this.Log().Debug($"OnWindowStateChanged: {newState}/{changedMask}");
-		}
-
-		if (_wasShown)
-		{
-			ProcessWindowStateChanged(newState, changedMask);
-		}
-		else
-		{
-			// Store state changes to replay once the application has been
-			// initalized completely (initialization can be delayed if the render
-			// surface is automatically detected).
-			_pendingWindowStateChanged?.Add(new(newState, changedMask));
-		}
-	}
-
-	private void ReplayPendingWindowStateChanges()
-	{
-		if (_pendingWindowStateChanged is not null)
-		{
-			foreach (var state in _pendingWindowStateChanged)
-			{
-				ProcessWindowStateChanged(state.newState, state.changedMask);
-			}
-
-			_pendingWindowStateChanged = null;
-		}
-	}
-
-	private void ProcessWindowStateChanged(Gdk.WindowState newState, Gdk.WindowState changedMask)
-	{
-		var winUIApplication = WinUIApplication.Current;
-
-		var isVisible =
-			!(newState.HasFlag(Gdk.WindowState.Withdrawn) ||
-			newState.HasFlag(Gdk.WindowState.Iconified));
-
-		var isVisibleChanged =
-			changedMask.HasFlag(Gdk.WindowState.Withdrawn) ||
-			changedMask.HasFlag(Gdk.WindowState.Iconified);
-
-		var focused = newState.HasFlag(Gdk.WindowState.Focused);
-		var focusChanged = changedMask.HasFlag(Gdk.WindowState.Focused);
-
-		if (!focused && focusChanged)
-		{
-			_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.Deactivated);
-		}
-
-		if (isVisibleChanged)
-		{
-			if (isVisible)
-			{
-				winUIApplication?.RaiseLeavingBackground(() => _winUIWindow?.OnNativeVisibilityChanged(true));
-			}
-			else
-			{
-				_winUIWindow?.OnNativeVisibilityChanged(false);
-				winUIApplication?.RaiseEnteredBackground(null);
-			}
-		}
-
-		if (focused && focusChanged)
-		{
-			_winUIWindow?.OnNativeActivated(Windows.UI.Core.CoreWindowActivationState.CodeActivated);
-		}
 	}
 }

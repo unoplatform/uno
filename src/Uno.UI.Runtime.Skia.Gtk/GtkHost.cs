@@ -66,8 +66,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 			StartApp();
 
-			SetupMainWindow();
-
 			GtkApplication.Run();
 		}
 
@@ -84,19 +82,6 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = GtkDispatch.DispatchNativeSingle;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
 		}
-
-		private void SetupMainWindow()
-		{
-			MainWindow = new UnoGtkWindow(WinUIWindow.Current);
-			MainWindow.Shown += MainWindow_Shown;
-			MainWindow.UpdateWindowPropertiesFromPackage();
-			MainWindow.UpdateWindowPropertiesFromApplicationView();
-			MainWindow.UpdateWindowPropertiesFromCoreApplication();
-		}
-
-		internal event EventHandler? MainWindowShown;
-
-		private void MainWindow_Shown(object? sender, EventArgs e) => MainWindowShown?.Invoke(this, e);
 
 		private void StartApp()
 		{
