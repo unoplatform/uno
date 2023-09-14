@@ -109,38 +109,6 @@
 			</group>
 		</dependencies>
 
-		<references>
-			<!-- .NET 7.0 -->
-			<group targetFramework="net7.0">
-				<reference file="Uno.UI.RemoteControl.dll" />
-			</group>
-			
-			<!-- .NET 8.0 -->
-			<group targetFramework="net8.0">
-				<reference file="Uno.UI.RemoteControl.dll" />
-			</group>
-
-			<!-- .NET 8 Android -->
-			<group targetFramework="net8.0-android">
-				<reference file="Uno.UI.RemoteControl.dll" />
-			</group>
-
-			<!-- .NET 8 iOS -->
-			<group targetFramework="net8.0-ios">
-				<reference file="Uno.UI.RemoteControl.dll" />
-			</group>
-
-			<!-- .NET 7 Android -->
-			<group targetFramework="net7.0-android">
-				<reference file="Uno.UI.RemoteControl.dll" />
-			</group>
-
-			<!-- .NET 7 iOS -->
-			<group targetFramework="net7.0-ios">
-				<reference file="Uno.UI.RemoteControl.dll" />
-			</group>
-
-		</references>
 	</metadata>
 
 	<files>

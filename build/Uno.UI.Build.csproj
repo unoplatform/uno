@@ -54,10 +54,6 @@
 		</PropertyGroup>
 
 		<ItemGroup>
-			<_PackageToUpdate Include="Uno.UI" />
-			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
-			<_PackageToUpdate Include="Uno.UI.DevServer" />
-			<_PackageToUpdate Include="Uno.UI.DevServer.Messaging" />
 
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj" Exclude="**\bin\**;**\obj\**"/>
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj" Exclude="**\bin\**;**\obj\**"/>
@@ -75,6 +71,12 @@
 			<_sdkProject Include="..\src\SolutionTemplate\UnoUITestTemplate\UnoUITestTemplate.csproj"/>
 			<_sdkProject Include="..\src\SolutionTemplate\Uno.ProjectTemplates.Dotnet\content\unolib-crossruntime\UnoCrossRuntimeLib\*.csproj"/>
 		</ItemGroup>
+
+		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
+							 Query="//x:PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
+							 Value="$(GitVersion_SemVer)"
+							 Namespaces="$(MSBuildDeveloperNamespace)"
+							 />
 
 		<XmlPoke XmlInputPath="%(_legacyProject.Identity)"
 							 Query="//x:PackageReference[@Include='Uno.UI.DevServer']/@Version"
@@ -97,6 +99,9 @@
 		<!-- Update templates for Uno.UI -->
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.UI.DevServer']/@Version"
