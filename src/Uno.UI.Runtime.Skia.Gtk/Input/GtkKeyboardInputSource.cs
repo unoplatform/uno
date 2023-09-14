@@ -9,6 +9,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Uno.UI.Hosting;
 using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -18,7 +19,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 	public event TypedEventHandler<object, KeyEventArgs>? KeyDown;
 	public event TypedEventHandler<object, KeyEventArgs>? KeyUp;
 
-	public GtkKeyboardInputSource()
+	public GtkKeyboardInputSource(IXamlRootHost xamlRootHost)
 	{
 		global::Gtk.Key.SnooperInstall(OnKeySnoop);
 	}
