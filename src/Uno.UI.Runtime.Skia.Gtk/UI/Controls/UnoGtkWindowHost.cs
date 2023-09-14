@@ -37,6 +37,8 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		RegisterForBackgroundColor();
 	}
 
+	public Window GtkWindow => _gtkWindow;
+
 	public UnoEventBox EventBox => _eventBox;
 
 	public Container RootContainer => _gtkWindow;
@@ -79,7 +81,7 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_gtkWindow.Add(_eventBox);
 	}
 
-	internal event EventHandler<Size> SizeChanged;
+	internal event EventHandler<Size>? SizeChanged;
 
 	private void RegisterForBackgroundColor()
 	{
