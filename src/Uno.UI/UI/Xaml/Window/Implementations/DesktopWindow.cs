@@ -3,6 +3,7 @@
 using System;
 using System.Runtime.CompilerServices;
 using Uno.Foundation.Logging;
+using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Hosting;
@@ -21,7 +22,6 @@ internal partial class DesktopWindow : BaseWindowImplementation
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
 		_desktopWindowXamlSource.AttachToWindow(window);
 		_desktopWindowXamlSource.Content = _windowChrome;
-		var par = _windowChrome.XamlRoot;
 		InitializeNativeWindow();
 	}
 
@@ -33,12 +33,14 @@ internal partial class DesktopWindow : BaseWindowImplementation
 	public override UIElement? Content
 	{
 		get => _windowChrome.Content as UIElement;
-		set
-		{
-			_windowChrome.Content = value;
-			var p = value!.XamlRoot;
-		}
+		set => _windowChrome.Content = value;
 	}
 
 	public override XamlRoot? XamlRoot => _desktopWindowXamlSource.XamlIsland.XamlRoot;
+
+	protected override void OnSizeChanged(Size newSize)
+	{
+		_desktopWindowXamlSource.XamlIsland.Width = newSize.Width;
+		_desktopWindowXamlSource.XamlIsland.Height = newSize.Height;
+	}
 }

@@ -8,7 +8,7 @@ internal sealed partial class WindowChrome : ContentControl
 	{
 		HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
 		VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
-		HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-		VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+		HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Stretch;
+		VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Stretch;
 	}
 }
