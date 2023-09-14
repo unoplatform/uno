@@ -302,6 +302,9 @@
 		<!-- Update Uno.WinUI.DevServer.Messaging references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer.Messaging']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
+		<!-- Update Uno.WinUI.DevServer references version -->
+		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.WinUI.DevServer']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
+
 		<!-- Update Uno.Foundation.Runtime.WebAssembly references version -->
 		<XmlPoke XmlInputPath="%(_NuspecFiles.Identity)" Query="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.Foundation.Runtime.WebAssembly']/@version" Value="$(GITVERSION_SemVer)" Namespaces="$(NugetNamespace)" />
 
