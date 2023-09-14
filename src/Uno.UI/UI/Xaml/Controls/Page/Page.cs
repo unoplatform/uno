@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Page : UserControl
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		public Page()
 		{
-			InitializeBorder();
+			_borderRenderer = new BorderLayerRenderer(this);
 		}
+
+		private void UpdateBorder() => _borderRenderer.Update();
 
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 
@@ -88,12 +91,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public NavigationCacheMode NavigationCacheMode { get; set; }
 
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) =>
 			UpdateBorder();
-#if __WASM__
-			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
-#endif
-		}
 	}
 }

@@ -556,6 +556,37 @@ namespace Uno.UI {
 			return true;
 		}
 
+		public setBorderRadius(htmlId: number, topLeft: string, topRight: string, bottomRight: string, bottomLeft: string) {
+			const element = this.getView(htmlId);
+
+			const elementStyle = element.style;
+
+			elementStyle.setProperty("border-radius", topLeft + "px " + topRight + "px " + bottomRight + "px " + bottomLeft+ "px");
+			elementStyle.setProperty("overflow", "hidden"); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+
+			return true;
+		}
+
+		/**
+		* Set border radius and overflow.
+		*/
+		public setBorderRadiusNative(pParams: number): boolean {
+			const params = WindowManagerSetBorderRadiusParams.unmarshal(pParams);
+			return this.setBorderRadius(
+				params.HtmlId,
+				params.TopLeft.toFixed(2).toString(),
+				params.TopRight.toFixed(2).toString(),
+				params.BottomRight.toFixed(2).toString(),
+				params.BottomLeft.toFixed(2).toString());
+		}
+			
+		public setStyleString(htmlId: number, name: string, value: string): string {
+
+			this.getView(htmlId).style.setProperty(name, value);
+
+			return "ok";
+		}
+
 		public setStyleStringNative(pParams: number): boolean {
 
 			const params = WindowManagerSetStyleStringParams.unmarshal(pParams);
@@ -568,6 +599,48 @@ namespace Uno.UI {
 		public setStyleStringNativeFast(htmlId: number, name: string, value: string) {
 
 			this.getView(htmlId).style.setProperty(name, value);
+		}
+
+		public setSolidColorBorder(htmlId: number, color: number, width: string) {
+			const element = this.getView(htmlId);
+
+			const elementStyle = element.style;
+
+			elementStyle.setProperty("border", "");
+			elementStyle.setProperty("border-style", "solid");
+			elementStyle.setProperty("border-color", this.numberToCssColor(color));
+			elementStyle.setProperty("border-width", width);
+
+			return true;
+		}
+
+		public setSolidColorBorderNative(pParams: number): boolean {
+
+			const params = WindowManagerSetSolidColorBorderParams.unmarshal(pParams);
+			return this.setSolidColorBorder(params.HtmlId, params.Color, params.Width);
+		}
+
+		public setGradientBorder(htmlId: number, borderImage: string, width: string) {
+			const element = this.getView(htmlId);
+
+			const elementStyle = element.style;
+			elementStyle.setProperty("border", "");
+			elementStyle.setProperty("border-style", "solid");
+			elementStyle.setProperty("border-color", "");
+			elementStyle.setProperty("border-image", borderImage);
+			elementStyle.setProperty("border-width", width);
+			elementStyle.setProperty("border-image-slice", "1");
+
+			return true;
+		}
+
+		/**
+		* Set border to gradient brush.
+		*/
+		public setGradientBorderNative(pParams: number): boolean {
+
+			const params = WindowManagerSetGradientBorderParams.unmarshal(pParams);
+			return this.setGradientBorder(params.HtmlId, params.BorderImage, params.Width);
 		}
 
 		/**

@@ -39,21 +39,33 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
+	/// <summary>
+	/// Displays the content of a ContentControl. Can also provide content presentation for non-controls.
+	/// Provides a base class for specialized presenters such as ScrollContentPresenter.
+	/// </summary>
 	[ContentProperty(Name = "Content")]
 	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
+
+		public ContentPresenter()
+		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
+			InitializePlatform();
+		}
+
+		private void UpdateBorder() => _borderRenderer.Update();
+
+		partial void InitializePlatform();
 
 		/// <summary>
 		/// Will be set to either the result of ContentTemplateSelector or to ContentTemplate, depending on which is used
 		/// </summary>
 		private DataTemplate _dataTemplateUsedLastUpdate;
-
-		private void InitializeContentPresenter()
-		{
-			SetDefaultForeground(ForegroundProperty);
-		}
 
 		/// <summary>
 		/// Indicates if the content should inherit templated parent from the presenter, or its templated parent.
@@ -175,11 +187,10 @@ namespace Windows.UI.Xaml.Controls
 		}
 		private void OnBackgroundSizingChanged(DependencyPropertyChangedEventArgs e)
 		{
-			OnBackgroundSizingChangedPartial(e);
+			UpdateBorder();
 			base.OnBackgroundSizingChangedInner(e);
 		}
 
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e);
 		#endregion
 
 		#region Foreground Dependency Property
@@ -490,10 +501,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
-			OnPaddingChangedPartial(oldValue, newValue);
+			OnPaddingChangedPartial();
+			UpdateBorder();
 		}
 
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
+		partial void OnPaddingChangedPartial();
 
 		#endregion
 
@@ -543,18 +555,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-#if __WASM__
-			if (((oldValue is null) ^ (newValue is null)) && BorderThickness != default)
-			{
-				// The transition from null to non-null (and vice-versa) affects child arrange on Wasm when non-zero BorderThickness is specified.
-				(Content as UIElement)?.InvalidateArrange();
-			}
-#endif
-			UpdateBorder();
-		}
-
+		private void OnBorderBrushChanged(Brush oldValue, Brush newValue) => UpdateBorder();
 
 		#endregion
 
@@ -570,10 +571,8 @@ namespace Windows.UI.Xaml.Controls
 			set => SetCornerRadiusValue(value);
 		}
 
-		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateCornerRadius(newValue);
-		}
+		private void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) =>
+			UpdateBorder();
 
 		#endregion
 
@@ -641,6 +640,14 @@ namespace Windows.UI.Xaml.Controls
 				this.ClearValue(DataContextProperty, DependencyPropertyValuePrecedences.Local);
 			}
 		}
+
+		private void SetUpdateTemplate()
+		{
+			UpdateContentTemplateRoot();
+			SetUpdateTemplatePartial();
+		}
+
+		partial void SetUpdateTemplatePartial();
 
 		private void TrySetDataContextFromContent(object value)
 		{
@@ -818,8 +825,6 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-
-			ClearBorder();
 
 			TryDetachNativeElement();
 		}

@@ -11,17 +11,14 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Xaml;
-#if __ANDROID__
-using View = Android.Views.View;
-#elif __IOS__
-using View = UIKit.UIView;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
 	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
 	{
+		private readonly BorderLayerRenderer _borderRenderer;
+
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 		private new UIElementCollection _children;
 #else
@@ -30,10 +27,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private PanelTransitionHelper _transitionHelper;
 
-		partial void Initialize()
+
+		public Panel()
 		{
+			_borderRenderer = new BorderLayerRenderer(this);
+
 			_children = new UIElementCollection(this);
 		}
+
+		private void UpdateBorder() => _borderRenderer.Update();
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
 			=> OnChildrenChanged();
@@ -180,35 +182,30 @@ namespace Windows.UI.Xaml.Controls
 			IsItemsHost = itemsOwner != null;
 		}
 
-		protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue)
-		{
-			OnCornerRadiusChangedPartial(oldValue, newValue);
-		}
-
-		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue);
+		protected virtual void OnCornerRadiusChanged(CornerRadius oldValue, CornerRadius newValue) =>
+			UpdateBorder();
 
 		protected virtual void OnPaddingChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnPaddingChangedPartial(oldValue, newValue);
+			UpdateBorder();
 		}
+
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue);
 
 		protected virtual void OnBorderThicknessChanged(Thickness oldValue, Thickness newValue)
 		{
 			OnBorderThicknessChangedPartial(oldValue, newValue);
+			UpdateBorder();
 		}
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue);
 
-		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
-		{
-			OnBorderBrushChangedPartial(oldValue, newValue);
-		}
-		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
+		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue) =>
+			UpdateBorder();
 
 		private protected override Thickness GetBorderThickness() => BorderThicknessInternal;
 
 		internal override bool CanHaveChildren() => true;
-
 
 		private protected void OnBackgroundSizingChangedInnerPanel(DependencyPropertyChangedEventArgs e)
 		{
@@ -217,7 +214,14 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		partial void UpdateBorder();
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnBackgroundChanged(e);
+			UpdateBorder();
+			OnBackgroundChangedPartial(e);
+		}
+
+		partial void OnBackgroundChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		internal override bool IsViewHit() => Border.IsViewHitImpl(this);
 	}

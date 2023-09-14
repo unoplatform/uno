@@ -297,6 +297,93 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetSolidColorBorder
+
+		internal static void SetSolidColorBorder(IntPtr htmlId, Color color, string borderWidth)
+		{
+			var parms = new WindowManagerSetSolidColorBorderParams
+			{
+				HtmlId = htmlId,
+				Color = color.ToCssInteger(),
+				Width = borderWidth,
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setSolidColorBorderNative", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetSolidColorBorderParams
+		{
+			public IntPtr HtmlId;
+
+			public uint Color;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Width;
+		}
+
+		#endregion
+
+		#region SetGradientBorder
+
+		internal static void SetGradientBorder(IntPtr htmlId, string borderImage, string borderWidth)
+		{
+			var parms = new WindowManagerSetGradientBorderParams
+			{
+				HtmlId = htmlId,
+				BorderImage = borderImage,
+				Width = borderWidth,
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setGradientBorderNative", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetGradientBorderParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string BorderImage;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Width;
+		}
+
+		#endregion
+
+		#region SetBorderRadius
+
+		internal static void SetBorderRadius(IntPtr htmlId, CornerRadius cornerRadius)
+		{
+			var parms = new WindowManagerSetBorderRadiusParams
+			{
+				HtmlId = htmlId,
+				TopLeft = cornerRadius.TopLeft,
+				TopRight = cornerRadius.TopRight,
+				BottomLeft = cornerRadius.BottomLeft,
+				BottomRight = cornerRadius.BottomRight,
+			};
+
+			TSInteropMarshaller.InvokeJS("Uno:setBorderRadiusNative", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerSetBorderRadiusParams
+		{
+			public IntPtr HtmlId;
+
+			public double TopLeft;
+			public double TopRight;
+			public double BottomLeft;
+			public double BottomRight;
+		}
+
+		#endregion
+
 		#region IsCssFeatureSupported
 
 		internal static bool IsCssFeatureSupported(string supportCondition)

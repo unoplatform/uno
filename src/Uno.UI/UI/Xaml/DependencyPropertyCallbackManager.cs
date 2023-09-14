@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml
 		{
 		}
 
+		public int CallbacksCount => _callbacks.Count;
+
 		public void Dispose()
 		{
 			if (_disposed)

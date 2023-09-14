@@ -207,12 +207,6 @@ namespace Windows.UI.Xaml
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		protected void SetCornerRadius(CornerRadius cornerRadius)
-			=> BorderLayerRenderer.SetCornerRadius(this, cornerRadius);
-
-		protected void SetBorder(Thickness thickness, Brush brush)
-			=> BorderLayerRenderer.SetBorder(this, thickness, brush);
-
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
 		{
 			if (dependencyPropertyChangedEventArgs.NewValue is BackgroundSizing sizing)

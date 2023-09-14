@@ -26,42 +26,21 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private const double __opaqueAlpha = 255;
 
-		private LayoutState _currentState;
-
 		private readonly SerialDisposable _layerDisposable = new SerialDisposable();
 		private static readonly float[] _outerRadiiStore = new float[8];
 		private static readonly float[] _innerRadiiStore = new float[8];
 
-		/// <summary>
-		/// Updates or creates a sublayer to render a border-like shape.
-		/// </summary>
-		/// <param name="view">The view to which we should add the layers</param>
-		/// <param name="background">The background brush of the border</param>
-		/// <param name="backgroundSizing">The background sizing (if drawn under border or not)</param>
-		/// <param name="borderThickness">The border thickness</param>
-		/// <param name="borderBrush">The border brush</param>
-		/// <param name="cornerRadius">The corner radius</param>
-		/// <param name="padding">The padding to apply on the content</param>
-		public void UpdateLayer(
-			FrameworkElement view,
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
-			Thickness padding,
-			bool willUpdateMeasures = false)
+		partial void UpdateLayer()
 		{
-			var drawArea = new Rect(default, view.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
-			var newState = new LayoutState(drawArea, background, borderThickness, borderBrush, cornerRadius, padding);
-			var previousLayoutState = _currentState;
+			var drawArea = new Rect(default, _owner.LayoutSlotWithMarginsAndAlignments.Size.LogicalToPhysicalPixels());
+			var newState = new BorderLayerState(drawArea, _borderInfoProvider);
 
-			if (newState.Equals(previousLayoutState))
+			if (newState.Equals(_currentState))
 			{
 				return;
 			}
 
-			var imageHasChanged = newState.BackgroundImageSource != previousLayoutState?.BackgroundImageSource;
+			var imageHasChanged = newState.BackgroundImageSource != _currentState?.BackgroundImageSource;
 			var shouldDisposeEagerly = imageHasChanged || newState.BackgroundImageSource == null;
 			if (shouldDisposeEagerly)
 			{
@@ -71,7 +50,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			Action onImageSet = null;
-			var disposable = InnerCreateLayers(view, drawArea, background, backgroundSizing, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
+			var disposable = InnerCreateLayers(
+				_owner,
+				drawArea,
+				_borderInfoProvider,
+				() => onImageSet?.Invoke());
 
 			// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
 			// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
@@ -85,13 +68,14 @@ namespace Windows.UI.Xaml.Controls
 				onImageSet = () => _layerDisposable.Disposable = disposable;
 			}
 
-			if (willUpdateMeasures)
+			if (_borderInfoProvider.ShouldUpdateMeasures)
 			{
-				view.RequestLayout();
+				_owner.RequestLayout();
+				_borderInfoProvider.ShouldUpdateMeasures = false;
 			}
 			else
 			{
-				view.Invalidate();
+				_owner.Invalidate();
 			}
 
 			_currentState = newState;
@@ -100,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Removes the added layers during a call to <see cref="UpdateLayer" />.
 		/// </summary>
-		internal void Clear()
+		partial void ClearLayer()
 		{
 			_layerDisposable.Disposable = null;
 			_currentState = null;
@@ -108,12 +92,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static IDisposable InnerCreateLayers(
 			BindableView view,
-			Rect drawArea,
-			Brush background,
-			BackgroundSizing backgroundSizing,
-			Thickness borderThickness,
-			Brush borderBrush,
-			CornerRadius cornerRadius,
+			IBorderInfoProvider borderInfoProvider,
 			Action onImageSet)
 		{
 			// In case the element has no size, skip everything!
@@ -291,10 +270,10 @@ namespace Windows.UI.Xaml.Controls
 			Dispatch(
 				view?.Dispatcher,
 				async ct =>
-					{
-						var bitmapDisposable = await SetImageBrushAsBackground(ct, view, background, drawArea, maskingPath, onImageSet);
-						disposable.Add(bitmapDisposable);
-					}
+				{
+					var bitmapDisposable = await SetImageBrushAsBackground(ct, view, background, drawArea, maskingPath, onImageSet);
+					disposable.Add(bitmapDisposable);
+				}
 			)
 			.DisposeWith(disposable);
 
@@ -476,61 +455,6 @@ namespace Windows.UI.Xaml.Controls
 			).AsTask(cd.Token);
 
 			return cd;
-		}
-
-		private class LayoutState : IEquatable<LayoutState>
-		{
-			public readonly Windows.Foundation.Rect Area;
-			public readonly Brush Background;
-			public readonly ImageSource BackgroundImageSource;
-			public readonly Uri BackgroundImageSourceUri;
-			public readonly Color? BackgroundColor;
-			public readonly Brush BorderBrush;
-			public readonly Color? BorderBrushColor;
-			public readonly Thickness BorderThickness;
-			public readonly CornerRadius CornerRadius;
-			public readonly Thickness Padding;
-			public readonly Color? BackgroundFallbackColor;
-
-			public LayoutState(Windows.Foundation.Rect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, Thickness padding)
-			{
-				Area = area;
-				Background = background;
-				BorderBrush = borderBrush;
-				CornerRadius = cornerRadius;
-				BorderThickness = borderThickness;
-				Padding = padding;
-
-				var imageBrushBackground = Background as ImageBrush;
-				BackgroundImageSource = imageBrushBackground?.ImageSource;
-				BackgroundImageSourceUri = BackgroundImageSource switch
-				{
-					BitmapImage bitmapImage => bitmapImage.UriSource,
-					SvgImageSource svgImageSource => svgImageSource.UriSource,
-					_ => null
-				};
-
-				BackgroundColor = (Background as SolidColorBrush)?.Color;
-				BorderBrushColor = (BorderBrush as SolidColorBrush)?.Color;
-
-				BackgroundFallbackColor = (Background as XamlCompositionBrushBase)?.FallbackColor;
-			}
-
-			public bool Equals(LayoutState other)
-			{
-				return other != null
-					&& other.Area == Area
-					&& other.Background == Background
-					&& other.BackgroundImageSource == BackgroundImageSource
-					&& other.BackgroundImageSourceUri == BackgroundImageSourceUri
-					&& other.BackgroundColor == BackgroundColor
-					&& other.BorderBrush == BorderBrush
-					&& other.BorderBrushColor == BorderBrushColor
-					&& other.BorderThickness == BorderThickness
-					&& other.CornerRadius == CornerRadius
-					&& other.Padding == Padding
-					&& other.BackgroundFallbackColor == BackgroundFallbackColor;
-			}
 		}
 	}
 }

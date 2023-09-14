@@ -7,118 +7,41 @@ using System.Linq;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
-using Uno.UI.Helpers;
 
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-using Android.Graphics;
-using Android.Views;
+namespace Windows.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+public partial class Border
 {
-	public partial class Border
+	protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
 	{
-		private Action _brushChanged;
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
 
-		public Border()
-		{
-		}
-
-		private protected override void OnLoaded()
-		{
-			base.OnLoaded();
-
-			UpdateBorder();
-		}
-
-		private protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-
-			_borderRenderer.Clear();
-		}
-
-		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom, bool localIsLayoutRequested)
-		{
-			base.OnLayoutCore(changed, left, top, right, bottom, localIsLayoutRequested);
-
-			UpdateBorder();
-		}
-
-		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
-		{
-			if (previousValue != null)
-			{
-				RemoveView(previousValue);
-			}
-
-			if (newValue != null)
-			{
-				AddView(newValue);
-			}
-		}
-
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
-		{
-			AdjustCornerRadius(canvas, CornerRadius);
-		}
-
-		private void UpdateBorder()
-		{
-			UpdateBorder(false);
-		}
-
-		private void UpdateBorder(bool willUpdateMeasures)
-		{
-			if (IsLoaded)
-			{
-				_borderRenderer.UpdateLayer(
-					this,
-					Background,
-					BackgroundSizing,
-					BorderThickness,
-					BorderBrush,
-					CornerRadius,
-					Padding,
-					willUpdateMeasures
-				);
-			}
-		}
-
-		partial void OnBorderBrushChangedPartial()
-		{
-			UpdateBorder();
-		}
-
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Don't call base, just update the filling color.
-			var newOnInvalidateRender = _brushChanged ?? (() => UpdateBorder());
-			Brush.SetupBrushChanged(e.OldValue as Brush, e.NewValue as Brush, ref _brushChanged, newOnInvalidateRender);
-		}
-
-		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder();
-		}
-
-		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-		{
-			UpdateBorder(true);
-		}
-
-		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-		{
-			UpdateBorder();
-		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+		UpdateBorder();
 	}
+
+	partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
+	{
+		if (previousValue != null)
+		{
+			RemoveView(previousValue);
+		}
+
+		if (newValue != null)
+		{
+			AddView(newValue);
+		}
+	}
+
+	partial void OnPaddingChangedPartial()
+	{
+		ShouldUpdateMeasures = true;
+	}
+
+	protected override void OnDraw(Android.Graphics.Canvas canvas)
+	{
+		AdjustCornerRadius(canvas, CornerRadius);
+	}
+
+	bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+	bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 }

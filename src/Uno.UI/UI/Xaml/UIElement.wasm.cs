@@ -132,10 +132,8 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleString(HtmlId, name, value);
 		}
 
-		protected internal void SetStyle(string name, double value)
-		{
+		protected internal void SetStyle(string name, double value) =>
 			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
-		}
 
 		protected internal void SetStyle(params (string name, string value)[] styles)
 		{
@@ -146,6 +144,12 @@ namespace Windows.UI.Xaml
 
 			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
+
+		internal void SetSolidColorBorder(Windows.UI.Color color, string borderWidth) =>
+			Uno.UI.Xaml.WindowManagerInterop.SetSolidColorBorder(HtmlId, color, borderWidth);
+
+		internal void SetGradientBorder(string borderImage, string borderWidth) =>
+			Uno.UI.Xaml.WindowManagerInterop.SetGradientBorder(HtmlId, borderImage, borderWidth);
 
 		internal void SetSelectionHighlight(Color backgroundColor, Color foregroundColor)
 		{
