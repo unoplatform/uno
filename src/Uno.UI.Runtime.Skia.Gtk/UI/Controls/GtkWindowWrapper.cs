@@ -24,7 +24,8 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 		_gtkWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
 		_gtkWindow.Shown += OnWindowShown;
 		_gtkWindow.Host.SizeChanged += OnHostSizeChanged;
-		_gtkWindow.DeleteEvent += WindowClosing;
+		_gtkWindow.DeleteEvent += OnWindowClosing;
+		_gtkWindow.Destroyed += OnWindowClosed;
 		_gtkWindow.WindowStateEvent += OnWindowStateChanged;
 	}
 
@@ -47,7 +48,13 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 
 	public void Activate() => _gtkWindow.Activate();
 
-	private void WindowClosing(object sender, DeleteEventArgs args)
+
+	private void OnWindowClosed(object? sender, EventArgs e)
+	{
+		Closed?.Invoke(this, EventArgs.Empty);
+	}
+
+	private void OnWindowClosing(object sender, DeleteEventArgs args)
 	{
 		var manager = SystemNavigationManagerPreview.GetForCurrentView();
 		if (!manager.HasConfirmedClose)
