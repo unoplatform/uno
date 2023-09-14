@@ -49,7 +49,7 @@ namespace Uno.UI.Controls
 		}
 
 		private UIView? _focusedView; // Not really the "focused", but the last view which was touched.
-		private WeakReference<UIScrollView>? _scrollViewModifiedForKeyboard;
+		private WeakReference<UIScrollView?>? _scrollViewModifiedForKeyboard;
 		private InputPane _inputPane;
 		private EventProviderExtensions.DisposableEventActivity? _touchTrace;
 
@@ -377,13 +377,13 @@ namespace Uno.UI.Controls
 
 			var scrollView = view.FindSuperviewsOfType<UIScrollView>().LastOrDefault();
 
+			_scrollViewModifiedForKeyboard = new WeakReference<UIScrollView?>(scrollView);
+
 			if (scrollView == null)
 			{
 				this.Log().Warn("Keyboard will show, but we cannot find any ScrollView with enough space for the currently focused view, so it's impossible to ensure that it's visible.");
 				return;
 			}
-
-			_scrollViewModifiedForKeyboard = new WeakReference<UIScrollView>(scrollView);
 
 			var scrollViewRectInWindow = ConvertRectFromView(scrollView.Bounds, scrollView);
 
