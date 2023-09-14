@@ -7,8 +7,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Foundation.Logging;
 using System.Threading.Tasks;
+
+#if HAS_UNO
+using Uno.Foundation.Logging;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
@@ -68,7 +71,9 @@ internal class ProcessHelpers
 	{
 		var process = StartProcess(executable, parameters, workingDirectory, logPrefix, environmentVariables);
 
-		typeof(Given_HotReloadWorkspace).Log().Debug(logPrefix + $" waiting for process exit");
+#if HAS_UNO
+		typeof(ProcessHelpers).Log().Debug(logPrefix + $" waiting for process exit");
+#endif
 
 		if (waitForExit)
 		{
@@ -118,7 +123,9 @@ internal class ProcessHelpers
 
 		process.StartInfo = pi;
 
-		typeof(Given_HotReloadWorkspace).Log().Debug($"Started process (wd:{pi.WorkingDirectory}): {pi.FileName} {string.Join(" ", pi.ArgumentList)})");
+#if HAS_UNO
+		typeof(ProcessHelpers).Log().Debug($"Started process (wd:{pi.WorkingDirectory}): {pi.FileName} {string.Join(" ", pi.ArgumentList)})");
+#endif
 
 		process.Start();
 
