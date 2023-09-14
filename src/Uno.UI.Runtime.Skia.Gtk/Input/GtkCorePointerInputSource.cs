@@ -16,6 +16,7 @@ using Exception = System.Exception;
 using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -23,7 +24,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 {
 	private const int _maxKnownDevices = 63;
 	private const int _knownDeviceScavengeCount = 16;
-	private readonly UnoGtkWindow _window;
+	private readonly UnoGtkWindowHost _windowHost;
 	private readonly Dictionary<PointerIdentifier, (Gdk.Device dev, uint ts)> _knownDevices = new(_maxKnownDevices + 1);
 	private Gdk.Device? _lastUsedDevice;
 
@@ -54,22 +55,22 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	public event TypedEventHandler<object, PointerEventArgs>? PointerCancelled; // Uno Only
 #pragma warning restore CS0067
 
-	public GtkCorePointerInputSource()
+	public GtkCorePointerInputSource(IXamlRootHost host)
 	{
 		_log = this.Log();
 		_isTraceEnabled = _log.IsEnabled(LogLevel.Trace);
 
-		if (GtkHost.Current?.MainWindow is not { } window)
+		if (host is not UnoGtkWindowHost windowHost)
 		{
-			throw new InvalidOperationException("Main window is not set");
+			throw new ArgumentException($"{nameof(host)} must be a WPF Control instance", nameof(host));
 		}
 
-		_window = window;
+		_windowHost = windowHost;
 
 		// even though we are not going to use events directly in the window here maintain the masks
-		window.AddEvents((int)RequestedEvents);
+		_windowHost.GtkWindow.AddEvents((int)RequestedEvents);
 		// add masks for the GtkEventBox
-		window.Host.EventBox.AddEvents((int)RequestedEvents);
+		_windowHost.EventBox.AddEvents((int)RequestedEvents);
 
 		// Use GtkEventBox to fix Wayland titlebar events
 		// Note: On some devices (e.g. raspberryPI - seems to be devices that are not supporting multi-touch?),
@@ -79,15 +80,15 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		//		 * When a device properly send the touch events through the OnTouchEvent,
 		//		   system does not "emulate the mouse" so this method should not be invoked.
 		//		   That's the purpose of the UnoEventBox.
-		window.Host.EventBox.EnterNotifyEvent += OnEnterEvent;
-		window.Host.EventBox.LeaveNotifyEvent += OnLeaveEvent;
-		window.Host.EventBox.ButtonPressEvent += OnButtonPressEvent;
-		window.Host.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
-		window.Host.EventBox.MotionNotifyEvent += OnMotionEvent;
-		window.Host.EventBox.ScrollEvent += OnScrollEvent;
-		window.Host.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
-		window.Host.EventBox.ProximityInEvent += OnProximityInEvent;
-		window.Host.EventBox.ProximityOutEvent += OnProximityOutEvent;
+		_windowHost.EventBox.EnterNotifyEvent += OnEnterEvent;
+		_windowHost.EventBox.LeaveNotifyEvent += OnLeaveEvent;
+		_windowHost.EventBox.ButtonPressEvent += OnButtonPressEvent;
+		_windowHost.EventBox.ButtonReleaseEvent += OnButtonReleaseEvent;
+		_windowHost.EventBox.MotionNotifyEvent += OnMotionEvent;
+		_windowHost.EventBox.ScrollEvent += OnScrollEvent;
+		_windowHost.EventBox.Touched += OnTouchedEvent; //Note: we don't use the TouchEvent for the reason explained in the UnoEventBox!
+		_windowHost.EventBox.ProximityInEvent += OnProximityInEvent;
+		_windowHost.EventBox.ProximityOutEvent += OnProximityOutEvent;
 	}
 
 	/// <inheritdoc />
@@ -101,8 +102,8 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	/// <inheritdoc />
 	public CoreCursor PointerCursor
 	{
-		get => _window.Window.Cursor.ToCoreCursor();
-		set => _window.Window.Cursor = value.ToCursor();
+		get => _windowHost.GtkWindow.Window.Cursor.ToCoreCursor();
+		set => _windowHost.GtkWindow.Window.Cursor = value.ToCursor();
 	}
 
 	/// <inheritdoc />
@@ -110,7 +111,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_windowHost.GtkWindow, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -123,7 +124,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			global::Gtk.Device.GrabAdd(_window, entry.dev, block_others: false);
+			global::Gtk.Device.GrabAdd(_windowHost.GtkWindow, entry.dev, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -136,7 +137,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_windowHost.GtkWindow, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -149,7 +150,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			global::Gtk.Device.GrabRemove(_window, entry.dev);
+			global::Gtk.Device.GrabRemove(_windowHost.GtkWindow, entry.dev);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
