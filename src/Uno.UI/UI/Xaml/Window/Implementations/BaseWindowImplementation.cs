@@ -77,12 +77,15 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
 		Bounds = new Rect(0, 0, size.Width, size.Height);
+		OnSizeChanged(size);
 		XamlRoot?.InvalidateMeasure(); // Should notify before or after?
 		XamlRoot?.NotifyChanged();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 		CoreWindow?.OnSizeChanged(windowSizeChanged);
 		SizeChanged?.Invoke(this, windowSizeChanged);
 	}
+
+	protected virtual void OnSizeChanged(Size newSize) { }
 
 	private void OnNativeVisibilityChanged(object? sender, bool isVisible)
 	{
