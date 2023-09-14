@@ -622,8 +622,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			FlyoutBase.ShowAttachedFlyout(button);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			var focused = FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot);
-			Assert.IsInstanceOfType(focused, typeof(Popup));
+			Assert.AreEqual(flyoutButton, FocusManager.GetFocusedElement(TestServices.WindowHelper.XamlRoot));
 
 			flyout.Hide();
 			await TestServices.WindowHelper.WaitForIdle();
