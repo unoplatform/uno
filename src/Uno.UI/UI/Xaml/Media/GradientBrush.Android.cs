@@ -9,7 +9,6 @@ namespace Windows.UI.Xaml.Media
 		private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 		{
 			paint.SetShader(GetShader(destinationRect.Size));
-			paint.SetStyle(Paint.Style.Stroke);
 		}
 
 		protected internal abstract Shader GetShader(Size size);
