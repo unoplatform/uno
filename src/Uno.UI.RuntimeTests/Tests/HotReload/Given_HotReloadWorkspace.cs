@@ -26,32 +26,31 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload;
 #if !__SKIA__
 [Ignore("Hot reload tests are only available on Skia targets")]
 #endif
-internal class Given_HotReloadWorkspace
+internal partial class Given_HotReloadWorkspace
 {
 	private static Process? _process;
 	private static int _remoteControlPort;
 	private static Process? _testAppProcess;
 
-	[TestInitialize]
-	public async Task Initialize()
-	{
-#if !DEBUG
-		if (Environment.GetEnvironmentVariable("UnoEnableHRuntimeTests") != "true")
-		{
-			Assert.Inconclusive($"HotReload workspace test are not enabled for this platform (UnoEnableHRuntimeTests env var is not defined)");
-		}
-#endif
-
-		await InitializeServer();
-		await BuildTestApp();
-	}
-
-	[TestCleanup]
-	public async Task TestCleanupWrapper()
-	{
-		_testAppProcess?.Kill();
-	}
-
+	/// <remarks>
+	/// This test is running C# hot reload tests in a separate app, located 
+	/// in the HRApp folder. These tests are run as "runtime tests" in the HRApp, and the
+	/// results are returned as an NUnit XML result file.
+	/// 
+	/// The results are expanded as a single unit test result for the test below which runs
+	/// in the original SamplesApp.
+	/// 
+	/// This secondary app is launched alongside a DevServer and can request hot reload
+	/// for its own files.
+	/// 
+	/// On the CI oor local console, the debug logs from the DevServer and HRApp are provided using the 
+	/// <see cref="Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace" /> type, 
+	/// and can be set in debug in the SamplesApp's startup.
+	/// 
+	/// Note that attaching a debugger to the HRApp will disable the hot reload subsystem 
+	/// in the Core CLR, making all HR runtime tests fail.
+	/// 
+	/// </remarks>
 	[TestMethod]
 	[Timeout(5 * 60 * 1000)]
 	public async Task When_HotReloadScenario()
@@ -79,39 +78,24 @@ internal class Given_HotReloadWorkspace
 		}
 	}
 
-	private class NUnitXmlParser
+	[TestInitialize]
+	public async Task Initialize()
 	{
-		public record TestResult(string result, string Name, string? errorMessage);
-
-		internal static TestResult[] GetTests(string resultFile)
+#if !DEBUG
+		if (Environment.GetEnvironmentVariable("UnoEnableHRuntimeTests") != "true")
 		{
-			var doc = new XmlDocument();
-			doc.Load(resultFile);
-
-			List<TestResult> results = new();
-
-			var testCases = doc.SelectNodes("//test-case");
-
-			if (testCases is not null)
-			{
-				foreach (var testCase in testCases)
-				{
-					if (testCase is XmlNode node
-						&& node.Attributes is not null)
-					{
-						var result = node.Attributes["result"]?.Value ?? "N/A";
-
-						var name = node.Attributes["name"]?.Value;
-						var fullName = node.Attributes["fullname"]?.Value;
-						var error = node.SelectSingleNode("failure/message")?.InnerText;
-
-						results.Add(new(result, name ?? "Unknown", error!));
-					}
-				}
-			}
-
-			return results.ToArray();
+			Assert.Inconclusive($"HotReload workspace test are not enabled for this platform (UnoEnableHRuntimeTests env var is not defined)");
 		}
+#endif
+
+		await InitializeServer();
+		await BuildTestApp();
+	}
+
+	[TestCleanup]
+	public async Task TestCleanupWrapper()
+	{
+		_testAppProcess?.Kill();
 	}
 
 	public static async Task InitializeServer()
@@ -132,7 +116,7 @@ internal class Given_HotReloadWorkspace
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
 
-		var p = await RunProcess(
+		var p = await ProcessHelpers.RunProcess(
 			ct,
 			"dotnet",
 			new() {
@@ -167,83 +151,9 @@ internal class Given_HotReloadWorkspace
 		return testOutput;
 	}
 
-	private static async Task<Process> RunProcess(
-		CancellationToken ct,
-		string executable,
-		List<string> parameters,
-		string workingDirectory,
-		string logPrefix,
-		bool waitForExit,
-		Dictionary<string, string>? environmentVariables = null)
-	{
-		var process = StartProcess(executable, parameters, workingDirectory, logPrefix, environmentVariables);
-
-		typeof(Given_HotReloadWorkspace).Log().Debug(logPrefix + $" waiting for process exit");
-
-		if (waitForExit)
-		{
-			await process.WaitForExitAsync();
-		}
-
-		return process;
-	}
-
-	private static Process StartProcess(
-		string executable,
-		List<string> parameters,
-		string workingDirectory,
-		string logPrefix,
-		Dictionary<string, string>? environmentVariables = null)
-	{
-		var hrAppPath = GetHotReloadAppPath();
-
-		var pi = new ProcessStartInfo(executable)
-		{
-			UseShellExecute = false,
-			CreateNoWindow = true,
-			WindowStyle = ProcessWindowStyle.Hidden,
-			WorkingDirectory = workingDirectory,
-		};
-
-		foreach (var parm in parameters)
-		{
-			pi.ArgumentList.Add(parm);
-		}
-
-		if (environmentVariables is not null)
-		{
-			foreach (var env in environmentVariables)
-			{
-				pi.EnvironmentVariables[env.Key] = env.Value;
-			}
-		}
-
-		// redirect the output
-		pi.RedirectStandardOutput = true;
-		pi.RedirectStandardError = true;
-
-		var process = new System.Diagnostics.Process();
-
-		// hookup the event handlers to capture the data that is received
-		process.OutputDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Debug(logPrefix + ": " + args.Data ?? "<Empty>");
-		process.ErrorDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Error(logPrefix + ": " + args.Data ?? "<Empty>");
-
-		process.StartInfo = pi;
-
-		typeof(Given_HotReloadWorkspace).Log().Debug($"Started process (wd:{pi.WorkingDirectory}): {pi.FileName} {string.Join(" ", pi.ArgumentList)})");
-
-		process.Start();
-
-		// start our event pumps
-		process.BeginOutputReadLine();
-		process.BeginErrorReadLine();
-
-		return process;
-	}
-
 	public static async Task BuildTestApp()
 	{
-		var process = StartProcess(
+		var process = ProcessHelpers.StartProcess(
 			"dotnet",
 			new() {
 				"build",
@@ -258,8 +168,6 @@ internal class Given_HotReloadWorkspace
 			GetHotReloadAppPath(),
 			"HRAppBuild"
 		);
-
-		await process.WaitForExitAsync();
 
 		await process.WaitForExitAsync();
 
