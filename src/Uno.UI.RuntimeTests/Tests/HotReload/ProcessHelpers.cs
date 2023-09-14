@@ -1,4 +1,5 @@
-﻿#nullable enable
+﻿#if HAS_UNO
+#nullable enable
 
 using System;
 using System.Diagnostics;
@@ -9,9 +10,7 @@ using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Threading.Tasks;
 
-#if HAS_UNO
 using Uno.Foundation.Logging;
-#endif
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
@@ -135,5 +134,5 @@ internal class ProcessHelpers
 
 		return process;
 	}
-
 }
+#endif
