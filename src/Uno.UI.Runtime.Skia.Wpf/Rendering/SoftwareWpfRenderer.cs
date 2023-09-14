@@ -88,7 +88,9 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
 
 				if (rootVisual.Compositor.IsSoftwareRenderer is null)
+				{
 					rootVisual.Compositor.IsSoftwareRenderer = true;
+				}
 			}
 		}
 

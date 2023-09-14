@@ -28,7 +28,7 @@ public class Given_CompositionVisualSurface
 			Width = 200,
 			Height = 200,
 			Stretch = Stretch.UniformToFill,
-			Source = ImageSource.TryCreateUriFromString("https://avatars.githubusercontent.com/u/52228309?s=200&v=4")
+			Source = ImageSource.TryCreateUriFromString("https://uno-assets.platform.uno/logos/uno.png")
 		};
 		var sut = new ContentControl
 		{

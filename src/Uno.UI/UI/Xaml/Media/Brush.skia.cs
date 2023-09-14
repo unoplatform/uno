@@ -206,13 +206,13 @@ namespace Windows.UI.Xaml.Media
 
 			brush.RegisterDisposablePropertyChangedCallback(
 				XamlCompositionBrushBase.FallbackColorProperty,
-				(s, colorArg) => { if (compositionBrush is CompositionColorBrush colorBrush) colorBrush.Color = brush.FallbackColorWithOpacity; }
+				(s, colorArg) => compositionBrush.TrySetColorFromBrush(brush)
 			)
 			.DisposeWith(disposables);
 
 			brush.RegisterDisposablePropertyChangedCallback(
 				XamlCompositionBrushBase.OpacityProperty,
-				(s, colorArg) => { if (compositionBrush is CompositionColorBrush colorBrush) colorBrush.Color = brush.FallbackColorWithOpacity; }
+				(s, colorArg) => compositionBrush.TrySetColorFromBrush(brush)
 			)
 			.DisposeWith(disposables);
 
@@ -308,6 +308,17 @@ namespace Windows.UI.Xaml.Media
 				case BrushMappingMode.RelativeToBoundingBox:
 				default:
 					return CompositionMappingMode.Relative;
+			}
+		}
+	}
+
+	internal static class BrushExtensions
+	{
+		internal static void TrySetColorFromBrush(this CompositionBrush brush, XamlCompositionBrushBase srcBrush)
+		{
+			if (brush is CompositionColorBrush colorBrush)
+			{
+				colorBrush.Color = srcBrush.FallbackColor;
 			}
 		}
 	}

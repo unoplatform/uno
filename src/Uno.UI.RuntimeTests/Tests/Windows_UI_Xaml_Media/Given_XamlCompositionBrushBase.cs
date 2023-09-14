@@ -55,9 +55,13 @@ public class Given_XamlCompositionBrushBase
 
 		var result = await RenderElements(expected, sut);
 		if (dpi == 1.0d)
+		{
 			await ImageAssert.AreEqualAsync(result.actual, result.expected);
+		}
 		else
+		{
 			await ImageAssert.AreSimilarAsync(result.actual, result.expected, 0.0405d * (dpi / 1.25d));
+		}
 	}
 
 	private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase

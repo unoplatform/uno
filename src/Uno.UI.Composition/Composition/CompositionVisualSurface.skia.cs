@@ -27,7 +27,16 @@ namespace Windows.UI.Composition
 				_drawingSession?.Dispose();
 				_surface?.Dispose();
 
-				var size = SourceSize != default ? SourceSize : (SourceVisual is not null && SourceVisual.Size != default ? SourceVisual.Size : new Vector2(1000, 1000));
+				Vector2 size = SourceSize switch
+				{
+					Vector2 { X: > 0.0f, Y: > 0.0f } => SourceSize,
+					_ => SourceVisual switch
+					{
+						Visual { Size: { X: > 0.0f, Y: > 0.0f } } => SourceVisual.Size,
+						_ => new Vector2(1000, 1000)
+					}
+				};
+
 				var info = new SKImageInfo((int)size.X, (int)size.Y, SKImageInfo.PlatformColorType, SKAlphaType.Premul);
 				_surface = SKSurface.Create(info);
 				_drawingSession = new DrawingSession(_surface, DrawingFilters.Default);
@@ -36,7 +45,10 @@ namespace Windows.UI.Composition
 			if (SourceVisual is not null && _surface is not null)
 			{
 				_surface.Canvas.Clear();
-				if (SourceOffset != default) _surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
+				if (SourceOffset != default)
+				{
+					_surface.Canvas.Translate(-SourceOffset.X, -SourceOffset.Y);
+				}
 
 				SourceVisual.Draw(_drawingSession.Value);
 			}

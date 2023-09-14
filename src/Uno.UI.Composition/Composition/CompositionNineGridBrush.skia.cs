@@ -28,9 +28,13 @@ namespace Windows.UI.Composition
 
 			SKRect sourceBounds;
 			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)
+			{
 				sourceBounds = new(0, 0, sourceSize.X, sourceSize.Y);
+			}
 			else
+			{
 				sourceBounds = bounds;
+			}
 
 			if ((Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline) || _sourcePaint.Shader is null || _sourceImage is null || _offlineSurface is null || _offlineSurface.Canvas.DeviceClipBounds != bounds)
 			{
@@ -70,7 +74,9 @@ namespace Windows.UI.Composition
 				_insetRect.Left = (int)(LeftInset * LeftInsetScale);
 
 				if (IsCenterHollow)
+				{
 					_offlineSurface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
+				}
 
 				_offlineSurface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
 
@@ -87,9 +93,13 @@ namespace Windows.UI.Composition
 		{
 			SKRect sourceBounds;
 			if (Source is ISizedBrush sizedBrush && sizedBrush.IsSized && sizedBrush.Size is Vector2 sourceSize)
+			{
 				sourceBounds = new(0, 0, sourceSize.X, sourceSize.Y);
+			}
 			else
+			{
 				sourceBounds = bounds;
+			}
 
 			if ((Source is IOnlineBrush onlineBrush && onlineBrush.IsOnline) || _sourcePaint.Shader is null || _sourceImage is null || _surface is null || _surface.Canvas.DeviceClipBounds != sourceBounds)
 			{
@@ -119,7 +129,9 @@ namespace Windows.UI.Composition
 				_insetRect.Left = (int)(LeftInset * LeftInsetScale);
 
 				if (IsCenterHollow)
+				{
 					session.Surface?.Canvas.ClipRect(_insetRect, SKClipOperation.Difference, true);
+				}
 
 				session.Surface?.Canvas.DrawImageNinePatch(_sourceImage, _insetRect, bounds, _filterPaint);
 			}

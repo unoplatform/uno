@@ -11796,7 +11796,7 @@
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="Auto" />
               </Grid.ColumnDefinitions>
-              <FontIcon x:Name="CheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE73E;" FontSize="16" Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}" Opacity="0" Width="16" Margin="0,0,12,0" />
+              <FontIcon x:Name="CheckGlyph" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE001;" not_win:Glyph="&#xE73E;" FontSize="16" Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}" Opacity="0" Width="16" Margin="0,0,12,0" />
               <Viewbox x:Name="IconRoot" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Width="16" Height="16" Visibility="Collapsed">
                 <ContentPresenter x:Name="IconContent" Content="{TemplateBinding Icon}" />
               </Viewbox>
