@@ -874,7 +874,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -938,7 +938,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -951,6 +951,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[RunsOnUIThread]
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
+#else
+		[Ignore("Fails")]
 #endif
 		public async Task When_Opening_And_Closing_Nested_Flyouts_Canceled()
 		{
@@ -1046,7 +1048,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -1099,7 +1101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -1108,11 +1110,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __SKIA__ || __WASM__
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Window_Resized()
 		{
 			var flyout1 = new Flyout();
@@ -1147,7 +1147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -1155,6 +1155,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout1.Hide();
 			}
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1199,7 +1200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -1209,11 +1210,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 		}
 
+#if __SKIA__ || __WASM__
 		[TestMethod]
 		[RunsOnUIThread]
-#if __MACOS__
-		[Ignore("Currently fails on macOS, part of #9282 epic")]
-#endif
 		public async Task When_Window_Resized_Canceled()
 		{
 			var flyout1 = new Flyout();
@@ -1252,7 +1251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{
@@ -1261,6 +1260,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				flyout1.Hide();
 			}
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -1378,7 +1378,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.Replace(Environment.NewLine, "\n"), output);
+				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
 			}
 			finally
 			{

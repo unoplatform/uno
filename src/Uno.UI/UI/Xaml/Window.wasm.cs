@@ -98,7 +98,7 @@ namespace Windows.UI.Xaml
 		[Preserve]
 		public static void Resize(double width, double height) => Current.OnNativeSizeChanged(new Size(width, height));
 
-		private void OnNativeSizeChanged(Size size)
+		internal void OnNativeSizeChanged(Size size)
 		{
 			var newBounds = new Rect(0, 0, size.Width, size.Height);
 

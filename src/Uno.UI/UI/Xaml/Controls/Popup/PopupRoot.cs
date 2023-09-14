@@ -19,8 +19,8 @@ internal partial class PopupRoot : Panel
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
-		Window.Current.Activated += (_, _) => CloseFlyouts();
-		Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+		Windows.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
+		Windows.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
 	}
 
 	private void CloseFlyouts()
