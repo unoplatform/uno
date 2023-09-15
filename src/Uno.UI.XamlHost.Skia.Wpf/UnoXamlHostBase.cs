@@ -116,8 +116,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			// Hook DesktopWindowXamlSource OnTakeFocus event for Focus processing
 			_xamlSource.TakeFocusRequested += OnTakeFocusRequested;
-
-			SizeChanged += OnSizeChanged;
 		}
 
 		/// <summary>
@@ -248,8 +246,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 				// Fire updated event
 				ChildChanged?.Invoke(this, new EventArgs());
-
-				UpdateUnoSize();
 			}
 		}
 

@@ -3,6 +3,7 @@
 using System;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
+using Uno.UI.Xaml.Controls;
 using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Microsoft.UI.Xaml.Hosting;
@@ -49,7 +50,11 @@ public partial class DesktopWindowXamlSource : IDisposable
 	public UIElement Content
 	{
 		get => _xamlIsland.Content;
-		set => _xamlIsland.Content = value;
+		set
+		{
+			_xamlIsland.Content = value;
+			ContentManager.TryLoadRootVisual(_xamlIsland.XamlRoot!);
+		}
 	}
 
 	internal XamlIsland XamlIsland => _xamlIsland;
