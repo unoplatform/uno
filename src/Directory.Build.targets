@@ -175,4 +175,15 @@
 			<ServerAddress></ServerAddress>
 		</PropertyGroup>
 	</Target>
+
+	<Target Name="ComplainAboutCopyAlways" 
+        AfterTargets="_GetCopyToOutputDirectoryItemsFromThisProject"
+        BeforeTargets="GetCopyToPublishDirectoryItems">
+		<CallTarget Targets="_GetCopyToOutputDirectoryItemsFromThisProject">
+			<Output TaskParameter="TargetOutputs" ItemName="_ThisProjectItemsToCopyToOutputDirectory" />
+		</CallTarget>
+		
+		<Error Text="Item '%(_ThisProjectItemsToCopyToOutputDirectory.TargetPath)' set as CopyToOutputDirectory=&quot;Always&quot;, use CopyToOutputDirectory=&quot;PreserveNewest&quot; instead." 
+				Condition="'%(_ThisProjectItemsToCopyToOutputDirectory.CopyToOutputDirectory)'=='Always'" />
+	</Target>
 </Project>
