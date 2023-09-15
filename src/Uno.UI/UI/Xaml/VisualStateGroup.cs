@@ -193,18 +193,14 @@ namespace Windows.UI.Xaml
 			// we ensure that this materialization occurs only in the right resource scope.
 			// Note: the "current" should have already been materialized.
 			(Storyboard transition, Storyboard animation, SetterBaseCollection setters) current, target;
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 
 				current = (currentValues.transition?.Storyboard, currentValues.state?.Storyboard, currentValues.state?.Setters);
 				target = (targetValues.transition?.Storyboard, targetValues.state?.Storyboard, targetValues.state?.Setters);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				ResourceResolver.PopScope();
 			}
@@ -321,9 +317,7 @@ namespace Windows.UI.Xaml
 					return;
 				}
 
-#if !HAS_EXPENSIVE_TRYFINALLY
 				try
-#endif
 				{
 					// Setter.ApplyValue can resolve some theme resources.
 					// We need to invoke them using the right resource context.
@@ -340,9 +334,7 @@ namespace Windows.UI.Xaml
 
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					ResourceResolver.PopScope();
 				}

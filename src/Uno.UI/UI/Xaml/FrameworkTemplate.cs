@@ -87,9 +87,7 @@ namespace Windows.UI.Xaml
 		View? IFrameworkTemplateInternal.LoadContent()
 		{
 			View? view = null;
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 				if (_viewFactory != null)
@@ -97,9 +95,7 @@ namespace Windows.UI.Xaml
 					view = _viewFactory(_ownerRef?.Target);
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				ResourceResolver.PopScope();
 			}

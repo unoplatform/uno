@@ -429,14 +429,11 @@ namespace Windows.UI.Xaml.Controls
 
 			// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
 			// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				OnForegroundChangedPartial();
 				InvalidateTextBlock();
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			catch (Exception e)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -444,7 +441,6 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
 				}
 			}
-#endif
 		}
 
 		partial void OnForegroundChangedPartial();
