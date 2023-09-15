@@ -92,7 +92,7 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !__MACCATALYST__
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 
