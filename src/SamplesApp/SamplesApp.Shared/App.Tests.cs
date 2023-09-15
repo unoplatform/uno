@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.System;
 using Windows.UI.Core;
 
 #if !HAS_UNO
@@ -64,8 +65,7 @@ partial class App
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = _mainWindow.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_ = _mainWindow.DispatcherQueue.EnqueueAsync(
 				async () =>
 				{
 					try
@@ -142,18 +142,18 @@ partial class App
 				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 			}
 
-			var n = _mainWindow.Dispatcher.RunIdleAsync(
-				_ =>
+			var n = _mainWindow.DispatcherQueue.EnqueueAsync(
+				() =>
 				{
-					var n = _mainWindow.Dispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
+					_ = _mainWindow.DispatcherQueue.EnqueueAsync(
 						async () =>
 						{
 							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
 						}
 					);
-
-				});
+				},
+				DispatcherQueuePriority.Low
+				);
 
 			return true;
 		}

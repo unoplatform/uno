@@ -31,6 +31,7 @@ using Uno.Logging;
 using Windows.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
+using SamplesApp;
 using Uno.UI.Extensions;
 
 namespace SampleControl.Presentation
@@ -113,8 +114,7 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			_ = Window.Current.DispatcherQueue.EnqueueAsync(
 				async () =>
 				{
 					// Initialize favorites and recents list as soon as possible.
@@ -211,8 +211,7 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			await Window.Current.DispatcherQueue.EnqueueAsync(
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -291,8 +290,7 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.Dispatcher.RunAsync(
-					CoreDispatcherPriority.Normal,
+				await Window.Current.DispatcherQueue.EnqueueAsync(
 					async () =>
 					{
 						try
@@ -508,8 +506,7 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					var unused = Window.Current.Dispatcher.RunAsync(
-						CoreDispatcherPriority.Normal,
+					_ = Window.Current.DispatcherQueue.EnqueueAsync(
 						async () =>
 						{
 							CurrentSelectedSample = newContent;
@@ -574,8 +571,8 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			var unused = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal, async () =>
+			_ = Window.Current.DispatcherQueue.EnqueueAsync(
+				async () =>
 				{
 					await Task.Delay(200);
 
@@ -823,7 +820,7 @@ description: {sample.Description}";
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			await Window.Current.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => sample.IsFavorite = isFavorite);
+			await Window.Current.DispatcherQueue.EnqueueAsync(() => sample.IsFavorite = isFavorite);
 		}
 
 		/// <summary>
