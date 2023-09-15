@@ -165,7 +165,10 @@ namespace Windows.UI.Xaml.Controls
 
 				// Reset the parent that may have been set by
 				// GetBindableSupplementaryView for header and footer content
-				key.Content.SetParent(null);
+				if (key.ElementKind == NativeListViewBase.ListViewFooterElementKindNS || key.ElementKind == NativeListViewBase.ListViewHeaderElementKindNS)
+				{
+					key.Content.SetParent(null);
+				}
 
 				if (_onRecycled.TryGetValue(key, out var actions))
 				{
@@ -387,6 +390,8 @@ namespace Windows.UI.Xaml.Controls
 				elementKind,
 				reuseIdentifier,
 				indexPath);
+
+			supplementaryView.ElementKind = elementKind;
 
 			using (supplementaryView.InterceptSetNeedsLayout())
 			{
@@ -739,6 +744,8 @@ namespace Windows.UI.Xaml.Controls
 		private Orientation ScrollOrientation => Owner.NativeLayout.ScrollOrientation;
 		private bool SupportsDynamicItemSizes => Owner.NativeLayout.SupportsDynamicItemSizes;
 		private ILayouter Layouter => Owner.NativeLayout.Layouter;
+
+		internal string ElementKind { get; set; }
 
 		protected override void Dispose(bool disposing)
 		{
