@@ -55,7 +55,7 @@ namespace Private.Infrastructure
 				MUXControlsTestApp.Utilities.RunOnUIThread.Execute(() =>
 				{
 					finger = InputInjector.TryCreate()?.GetFinger() ?? throw new InvalidOperationException("Failed to create finger");
-					var topLeft = element.TransformToVisual(Window.Current.Content).TransformPoint(new Point(0, 0));
+					var topLeft = element.TransformToVisual(WindowHelper.XamlRoot.Content).TransformPoint(new Point(0, 0));
 					var center = new Point(topLeft.X + element.RenderSize.Width / 2, topLeft.Y + element.RenderSize.Height / 2);
 					finger.Press(center);
 				});
