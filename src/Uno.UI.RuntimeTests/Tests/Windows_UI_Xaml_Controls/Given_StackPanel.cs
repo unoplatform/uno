@@ -16,8 +16,6 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Markup;
 using static Private.Infrastructure.TestServices;
 using Windows.UI.Xaml.Media.Animation;
-using Windows.UI;
-using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
