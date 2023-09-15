@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Tests.Enterprise;
+using Windows.System;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
-#if WINAPPSDK
+using Uno.UI.RuntimeTests.Extensions;
+#if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
 using UIKit;
@@ -107,10 +109,10 @@ namespace Private.Infrastructure
 			public static UIElement RootElement => UseActualWindowRoot ?
 				XamlRoot.Content : EmbeddedTestRoot.control;
 
-			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.Content when
 			// not on the UI thread will throw an exception in WinUI.
-			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
-				Window.Current.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
+			public static DispatcherQueue RootElementDispatcherQueue => UseActualWindowRoot ?
+				Window.Current.DispatcherQueue : EmbeddedTestRoot.control.DispatcherQueue;
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -127,8 +129,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
-				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcherQueue.EnqueueAsync(() => { /* Empty to wait for the idle queue to be reached */ }, DispatcherQueuePriority.Low);
+				await RootElementDispatcherQueue.EnqueueAsync(() => { /* Empty to wait for the idle queue to be reached */ }, DispatcherQueuePriority.Low);
 			}
 
 			/// <summary>

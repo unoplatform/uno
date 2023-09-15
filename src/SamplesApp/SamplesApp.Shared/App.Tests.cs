@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.System;
 using Windows.UI.Core;
 using Private.Infrastructure;
 
@@ -153,8 +154,9 @@ partial class App
 							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
 						}
 					);
-
-				});
+				},
+				DispatcherQueuePriority.Low
+				);
 
 			return true;
 		}

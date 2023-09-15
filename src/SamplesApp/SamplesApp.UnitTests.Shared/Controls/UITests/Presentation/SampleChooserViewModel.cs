@@ -31,6 +31,7 @@ using Uno.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
+using SamplesApp;
 using Uno.UI.Extensions;
 using Microsoft.UI.Dispatching;
 using Private.Infrastructure;
@@ -118,6 +119,7 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
+			_ = _mainWindow.DispatcherQueue.EnqueueAsync(
 			_ = UnitTestDispatcherCompat
 				.From(SamplesApp.App.MainWindow.Content)
 				.RunAsync(
@@ -528,6 +530,7 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
+					_ = Window.Current.DispatcherQueue.EnqueueAsync(
 					UnitTestDispatcherCompat
 						.From(SamplesApp.App.MainWindow.Content)
 						.RunAsync(
