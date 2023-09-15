@@ -120,11 +120,7 @@ namespace SamplesApp
 			}
 
 			var sw = Stopwatch.StartNew();
-			var n = _mainWindow.Dispatcher.RunIdleAsync(
-				_ =>
-				{
-					Console.WriteLine("Done loading " + sw.Elapsed);
-				});
+			_ = _mainWindow.DispatcherQueue.EnqueueAsync(() => Console.WriteLine("Done loading " + sw.Elapsed));
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
