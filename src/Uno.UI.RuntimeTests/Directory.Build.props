@@ -20,7 +20,7 @@
 		<None Include="Tests\HotReload\Frame\HRApp\**\*.xaml" Exclude="Tests\HotReload\Frame\HRApp\bin\**;Tests\HotReload\Frame\HRApp\obj\**" />
 	</ItemGroup>
 
-	<Target Name="RemoveSample" BeforeTargets="BeforeBuild">
+	<Target Name="RemoveSample" BeforeTargets="BeforeBuild;GetCopyToOutputDirectoryItems">
 
 		<ItemGroup>
 			<Compile Remove="Tests\HotReload\Frame\HRApp\**\*.cs" />
