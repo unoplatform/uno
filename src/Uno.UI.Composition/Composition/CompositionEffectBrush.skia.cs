@@ -1149,7 +1149,7 @@ namespace Windows.UI.Composition
 								}
 							case EffectType.DistantDiffuseEffect:
 								{
-									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
@@ -1174,6 +1174,72 @@ namespace Windows.UI.Composition
 										Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
 
 										return SKImageFilter.CreateDistantLitDiffuse(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.DistantSpecularEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 5 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Azimuth", out uint azimuthProp, out GraphicsEffectPropertyMapping azimuthMapping);
+										effectInterop.GetNamedPropertyMapping("Elevation", out uint elevationProp, out GraphicsEffectPropertyMapping elevationMapping);
+										effectInterop.GetNamedPropertyMapping("SpecularExponent", out uint exponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("SpecularAmount", out uint amountProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
+
+										float azimuth = (float)effectInterop.GetProperty(azimuthProp);
+										float elevation = (float)effectInterop.GetProperty(elevationProp);
+										float exponent = (float)effectInterop.GetProperty(exponentProp);
+										float amount = (float)effectInterop.GetProperty(amountProp);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										if (azimuthMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+											azimuth *= 180.0f / MathF.PI;
+
+										if (elevationMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+											elevation *= 180.0f / MathF.PI;
+
+										Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
+
+										return SKImageFilter.CreateBlendMode(SKBlendMode.SrcOver, SKImageFilter.CreatePaint(new() { Color = SKColors.Black }), SKImageFilter.CreateDistantLitSpecular(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter), new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.SpotDiffuseEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 6 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightTarget", out uint targetProp, out _);
+										effectInterop.GetNamedPropertyMapping("Focus", out uint focusProp, out _);
+										effectInterop.GetNamedPropertyMapping("LimitingConeAngle", out uint angleProp, out GraphicsEffectPropertyMapping angleMapping);
+										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
+
+										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
+										Vector3 target = (Vector3)effectInterop.GetProperty(targetProp);
+										float focus = (float)effectInterop.GetProperty(focusProp);
+										float angle = (float)effectInterop.GetProperty(angleProp);
+										float amount = (float)effectInterop.GetProperty(amountProp);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+											angle *= 180.0f / MathF.PI;
+
+										Vector3 lightTarget = EffectHelpers.CalcLightTargetVector(position, target);
+										//Vector2 coneAngle = EffectHelpers.CalcConeAngle(angle);
+
+										return SKImageFilter.CreateSpotLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), focus, angle, color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
 									}
 
 									return null;

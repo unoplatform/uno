@@ -32,5 +32,7 @@
 		<Grid x:Name="tempTintGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="TemperatureAndTintEffect"/>
 		<Grid x:Name="matrixGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ColorMatrixEffect"/>
 		<Grid x:Name="ddGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="DistantDiffuseEffect"/>
+		<Grid x:Name="dsGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="DistantSpecularEffect"/>
+		<Grid x:Name="sdGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="SpotDiffuseEffect"/>
 	</GridView>
 </UserControl>
