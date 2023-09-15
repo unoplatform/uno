@@ -1399,7 +1399,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				var moreButton = TreeHelper.GetVisualChildByName(cmdBar, "MoreButton");
 
 				VERIFY_IS_TRUE(focusedElement.Equals(moreButton));
@@ -1511,7 +1511,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Validate the second primary command still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(1), (ICommandBarElement)FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(1), (ICommandBarElement)FocusManager.GetFocusedElement(WindowHelper.XamlRoot));
 
 				LOG_OUTPUT("Focus the second secondary command.");
 				((Control)commandBar.SecondaryCommands.GetAt(1)).Focus(FocusState.Keyboard);
@@ -1524,7 +1524,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Validate the second secondary command still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.SecondaryCommands.GetAt(1), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.SecondaryCommands.GetAt(1), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 
 				LOG_OUTPUT("Clearing all secondary commands. Focus is expected to go to the more button.");
 				commandBar.SecondaryCommands.Clear();
@@ -1535,7 +1535,7 @@ namespace Windows.UI.Tests.Enterprise
 			{
 				LOG_OUTPUT("Validate the more button has focus.");
 				var moreButton = (Button)(TreeHelper.GetVisualChildByName(commandBar, "MoreButton"));
-				var focused = (Button)FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focused = (Button)FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_ARE_EQUAL(moreButton, focused);
 
 				LOG_OUTPUT("Focus fourth primary command, enable dynamic overflow and resize command bar.");
@@ -1548,7 +1548,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Fourth primary command is now in the secondary ItemsControl. Validate it still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 
 				LOG_OUTPUT("Resize command bar back to its original size.");
 				commandBar.Width = 500;
@@ -1558,7 +1558,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				LOG_OUTPUT("Fourth primary command is back in the primary ItemsControl. Validate it still has focus.");
-				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot)));
+				VERIFY_ARE_EQUAL(commandBar.PrimaryCommands.GetAt(3), (ICommandBarElement)(FocusManager.GetFocusedElement(WindowHelper.XamlRoot)));
 			});
 		}
 
@@ -1954,7 +1954,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 
 				cmdBar.IsOpen = false;
 
@@ -1973,7 +1973,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 
 				cmdBar.IsOpen = false;
 			});
@@ -2538,11 +2538,7 @@ namespace Windows.UI.Tests.Enterprise
 			//UNO ONLY: SetWindowSizeOverride is not supported, so we are fullscreen
 			//double expectedCommandBarWidth = 500;
 
-			double expectedCommandBarWidth = Window.Current.Bounds.Width;
-			if (TestServices.WindowHelper.IsXamlIsland)
-			{
-				expectedCommandBarWidth = TestServices.WindowHelper.XamlRoot.Size.Width;
-			}
+			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : Window.CurrentSafe!.Bounds.Width;
 
 #if __IOS__
 			await RunOnUIThread(() =>
@@ -3489,7 +3485,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)));
 				});
 
@@ -3499,7 +3495,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(async () =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					var moreButton = await GetMoreButton(cmdBar);
 					VERIFY_IS_TRUE(focusedElement.Equals(moreButton), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be moreButton ({moreButton.GetHashCode()})");
 				});
@@ -3510,7 +3506,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.PrimaryCommands.GetAt(0)), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be primary command ({cmdBar.PrimaryCommands.GetAt(0).GetHashCode()})");
 				});
 
@@ -3520,7 +3516,7 @@ namespace Windows.UI.Tests.Enterprise
 
 				await RunOnUIThread(() =>
 				{
-					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+					var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 					VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.Content), $"Input: {inputDevice}, Focused element ({focusedElement.GetHashCode()}) should be content ({cmdBar.Content.GetHashCode()})");
 				});
 			};
@@ -3575,7 +3571,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.SecondaryCommands.GetAt(2)));
 			});
 			await CloseCommandBar(cmdBar);
@@ -3586,7 +3582,7 @@ namespace Windows.UI.Tests.Enterprise
 
 			await RunOnUIThread(() =>
 			{
-				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot);
+				var focusedElement = FocusManager.GetFocusedElement(WindowHelper.XamlRoot);
 				VERIFY_IS_TRUE(focusedElement.Equals(cmdBar.SecondaryCommands.GetAt(0)));
 			});
 			await CloseCommandBar(cmdBar);

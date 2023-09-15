@@ -28,7 +28,6 @@ namespace Uno.UI.Runtime.Skia
 			_fbDev = new FrameBufferDevice();
 			_fbDev.Init();
 
-			WUX.Window.Current.ToString();
 			_host = host;
 		}
 
@@ -77,7 +76,7 @@ namespace Uno.UI.Runtime.Skia
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WUX.Window.Current.Compositor.RenderRootVisual(surface, rootVisual);
+					_host.RootElement.XamlRoot!.Compositor.RenderRootVisual(surface, rootVisual);
 				}
 
 				_fbDev.VSync();

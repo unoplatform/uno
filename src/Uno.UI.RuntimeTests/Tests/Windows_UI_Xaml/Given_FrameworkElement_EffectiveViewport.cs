@@ -48,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if HAS_UNO
 			TestServices.WindowHelper.EmbeddedTestRoot.control?.XamlRoot?.Bounds ??
 #endif
-			Window.Current.Bounds;
+			TestServices.WindowHelper.XamlRoot.Bounds;
 #endif
 
 		private Point RootLocation

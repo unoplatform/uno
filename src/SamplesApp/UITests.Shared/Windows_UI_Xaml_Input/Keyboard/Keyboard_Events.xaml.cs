@@ -17,7 +17,9 @@ namespace UITests.Windows_UI_Xaml_Input.Keyboard
 			SetupEvent(_root);
 			SetupEvent(_btt1);
 			SetupEvent(_btt2);
-			SetupEvent(global::Microsoft.UI.Xaml.Window.Current.CoreWindow);
+#if !HAS_UNO_WINUI
+			SetupEvent(global::Windows.UI.Xaml.Window.CurrentSafe.CoreWindow);
+#endif
 		}
 
 		private void SetupEvent(FrameworkElement elt)

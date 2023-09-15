@@ -46,7 +46,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot()
 		{
-			var windowBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
+			var windowBounds = XamlRoot!.Bounds;
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border1.ActualWidth, windowBounds.Height - visible.Bottom - Border1.ActualHeight);
 
@@ -58,7 +58,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot_With_TranslateTransform()
 		{
-			var windowBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
+			var windowBounds = XamlRoot!.Bounds;
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;
@@ -72,7 +72,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		public void When_TransformToRoot_With_InheritedTranslateTransform_And_Margin()
 		{
-			var windowBounds = Microsoft.UI.Xaml.Window.Current.Bounds;
+			var windowBounds = XamlRoot!.Bounds;
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;

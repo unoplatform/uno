@@ -29,27 +29,27 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar.BackGesture
 
 		private void Back_Click(object sender, RoutedEventArgs e)
 		{
-			(Microsoft.UI.Xaml.Window.Current.Content as Microsoft.UI.Xaml.Controls.Frame).GoBack();
+			(XamlRoot?.Content as Microsoft.UI.Xaml.Controls.Frame).GoBack();
 		}
 
 		private void Normal_Click(object sender, RoutedEventArgs e)
 		{
-			(Microsoft.UI.Xaml.Window.Current.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_Normal));
+			(XamlRoot?.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_Normal));
 		}
 
 		private void Collapsed_Click(object sender, RoutedEventArgs e)
 		{
-			(Microsoft.UI.Xaml.Window.Current.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_Collapsed));
+			(XamlRoot?.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_Collapsed));
 		}
 
 		private void NavigationCommand_Click(object sender, RoutedEventArgs e)
 		{
-			(Microsoft.UI.Xaml.Window.Current.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_NavigationCommand));
+			(XamlRoot?.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_NavigationCommand));
 		}
 
 		private void CollapsedNavigationCommand_Click(object sender, RoutedEventArgs e)
 		{
-			(Microsoft.UI.Xaml.Window.Current.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_CollapsedNavigationCommand));
+			(XamlRoot?.Content as Microsoft.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_CollapsedNavigationCommand));
 		}
 	}
 }

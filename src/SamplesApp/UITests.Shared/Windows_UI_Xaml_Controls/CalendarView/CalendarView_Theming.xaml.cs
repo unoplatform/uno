@@ -20,7 +20,7 @@ namespace UITests.Windows_UI_Xaml_Controls.CalendarView
 		private void ToggleButton_Click(object sender, RoutedEventArgs e)
 		{
 			// Set theme for window root.
-			if (global::Microsoft.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			if (XamlRoot?.Content is FrameworkElement root)
 			{
 				switch (root.ActualTheme)
 				{
