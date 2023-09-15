@@ -26,7 +26,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 
 			if (IsXamlContentLoaded())
 			{
-				_xamlSource.Content.Measure(new Windows.Foundation.Size(constraint.Width, constraint.Height));
+				_xamlSource.XamlIsland.Measure(new Windows.Foundation.Size(constraint.Width, constraint.Height));
 				desiredSize.Width = _xamlSource.Content.DesiredSize.Width;
 				desiredSize.Height = _xamlSource.Content.DesiredSize.Height;
 			}
@@ -50,7 +50,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 				// set to 'Stretch'.  The UWP XAML content will be 0 in the stretch alignment direction
 				// until Arrange is called, and the UWP XAML content is expanded to fill the available space.
 				var finalRect = new Windows.Foundation.Rect(0, 0, finalSize.Width, finalSize.Height);
-				_xamlSource.Content.Arrange(finalRect);
+				_xamlSource.XamlIsland.Arrange(finalRect);
 			}
 
 			return base.ArrangeOverride(finalSize);
@@ -86,27 +86,6 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		private void XamlContentSizeChanged(object sender, WUX.SizeChangedEventArgs e)
 		{
 			InvalidateMeasure();
-		}
-
-		private void OnSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
-		{
-			UpdateUnoSize();
-		}
-
-		//TODO: This is temporary workaround, should not be needed as per UWP islands. https://github.com/unoplatform/uno/issues/8978
-		//Might be some missing logic. Maybe not needed now after Arrange and Measure works with XamlIslandRoot
-		private void UpdateUnoSize()
-		{
-			if (IsXamlContentLoaded())
-			{
-				if (_xamlSource.GetVisualTreeRoot() is WUX.FrameworkElement element)
-				{
-					var width = ActualWidth;
-					var height = ActualHeight;
-					element.Width = width;
-					element.Height = height;
-				}
-			}
 		}
 	}
 }
