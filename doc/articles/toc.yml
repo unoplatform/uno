@@ -22,6 +22,47 @@
         href: external/uno.check/doc/using-uno-check.md
       - name: Visual Studio 2019
         href: get-started-vs.md
+    - name: Create Your First App
+      topicHref: getting-started-tutorial-1.md
+      items:
+      - name: Tutorial 1
+        href: getting-started-tutorial-1.md
+      - name: Tutorial 2
+        href: getting-started-tutorial-2.md
+    - name: Migration
+      topicHref: migration-intro.md
+      items:
+      - name: Xamarin Forms
+        items:
+          - name: Migrating Custom Controls
+            href: https://platform.uno/blog/porting-custom-controls-from-xamarin-forms-to-uno-platform/
+          - name: Migrating Custom-Drawn Controls
+            href: https://platform.uno/blog/porting-a-custom-drawn-xamarin-forms-control-to-uno-platform/
+          - name: Migrating Animations
+            href: https://platform.uno/blog/migrating-animations-from-xamarin-forms-to-uno-platform/
+          - name: Migrating Renderers
+            href: https://platform.uno/blog/hosting-native-controls-moving-from-xamarin-forms-renderers-to-uno-platform-controls/
+          # - name: Migrating Third Party Controls
+          #   href: guides/xf-migration/third-party-controls.md
+      - name: WPF
+        items:
+          - name: Migrating WPF Apps to Web
+            href: wpf-migration.md
+      - name: UWP-only code
+        items:
+          - name: Overview
+            href: howto-migrate-existing-code.md
+          - name: Checklist
+            href: migrating-before-you-start.md
+          - name: Applications
+            href: migrating-apps.md
+          - name: Class libraries
+            href: migrating-libraries.md
+          - name: General guidance
+            href: migrating-guidance.md
+      - name: Silverlight
+        topicHref: guides/silverlight-migration/silverlight-migration-landing.md
+        href: guides/silverlight-migration/toc.yml
     - name: Common Issues
       href: get-started-wizard.md
 
@@ -51,14 +92,6 @@
           items:
             - name: Overview
               href: tutorials-intro.md
-
-            - name: Create Your First App
-              topicHref: getting-started-tutorial-1.md
-              items:
-              - name: Tutorial 1
-                href: getting-started-tutorial-1.md
-              - name: Tutorial 2
-                href: getting-started-tutorial-2.md
             - name: How to deploy a WebAssembly app on Azure Static Web Apps
               href: guides/azure-static-webapps.md
             - name: How to integrate Uno.Material
@@ -85,9 +118,6 @@
               href: interop/MSAL.md
             - name: How to authenticate with OpenID Connect
               href: guides/open-id-connect.md
-            - name: Migrate from Silverlight to Uno Platform
-              topicHref: guides/silverlight-migration/silverlight-migration-landing.md
-              href: guides/silverlight-migration/toc.yml
             - name: Embed a JavaScript Component
               topicHref: interop/wasm-javascript-1.md
               items:
@@ -380,22 +410,6 @@
           items:
             - name: Upgrading from previous releases
               href: migrating-from-previous-releases.md
-            - name: Migrating UWP-only code
-              items:
-                - name: Overview
-                  href: howto-migrate-existing-code.md
-                - name: Checklist
-                  href: migrating-before-you-start.md
-                - name: Applications
-                  href: migrating-apps.md
-                - name: Class libraries
-                  href: migrating-libraries.md
-                - name: General guidance
-                  href: migrating-guidance.md
-            - name: WPF Migration
-              items:
-                - name: Migrating WPF Apps to Web
-                  href: wpf-migration.md
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
             - name: Faster Single Target App Builds
