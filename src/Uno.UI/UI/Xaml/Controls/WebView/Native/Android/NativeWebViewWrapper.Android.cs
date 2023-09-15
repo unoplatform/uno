@@ -16,6 +16,8 @@ namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWebViewWrapper : INativeWebView
 {
+	private readonly Uri AndroidAssetBaseUri = new Uri("file:///android_asset/");
+
 	private readonly WebView _webView;
 	private readonly CoreWebView2 _coreWebView;
 
@@ -132,6 +134,23 @@ internal class NativeWebViewWrapper : INativeWebView
 		{
 			CreateAndLaunchMailtoIntent(_webView.Context, uri.AbsoluteUri);
 			return;
+		}
+
+		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		{
+			// Load Url with folder
+			var folderUri = new Uri(AndroidAssetBaseUri, folderName + '/');
+
+			var relativePath = uri.PathAndQuery;
+
+			if (relativePath.StartsWith('/'))
+			{
+				relativePath = relativePath.Substring(1);
+			}
+
+			var assetUri = new Uri(folderUri, relativePath);
+
+			uri = assetUri;
 		}
 
 		//The replace is present because the uri cuts off any slashes that are more than two when it creates the uri.
