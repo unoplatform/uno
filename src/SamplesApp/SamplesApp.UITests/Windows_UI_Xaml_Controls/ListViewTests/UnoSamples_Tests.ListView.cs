@@ -305,6 +305,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM: CheckBox border changes color when checked then unchecked https://github.com/unoplatform/uno/issues/13650
 		public void ListView_ExpandableItemLarge_ExpandHeader_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
