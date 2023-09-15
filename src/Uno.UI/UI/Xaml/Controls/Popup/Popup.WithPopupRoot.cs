@@ -106,6 +106,15 @@ public partial class Popup
 				PopupPanel.Visibility = Visibility.Collapsed;
 			}
 		}
+
+		if (newIsOpen)
+		{
+			Opened?.Invoke(this, newIsOpen);
+		}
+		else
+		{
+			Closed?.Invoke(this, newIsOpen);
+		}
 	}
 
 #if __ANDROID__
