@@ -31,5 +31,6 @@
 		<Grid x:Name="sepiaGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="SepiaEffect"/>
 		<Grid x:Name="tempTintGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="TemperatureAndTintEffect"/>
 		<Grid x:Name="matrixGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="ColorMatrixEffect"/>
+		<Grid x:Name="ddGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="DistantDiffuseEffect"/>
 	</GridView>
 </UserControl>
