@@ -129,6 +129,32 @@ namespace Windows.Graphics.Effects.Interop
 			return lightVector;
 		}
 
+		internal static Vector3 CalcLightTargetVector(Vector3 lightPosition, Vector3 lightTarget)
+		{
+			Vector3 targetVector = new();
+
+			targetVector.X = lightTarget.X - lightPosition.X;
+			targetVector.Y = lightTarget.Y - lightPosition.Y;
+			targetVector.Z = lightTarget.Z - lightPosition.Z;
+
+			Normalize3DVector(ref targetVector);
+			return targetVector;
+		}
+
+		/*internal static Vector2 CalcConeAngle(float limitingConeAngle)
+		{
+			float limitingConeAngleInRadians = MathF.Abs(limitingConeAngle) * 0.0174532925199433f;
+
+			Vector2 coneAngle = new();
+			coneAngle.X = MathF.Cos(limitingConeAngleInRadians);
+			if (limitingConeAngle >= 5.0f)
+				coneAngle.Y = MathF.Cos(limitingConeAngleInRadians + 0.0174532925199433f);
+			else
+				coneAngle.Y = MathF.Cos(limitingConeAngleInRadians * 1.2f);
+
+			return coneAngle;
+		}*/
+
 		private static void Normalize3DVector(ref Vector3 vector)
 		{
 			float fa = 0.0f;
