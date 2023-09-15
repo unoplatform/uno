@@ -18,10 +18,9 @@ using System.Windows.Input;
 using System.ComponentModel;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
-
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_DataContext_Reference", viewModelType:typeof(DataContextReferenceViewModel))]
+	[SampleControlInfo("ListView", "ListView_DataContext_Reference", viewModelType: typeof(DataContextReferenceViewModel), isManualTest: true)]
 	public sealed partial class ListView_DataContext_Reference : UserControl
 	{
 		public ListView_DataContext_Reference()
@@ -30,72 +29,70 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		}
 	}
 
-    public class DataContextReferenceViewModel
-    {
-        //private int nextIndex = 100;
-        public ObservableCollection<Item> Items { get; } =
-            new ObservableCollection<Item>(Enumerable.Range(0, 10).Select(x => new Item(x)));
+	public class DataContextReferenceViewModel
+	{
+		public ObservableCollection<Item> Items { get; } =
+			new ObservableCollection<Item>(Enumerable.Range(0, 10).Select(x => new Item(x)));
 
-        private ICommand _command;
-        public ICommand Command
-        {
-            get
-            {
-                _command ??= new Command<Item>(ExecuteCommand);
-
-                return _command;
-            }
-        }
-
-        private void ExecuteCommand(Item item)
-        {
-            if (item is null)
-            {
-                Console.WriteLine("Item was null");
-                return;
-            }
-
-            Items.Remove(item);
-			//Items.Add(new Item(++nextIndex));
-			//Items.Add(item with { Name = $"Selected item {item.Index}" });
-			Items.Insert(item.Index, item with { Name = $"Selected item {item.Index}" });
+		private ICommand _command;
+		public ICommand Command
+		{
+			get
+			{
+				_command ??= new Command<Item>(ExecuteCommand);
+				return _command;
+			}
 		}
-    }
 
-    public record Item
-    {
-        public Item(int index)
-        {
-            Index = index;
-            Name = $"Item {index}";
-        }
+		private void ExecuteCommand(Item item)
+		{
+			if (item is null)
+			{
+				Console.WriteLine("Item was null");
+				return;
+			}
 
-        public int Index { get; init; }
+			var newItem = item with { Name = $"Selected item {item.Index}" };
 
-        public string Name { get; init; }
-    }
+			Items.Remove(item);
+			Items.Insert(newItem.Index, newItem);
+		}
+	}
 
-    public class Command<T> : ICommand
-    {
-        private readonly Action<T> _act;
+	public record Item
+	{
+		public Item(int index)
+		{
+			Index = index;
+			Name = $"Item {index}";
+		}
 
-        public Command(Action<T> act)
-        {
-            _act = act;
-        }
+		public int Index { get; init; }
 
-        public event EventHandler CanExecuteChanged;
+		public string Name { get; init; }
+	}
 
-        public bool CanExecute(object parameter) => true;
+	public class Command<T> : ICommand
+	{
+		private readonly Action<T> _act;
 
-        public void Execute(object parameter)
-        {
-            _act?.Invoke((T)parameter!);
-        }
+		public Command(Action<T> act)
+		{
+			_act = act;
+		}
 
-        public void UpdateCanExecuteChanged()
-        {
-            CanExecuteChanged?.Invoke(this, EventArgs.Empty);
-        }
-    }	
+		public event EventHandler CanExecuteChanged;
+
+		public bool CanExecute(object parameter) => true;
+
+		public void Execute(object parameter)
+		{
+			_act?.Invoke((T)parameter!);
+		}
+
+		public void UpdateCanExecuteChanged()
+		{
+			CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+		}
+	}
 }
