@@ -108,9 +108,11 @@ namespace Windows.Graphics.Effects.Interop
 				case D2D1CompositeMode.Add:
 					return SKBlendMode.Plus;
 
+				case D2D1CompositeMode.Copy:
+					return SKBlendMode.Src;
+
 				// Unsupported modes
 
-				case D2D1CompositeMode.Copy:
 				case D2D1CompositeMode.MaskInvert:
 				default:
 					return (SKBlendMode)0xFF;
@@ -123,10 +125,13 @@ namespace Windows.Graphics.Effects.Interop
 			{
 				case D2D1BorderEdgeMode.Clamp:
 					return SKShaderTileMode.Clamp;
+
 				case D2D1BorderEdgeMode.Wrap:
 					return SKShaderTileMode.Repeat;
+
 				case D2D1BorderEdgeMode.Mirror:
 					return SKShaderTileMode.Mirror;
+
 				default:
 					return SKShaderTileMode.Clamp;
 			}

@@ -2,6 +2,7 @@
 using Windows.Foundation;
 using Windows.Graphics.Effects;
 using System.Runtime.InteropServices;
+using System.Numerics;
 
 namespace Windows.Graphics.Effects.Interop
 {
@@ -110,6 +111,57 @@ namespace Windows.Graphics.Effects.Interop
 
 			else
 				return EffectType.Unsupported;
+		}
+
+		internal static Vector3 GetLightVector(float azimuthInDegrees, float elevationInDegrees)
+		{
+			// MathEx.ToRadians isn't used here to precisely match the original function
+			float azimuthInRadians = azimuthInDegrees * 0.0174532925199433f;
+			float elevationInRadians = 0.0174532925199433f * elevationInDegrees;
+			float cosElevation = MathF.Cos(elevationInRadians);
+
+			Vector3 lightVector = new();
+			lightVector.X = cosElevation * MathF.Cos(azimuthInRadians);
+			lightVector.Y = cosElevation * MathF.Sin(azimuthInRadians);
+			lightVector.Z = MathF.Sin(elevationInRadians);
+
+			Normalize3DVector(ref lightVector);
+			return lightVector;
+		}
+
+		private static void Normalize3DVector(ref Vector3 vector)
+		{
+			float fa = 0.0f;
+			float flSqSum = 0.0f;
+			float flSqSuma = 0.0f;
+			Vector3 rgflSq = vector * vector;
+
+			flSqSum = rgflSq[0] + rgflSq[1] + rgflSq[2];
+			if (flSqSum <= 0.0000099999997f)
+			{
+				vector.X = 0.0f;
+				vector.Y = 0.0f;
+				vector.Z = 0.0f;
+			}
+			else
+			{
+				for (int i = 0; i < 3; ++i)
+				{
+					if (rgflSq[i] == 0)
+					{
+						vector[i] = 0.0f;
+					}
+					else
+					{
+						flSqSuma += rgflSq[i];
+					}
+				}
+
+				fa = MathF.Sqrt(flSqSuma);
+				vector.X = vector.X / fa;
+				vector.Y = vector.Y / fa;
+				vector.Z = vector.Z / fa;
+			}
 		}
 	}
 }

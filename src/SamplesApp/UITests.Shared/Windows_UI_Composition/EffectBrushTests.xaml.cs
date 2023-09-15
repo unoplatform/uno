@@ -41,7 +41,7 @@ namespace UITests.Windows_UI_Composition
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
 		{
 #if !WINDOWS_UWP
-			var compositor = Window.Current.Compositor;
+			var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 
 			var effect = new SimpleBlurEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), BlurAmount = 5.0f };
 			var factory = compositor.CreateEffectFactory(effect);
@@ -199,6 +199,23 @@ namespace UITests.Windows_UI_Composition
 			var effectBrush21 = factory21.CreateBrush();
 
 			matrixGrid.Background = new EffectTesterBrush(effectBrush21);
+
+			var surface3 = LoadedImageSurface.StartLoadFromUri(new Uri("https://user-images.githubusercontent.com/34550324/268126129-1bb2c5e7-24a4-41dc-bcdf-59f533c0d173.png"));
+			surface3.LoadCompleted += (s, o) =>
+			{
+				if (o.Status == LoadedImageSourceLoadStatus.Success)
+				{
+					var brush = compositor.CreateSurfaceBrush(surface3);
+
+					var effect22 = new SimpleDistantDiffuseEffect() { Source = new SimpleLuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, DiffuseAmount = 5.0f, Azimuth = (float)MathEx.ToRadians(180.0f) };
+					var factory22 = compositor.CreateEffectFactory(effect22);
+					var effectBrush22 = factory22.CreateBrush();
+
+					effectBrush22.SetSourceParameter("sourceBrush", brush);
+
+					ddGrid.Background = new XamlCompositionBrush(effectBrush22);
+				}
+			};
 #endif
 		}
 
@@ -215,7 +232,7 @@ namespace UITests.Windows_UI_Composition
 
 			protected override void OnConnected()
 			{
-				var compositor = Window.Current.Compositor;
+				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 				var surface = LoadedImageSurface.StartLoadFromUri(new Uri($"https://avatars.githubusercontent.com/u/52228309?s={_imgSize}&v=4"));
 				surface.LoadCompleted += (s, o) =>
 				{
@@ -243,7 +260,7 @@ namespace UITests.Windows_UI_Composition
 
 			protected override void OnConnected()
 			{
-				var compositor = Window.Current.Compositor;
+				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
 				var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://avatars.githubusercontent.com/u/52228309?s=200&v=4"));
 				surface.LoadCompleted += (s, o) =>
 				{
@@ -256,6 +273,18 @@ namespace UITests.Windows_UI_Composition
 						CompositionBrush = _effectBrush;
 					}
 				};
+			}
+		}
+
+		private class XamlCompositionBrush : XamlCompositionBrushBase
+		{
+			CompositionBrush _brush;
+
+			public XamlCompositionBrush(CompositionBrush brush) => _brush = brush;
+
+			protected override void OnConnected()
+			{
+				CompositionBrush = _brush;
 			}
 		}
 
@@ -1610,6 +1639,89 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 1;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("3E7EFD62-A32D-46D4-A83C-5278889AC954")]
+		private class SimpleDistantDiffuseEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleDistantDiffuseEffect";
+			private Guid _id = new Guid("3E7EFD62-A32D-46D4-A83C-5278889AC954");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Azimuth { get; set; } = 0.0f;
+
+			public float Elevation { get; set; } = 0.0f;
+
+			public float DiffuseAmount { get; set; } = 1.0f;
+
+			public Color LightColor { get; set; } = Colors.White;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Azimuth":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
+							break;
+						}
+					case "Elevation":
+						{
+							index = 1;
+							mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
+							break;
+						}
+					case "DiffuseAmount":
+						{
+							index = 2;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "LightColor":
+						{
+							index = 3;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Azimuth;
+					case 1:
+						return Elevation;
+					case 2:
+						return DiffuseAmount;
+					case 3:
+						return LightColor;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 4;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}

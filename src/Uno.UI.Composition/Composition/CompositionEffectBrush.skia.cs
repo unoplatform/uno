@@ -1147,6 +1147,37 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
+							case EffectType.DistantDiffuseEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("Azimuth", out uint azimuthProp, out GraphicsEffectPropertyMapping azimuthMapping);
+										effectInterop.GetNamedPropertyMapping("Elevation", out uint elevationProp, out GraphicsEffectPropertyMapping elevationMapping);
+										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
+
+										float azimuth = (float)effectInterop.GetProperty(azimuthProp);
+										float elevation = (float)effectInterop.GetProperty(elevationProp);
+										float amount = (float)effectInterop.GetProperty(amountProp);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										if (azimuthMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+											azimuth *= 180.0f / MathF.PI;
+
+										if (elevationMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+											elevation *= 180.0f / MathF.PI;
+
+										Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
+
+										return SKImageFilter.CreateDistantLitDiffuse(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
 							case EffectType.Unsupported:
 							default:
 								return null;
