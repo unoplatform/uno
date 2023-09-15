@@ -29,7 +29,7 @@ namespace Uno.UI.Samples.Content.UITests.CommandBar
 
 		private void FullWindow_Click(object sender, RoutedEventArgs e)
 		{
-			(Windows.UI.Xaml.Window.Current.Content as Windows.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_Chooser));
+			(XamlRoot?.Content as Windows.UI.Xaml.Controls.Frame).Navigate(typeof(BackGesture_Chooser));
 		}
 	}
 }
