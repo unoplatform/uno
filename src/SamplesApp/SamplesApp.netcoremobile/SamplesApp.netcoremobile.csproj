@@ -66,6 +66,12 @@
 				<RuntimeIdentifier>ios-arm64</RuntimeIdentifier>
 				<DefineConstants>$(DefineConstants);TESTFLIGHT</DefineConstants>
 			</PropertyGroup>
+			
+			<ItemGroup>
+				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
+				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="iOS\Resources\WebContent\index.html" />
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="iOS\Resources\WebContent\js\site.js" />			
+			</ItemGroup>
 		</When>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='maccatalyst'">
@@ -103,6 +109,12 @@
 				<_LibMonoLinkMode>Static</_LibMonoLinkMode>
 				<_LibXamarinLinkMode>Static</_LibXamarinLinkMode>
 			</PropertyGroup>
+			
+			<ItemGroup>
+				<BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="MacCatalyst\Resources\WebContent\css\site.css" />
+				<BundleResource Include="..\LinkedFiles\WebContent\index.html" Link="MacCatalyst\Resources\WebContent\index.html" />
+				<BundleResource Include="..\LinkedFiles\WebContent\js\site.js" Link="MacCatalyst\Resources\WebContent\js\site.js" />			
+			</ItemGroup>
 		</When>
 
 		<When Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)'))=='android'">
@@ -131,7 +143,10 @@
 				<AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
 				<AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
 				<AndroidAsset Include="Assets\Lottie\uno.json" />
-				<AndroidAsset Include="Assets\Lottie\LightBulb.json" />
+				<AndroidAsset Include="Assets\Lottie\LightBulb.json" />				
+				<AndroidAsset Include="..\LinkedFiles\WebContent\js\site.js" Link="Android\Assets\WebContent\js\site.js" />
+				<AndroidAsset Include="..\LinkedFiles\WebContent\css\site.css" Link="Android\Assets\WebContent\css\site.css" />
+				<AndroidAsset Include="..\LinkedFiles\WebContent\index.html" Link="Android\Assets\WebContent\index.html" />
 				<AndroidEnvironment Include="Android\environment.conf" />
 			</ItemGroup>
 		</When>
