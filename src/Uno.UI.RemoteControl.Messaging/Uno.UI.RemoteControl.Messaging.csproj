@@ -3,8 +3,8 @@
 	<PropertyGroup>
 		<TargetFramework>netstandard2.0</TargetFramework>
 
-		<PackageId>Uno.UI.RemoteControl.Messaging</PackageId>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl.Messaging</PackageId>
+		<PackageId>Uno.UI.DevServer.Messaging</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer.Messaging</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
