@@ -25,7 +25,7 @@ To light-up the Uno Islands feature, we need to reference several Uno Platform N
     <PackageReference Include="Microsoft.Extensions.Logging" Version="5.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="5.0.0" />
     <PackageReference Include="Uno.WinUI.Skia.Wpf" Version="4.5.0" />
-    <PackageReference Include="Uno.WinUI.RemoteControl" Version="4.5.0-dev.453" Condition="'$(Configuration)'=='Debug'" />
+    <PackageReference Include="Uno.WinUI.DevServer" Version="4.5.0-dev.453" Condition="'$(Configuration)'=='Debug'" />
     <PackageReference Include="Uno.UI.Adapter.Microsoft.Extensions.Logging" Version="4.5.0-dev.453" />
     <PackageReference Include="Uno.WinUI.XamlHost" Version="4.5.0-dev.453" />
     <PackageReference Include="Uno.WinUI.XamlHost.Skia.Wpf" Version="4.5.0-dev.453" />

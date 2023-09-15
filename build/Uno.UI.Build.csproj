@@ -133,6 +133,9 @@
 							 Query="//PackageReference[@Include='Uno.WinUI']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
+							 Query="//PackageReference[@Include='Uno.WinUI.RemoteControl']/@Version"
+							 Value="$(GitVersion_SemVer)" />
+		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"
 							 Query="//PackageReference[@Include='Uno.WinUI.DevServer']/@Version"
 							 Value="$(GitVersion_SemVer)" />
 		<XmlPoke XmlInputPath="%(_sdkProject.Identity)"

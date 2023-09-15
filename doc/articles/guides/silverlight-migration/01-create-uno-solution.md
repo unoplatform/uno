@@ -49,7 +49,7 @@ When working with Uno, it is important to ensure that the latest and greatest ve
 
     * **Uno.Core**
     * **Uno.WinUI** (or **Uno.UI**)
-    * **Uno.WinUI.RemoteControl** (or **Uno.UI.RemoteControl**)
+    * **Uno.WinUI.DevServer** (or **Uno.UI.DevServer**)
     * **Uno.WinUI.WebAssembly** (or **Uno.UI.WebAssembly**)
     * **Uno.Wasm.Bootstrap**
     * **Uno.Wasm.Bootstrap.DevServer**

@@ -61,7 +61,7 @@ body:
         - Uno.UI / Uno.UI.WebAssembly / Uno.UI.Skia
         - Uno.WinUI / Uno.WinUI.WebAssembly / Uno.WinUI.Skia
         - Uno.SourceGenerationTasks
-        - Uno.UI.RemoteControl / Uno.WinUI.RemoteControl
+        - Uno.UI.DevServer / Uno.WinUI.DevServer
         - Other
 
   - type: textarea
