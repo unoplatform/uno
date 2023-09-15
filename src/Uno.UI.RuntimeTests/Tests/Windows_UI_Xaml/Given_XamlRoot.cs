@@ -10,6 +10,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	{
 		[TestMethod]
 		[RunsOnUIThread]
+#if HAS_UNO_WINUI
+		[Ignore("Window.Current is null on WinUI")]
+#endif
 		public async Task When_Loaded_Matches_Window_Root()
 		{
 			if (TestServices.WindowHelper.IsXamlIsland)
@@ -25,8 +28,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 			TestServices.WindowHelper.WindowContent = border;
 			var xamlRoot = await completionSource.Task;
-			Assert.AreEqual(Window.Current.Content, xamlRoot.Content);
-			Assert.AreEqual(Window.Current.Content.RenderSize, xamlRoot.Size);
+			Assert.AreEqual(Window.CurrentSafe!.Content, xamlRoot.Content);
+			Assert.AreEqual(Window.CurrentSafe!.Content!.RenderSize, xamlRoot.Size);
 		}
 	}
 }
