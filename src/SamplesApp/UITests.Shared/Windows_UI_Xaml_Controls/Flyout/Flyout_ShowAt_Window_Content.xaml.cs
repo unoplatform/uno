@@ -43,7 +43,7 @@ namespace UITests.Windows_UI_Xaml_Controls.FlyoutTests
 					Background = new SolidColorBrush(Windows.UI.Colors.Red),
 				};
 
-			flyout.ShowAt(global::Windows.UI.Xaml.Window.Current.Content as FrameworkElement);
+			flyout.ShowAt(XamlRoot?.Content as FrameworkElement);
 		}
 	}
 }

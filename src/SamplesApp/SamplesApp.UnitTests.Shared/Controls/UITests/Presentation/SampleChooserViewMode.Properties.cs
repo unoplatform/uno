@@ -10,6 +10,7 @@ using Windows.UI.Xaml;
 using Uno.UI.Common;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
+using Uno.UI.Xaml.Core;
 
 #if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
@@ -403,7 +404,10 @@ namespace SampleControl.Presentation
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
-				Application.PropagateResourcesChanged(Windows.UI.Xaml.Window.Current.Content, updateReason);
+				foreach (var root in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+				{
+					Application.PropagateResourcesChanged(root.XamlRoot?.Content, updateReason);
+				}
 #endif
 				RaisePropertyChanged();
 			}
