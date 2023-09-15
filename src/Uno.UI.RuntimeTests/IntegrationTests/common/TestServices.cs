@@ -7,6 +7,7 @@ using FluentAssertions;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.RuntimeTests.Extensions;
 
 namespace Private.Infrastructure
 {
@@ -55,7 +56,7 @@ namespace Private.Infrastructure
 			action();
 			return Task.CompletedTask;
 #else
-			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+			await WindowHelper.RootElementDispatcherQueue.EnqueueAsync(() => action());
 #endif
 		}
 
