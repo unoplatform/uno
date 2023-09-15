@@ -31,6 +31,7 @@ using Uno.Logging;
 using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
+using SamplesApp;
 using Uno.UI.Extensions;
 using Microsoft.UI.Dispatching;
 using Private.Infrastructure;
@@ -115,6 +116,7 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
+			_ = _mainWindow.DispatcherQueue.EnqueueAsync(
 			_ = UnitTestDispatcherCompat
 				.From(SamplesApp.App.MainWindow.Content)
 				.RunAsync(
@@ -214,8 +216,7 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal,
+			await Window.Current.DispatcherQueue.EnqueueAsync(
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -294,8 +295,7 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.Dispatcher.RunAsync(
-					CoreDispatcherPriority.Normal,
+				await Window.Current.DispatcherQueue.EnqueueAsync(
 					async () =>
 					{
 						try
@@ -525,6 +525,7 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
+					_ = Window.Current.DispatcherQueue.EnqueueAsync(
 					UnitTestDispatcherCompat
 						.From(SamplesApp.App.MainWindow.Content)
 						.RunAsync(
@@ -591,8 +592,8 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			var unused = Window.Current.Dispatcher.RunAsync(
-				CoreDispatcherPriority.Normal, async () =>
+			_ = Window.Current.DispatcherQueue.EnqueueAsync(
+				async () =>
 				{
 					await Task.Delay(200);
 
