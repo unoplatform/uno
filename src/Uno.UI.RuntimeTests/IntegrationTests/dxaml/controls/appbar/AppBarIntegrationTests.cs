@@ -944,7 +944,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus stayed on the pageButton.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(pageButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(pageButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -981,7 +981,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				appBarButton = (AppBarButton)TreeHelper.GetVisualChildByName(page.BottomAppBar, "AppBarButton");
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1026,7 +1026,7 @@ namespace Windows.UI.Tests.Enterprise
 			await RunOnUIThread(() =>
 			{
 				appBarButton = (AppBarButton)TreeHelper.GetVisualChildByName(page.BottomAppBar, "AppBarButton");
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(appBarButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(appBarButton));
 				appBar.IsOpen = false;
 			});
 			await WindowHelper.WaitForIdle();
@@ -1034,7 +1034,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus moved back to the pageButton (previously focused element) since the AppBar was closed.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(pageButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(pageButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -1077,7 +1077,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Then, close the AppBar programmatically.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton));
 				appBar.IsOpen = false;
 			});
 			await WindowHelper.WaitForIdle();
@@ -1085,7 +1085,7 @@ namespace Windows.UI.Tests.Enterprise
 			// Verify that the focus is still on the expandButton after the AppBar closed.
 			await RunOnUIThread(() =>
 			{
-				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton));
+				VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton));
 			});
 			await WindowHelper.WaitForIdle();
 		}
@@ -2258,7 +2258,7 @@ namespace Windows.UI.Tests.Enterprise
 			});
 			await WindowHelper.WaitForIdle();
 
-			await RunOnUIThread(() => VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.WindowContent.XamlRoot).Equals(expandButton)));
+			await RunOnUIThread(() => VERIFY_IS_TRUE(FocusManager.GetFocusedElement(WindowHelper.XamlRoot).Equals(expandButton)));
 			await WindowHelper.WaitForIdle();
 
 			LOG_OUTPUT("After closing AppBars, further calls to 'close function', while focus is on top AppBar, should not get handled.");

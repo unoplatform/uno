@@ -17,7 +17,7 @@ public class Given_ContainerVisual
 	[RunsOnUIThread]
 	public void When_Children_Change()
 	{
-		var compositor = Microsoft.UI.Xaml.Window.Current.Compositor;
+		var compositor = TestServices.WindowHelper.XamlRoot.Compositor;
 		var containerVisual = compositor.CreateContainerVisual();
 		Assert.IsFalse(containerVisual.IsChildrenRenderOrderDirty);
 

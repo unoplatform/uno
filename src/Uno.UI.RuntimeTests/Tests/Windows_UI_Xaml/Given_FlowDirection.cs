@@ -71,7 +71,7 @@ public class Given_FlowDirection
 #if WINAPPSDK
 		Window.Current.Bounds;
 #else
-		TestServices.WindowHelper.WindowContent.XamlRoot.Bounds;
+		TestServices.WindowHelper.XamlRoot.Bounds;
 #endif
 
 	private static Rect Get100x100RectAt(double x, double y) => new Rect(new Point(x, y), new Size(100, 100));

@@ -52,7 +52,7 @@ namespace MUXControlsTestApp
 			viewTitleBar.ButtonInactiveBackgroundColor = Colors.Transparent;
 			viewTitleBar.ButtonForegroundColor = (Color)Resources["SystemBaseHighColor"];
 
-			Microsoft.UI.Xaml.Window.Current.CoreWindow.SizeChanged += (s, e) => UpdateAppTitle();
+			XamlRoot!.Changed += (s, e) => UpdateAppTitle();
 			coreTitleBar.LayoutMetricsChanged += (s, e) => UpdateAppTitle();
 		}
 

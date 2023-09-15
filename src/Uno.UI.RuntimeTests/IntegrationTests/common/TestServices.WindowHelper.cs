@@ -32,25 +32,12 @@ namespace Private.Infrastructure
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Microsoft.UI.Xaml.Window CurrentTestWindow
-			{
-				get
-				{
-					if (_currentTestWindow is null)
-					{
-						throw new InvalidOperationException("Current test window not set.");
-					}
-					return _currentTestWindow;
-				}
-				set => _currentTestWindow = value;
-			}
-
 			public static bool UseActualWindowRoot { get; set; }
 
 			public static UIElement WindowContent
 			{
 				get => UseActualWindowRoot
-					? (IsXamlIsland ? GetXamlIslandRootContentControl().Content as UIElement : CurrentTestWindow.Content)
+					? (IsXamlIsland ? GetXamlIslandRootContentControl().Content as UIElement : XamlRoot.Content)
 					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
@@ -62,7 +49,7 @@ namespace Private.Infrastructure
 						}
 						else
 						{
-							CurrentTestWindow.Content = value;
+							Window.Current.Content = value;
 						}
 					}
 					else if (EmbeddedTestRoot.setContent is { } setter)
@@ -95,7 +82,7 @@ namespace Private.Infrastructure
 				}
 				else
 				{
-					_originalWindowContent = CurrentTestWindow.Content;
+					_originalWindowContent = Window.Current.Content;
 				}
 			}
 
@@ -109,7 +96,7 @@ namespace Private.Infrastructure
 					}
 					else
 					{
-						CurrentTestWindow.Content = _originalWindowContent;
+						Window.Current.Content = _originalWindowContent;
 					}
 					_originalWindowContent = null;
 				}
@@ -118,13 +105,12 @@ namespace Private.Infrastructure
 			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
 			public static UIElement RootElement => UseActualWindowRoot ?
-				CurrentTestWindow.Content : EmbeddedTestRoot.control;
+				XamlRoot.Content : EmbeddedTestRoot.control;
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
-			public static UnitTestDispatcherCompat RootElementDispatcher => UseActualWindowRoot
-				? UnitTestDispatcherCompat.From(CurrentTestWindow)
-				: UnitTestDispatcherCompat.From(EmbeddedTestRoot.control);
+			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
+				Window.Current.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
 
 			internal static Page SetupSimulatedAppPage()
 			{

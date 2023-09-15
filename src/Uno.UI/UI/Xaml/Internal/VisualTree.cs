@@ -107,7 +107,7 @@ namespace Uno.UI.Xaml.Core
 
 		/// <summary>
 		/// RootElement is the parent of the roots. For XAML app window content, this is the RootVisual.
-		/// For XamlIsland content, it's the XamlIslandRoot.
+		/// For XamlIsland content, it's the XamlIsland.
 		/// </summary>
 		public UIElement RootElement { get; }
 
