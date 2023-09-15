@@ -243,6 +243,13 @@ namespace Windows.UI.Xaml.Controls
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
 					}
 
+					// When reusing the cell there are situation when the parent is detached from the cell.
+					// https://github.com/unoplatform/uno/issues/13199
+					if (selectorItem.GetParent() is null)
+					{
+						selectorItem.SetParent(Owner.XamlParent);
+					}
+
 					Owner?.XamlParent?.PrepareContainerForIndex(selectorItem, index);
 
 					// Normally this happens when the SelectorItem.Content is set, but there's an edge case where after a refresh, a
