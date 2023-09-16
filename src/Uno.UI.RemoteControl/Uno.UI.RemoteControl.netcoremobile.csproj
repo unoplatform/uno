@@ -17,8 +17,8 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<PackageId>Uno.UI.RemoteControl</PackageId>
-		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
+		<PackageId>Uno.UI.DevServer</PackageId>
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -32,7 +32,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="buildTransitive\Uno.UI.RemoteControl.targets">
+	  <Content Include="buildTransitive\Uno.UI.DevServer.targets">
 	    <PackagePath>build</PackagePath>
 	    <Pack>true</Pack>
 	  </Content>
