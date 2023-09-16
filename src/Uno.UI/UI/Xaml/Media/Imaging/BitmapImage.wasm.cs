@@ -180,15 +180,8 @@ namespace Windows.UI.Xaml.Media.Imaging
 				(int)ResolutionScale.Scale500Percent
 			};
 
-#if !DISABLE_GENERATED_REGEX
 			[GeneratedRegex("\r\n|\r|\n")]
-#endif
 			private static partial Regex LineMatch();
-
-#if DISABLE_GENERATED_REGEX
-			private static partial Regex LineMatch()
-				=> new Regex("\r\n|\r|\n");
-#endif
 		}
 
 		internal override void ReportImageLoaded()

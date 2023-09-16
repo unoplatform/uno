@@ -29,15 +29,7 @@ namespace Uno.UI.Helpers.WinUI
 			return string.Format(CultureInfo.CurrentCulture, dotnetFormat, list.ToArray());
 		}
 
-#if !DISABLE_GENERATED_REGEX
 		[GeneratedRegex(@"\%(\d+)!.*?!", RegexOptions.Singleline)]
-#endif
-
 		private static partial Regex CppFormat();
-
-#if DISABLE_GENERATED_REGEX
-		private static partial Regex CppFormat()
-			=> new Regex(@"\%(\d+)!.*?!", RegexOptions.Singleline);
-#endif
 	}
 }
