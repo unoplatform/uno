@@ -85,7 +85,7 @@ webView.WebMessageReceived += (s, e) =>
 
 The `WebMessageAsJson` property contains a JSON-encoded string of the data passed to `postWebViewMessage` above.
 
-## Navigating to web content in application package
+## Navigating to web content in the application package
 
 To load local web content bundled with the application, you can use the `SetVirtualHostNameToFolderMapping` method. This allows you to set a virtual hostname that maps to a folder within the package, from which the web content will be loaded:
 
@@ -98,19 +98,19 @@ webView.CoreWebView2.SetVirtualHostNameToFolderMapping(
 webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
 ```
 
-This will navigate to the `index.html` file stored in the `WebContent` folder. This folder must be included in platform-specific location on each platform:
+This will navigate to the `index.html` file stored in the `WebContent` folder. This folder must be included in a platform-specific location on each platform:
 
-- On Windows it should be directly in the root of the `YourApp.Windows` project and all its contents should be set to `Content` build action
+- On Windows, it should be directly in the root of the `YourApp.Windows` project and all its contents should be set to `Content` build action
 - On iOS it should be inside the `Resources` folder and all its contents should be set to `BundleResource` build action
-- On Android it should be inside the `Assets` folder and all its contents should be set to `AndroidAsset` build action
+- On Android, it should be inside the `Assets` folder and all its contents should be set to `AndroidAsset` build action
 
-To avoid duplication, you can put the files in a non-project specific location and add them to via linking, e.g.:
+To avoid duplication, you can put the files in a non-project-specific location and add them via linking, e.g.:
 
 ```xml
 <BundleResource Include="..\LinkedFiles\WebContent\css\site.css" Link="iOS\Resources\WebContent\css\site.css" />
 ```
 
-The web files can reference each other in a relative path fashion, for example the following HTML file:
+The web files can reference each other in a relative path fashion, for example, the following HTML file:
 
 ```html
 <html>

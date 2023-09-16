@@ -153,8 +153,8 @@ internal class NativeWebViewWrapper : INativeWebView
 			uri = assetUri;
 		}
 
-		//The replace is present because the uri cuts off any slashes that are more than two when it creates the uri.
-		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashles.
+		//The replace is present because the URI cuts off any slashes that are more than two when it creates the URI.
+		//Therefore we add the final forward slash manually in Android because the file:/// requires 3 slashes.
 		_webView.LoadUrl(uri.AbsoluteUri.Replace("file://", "file:///"));
 	}
 
