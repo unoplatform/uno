@@ -267,7 +267,7 @@ namespace Uno.UI.Controls
 					// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause
 					// the keyboard to disappear and the feeling that touches are going "through the keyboard".
 
-					return _focusedView ?? base.HitTest(point, uievent);
+					return _focusedView!;
 				}
 
 				var previouslyFocusedView = _focusedView;
