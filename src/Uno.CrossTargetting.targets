@@ -1,10 +1,14 @@
 ﻿<Project>
 
+	<PropertyGroup>
+		<IsCrossruntime>false</IsCrossruntime>
+		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
+	</PropertyGroup>
 	<ItemGroup>
 		<AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
 
-		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(_IsNetStd)" />
-		<Compile Remove="**\*.crossruntime.cs" Condition="!$(_IsNetStd)" />
+		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
+		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
 		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
 		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
@@ -12,8 +16,8 @@
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 
-		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
-		<Compile Remove="**\*.reference.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
+		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
@@ -53,20 +57,20 @@
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
-	<PropertyGroup Condition="$(_IsNetStd)">
+	<PropertyGroup Condition="$(IsCrossruntime)">
 		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
 		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
 		<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
 		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
 		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
