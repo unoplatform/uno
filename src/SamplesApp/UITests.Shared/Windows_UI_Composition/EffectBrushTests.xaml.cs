@@ -230,6 +230,30 @@ namespace UITests.Windows_UI_Composition
 					effectBrush24.SetSourceParameter("sourceBrush", brush);
 
 					sdGrid.Background = new XamlCompositionBrush(effectBrush24);
+
+					var effect25 = new SimpleSpotSpecularEffect() { Source = new SimpleLuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, SpecularAmount = 1.25f, LimitingConeAngle = 0.25f, LightTarget = new Vector3(surface3.DecodedSize.ToVector2(), 0) / 2, LightColor = Colors.WhiteSmoke };
+					var factory25 = compositor.CreateEffectFactory(effect25);
+					var effectBrush25 = factory25.CreateBrush();
+
+					effectBrush25.SetSourceParameter("sourceBrush", brush);
+
+					ssGrid.Background = new XamlCompositionBrush(effectBrush25);
+
+					var effect26 = new SimplePointDiffuseEffect() { Source = new SimpleLuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, DiffuseAmount = 1.25f, LightColor = Colors.WhiteSmoke };
+					var factory26 = compositor.CreateEffectFactory(effect26);
+					var effectBrush26 = factory26.CreateBrush();
+
+					effectBrush26.SetSourceParameter("sourceBrush", brush);
+
+					pdGrid.Background = new XamlCompositionBrush(effectBrush26);
+
+					var effect27 = new SimplePointSpecularEffect() { Source = new SimpleLuminanceToAlphaEffect() { Source = new CompositionEffectSourceParameter("sourceBrush") }, SpecularAmount = 1.25f, LightColor = Colors.WhiteSmoke };
+					var factory27 = compositor.CreateEffectFactory(effect27);
+					var effectBrush27 = factory27.CreateBrush();
+
+					effectBrush27.SetSourceParameter("sourceBrush", brush);
+
+					psGrid.Background = new XamlCompositionBrush(effectBrush27);
 				}
 			};
 #endif
@@ -1934,6 +1958,275 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 6;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("EDAE421E-7654-4A37-9DB8-71ACC1BEB3C1")]
+		private class SimpleSpotSpecularEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleSpotSpecularEffect";
+			private Guid _id = new Guid("EDAE421E-7654-4A37-9DB8-71ACC1BEB3C1");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public Vector3 LightPosition { get; set; } = new();
+
+			public Vector3 LightTarget { get; set; } = new();
+
+			public float Focus { get; set; } = 1.0f;
+
+			public float LimitingConeAngle { get; set; } = MathF.PI / 2.0f;
+
+			public float SpecularExponent { get; set; } = 1.0f;
+
+			public float SpecularAmount { get; set; } = 1.0f;
+
+			public Color LightColor { get; set; } = Colors.White;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "LightPosition":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "LightTarget":
+						{
+							index = 1;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "Focus":
+						{
+							index = 2;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "LimitingConeAngle":
+						{
+							index = 3;
+							mapping = GraphicsEffectPropertyMapping.RadiansToDegrees;
+							break;
+						}
+					case "SpecularExponent":
+						{
+							index = 4;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "SpecularAmount":
+						{
+							index = 5;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "LightColor":
+						{
+							index = 6;
+							mapping = GraphicsEffectPropertyMapping.ColorToVector3;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return LightPosition;
+					case 1:
+						return LightTarget;
+					case 2:
+						return Focus;
+					case 3:
+						return LimitingConeAngle;
+					case 4:
+						return SpecularExponent;
+					case 5:
+						return SpecularAmount;
+					case 6:
+						return LightColor;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 7;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("B9E303C3-C08C-4F91-8B7B-38656BC48C20")]
+		private class SimplePointDiffuseEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimplePointDiffuseEffect";
+			private Guid _id = new Guid("B9E303C3-C08C-4F91-8B7B-38656BC48C20");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public Vector3 LightPosition { get; set; } = new();
+
+			public float DiffuseAmount { get; set; } = 1.0f;
+
+			public Color LightColor { get; set; } = Colors.White;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "LightPosition":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "DiffuseAmount":
+						{
+							index = 1;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "LightColor":
+						{
+							index = 2;
+							mapping = GraphicsEffectPropertyMapping.ColorToVector3;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return LightPosition;
+					case 1:
+						return DiffuseAmount;
+					case 2:
+						return LightColor;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 3;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("09C3CA26-3AE2-4F09-9EBC-ED3865D53F22")]
+		private class SimplePointSpecularEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimplePointSpecularEffect";
+			private Guid _id = new Guid("09C3CA26-3AE2-4F09-9EBC-ED3865D53F22");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public Vector3 LightPosition { get; set; } = new();
+
+			public float SpecularExponent { get; set; } = 1.0f;
+
+			public float SpecularAmount { get; set; } = 1.0f;
+
+			public Color LightColor { get; set; } = Colors.White;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "LightPosition":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "SpecularExponent":
+						{
+							index = 1;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "SpecularAmount":
+						{
+							index = 2;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					case "LightColor":
+						{
+							index = 3;
+							mapping = GraphicsEffectPropertyMapping.ColorToVector3;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return LightPosition;
+					case 1:
+						return SpecularExponent;
+					case 2:
+						return SpecularAmount;
+					case 3:
+						return LightColor;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 4;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}

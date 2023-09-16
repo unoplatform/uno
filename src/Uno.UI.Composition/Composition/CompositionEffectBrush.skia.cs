@@ -1206,7 +1206,8 @@ namespace Windows.UI.Composition
 
 										Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
 
-										return SKImageFilter.CreateBlendMode(SKBlendMode.SrcOver, SKImageFilter.CreatePaint(new() { Color = SKColors.Black }), SKImageFilter.CreateDistantLitSpecular(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter), new(bounds));
+										//return SKImageFilter.CreateBlendMode(SKBlendMode.SrcOver, SKImageFilter.CreatePaint(new() { Color = SKColors.Black }), SKImageFilter.CreateDistantLitSpecular(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter), new(bounds));
+										return SKImageFilter.CreateDistantLitSpecular(new SKPoint3(lightVector.X, lightVector.Y, lightVector.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, new(bounds));
 									}
 
 									return null;
@@ -1237,9 +1238,88 @@ namespace Windows.UI.Composition
 											angle *= 180.0f / MathF.PI;
 
 										Vector3 lightTarget = EffectHelpers.CalcLightTargetVector(position, target);
-										//Vector2 coneAngle = EffectHelpers.CalcConeAngle(angle);
+										//Vector2 coneAngle = EffectHelpers.CalcConeAngle(angle); // Uncomment this if we ever needed to switch light effects to pixel shaders
 
 										return SKImageFilter.CreateSpotLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), focus, angle, color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.SpotSpecularEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 7 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightTarget", out uint targetProp, out _);
+										effectInterop.GetNamedPropertyMapping("Focus", out uint focusProp, out _);
+										effectInterop.GetNamedPropertyMapping("LimitingConeAngle", out uint angleProp, out GraphicsEffectPropertyMapping angleMapping);
+										effectInterop.GetNamedPropertyMapping("SpecularExponent", out uint exponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("SpecularAmount", out uint amountProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
+
+										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
+										Vector3 target = (Vector3)effectInterop.GetProperty(targetProp);
+										float focus = (float)effectInterop.GetProperty(focusProp);
+										float angle = (float)effectInterop.GetProperty(angleProp);
+										float exponent = (float)effectInterop.GetProperty(exponentProp);
+										float amount = (float)effectInterop.GetProperty(amountProp);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+											angle *= 180.0f / MathF.PI;
+
+										Vector3 lightTarget = EffectHelpers.CalcLightTargetVector(position, target);
+										//Vector2 coneAngle = EffectHelpers.CalcConeAngle(angle); // Uncomment this if we ever needed to switch light effects to pixel shaders
+
+										return SKImageFilter.CreateSpotLitSpecular(new SKPoint3(position.X, position.Y, position.Z), new SKPoint3(lightTarget.X, lightTarget.Y, lightTarget.Z), exponent, angle, color.ToSKColor(), 1.0f, amount, focus, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.PointDiffuseEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
+										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
+
+										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
+										float amount = (float)effectInterop.GetProperty(amountProp);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										return SKImageFilter.CreatePointLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.PointSpecularEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+											return null;
+
+										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
+										effectInterop.GetNamedPropertyMapping("SpecularExponent", out uint exponentProp, out _);
+										effectInterop.GetNamedPropertyMapping("SpecularAmount", out uint amountProp, out _);
+										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
+
+										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
+										float exponent = (float)effectInterop.GetProperty(exponentProp);
+										float amount = (float)effectInterop.GetProperty(amountProp);
+										Color color = (Color)effectInterop.GetProperty(colorProp);
+
+										return SKImageFilter.CreatePointLitSpecular(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, new(bounds));
 									}
 
 									return null;
