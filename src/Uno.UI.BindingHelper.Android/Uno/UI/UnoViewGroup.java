@@ -113,7 +113,8 @@ public abstract class UnoViewGroup
 	
 		// Original bug: https://github.com/unoplatform/Uno.Gallery/issues/898
 	
-		// Check for opacity (Alpha) and return false if it's less than 1f
+		// We always return false without checking for opacity (Alpha). This is because
+		// the opacity may be set on a parent, and for performance concerns we don't want to walk all the parents.
 		return false;
 	}
 
