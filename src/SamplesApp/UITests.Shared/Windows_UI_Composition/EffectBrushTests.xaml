@@ -34,5 +34,8 @@
 		<Grid x:Name="ddGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="DistantDiffuseEffect"/>
 		<Grid x:Name="dsGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="DistantSpecularEffect"/>
 		<Grid x:Name="sdGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="SpotDiffuseEffect"/>
+		<Grid x:Name="ssGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="SpotSpecularEffect"/>
+		<Grid x:Name="pdGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="PointDiffuseEffect"/>
+		<Grid x:Name="psGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="PointSpecularEffect"/>
 	</GridView>
 </UserControl>

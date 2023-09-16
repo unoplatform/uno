@@ -141,6 +141,7 @@ namespace Windows.Graphics.Effects.Interop
 			return targetVector;
 		}
 
+		// Uncomment this if we ever needed to switch light effects to pixel shaders
 		/*internal static Vector2 CalcConeAngle(float limitingConeAngle)
 		{
 			float limitingConeAngleInRadians = MathF.Abs(limitingConeAngle) * 0.0174532925199433f;
