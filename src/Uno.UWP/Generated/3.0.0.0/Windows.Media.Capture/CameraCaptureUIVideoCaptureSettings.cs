@@ -36,7 +36,7 @@ namespace Windows.Media.Capture
 			}
 		}
 #endif
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Media.Capture.CameraCaptureUIVideoFormat Format
 		{
