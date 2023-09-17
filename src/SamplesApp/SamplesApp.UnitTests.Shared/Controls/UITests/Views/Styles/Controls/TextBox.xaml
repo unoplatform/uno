@@ -14,14 +14,6 @@
 				Value="50" />
 		<Setter Property="MinHeight"
 				Value="30" />
-		<Setter Property="Foreground"
-				Value="{StaticResource Color02Brush}" />
-		<Setter Property="Background"
-				Value="{StaticResource Color08Brush}" />
-		<Setter Property="SelectionHighlightColor"
-				Value="{StaticResource Color06Brush}" />
-		<Setter Property="BorderThickness"
-				Value="0" />
 		<Setter Property="FontSize"
 				Value="14" />
 		<Setter Property="ScrollViewer.HorizontalScrollMode"
@@ -122,6 +114,7 @@
 						</VisualStateManager.VisualStateGroups>
 
 						<Border x:Name="BorderElement"
+								CornerRadius="2"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
 								Background="{TemplateBinding Background}"
@@ -140,10 +133,12 @@
 										  Visibility="Collapsed"
 										  x:DeferLoadStrategy="Lazy" />
 
-						<u:PathControl Style="{StaticResource Icon_Search}"
-									   Grid.Row="1"
-									   Margin="8,0,0,0"
-									   VerticalAlignment="Center" />
+						<SymbolIcon
+							Symbol="Find"
+							VerticalAlignment="Center"
+							Foreground="{TemplateBinding Foreground}"
+							Grid.Row="1"
+							Margin="8,0,0,0" />
 
 						<ScrollViewer x:Name="ContentElement"
 									  AutomationProperties.AccessibilityView="Raw"
