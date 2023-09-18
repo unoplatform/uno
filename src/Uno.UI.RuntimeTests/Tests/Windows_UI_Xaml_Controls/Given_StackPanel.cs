@@ -23,8 +23,112 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __MACOS__
 	[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
-	public class Given_StackPanel
+	public partial class Given_StackPanel
 	{
+		private partial class MyStackPanel : StackPanel
+		{
+			public int MeasureCount { get; private set; }
+			public int ArrangeCount { get; private set; }
+
+			public Size LastMeasureOverrideReturn { get; private set; }
+			public Size LastArrangeOverrideReturn { get; private set; }
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				MeasureCount++;
+				return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
+			}
+
+			protected override Size ArrangeOverride(Size arrangeSize)
+			{
+				ArrangeCount++;
+				return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__
+		[Ignore("Fails on iOS")]
+#endif
+		public async Task When_Adding_Or_Removing_Child_Should_Re_Measure()
+		{
+			var SUT = new MyStackPanel()
+			{
+				Children =
+				{
+					new Border()
+					{
+						Width = 50,
+						Height = 50,
+					}
+				}
+			};
+
+			int expectedMeasureAndArrangeCount = 0;
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+			expectedMeasureAndArrangeCount++;
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
+			Assert.AreEqual(50, SUT.LastMeasureOverrideReturn.Height);
+			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
+
+			SUT.Children.Add(new Border()
+			{
+				Width = 50,
+				Height = 50,
+			});
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
+			expectedMeasureAndArrangeCount++;
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
+			Assert.AreEqual(100, SUT.LastMeasureOverrideReturn.Height);
+			Assert.AreEqual(100, SUT.LastArrangeOverrideReturn.Height);
+
+			SUT.Children.RemoveAt(1);
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
+			expectedMeasureAndArrangeCount++;
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
+			Assert.AreEqual(50, SUT.LastMeasureOverrideReturn.Height);
+			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
+
+			SUT.Children.Remove(SUT.Children.Single());
+#if !__CROSSRUNTIME__
+			await TestServices.WindowHelper.WaitForRelayouted(SUT); // arrange is skipped (incorrectly) when finalRect is default, which is the case after removing the last child from StackPanel.
+			expectedMeasureAndArrangeCount++;
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
+			Assert.AreEqual(0, SUT.LastMeasureOverrideReturn.Height);
+			Assert.AreEqual(0, SUT.LastArrangeOverrideReturn.Height);
+#endif
+
+			SUT.Children.Add(new Border()
+			{
+				Width = 50,
+				Height = 50,
+			});
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
+			expectedMeasureAndArrangeCount++;
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
+			Assert.AreEqual(50, SUT.LastMeasureOverrideReturn.Height);
+			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
+
+			SUT.Children.Clear();
+#if !__CROSSRUNTIME__
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);  // arrange is skipped (incorrectly) when finalRect is default, which is the case after removing the last child from StackPanel.
+			expectedMeasureAndArrangeCount++;
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
+			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
+			Assert.AreEqual(0, SUT.LastMeasureOverrideReturn.Height);
+			Assert.AreEqual(0, SUT.LastArrangeOverrideReturn.Height);
+#endif
+		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Padding_Set_In_SizeChanged()

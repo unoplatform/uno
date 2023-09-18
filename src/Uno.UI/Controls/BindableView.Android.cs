@@ -155,6 +155,7 @@ namespace Uno.UI.Controls
 			base.RemoveViewFast(view);
 
 			ResetDependencyObjectParent(view);
+			OnChildViewRemoved(view);
 		}
 
 		/// <summary>
@@ -181,6 +182,7 @@ namespace Uno.UI.Controls
 			base.RemoveViewAtFast(index);
 
 			ResetDependencyObjectParent(removedView);
+			OnChildViewRemoved(removedView);
 		}
 
 		/// <summary>
@@ -241,8 +243,16 @@ namespace Uno.UI.Controls
 		/// <summary>
 		/// Invoked when a child view has been added.
 		/// </summary>
-		/// <param name="view">The view being removed</param>
+		/// <param name="view">The view being added</param>
 		protected virtual void OnChildViewAdded(View view)
+		{
+		}
+
+		/// <summary>
+		/// Invoked when a child view has been removed.
+		/// </summary>
+		/// <param name="view">The view being removed</param>
+		protected virtual void OnChildViewRemoved(View view)
 		{
 		}
 
