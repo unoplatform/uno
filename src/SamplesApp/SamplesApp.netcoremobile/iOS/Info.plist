@@ -41,6 +41,14 @@
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to use your camera.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to use your photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to use your microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to add to your photo library.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>This is a step counter, and we&apos;d like to track motion. </string>
 	<key>NSLocationWhenInUseUsageDescription</key>
