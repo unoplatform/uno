@@ -16,5 +16,7 @@
 		<ios:Button Content="Capture Image" Click="CaptureImage_Click" />
 		<ios:Button Content="Capture Video" Click="CaptureVideo_Click" />
 		<Image x:Name="ImageControl" />
+		<TextBlock x:Name="videoSize"
+				   TextWrapping="WrapWholeWords" />
 	</StackPanel>
 </Page>
