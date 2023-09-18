@@ -200,6 +200,13 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
+	<Target Name="RemoveGeneratedIcon" BeforeTargets="CoreCompile">
+		<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
+		<ItemGroup>
+			<Compile Remove="@(_WindowIconExtension)"/>
+		</ItemGroup>
+	</Target>
+
 	<Target Name="GenerateVersion" 
 			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
 			Condition="'$(GITVERSION_InformationalVersion)'!=''">
