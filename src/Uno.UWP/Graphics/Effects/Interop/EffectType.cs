@@ -34,7 +34,7 @@
 		OpacityEffect,
 		PointDiffuseEffect,
 		PointSpecularEffect,
-		SaturationEffect,
+		SaturationEffect, //
 		SepiaEffect,
 		SpotDiffuseEffect,
 		SpotSpecularEffect,
@@ -43,7 +43,7 @@
 		Transform2DEffect,
 
 		// Composition-only Effects
-		SceneLightingEffect,
+		SceneLightingEffect, // Note: This needs Composition Lights support first to be implemented
 		WhiteNoiseEffect,
 
 		Unsupported

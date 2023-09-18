@@ -1,4 +1,6 @@
-﻿using Windows.Graphics.Effects;
+﻿#nullable enable
+
+using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 using System;
 using SkiaSharp;
@@ -9,7 +11,7 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionEffectBrush : CompositionBrush
 	{
-		private SKImageFilter GenerateEffectFilter(object effect, SKRect bounds)
+		private SKImageFilter? GenerateEffectFilter(object effect, SKRect bounds)
 		{
 			// TODO: https://user-images.githubusercontent.com/34550324/264485558-d7ee5062-b0e0-4f6e-a8c7-0620ec561d3d.png
 			// TODO: Cache pixel shaders (see dwmcore.dll!CCompiledEffectCache), needed in order to implement animations and online rendering
@@ -18,7 +20,7 @@ namespace Windows.UI.Composition
 			{
 				case CompositionEffectSourceParameter effectSourceParameter:
 					{
-						CompositionBrush brush = GetSourceParameter(effectSourceParameter.Name);
+						CompositionBrush? brush = GetSourceParameter(effectSourceParameter.Name);
 						if (brush is not null)
 						{
 							SKPaint paint = new SKPaint() { IsAntialias = true, IsAutohinted = true, FilterQuality = SKFilterQuality.High };
@@ -37,9 +39,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 										effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
@@ -58,9 +62,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -80,9 +86,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -102,15 +110,19 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Angle", out uint angleProp, out GraphicsEffectPropertyMapping angleMapping);
 										float angle = (float)effectInterop.GetProperty(angleProp);
 
 										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											angle *= 180.0f / MathF.PI;
+										}
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -130,9 +142,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 /* only the Color property is required */ && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										// Note: ColorHdr isn't supported by Composition (as of 10.0.25941.1000)
 										effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
@@ -153,7 +167,9 @@ namespace Windows.UI.Composition
 
 										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
 										if (errors is not null)
+										{
 											return null;
+										}
 
 										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
 										{
@@ -206,20 +222,26 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource bg && effectInterop.GetSource(1) is IGraphicsEffectSource fg)
 									{
-										SKImageFilter bgFilter = GenerateEffectFilter(bg, bounds);
+										SKImageFilter? bgFilter = GenerateEffectFilter(bg, bounds);
 										if (bgFilter is null)
+										{
 											return null;
+										}
 
-										SKImageFilter fgFilter = GenerateEffectFilter(fg, bounds);
+										SKImageFilter? fgFilter = GenerateEffectFilter(fg, bounds);
 										if (fgFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
 										D2D1BlendEffectMode mode = (D2D1BlendEffectMode)effectInterop.GetProperty(modeProp);
 										SKBlendMode skMode = mode.ToSkia();
 
-										if (skMode == (SKBlendMode)0xFF) // Unsupported mode
-											return null;
+										if (skMode == (SKBlendMode)0xFF) // Unsupported mode, fallback to default mode, we can add support for other modes when we move to Skia 3 through pixel shaders
+										{
+											skMode = SKBlendMode.Multiply;
+										}
 
 										return SKImageFilter.CreateBlendMode(skMode, bgFilter, fgFilter, new(bounds));
 									}
@@ -230,24 +252,30 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() > 1 && effectInterop.GetPropertyCount() == 1)
 									{
-										SKImageFilter currentFilter = GenerateEffectFilter(effectInterop.GetSource(0), bounds);
+										SKImageFilter? currentFilter = GenerateEffectFilter(effectInterop.GetSource(0), bounds);
 										if (currentFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
 										D2D1CompositeMode mode = (D2D1CompositeMode)effectInterop.GetProperty(modeProp);
 										SKBlendMode skMode = mode.ToSkia();
 
-										if (skMode == (SKBlendMode)0xFF) // Unsupported mode
-											return null;
+										if (skMode == (SKBlendMode)0xFF) // Unsupported mode, fallback to default mode, we can add support for other modes when we move to Skia 3 through pixel shaders
+										{
+											skMode = SKBlendMode.SrcOver;
+										}
 
 										// We have to do this manually because SKImageFilter.CreateMerge(SKImageFilter, SKImageFilter, SKBlendMode, SKImageFilter.CropRect) is obsolete.
 										for (uint idx = 1; idx < effectInterop.GetSourceCount(); idx++)
 										{
-											SKImageFilter nextFilter = GenerateEffectFilter(effectInterop.GetSource(idx), bounds);
+											SKImageFilter? nextFilter = GenerateEffectFilter(effectInterop.GetSource(idx), bounds);
 
 											if (nextFilter is not null)
+											{
 												currentFilter = SKImageFilter.CreateBlendMode(skMode, currentFilter, nextFilter, new(bounds));
+											}
 										}
 
 										return currentFilter;
@@ -272,9 +300,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Opacity", out uint opacityProp, out _);
 										float opacity = (float)effectInterop.GetProperty(opacityProp);
@@ -298,9 +328,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 /* only the Contrast property is required */ && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Contrast", out uint contrastProp, out _);
 										effectInterop.GetNamedPropertyMapping("ClampSource", out uint clampProp, out _);
@@ -356,7 +388,9 @@ namespace Windows.UI.Composition
 
 										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
 										if (errors is not null)
+										{
 											return null;
+										}
 
 										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
 										{
@@ -417,13 +451,17 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource bg && effectInterop.GetSource(1) is IGraphicsEffectSource fg)
 									{
-										SKImageFilter bgFilter = GenerateEffectFilter(bg, bounds);
+										SKImageFilter? bgFilter = GenerateEffectFilter(bg, bounds);
 										if (bgFilter is null)
+										{
 											return null;
+										}
 
-										SKImageFilter fgFilter = GenerateEffectFilter(fg, bounds);
+										SKImageFilter? fgFilter = GenerateEffectFilter(fg, bounds);
 										if (fgFilter is null)
+										{
 											return null;
+										}
 
 										float? multiplyAmount = effectInterop.GetProperty(0) as float?;
 										float? source1Amount = effectInterop.GetProperty(1) as float?;
@@ -432,15 +470,19 @@ namespace Windows.UI.Composition
 
 										if (multiplyAmount is null || source1Amount is null || source2Amount is null || offset is null)
 										{
-											float[] coefficients = effectInterop.GetProperty(0) as float[];
+											float[]? coefficients = effectInterop.GetProperty(0) as float[];
 
 											if (coefficients is null)
 											{
 												effectInterop.GetNamedPropertyMapping("Coefficients", out uint coefficientsProp, out GraphicsEffectPropertyMapping coefficientsMapping);
 												if (coefficientsMapping == GraphicsEffectPropertyMapping.Direct)
+												{
 													coefficients = effectInterop.GetProperty(coefficientsProp) as float[];
+												}
 												else
+												{
 													return null;
+												}
 											}
 
 											if (coefficients is not null && coefficients.Length == 4)
@@ -451,7 +493,9 @@ namespace Windows.UI.Composition
 												offset = coefficients[3];
 											}
 											else
+											{
 												return null;
+											}
 										}
 
 										return SKImageFilter.CreateArithmetic(multiplyAmount.Value, source1Amount.Value, source2Amount.Value, offset.Value, false, bgFilter, fgFilter, new(bounds));
@@ -463,9 +507,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Exposure", out uint exposureProp, out _);
 
@@ -523,22 +569,30 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource sourceA && effectInterop.GetSource(1) is IGraphicsEffectSource sourceB)
 									{
-										SKImageFilter sourceFilter1 = GenerateEffectFilter(sourceB, bounds);
+										SKImageFilter? sourceFilter1 = GenerateEffectFilter(sourceB, bounds);
 										if (sourceFilter1 is null)
+										{
 											return null;
+										}
 
-										SKImageFilter sourceFilter2 = GenerateEffectFilter(sourceA, bounds);
+										SKImageFilter? sourceFilter2 = GenerateEffectFilter(sourceA, bounds);
 										if (sourceFilter2 is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("CrossFade", out uint crossfadeProp, out _);
 
 										float crossfade = (float)effectInterop.GetProperty(crossfadeProp);
 
 										if (crossfade <= 0.0f)
+										{
 											return sourceFilter1;
+										}
 										else if (crossfade >= 1.0f)
+										{
 											return sourceFilter2;
+										}
 
 										SKImageFilter fbFilter = SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -564,7 +618,9 @@ namespace Windows.UI.Composition
 
 										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
 										if (errors is not null)
+										{
 											return null;
+										}
 
 										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
 										{
@@ -586,9 +642,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), sourceFilter, new(bounds));
 									}
@@ -599,9 +657,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 13 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("RedOffset", out uint redOffsetProp, out _);
 										effectInterop.GetNamedPropertyMapping("RedSlope", out uint redSlopeProp, out _);
@@ -682,7 +742,9 @@ namespace Windows.UI.Composition
 
 										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
 										if (errors is not null)
+										{
 											return null;
+										}
 
 										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
 										{
@@ -792,9 +854,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 17 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("RedAmplitude", out uint redAmplitudeProp, out _);
 										effectInterop.GetNamedPropertyMapping("RedExponent", out uint redExponentProp, out _);
@@ -887,7 +951,9 @@ namespace Windows.UI.Composition
 
 										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
 										if (errors is not null)
+										{
 											return null;
+										}
 
 										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
 										{
@@ -1006,21 +1072,27 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("TransformMatrix", out uint matrixProp, out _);
 										Matrix3x2? matrix = effectInterop.GetProperty(matrixProp) as Matrix3x2?;
 
 										if (matrix is null)
 										{
-											float[] matrixArray = effectInterop.GetProperty(matrixProp) as float[];
+											float[]? matrixArray = effectInterop.GetProperty(matrixProp) as float[];
 
 											if (matrixArray is not null && matrixArray.Length == 6)
+											{
 												matrix = new Matrix3x2(matrixArray[0], matrixArray[1], matrixArray[2], matrixArray[3], matrixArray[4], matrixArray[5]);
+											}
 											else
+											{
 												return null;
+											}
 										}
 
 										return SKImageFilter.CreateMerge(new[] { SKImageFilter.CreateMatrix(matrix.Value.ToSKMatrix(), SKFilterQuality.High, sourceFilter) }, new(bounds));
@@ -1032,9 +1104,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("ExtendX", out uint modeXProp, out _);
 										effectInterop.GetNamedPropertyMapping("ExtendY", out uint modeYProp, out _);
@@ -1047,12 +1121,18 @@ namespace Windows.UI.Composition
 										if (xmode != ymode)
 										{
 											if (xmode != default)
+											{
 												mode = xmode.ToSkia();
+											}
 											else
+											{
 												mode = ymode.ToSkia();
+											}
 										}
 										else
+										{
 											mode = xmode.ToSkia();
+										}
 
 										float[] identityKernel = new float[9]
 										{
@@ -1070,9 +1150,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Intensity", out uint intensityProp, out _);
 										float intensity = (float)effectInterop.GetProperty(intensityProp);
@@ -1096,9 +1178,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Temperature", out uint tempProp, out _);
 										effectInterop.GetNamedPropertyMapping("Tint", out uint tintProp, out _);
@@ -1126,9 +1210,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("ColorMatrix", out uint matrixProp, out _);
 										float[] matrix = (float[])effectInterop.GetProperty(matrixProp);
@@ -1151,9 +1237,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Azimuth", out uint azimuthProp, out GraphicsEffectPropertyMapping azimuthMapping);
 										effectInterop.GetNamedPropertyMapping("Elevation", out uint elevationProp, out GraphicsEffectPropertyMapping elevationMapping);
@@ -1166,10 +1254,14 @@ namespace Windows.UI.Composition
 										Color color = (Color)effectInterop.GetProperty(colorProp);
 
 										if (azimuthMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											azimuth *= 180.0f / MathF.PI;
+										}
 
 										if (elevationMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											elevation *= 180.0f / MathF.PI;
+										}
 
 										Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
 
@@ -1182,9 +1274,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 5 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("Azimuth", out uint azimuthProp, out GraphicsEffectPropertyMapping azimuthMapping);
 										effectInterop.GetNamedPropertyMapping("Elevation", out uint elevationProp, out GraphicsEffectPropertyMapping elevationMapping);
@@ -1199,10 +1293,14 @@ namespace Windows.UI.Composition
 										Color color = (Color)effectInterop.GetProperty(colorProp);
 
 										if (azimuthMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											azimuth *= 180.0f / MathF.PI;
+										}
 
 										if (elevationMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											elevation *= 180.0f / MathF.PI;
+										}
 
 										Vector3 lightVector = EffectHelpers.GetLightVector(azimuth, elevation);
 
@@ -1216,9 +1314,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 6 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightTarget", out uint targetProp, out _);
@@ -1235,7 +1335,9 @@ namespace Windows.UI.Composition
 										Color color = (Color)effectInterop.GetProperty(colorProp);
 
 										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											angle *= 180.0f / MathF.PI;
+										}
 
 										Vector3 lightTarget = EffectHelpers.CalcLightTargetVector(position, target);
 										//Vector2 coneAngle = EffectHelpers.CalcConeAngle(angle); // Uncomment this if we ever needed to switch light effects to pixel shaders
@@ -1249,9 +1351,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 7 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightTarget", out uint targetProp, out _);
@@ -1270,7 +1374,9 @@ namespace Windows.UI.Composition
 										Color color = (Color)effectInterop.GetProperty(colorProp);
 
 										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
+										{
 											angle *= 180.0f / MathF.PI;
+										}
 
 										Vector3 lightTarget = EffectHelpers.CalcLightTargetVector(position, target);
 										//Vector2 coneAngle = EffectHelpers.CalcConeAngle(angle); // Uncomment this if we ever needed to switch light effects to pixel shaders
@@ -1284,9 +1390,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
@@ -1305,9 +1413,11 @@ namespace Windows.UI.Composition
 								{
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
-										SKImageFilter sourceFilter = GenerateEffectFilter(source, bounds);
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
 										if (sourceFilter is null)
+										{
 											return null;
+										}
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("SpecularExponent", out uint exponentProp, out _);
@@ -1324,6 +1434,55 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
+							case EffectType.AlphaMaskEffect: // This is a temporary workaround until we move to Skia 3 so we can implement it properly using pixel shaders
+								{
+									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source && effectInterop.GetSource(1) is IGraphicsEffectSource mask)
+									{
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+										{
+											return null;
+										}
+
+										SKImageFilter? maskFilter = GenerateEffectFilter(mask, bounds);
+										if (maskFilter is null)
+										{
+											return null;
+										}
+
+										return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
+							case EffectType.SaturationEffect:
+								{
+									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
+									{
+										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
+										if (sourceFilter is null)
+										{
+											return null;
+										}
+
+										effectInterop.GetNamedPropertyMapping("Saturation", out uint saturationProp, out _);
+
+										float saturation = MathF.Min((float)effectInterop.GetProperty(saturationProp), 2);
+
+										return SKImageFilter.CreateColorFilter(
+											SKColorFilter.CreateColorMatrix(
+												new float[] // Saturation Matrix
+												{
+													0.2126f + 0.7874f * saturation, 0.7152f - 0.7152f * saturation, 0.0722f - 0.0722f * saturation, 0.0f, 0.0f,
+													0.2126f - 0.2126f * saturation, 0.7152f + 0.2848f * saturation, 0.0722f - 0.0722f * saturation, 0.0f, 0.0f,
+													0.2126f - 0.2126f * saturation, 0.7152f - 0.7152f * saturation, 0.0722f + 0.9278f * saturation, 0.0f, 0.0f,
+													0.0f,                           0.0f,                           0.0f,                           1.0f, 0.0f
+												}),
+											sourceFilter, new(bounds));
+									}
+
+									return null;
+								}
 							case EffectType.Unsupported:
 							default:
 								return null;
@@ -1336,10 +1495,7 @@ namespace Windows.UI.Composition
 
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
-			SKImageFilter filter = GenerateEffectFilter(_effect, bounds);
-			if (filter is null)
-				throw new NotSupportedException("The specified IGraphicsEffect is not supported"); // TODO: Replicate Windows' behavior
-
+			SKImageFilter filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException("Unsupported effect description.");
 			paint.Shader = null;
 			paint.ImageFilter = filter;
 			paint.FilterQuality = SKFilterQuality.High;

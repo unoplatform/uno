@@ -1,4 +1,6 @@
-﻿using Windows.Graphics.Effects;
+﻿#nullable enable
+
+using Windows.Graphics.Effects;
 using System.Collections.Generic;
 
 namespace Windows.UI.Composition
@@ -10,7 +12,7 @@ namespace Windows.UI.Composition
 
 		private Dictionary<string, CompositionBrush> _sourceParameters;
 
-		internal CompositionEffectBrush(IGraphicsEffect graphicsEffect, IEnumerable<string> animatableProperties = null)
+		internal CompositionEffectBrush(IGraphicsEffect graphicsEffect, IEnumerable<string>? animatableProperties = null)
 		{
 			_effect = graphicsEffect;
 			//_animatableProperties = animatableProperties; // TODO (see the TODO note above)
@@ -18,7 +20,7 @@ namespace Windows.UI.Composition
 			_sourceParameters = new();
 		}
 
-		public CompositionBrush GetSourceParameter(string name)
+		public CompositionBrush? GetSourceParameter(string name)
 		{
 			if (_sourceParameters.TryGetValue(name, out var result))
 				return result;

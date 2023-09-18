@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿#nullable enable
+
+using System;
 
 namespace Uno.UI.Composition
 {
@@ -111,7 +108,10 @@ namespace Uno.UI.Composition
 			float flV;
 
 			if (flTemp < 1666.666625976562f)
+			{
 				flTemp = 1666.6666f;
+			}
+
 			flMax = Math.Clamp(flTint, -0.1f, 0.1f);
 			TempTintToYUV(out flY, out flU, flTemp, flMax, out flV);
 			Yuv1960toXYZ(out pflX, out pflY, flY, flU, flV, out pflZ);
@@ -157,7 +157,9 @@ namespace Uno.UI.Composition
 			float flTinta;
 
 			if (flTemp < 1666.666625976562f)
+			{
 				flTemp = 1666.6666f;
+			}
 
 			flTinta = Math.Clamp(flTint, -0.1f, 0.1f);
 			flRecipTemp = 1.0f / flTemp;
@@ -166,13 +168,17 @@ namespace Uno.UI.Composition
 			for (int i = 0; i < 31; i++)
 			{
 				if (_robertson[i].R <= flRecipTemp && _robertson[i + 1].R >= flRecipTemp)
+				{
 					break;
+				}
 
 				idx++;
 			}
 
 			if (idx >= 0x1F)
+			{
 				idx = 30;
+			}
 
 			flDelU = InvLerp(_robertson[idx - 1].R, flRecipTemp, _robertson[idx].R);
 			flRecipTempa = _robertson[idx - 1].S * _robertson[idx - 1].S + 1.0f;
@@ -207,9 +213,13 @@ namespace Uno.UI.Composition
 		private static float InvLerp(float flV0, float flVt, float flV1)
 		{
 			if (flV0 == flV1)
+			{
 				return (float)0.5f;
+			}
 			else
+			{
 				return (float)((flVt - flV0) / (flV1 - flV0));
+			}
 		}
 
 		private static void MapUV(ref float pflU, ref float pflV, float flUbb, float flVbb)
