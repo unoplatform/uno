@@ -12,7 +12,7 @@ document.addEventListener(
                 const t = e.target;
                 if (
                     window.innerWidth >= 980 ||
-                    !t.matches("#navbar .has-children a")
+                    !t.matches("#navbar .menu-item-has-children a")
                 )
                     return;
                 e.stopImmediatePropagation();
