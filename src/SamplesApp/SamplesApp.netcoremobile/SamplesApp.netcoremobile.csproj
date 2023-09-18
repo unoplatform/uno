@@ -201,7 +201,7 @@
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
 	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_ValidateAndroidPackageProperties" 
+			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
 			Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
 		<Exec Command="git rev-list --count HEAD"
