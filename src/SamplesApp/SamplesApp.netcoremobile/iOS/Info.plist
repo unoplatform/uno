@@ -60,5 +60,7 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/iconapp.appiconset</string>
 </dict>
 </plist>
