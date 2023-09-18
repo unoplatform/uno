@@ -20,33 +20,40 @@ namespace Windows.UI.Xaml.Controls
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, Primitives.SnapPointsAlignment alignment)
 		{
-			if (orientation == Orientation && _snapPoints != null)
+			if (orientation != Orientation || _snapPoints == null)
 			{
-				switch (alignment)
-				{
-					case SnapPointsAlignment.Far:
-						return _snapPoints;
-					case SnapPointsAlignment.Center:
-						{
-							float previous = 0;
-							var result = new List<float>(_snapPoints.Select(sp => (previous + sp) / 2));
-
-							return result;
-						}
-					case SnapPointsAlignment.Near:
-						{
-							var result = new List<float>(_snapPoints.Count);
-							result.Add(0f);
-							for (var i = 1; i < _snapPoints.Count; i++)
-							{
-								result.Add(_snapPoints[i - 1]);
-							}
-							return result;
-						}
-				}
+				return Array.Empty<float>();
 			}
-			return Array.Empty<float>();
 
+			switch (alignment)
+			{
+				case SnapPointsAlignment.Far:
+					return _snapPoints;
+				case SnapPointsAlignment.Center:
+					var centerResult = new List<float>(_snapPoints.Count);
+					for (var i = 0; i < _snapPoints.Count; i++)
+					{
+						var start = i == 0 ? (float)(orientation == Orientation.Horizontal ? Margin.Left : Margin.Right) : _snapPoints[i - 1];
+						var end = _snapPoints[i];
+
+						centerResult.Add((start + end) / 2);
+					}
+
+					return centerResult;
+				case SnapPointsAlignment.Near:
+					var nearResult = new List<float>(_snapPoints.Count);
+					if (_snapPoints.Count > 0)
+					{
+						nearResult.Add(0f);
+					}
+					for (var i = 1; i < _snapPoints.Count; i++)
+					{
+						nearResult.Add(_snapPoints[i - 1]);
+					}
+					return nearResult;
+				default:
+					throw new ArgumentOutOfRangeException(nameof(alignment), "Alignment should be Near, Center or Far.");
+			}
 		}
 		public float GetRegularSnapPoints(Orientation orientation, Primitives.SnapPointsAlignment alignment, out float offset)
 		{

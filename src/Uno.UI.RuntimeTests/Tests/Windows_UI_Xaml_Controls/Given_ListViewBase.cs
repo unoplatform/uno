@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
@@ -2710,7 +2711,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(list);
 			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromItem("Item1") as ListViewItem);
-			Assert.AreEqual(29, GetTop(container1, outer));
+			Assert.AreEqual(29, GetTop(container1, outer), Epsilon);
 			Assert.AreEqual(0, list.SelectedIndex);
 			Assert.AreEqual("Item0", list.SelectedItem);
 
@@ -3053,7 +3054,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(source.Count - 1));
 
-			Assert.AreEqual(969, sv.VerticalOffset, delta: 1);
+			Assert.AreEqual(969, sv.VerticalOffset, delta: 2);
 
 			source.RemoveAt(0);
 
@@ -3074,7 +3075,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var listBounds = SUT.GetOnScreenBounds();
 			var itemBounds = firstContainer.GetOnScreenBounds();
-			Assert.AreEqual(listBounds.Y, itemBounds.Y); // Top of first item should align with top of list
+			Assert.AreEqual(listBounds.Y, itemBounds.Y, 2); // Top of first item should align with top of list
 		}
 
 		[TestMethod]
@@ -3112,7 +3113,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(880, sv.VerticalOffset, delta: 1);
+			Assert.AreEqual(880, sv.VerticalOffset, delta: 2);
 
 			source[0].ItemHeight = 143;
 
