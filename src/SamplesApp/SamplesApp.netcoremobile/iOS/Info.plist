@@ -5,11 +5,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Uno SamplesApp</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.SamplesApp</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>uno.platform.samplesdev</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>MinimumOSVersion</key>
@@ -64,5 +60,7 @@
 	</array>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>XSAppIconAssets</key>
+	<string>Assets.xcassets/iconapp.appiconset</string>
 </dict>
 </plist>

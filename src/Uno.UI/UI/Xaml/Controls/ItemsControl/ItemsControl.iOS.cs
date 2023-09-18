@@ -22,11 +22,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SetNeedsLayout();
 		}
-
-		partial void RemoveViewPartial(UIView current)
-		{
-			current.RemoveFromSuperview();
-		}
 	}
 }
 

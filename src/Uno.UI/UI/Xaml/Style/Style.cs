@@ -75,9 +75,7 @@ namespace Windows.UI.Xaml
 
 			EnsureSetterMap();
 
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ResourceResolver.PushNewScope(_xamlScope);
 				localPrecedenceDisposable = DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence);
@@ -96,9 +94,7 @@ namespace Windows.UI.Xaml
 				// Check tree for resource binding values, since some Setters may have set ThemeResource-backed values
 				(o as IDependencyObjectStoreProvider)!.Store.UpdateResourceBindings(ResourceUpdateReason.ResolvedOnLoading);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				localPrecedenceDisposable?.Dispose();
 				ResourceResolver.PopScope();

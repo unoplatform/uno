@@ -376,15 +376,11 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException($"Called without matching {nameof(IsParsing)} call. This method should never be called from user code.");
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				ApplyStyles();
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_isParsing = false;
 				ResourceResolver.PopSourceFromScope();

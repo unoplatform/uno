@@ -22,11 +22,6 @@ namespace Windows.UI.Xaml.Controls
 			RequestLayout();
 		}
 
-		partial void RemoveViewPartial(View current)
-		{
-			(current.Parent as ViewGroup).RemoveViewAndDispose(current);
-		}
-
 		/// <summary>
 		/// Gets item for a particular 'display position.' For this purpose, if the source is grouped, it is treated as a flat list with the header items (groups themselves) placed contiguously after all of the group items.
 		/// </summary>

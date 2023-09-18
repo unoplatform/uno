@@ -119,7 +119,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Panels don't have an Orientation in UWP, but many derived types do.
 		/// This should be overriden by the derived types to refer to match their
-		/// own Orientation.
+		/// own Orientation. We don't set a default here since different scenarios
+		/// use different defaults. E.g. ListView assumes a vertical orientation
+		/// for keyboard navigation by default, but ItemsPresenter assumes a
+		/// horizontal orientation for header/footer placement.
 		/// </summary>
 		internal virtual Orientation? InternalOrientation { get; }
 

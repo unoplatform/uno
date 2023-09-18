@@ -176,9 +176,7 @@ namespace Windows.UI.Xaml.Data
 				return;
 			}
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_IsCurrentlyPushingTwoWay = true;
 
@@ -202,9 +200,7 @@ namespace Windows.UI.Xaml.Data
 					_bindingPath.Value = value;
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_IsCurrentlyPushingTwoWay = false;
 			}
@@ -694,9 +690,7 @@ namespace Windows.UI.Xaml.Data
 
 						ApplyFallbackValue();
 					}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 					finally
-#endif
 					{
 						_IsCurrentlyPushing = false;
 					}
