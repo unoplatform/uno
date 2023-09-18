@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -51,7 +51,7 @@
 			<ItemGroup>
 				<PackageReference Include="Uno.Extensions.Logging.OSLog" Version="1.6.0" />
 				<PackageReference Include="SkiaSharp.NativeAssets.iOS" />
-				<PackageReference Include="Xamarin.TestCloud.Agent" />
+				<PackageReference Include="Xamarin.TestCloud.Agent" Condition="'$(BuildForTestFlight)'!='true'" />
 			</ItemGroup>
 
 			<PropertyGroup>
@@ -164,6 +164,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
+		<PackageReference Include="Uno.Resizetizer" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -199,8 +200,17 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
+	<Target Name="_UnoRemoveGeneratedIcon" 
+			BeforeTargets="CoreCompile"
+			DependsOnTargets="_AddResizetizerWindowIconExtensions">
+		<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
+		<ItemGroup>
+			<Compile Remove="@(_WindowIconExtension)"/>
+		</ItemGroup>
+	</Target>
+
 	<Target Name="GenerateVersion" 
-			BeforeTargets="BeforeBuild;_CompileAppManifest;_ValidateAndroidPackageProperties" 
+			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
 			Condition="'$(GITVERSION_InformationalVersion)'!=''">
 
 		<Exec Command="git rev-list --count HEAD"
