@@ -30,6 +30,8 @@ using NavigationViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.Navi
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
+using Windows.UI.Input;
+using Windows.Devices.Input;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls;
