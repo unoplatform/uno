@@ -200,7 +200,9 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="RemoveGeneratedIcon" BeforeTargets="CoreCompile">
+	<Target Name="_UnoRemoveGeneratedIcon" 
+			BeforeTargets="CoreCompile"
+			AfterTargets="_AddResizetizerWindowIconExtensions">
 		<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
 		<ItemGroup>
 			<Compile Remove="@(_WindowIconExtension)"/>
