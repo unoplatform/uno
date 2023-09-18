@@ -39,7 +39,6 @@
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
   - UNO_REFERENCE_API: Used when the netstandard 2.0 Reference API is used.
-  - HAS_EXPENSIVE_TRYFINALLY: Used on WebAssembly until exceptions are supported by the WebAssembly specification
   - __NETSTD_REFERENCE__: Used when building the reference assemblies for the netstandard 2.0 target
   - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
 										UIElements. On iOS, this means additional weak references
@@ -58,7 +57,7 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;HAS_EXPENSIVE_TRYFINALLY;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">

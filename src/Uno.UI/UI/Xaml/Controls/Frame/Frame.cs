@@ -496,9 +496,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 			uiElement.IsLeavingFrame = true;
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				var focusManager = VisualTree.GetFocusManagerForElement(this);
 				if (focusManager?.FocusedElement is not { } focusedElement)
@@ -522,9 +520,7 @@ namespace Windows.UI.Xaml.Controls
 					(focusedElement as Control)?.UpdateFocusState(FocusState.Unfocused);
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				uiElement.IsLeavingFrame = false;
 			}
