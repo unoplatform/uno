@@ -28,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush);
+			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 		}
 
 		private protected override void OnLoaded()
@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			SetCornerRadius(newValue);
+			UpdateBorder();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)

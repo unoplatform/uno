@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateBorder()
 		{
-			SetBorder(BorderThicknessInternal, BorderBrushInternal);
+			SetBorder(BorderThicknessInternal, BorderBrushInternal, CornerRadiusInternal);
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			SetCornerRadius(newValue);
+			UpdateBorder();
 		}
 
 		/// <summary>        

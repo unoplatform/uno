@@ -10,14 +10,14 @@ using Uno.UI.Xaml.Media;
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno;
 using Uno.UI.Helpers;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{
 		private Brush _background;
-		private (Brush, Thickness) _border;
-		private CornerRadius _cornerRadius;
+		private (Brush, Thickness, CornerRadius) _border;
 
 		private Action _backgroundChanged;
 
@@ -38,35 +38,14 @@ namespace Windows.UI.Xaml.Shapes
 				SetAndObserveBackgroundBrush(fwElt, oldValue, background, ref _backgroundChanged);
 			}
 
-			if (_border != (borderBrush, borderThickness))
+			if (_border != (borderBrush, borderThickness, cornerRadius))
 			{
-				_border = (borderBrush, borderThickness);
-				SetBorder(element, borderThickness, borderBrush);
-			}
-
-			if (_cornerRadius != cornerRadius)
-			{
-				_cornerRadius = cornerRadius;
-				SetCornerRadius(element, cornerRadius);
+				_border = (borderBrush, borderThickness, cornerRadius);
+				SetBorder(element, borderThickness, borderBrush, cornerRadius);
 			}
 		}
 
-		public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
-		{
-			if (cornerRadius == CornerRadius.None)
-			{
-				element.ResetStyle("border-radius", "overflow");
-			}
-			else
-			{
-				var borderRadiusCssString = $"min(50%,{cornerRadius.TopLeft.ToStringInvariant()}px) min(50%,{cornerRadius.TopRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomLeft.ToStringInvariant()}px)";
-				element.SetStyle(
-					("border-radius", borderRadiusCssString),
-					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
-			}
-		}
-
-		public static void SetBorder(UIElement element, Thickness thickness, Brush brush)
+		public static void SetBorder(UIElement element, Thickness thickness, Brush brush, CornerRadius cornerRadius)
 		{
 			if (thickness == Thickness.Empty)
 			{
@@ -118,6 +97,19 @@ namespace Windows.UI.Xaml.Shapes
 						element.ResetStyle("border-style", "border-color", "border-image", "border-width");
 						break;
 				}
+			}
+
+			if (cornerRadius == CornerRadius.None)
+			{
+				element.ResetStyle("border-radius", "overflow");
+			}
+			else
+			{
+				var outer = cornerRadius.GetRadii(element.RenderSize, thickness).Outer;
+				var borderRadius = $"{outer.TopLeft.X}px {outer.TopRight.X}px {outer.BottomRight.X}px {outer.BottomLeft.X}px / {outer.TopLeft.Y}px {outer.TopRight.Y}px {outer.BottomRight.Y}px {outer.BottomLeft.Y}px";
+				element.SetStyle(
+					("border-radius", borderRadius),
+					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 			}
 		}
 
