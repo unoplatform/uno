@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
@@ -37,7 +37,7 @@
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" />
 		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
 		<PackageReference Include="Xamarin.AndroidX.Fragment" />
-		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.0.0" />
+		<PackageReference Include="Xamarin.AndroidX.Browser" Version="1.6.0.1" />
 	</ItemGroup>
 
 	<ItemGroup>
