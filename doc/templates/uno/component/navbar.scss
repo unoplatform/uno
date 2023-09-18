@@ -133,9 +133,9 @@
       }
 
       /**
-       * has-children means there is a submenu
+       * menu-item-has-children means there is a submenu
        */
-      &.has-children {
+      &.menu-item-has-children {
         // actual submenu
         position: relative;
 
@@ -236,7 +236,7 @@
            * instead of on hover. This is to displays submenus as columns.
            */
           &:not([style*="display: none;"]) {
-            .has-children {
+            .menu-item-has-children {
               ul {
                 visibility: visible;
                 opacity: 1;
@@ -337,7 +337,7 @@
           width: 100%;
         }
 
-        &.has-children {
+        &.menu-item-has-children {
           position: relative;
 
           ul {
