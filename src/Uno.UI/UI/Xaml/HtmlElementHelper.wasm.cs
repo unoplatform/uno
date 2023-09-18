@@ -26,16 +26,9 @@ internal static class HtmlElementHelper
 	{
 		const string UnoUIRuntimeWebAssemblyName = "Uno.UI.Runtime.WebAssembly";
 
-		if (PlatformHelper.IsNetCore)
-		{
-			// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
-			return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
-				?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
-		}
-		else
-		{
-			return Assembly.Load(UnoUIRuntimeWebAssemblyName);
-		}
+		// .NET Core fails to load assemblies property because of ALC issues: https://github.com/dotnet/runtime/issues/44269
+		return AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(a => a.GetName().Name == UnoUIRuntimeWebAssemblyName)
+			?? throw new InvalidOperationException($"Unable to find {UnoUIRuntimeWebAssemblyName} in the loaded assemblies");
 	}
 
 	internal static HtmlTag GetHtmlTag(Type type, string defaultHtmlTag)
