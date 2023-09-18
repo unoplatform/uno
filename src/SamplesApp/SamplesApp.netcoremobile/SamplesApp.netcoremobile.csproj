@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -202,7 +202,7 @@
 
 	<Target Name="_UnoRemoveGeneratedIcon" 
 			BeforeTargets="CoreCompile"
-			AfterTargets="_AddResizetizerWindowIconExtensions">
+			DependsOnTargets="_AddResizetizerWindowIconExtensions">
 		<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
 		<ItemGroup>
 			<Compile Remove="@(_WindowIconExtension)"/>
