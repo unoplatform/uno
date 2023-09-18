@@ -1,6 +1,6 @@
-﻿using System;
-using Windows.Foundation;
-using Windows.Graphics.Effects;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 
 namespace Windows.Graphics.Effects.Interop

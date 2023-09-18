@@ -256,6 +256,26 @@ namespace UITests.Windows_UI_Composition
 					psGrid.Background = new XamlCompositionBrush(effectBrush27);
 				}
 			};
+
+			var effect28 = new SimpleAlphaMaskEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), AlphaMask = new CompositionEffectSourceParameter("maskBrush") };
+			var factory28 = compositor.CreateEffectFactory(effect28);
+			var effectBrush28 = factory28.CreateBrush();
+
+			var maskBrush = compositor.CreateLinearGradientBrush();
+			maskBrush.ColorStops.Add(compositor.CreateColorGradientStop(0.0f, Colors.Black));
+			maskBrush.ColorStops.Add(compositor.CreateColorGradientStop(0.75f, Colors.Transparent));
+			maskBrush.StartPoint = new(0.0f, 0.0f);
+			maskBrush.EndPoint = new(0.0f, 200.0f);
+
+			effectBrush28.SetSourceParameter("maskBrush", maskBrush);
+
+			maskGrid.Background = new EffectTesterBrush(effectBrush28);
+
+			var effect29 = new SimpleSaturationEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), Saturation = 0.3f };
+			var factory29 = compositor.CreateEffectFactory(effect29);
+			var effectBrush29 = factory29.CreateBrush();
+
+			saturationGrid.Background = new EffectTesterBrush(effectBrush29);
 #endif
 		}
 
@@ -2227,6 +2247,86 @@ namespace UITests.Windows_UI_Composition
 			}
 
 			public uint GetPropertyCount() => 4;
+			public IGraphicsEffectSource GetSource(uint index) => Source;
+			public uint GetSourceCount() => 1;
+		}
+
+		[Guid("C80ECFF0-3FD5-4F05-8328-C5D1724B4F0A")]
+		private class SimpleAlphaMaskEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleAlphaMaskEffect";
+			private Guid _id = new Guid("C80ECFF0-3FD5-4F05-8328-C5D1724B4F0A");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public IGraphicsEffectSource AlphaMask { get; set; }
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping) => throw new NotSupportedException();
+
+			public object GetProperty(uint index) => throw new NotSupportedException();
+
+			public uint GetPropertyCount() => 0;
+			public IGraphicsEffectSource GetSource(uint index) => index == 0 ? Source : AlphaMask;
+			public uint GetSourceCount() => 2;
+		}
+
+		[Guid("5CB2D9CF-327D-459F-A0CE-40C0B2086BF7")]
+		private class SimpleSaturationEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+		{
+			private string _name = "SimpleSaturationEffect";
+			private Guid _id = new Guid("5CB2D9CF-327D-459F-A0CE-40C0B2086BF7");
+
+			public string Name
+			{
+				get => _name;
+				set => _name = value;
+			}
+
+			public float Saturation { get; set; } = 0.5f;
+
+			public IGraphicsEffectSource Source { get; set; }
+
+			public Guid GetEffectId() => _id;
+
+			public void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping)
+			{
+				switch (name)
+				{
+					case "Saturation":
+						{
+							index = 0;
+							mapping = GraphicsEffectPropertyMapping.Direct;
+							break;
+						}
+					default:
+						{
+							index = 0xFF;
+							mapping = (GraphicsEffectPropertyMapping)0xFF;
+							break;
+						}
+				}
+			}
+
+			public object GetProperty(uint index)
+			{
+				switch (index)
+				{
+					case 0:
+						return Saturation;
+					default:
+						return null;
+				}
+			}
+
+			public uint GetPropertyCount() => 1;
 			public IGraphicsEffectSource GetSource(uint index) => Source;
 			public uint GetSourceCount() => 1;
 		}

@@ -103,6 +103,7 @@ namespace Windows.Graphics.Effects.Interop
 					return SKBlendMode.DstATop;
 
 				case D2D1CompositeMode.Xor:
+				case D2D1CompositeMode.MaskInvert: // As of 10.0.25941.1000, this is the same as Xor
 					return SKBlendMode.Xor;
 
 				case D2D1CompositeMode.Add:
@@ -111,9 +112,6 @@ namespace Windows.Graphics.Effects.Interop
 				case D2D1CompositeMode.Copy:
 					return SKBlendMode.Src;
 
-				// Unsupported modes
-
-				case D2D1CompositeMode.MaskInvert:
 				default:
 					return (SKBlendMode)0xFF;
 			}
