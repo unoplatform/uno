@@ -97,14 +97,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
 
 			SUT.Children.Remove(SUT.Children.Single());
-#if !__CROSSRUNTIME__
-			await TestServices.WindowHelper.WaitForRelayouted(SUT); // arrange is skipped (incorrectly) when finalRect is default, which is the case after removing the last child from StackPanel.
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
 			expectedMeasureAndArrangeCount++;
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
 			Assert.AreEqual(0, SUT.LastMeasureOverrideReturn.Height);
 			Assert.AreEqual(0, SUT.LastArrangeOverrideReturn.Height);
-#endif
 
 			SUT.Children.Add(new Border()
 			{
@@ -119,14 +117,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
 
 			SUT.Children.Clear();
-#if !__CROSSRUNTIME__
-			await TestServices.WindowHelper.WaitForRelayouted(SUT);  // arrange is skipped (incorrectly) when finalRect is default, which is the case after removing the last child from StackPanel.
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
 			expectedMeasureAndArrangeCount++;
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
 			Assert.AreEqual(0, SUT.LastMeasureOverrideReturn.Height);
 			Assert.AreEqual(0, SUT.LastArrangeOverrideReturn.Height);
-#endif
 		}
 
 		[TestMethod]
