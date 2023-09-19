@@ -60,7 +60,7 @@ In this task, you will create a simple Single Page App with the Uno Platform. Th
 
     * **Uno.Core**
     * **Uno.WinUI** (or **Uno.UI**)
-    * **Uno.WinUI.RemoteControl** (or **Uno.UI.RemoteControl**)
+    * **Uno.WinUI.DevServer** (or **Uno.UI.DevServer**)
     * **Uno.WinUI.WebAssembly** (or **Uno.UI.WebAssembly**)
     * **Uno.Wasm.Bootstrap**
     * **Uno.Wasm.Bootstrap.DevServer**

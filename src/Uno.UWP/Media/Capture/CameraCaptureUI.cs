@@ -21,6 +21,7 @@ namespace Windows.Media.Capture
 
 		public CameraCaptureUI()
 		{
+			VideoSettings.Format = CameraCaptureUIVideoFormat.Mp4;
 		}
 
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CaptureFileAsync(global::Windows.Media.Capture.CameraCaptureUIMode mode)

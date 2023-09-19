@@ -50,6 +50,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.netcoremobile.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.netcoremobile.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>

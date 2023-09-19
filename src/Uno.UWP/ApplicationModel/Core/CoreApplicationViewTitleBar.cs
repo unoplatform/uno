@@ -4,7 +4,7 @@ using System;
 
 namespace Windows.ApplicationModel.Core
 {
-#if !__ANDROID__
+#if !__ANDROID__ && !__SKIA__
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CoreApplicationViewTitleBar
@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel.Core
 		internal event Action ExtendViewIntoTitleBarChanged;
 #pragma warning restore 67
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__SKIA__
 		[global::Uno.NotImplemented]
 		public bool ExtendViewIntoTitleBar
 		{

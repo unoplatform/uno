@@ -118,6 +118,8 @@ namespace Windows.UI.Xaml.Media
 #endif
 		}
 
+		internal static _View GetViewGroupChild(_ViewGroup reference, int childIndex) => (reference as _ViewGroup)?.GetChildren().ElementAtOrDefault(childIndex);
+
 		public static int GetChildrenCount(DependencyObject reference)
 		{
 #if XAMARIN
@@ -129,6 +131,70 @@ namespace Windows.UI.Xaml.Media
 			return (reference as UIElement)?
 				.GetChildren()
 				.Count() ?? 0;
+#endif
+		}
+
+		internal static int GetViewGroupChildrenCount(_ViewGroup reference) => reference.GetChildren().Count();
+
+		internal static void AddView(_ViewGroup parent, _View child, int index)
+		{
+#if __MACOS__
+			if (index == 0)
+			{
+				if (parent.Subviews.Length == 0)
+				{
+					parent.AddSubview(child);
+				}
+				else
+				{
+					parent.AddSubview(child, NSWindowOrderingMode.Below, null);
+				}
+			}
+			else
+			{
+				parent.AddSubview(child, NSWindowOrderingMode.Above, parent.Subviews[index - 1]);
+			}
+#elif __IOS__
+			parent.InsertSubview(child, index);
+#elif __ANDROID__
+			parent.AddView(child, index);
+#elif __CROSSRUNTIME__
+			parent.AddChild(child, index);
+#elif IS_UNIT_TESTS
+			if (parent is FrameworkElement fe)
+			{
+				fe.AddChild(child, index);
+			}
+			else
+			{
+				throw new NotSupportedException("AddView on UIElement is not implemented on IS_UNIT_TESTS.");
+			}
+#else
+			throw new NotSupportedException("AddView not implemented on this platform.");
+#endif
+		}
+
+		internal static void AddView(_ViewGroup parent, _View child)
+		{
+#if __IOS__ || __MACOS__
+			parent.AddSubview(child);
+#elif __ANDROID__
+			parent.AddView(child);
+#else
+			parent.AddChild(child);
+#endif
+		}
+
+		internal static void RemoveView(_ViewGroup parent, _View child)
+		{
+#if __IOS__ || __MACOS__
+			child.RemoveFromSuperview();
+#elif __ANDROID__
+			parent.RemoveView(child);
+#elif __CROSSRUNTIME__
+			parent.RemoveChild(child);
+#else
+			throw new NotSupportedException("RemoveView not implemented on this platform.");
 #endif
 		}
 
@@ -411,6 +477,8 @@ namespace Windows.UI.Xaml.Media
 			element.ApplyRenderTransform(ref matrix);
 			element.ApplyLayoutTransform(ref matrix);
 			element.ApplyElementCustomTransform(ref matrix);
+			element.ApplyFlowDirectionTransform(ref matrix);
+
 			TRACE($"- transform to parent: [{matrix.M11:F2},{matrix.M12:F2} / {matrix.M21:F2},{matrix.M22:F2} / {matrix.M31:F2},{matrix.M32:F2}]");
 
 			// Build 'position' in the current element coordinate space
@@ -423,6 +491,7 @@ namespace Windows.UI.Xaml.Media
 			element.ApplyRenderTransform(ref matrix, ignoreOrigin: true);
 			matrix.Translation = default; //
 			element.ApplyElementCustomTransform(ref matrix);
+			element.ApplyFlowDirectionTransform(ref matrix);
 			matrix = matrix.Inverse();
 
 			// The maximum region where the current element and its children might draw themselves

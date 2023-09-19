@@ -92,7 +92,7 @@ namespace SamplesApp
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
-#if __IOS__ && !__MACCATALYST__
+#if __IOS__ && !__MACCATALYST__ && !TESTFLIGHT
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 
@@ -381,6 +381,9 @@ namespace SamplesApp
 
 				// RemoteControl and HotReload related
 				builder.AddFilter("Uno.UI.RemoteControl", LogLevel.Information);
+
+				// Adjust logging when debugging the Given_HotReloadWorkspace tests
+				builder.AddFilter("Uno.UI.RuntimeTests.Tests.HotReload.Given_HotReloadWorkspace", LogLevel.Warning);
 
 				// Display Skia related information
 				builder.AddFilter("Uno.UI.Runtime.Skia", LogLevel.Debug);

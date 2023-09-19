@@ -9,7 +9,7 @@
 	xmlns:uBehaviors="using:Uno.UI.Behaviors"
 	xmlns:primitives="using:Microsoft.UI.Xaml.Controls.Primitives"
     xmlns:local="using:Windows.UI.Xaml.Controls"
-	mc:Ignorable="d">
+	mc:Ignorable="d netstdref not_netstdref">
 
 	<ResourceDictionary.ThemeDictionaries>
 
@@ -1070,7 +1070,6 @@
 		<Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
 		<Setter Property="AllowFocusOnInteraction" Value="False" />
 		<Setter Property="KeyboardAcceleratorPlacementMode" Value="Hidden" />
-		<Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="AppBarButton">
@@ -1326,7 +1325,6 @@
                                 HorizontalAlignment="Center"
                                 AutomationProperties.AccessibilityView="Raw" >
 								<ContentPresenter x:Name="Content"
-                                    Height="20"
                                     Content="{TemplateBinding Icon}"
                                     Foreground="{TemplateBinding Foreground}"/>
 							</Viewbox>

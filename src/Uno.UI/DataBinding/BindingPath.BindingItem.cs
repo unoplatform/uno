@@ -163,16 +163,12 @@ namespace Uno.UI.DataBinding
 					ClearCachedGetters();
 					if (_propertyChanged.Disposable != null)
 					{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 						try
-#endif
 						{
 							_isDataContextChanging = true;
 							_propertyChanged.Disposable = null;
 						}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 						finally
-#endif
 						{
 							_isDataContextChanging = false;
 						}

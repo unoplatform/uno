@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project>
-  <!--
+	<!--
   This file is meant to be used inside of Uno to reference the generators and tasks
   -->
-  
-  <Import Project="$(MSBuildThisFileDirectory)\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 
-  <PropertyGroup>
-    <UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
-  </PropertyGroup>
-  <Import Project="$(MSBuildThisFileDirectory)\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
-  
-  <!-- List of packages that provide an uno-runtime folder -->
-  <PropertyGroup>
-    <UnoRemoteControlProcessorsPath>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server.Processors\bin\$(Configuration)\netcoreapp3.1</UnoRemoteControlProcessorsPath>
-  </PropertyGroup>
+	<Import Project="$(MSBuildThisFileDirectory)\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
+
+	<PropertyGroup>
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+	</PropertyGroup>
+	<Import Project="$(MSBuildThisFileDirectory)\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" />
+
+	<!-- List of packages that provide an uno-runtime folder -->
+	<PropertyGroup>
+		<_UnoRCHostVersionPath>net7.0</_UnoRCHostVersionPath>
+		<_UnoRCHostVersionPath Condition="'$([MSBuild]::GetTargetFrameworkVersion($(TargetFramework)))' &gt; 7">net8.0</_UnoRCHostVersionPath>
+
+		<UnoRemoteControlProcessorsPath>$(MSBuildThisFileDirectory)..\Uno.UI.RemoteControl.Server.Processors\bin\$(Configuration)\$(_UnoRCHostVersionPath)</UnoRemoteControlProcessorsPath>
+	</PropertyGroup>
 
 </Project>

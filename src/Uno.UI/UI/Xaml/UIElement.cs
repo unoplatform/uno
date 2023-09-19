@@ -90,6 +90,24 @@ namespace Windows.UI.Xaml
 			SubscribeToOverridenRoutedEvents();
 		}
 
+#if SUPPORTS_RTL
+		internal Matrix3x2 GetFlowDirectionTransform()
+			=> ShouldMirrorVisual() ? new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, (float)RenderSize.Width, 0.0f) : Matrix3x2.Identity;
+
+		private bool ShouldMirrorVisual()
+		{
+			if (this is FrameworkElement fe && this.FindFirstParent<FrameworkElement>(includeCurrent: false) is FrameworkElement feParent)
+			{
+				if (fe is not PopupPanel && fe.FlowDirection != feParent.FlowDirection)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+#endif
+
 		private void SubscribeToOverridenRoutedEvents()
 		{
 			// Overridden Events are registered from constructor to ensure they are
@@ -379,11 +397,13 @@ namespace Windows.UI.Xaml
 
 		private void OnRenderTransformChanged(Transform _, Transform transform)
 		{
+			var flowDirectionTransform = _renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity;
+
 			_renderTransform?.Dispose();
 
-			if (transform is not null)
+			if (transform is not null || !flowDirectionTransform.IsIdentity)
 			{
-				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin);
+				_renderTransform = new NativeRenderTransformAdapter(this, transform, RenderTransformOrigin, flowDirectionTransform);
 				OnRenderTransformSet();
 			}
 			else
@@ -509,6 +529,7 @@ namespace Windows.UI.Xaml
 				elt.ApplyRenderTransform(ref matrix);
 				elt.ApplyLayoutTransform(ref matrix);
 				elt.ApplyElementCustomTransform(ref matrix);
+				elt.ApplyFlowDirectionTransform(ref matrix);
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref matrix) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			if (to is not null && elt != to)
@@ -587,6 +608,21 @@ namespace Windows.UI.Xaml
 			{
 				matrix.M31 -= (float)ScrollOffsets.X;
 				matrix.M32 -= (float)ScrollOffsets.Y;
+			}
+#endif
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
+		{
+#if SUPPORTS_RTL
+			if (this is FrameworkElement fe && VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			{
+				if (fe.FlowDirection != parent.FlowDirection)
+				{
+					matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f);
+					matrix *= Matrix3x2.CreateTranslation((float)parent.RenderSize.Width, 0);
+				}
 			}
 #endif
 		}
@@ -893,6 +929,31 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		Size IUIElement.DesiredSize { get; set; }
 
+		private Size _size;
+
+		/// <summary>
+		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
+		/// </summary>
+		public Size RenderSize
+		{
+			get => Visibility == Visibility.Collapsed ? new Size() : _size;
+			internal set
+			{
+				global::System.Diagnostics.Debug.Assert(value.Width >= 0, "Invalid width");
+				global::System.Diagnostics.Debug.Assert(value.Height >= 0, "Invalid height");
+				var previousSize = _size;
+				_size = value;
+				if (_size != previousSize)
+				{
+					if (this is FrameworkElement frameworkElement)
+					{
+						frameworkElement.SetActualSize(_size);
+						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
+					}
+				}
+			}
+		}
+
 #if !UNO_REFERENCE_API
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
@@ -902,10 +963,6 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public Size DesiredSize => ((IUIElement)this).DesiredSize;
 
-		/// <summary>
-		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
-		/// </summary>
-		public Size RenderSize { get; internal set; }
 
 #if !UNO_REFERENCE_API
 		/// <summary>

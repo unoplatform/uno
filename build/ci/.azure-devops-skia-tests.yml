@@ -129,20 +129,44 @@ jobs:
 
   dependsOn: Skia_Tests_Build
 
+  variables:
+    SamplesAppArtifactName: skia-gtk-samples-app
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+    UnoEnableHRuntimeTests: true
+
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-gtk-samples-app
+        artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
   - template: templates/gtk-install-macos.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
+      # Build source generators for hot reload runtime tests
+      # Used to build the hot reload test secondary app during runtime tests
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.Tasks
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/SourceGenerators/Uno.UI.SourceGenerators
+      dotnet build -c Debug
+      cd $(build.sourcesdirectory)/src/Uno.UI.RemoteControl.Host
+      dotnet build -c Debug -p:UnoDisableNet8=true
+    displayName: Build HR dependencies
+
+  - script: |
+        cd $(SamplesAppArtifactPath)
         dotnet SamplesApp.Skia.Gtk.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml
 
     displayName: Run Skia GTK Runtime Tests
+    env:
+      UnoEnableHRuntimeTests: $(UnoEnableHRuntimeTests)
+      SamplesAppArtifactPath: $(SamplesAppArtifactPath)
+      SamplesAppArtifactName: $(SamplesAppArtifactName)
 
   - task: PublishTestResults@2
     condition: always()
@@ -165,16 +189,20 @@ jobs:
 
   dependsOn: Skia_Tests_Build
 
+  variables:
+    SamplesAppArtifactName: skia-wpf-samples-app
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-wpf-samples-app
+        artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-wpf-samples-app
+        cd $(SamplesAppArtifactPath)
         dotnet SamplesApp.Skia.Wpf.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-wpf-screenshots
 
     displayName: Run Skia WPF Snapshot Tests
@@ -196,6 +224,10 @@ jobs:
 
   dependsOn: Skia_Tests_Build
 
+  variables:
+    SamplesAppArtifactName: skia-wpf-samples-app
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -205,7 +237,7 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-wpf-samples-app
+        cd $(SamplesAppArtifactPath)
         dotnet SamplesApp.Skia.Wpf.dll --runtime-tests=$(build.sourcesdirectory)/build/skia-wpf-runtime-tests-results.xml
 
     displayName: Run Skia WPF Runtime Tests
@@ -227,6 +259,10 @@ jobs:
 
   dependsOn: Skia_Tests_Build
 
+  variables:
+    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app
+    SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
+
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
@@ -236,7 +272,7 @@ jobs:
   - template: templates/dotnet-install.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/uno-islands-skia-wpf-samples-app
+        cd $(SamplesAppArtifactPath)
         dotnet UnoIslandsSamplesApp.Skia.Wpf.dll --runtime-tests=$(build.sourcesdirectory)/build/uno-islands-skia-wpf-runtime-tests-results.xml
 
     displayName: Run Uno Islands Skia WPF Runtime Tests

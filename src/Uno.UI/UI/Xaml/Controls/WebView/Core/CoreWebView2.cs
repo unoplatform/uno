@@ -1,15 +1,16 @@
 #nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using System.Net.Http;
 using Uno.UI.Xaml.Controls;
-using System.Threading;
-using System.Globalization;
 using Windows.Foundation;
-using System.Diagnostics.CodeAnalysis;
-using System.Threading.Tasks;
 
 namespace Microsoft.Web.WebView2.Core;
 
@@ -19,6 +20,7 @@ public partial class CoreWebView2
 	internal const string DataUriFormatString = "data:text/html;charset=utf-8;base64,{0}";
 	internal static readonly Uri BlankUri = new Uri(BlankUrl);
 
+	private readonly Dictionary<string, string> _hostToFolderMap = new();
 	private readonly IWebView _owner;
 
 	private bool _scrollEnabled = true;
@@ -28,10 +30,13 @@ public partial class CoreWebView2
 
 	internal CoreWebView2(IWebView owner)
 	{
+		HostToFolderMap = _hostToFolderMap.AsReadOnly();
 		_owner = owner;
 	}
 
 	internal IWebView Owner => _owner;
+
+	internal IReadOnlyDictionary<string, string> HostToFolderMap { get; }
 
 	/// <summary>
 	/// Gets the CoreWebView2Settings object contains various modifiable
@@ -65,6 +70,23 @@ public partial class CoreWebView2
 
 		UpdateFromInternalSource();
 	}
+
+	public void SetVirtualHostNameToFolderMapping(string hostName, string folderPath, CoreWebView2HostResourceAccessKind accessKind)
+	{
+		if (hostName is null)
+		{
+			throw new ArgumentNullException(nameof(hostName));
+		}
+
+		if (folderPath is null)
+		{
+			throw new ArgumentNullException(nameof(folderPath));
+		}
+
+		_hostToFolderMap.Add(hostName.ToLowerInvariant(), folderPath);
+	}
+
+	public void ClearVirtualHostNameToFolderMapping(string hostName) => _hostToFolderMap.Remove(hostName);
 
 	internal void NavigateWithHttpRequestMessage(global::Windows.Web.Http.HttpRequestMessage requestMessage)
 	{

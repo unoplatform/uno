@@ -59,18 +59,12 @@ namespace Windows.UI.Xaml
 			ComputeAreChildrenNativeViewsOnly();
 		}
 
-		/// <summary>
-		/// Invoked when a child view has been added.
-		/// </summary>
-		/// <param name="view">The view being removed</param>
+		/// <inheritdoc />
 		protected override void OnChildViewAdded(View view)
 		{
 			if (view is UIElement uiElement)
 			{
-				uiElement.ResetLayoutFlags();
-				SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+				OnChildManagedViewAddedOrRemoved(uiElement);
 			}
 			else
 			{
@@ -78,6 +72,29 @@ namespace Windows.UI.Xaml
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		/// <inheritdoc />
+		protected override void OnChildViewRemoved(View view)
+		{
+			if (view is UIElement uiElement)
+			{
+				OnChildManagedViewAddedOrRemoved(uiElement);
+			}
+			else
+			{
+				_nativeChildrenCount--;
+			}
+
+			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)
+		{
+			uiElement.ResetLayoutFlags();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
 		}
 
 		public UIElement()

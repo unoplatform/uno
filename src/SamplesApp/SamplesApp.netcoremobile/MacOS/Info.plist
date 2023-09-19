@@ -7,7 +7,7 @@
 	<key>CFBundleName</key>
 	<string>SamplesApp.macOS</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.SamplesApp-macOS</string>
+	<string>uno.platform.samplesdev</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>

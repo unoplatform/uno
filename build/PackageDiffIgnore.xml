@@ -1669,6 +1669,11 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
+
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ItemsControl.ResolveInternalItemsPanel(Android.Views.View itemsPanel)" reason="ItemsPanel should be a ViewGroup not a View, since it has children" />
+
+			<Member fullName="Android.Graphics.Paint Windows.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
+			<Member fullName="Android.Graphics.Paint Microsoft.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 	  <!--

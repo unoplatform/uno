@@ -61,9 +61,7 @@ namespace Uno.Buffers
 				// necessary to properly handle thread aborts on platforms which have them.
 				bool lockTaken = false, allocateBuffer = false;
 
-#if !HAS_EXPENSIVE_TRYFINALLY
 				try
-#endif
 				{
 					_lock.Enter(ref lockTaken);
 
@@ -85,9 +83,7 @@ namespace Uno.Buffers
 						}
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					if (lockTaken) _lock.Exit(false);
 				}
@@ -116,9 +112,7 @@ namespace Uno.Buffers
 				// necessary to properly handle thread aborts on platforms which have them.
 				bool lockTaken = false;
 
-#if !HAS_EXPENSIVE_TRYFINALLY
 				try
-#endif
 				{
 					_lock.Enter(ref lockTaken);
 
@@ -137,9 +131,7 @@ namespace Uno.Buffers
 						}
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					if (lockTaken) _lock.Exit(false);
 				}
@@ -163,9 +155,7 @@ namespace Uno.Buffers
 				// The try/finally is necessary to properly handle thread aborts on platforms
 				// which have them.
 				bool lockTaken = false;
-#if !HAS_EXPENSIVE_TRYFINALLY
 				try
-#endif
 				{
 					_lock.Enter(ref lockTaken);
 
@@ -181,9 +171,7 @@ namespace Uno.Buffers
 						_count++;
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					if (lockTaken) _lock.Exit(false);
 				}
@@ -207,9 +195,7 @@ namespace Uno.Buffers
 
 				var trimDelay = usageLevel == AppMemoryUsageLevel.High ? StackHighTrimAfter : StackTrimAfter;
 
-#if !HAS_EXPENSIVE_TRYFINALLY
 				lock (this)
-#endif
 				{
 					if (_count == 0)
 					{

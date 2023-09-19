@@ -9,8 +9,7 @@ namespace Windows.UI.Xaml
 		private static readonly bool CanUseTypeGetType =
 #if __WASM__
 			// Workaround for https://github.com/dotnet/runtime/issues/45078
-			Uno.Foundation.Runtime.WebAssembly.Interop.PlatformHelper.IsNetCore
-			&& Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE") == "Interpreter";
+			Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE") == "Interpreter";
 #else
 			true;
 #endif
