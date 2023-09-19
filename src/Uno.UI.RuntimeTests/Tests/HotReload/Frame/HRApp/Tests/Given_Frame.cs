@@ -128,7 +128,6 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests
 		/// Navigate to Page2
 		/// </summary>
 		[TestMethod]
-		[Ignore("Not yet working")]
 		public async Task Check_Can_Change_Page2_Before_Navigation()
 		{
 			var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
@@ -151,8 +150,10 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests
 					await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
 
 					// Navigate to the second page, verify the TextBlock on the second page has the updated value
-					//frame.Navigate(typeof(HR_Frame_Pages_Page2));
-					(frame.Content as HR_Frame_Pages_Page1)?.Page2Click(null, null);
+					frame.Navigate(typeof(HR_Frame_Pages_Page2));
+					
+					// This won't work since the current page might not be HR_Frame_Pages_Page1)
+					// (frame.Content as HR_Frame_Pages_Page1)?.Page2Click(null, null);
 					await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockChangedText);
 
 					// Go back and Validate again that the TextBlock still has same value
