@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		public Panel()
 		{
 			Initialize();
+			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		partial void Initialize();

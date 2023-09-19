@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using System.Linq;
-using System.Drawing;
-using Uno.Disposables;
-using Windows.UI.Xaml.Media;
-using Uno.UI;
-
-namespace Windows.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
 		public Border()
 		{
+			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)

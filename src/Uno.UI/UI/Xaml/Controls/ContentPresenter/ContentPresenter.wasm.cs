@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		public ContentPresenter()
 		{
 			InitializeContentPresenter();
+			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()
