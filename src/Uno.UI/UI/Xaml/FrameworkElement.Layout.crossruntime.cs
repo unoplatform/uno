@@ -282,22 +282,45 @@ namespace Windows.UI.Xaml
 
 			if (needsClipToSlot)
 			{
-				var layoutFrame = new Rect(offset, clippedInkSize);
+				// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
+				double maxWidthClip = double.IsPositiveInfinity(maxSize.Width) ? innerInkSize.Width : maxSize.Width;
+				double maxHeightClip = double.IsPositiveInfinity(maxSize.Height) ? innerInkSize.Height : maxSize.Height;
 
-				// Calculate clipped frame.
-				var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
-				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
+				Size clippingSize = finalRect.Size.Subtract(marginSize).AtLeastZero();
 
-				// Rebase the origin of the clipped frame to layout
-				var clippedFrame = new Rect(
-					clippedFrameWithParentOrigin.X - layoutFrame.X,
-					clippedFrameWithParentOrigin.Y - layoutFrame.Y,
-					clippedFrameWithParentOrigin.Width,
-					clippedFrameWithParentOrigin.Height);
+				//need to clip because the computed sizes exceed MaxWidth/MaxHeight/Width/Height
+				bool needToClipLocally = IsLessThanAndNotCloseTo(maxWidthClip, innerInkSize.Width) || IsLessThanAndNotCloseTo(maxHeightClip, innerInkSize.Height);
 
-				clippedFrame = clippedFrame.AtMost(clientSize);
+				bool needToClipSlot = IsLessThanAndNotCloseTo(clippingSize.Width, innerInkSize.Width) || IsLessThanAndNotCloseTo(clippingSize.Height, innerInkSize.Height);
 
-				ArrangeNative(offset, true, clippedFrame);
+				if (needToClipLocally && !needToClipSlot)
+				{
+					var clippedFrame = new Rect(0, 0, maxWidthClip, maxHeightClip);
+					ArrangeNative(offset, true, clippedFrame);
+				}
+				else if (needToClipSlot)
+				{
+					var layoutFrame = new Rect(offset, clippedInkSize);
+
+					// Calculate clipped frame.
+					var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
+					var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
+
+					// Rebase the origin of the clipped frame to layout
+					var clippedFrame = new Rect(
+						clippedFrameWithParentOrigin.X - layoutFrame.X,
+						clippedFrameWithParentOrigin.Y - layoutFrame.Y,
+						clippedFrameWithParentOrigin.Width,
+						clippedFrameWithParentOrigin.Height);
+
+					clippedFrame = clippedFrame.AtMost(clientSize);
+
+					ArrangeNative(offset, true, clippedFrame);
+				}
+				else
+				{
+					ArrangeNative(offset, false);
+				}
 			}
 			else
 			{
