@@ -654,6 +654,7 @@
 			<!-- END Skia clipping -->
 
 			<Member fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase" reason="Shapes refactoring" />
+			<Member fullName="Windows.UI.Xaml.Controls.StackPanelExtensions" reason="Shouldn't be public, and removed completely" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
