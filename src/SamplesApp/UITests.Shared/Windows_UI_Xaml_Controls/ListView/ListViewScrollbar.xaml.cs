@@ -41,7 +41,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		public bool FooterChecked
 		{
-			get =>  _footerChecked;
+			get => _footerChecked;
 			set
 			{
 				_footerChecked = value;
