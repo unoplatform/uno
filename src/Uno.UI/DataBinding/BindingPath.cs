@@ -195,8 +195,14 @@ namespace Uno.UI.DataBinding
 			{
 				if (!_disposed
 					&& _value != null
-					&& DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
-				)
+					&& (
+						!_value.IsDependencyProperty
+
+						// Don't get the source value if we're not accessing a dependency property.
+						// WinUI does not read the property value before setting the value for a
+						// non-dependency property source.
+						|| DependencyObjectStore.AreDifferent(value, _value.GetPrecedenceSpecificValue())
+					))
 				{
 					_value.Value = value;
 				}
@@ -428,7 +434,7 @@ namespace Uno.UI.DataBinding
 			}
 
 			var itemPath = path.Substring(start, length);
-			var item = new BindingItem(head, itemPath, fallbackValue, precedence, allowPrivateMembers);
+			var item = new BindingItem(head, itemPath, precedence, allowPrivateMembers);
 
 			head = item;
 			tail ??= item;
