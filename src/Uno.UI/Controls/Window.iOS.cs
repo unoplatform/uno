@@ -312,9 +312,9 @@ namespace Uno.UI.Controls
 		{
 			if (e.Notification.UserInfo is null)
 			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
+				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
-					this.Log().Warn("[OnKeyboardWillShow] Notification UserInfo was null");
+					this.Log().Debug("[OnKeyboardWillShow] Notification UserInfo was null");
 				}
 
 				return;
