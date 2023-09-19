@@ -1189,6 +1189,10 @@ namespace Windows.UI.Xaml.Controls
 			opensWindowed = false;
 		}
 
+		// This is an internal method used in CommandBar-related workarounds without
+		// breaking the public API
+		internal bool TryDismissInlineAppBarInternal() => TryDismissInlineAppBar();
+
 		protected bool TryDismissInlineAppBar()
 		{
 			MUX_ASSERT(m_Mode == AppBarMode.Inline);
