@@ -222,9 +222,9 @@ internal class HotReloadWorkspace
 					// Build the analyzer document additional data information
 					var analyzerDocumentId = DocumentId.CreateNewId(project.Id);
 
+					// For now, there is no need to customize these for each test.
 					var globalConfigBuilder = new StringBuilder($"""
 						is_global = true
-						# For now, there is no need to customize these for each test.
 						build_property.MSBuildProjectFullPath = C:\Project\{project.Name}.csproj
 						build_property.RootNamespace = {project.Name}
 						build_property.XamlSourceGeneratorTracingFolder = {_baseWorkFolder}

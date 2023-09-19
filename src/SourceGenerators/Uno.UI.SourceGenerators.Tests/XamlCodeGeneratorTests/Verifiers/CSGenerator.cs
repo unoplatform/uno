@@ -90,9 +90,9 @@ namespace Uno.UI.SourceGenerators.Tests.Verifiers
 				_testFilePath = testFilePath;
 				_testMethodName = testMethodName;
 
+				// For now, there is no need to customize these for each test.
 				var globalConfigBuilder = new StringBuilder("""
 					is_global = true
-					# For now, there is no need to customize these for each test.
 					build_property.MSBuildProjectFullPath = C:\Project\Project.csproj
 					build_property.RootNamespace = MyProject
 					build_property.UnoForceHotReloadCodeGen = false
@@ -146,7 +146,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 					expectedNames.Add(GetFileNameFromTree(tree));
 				}
 
-				var currentTestPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
+				var currentTestPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
 				foreach (var name in GetType().Assembly.GetManifestResourceNames())
 				{
 					if (!name.StartsWith(currentTestPrefix))
@@ -165,7 +165,7 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 
 			public TestBase AddGeneratedSources()
 			{
-				var expectedPrefix = $"Uno.UI.SourceGenerators.netcore.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
+				var expectedPrefix = $"Uno.UI.SourceGenerators.Tests.XamlCodeGeneratorTests.{TestOutputFolderName}.{_testMethodName}.";
 				foreach (var resourceName in typeof(Test).Assembly.GetManifestResourceNames())
 				{
 					if (!resourceName.StartsWith(expectedPrefix))
