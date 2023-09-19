@@ -12,7 +12,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
 	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
 	{
