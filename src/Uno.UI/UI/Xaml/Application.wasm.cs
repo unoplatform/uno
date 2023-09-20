@@ -21,6 +21,7 @@ using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
+using Uno.UI.Xaml.Controls;
 
 
 #if HAS_UNO_WINUI
@@ -62,14 +63,14 @@ namespace Windows.UI.Xaml
 			{
 				application?.RaiseLeavingBackground(() =>
 				{
-					window?.OnNativeVisibilityChanged(true);
-					window?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+					NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(true);
+					NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 				});
 			}
 			else
 			{
-				window?.OnNativeActivated(CoreWindowActivationState.Deactivated);
-				window?.OnNativeVisibilityChanged(false);
+				NativeWindowWrapper.Instance?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
 				application?.RaiseEnteredBackground(null);
 			}
 
