@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("89176087-8AF9-4A08-AEB1-895F38DB1766")]
-	public class TemperatureAndTintEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class TemperatureAndTintEffect : ICanvasEffect
 	{
 		private string _name = "TemperatureAndTintEffect";
 		private Guid _id = new Guid("89176087-8AF9-4A08-AEB1-895F38DB1766");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public float Temperature { get; set; }
 
@@ -66,5 +70,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 2;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

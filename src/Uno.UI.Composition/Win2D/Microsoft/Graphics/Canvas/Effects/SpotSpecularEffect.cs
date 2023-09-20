@@ -8,7 +8,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("EDAE421E-7654-4A37-9DB8-71ACC1BEB3C1")]
-	public class SpotSpecularEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class SpotSpecularEffect : ICanvasEffect
 	{
 		private string _name = "SpotSpecularEffect";
 		private Guid _id = new Guid("EDAE421E-7654-4A37-9DB8-71ACC1BEB3C1");
@@ -18,6 +18,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public Vector3 LightPosition { get; set; }
 
@@ -118,5 +122,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 7;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

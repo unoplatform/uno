@@ -7,7 +7,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("36312B17-F7DD-4014-915D-FFCA768CF211")]
-	public class TintEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class TintEffect : ICanvasEffect
 	{
 		private string _name = "TintEffect";
 		private Guid _id = new Guid("36312B17-F7DD-4014-915D-FFCA768CF211");
@@ -17,6 +17,12 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public static bool IsSupported => true;
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public Color Color { get; set; } = Color.FromArgb(255, 255, 255, 255);
 
@@ -57,5 +63,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 1;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

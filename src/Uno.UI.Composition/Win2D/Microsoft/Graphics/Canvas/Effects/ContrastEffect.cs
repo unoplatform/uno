@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("B648A78A-0ED5-4F80-A94A-8E825ACA6B77")]
-	public class ContrastEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class ContrastEffect : ICanvasEffect
 	{
 		private string _name = "ContrastEffect";
 		private Guid _id = new Guid("B648A78A-0ED5-4F80-A94A-8E825ACA6B77");
@@ -17,7 +17,13 @@ namespace Microsoft.Graphics.Canvas.Effects
 			set => _name = value;
 		}
 
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
+
 		public float Contrast { get; set; }
+
+		public bool ClampSource { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -30,6 +36,12 @@ namespace Microsoft.Graphics.Canvas.Effects
 				case "Contrast":
 					{
 						index = 0;
+						mapping = GraphicsEffectPropertyMapping.Direct;
+						break;
+					}
+				case "ClampSource":
+					{
+						index = 1;
 						mapping = GraphicsEffectPropertyMapping.Direct;
 						break;
 					}
@@ -48,13 +60,17 @@ namespace Microsoft.Graphics.Canvas.Effects
 			{
 				case 0:
 					return Contrast;
+				case 1:
+					return ClampSource;
 				default:
 					return null;
 			}
 		}
 
-		public uint GetPropertyCount() => 1;
+		public uint GetPropertyCount() => 2;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

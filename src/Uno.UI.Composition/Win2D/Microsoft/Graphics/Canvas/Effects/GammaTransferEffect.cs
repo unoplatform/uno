@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("409444C4-C419-41A0-B0C1-8CD0C0A18E42")]
-	public class GammaTransferEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class GammaTransferEffect : ICanvasEffect
 	{
 		private string _name = "GammaTransferEffect";
 		private Guid _id = new Guid("409444C4-C419-41A0-B0C1-8CD0C0A18E42");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public float RedAmplitude { get; set; } = 1.0f;
 
@@ -221,5 +225,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 17;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

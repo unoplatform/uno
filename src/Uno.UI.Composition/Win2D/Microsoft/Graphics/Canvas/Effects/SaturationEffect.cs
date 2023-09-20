@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("5CB2D9CF-327D-459F-A0CE-40C0B2086BF7")]
-	public class SaturationEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class SaturationEffect : ICanvasEffect
 	{
 		private string _name = "SaturationEffect";
 		private Guid _id = new Guid("5CB2D9CF-327D-459F-A0CE-40C0B2086BF7");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public float Saturation { get; set; } = 0.5f;
 
@@ -56,5 +60,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 1;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

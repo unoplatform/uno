@@ -7,7 +7,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("6AA97485-6354-4CFC-908C-E4A74F62C96C")]
-	public class Transform2DEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class Transform2DEffect : ICanvasEffect
 	{
 		private string _name = "Transform2DEffect";
 		private Guid _id = new Guid("6AA97485-6354-4CFC-908C-E4A74F62C96C");
@@ -18,7 +18,17 @@ namespace Microsoft.Graphics.Canvas.Effects
 			set => _name = value;
 		}
 
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
+
+		public CanvasImageInterpolation InterpolationMode { get; set; } = CanvasImageInterpolation.Linear;
+
+		public EffectBorderMode BorderMode { get; set; } = EffectBorderMode.Soft;
+
 		public Matrix3x2 TransformMatrix { get; set; } = Matrix3x2.Identity;
+
+		public float Sharpness { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -28,9 +38,27 @@ namespace Microsoft.Graphics.Canvas.Effects
 		{
 			switch (name)
 			{
-				case "TransformMatrix":
+				case "InterpolationMode":
 					{
 						index = 0;
+						mapping = GraphicsEffectPropertyMapping.Direct;
+						break;
+					}
+				case "BorderMode":
+					{
+						index = 1;
+						mapping = GraphicsEffectPropertyMapping.Direct;
+						break;
+					}
+				case "TransformMatrix":
+					{
+						index = 2;
+						mapping = GraphicsEffectPropertyMapping.Direct;
+						break;
+					}
+				case "Sharpness":
+					{
+						index = 3;
 						mapping = GraphicsEffectPropertyMapping.Direct;
 						break;
 					}
@@ -48,7 +76,13 @@ namespace Microsoft.Graphics.Canvas.Effects
 			switch (index)
 			{
 				case 0:
+					return InterpolationMode;
+				case 1:
+					return BorderMode;
+				case 2:
 					return TransformMatrix;
+				case 3:
+					return Sharpness;
 				default:
 					return null;
 			}
@@ -57,5 +91,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 4;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

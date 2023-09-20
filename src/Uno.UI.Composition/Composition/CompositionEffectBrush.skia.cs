@@ -1550,7 +1550,7 @@ namespace Windows.UI.Composition
 
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
-			SKImageFilter filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException("Unsupported effect description.");
+			SKImageFilter filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
 			paint.Shader = null;
 			paint.ImageFilter = filter;
 			paint.FilterQuality = SKFilterQuality.High;

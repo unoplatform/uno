@@ -8,7 +8,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("818A1105-7932-44F4-AA86-08AE7B2F2C93")]
-	public class SpotDiffuseEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class SpotDiffuseEffect : ICanvasEffect
 	{
 		private string _name = "SpotDiffuseEffect";
 		private Guid _id = new Guid("818A1105-7932-44F4-AA86-08AE7B2F2C93");
@@ -18,6 +18,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public Vector3 LightPosition { get; set; }
 
@@ -108,5 +112,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 6;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }
