@@ -44,7 +44,6 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	{
 		_wasActivated = true;
 		NativeWindowWrapper!.Show();
-		ContentManager.TryLoadRootVisual(XamlRoot!);
 		// TODO:MZ: Raise activation if needed!
 		//_lastActivationState = CoreWindowActivationState.CodeActivated;
 	}
@@ -68,9 +67,12 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		nativeWindow.VisibilityChanged += OnNativeVisibilityChanged;
 		nativeWindow.SizeChanged += OnNativeSizeChanged;
 		nativeWindow.Closed += OnNativeClosed;
+		nativeWindow.Shown += OnNativeShown;
 
 		NativeWindowWrapper = nativeWindow;
 	}
+
+	private void OnNativeShown(object? sender, EventArgs e) => ContentManager.TryLoadRootVisual(XamlRoot!);
 
 	private void OnNativeClosed(object? sender, EventArgs args) => Closed?.Invoke(this, new WindowEventArgs());
 

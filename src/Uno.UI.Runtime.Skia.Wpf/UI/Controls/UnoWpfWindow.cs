@@ -55,8 +55,6 @@ internal class UnoWpfWindow : WpfWindow
 		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
-	private void OnShowing(object? sender, EventArgs e) => Show();
-
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 
 	internal void UpdateWindowPropertiesFromApplicationView()

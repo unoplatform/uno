@@ -36,8 +36,13 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 	public event EventHandler<bool>? VisibilityChanged;
 
 	public event EventHandler? Closed;
+	public event EventHandler? Shown;
 
-	public void Show() => _wpfWindow.Show();
+	public void Show()
+	{
+		_wpfWindow.Show();
+		Shown?.Invoke(this, EventArgs.Empty);
+	}
 
 	public void Activate() => _wpfWindow.Activate();
 

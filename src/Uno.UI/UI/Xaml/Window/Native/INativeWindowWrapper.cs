@@ -19,6 +19,8 @@ internal interface INativeWindowWrapper
 
 	event EventHandler? Closed;
 
+	event EventHandler? Shown;
+
 	void Activate();
 
 	void Show();
