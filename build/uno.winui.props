@@ -1,12 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<PropertyGroup>
-		<!-- Wrap WinAppSDK detection until a stable property can be used -->
-		<_UnoIsWinAppSDKDefined>false</_UnoIsWinAppSDKDefined>
-		<_UnoIsWinAppSDKDefined Condition="'$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true'">true</_UnoIsWinAppSDKDefined>
-	</PropertyGroup>
-
-	<Import Project="../uno.winui.common.props" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
+	<!-- 
+		Note that WinUI cannot be detected in properties or imports, as the nuget props
+		import from nuget packages cannot be controlled.
+	-->
+	<Import Project="../uno.winui.common.props" />
 
 </Project>
