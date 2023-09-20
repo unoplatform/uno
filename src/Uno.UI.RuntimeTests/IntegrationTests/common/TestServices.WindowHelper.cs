@@ -63,7 +63,7 @@ namespace Private.Infrastructure
 						}
 						else
 						{
-							Window.Current.Content = value;
+							CurrentTestWindow.Content = value;
 						}
 					}
 					else if (EmbeddedTestRoot.setContent is { } setter)
@@ -96,7 +96,7 @@ namespace Private.Infrastructure
 				}
 				else
 				{
-					_originalWindowContent = Window.Current.Content;
+					_originalWindowContent = CurrentTestWindow.Content;
 				}
 			}
 
@@ -110,7 +110,7 @@ namespace Private.Infrastructure
 					}
 					else
 					{
-						Window.Current.Content = _originalWindowContent;
+						CurrentTestWindow.Content = _originalWindowContent;
 					}
 					_originalWindowContent = null;
 				}
