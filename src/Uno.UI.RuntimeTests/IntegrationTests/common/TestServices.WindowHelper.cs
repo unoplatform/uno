@@ -34,6 +34,19 @@ namespace Private.Infrastructure
 
 			public static bool IsXamlIsland { get; set; }
 
+			public static Windows.UI.Xaml.Window CurrentTestWindow
+			{
+				get
+				{
+					if (_currentTestWindow is null)
+					{
+						throw new InvalidOperationException("Current test window not set.");
+					}
+					return _currentTestWindow;
+				}
+				set => _currentTestWindow = value;
+			}
+
 			public static bool UseActualWindowRoot { get; set; }
 
 			public static UIElement WindowContent
