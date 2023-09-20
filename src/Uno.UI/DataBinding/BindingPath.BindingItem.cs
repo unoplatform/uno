@@ -494,19 +494,19 @@ namespace Uno.UI.DataBinding
 
 			private bool IsDisposed
 			{
-				get => _flags.HasFlag(Flags.Disposed);
+				get => (_flags & Flags.Disposed) != 0;
 				set => SetFlag(value, Flags.Disposed);
 			}
 
 			private bool AllowPrivateMembers
 			{
-				get => _flags.HasFlag(Flags.AllowPrivateMembers);
+				get => (_flags & Flags.AllowPrivateMembers) != 0;
 				set => SetFlag(value, Flags.AllowPrivateMembers);
 			}
 
 			private bool IsDependencyPropertyValueSet
 			{
-				get => _flags.HasFlag(Flags.IsDependencyPropertyValueSet);
+				get => (_flags & Flags.IsDependencyPropertyValueSet) != 0;
 				set => SetFlag(value, Flags.IsDependencyPropertyValueSet);
 			}
 
@@ -528,7 +528,7 @@ namespace Uno.UI.DataBinding
 					}
 					else
 					{
-						return _flags.HasFlag(Flags.IsDependencyProperty);
+						return (_flags & Flags.IsDependencyProperty) != 0;
 					}
 				}
 			}
