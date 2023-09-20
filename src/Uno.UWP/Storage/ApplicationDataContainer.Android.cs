@@ -22,16 +22,12 @@ namespace Windows.Storage
 
 		private class SharedPreferencesPropertySet : IPropertySet
 		{
-			private readonly ISharedPreferences _preferences;
-
 			public SharedPreferencesPropertySet()
 			{
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-				_preferences = PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext());
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
 			}
+
+			private ISharedPreferences Preferences
+				=> PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
 
 			public object this[string key]
 			{
@@ -48,7 +44,9 @@ namespace Windows.Storage
 				{
 					if (value != null)
 					{
-						_preferences
+						using var preferences = Preferences;
+
+						preferences
 							.Edit()
 							.PutString(key, DataTypeSerializer.Serialize(value))
 							.Commit();
@@ -61,20 +59,44 @@ namespace Windows.Storage
 			}
 
 			public ICollection<string> Keys
-				=> _preferences
-				.All
-				.Keys
-				.ToArray();
+			{
+				get
+				{
+					using var preferences = Preferences;
+
+					return preferences
+						.All
+						.Keys
+						.ToArray();
+				}
+			}
 
 			public ICollection<object> Values
-				=> _preferences
-				.All
-				.Values
-				.Select(v => DataTypeSerializer.Deserialize(v?.ToString()))
-				.ToArray();
+			{
+				get
+				{
+					using var preferences = Preferences;
+
+					return preferences
+						.All
+						.Values
+						.Select(v => DataTypeSerializer.Deserialize(v?.ToString()))
+						.ToArray();
+				}
+			}
 
 			public int Count
-				=> _preferences.All.Values.Count;
+			{
+				get
+				{
+					using var preferences = Preferences;
+
+					return preferences
+						.All
+						.Values
+						.Count;
+				}
+			}
 
 			public bool IsReadOnly => false;
 
@@ -91,7 +113,9 @@ namespace Windows.Storage
 				}
 				if (value != null)
 				{
-					_preferences
+					using var preferences = Preferences;
+
+					preferences
 						.Edit()
 						.PutString(key, DataTypeSerializer.Serialize(value))
 						.Commit();
@@ -103,7 +127,9 @@ namespace Windows.Storage
 
 			public void Clear()
 			{
-				_preferences
+				using var preferences = Preferences;
+
+				preferences
 					.Edit()
 					.Clear()
 					.Commit();
@@ -113,21 +139,29 @@ namespace Windows.Storage
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
-				=> _preferences.All.ContainsKey(key);
+			{
+				using var preferences = Preferences;
+
+				return preferences.All.ContainsKey(key);
+			}
 
 			public void CopyTo(KeyValuePair<string, object>[] array, int arrayIndex)
 				=> throw new NotSupportedException();
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 			{
-				return _preferences
+				using var preferences = Preferences;
+
+				return preferences
 					.All
 					.GetEnumerator();
 			}
 
 			public bool Remove(string key)
 			{
-				_preferences
+				using var preferences = Preferences;
+
+				preferences
 					.Edit()
 					.Remove(key)
 					.Commit();
@@ -139,7 +173,9 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if (_preferences.All.TryGetValue(key, out var serializedValue))
+				using var preferences = Preferences;
+
+				if (preferences.All.TryGetValue(key, out var serializedValue))
 				{
 					value = DataTypeSerializer.Deserialize(serializedValue?.ToString());
 					return true;
