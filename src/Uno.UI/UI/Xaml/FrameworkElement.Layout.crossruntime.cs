@@ -280,54 +280,59 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			if (needsClipToSlot)
-			{
-				// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
-				double maxWidthClip = double.IsPositiveInfinity(maxSize.Width) ? innerInkSize.Width : maxSize.Width;
-				double maxHeightClip = double.IsPositiveInfinity(maxSize.Height) ? innerInkSize.Height : maxSize.Height;
-
-				Size clippingSize = finalRect.Size.Subtract(marginSize).AtLeastZero();
-
-				//need to clip because the computed sizes exceed MaxWidth/MaxHeight/Width/Height
-				bool needToClipLocally = IsLessThanAndNotCloseTo(maxWidthClip, innerInkSize.Width) || IsLessThanAndNotCloseTo(maxHeightClip, innerInkSize.Height);
-
-				bool needToClipSlot = IsLessThanAndNotCloseTo(clippingSize.Width, innerInkSize.Width) || IsLessThanAndNotCloseTo(clippingSize.Height, innerInkSize.Height);
-
-				if (needToClipLocally && !needToClipSlot)
-				{
-					var clippedFrame = new Rect(0, 0, maxWidthClip, maxHeightClip);
-					ArrangeNative(offset, true, clippedFrame);
-				}
-				else if (needToClipSlot)
-				{
-					var layoutFrame = new Rect(offset, clippedInkSize);
-
-					// Calculate clipped frame.
-					var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
-					var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
-
-					// Rebase the origin of the clipped frame to layout
-					var clippedFrame = new Rect(
-						clippedFrameWithParentOrigin.X - layoutFrame.X,
-						clippedFrameWithParentOrigin.Y - layoutFrame.Y,
-						clippedFrameWithParentOrigin.Width,
-						clippedFrameWithParentOrigin.Height);
-
-					clippedFrame = clippedFrame.AtMost(clientSize);
-
-					ArrangeNative(offset, true, clippedFrame);
-				}
-				else
-				{
-					ArrangeNative(offset, false);
-				}
-			}
-			else
+			var clippedFrame = GetClipRect(needsClipToSlot, finalRect, maxSize, margin, offset);
+			if (clippedFrame is null)
 			{
 				ArrangeNative(offset, false);
 			}
+			else
+			{
+				ArrangeNative(offset, true, clippedFrame.Value);
+			}
 
 			OnLayoutUpdated();
+		}
+
+		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
+		private Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin, Point actualOffset)
+		{
+			if (needsClipToSlot)
+			{
+				Rect clippedFrame = default;
+				var inkSize = RenderSize;
+
+				var maxClip = maxSize.FiniteOrDefault(inkSize);
+
+				//need to clip because the computed sizes exceed MaxWidth/MaxHeight/Width/Height
+				bool needToClipLocally = IsLessThanAndNotCloseTo(maxClip.Width, inkSize.Width) || IsLessThanAndNotCloseTo(maxClip.Height, inkSize.Height);
+
+				inkSize = inkSize.AtMost(maxSize);
+
+				var marginSize = new Size(margin.Left + margin.Right, margin.Top + margin.Bottom);
+				Size clippingSize = finalRect.Size.Subtract(marginSize).AtLeastZero();
+				bool needToClipSlot = IsLessThanAndNotCloseTo(clippingSize.Width, inkSize.Width) || IsLessThanAndNotCloseTo(clippingSize.Height, inkSize.Height);
+
+				if (needToClipSlot)
+				{
+					var (offset, _) = LayoutHelper.GetAlignmentOffset(this, clippingSize, inkSize);
+					clippedFrame = new Rect(-offset.X, -offset.Y, clippingSize.Width, clippingSize.Height);
+					if (needToClipLocally)
+					{
+						clippedFrame = clippedFrame.IntersectWith(new Rect(default, maxClip)) ?? Rect.Empty;
+					}
+				}
+				else if (needToClipLocally)
+				{
+					clippedFrame = new Rect(default, maxClip);
+				}
+
+				if (needToClipSlot || needToClipLocally)
+				{
+					return clippedFrame;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>
