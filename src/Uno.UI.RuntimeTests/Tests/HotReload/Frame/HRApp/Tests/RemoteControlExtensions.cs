@@ -25,12 +25,7 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.WaitForConnection();
 
-		var replacementType = typeof(T).GetReplacementType();
-		var element = replacementType != typeof(T) ?
-			Activator.CreateInstance(replacementType) as FrameworkElement :
-			new T();
-
-		var message = element?.CreateUpdateFileMessage(
+		var message = new T().CreateUpdateFileMessage(
 			originalText: originalText,
 			replacementText: replacementText);
 
