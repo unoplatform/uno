@@ -41,7 +41,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 		internal static GtkHost? Current => _current;
 
-		internal UnoGtkWindow? MainWindow { get; private set; }
+		internal UnoGtkWindow? MainWindow { get; set; }
 
 		/// <summary>
 		/// Gets or sets the current Skia Render surface type.
