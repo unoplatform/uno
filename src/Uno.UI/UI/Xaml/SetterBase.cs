@@ -15,15 +15,6 @@ namespace Windows.UI.Xaml
 
 		internal abstract void ApplyTo(DependencyObject o);
 
-		/// <summary>
-		/// This method is present for binary backward compatibility with <see cref="Setter{T}"/>.
-		/// Use <see cref="Setter.Property"/> or <see cref="Setter{T}.Property"/> instead.
-		/// </summary>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void set_Property(string name) => OnStringPropertyChanged(name);
-
-		internal virtual void OnStringPropertyChanged(string name) { }
-
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			this.Log().Debug("SetterBase.DataContextChanged");

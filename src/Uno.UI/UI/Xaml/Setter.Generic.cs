@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public string Property { get; set; }
 
-		internal override void OnStringPropertyChanged(string name) => Property = name;
-
 		internal override void ApplyTo(DependencyObject o)
 		{
 			if (!(o is T))

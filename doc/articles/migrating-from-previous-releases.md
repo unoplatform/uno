@@ -123,6 +123,9 @@ This change has no effect on Controls behavior.
 #### Change `RenderSurfaceType` namespace
 There used two be two `RenderSurfaceType`s, `Uno.UI.Runtime.Skia.RenderSurfaceType` (for Gtk) and `Uno.UI.Skia.RenderSurfaceType` (for Skia). They are now `Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType` and `Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType` respectively.
 
+#### Rmove `SetterBase.set_Property`
+This method was only present for binary backward compatibility with `Setter<T>`. Use `Setter.Property` or `Setter<T>.Property` instead
+
 #### `Panel`s no longer measure or arrange any children in `MeasureOverride` or `ArrangeOverride`, respectively
 `Panel`s used to measure and arrange the first child in `MeasureOverride` or `ArrangeOverride`, respectively. This is no longer the case. Now, to match WinUI, `Panel`s just return an empty size in `MeasureOverride`, and the `finalSize` as is in `ArrangeOverride`. You should override these layout-override methods in `Panel`-derived subclasses instead.
 
