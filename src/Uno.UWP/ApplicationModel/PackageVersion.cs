@@ -23,6 +23,16 @@ public partial struct PackageVersion : IEquatable<PackageVersion>
 		Revision = (ushort)(version.Revision >= 0 ? version.Revision : 0);
 	}
 
+#if HAS_UNO_WINUI
+	public PackageVersion(ushort _Major, ushort _Minor, ushort _Build, ushort _Revision)
+	{
+		Major = _Major;
+		Minor = _Minor;
+		Build = _Build;
+		Revision = _Revision;
+	}
+#endif
+
 	// NOTE: Equality implementation should be modified if a new field/property is added.
 
 	/// <summary>
