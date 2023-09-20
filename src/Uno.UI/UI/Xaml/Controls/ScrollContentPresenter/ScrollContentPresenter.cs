@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// TODO: Handle zoom https://github.com/unoplatform/uno/issues/4309
 				}
-				else if (canScrollHorizontally && properties.IsHorizontalMouseWheel)
+				else if (canScrollHorizontally && (!canScrollVertically || properties.IsHorizontalMouseWheel || e.KeyModifiers == VirtualKeyModifiers.Shift))
 				{
 #if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
 					var horizontalOffset = _pendingScrollTo?.horizontal ?? HorizontalOffset;
