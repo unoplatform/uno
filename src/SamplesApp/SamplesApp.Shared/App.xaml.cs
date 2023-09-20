@@ -16,6 +16,7 @@ using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using Uno.UI.RuntimeTests.Extensions;
 
 #if !HAS_UNO
 using Uno.Logging;

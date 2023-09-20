@@ -33,6 +33,7 @@ using Windows.Graphics.Imaging;
 using Windows.Graphics.Display;
 using SamplesApp;
 using Uno.UI.Extensions;
+using Uno.UI.RuntimeTests.Extensions;
 
 namespace SampleControl.Presentation
 {
