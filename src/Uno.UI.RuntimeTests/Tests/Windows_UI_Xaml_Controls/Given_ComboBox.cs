@@ -862,6 +862,85 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+		[TestMethod]
+		public async Task When_SelectedItem_TwoWay_Binding_Clear()
+		{
+			var root = new Grid();
+
+			var comboBox = new ComboBox();
+
+			root.Children.Add(comboBox);
+
+			comboBox.SetBinding(ComboBox.ItemsSourceProperty, new Binding { Path = new("Items") });
+			comboBox.SetBinding(ComboBox.SelectedItemProperty, new Binding { Path = new("Item"), Mode = BindingMode.TwoWay });
+
+			WindowHelper.WindowContent = root;
+
+			var dc = new TwoWayBindingClearViewModel();
+			root.DataContext = dc;
+
+			await WindowHelper.WaitForIdle();
+
+			dc.Dispose();
+			root.DataContext = null;
+
+			Assert.AreEqual(1, dc.ItemGetCount);
+			Assert.AreEqual(1, dc.ItemSetCount);
+		}
+
+		public sealed class TwoWayBindingClearViewModel : IDisposable
+		{
+			public enum Themes
+			{
+				Invalid,
+				Day,
+				Night
+			}
+
+			public TwoWayBindingClearViewModel()
+			{
+				_item = Items[0];
+			}
+
+			public Themes[] Items { get; } = new Themes[] { Themes.Day, Themes.Night };
+			private Themes _item;
+			private bool _isDisposed;
+			public Themes Item
+			{
+				get
+				{
+					ItemGetCount++;
+
+					if (_isDisposed)
+					{
+						return Themes.Invalid;
+					}
+
+					return _item;
+				}
+				set
+				{
+					ItemSetCount++;
+
+					if (_isDisposed)
+					{
+						_item = Themes.Invalid;
+						return;
+					}
+
+					_item = value;
+				}
+			}
+
+			public int ItemGetCount { get; private set; }
+			public int ItemSetCount { get; private set; }
+
+			public void Dispose()
+			{
+				_isDisposed = true;
+			}
+		}
+
 		public class TwoWayBindingItem : System.ComponentModel.INotifyPropertyChanged
 		{
 			private int _selectedNumber;
@@ -932,6 +1011,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
+
+
 #if __IOS__
 	#region "Helper classes for the iOS Modal Page (UIModalPresentationStyle.pageSheet)"
 	public partial class MultiFrame : Grid
