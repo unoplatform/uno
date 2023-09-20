@@ -119,7 +119,6 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests
 		/// Navigate back to Page1
 		/// </summary>
 		[TestMethod]
-		[Ignore("Not yet working")]
 		public async Task Check_Can_Change_Page1_Before_Navigating_Back_With_DataContext()
 		{
 			var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
