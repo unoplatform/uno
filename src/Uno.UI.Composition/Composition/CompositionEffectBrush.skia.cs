@@ -1483,6 +1483,61 @@ namespace Windows.UI.Composition
 
 									return null;
 								}
+							case EffectType.WhiteNoiseEffect:
+								{
+									if (effectInterop.GetPropertyCount() == 2)
+									{
+										effectInterop.GetNamedPropertyMapping("Frequency", out uint frequencyProp, out _);
+										effectInterop.GetNamedPropertyMapping("Offset", out uint offsetProp, out _);
+
+										Vector2 frequency = (Vector2)effectInterop.GetProperty(frequencyProp);
+										Vector2 offset = (Vector2)effectInterop.GetProperty(offsetProp);
+
+										string shader = $@"
+											uniform half2 frequency;
+											uniform half2 offset;
+
+											half Hash(half2 p)
+											{{
+												return fract(1e4 * sin(17.0 * p.x + p.y * 0.1) * (0.1 + abs(sin(p.y * 13.0 + p.x))));
+											}}
+
+
+											half4 main(float2 coords) 
+											{{
+												float2 coord = coords * 0.81 * frequency + offset;
+												float2 px00 = floor(coord - 0.5) + 0.5;
+												float2 px11 = px00 + 1;
+												float2 px10 = float2(px11.x, px00.y);
+												float2 px01 = float2(px00.x, px11.y);
+												float2 factor = coord - px00;
+												float sample00 = Hash(px00);
+												float sample10 = Hash(px10);
+												float sample01 = Hash(px01);
+												float sample11 = Hash(px11);
+												float result = mix(mix(sample00, sample10, factor.x), mix(sample01, sample11, factor.x), factor.y);
+
+												return half4(result.xxx, 1);
+											}}
+										";
+
+										SKRuntimeEffect runtimeEffect = SKRuntimeEffect.Create(shader, out string errors);
+										if (errors is not null)
+										{
+											return null;
+										}
+
+										SKRuntimeEffectUniforms uniforms = new(runtimeEffect)
+										{
+											{ "frequency", new float[2] { frequency.X, frequency.Y } },
+											{ "offset", new float[2] { offset.X, offset.Y } }
+										};
+
+										return SKImageFilter.CreatePaint(new SKPaint() { Shader = runtimeEffect.ToShader(false, uniforms), IsAntialias = true, FilterQuality = SKFilterQuality.High }, new(bounds));
+									}
+
+									return null;
+								}
 							case EffectType.Unsupported:
 							default:
 								return null;
