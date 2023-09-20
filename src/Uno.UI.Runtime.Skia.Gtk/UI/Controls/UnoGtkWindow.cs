@@ -44,28 +44,17 @@ internal class UnoGtkWindow : Window
 			Cursors.EnsureLoaded();
 		};
 
-
-
 		Host = new UnoGtkWindowHost(this, winUIWindow);
+		if (GtkHost.Current is not null) // TODO:MZ: This is a workaround for DPIHelper, should not be done this way.
+		{
+			GtkHost.Current.MainWindow = this;
+		}
 		GtkManager.XamlRootMap.Register(xamlRoot, Host);
 
 		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
 	internal UnoGtkWindowHost Host { get; }
-
-	private async void OnShowing(object? sender, EventArgs e)
-	{
-		try
-		{
-			await Host.InitializeAsync();
-			ShowAll();
-		}
-		catch (Exception ex)
-		{
-			this.Log().Error("Failed to initialize the UnoGtkWindow", ex);
-		}
-	}
 
 	internal void UpdateWindowPropertiesFromPackage()
 	{
