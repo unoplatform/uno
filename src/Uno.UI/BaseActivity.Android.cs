@@ -17,6 +17,7 @@ using Uno.Foundation.Logging;
 using Microsoft.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
@@ -198,7 +199,7 @@ namespace Uno.UI
 
 			Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(() =>
 			{
-				WinUIWindow?.OnNativeVisibilityChanged(true);
+				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
 			});
 		}
 
@@ -209,12 +210,12 @@ namespace Uno.UI
 			SetAsCurrent();
 
 			Windows.UI.Xaml.Application.Current?.RaiseResuming();
-			WinUIWindow?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		partial void InnerTopResumedActivityChanged(bool isTopResumedActivity)
 		{
-			WinUIWindow?.OnNativeActivated(
+			NativeWindowWrapper.Instance.OnNativeActivated(
 				isTopResumedActivity ?
 					CoreWindowActivationState.CodeActivated :
 					CoreWindowActivationState.Deactivated);
@@ -224,14 +225,14 @@ namespace Uno.UI
 		{
 			ResignCurrent();
 
-			WinUIWindow?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		partial void InnerStop()
 		{
 			ResignCurrent();
 
-			WinUIWindow?.OnNativeVisibilityChanged(false);
+			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
 			Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(() => Windows.UI.Xaml.Application.Current?.RaiseSuspending());
 		}
 
