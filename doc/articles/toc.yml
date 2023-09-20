@@ -30,7 +30,6 @@
       - name: Tutorial 2
         href: getting-started-tutorial-2.md
     - name: Migration
-      topicHref: migration-intro.md
       items:
       - name: Xamarin Forms
         items:
