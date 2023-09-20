@@ -7,6 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.RuntimeTests.Extensions;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -71,14 +72,14 @@ partial class App
 					try
 					{
 #if __IOS__ || __ANDROID__
-							var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-							if (statusBar != null)
-							{
-								_ = _mainWindow.Dispatcher.RunAsync(
-									Windows.UI.Core.CoreDispatcherPriority.Normal,
-									async () => await statusBar.HideAsync()
-								);
-							}
+						var statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
+						if (statusBar != null)
+						{
+							_ = _mainWindow.Dispatcher.RunAsync(
+								Windows.UI.Core.CoreDispatcherPriority.Normal,
+								async () => await statusBar.HideAsync()
+							);
+						}
 #endif
 
 #if __ANDROID__
