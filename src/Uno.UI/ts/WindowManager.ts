@@ -1498,6 +1498,10 @@ namespace Uno.UI {
 			}
 		}
 
+		public setCornerRadius(viewId: number, topLeftX: number, topLeftY: number, topRightX: number, topRightY: number, bottomRightX: number, bottomRightY: number, bottomLeftX: number, bottomLeftY: number) {
+			this.getView(viewId).style.borderRadius = `${topLeftX}px ${topRightX}px ${bottomRightX}px ${bottomLeftX}px / ${topLeftY}px ${topRightY}px ${bottomRightY}px ${bottomLeftY}px`
+		}
+
 		public setPointerCapture(viewId: number, pointerId: number): void {
 			this.getView(viewId).setPointerCapture(pointerId);
 		}

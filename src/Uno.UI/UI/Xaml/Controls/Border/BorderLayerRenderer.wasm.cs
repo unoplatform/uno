@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Shapes
 							("border-width", borderWidth));
 						break;
 					case GradientBrush gradientBrush:
-						var border = gradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+						var border = gradientBrush.ToCssString(element.RenderSize);
 						element.SetStyle(
 							("border-style", "solid"),
 							("border-color", ""),
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Shapes
 							("border-image-slice", "1"));
 						break;
 					case RadialGradientBrush radialGradientBrush:
-						var radialBorder = radialGradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+						var radialBorder = radialGradientBrush.ToCssString(element.RenderSize);
 						element.SetStyle(
 							("border-style", "solid"),
 							("border-color", ""),
@@ -106,10 +106,8 @@ namespace Windows.UI.Xaml.Shapes
 			else
 			{
 				var outer = cornerRadius.GetRadii(element.RenderSize, thickness).Outer;
-				var borderRadius = $"{outer.TopLeft.X}px {outer.TopRight.X}px {outer.BottomRight.X}px {outer.BottomLeft.X}px / {outer.TopLeft.Y}px {outer.TopRight.Y}px {outer.BottomRight.Y}px {outer.BottomLeft.Y}px";
-				element.SetStyle(
-					("border-radius", borderRadius),
-					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
+				WindowManagerInterop.SetCornerRadius(element.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
+				element.SetStyle("overflow", "hidden"); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 			}
 		}
 
