@@ -43,5 +43,7 @@
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
 	</dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>
