@@ -126,6 +126,9 @@ There used two be two `RenderSurfaceType`s, `Uno.UI.Runtime.Skia.RenderSurfaceTy
 #### `Panel`s no longer measure or arrange any children in `MeasureOverride` or `ArrangeOverride`, respectively
 `Panel`s used to measure and arrange the first child in `MeasureOverride` or `ArrangeOverride`, respectively. This is no longer the case. Now, to match WinUI, `Panel`s just return an empty size in `MeasureOverride`, and the `finalSize` as is in `ArrangeOverride`. You should override these layout-override methods in `Panel`-derived subclasses instead.
 
+#### `Application.TraceProvider.<LauchedStart|LauchedStop>` are renamed to `Application.TraceProvider.<LaunchedStart|LaunchedStop>`
+This is a simple typo fix. Rename the old constants to the new ones.
+
 ### Uno Platform 4.10
 This release does not require upgrade steps.
 
