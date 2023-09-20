@@ -39,5 +39,6 @@
 		<Grid x:Name="psGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="PointSpecularEffect (Turn on Dark Mode)"/>
 		<Grid x:Name="maskGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="AlphaMaskEffect"/>
 		<Grid x:Name="saturationGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="SaturationEffect"/>
+		<Grid x:Name="noiseGrid" Width="200" Height="200" VerticalAlignment="Top" HorizontalAlignment="Left" ToolTipService.ToolTip="WhiteNoiseEffect"/>
 	</GridView>
 </UserControl>
