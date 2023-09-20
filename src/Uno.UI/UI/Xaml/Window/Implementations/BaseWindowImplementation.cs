@@ -80,7 +80,9 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	{
 		Bounds = new Rect(0, 0, size.Width, size.Height);
 		OnSizeChanged(size);
+#if __SKIA__ || __WASM__ // TODO:MZ: What about Android & iOS
 		XamlRoot?.InvalidateMeasure(); // Should notify before or after?
+#endif
 		XamlRoot?.NotifyChanged();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
 		CoreWindow?.OnSizeChanged(windowSizeChanged);

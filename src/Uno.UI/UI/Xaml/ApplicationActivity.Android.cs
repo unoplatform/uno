@@ -11,6 +11,7 @@ using Uno.Foundation.Logging;
 using Uno.Gaming.Input.Internal;
 using Uno.Helpers.Theming;
 using Uno.UI;
+using Uno.UI.Xaml.Controls;
 using Windows.Devices.Sensors;
 using Windows.Gaming.Input;
 using Windows.Graphics.Display;
@@ -217,7 +218,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnKeyboardChanged(Rect keyboard)
 		{
-			WinUIWindow?.RaiseNativeSizeChanged();
+			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 			_inputPane.OccludedRect = ViewHelper.PhysicalToLogicalPixels(keyboard);
 		}
 
@@ -229,7 +230,7 @@ namespace Microsoft.UI.Xaml
 			}
 
 			base.OnCreate(bundle);
-			WinUIWindow.OnActivityCreated();
+			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);
 			LayoutProvider.KeyboardChanged += OnKeyboardChanged;
@@ -240,7 +241,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnInsetsChanged(Thickness insets)
 		{
-			WinUIWindow?.RaiseNativeSizeChanged();
+			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 		}
 
 		public override void SetContentView(View view)
@@ -294,6 +295,8 @@ namespace Microsoft.UI.Xaml
 			LayoutProvider.Stop();
 			LayoutProvider.KeyboardChanged -= OnKeyboardChanged;
 			LayoutProvider.InsetsChanged -= OnInsetsChanged;
+
+			NativeWindowWrapper.Instance.OnNativeClosed();
 		}
 
 		public override void OnConfigurationChanged(Configuration newConfig)
@@ -305,7 +308,7 @@ namespace Microsoft.UI.Xaml
 
 		private void RaiseConfigurationChanges()
 		{
-			WinUIWindow?.RaiseNativeSizeChanged();
+			NativeWindowWrapper.Instance.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
 			SystemThemeHelper.RefreshSystemTheme();

@@ -22,7 +22,7 @@ internal partial class NativeWindowFactory
 		return CreateWindowPlatform(window, xamlRoot);
 	}
 
-#if !__SKIA__
+#if !__SKIA__ && !__ANDROID__
 	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot) => null;
 #endif
 }
