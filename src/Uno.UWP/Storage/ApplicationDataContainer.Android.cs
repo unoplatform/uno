@@ -25,7 +25,7 @@ namespace Windows.Storage
 			{
 			}
 
-			private ISharedPreferences Preferences
+			private ISharedPreferences CreatePreferences()
 				=> PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
 
 			public object this[string key]
@@ -43,7 +43,7 @@ namespace Windows.Storage
 				{
 					if (value != null)
 					{
-						using var preferences = Preferences;
+						using var preferences = CreatePreferences();
 
 						preferences
 							.Edit()
@@ -61,7 +61,7 @@ namespace Windows.Storage
 			{
 				get
 				{
-					using var preferences = Preferences;
+					using var preferences = CreatePreferences();
 
 					return preferences
 						.All
@@ -74,7 +74,7 @@ namespace Windows.Storage
 			{
 				get
 				{
-					using var preferences = Preferences;
+					using var preferences = CreatePreferences();
 
 					return preferences
 						.All
@@ -88,7 +88,7 @@ namespace Windows.Storage
 			{
 				get
 				{
-					using var preferences = Preferences;
+					using var preferences = CreatePreferences();
 
 					return preferences
 						.All
@@ -112,7 +112,7 @@ namespace Windows.Storage
 				}
 				if (value != null)
 				{
-					using var preferences = Preferences;
+					using var preferences = CreatePreferences();
 
 					preferences
 						.Edit()
@@ -126,7 +126,7 @@ namespace Windows.Storage
 
 			public void Clear()
 			{
-				using var preferences = Preferences;
+				using var preferences = CreatePreferences();
 
 				preferences
 					.Edit()
@@ -139,7 +139,7 @@ namespace Windows.Storage
 
 			public bool ContainsKey(string key)
 			{
-				using var preferences = Preferences;
+				using var preferences = CreatePreferences();
 
 				return preferences.All.ContainsKey(key);
 			}
@@ -149,7 +149,7 @@ namespace Windows.Storage
 
 			public IEnumerator<KeyValuePair<string, object>> GetEnumerator()
 			{
-				using var preferences = Preferences;
+				using var preferences = CreatePreferences();
 
 				return preferences
 					.All
@@ -158,7 +158,7 @@ namespace Windows.Storage
 
 			public bool Remove(string key)
 			{
-				using var preferences = Preferences;
+				using var preferences = CreatePreferences();
 
 				preferences
 					.Edit()
@@ -172,7 +172,7 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				using var preferences = Preferences;
+				using var preferences = CreatePreferences();
 
 				if (preferences.All.TryGetValue(key, out var serializedValue))
 				{
