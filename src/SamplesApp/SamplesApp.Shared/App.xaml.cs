@@ -17,6 +17,7 @@ using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using Uno.UI.RuntimeTests.Extensions;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
