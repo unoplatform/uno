@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("41251AB7-0BEB-46F8-9DA7-59E93FCCE5DE")]
-	public class LuminanceToAlphaEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class LuminanceToAlphaEffect : ICanvasEffect
 	{
 		private string _name = "LuminanceToAlphaEffect";
 		private Guid _id = new Guid("41251AB7-0BEB-46F8-9DA7-59E93FCCE5DE");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -28,5 +32,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 0;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

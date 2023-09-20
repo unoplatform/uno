@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("12F575E8-4DB1-485F-9A84-03A07DD3829F")]
-	public class CrossFadeEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class CrossFadeEffect : ICanvasEffect
 	{
 		private string _name = "CrossFadeEffect";
 		private Guid _id = new Guid("12F575E8-4DB1-485F-9A84-03A07DD3829F");
@@ -16,6 +16,12 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public static bool IsSupported => true;
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public float CrossFade { get; set; } = 0.5f;
 
@@ -60,5 +66,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 1;
 		public IGraphicsEffectSource GetSource(uint index) => index is 0 ? Source1 : Source2;
 		public uint GetSourceCount() => 2;
+
+		public void Dispose() { }
 	}
 }

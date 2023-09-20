@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5")]
-	public class GaussianBlurEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class GaussianBlurEffect : ICanvasEffect
 	{
 		private string _name = "GaussianBlurEffect";
 		private Guid _id = new Guid("1FEB6D69-2FE6-4AC9-8C58-1D7F93E7A6A5");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -76,5 +80,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 3;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

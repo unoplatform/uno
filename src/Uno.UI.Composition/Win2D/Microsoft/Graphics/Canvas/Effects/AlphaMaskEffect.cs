@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("C80ECFF0-3FD5-4F05-8328-C5D1724B4F0A")]
-	public class AlphaMaskEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class AlphaMaskEffect : ICanvasEffect
 	{
 		private string _name = "AlphaMaskEffect";
 		private Guid _id = new Guid("C80ECFF0-3FD5-4F05-8328-C5D1724B4F0A");
@@ -17,9 +17,15 @@ namespace Microsoft.Graphics.Canvas.Effects
 			set => _name = value;
 		}
 
+		public static bool IsSupported => true;
+
 		public IGraphicsEffectSource AlphaMask { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public Guid GetEffectId() => _id;
 
@@ -30,5 +36,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 0;
 		public IGraphicsEffectSource GetSource(uint index) => index == 0 ? Source : AlphaMask;
 		public uint GetSourceCount() => 2;
+
+		public void Dispose() { }
 	}
 }

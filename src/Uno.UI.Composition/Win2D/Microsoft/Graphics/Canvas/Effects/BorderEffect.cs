@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("2A2D49C0-4ACF-43C7-8C6A-7C4A27874D27")]
-	public class BorderEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class BorderEffect : ICanvasEffect
 	{
 		private string _name = "BorderEffect";
 		private Guid _id = new Guid("2A2D49C0-4ACF-43C7-8C6A-7C4A27874D27");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public CanvasEdgeBehavior ExtendX { get; set; } = CanvasEdgeBehavior.Clamp;
 
@@ -66,5 +70,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 2;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

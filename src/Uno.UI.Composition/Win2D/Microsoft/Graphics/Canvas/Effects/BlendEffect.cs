@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("81C5B77B-13F8-4CDD-AD20-C890547AC65D")]
-	public class BlendEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class BlendEffect : ICanvasEffect
 	{
 		private string _name = "BlendEffect";
 		private Guid _id = new Guid("81C5B77B-13F8-4CDD-AD20-C890547AC65D");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public BlendEffectMode Mode { get; set; } = BlendEffectMode.Multiply;
 
@@ -60,5 +64,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public IGraphicsEffectSource GetSource(uint index) => index is 0 ? Background : Foreground;
 
 		public uint GetSourceCount() => 2;
+
+		public void Dispose() { }
 	}
 }

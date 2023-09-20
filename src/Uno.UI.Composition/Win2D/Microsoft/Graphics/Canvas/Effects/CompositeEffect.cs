@@ -7,7 +7,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("48FC9F51-F6AC-48F1-8B58-3B28AC46F76D")]
-	public class CompositeEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class CompositeEffect : ICanvasEffect
 	{
 		private string _name = "CompositeEffect";
 		private Guid _id = new Guid("48FC9F51-F6AC-48F1-8B58-3B28AC46F76D");
@@ -17,6 +17,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public CanvasComposite Mode { get; set; } = CanvasComposite.SourceOver;
 
@@ -59,5 +63,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public IGraphicsEffectSource GetSource(uint index) => index < Sources.Count ? Sources[(int)index] : null;
 
 		public uint GetSourceCount() => (uint)Sources.Count;
+
+		public void Dispose() { }
 	}
 }

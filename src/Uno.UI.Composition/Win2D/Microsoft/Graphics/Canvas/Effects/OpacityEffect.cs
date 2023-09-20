@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("811D79A4-DE28-4454-8094-C64685F8BD4C")]
-	public class OpacityEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class OpacityEffect : ICanvasEffect
 	{
 		private string _name = "OpacityEffect";
 		private Guid _id = new Guid("811D79A4-DE28-4454-8094-C64685F8BD4C");
@@ -16,6 +16,12 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public static bool IsSupported => true;
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public float Opacity { get; set; } = 1.0f;
 
@@ -56,5 +62,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 1;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

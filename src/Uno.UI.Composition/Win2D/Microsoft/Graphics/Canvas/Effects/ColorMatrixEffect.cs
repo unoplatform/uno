@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("921F03D6-641C-47DF-852D-B4BB6153AE11")]
-	public class ColorMatrixEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class ColorMatrixEffect : ICanvasEffect
 	{
 		private string _name = "ColorMatrixEffect";
 		private Guid _id = new Guid("921F03D6-641C-47DF-852D-B4BB6153AE11");
@@ -17,7 +17,15 @@ namespace Microsoft.Graphics.Canvas.Effects
 			set => _name = value;
 		}
 
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
+
 		public Matrix5x4 ColorMatrix { get; set; } = Matrix5x4.Identity;
+
+		public CanvasAlphaMode AlphaMode { get; set; }
+
+		public bool ClampOutput { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -30,6 +38,18 @@ namespace Microsoft.Graphics.Canvas.Effects
 				case "ColorMatrix":
 					{
 						index = 0;
+						mapping = GraphicsEffectPropertyMapping.Direct;
+						break;
+					}
+				case "AlphaMode":
+					{
+						index = 1;
+						mapping = GraphicsEffectPropertyMapping.ColorMatrixAlphaMode;
+						break;
+					}
+				case "ClampOutput":
+					{
+						index = 2;
 						mapping = GraphicsEffectPropertyMapping.Direct;
 						break;
 					}
@@ -48,13 +68,19 @@ namespace Microsoft.Graphics.Canvas.Effects
 			{
 				case 0:
 					return ColorMatrix.ToArray();
+				case 1:
+					return AlphaMode;
+				case 2:
+					return ClampOutput;
 				default:
 					return null;
 			}
 		}
 
-		public uint GetPropertyCount() => 1;
+		public uint GetPropertyCount() => 3;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

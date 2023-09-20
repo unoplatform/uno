@@ -6,7 +6,7 @@ using Windows.Graphics.Effects.Interop;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("E0C3784D-CB39-4E84-B6FD-6B72F0810263")]
-	public class InvertEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class InvertEffect : ICanvasEffect
 	{
 		private string _name = "InvertEffect";
 		private Guid _id = new Guid("E0C3784D-CB39-4E84-B6FD-6B72F0810263");
@@ -16,6 +16,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			get => _name;
 			set => _name = value;
 		}
+
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -28,5 +32,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 0;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }

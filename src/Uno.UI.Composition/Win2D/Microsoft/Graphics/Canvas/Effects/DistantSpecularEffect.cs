@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
@@ -7,7 +8,7 @@ using Windows.UI;
 namespace Microsoft.Graphics.Canvas.Effects
 {
 	[Guid("428C1EE5-77B8-4450-8AB5-72219C21ABDA")]
-	public class DistantSpecularEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop
+	public class DistantSpecularEffect : ICanvasEffect
 	{
 		private string _name = "DistantSpecularEffect";
 		private Guid _id = new Guid("428C1EE5-77B8-4450-8AB5-72219C21ABDA");
@@ -18,6 +19,10 @@ namespace Microsoft.Graphics.Canvas.Effects
 			set => _name = value;
 		}
 
+		public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+		public bool CacheOutput { get; set; }
+
 		public float Azimuth { get; set; }
 
 		public float Elevation { get; set; }
@@ -27,6 +32,12 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public float SpecularAmount { get; set; } = 1.0f;
 
 		public Color LightColor { get; set; } = Colors.White;
+
+		public Vector4 LightColorHdr
+		{
+			get => new(LightColor.R * 255.0f, LightColor.G * 255.0f, LightColor.B * 255.0f, LightColor.A * 255.0f);
+			set => LightColor = new((byte)(value.W / 255.0f), (byte)(value.X / 255.0f), (byte)(value.Y / 255.0f), (byte)(value.Z / 255.0f));
+		}
 
 		public IGraphicsEffectSource Source { get; set; }
 
@@ -97,5 +108,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public uint GetPropertyCount() => 5;
 		public IGraphicsEffectSource GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
+
+		public void Dispose() { }
 	}
 }
