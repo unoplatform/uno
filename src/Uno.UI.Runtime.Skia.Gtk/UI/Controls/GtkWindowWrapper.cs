@@ -19,9 +19,9 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 	private readonly UnoGtkWindow _gtkWindow;
 	private List<PendingWindowStateChangedInfo>? _pendingWindowStateChanged = new();
 
-	public GtkWindowWrapper(UnoGtkWindow wpfWindow)
+	public GtkWindowWrapper(UnoGtkWindow gtkWindow)
 	{
-		_gtkWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
+		_gtkWindow = gtkWindow ?? throw new ArgumentNullException(nameof(gtkWindow));
 		_gtkWindow.Shown += OnWindowShown;
 		_gtkWindow.Host.SizeChanged += OnHostSizeChanged;
 		_gtkWindow.DeleteEvent += OnWindowClosing;
@@ -29,7 +29,19 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 		_gtkWindow.WindowStateEvent += OnWindowStateChanged;
 	}
 
-	public void Show() => _gtkWindow.ShowAll();
+	public async void Show()
+	{
+		try
+		{
+			await _gtkWindow.Host.InitializeAsync();
+			_gtkWindow.ShowAll();
+			Shown?.Invoke(this, EventArgs.Empty);
+		}
+		catch (Exception ex)
+		{
+			this.Log().Error("Failed to initialize the UnoGtkWindow", ex);
+		}
+	}
 
 	private void OnWindowShown(object? sender, EventArgs e)
 	{
@@ -45,9 +57,9 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 	public event EventHandler<bool>? VisibilityChanged;
 	public event EventHandler? Closed;
 	public event EventHandler<Size>? SizeChanged;
+	public event EventHandler? Shown;
 
 	public void Activate() => _gtkWindow.Activate();
-
 
 	private void OnWindowClosed(object? sender, EventArgs e)
 	{
