@@ -77,6 +77,8 @@ public partial class Window
 #endif
 
 		Background = SolidColorBrushHelper.White;
+
+		SizeChanged += OnWindowSizeChanged;
 	}
 
 	partial void InitializeWindowingFlavor();
@@ -294,5 +296,13 @@ public partial class Window
 			(h, s, e) =>
 				(h as Windows.UI.Xaml.WindowSizeChangedEventHandler)?.Invoke(s, (WindowSizeChangedEventArgs)e)
 		);
+	}
+
+	private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+	{
+		foreach (var action in _sizeChangedHandlers)
+		{
+			action(this, e);
+		}
 	}
 }
