@@ -15,6 +15,7 @@ using Point = Windows.Foundation.Point;
 using UIElement = Microsoft.UI.Xaml.UIElement;
 using ObjCRuntime;
 using NSDraggingInfo = AppKit.INSDraggingInfo;
+using Uno.UI.Xaml.Controls;
 
 namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 {
@@ -27,7 +28,7 @@ namespace Windows.ApplicationModel.DataTransfer.DragDrop.Core
 		public MacOSDragDropExtension(DragDropManager owner)
 		{
 			_manager = owner;
-			_window = (Uno.UI.Controls.Window)CoreWindow.GetForCurrentThread()!.NativeWindow;
+			_window = (Uno.UI.Controls.Window)NativeWindowWrapper.Instance.NativeWindow;
 
 			_window.DraggingEnteredAction = OnDraggingEnteredEvent;
 			_window.DraggingUpdatedAction = OnDraggingUpdated;

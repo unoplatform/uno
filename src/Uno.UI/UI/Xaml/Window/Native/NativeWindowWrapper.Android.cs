@@ -35,7 +35,7 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 	public event EventHandler Closed;
 	public event EventHandler Shown;
 
-	public bool Visible => throw new NotImplementedException();
+	public bool Visible { get; private set; }
 
 	internal int SystemUiVisibility { get; set; }
 
@@ -44,13 +44,17 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 		// TODO: MZ: Bring window to the foreground?
 	}
 
+	internal void OnNativeVisibilityChanged(bool visible)
+	{
+		Visible = visible;
+		VisibilityChanged?.Invoke(this, visible);
+	}
+
 	internal void OnNativeClosed() => Closed?.Invoke(this, EventArgs.Empty);
 
 	internal void OnActivityCreated() => AddPreDrawListener();
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationChanged?.Invoke(this, state);
-
-	internal void OnNativeVisibilityChanged(bool visible) => VisibilityChanged?.Invoke(this, visible);
 
 	internal bool IsStatusBarTranslucent()
 	{

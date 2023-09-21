@@ -1,21 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using AppKit;
-using Uno.UI.Extensions;
-using Microsoft.UI.Xaml.Controls;
+﻿using Uno.UI.Xaml.Controls;
 
-namespace Microsoft.UI.Xaml.Input
+namespace Microsoft.UI.Xaml.Input;
+
+public partial class FocusManager
 {
-	public partial class FocusManager
+	private static void FocusNative(UIElement control)
 	{
-		private static void FocusNative(UIElement control)
+		if (control?.AcceptsFirstResponder() == true)
 		{
-			if (control?.AcceptsFirstResponder() == true)
-			{
-				Window.Current?.NativeWindow?.MakeFirstResponder(control);
-			}
+			NativeWindowWrapper.Instance.NativeWindow.MakeFirstResponder(control);
 		}
 	}
 }
