@@ -5,8 +5,11 @@ using Uno.Extensions.ApplicationModel.Core;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.Extensions.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer;
+using Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 using Uno.WinUI.Runtime.Skia.LinuxFB;
 using Windows.Graphics.Display;
 using Windows.UI.Xaml;
@@ -90,6 +93,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 		{
 			_isDispatcherThread = true;
 
+			ApiExtensibility.Register(typeof(INativeWindowFactoryExtension), o => new NativeWindowFactoryExtension(this));
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new FrameBufferPointerInputSource());
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
@@ -157,6 +161,6 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
 
-		WUX.UIElement? IXamlRootHost.RootElement => WUX.Window.Current.RootElement;
+		WUX.UIElement? IXamlRootHost.RootElement => FrameBufferWindowWrapper.Instance.Window?.RootElement;
 	}
 }
