@@ -184,6 +184,12 @@ namespace Windows.UI.Xaml.Controls
 		internal override bool IsViewHit()
 			=> true;
 
+#if __CROSSRUNTIME__
+		// This may need to be adjusted if/when CanContentRenderOutsideBounds is implemented.
+		private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
+			=> new Rect(default, RenderSize);
+#endif
+
 		private void PointerWheelScroll(object sender, Input.PointerRoutedEventArgs e)
 		{
 			var properties = e.GetCurrentPoint(null).Properties;

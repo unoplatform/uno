@@ -17,6 +17,12 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+#if TRACE_HIT_TESTING
+using System.Runtime.CompilerServices;
+using System.Text;
+using Uno.Disposables;
+#endif
+
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -742,7 +748,7 @@ namespace Windows.UI.Xaml.Media
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
 #endif
-		#endregion
+#endregion
 
 		#region HitTest tracing
 #if TRACE_HIT_TESTING
