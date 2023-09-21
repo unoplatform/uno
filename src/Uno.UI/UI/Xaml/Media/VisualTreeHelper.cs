@@ -748,7 +748,7 @@ namespace Windows.UI.Xaml.Media
 		internal static MaterializableList<UIElement> GetManagedVisualChildren(_View view)
 			=> view._children;
 #endif
-	#endregion
+		#endregion
 
 		#region HitTest tracing
 #if TRACE_HIT_TESTING
