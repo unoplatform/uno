@@ -427,7 +427,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildInitializeComponent(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, INamedTypeSymbol controlBaseType)
 		{
-			writer.AppendLineIndented("global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
+			writer.AppendLineIndented("private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
 
 			using (writer.BlockInvariant($"private void InitializeComponent()"))
 			{
