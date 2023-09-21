@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private readonly static Thickness _thicknessCache = Thickness.Empty;
-
 		protected FrameworkElement()
 		{
 			Initialize();
