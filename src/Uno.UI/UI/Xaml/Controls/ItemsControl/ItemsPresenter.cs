@@ -349,6 +349,11 @@ namespace Windows.UI.Xaml.Controls
 			var isHorizontal = Orientation == Orientation.Horizontal;
 			var padding = AppliedPadding;
 
+			var unpaddedSize = new Size(
+				finalSize.Width - padding.Left - padding.Right,
+				finalSize.Height - padding.Top - padding.Bottom
+			);
+
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
 
@@ -373,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 					childRect.X += previousChildSize;
 
 					childRect.Width = desiredChildSize.Width;
-					childRect.Height = Math.Max(finalSize.Height, desiredChildSize.Height);
+					childRect.Height = Math.Max(unpaddedSize.Height, desiredChildSize.Height);
 
 					if (view == _itemsPanel)
 					{
@@ -389,7 +394,7 @@ namespace Windows.UI.Xaml.Controls
 					childRect.Y += previousChildSize;
 
 					childRect.Height = desiredChildSize.Height;
-					childRect.Width = Math.Max(finalSize.Width, desiredChildSize.Width);
+					childRect.Width = Math.Max(unpaddedSize.Width, desiredChildSize.Width);
 
 					if (view == _itemsPanel)
 					{
@@ -453,22 +458,37 @@ namespace Windows.UI.Xaml.Controls
 
 				var measuredSize = MeasureElement(view, unpaddedSize);
 
-				if (isHorizontal)
+				// Footers don't get counted in desiredSize
+				if (view != FooterContentControl)
 				{
-					desiredSize.Width += measuredSize.Width;
-					desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
-				}
-				else
-				{
-					desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
-					desiredSize.Height += measuredSize.Height;
+					if (isHorizontal)
+					{
+						desiredSize.Width += measuredSize.Width;
+						desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
+					}
+					else
+					{
+						desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
+						desiredSize.Height += measuredSize.Height;
+					}
 				}
 			}
 
-			return new Size(
-				desiredSize.Width + padding.Left + padding.Right,
-				desiredSize.Height + padding.Top + padding.Bottom
-			);
+			// The "ending" padding in the direction of Orientation is not counted
+			if (isHorizontal)
+			{
+				return new Size(
+					desiredSize.Width + padding.Left,
+					desiredSize.Height + padding.Top + padding.Bottom
+				);
+			}
+			else
+			{
+				return new Size(
+					desiredSize.Width + padding.Left + padding.Right,
+					desiredSize.Height + padding.Top
+				);
+			}
 		}
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
