@@ -1,10 +1,10 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AppKit;
+using CoreGraphics;
+using Uno.UI.Xaml.Core;
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -12,7 +12,7 @@ partial class ContentManager
 {
 	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
 	{
-		if (coreServices.ContentRootCoordinator.CoreWindowContentRoot is { } contentRoot)
+		if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is { } contentRoot)
 		{
 			contentRoot.SetHost(this); // Enables input manager
 		}
@@ -21,18 +21,18 @@ partial class ContentManager
 			throw new InvalidOperationException("The content root was not initialized.");
 		}
 
-		_mainController.View = _rootVisual;
-		_rootVisual.Frame = _window.Frame;
-		_rootVisual.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
-
+		NativeWindowWrapper.Instance.MainController.View = rootVisual;
+		rootVisual.Frame = NativeWindowWrapper.Instance.NativeWindow.Frame;
+		rootVisual.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+		var windowSize = NativeWindowWrapper.Instance.GetWindowSize();
 		// This is required to get the mouse move while not pressed!
 		var options = NSTrackingAreaOptions.MouseEnteredAndExited
 			| NSTrackingAreaOptions.MouseMoved
 			| NSTrackingAreaOptions.ActiveInKeyWindow
 			| NSTrackingAreaOptions.EnabledDuringMouseDrag // We want enter/leave events even if the button is pressed
 			| NSTrackingAreaOptions.InVisibleRect; // Automagicaly syncs the bounds rect
-		var trackingArea = new NSTrackingArea(Bounds, options, _rootVisual, null);
+		var trackingArea = new NSTrackingArea(new CGRect(0, 0, windowSize.Width, windowSize.Height), options, rootVisual, null);
 
-		_rootVisual.AddTrackingArea(trackingArea);
+		rootVisual.AddTrackingArea(trackingArea);
 	}
 }
