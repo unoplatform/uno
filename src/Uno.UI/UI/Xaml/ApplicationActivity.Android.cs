@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			if (WinUIWindow.RootElement is View content) // TODO:MZ: Fix this!
+			if (WinUIWindow?.RootElement is View content) // TODO:MZ: Fix this!
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
 				SetContentView(content);
@@ -226,10 +226,6 @@ namespace Microsoft.UI.Xaml
 			{
 				Uno.UI.Composition.CompositorThread.Start(this);
 			}
-
-#if !HAS_UNO_WINUI
-			WinUIWindow = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow;
-#endif
 
 			base.OnCreate(bundle);
 			NativeWindowWrapper.Instance.OnActivityCreated();
