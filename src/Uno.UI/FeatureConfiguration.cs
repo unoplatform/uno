@@ -227,6 +227,13 @@ namespace Uno.UI
 			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
 #endif
 
+#if __ANDROID__
+			/// <summary>
+			/// Invalidate native android measure cache when measure-spec has changed since last measure.
+			/// </summary>
+			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
+#endif
+
 			/// <summary>
 			/// [WebAssembly Only] Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
 			/// <see cref="Windows.UI.Xaml.FrameworkElement.Unloaded"/> events through managed
