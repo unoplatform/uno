@@ -16,8 +16,10 @@ namespace Windows.UI.ViewManagement
 	{
 		private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 
-		internal void SetVisibleBounds(UIKit.UIWindow keyWindow, Foundation.Rect windowBounds)
+		internal void SetVisibleBounds(UIKit.UIWindow keyWindow, Foundation.Size windowSize)
 		{
+			var windowBounds = new Foundation.Rect(default, windowSize);
+
 			var inset = UseSafeAreaInsets
 					? keyWindow.SafeAreaInsets
 					: UIEdgeInsets.Zero;
