@@ -175,7 +175,7 @@ public partial class Window
 	/// <summary>
 	/// Gets the window of the current thread.		
 	/// </summary>
-	public static Window Current => _current ??= new Window(WindowType.CoreWindow);
+	public static Window? Current => _current;
 #endif
 
 #pragma warning disable RS0030 // Current is banned
@@ -187,6 +187,13 @@ public partial class Window
 #pragma warning restore RS0030
 
 	internal static Window? IShouldntUseCurrentWindow => CurrentSafe;
+
+#if !HAS_UNO_WINUI
+	internal static void InitializeWindowCurrent()
+	{
+		_current = new Window(WindowType.CoreWindow);
+	}
+#endif
 
 #if HAS_UNO_WINUI
 	/// <summary>
@@ -249,11 +256,11 @@ public partial class Window
 	// The parameter name differs between UWP and WinUI.
 	// UWP: https://learn.microsoft.com/en-us/uwp/api/windows.ui.xaml.window.settitlebar?view=winrt-22621
 	// WinUI: https://learn.microsoft.com/en-us/windows/windows-app-sdk/api/winrt/microsoft.ui.xaml.window.settitlebar?view=windows-app-sdk-1.3
-	public void SetTitleBar(UIElement
+	public void SetTitleBar(
 #if HAS_UNO_WINUI
-								titleBar
+		UIElement titleBar
 #else
-							value
+		UIElement value
 #endif
 		)
 	{
