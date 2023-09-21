@@ -255,18 +255,20 @@ namespace Windows.UI.Xaml
 				needsClipToSlot = true;
 			}
 
-			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
+			if (allowClipToSlot &&
+				(IsLessThanAndNotCloseTo(clientSize.Width, clippedInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clientSize.Height, clippedInkSize.Height)))
+			{
+				needsClipToSlot = true;
+			}
+
+			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
 
 			offset = new Point(
 				offset.X + finalRect.X + margin.Left,
 				offset.Y + finalRect.Y + margin.Top
 			);
-
-			if (overflow)
-			{
-				needsClipToSlot = true;
-			}
 
 			_logDebug?.Debug(
 				$"{DepthIndentation}[{FormatDebugName()}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
@@ -314,7 +316,7 @@ namespace Windows.UI.Xaml
 
 				if (needToClipSlot)
 				{
-					var (offset, _) = LayoutHelper.GetAlignmentOffset(this, clippingSize, inkSize);
+					var offset = LayoutHelper.GetAlignmentOffset(this, clippingSize, inkSize);
 					clippedFrame = new Rect(-offset.X, -offset.Y, clippingSize.Width, clippingSize.Height);
 					if (needToClipLocally)
 					{
