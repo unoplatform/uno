@@ -224,26 +224,5 @@ namespace Uno.UI
 
 			return lastBottom;
 		}
-
-		/// <summary>
-		/// Gets the orientation-dependent screen size
-		/// </summary>
-		/// <returns></returns>
-		internal static CGSize GetMainWindowSize()
-		{
-			return GetWindowSize(window: Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow);
-		}
-
-		internal static CGSize GetWindowSize(Microsoft.UI.Xaml.Window window)
-		{
-#if __IOS__
-			var nativeFrame = window?.NativeWindow?.Frame ?? CGRect.Empty;
-
-			return new CGSize(nativeFrame.Width, nativeFrame.Height);
-#else
-			var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
-			return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
-#endif
-		}
 	}
 }

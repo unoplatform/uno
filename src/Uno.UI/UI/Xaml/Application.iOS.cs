@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Threading;
+using Uno.UI.Xaml.Controls;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
@@ -208,7 +209,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeVisibilityChanged(false);
+			NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(() => RaiseSuspending());
 		}
@@ -216,17 +217,17 @@ namespace Microsoft.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeVisibilityChanged(true));
+			RaiseLeavingBackground(() => NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 
 		private void SetCurrentLanguage()
