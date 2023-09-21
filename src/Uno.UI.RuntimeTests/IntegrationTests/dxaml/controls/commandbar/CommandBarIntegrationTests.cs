@@ -30,6 +30,7 @@ using Microsoft.UI.Xaml.Controls;
 #endif
 using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
+using Uno.UI.Xaml.Controls;
 
 namespace Windows.UI.Tests.Enterprise
 {
@@ -2542,7 +2543,7 @@ namespace Windows.UI.Tests.Enterprise
 #if __IOS__
 			await RunOnUIThread(() =>
 			{
-				expectedCommandBarWidth = ViewHelper.GetMainWindowSize().Width;
+				expectedCommandBarWidth = NativeWindowWrapper.Instance.GetWindowSize().Width;
 			});
 #endif
 			double expectedCommandBarCompactClosedHeight = 40;

@@ -6,6 +6,7 @@ using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
@@ -51,7 +52,7 @@ namespace Windows.UI.Xaml.Controls
 				Visibility = Visibility.Collapsed,
 				Background = SolidColorBrushHelper.Transparent,
 				AutoresizingMask = UIViewAutoresizing.All,
-				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetMainWindowSize())
+				Frame = new CGRect(CGPoint.Empty, NativeWindowWrapper.Instance.GetWindowSize())
 			};
 		}
 
