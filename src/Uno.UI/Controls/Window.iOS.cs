@@ -1,18 +1,15 @@
 #nullable enable
 using System;
-using System.Drawing;
 using System.Linq;
 using CoreGraphics;
 using Foundation;
+using ObjCRuntime;
 using UIKit;
 using Uno.Collections;
 using Uno.Diagnostics.Eventing;
-using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.Controls;
 using Uno.UI.Extensions;
-using Uno.UI.Xaml.Core;
 using WebKit;
 using Windows.Foundation;
 using Windows.UI.Core;
@@ -21,8 +18,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-using Windows.System;
-using ObjCRuntime;
 
 namespace Uno.UI.Controls
 {
@@ -55,7 +50,9 @@ namespace Uno.UI.Controls
 
 		internal event Action? FrameChanged;
 
+#if __MACCATALYST__ //TODO:MZ: Should be mac catalyst specific?
 		private ICoreWindowEvents? _ownerEvents;
+#endif
 
 		/// <summary>
 		/// ctor.
