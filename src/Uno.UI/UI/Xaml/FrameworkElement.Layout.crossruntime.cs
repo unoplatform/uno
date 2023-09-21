@@ -283,7 +283,7 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			var clippedFrame = GetClipRect(needsClipToSlot, finalRect, maxSize, margin, offset);
+			var clippedFrame = GetClipRect(needsClipToSlot, finalRect, maxSize, margin);
 			if (clippedFrame is null)
 			{
 				ArrangeNative(offset, false);
@@ -297,7 +297,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
-		private Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin, Point actualOffset)
+		private Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
 		{
 			if (needsClipToSlot)
 			{
