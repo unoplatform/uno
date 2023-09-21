@@ -12,6 +12,7 @@ using Uno.UI.DataBinding;
 using System;
 using Uno.UI;
 using System.Collections;
+using System.Diagnostics;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
@@ -36,6 +37,11 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private InlineCollection _inlines;
 		private string _inlinesText; // Text derived from the content of Inlines
+
+#if !__WASM__
+		private Hyperlink _hyperlinkOver;
+#endif
+
 		private Action _foregroundChanged;
 
 		private Run _reusableRun;
@@ -429,14 +435,11 @@ namespace Windows.UI.Xaml.Controls
 
 			// On Android, in practice this could result in ObjectDisposedExceptions when calling RequestLayout(). The try/catch is to
 			// ensure that callbacks are correctly raised for remaining views referencing the brush which *are* still live in the visual tree.
-#if !HAS_EXPENSIVE_TRYFINALLY
 			try
-#endif
 			{
 				OnForegroundChangedPartial();
 				InvalidateTextBlock();
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			catch (Exception e)
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))
@@ -444,7 +447,6 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().LogDebug($"Failed to invalidate for brush changed: {e}");
 				}
 			}
-#endif
 		}
 
 		partial void OnForegroundChangedPartial();
@@ -805,7 +807,7 @@ namespace Windows.UI.Xaml.Controls
 #else
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
-			if (!(sender is TextBlock that) || !that.HasHyperlink)
+			if (sender is not TextBlock { HasHyperlink: true } that)
 			{
 				return;
 			}
@@ -865,13 +867,67 @@ namespace Windows.UI.Xaml.Controls
 			}
 		};
 
+		private static readonly PointerEventHandler OnPointerMoved = (sender, e) =>
+		{
+			if (sender is not TextBlock { HasHyperlink: true } that)
+			{
+				return;
+			}
+
+			var point = e.GetCurrentPoint(that);
+
+			var hyperlink = that.FindHyperlinkAt(point.Position);
+			if (that._hyperlinkOver != hyperlink)
+			{
+				that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
+				that._hyperlinkOver = hyperlink;
+				hyperlink?.SetPointerOver(e.Pointer);
+			}
+		};
+
+		private static readonly PointerEventHandler OnPointerEntered = (sender, e) =>
+		{
+			if (sender is not TextBlock { HasHyperlink: true } that)
+			{
+				return;
+			}
+
+			// This assertion fails because we don't release pointer captures on PointerExited in InputManager
+			// TODO: make it such that this assertion doesn't fail
+			// global::System.Diagnostics.Debug.Assert(that._hyperlinkOver == null);
+
+			var point = e.GetCurrentPoint(that);
+
+			var hyperlink = that.FindHyperlinkAt(point.Position);
+
+			that._hyperlinkOver = hyperlink;
+			hyperlink?.SetPointerOver(e.Pointer);
+		};
+
+		private static readonly PointerEventHandler OnPointerExit = (sender, e) =>
+		{
+			if (sender is not TextBlock { HasHyperlink: true } that)
+			{
+				return;
+			}
+
+			global::System.Diagnostics.Debug.Assert(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position) == null);
+
+			that._hyperlinkOver?.ReleasePointerOver(e.Pointer);
+			that._hyperlinkOver = null;
+		};
+
 		private bool AbortHyperlinkCaptures(Pointer pointer)
 		{
 			var aborted = false;
 			foreach (var hyperlink in _hyperlinks.ToList()) // .ToList() : for a strange reason on WASM the collection gets modified
 			{
 				aborted |= hyperlink.hyperlink.AbortPointerPressed(pointer);
+				aborted |= hyperlink.hyperlink.ReleasePointerOver(pointer);
 			}
+
+			aborted |= _hyperlinkOver?.ReleasePointerOver(pointer) ?? false;
+			_hyperlinkOver = null;
 
 			return aborted;
 		}
@@ -881,20 +937,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateHyperlinks()
 		{
+			global::System.Diagnostics.Debug.Assert(_hyperlinkOver is null || _hyperlinks.Where(h => h.hyperlink == _hyperlinkOver).Count() == 1);
+
 			if (UseInlinesFastPath) // i.e. no Inlines
 			{
 				if (HasHyperlink)
 				{
 					RemoveHandler(PointerPressedEvent, OnPointerPressed);
 					RemoveHandler(PointerReleasedEvent, OnPointerReleased);
+					RemoveHandler(PointerMovedEvent, OnPointerMoved);
+					RemoveHandler(PointerEnteredEvent, OnPointerEntered);
+					RemoveHandler(PointerExitedEvent, OnPointerExit);
 					RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 
 					// Make sure to clear the pressed state of removed hyperlinks
 					foreach (var hyperlink in _hyperlinks)
 					{
-						hyperlink.hyperlink.AbortAllPointerPressed();
+						hyperlink.hyperlink.AbortAllPointerState();
 					}
 
+					_hyperlinkOver = null;
 					_hyperlinks.Clear();
 				}
 
@@ -903,6 +965,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var previousHasHyperlinks = HasHyperlink;
 			var previousHyperLinks = _hyperlinks.Select(h => h.hyperlink).ToList();
+			_hyperlinkOver = null;
 			_hyperlinks.Clear();
 
 			var start = 0;
@@ -925,7 +988,7 @@ namespace Windows.UI.Xaml.Controls
 			// Make sure to clear the pressed state of removed hyperlinks
 			foreach (var removed in previousHyperLinks)
 			{
-				removed.AbortAllPointerPressed();
+				removed.AbortAllPointerState();
 			}
 
 			// Update events subscriptions if needed
@@ -934,17 +997,33 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InsertHandler(PointerPressedEvent, OnPointerPressed);
 				InsertHandler(PointerReleasedEvent, OnPointerReleased);
+				InsertHandler(PointerMovedEvent, OnPointerMoved);
+				InsertHandler(PointerEnteredEvent, OnPointerEntered);
+				InsertHandler(PointerExitedEvent, OnPointerExit);
 				InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
 			else if (!HasHyperlink && previousHasHyperlinks)
 			{
 				RemoveHandler(PointerPressedEvent, OnPointerPressed);
 				RemoveHandler(PointerReleasedEvent, OnPointerReleased);
+				RemoveHandler(PointerMovedEvent, OnPointerMoved);
+				RemoveHandler(PointerEnteredEvent, OnPointerEntered);
+				RemoveHandler(PointerExitedEvent, OnPointerExit);
 				RemoveHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
 		}
 
-		private bool HasHyperlink => _hyperlinks.Any();
+		private bool HasHyperlink
+		{
+			get
+			{
+				var hasHyperlink = _hyperlinks.Count > 0;
+
+				global::System.Diagnostics.Debug.Assert(!(!hasHyperlink && _hyperlinkOver is { }));
+
+				return hasHyperlink;
+			}
+		}
 
 #if !__SKIA__
 		private Hyperlink FindHyperlinkAt(Point point)

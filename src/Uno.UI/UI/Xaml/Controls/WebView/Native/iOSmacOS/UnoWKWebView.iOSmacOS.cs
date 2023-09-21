@@ -131,6 +131,23 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 			var path = $"{NSBundle.MainBundle.BundlePath}/{uri.PathAndQuery}";
 
 			ProcessNSUrlRequest(new NSUrlRequest(new NSUrl(path, false)));
+			return;
+		}
+
+		if (_coreWebView.HostToFolderMap.TryGetValue(uri.Host.ToLowerInvariant(), out var folderName))
+		{
+			// Load Url with folder
+			var relativePath = uri.PathAndQuery;
+
+			if (relativePath.StartsWith('/'))
+			{
+				relativePath = relativePath.Substring(1);
+			}
+
+			var fullPath = Path.Combine(NSBundle.MainBundle.ResourcePath, folderName, relativePath);
+
+			var nsUrl = new NSUrl("file://" + fullPath);
+			ProcessNSUrlRequest(new NSUrlRequest(nsUrl));
 		}
 		else
 		{

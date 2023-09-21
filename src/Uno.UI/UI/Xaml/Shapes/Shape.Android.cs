@@ -1,10 +1,10 @@
-﻿using Android.Graphics;
+﻿using System;
+using System.Linq;
+using Android.Graphics;
 using Uno.Foundation.Logging;
 using Uno.UI;
-using System.Linq;
 using Windows.UI.Xaml.Media;
 using Canvas = Android.Graphics.Canvas;
-using System;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -13,6 +13,8 @@ namespace Windows.UI.Xaml.Shapes
 		private Android.Graphics.Path _path;
 		private Windows.Foundation.Rect _drawArea;
 		protected Windows.Foundation.Rect _logicalRenderingArea;
+		private static Paint _strokePaint;
+		private static Paint _fillPaint;
 
 		protected bool HasStroke
 		{
@@ -101,8 +103,9 @@ namespace Windows.UI.Xaml.Shapes
 			else
 			{
 				var fill = Fill ?? SolidColorBrushHelper.Transparent;
-				var fillPaint = fill.GetFillPaint(_drawArea);
-				canvas.DrawPath(_path, fillPaint);
+				_fillPaint ??= new();
+				fill.ApplyToFillPaint(_drawArea, _fillPaint);
+				canvas.DrawPath(_path, _fillPaint);
 			}
 		}
 
@@ -116,21 +119,20 @@ namespace Windows.UI.Xaml.Shapes
 
 			var strokeThickness = PhysicalStrokeThickness;
 
-			using (var strokePaint = new Paint(stroke.GetStrokePaint(_drawArea)))
-			{
-				SetStrokeDashEffect(strokePaint);
+			_strokePaint ??= new Paint();
+			stroke.ApplyToStrokePaint(_drawArea, _strokePaint);
+			SetStrokeDashEffect(_strokePaint);
 
-				if (_drawArea.HasZeroArea())
-				{
-					//Draw the stroke as a fill because the shape has no area
-					strokePaint.SetStyle(Paint.Style.Fill);
-					canvas.DrawCircle((float)(strokeThickness / 2), (float)(strokeThickness / 2), (float)(strokeThickness / 2), strokePaint);
-				}
-				else
-				{
-					strokePaint.StrokeWidth = (float)strokeThickness;
-					canvas.DrawPath(_path, strokePaint);
-				}
+			if (_drawArea.HasZeroArea())
+			{
+				//Draw the stroke as a fill because the shape has no area
+				_strokePaint.SetStyle(Paint.Style.Fill);
+				canvas.DrawCircle((float)(strokeThickness / 2), (float)(strokeThickness / 2), (float)(strokeThickness / 2), _strokePaint);
+			}
+			else
+			{
+				_strokePaint.StrokeWidth = (float)strokeThickness;
+				canvas.DrawPath(_path, _strokePaint);
 			}
 		}
 

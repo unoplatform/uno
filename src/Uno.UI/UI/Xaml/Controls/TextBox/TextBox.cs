@@ -269,16 +269,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!_isInvokingTextChanging)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isInvokingTextChanging = true;
 					TextChanging?.Invoke(this, new TextBoxTextChangingEventArgs());
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isInvokingTextChanging = false;
 				}
@@ -298,9 +294,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_isInvokingTextChanged = true;
 				_isTextChangedPending = false;
@@ -309,9 +303,7 @@ namespace Windows.UI.Xaml.Controls
 					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_isInvokingTextChanged = false;
 				_suppressTextChanged = false;
@@ -625,6 +617,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial();
 
 		#endregion
+#if SUPPORTS_RTL
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FrameworkElement.FlowDirectionProperty)
+			{
+				OnFlowDirectionChangedPartial();
+			}
+		}
+
+		partial void OnFlowDirectionChangedPartial();
+#endif
 
 #if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -1028,16 +1032,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
 		internal string ProcessTextInput(string newText)
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_isInputModifyingText = true;
 				Text = newText;
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_isInputModifyingText = false;
 			}
@@ -1047,18 +1047,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DeleteButtonClick()
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_isInputClearingText = true;
 
 				Text = string.Empty;
 				OnDeleteButtonClickPartial();
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_isInputClearingText = false;
 			}

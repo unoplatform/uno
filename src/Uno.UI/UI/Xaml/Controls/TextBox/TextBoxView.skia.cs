@@ -20,6 +20,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBoxView(TextBox textBox)
 		{
+			DisplayBlock = new TextBlock();
+			SetFlowDirectionAndTextAlignment();
+
 			_textBox = new WeakReference<TextBox>(textBox);
 			_isPasswordBox = textBox is PasswordBox;
 			if (!ApiExtensibility.CreateInstance(this, out _textBoxExtension))
@@ -54,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal int GetSelectionLength() => _textBoxExtension?.GetSelectionLength() ?? 0;
 
-		public TextBlock DisplayBlock { get; } = new TextBlock();
+		public TextBlock DisplayBlock { get; }
 
 		internal void SetTextNative(string text)
 		{
@@ -66,6 +69,29 @@ namespace Windows.UI.Xaml.Controls
 		internal void Select(int start, int length)
 		{
 			_textBoxExtension?.Select(start, length);
+		}
+
+		internal void SetFlowDirectionAndTextAlignment()
+		{
+			if (_textBox?.GetTarget() is not { } textBox)
+			{
+				return;
+			}
+
+			var flowDirection = textBox.FlowDirection;
+			var textAlignment = textBox.TextAlignment;
+			if (flowDirection == FlowDirection.RightToLeft)
+			{
+				textAlignment = textAlignment switch
+				{
+					TextAlignment.Left => TextAlignment.Right,
+					TextAlignment.Right => TextAlignment.Left,
+					_ => textAlignment,
+				};
+			}
+
+			DisplayBlock.FlowDirection = flowDirection;
+			DisplayBlock.TextAlignment = textAlignment;
 		}
 
 		internal void OnForegroundChanged(Brush brush)

@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-					// When showing the header/footer, the datacontext must be the listview's 
+					// When showing the header/footer, the datacontext must be the listview's
 					// datacontext. We only need to set the content of the container, not its
 					// datacontext.
 

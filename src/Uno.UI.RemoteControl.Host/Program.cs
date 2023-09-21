@@ -13,11 +13,20 @@ namespace Uno.UI.RemoteControl.Host
 		static void Main(string[] args)
 		{
 			var httpPort = 0;
+			var parentPID = 0;
 
 			var p = new OptionSet() {
 				{
 					"httpPort=", s => {
 						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out httpPort))
+						{
+							throw new ArgumentException($"The httpPort parameter is invalid {s}");
+						}
+					}
+				},
+				{
+					"ppid=", s => {
+						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out parentPID))
 						{
 							throw new ArgumentException($"The httpPort parameter is invalid {s}");
 						}
@@ -48,6 +57,8 @@ namespace Uno.UI.RemoteControl.Host
 					config.AddCommandLine(args);
 				})
 				.Build();
+
+			using var parentObserver = ParentProcessObserver.Observe(host, parentPID);
 
 			host.Run();
 		}

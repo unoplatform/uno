@@ -186,9 +186,7 @@ namespace Windows.UI.Xaml
 
 			if (_content == null && !_isMaterializing)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isMaterializing = true;
 
@@ -207,9 +205,7 @@ namespace Windows.UI.Xaml
 
 					MaterializationChanged?.Invoke(this);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isMaterializing = false;
 				}

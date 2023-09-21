@@ -5,11 +5,7 @@
 	<key>CFBundleDisplayName</key>
 	<string>Uno SamplesApp</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.SamplesApp</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
-	<key>CFBundleVersion</key>
-	<string>1.0</string>
+	<string>uno.platform.samplesdev</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>2</integer>
@@ -24,6 +20,20 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to use your camera.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to use your photo library.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>This app needs access to use your microphone.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to add to your photo library.</string>
+	<key>NSMotionUsageDescription</key>
+	<string>This is a step counter, and we&apos;d like to track motion. </string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>TODO NSLocationWhenInUseUsageDescription</string>
+	<key>NSLocationUsageDescription</key>
+	<string>TODO NSLocationUsageDescription</string>
 	<key>XSAppIconAssets</key>
 	<string>Media.xcassets/iconapp.appiconset</string>
 	<key>NSAppTransportSecurity</key>
@@ -33,5 +43,7 @@
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
 	</dict>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

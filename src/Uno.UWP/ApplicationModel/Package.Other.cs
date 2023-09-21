@@ -97,6 +97,11 @@ public partial class Package
 
 			DisplayName = doc.SelectSingleNode("/d:Package/d:Properties/d:DisplayName", nsmgr)?.InnerText ?? "";
 
+#if __SKIA__
+			Description = doc.SelectSingleNode("/d:Package/d:Properties/d:Description", nsmgr)?.InnerText ?? "";
+			PublisherDisplayName = doc.SelectSingleNode("/d:Package/d:Properties/d:PublisherDisplayName", nsmgr)?.InnerText ?? "";
+#endif
+
 			var logoUri = doc.SelectSingleNode("/d:Package/d:Properties/d:Logo", nsmgr)?.InnerText ?? "";
 			if (Uri.TryCreate(logoUri, UriKind.RelativeOrAbsolute, out var logo))
 			{

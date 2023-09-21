@@ -510,7 +510,7 @@
 		</Methods>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="4.9">
+	<IgnoreSet baseVersion="4.10">
 		<Types>
 			<Member fullName="Windows.UI.Core.ICoreWindowEvents" reason="Not present in WinUI" />
 			<Member fullName="Microsoft.UI.Windowing.AppWindowConfiguration" reason="Not present in WinAppSDK 1.2" />
@@ -875,7 +875,15 @@
 
 			<Member fullName="System.Nullable`1&lt;Uno.UI.Skia.RenderSurfaceType&gt; Uno.UI.XamlHost.Skia.Wpf.UnoXamlHostBase::RenderSurfaceType()" reason="Changed RenderSurfaceType namespace to Uno.UI.Runtime.Skia.Wpf" />
 
+			<!-- BEGIN PopupRoot alignment -->
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.Primitives.Popup::MainWindow()" reason="Not available in WinUI" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.Primitives.Popup::MainWindowContent()" reason="Not available in WinUI" />
+			<!-- END PopupRoot alignment -->
+
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase::ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
+			
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings::OpenPaneWidth()" reason="Does not exist in UWP" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings::OpenPaneWidthProperty()" reason="Does not exist in UWP" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1656,9 +1664,23 @@
 
 			<Member fullName="System.Collections.Generic.IEnumerator`1&lt;T&gt; Uno.Collections.MaterializableList`1.GetEnumerator()" reason="Changed return type" />
 
+			<!-- BEGIN PopupRoot alignment -->
+			<Member fullName="UIKit.UIView Windows.UI.Xaml.Controls.Primitives.Popup.get_MainWindow()" reason="Not available in WinUI" />
+			<Member fullName="AppKit.NSView Windows.UI.Xaml.Controls.Primitives.Popup.get_MainWindowContent()" reason="Not available in WinUI" />
+			<!-- END PopupRoot alignment -->
+
 			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
+
+			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ItemsControl.ResolveInternalItemsPanel(Android.Views.View itemsPanel)" reason="ItemsPanel should be a ViewGroup not a View, since it has children" />
+
+			<Member fullName="Android.Graphics.Paint Windows.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
+			<Member fullName="Android.Graphics.Paint Microsoft.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
+
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidth()" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneWidth(System.Double value)" reason="Does not exist in UWP" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 	  <!--

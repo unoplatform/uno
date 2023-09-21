@@ -27,6 +27,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		private HotReloadAgent _agent;
 		private ElementUpdateAgent? _elementAgent;
 		private static ClientHotReloadProcessor? _instance;
+		private readonly TaskCompletionSource<bool> _hotreloadWorkloadSpaceLoaded = new();
 
 		private ElementUpdateAgent ElementAgent
 		{
@@ -43,6 +44,15 @@ namespace Uno.UI.RemoteControl.HotReload
 				return _elementAgent;
 			}
 		}
+
+		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
+			=> _hotreloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+
+		/// <summary>
+		/// Determines if the server's hot reload workspace has been loaded
+		/// </summary>
+		internal Task HotReloadWorkspaceLoaded
+			=> _hotreloadWorkloadSpaceLoaded.Task;
 
 		[MemberNotNull(nameof(_agent))]
 		partial void InitializeMetadataUpdater()
@@ -160,7 +170,6 @@ namespace Uno.UI.RemoteControl.HotReload
 			return values;
 		}
 #endif
-
 		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
 			if (updatedTypes.Length == 0)

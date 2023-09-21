@@ -4,6 +4,8 @@
 using System;
 using Uno.Disposables;
 using Uno.Foundation.Logging;
+using Uno.UI.Xaml.Input;
+using Windows.ApplicationModel.Appointments;
 using Windows.UI.Xaml;
 
 namespace Uno.UI.DataBinding
@@ -15,12 +17,10 @@ namespace Uno.UI.DataBinding
 			private delegate void PropertyChangedHandler(object? previousValue, object? newValue, bool shouldRaiseValueChanged);
 
 			private ManagedWeakReference? _dataContextWeakStorage;
+			private Flags _flags;
 
 			private readonly SerialDisposable _propertyChanged = new SerialDisposable();
-			private bool _disposed;
 			private readonly DependencyPropertyValuePrecedences? _precedence;
-			private readonly object? _fallbackValue;
-			private readonly bool _allowPrivateMembers;
 			private ValueGetterHandler? _valueGetter;
 			private ValueGetterHandler? _precedenceSpecificGetter;
 			private ValueGetterHandler? _substituteValueGetter;
@@ -32,18 +32,27 @@ namespace Uno.UI.DataBinding
 
 			private Type? _dataContextType;
 
-			public BindingItem(BindingItem next, string property, object fallbackValue) :
-				this(next, property, fallbackValue, null, false)
+			[Flags]
+			private enum Flags
+			{
+				None = 0,
+				Disposed = 1 << 0,
+				AllowPrivateMembers = 1 << 1,
+				IsDependencyProperty = 1 << 2,
+				IsDependencyPropertyValueSet = 1 << 3,
+			}
+
+			public BindingItem(BindingItem next, string property) :
+				this(next, property, null, false)
 			{
 			}
 
-			internal BindingItem(BindingItem? next, string property, object? fallbackValue, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
+			internal BindingItem(BindingItem? next, string property, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 			{
 				Next = next;
 				PropertyName = property;
 				_precedence = precedence;
-				_fallbackValue = fallbackValue;
-				_allowPrivateMembers = allowPrivateMembers;
+				AllowPrivateMembers = allowPrivateMembers;
 			}
 
 			public object? DataContext
@@ -51,7 +60,7 @@ namespace Uno.UI.DataBinding
 				get => _dataContextWeakStorage?.Target;
 				set
 				{
-					if (!_disposed)
+					if (!IsDisposed)
 					{
 						// Historically, Uno was processing property changes using INPC. Since the inclusion of DependencyObject
 						// values changes are now filtered by DependencyProperty updates, making equality updates at this location
@@ -131,7 +140,7 @@ namespace Uno.UI.DataBinding
 				{
 					if (DataContext != null)
 					{
-						return BindingPropertyHelper.GetPropertyType(_dataContextType!, PropertyName, _allowPrivateMembers);
+						return BindingPropertyHelper.GetPropertyType(_dataContextType!, PropertyName, AllowPrivateMembers);
 					}
 					else
 					{
@@ -163,16 +172,12 @@ namespace Uno.UI.DataBinding
 					ClearCachedGetters();
 					if (_propertyChanged.Disposable != null)
 					{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 						try
-#endif
 						{
 							_isDataContextChanging = true;
 							_propertyChanged.Disposable = null;
 						}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 						finally
-#endif
 						{
 							_isDataContextChanging = false;
 						}
@@ -226,6 +231,7 @@ namespace Uno.UI.DataBinding
 
 				if (_dataContextType != currentType && _dataContextType != null)
 				{
+					IsDependencyPropertyValueSet = false;
 					_valueGetter = null;
 					_precedenceSpecificGetter = null;
 					_substituteValueGetter = null;
@@ -312,7 +318,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_valueGetter == null && _dataContextType != null)
 				{
-					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
+					_valueGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, AllowPrivateMembers);
 				}
 			}
 
@@ -320,7 +326,7 @@ namespace Uno.UI.DataBinding
 			{
 				if (_precedenceSpecificGetter == null && _dataContextType != null)
 				{
-					_precedenceSpecificGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, _allowPrivateMembers);
+					_precedenceSpecificGetter = BindingPropertyHelper.GetValueGetter(_dataContextType, PropertyName, _precedence, AllowPrivateMembers);
 				}
 			}
 
@@ -478,8 +484,61 @@ namespace Uno.UI.DataBinding
 
 			public void Dispose()
 			{
-				_disposed = true;
+				IsDisposed = true;
 				_propertyChanged.Dispose();
+			}
+
+			private bool IsDisposed
+			{
+				get => (_flags & Flags.Disposed) != 0;
+				set => SetFlag(value, Flags.Disposed);
+			}
+
+			private bool AllowPrivateMembers
+			{
+				get => (_flags & Flags.AllowPrivateMembers) != 0;
+				set => SetFlag(value, Flags.AllowPrivateMembers);
+			}
+
+			private bool IsDependencyPropertyValueSet
+			{
+				get => (_flags & Flags.IsDependencyPropertyValueSet) != 0;
+				set => SetFlag(value, Flags.IsDependencyPropertyValueSet);
+			}
+
+			internal bool IsDependencyProperty
+			{
+				get
+				{
+					if (!IsDependencyPropertyValueSet)
+					{
+						var isDP =
+							_dataContextType is not null
+							&& DependencyProperty.GetProperty(_dataContextType!, PropertyName) is not null;
+
+						SetFlag(isDP, Flags.IsDependencyProperty);
+
+						IsDependencyPropertyValueSet = true;
+
+						return isDP;
+					}
+					else
+					{
+						return (_flags & Flags.IsDependencyProperty) != 0;
+					}
+				}
+			}
+
+			private void SetFlag(bool value, Flags flag)
+			{
+				if (!value)
+				{
+					_flags &= ~flag;
+				}
+				else
+				{
+					_flags |= flag;
+				}
 			}
 
 			/// <summary>

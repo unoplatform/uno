@@ -76,8 +76,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					AssociatedFlyout = this,
 				};
 
-				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
-
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
 				child.Loaded += OnPresenterLoaded;
@@ -87,6 +85,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				InitializePopupPanel();
 
+				SynchronizePropertyToPopup(Popup.TemplatedParentProperty, TemplatedParent);
 				SynchronizePropertyToPopup(Popup.DataContextProperty, DataContext);
 				SynchronizePropertyToPopup(Popup.AllowFocusOnInteractionProperty, AllowFocusOnInteraction);
 				SynchronizePropertyToPopup(Popup.AllowFocusWhenDisabledProperty, AllowFocusWhenDisabled);

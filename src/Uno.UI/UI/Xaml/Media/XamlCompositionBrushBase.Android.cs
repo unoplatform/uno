@@ -5,10 +5,9 @@ namespace Windows.UI.Xaml.Media;
 
 public partial class XamlCompositionBrushBase : Brush
 {
-	protected override Paint GetPaintInner(Rect destinationRect)
+	private protected override void ApplyToPaintInner(Rect destinationRect, Paint paint)
 	{
 		// By default fallback to FallbackColor, unless overridden by a derived class.
-		var color = GetColorWithOpacity(FallbackColor);
-		return new Paint() { Color = color, AntiAlias = true };
+		paint.Color = FallbackColorWithOpacity;
 	}
 }

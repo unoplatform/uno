@@ -48,6 +48,7 @@ namespace Windows.Storage.Pickers
 
 			if (resultIntent?.Data != null)
 			{
+				ContextHelper.Current.GrantUriPermission(ContextHelper.Current.PackageName, resultIntent.Data, ActivityFlags.GrantWriteUriPermission);
 				return StorageFile.GetFromSafUri(resultIntent.Data);
 			}
 			else if (resultIntent?.ClipData != null && resultIntent.ClipData.ItemCount > 0)

@@ -6,7 +6,6 @@ uid: Uno.RaspberryPi.Intro
 
 ![Uno Hello World](images/00_uno-hello-world.jpg)
 
-
 ## Prerequisites
 
 For this guide, you'll need various pieces of hardware and an Azure Account;
@@ -28,15 +27,18 @@ For this guide, we'll install all of the requirements to build and run the appli
 
 There will be a series of steps involved in this;
 
-1. [Connect to your Raspberry Pi](#connect-to-your-raspberry-pi)
-2. [Update Raspberry Pi OS](#update-raspberry-pi-os)
-3. [Install .NET Framework](#install-dot-net-framework)
-4. [Install Uno Platform Templates](#install-uno-platform-templates)
-5. [Create a new Uno Solution](#create-a-new-uno-solution)
-6. [Give the SSH Session access to use the display](#give-the-ssh-session-access-to-use-the-display)
-7. [Build and run the application](#build-and-run-the-application)
-8. [Creating and Building on a PC](#creating-and-building-on-a-pc)
-9. [Wrap Up](#wrap-up)
+- [Getting Started with Uno Platform and the Raspberry Pi](#getting-started-with-uno-platform-and-the-raspberry-pi)
+  - [Prerequisites](#prerequisites)
+  - [What we'll be doing](#what-well-be-doing)
+  - [Connect to your Raspberry Pi](#connect-to-your-raspberry-pi)
+  - [Update Raspberry Pi OS](#update-raspberry-pi-os)
+  - [Install .NET](#install-net)
+  - [Install Uno Platform Templates](#install-uno-platform-templates)
+  - [Create a new Uno Solution](#create-a-new-uno-solution)
+  - [Give the SSH Session access to use the display](#give-the-ssh-session-access-to-use-the-display)
+  - [Build and run the application](#build-and-run-the-application)
+  - [Creating and Building on a PC](#creating-and-building-on-a-pc)
+  - [Wrap Up](#wrap-up)
 
 ## Connect to your Raspberry Pi
 
@@ -69,39 +71,47 @@ sudo apt full-upgrade
 
 Once those two commands have completed, restart your Pi using;
 
-`sudo reboot`
+```
+sudo reboot
+```
 
-## Install Dot NET Framework
+## Install .NET
 
-Now that our Pi is all up to date, we're ready to install the .NET Framework.
+Now that our Pi is all up to date, we're ready to install the .NET.
 
-Normally for the Pi, as there's no `apt-get install dotnet`, we'd need to go through a bunch of steps to get .NET Framework installed.
+Normally for the Pi, as there's no `apt-get install dotnet`, we'd need to go through a bunch of steps to get .NET installed.
 
-However, I've created a single line install script for .NET 5 on the Raspberry Pi.
+However, I've created a single line install script for .NET 7 on the Raspberry Pi.
 
 Run the following command;
 
-`wget -O - https://raw.githubusercontent.com/pjgpetecodes/dotnet5pi/master/install.sh | sudo bash`
+`wget -O - https://raw.githubusercontent.com/pjgpetecodes/dotnet7pi/main/install.sh | sudo bash`
 
-You can see the contents of this script [here](scripts/install.sh)
+You can see the contents of this .NET installation script [here](https://github.com/pjgpetecodes/dotnet7pi/blob/main/install.sh)
 
-![Install Dot NET 5](images/03_install-dot-net-5.gif)
+![Install .NET](images/03_install-dot-net.gif)
 
 Once the process has completed, go ahead and reboot your Pi again with;
 
-`sudo reboot`
+```
+sudo reboot
+```
 
-Once you're finished, you should be able to run the following to check your .NET framework version;
+Once you're finished, you should be able to run the following to check your .NET version;
 
-`dotnet --info`
+```
+dotnet --info
+```
 
-![Dot NET 5 Installed](images/04_dot-net-info.png)
+![.NET Installed](images/04_dot-net-info.png)
 
 ## Install Uno Platform Templates
 
 Next we can add the Uno Platform Project Templates to our .NET Installation;
 
-`dotnet new --install Uno.ProjectTemplates.Dotnet`
+```
+dotnet new --install Uno.Templates
+```
 
 ![Install Uno Templates](images/05_install-uno-templates.png)
 
@@ -113,11 +123,15 @@ Once the templates are installed, you can scroll back up and see the list of Uno
 
 Now we have the moving parts installed on our Pi, we can spin up a brand new Uno solution with the following command;
 
-`dotnet new UnoApp -o unoapp1 -ios=false -android=false -macos=false -wasm=false -skia-wpf=false -skia-tizen=false && cd unoapp1`
+```
+dotnet new unoapp -o HelloPi --preset=blank --platforms=gtk --platforms="linux-fb" && cd HelloPi
+```
 
 You should now find yourself in the solution directory for your new Uno App. If we have a look at the folder contents with;
 
-`dir`
+```
+dir
+```
 
 ![Uno Templates Installed](images/07_uno-app-directory.png)
 
@@ -129,14 +143,14 @@ Then we have four directories;
 
 | Directory | Purpose |
 | :--- | :--- |
-| `unoapp1` | Contains the main XAML page  |
-| `unoapp1.Skia.Gtk` | Contains the Linux / Raspberry Pi Version |
-| `unoapp1.Skia.Linux.FrameBuffer` | Provides Access to a Window Manager and the Cursor  |
-| `unoapp1.UWP` | Contains the Windows UWP version |
+| `HelloPi` | Contains the main XAML page  |
+| `HelloPi.Skia.Gtk` | Contains the Linux / Raspberry Pi Version |
+| `HelloPi.Skia.Linux.FrameBuffer` | Provides Access to a Window Manager and the Cursor  |
+| `HelloPi.UWP` | Contains the Windows UWP version |
 
-The directory we're interested in is the `unoapp1.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
+The directory we're interested in is the `HelloPi.Skia.Gtk` directory. This directory contains the project which we'll build and run on the Raspberry Pi.
 
-It actually includes the build outputs from the `unoapp1` and `unoapp1.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive into those in a bit more detail.
+It actually includes the build outputs from the `HelloPi` and `HelloPi.Skia.Linux.FrameBuffer` projects too, and in the next tutorial, we'll dive into those in a bit more detail.
 
 ## Give the SSH Session access to use the display
 
@@ -147,12 +161,14 @@ If we don't do this, we'll get an error like;
 ```
 Unable to init server: Could not connect: Connection refused
 
-(unoapp1.Skia.Gtk:18530): Gtk-WARNING **: 19:40:51.384: cannot open display:
+(HelloPi.Skia.Gtk:18530): Gtk-WARNING **: 19:40:51.384: cannot open display:
 ```
 
 We can sort this out using the following command;
 
-`export DISPLAY=:0`
+```
+export DISPLAY=:0
+```
 
 You won't get any response to this message, so don't worry.
 
@@ -164,11 +180,15 @@ We're now ready to run our application.
 
 Firstly, we need to navigate to the Skia.Gtk directory;
 
-`cd unoapp1.Skia.Gtk`
+```
+cd HelloPi.Skia.Gtk
+```
 
 We can now run our application with;
 
-`dotnet run`
+```
+dotnet run
+```
 
 This will take quite some time to run this command the first time as the Pi isn't as powerful as a desktop PC of course.
 
@@ -182,25 +202,36 @@ To be able to see your app running, you're going to need to either connect a Mon
 
 We've performed most of this on the Pi itself of course. However, you can actually create and build the whole application on your PC and copy the built files to your Pi using;
 
-`dotnet publish -r linux-arm -o bin\linux-arm\publish --no-self-contained`
+```
+dotnet publish -r linux-arm -o bin\linux-arm\publish --no-self-contained
+```
 
 You can copy the contents of the `bin\linux-arm\publish` directory to your Pi in whatever way takes your fancy.
 
 You then need to navigate to the directory where you've copied the files and make the main application executable with;
 
-`chmod +x unoapp1.Skia.Gtk`
+```
+chmod +x HelloPi.Skia.Gtk
+```
 
 Don't forget that, if you've just dialled in you'll need to give access to the Display;
 
-`export DISPLAY=:0`
+```
+export DISPLAY=:0
+```
 
 If you are using a 64-bit version of the Raspberry Pi OS, you need to run the following commands to be able to run 32-bit executable :
-`$ sudo apt-get install ia32-libs-multiarch`
-`$ sudo apt-get install ia32-libs`
+
+```
+$ sudo apt-get install ia32-libs-multiarch
+$ sudo apt-get install ia32-libs
+```
 
 You can then run the application with;
 
-`./unoapp1.Skia.Gtk`
+```
+./HelloPi.Skia.Gtk
+```
 
 I've created a blog post around how you can actually automate Building, Deploying and even debugging from your Windows machine using VS Code;
 

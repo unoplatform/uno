@@ -15,6 +15,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -24,6 +25,8 @@ namespace Windows.UI.Xaml.Documents
 		private readonly IFocusable _focusableHelper;
 #endif
 
+		private const string HyperlinkForegroundPressedKey = "HyperlinkForegroundPressed";
+		private const string HyperlinkForegroundPointerOverKey = "HyperlinkForegroundPointerOver";
 		private protected override Brush DefaultTextForegroundBrush => DefaultBrushes.HyperlinkForegroundBrush;
 
 		public
@@ -148,12 +151,35 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
+		#region Hover
+		private Pointer _hoveredPointer;
+		internal void SetPointerOver(Pointer pointer)
+		{
+			_hoveredPointer = pointer;
+			SetCurrentForeground();
+		}
+
+		internal bool ReleasePointerOver(Pointer pointer)
+		{
+			if (_hoveredPointer?.Equals(pointer) ?? false)
+			{
+				_hoveredPointer = null;
+				SetCurrentForeground();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		#endregion
+
 		#region Click
 		private Pointer _pressedPointer;
 		internal void SetPointerPressed(Pointer pointer)
 		{
 			_pressedPointer = pointer;
-			this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
+			SetCurrentForeground();
 		}
 
 		internal bool ReleasePointerPressed(Pointer pointer)
@@ -163,7 +189,7 @@ namespace Windows.UI.Xaml.Documents
 				OnClick();
 
 				_pressedPointer = null;
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				SetCurrentForeground();
 				return true;
 			}
 			else
@@ -177,7 +203,7 @@ namespace Windows.UI.Xaml.Documents
 			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
 				_pressedPointer = null;
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				SetCurrentForeground();
 				return true;
 			}
 			else
@@ -186,9 +212,11 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		internal void AbortAllPointerPressed()
+		internal void AbortAllPointerState()
 		{
-			this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+			_pressedPointer = null;
+			_hoveredPointer = null;
+			SetCurrentForeground();
 		}
 
 		internal void OnClick()
@@ -202,18 +230,25 @@ namespace Windows.UI.Xaml.Documents
 			}
 #endif
 		}
-
-		private Brush GetPressedForeground()
-		{
-#if XAMARIN
-			var normalColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
-			var pressedColor = Color.FromArgb((byte)(normalColor.A / 2), normalColor.R, normalColor.G, normalColor.B);
-			return new SolidColorBrush(pressedColor);
-#else
-			return null;
-#endif
-		}
 		#endregion
+
+		private void SetCurrentForeground()
+		{
+			if (_pressedPointer is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPressedKey, out var pressedBrush))
+			{
+				this.SetValue(ForegroundProperty, pressedBrush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else if (_hoveredPointer is { }
+				&& Application.Current.Resources.TryGetValue(HyperlinkForegroundPointerOverKey, out var hoveredBrush))
+			{
+				this.SetValue(ForegroundProperty, hoveredBrush, DependencyPropertyValuePrecedences.Animations);
+			}
+			else
+			{
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+			}
+		}
 
 #if !__WASM__
 		public FocusState FocusState

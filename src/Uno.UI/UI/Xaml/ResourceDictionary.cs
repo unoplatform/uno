@@ -272,17 +272,13 @@ namespace Windows.UI.Xaml
 			if (value is LazyInitializer lazyInitializer)
 			{
 				object newValue = null;
-#if !HAS_EXPENSIVE_TRYFINALLY
 				try
-#endif
 				{
 					_values.Remove(key); // Temporarily remove the key to make this method safely reentrant, if it's a framework- or application-level theme dictionary
 					ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
 					newValue = lazyInitializer.Initializer();
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					value = newValue;
 					_values[key] = newValue; // If Initializer threw an exception this will push null, to avoid running buggy initialization again and again (and avoid surfacing initializer to consumer code)

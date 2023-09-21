@@ -449,9 +449,7 @@ namespace Windows.UI.Xaml
 			{
 				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
 					{
@@ -505,9 +503,7 @@ namespace Windows.UI.Xaml
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					overrideDisposable?.Dispose();
 				}
@@ -1141,19 +1137,13 @@ namespace Windows.UI.Xaml
 
 				if (parentProvider != null)
 				{
-#if !HAS_EXPENSIVE_TRYFINALLY
-					// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-					// See https://github.com/dotnet/runtime/issues/50783 for more details.
 					try
-#endif
 					{
 						_registeringInheritedProperties = true;
 
 						_inheritedProperties.Disposable = RegisterInheritedProperties(parentProvider);
 					}
-#if !HAS_EXPENSIVE_TRYFINALLY
 					finally
-#endif
 					{
 						_registeringInheritedProperties = false;
 					}
@@ -1204,11 +1194,7 @@ namespace Windows.UI.Xaml
 
 		private void CleanupInheritedProperties()
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY
-			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
-#endif
 			{
 				_unregisteringInheritedProperties = true;
 
@@ -1233,9 +1219,7 @@ namespace Windows.UI.Xaml
 					SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_unregisteringInheritedProperties = false;
 			}
@@ -1371,16 +1355,12 @@ namespace Windows.UI.Xaml
 			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
 			if (binding.SetterBindingPath != null)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isSettingPersistentResourceBinding = binding.IsPersistent;
 					binding.SetterBindingPath.Value = convertedValue;
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isSettingPersistentResourceBinding = false;
 				}
@@ -1929,9 +1909,7 @@ namespace Windows.UI.Xaml
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				if (propagateUnregistering)
 				{
@@ -1940,9 +1918,7 @@ namespace Windows.UI.Xaml
 
 				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				if (propagateUnregistering)
 				{

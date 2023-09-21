@@ -514,6 +514,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\CompassTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\LightSensorTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3942,6 +3946,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Folder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_NavigationProperties.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -5530,6 +5538,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\LampTests.xaml.cs">
       <DependentUpon>LampTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\CompassTests.xaml.cs">
+      <DependentUpon>CompassTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\LightSensorTests.xaml.cs">
       <DependentUpon>LightSensorTests.xaml</DependentUpon>
@@ -8825,6 +8836,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Basic.xaml.cs">
       <DependentUpon>WebView2_Basic.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_Folder.xaml.cs">
+      <DependentUpon>WebView2_Folder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\WebView2Tests\WebView2_NavigationProperties.xaml.cs">
       <DependentUpon>WebView2_NavigationProperties.xaml</DependentUpon>
     </Compile>
@@ -9117,9 +9131,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Thumbnails\Getting_Started_with_Uno_Platform_for_Figma.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\UnoGalleryLogo_Dark.scale-100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\UnoGalleryLogo_Light.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Videos\Getting_Started_with_Uno_Platform_for_Figma.mp4">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Videos\Getting_Started_with_Uno_Platform_for_Figma.mp4" />
     <Content Include="$(MSBuildThisFileDirectory)Asset_GetFileFromApplicationUriAsync.xml" />
     <Content Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\BeginTime_MultipleAnimations_Expected.gif" />
     <EmbeddedResource Include="$(MSBuildThisFileDirectory)EmbeddedResources\LockScreen.png" />

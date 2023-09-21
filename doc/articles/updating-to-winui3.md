@@ -12,7 +12,7 @@ Uno Platform supports authoring apps using [WinUI 3's API](uwp-vs-winui3.md). Th
 
 - **NuGet updates:**
     - `Uno.UI` becomes `Uno.WinUI`
-    - `Uno.UI.RemoteControl` becomes `Uno.WinUI.RemoteControl`
+    - `Uno.UI.DevServer` becomes `Uno.WinUI.DevServer`
     - `Uno.UI.Lottie` becomes `Uno.WinUI.Lottie`
     - `Uno.UI.Foldable` becomes `Uno.WinUI.Foldable`
 - **String replacements:**

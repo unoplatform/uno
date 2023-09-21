@@ -74,7 +74,9 @@ namespace Uno.UI.RuntimeTests
 			await target.GetValue(ct, 3);
 			await Task.Yield();
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3);
+			// v3 is repeated because the target property is not a DependencyProperty
+			// and no deduplication happens in the binding engine.
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -147,7 +149,9 @@ namespace Uno.UI.RuntimeTests
 			await target.GetValue(ct, 3);
 			await Task.Yield();
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3);
+			// v3 is repeated because the target property is not a DependencyProperty
+			// and no deduplication happens in the binding engine.
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 
@@ -178,7 +182,9 @@ namespace Uno.UI.RuntimeTests
 			await target.GetValue(ct, 9);
 			await Task.Yield();
 
-			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3);
+			// v3 is repeated because the target property is not a DependencyProperty
+			// and no deduplication happens in the binding engine.
+			target.History.Should().BeEquivalentTo(v1, v2, v3, v1, v2, v3, v1, v2, v3, v3);
 			sut.State.Should().Be(Timeline.TimelineState.Filling);
 		}
 

@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
@@ -7,6 +9,11 @@ using Uno.Foundation.Logging;
 using System.Linq;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+#if __IOS__
+using View = UIKit.UIView;
+#elif __ANDROID__
+using Android.Views;
+#endif
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
@@ -76,7 +83,7 @@ partial class PopupPanel
 
 	protected virtual bool FullPlacementRequested { get; }
 
-	internal virtual FlyoutBase Flyout => null;
+	internal virtual FlyoutBase? Flyout => null;
 
 	private Size PlacementArrangeOverride(Popup popup, Size finalSize)
 	{
@@ -100,6 +107,14 @@ partial class PopupPanel
 
 		return finalSize;
 	}
+
+#if __ANDROID__ || __IOS__
+	/// <summary>
+	/// A native view to use as the anchor, in the case that the managed <see cref="AnchorControl"/> is a proxy that's not actually
+	/// included in the visual tree.
+	/// </summary>
+	protected virtual View? NativeAnchor => null;
+#endif
 
 	private Rect GetAnchorRect(Popup popup)
 	{
@@ -380,5 +395,5 @@ partial class PopupPanel
 
 	private Rect GetVisibleBounds() =>
 		WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly ?
-			XamlRoot.Bounds : ApplicationView.GetForCurrentView().VisibleBounds;
+			(XamlRoot?.Bounds ?? default) : ApplicationView.GetForCurrentView().VisibleBounds;
 }

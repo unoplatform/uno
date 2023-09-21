@@ -32,6 +32,7 @@
 			<_AllChildProjectItemsWithTargetPath Include="$(ProjectUnoPriFullPath)">
 				<TargetPath>$(ProjectUnoPriFileName)</TargetPath>
 				<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+				<PublishFolderType>None</PublishFolderType>
 			</_AllChildProjectItemsWithTargetPath>
 		</ItemGroup>
 
@@ -39,10 +40,13 @@
 	
 	<!--
 	Marker generation to ensure that assets are only copied for uno-enabled targets
+
+	The target needs also to run in the context of generating a nuget package after a build 
+	has already occurred. See https://github.com/unoplatform/uno/issues/13167#issuecomment-1677286706
 	-->
 	<Target Name="_UnoGeneratePriMarker"
 			Condition="'$(GenerateLibraryLayout)' == 'true' AND '$(SDKIdentifier)' != 'Windows'"
-			BeforeTargets="PrepareForRun"
+			BeforeTargets="PrepareForRun;GenerateNuSpec"
 			DependsOnTargets="_DefineUnoPriProperties">
 		
 		<WriteLinesToFile File="$(ProjectUnoPriFullPath)"
@@ -198,7 +202,7 @@
 	as nuget packages content.
 	-->
 	<Target Name="_UnoAssetsGetCopyToPublishDirectory"
-	BeforeTargets="GetCopyToPublishDirectoryItems">
+			BeforeTargets="GetCopyToPublishDirectoryItems">
 		<ItemGroup>
 			<ContentWithTargetPath Include="@(_TransitiveItemsToCopyToOutputDirectory)">
 				<TargetPath>%(TargetPath)</TargetPath>
