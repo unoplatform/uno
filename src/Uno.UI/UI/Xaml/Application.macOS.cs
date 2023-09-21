@@ -13,6 +13,7 @@ using Selector = ObjCRuntime.Selector;
 using Windows.UI.Core;
 using Uno.Foundation.Extensibility;
 using Uno.UI.Runtime.MacOS;
+using Uno.UI.Xaml.Controls;
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -30,7 +31,7 @@ namespace Microsoft.UI.Xaml
 
 		static partial void InitializePartialStatic()
 		{
-			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)((Microsoft.UI.Xaml.Window)host).NativeWindow));
+			ApiExtensibility.Register(typeof(IUnoCorePointerInputSource), host => new MacOSPointerInputSource((Uno.UI.Controls.Window)NativeWindowWrapper.Instance.NativeWindow));
 		}
 
 		partial void InitializePartial()
@@ -139,7 +140,7 @@ namespace Microsoft.UI.Xaml
 
 		private void OnEnteredBackground(NSNotification notification)
 		{
-			Microsoft.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
+			NativeWindowWrapper.Instance?.OnNativeVisibilityChanged(false);
 
 			RaiseEnteredBackground(null);
 		}
@@ -147,17 +148,17 @@ namespace Microsoft.UI.Xaml
 		private void OnLeavingBackground(NSNotification notification)
 		{
 			RaiseResuming();
-			RaiseLeavingBackground(() => Microsoft.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true));
+			RaiseLeavingBackground(() => NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true));
 		}
 
 		private void OnActivated(NSNotification notification)
 		{
-			Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 		}
 
 		private void OnDeactivated(NSNotification notification)
 		{
-			Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+			NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 		}
 	}
 }

@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Uno.UI.Runtime.MacOS;
 using ObjCRuntime;
 using NSDraggingInfo = AppKit.INSDraggingInfo;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls
 {
@@ -364,26 +365,26 @@ namespace Uno.UI.Controls
 
 			public override void DidMiniaturize(NSNotification notification)
 			{
-				Microsoft.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(false);
-				Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
-				Microsoft.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
+				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(false);
+				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				Windows.UI.Xaml.Application.Current?.RaiseEnteredBackground(null);
 			}
 
 			public override void DidDeminiaturize(NSNotification notification)
 			{
-				Microsoft.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
-				Microsoft.UI.Xaml.Window.Current?.OnNativeVisibilityChanged(true);
-				Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+				Windows.UI.Xaml.Application.Current?.RaiseLeavingBackground(null);
+				NativeWindowWrapper.Instance.OnNativeVisibilityChanged(true);
+				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
 
 			public override void DidBecomeKey(NSNotification notification)
 			{
-				Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.CodeActivated);
+				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.CodeActivated);
 			}
 
 			public override void DidResignKey(NSNotification notification)
 			{
-				Microsoft.UI.Xaml.Window.Current?.OnNativeActivated(CoreWindowActivationState.Deactivated);
+				NativeWindowWrapper.Instance.OnNativeActivated(CoreWindowActivationState.Deactivated);
 			}
 
 			public override async void DidBecomeMain(NSNotification notification)
@@ -416,6 +417,12 @@ namespace Uno.UI.Controls
 
 				// All prerequisites passed, can safely close.
 				return true;
+			}
+
+			public override void WillClose(NSNotification notification)
+			{
+				base.WillClose(notification);
+				NativeWindowWrapper.Instance.OnNativeClosed();
 			}
 		}
 	}
