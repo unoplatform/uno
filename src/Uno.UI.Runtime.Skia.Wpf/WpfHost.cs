@@ -74,6 +74,7 @@ public class WpfHost : IWpfApplicationHost
 		unoWpfWindow.Activated += MainWindow_Activated;
 		unoWpfWindow.UpdateWindowPropertiesFromPackage();
 		unoWpfWindow.UpdateWindowPropertiesFromApplicationView();
+		unoWpfWindow.UpdateWindowPropertiesFromCoreApplication();
 	}
 
 	internal event EventHandler? MainWindowShown;

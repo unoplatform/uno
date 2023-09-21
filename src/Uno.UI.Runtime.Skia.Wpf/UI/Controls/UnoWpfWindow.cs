@@ -3,6 +3,8 @@
 using System;
 using System.ComponentModel;
 using System.IO;
+using System.Windows;
+using Windows.ApplicationModel.Core;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
@@ -10,6 +12,7 @@ using Windows.UI.ViewManagement;
 using WinUI = Windows.UI.Xaml;
 using WinUIApplication = Windows.UI.Xaml.Application;
 using WpfWindow = System.Windows.Window;
+using System.Windows.Shell;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
@@ -93,6 +96,24 @@ internal class UnoWpfWindow : WpfWindow
 		Title = appView.Title;
 		MinWidth = appView.PreferredMinSize.Width;
 		MinHeight = appView.PreferredMinSize.Height;
+	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		if (coreApplicationView.TitleBar.ExtendViewIntoTitleBar)
+		{
+			WindowStyle = WindowStyle.None;
+			WindowChrome.SetWindowChrome(this, new WindowChrome()
+			{
+				GlassFrameThickness = new Thickness(-1),
+				UseAeroCaptionButtons = false
+			});
+
+			ResizeMode = ResizeMode.NoResize;
+
+			WindowChrome.SetIsHitTestVisibleInChrome((IInputElement)Content, true);
+		}
 	}
 
 	internal void UpdateWindowPropertiesFromPackage()
