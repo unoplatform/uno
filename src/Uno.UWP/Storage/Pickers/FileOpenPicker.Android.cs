@@ -20,6 +20,8 @@ namespace Windows.Storage.Pickers
 
 		private const string StorageIdentifierFormatString = "Uno.FileOpenPicker.{0}";
 
+		private Intent _helperIntent;
+
 		internal static bool TryHandleIntent(Intent intent, Result resultCode)
 		{
 			if (_currentFileOpenPickerRequest == null)
@@ -62,7 +64,7 @@ namespace Windows.Storage.Pickers
 
 			var action = Intent.ActionOpenDocument;
 
-			var intent = new Intent(action);
+			var intent = _helperIntent.Action == action ? _helperIntent : new Intent(action);
 			intent.PutExtra(Intent.ExtraAllowMultiple, multiple);
 
 			var settingName = string.Format(CultureInfo.InvariantCulture, StorageIdentifierFormatString, SettingsIdentifier);
@@ -198,6 +200,12 @@ namespace Windows.Storage.Pickers
 
 
 			return mimeTypes.ToArray();
+		}
+
+		internal IDisposable RegisterOnBeforeStartActivity(Intent intent)
+		{
+			_helperIntent = intent;
+			return _helperIntent;
 		}
 	}
 }

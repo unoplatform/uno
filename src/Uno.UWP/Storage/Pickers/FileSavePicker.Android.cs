@@ -15,6 +15,7 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileSavePicker
 	{
+		private Intent _helperIntent;
 		private async Task<StorageFile?> PickSaveFileTaskAsync(CancellationToken token)
 		{
 			if (!(ContextHelper.Current is Activity appActivity))
@@ -24,7 +25,7 @@ namespace Windows.Storage.Pickers
 
 			var action = Intent.ActionCreateDocument;
 
-			var intent = new Intent(action);
+			var intent = _helperIntent.Action == action ? _helperIntent : new Intent(action);
 			intent.SetType("*/*");
 			intent.AddCategory(Intent.CategoryOpenable);
 			var mimeTypes = GetMimeTypes();
@@ -85,6 +86,12 @@ namespace Windows.Storage.Pickers
 				.Select(extension => MimeTypeService.GetFromExtension(extension))
 				.Distinct()
 				.ToArray();
+		}
+
+		internal IDisposable RegisterOnBeforeStartActivity(Intent intent)
+		{
+			_helperIntent = intent;
+			return _helperIntent;
 		}
 
 		private const string XmlCorrectMimeToActionCreateDocument = "application/xhtml+xml";
