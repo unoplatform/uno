@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		/// <summary>
-		/// 
+		/// Gets or sets the current report interval for the barometer.
 		/// </summary>
 		public uint ReportInterval
 		{
