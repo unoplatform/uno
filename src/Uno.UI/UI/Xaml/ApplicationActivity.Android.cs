@@ -55,8 +55,6 @@ namespace Microsoft.UI.Xaml
 		{
 			Instance = this;
 
-			WinUIWindow = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow;
-
 			_inputPane = InputPane.GetForCurrentView();
 			_inputPane.Showing += OnInputPaneVisibilityChanged;
 			_inputPane.Hiding += OnInputPaneVisibilityChanged;
@@ -228,6 +226,10 @@ namespace Microsoft.UI.Xaml
 			{
 				Uno.UI.Composition.CompositorThread.Start(this);
 			}
+
+#if !HAS_UNO_WINUI
+			WinUIWindow = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow;
+#endif
 
 			base.OnCreate(bundle);
 			NativeWindowWrapper.Instance.OnActivityCreated();
