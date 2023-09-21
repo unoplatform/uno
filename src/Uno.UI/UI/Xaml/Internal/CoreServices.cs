@@ -50,12 +50,6 @@ namespace Uno.UI.Xaml.Core
 
 		public DependencyObject? VisualRoot => _mainVisualTree?.PublicRootVisual;
 
-		private void ResetCoreWindowVisualTree()
-		{
-			//TODO Uno: Implement.
-			_mainVisualTree = null;
-		}
-
 		internal void InitCoreWindowContentRoot()
 		{
 			if (_mainVisualTree is not null)
