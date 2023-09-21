@@ -1,6 +1,10 @@
 using System;
 
+#if HAS_UNO_WINUI
+namespace Microsoft.UI;
+#else
 namespace Windows.UI;
+#endif
 
 public partial struct WindowId : IEquatable<WindowId>
 {

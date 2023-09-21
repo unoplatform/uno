@@ -30,7 +30,7 @@ internal partial class XamlIsland
 	private void SetPublicRootVisual(
 		UIElement? rootVisual,
 		ScrollViewer? rootScrollViewer,
-		ContentPresenter? contentPresenter) => 
+		ContentPresenter? contentPresenter) =>
 		_contentRoot.VisualTree.SetPublicRootVisual(rootVisual, rootScrollViewer, contentPresenter);
 
 	/// <summary>
