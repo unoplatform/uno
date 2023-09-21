@@ -92,15 +92,15 @@ namespace Windows.Devices.Sensors
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
-				if (e is null)
+				if (e?.Values is not { } values)
 				{
 					return;
 				}
 
 				var gyrometerReading = new GyrometerReading(
-					e.Values![0] * SensorConstants.RadToDeg,
-					e.Values![1] * SensorConstants.RadToDeg,
-					e.Values![2] * SensorConstants.RadToDeg,
+					values[0] * SensorConstants.RadToDeg,
+					values[1] * SensorConstants.RadToDeg,
+					values[2] * SensorConstants.RadToDeg,
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp)
 				);
 				_gyrometer.OnReadingChanged(gyrometerReading);

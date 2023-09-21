@@ -89,15 +89,15 @@ namespace Windows.Devices.Sensors
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
-				if (e is null)
+				if (e?.Values is not { } values)
 				{
 					return;
 				}
 
 				var magnetometerReading = new MagnetometerReading(
-					e.Values![0],
-					e.Values![1],
-					e.Values![2],
+					values[0],
+					values[1],
+					values[2],
 					SensorStatusToAccuracy(),
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp)
 				);

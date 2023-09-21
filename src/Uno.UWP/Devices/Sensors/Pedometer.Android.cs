@@ -86,7 +86,7 @@ namespace Windows.Devices.Sensors
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
-				if (e is null)
+				if (e?.Values is not { } values)
 				{
 					return;
 				}
@@ -95,7 +95,7 @@ namespace Windows.Devices.Sensors
 				{
 					var lastStepTimestamp = SensorHelpers.TimestampToDateTimeOffset(e.Timestamp);
 					var timeDifference = lastStepTimestamp - SensorHelpers.SystemBootDateTimeOffset;
-					var currentSteps = Convert.ToInt32(e.Values![0]);
+					var currentSteps = Convert.ToInt32(values[0]);
 					var pedometerReading = new PedometerReading(
 						currentSteps,
 						timeDifference,

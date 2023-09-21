@@ -85,14 +85,19 @@ public partial class Compass
 
 	private void StopReadingChanged()
 	{
-		SensorHelpers.GetSensorManager().UnregisterListener(_listener, _accelerometer);
-		SensorHelpers.GetSensorManager().UnregisterListener(_listener, _magnetometer);
+		if (_accelerometer != null)
+		{
+			SensorHelpers.GetSensorManager().UnregisterListener(_listener, _accelerometer);
+			_accelerometer.Dispose();
+			_accelerometer = null;
+		}
 
-		_accelerometer!.Dispose();
-		_magnetometer!.Dispose();
-
-		_accelerometer = null;
-		_magnetometer = null;
+		if (_magnetometer != null)
+		{
+			SensorHelpers.GetSensorManager().UnregisterListener(_listener, _magnetometer);
+			_magnetometer.Dispose();
+			_magnetometer = null;
+		}
 
 		_listener?.Dispose();
 		_listener = null;

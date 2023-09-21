@@ -67,10 +67,10 @@ namespace Windows.Devices.Sensors
 				SensorHelpers.GetSensorManager().UnregisterListener(_listener, _sensor);
 				_listener.Dispose();
 				_listener = null;
-
-				_sensor?.Dispose();
-				_sensor = null;
 			}
+
+			_sensor?.Dispose();
+			_sensor = null;
 		}
 
 		private class BarometerListener : Java.Lang.Object, ISensorEventListener, IDisposable
@@ -88,13 +88,13 @@ namespace Windows.Devices.Sensors
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent? e)
 			{
-				if (e is null)
+				if (e?.Values is not { } values)
 				{
 					return;
 				}
 
 				var barometerReading = new BarometerReading(
-					e.Values![0],
+					values[0],
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 				_barometer._readingChanged?.Invoke(
 					_barometer,

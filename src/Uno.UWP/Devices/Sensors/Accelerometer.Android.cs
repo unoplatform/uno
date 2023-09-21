@@ -73,8 +73,11 @@ namespace Windows.Devices.Sensors
 				_readingChangedListener = null;
 			}
 
-			_accelerometer?.Dispose();
-			_accelerometer = null;
+			if (_shakeListener == null)
+			{
+				_accelerometer?.Dispose();
+				_accelerometer = null;
+			}
 		}
 
 		private void StartShaken()
@@ -98,8 +101,11 @@ namespace Windows.Devices.Sensors
 				_shakeListener = null;
 			}
 
-			_accelerometer?.Dispose();
-			_accelerometer = null;
+			if (_readingChangedListener == null)
+			{
+				_accelerometer?.Dispose();
+				_accelerometer = null;
+			}
 		}
 
 		class ReadingChangedListener : Java.Lang.Object, ISensorEventListener
@@ -117,15 +123,15 @@ namespace Windows.Devices.Sensors
 
 			public void OnSensorChanged(SensorEvent? e)
 			{
-				if (e is null)
+				if (e?.Values is not { } values)
 				{
 					return;
 				}
 
 				var reading = new AccelerometerReading(
-					e.Values![0] / SensorManager.GravityEarth * -1,
-					e.Values![1] / SensorManager.GravityEarth * -1,
-					e.Values![2] / SensorManager.GravityEarth * -1,
+					values[0] / SensorManager.GravityEarth * -1,
+					values[1] / SensorManager.GravityEarth * -1,
+					values[2] / SensorManager.GravityEarth * -1,
 					SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 
 				_accelerometer.OnReadingChanged(reading);
@@ -147,14 +153,14 @@ namespace Windows.Devices.Sensors
 
 			public void OnSensorChanged(SensorEvent? e)
 			{
-				if (e is null)
+				if (e?.Values is not { } values)
 				{
 					return;
 				}
 
-				var x = e.Values![0];
-				var y = e.Values![1];
-				var z = e.Values![2];
+				var x = values[0];
+				var y = values[1];
+				var z = values[2];
 
 				_shakeDetector.OnSensorChanged(x, y, z, SensorHelpers.TimestampToDateTimeOffset(e.Timestamp));
 			}
