@@ -114,14 +114,14 @@ jobs:
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-gtk-samples-app
+        artifactName: skia-gtk-samples-app-UWP
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
   - template: templates/gtk-install-macos.yml
 
   - script: |
-        cd $(build.sourcesdirectory)/build/skia-gtk-samples-app
+        cd $(build.sourcesdirectory)/build/$(artifactName)
         dotnet SamplesApp.Skia.Gtk.dll --auto-screenshots=$(build.artifactstagingdirectory)/screenshots/skia-gtk-screenshots
 
     displayName: Run Skia GTK Snapshot Tests
@@ -193,7 +193,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia GTK Runtime Tests'
+      testRunTitle: 'Skia GTK $(XAML_FLAVOR_BUILD) Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-gtk-runtime-tests-results.xml'
       failTaskOnFailedTests: true
@@ -212,7 +212,7 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-wpf-samples-app
+    SamplesAppArtifactName: skia-wpf-samples-app-UWP
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
@@ -255,13 +255,13 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: skia-wpf-samples-app
+    SamplesAppArtifactName: skia-wpf-samples-app-$(XAML_FLAVOR_BUILD)
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: skia-wpf-samples-app
+        artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
@@ -275,7 +275,7 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Skia WPF Runtime Tests'
+      testRunTitle: 'Skia WPF $(XAML_FLAVOR_BUILD) Runtime Tests'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/skia-wpf-runtime-tests-results.xml'
       failTaskOnFailedTests: true
@@ -290,13 +290,13 @@ jobs:
   dependsOn: Skia_Tests_Build
 
   variables:
-    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app
+    SamplesAppArtifactName: uno-islands-skia-wpf-samples-app-UWP
     SamplesAppArtifactPath: $(build.sourcesdirectory)/build/$(SamplesAppArtifactName)
 
   steps:
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: uno-islands-skia-wpf-samples-app
+        artifactName: $(SamplesAppArtifactName)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - template: templates/dotnet-install.yml
