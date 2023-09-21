@@ -11,6 +11,7 @@ using System.Diagnostics;
 using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
+using Windows.UI.Composition;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -93,7 +94,7 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
+				Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
 
 				if (WUX.Window.Current.Compositor.IsSoftwareRenderer is null)
 				{
