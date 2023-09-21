@@ -749,7 +749,7 @@ namespace Uno.UI.DataBinding
 				var currentType = DataContext!.GetType();
 
 				if (_dataContextType != currentType && _dataContextType != null)
-				{					
+				{
 					IsDependencyPropertyValueSet = false;
 					_valueGetter = null;
 					_precedenceSpecificGetter = null;
@@ -1059,7 +1059,7 @@ namespace Uno.UI.DataBinding
 					_flags |= flag;
 				}
 			}
-			
+
 			/// <summary>
 			/// Property changed value handler, used to avoid creating a delegate for processing
 			/// </summary>
