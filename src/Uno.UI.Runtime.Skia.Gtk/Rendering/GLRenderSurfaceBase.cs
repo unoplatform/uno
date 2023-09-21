@@ -11,6 +11,7 @@ using Microsoft.UI.Xaml.Controls;
 using Windows.Graphics.Display;
 using Gtk;
 using Uno.UI.Hosting;
+using Windows.UI.Composition;
 
 namespace Uno.UI.Runtime.Skia.Gtk
 {
@@ -139,7 +140,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 
 				if (_host.RootElement?.Visual is { } rootVisual)
 				{
-					WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
+					Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
 				}
 			}
 

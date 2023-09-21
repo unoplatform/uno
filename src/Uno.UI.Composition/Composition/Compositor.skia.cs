@@ -1,12 +1,8 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
-using System.Numerics;
 using SkiaSharp;
 using Windows.ApplicationModel.Core;
-using Windows.UI.Core;
-using Uno.Extensions;
 
 namespace Microsoft.UI.Composition;
 
@@ -33,7 +29,7 @@ public partial class Compositor
 		if (!_isDirty)
 		{
 			_isDirty = true;
-			// TODO: Adjust for multi window #8341 
+			// TODO: Adjust for multi window #8341, make dirty flag XamlRoot specific
 			CoreApplication.QueueInvalidateRender();
 		}
 	}
