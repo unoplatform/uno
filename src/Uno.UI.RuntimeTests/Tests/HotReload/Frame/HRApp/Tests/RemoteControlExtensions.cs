@@ -29,7 +29,7 @@ internal static class HotReloadHelper
 			originalText: originalText,
 			replacementText: replacementText);
 
-		if(message is null)
+		if (message is null)
 		{
 			return;
 		}
