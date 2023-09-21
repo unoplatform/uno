@@ -8,5 +8,6 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class NativeWindowFactory
 {
-	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot) => null;
+	//TODO: Allow multi-window support for Wasm
+	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot) => NativeWindowWrapper.Instance;
 }
