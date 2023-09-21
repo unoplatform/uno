@@ -28,6 +28,7 @@ using Windows.UI.Xaml.Media;
 using Newtonsoft.Json;
 using System.Text;
 using System.Security.Cryptography;
+using System.Collections.Immutable;
 
 #if HAS_UNO
 using Uno.Foundation.Logging;
@@ -782,6 +783,11 @@ namespace Uno.UI.Samples.Tests
 							}
 
 							object returnValue = null;
+							var methodArguments = testCase.Parameters;
+							if (test.PassFiltersAsFirstParameter)
+							{
+								methodArguments = methodArguments.ToImmutableArray().Insert(0, string.Join(";", config.Filters)).ToArray();
+							}
 							if (test.RunsOnUIThread)
 							{
 								var cts = new TaskCompletionSource<bool>();
@@ -813,7 +819,7 @@ namespace Uno.UI.Samples.Tests
 											await initializeReturnTask;
 										}
 
-										returnValue = test.Method.Invoke(instance, testCase.Parameters);
+										returnValue = test.Method.Invoke(instance, methodArguments);
 										sw.Stop();
 
 										cts.TrySetResult(true);
@@ -846,7 +852,7 @@ namespace Uno.UI.Samples.Tests
 									await initializeReturnTask;
 								}
 
-								returnValue = test.Method.Invoke(instance, testCase.Parameters);
+								returnValue = test.Method.Invoke(instance, methodArguments);
 								sw.Stop();
 							}
 

@@ -25,6 +25,9 @@ internal record UnitTestMethodInfo
 		RequiresFullWindow =
 			HasCustomAttribute<RequiresFullWindowAttribute>(method) ||
 			HasCustomAttribute<RequiresFullWindowAttribute>(method.DeclaringType);
+		PassFiltersAsFirstParameter =
+			HasCustomAttribute<FiltersAttribute>(method) ||
+			HasCustomAttribute<FiltersAttribute>(method.DeclaringType);
 		ExpectedException = method
 			.GetCustomAttributes<ExpectedExceptionAttribute>()
 			.SingleOrDefault()
@@ -59,6 +62,8 @@ internal record UnitTestMethodInfo
 	public bool RequiresFullWindow { get; }
 
 	public bool RunsOnUIThread { get; }
+
+	public bool PassFiltersAsFirstParameter { get; }
 
 	private bool HasCustomAttribute<T>(MemberInfo? testMethod)
 		=> testMethod?.GetCustomAttribute(typeof(T)) != null;
