@@ -807,7 +807,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			public static Branch ToPublicRoot(UIElement leaf)
 				=> new Branch(
-					leaf.XamlRoot?.VisualTree?.PublicRootVisual ?? throw new InvalidOperationException("Element must be part of a visual tree"), 
+					leaf.XamlRoot?.VisualTree?.PublicRootVisual ?? throw new InvalidOperationException("Element must be part of a visual tree"),
 					leaf); // TODO:MZ: Multi-window support
 
 			public Branch(UIElement root, UIElement leaf)
