@@ -11,6 +11,7 @@ partial class ContentManager
 	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
 	{
 		WindowManagerInterop.SetRootElement(rootVisual.HtmlId);
+		UpdateRootAttributes(rootVisual);
 	}
 
 	private void UpdateRootAttributes(UIElement rootElement)
