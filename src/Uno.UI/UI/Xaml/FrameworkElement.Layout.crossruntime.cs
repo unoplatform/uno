@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
@@ -330,6 +331,12 @@ namespace Windows.UI.Xaml
 
 				if (needToClipSlot || needToClipLocally)
 				{
+					if (this is Panel && RenderTransform is { } renderTransform)
+					{
+						clippedFrame.X -= renderTransform.MatrixCore.M31;
+						clippedFrame.Y -= renderTransform.MatrixCore.M32;
+					}
+
 					return clippedFrame;
 				}
 			}
