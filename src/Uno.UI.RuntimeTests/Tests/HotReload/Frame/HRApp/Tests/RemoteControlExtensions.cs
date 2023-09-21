@@ -4,6 +4,7 @@ using System;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
@@ -27,6 +28,11 @@ internal static class HotReloadHelper
 		var message = new T().CreateUpdateFileMessage(
 			originalText: originalText,
 			replacementText: replacementText);
+
+		if (message is null)
+		{
+			return;
+		}
 
 		await RemoteControlClient.Instance.SendMessage(message);
 

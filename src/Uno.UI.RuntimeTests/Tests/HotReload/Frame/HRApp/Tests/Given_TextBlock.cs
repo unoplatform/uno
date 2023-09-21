@@ -13,46 +13,45 @@ using Uno.UI.RuntimeTests.Tests.HotReload;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests
+namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+
+[TestClass]
+[RunsOnUIThread]
+public class Given_TextBlock : BaseTestClass
 {
-	[TestClass]
-	[RunsOnUIThread]
-	public class Given_TextBlock
+	public const string SimpleTextChange = " (changed)";
+
+	public const string FirstPageTextBlockOriginalText = "First page";
+	public const string FirstPageTextBlockChangedText = FirstPageTextBlockOriginalText + SimpleTextChange;
+
+	public const string SecondPageTextBlockOriginalText = "Second page";
+	public const string SecondPageTextBlockChangedText = SecondPageTextBlockOriginalText + SimpleTextChange;
+
+
+	/// <summary>
+	/// Checks that a simple change to a XAML element (change Text on TextBlock) will be applied to
+	/// the currently visible page:
+	/// Open Page1
+	/// Change Page1
+	/// </summary>
+	[TestMethod]
+	public async Task When_Changing_TextBlock()
 	{
-		public const string SimpleTextChange = " (changed)";
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
 
-		public const string FirstPageTextBlockOriginalText = "First page";
-		public const string FirstPageTextBlockChangedText = FirstPageTextBlockOriginalText + SimpleTextChange;
-
-		public const string SecondPageTextBlockOriginalText = "Second page";
-		public const string SecondPageTextBlockChangedText = SecondPageTextBlockOriginalText + SimpleTextChange;
-
-
-		/// <summary>
-		/// Checks that a simple change to a XAML element (change Text on TextBlock) will be applied to
-		/// the currently visible page:
-		/// Open Page1
-		/// Change Page1
-		/// </summary>
-		[TestMethod]
-		public async Task When_Changing_TextBlock()
+		UnitTestsUIContentHelper.Content = new ContentControl
 		{
-			var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
+			Content = new HR_Frame_Pages_Page1()
+		};
 
-			UnitTestsUIContentHelper.Content = new ContentControl
-			{
-				Content = new HR_Frame_Pages_Page1()
-			};
+		// Check the initial text of the TextBlock
+		await UnitTestsUIContentHelper.Content.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
 
-			// Check the initial text of the TextBlock
-			await UnitTestsUIContentHelper.Content.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
-
-			// Check the updated text of the TextBlock
-			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-				FirstPageTextBlockOriginalText,
-				FirstPageTextBlockChangedText,
-				() => UnitTestsUIContentHelper.Content.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText),
-				ct);
-		}
+		// Check the updated text of the TextBlock
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+			FirstPageTextBlockOriginalText,
+			FirstPageTextBlockChangedText,
+			() => UnitTestsUIContentHelper.Content.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText),
+			ct);
 	}
 }
