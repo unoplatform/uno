@@ -43,17 +43,14 @@ internal partial class ContentManager
 			return;
 		}
 
-#if __WASM__ // Only WASM currently has a root scroll viewer.
-		CreateRootScrollViewer(newContent);
-#endif
-
 		if (_isCoreWindowContent)
 		{
 			if (WinUICoreServices.Instance.MainVisualTree is not { } visualTree)
 			{
 				throw new InvalidOperationException("Main visual tree must be initialized");
 			}
-			visualTree.SetPublicRootVisual(newContent, RootScrollViewer, rootContentPresenter: null);
+			// TODO:MZ: Add RootScrollViewer everywhere
+			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
 			_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
 			if (_rootVisual?.XamlRoot is null)
@@ -68,25 +65,6 @@ internal partial class ContentManager
 	}
 
 	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual);
-
-#if __WASM__ // Only WASM currently has a root scroll viewer.
-	private void CreateRootScrollViewer(UIElement? content)
-	{
-		var rootBorder = new Border()
-		{
-			Child = content
-		};
-
-		RootScrollViewer = new Windows.UI.Xaml.Controls.ScrollViewer()
-		{
-			VerticalScrollBarVisibility = ScrollBarVisibility.Disabled,
-			HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled,
-			VerticalScrollMode = ScrollMode.Disabled,
-			HorizontalScrollMode = ScrollMode.Disabled,
-			Content = rootBorder
-		};
-	}
-#endif
 
 	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
 	{
