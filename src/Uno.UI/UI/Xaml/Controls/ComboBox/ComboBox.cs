@@ -478,14 +478,18 @@ namespace Windows.UI.Xaml.Controls
 				OnDropDownOpened(args);
 
 				RestoreSelectedItem();
+
+				var index = SelectedIndex;
+				index = index == -1 ? 0 : index;
+				if (ContainerFromIndex(index) is ComboBoxItem container)
+				{
+					container.Focus(FocusState.Programmatic);
+				}
 			}
 			else
 			{
 				OnDropDownClosed(args);
 				UpdateContentPresenter();
-
-				// Focus moves to ComboBox after item is selected.
-				Focus(FocusState.Programmatic);
 			}
 
 			UpdateDropDownState();
@@ -585,6 +589,14 @@ namespace Windows.UI.Xaml.Controls
 						return true;
 					}
 				}
+			}
+			else if (args.Key == VirtualKey.Tab)
+			{
+				if (_popup is { } p)
+				{
+					p.IsOpen = false;
+				}
+				// Don't handle. Let RootVisual deal with focus management
 			}
 			return false;
 		}
