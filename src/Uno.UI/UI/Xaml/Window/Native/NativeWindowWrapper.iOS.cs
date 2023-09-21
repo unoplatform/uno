@@ -36,7 +36,7 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 #endif
 	}
 
-	public bool Visible => throw new NotImplementedException();
+	public bool Visible { get; private set; }
 
 	public event EventHandler<Size> SizeChanged;
 	public event EventHandler<CoreWindowActivationState> ActivationChanged;
@@ -50,6 +50,7 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 	{
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
+		Visible = true;
 		Shown?.Invoke(this, EventArgs.Empty);
 	}
 
@@ -57,7 +58,11 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible) => VisibilityChanged?.Invoke(this, visible);
+	internal void OnNativeVisibilityChanged(bool visible)
+	{
+		Visible = visible;
+		VisibilityChanged?.Invoke(this, visible);
+	}
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationChanged?.Invoke(this, state);
 
