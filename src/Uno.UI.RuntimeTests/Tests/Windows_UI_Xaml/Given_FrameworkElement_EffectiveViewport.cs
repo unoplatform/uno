@@ -37,7 +37,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		{
 			get
 			{
-				var slot = LayoutInformation.GetLayoutSlot(Window.Current.Content);
+				var slot = LayoutInformation.GetLayoutSlot(Window.Current!.Content);
 				var bounds = new Rect(0, 0, slot.Width, slot.Height);
 
 				return bounds;
