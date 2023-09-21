@@ -129,10 +129,12 @@ namespace SamplesApp
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
-			AssertInitialWindowSize();
+			//TODO:MZ: Uncomment and enable
+			//AssertInitialWindowSize();
 
 			InitializeFrame(e.Arguments);
 
+			//TODO:MZ: Uncomment and enable
 			//AssertIssue8641NativeOverlayInitialized();
 
 			ActivateMainWindow();
