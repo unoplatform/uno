@@ -3,7 +3,7 @@
 namespace Microsoft.UI.Input;
 
 #if HAS_UNO_WINUI
-public 
+public
 #else
 internal
 #endif
