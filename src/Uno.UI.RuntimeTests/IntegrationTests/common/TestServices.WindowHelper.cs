@@ -123,8 +123,7 @@ namespace Private.Infrastructure
 
 			// Dispatcher is a separate property, as accessing CurrentTestWindow.Content when
 			// not on the UI thread will throw an exception in WinUI.
-			public static DispatcherQueue RootElementDispatcherQueue => UseActualWindowRoot ?
-				Window.Current.DispatcherQueue : EmbeddedTestRoot.control.DispatcherQueue;
+			public static DispatcherQueue RootElementDispatcherQueue => DispatcherQueue.Main;
 
 			internal static Page SetupSimulatedAppPage()
 			{
