@@ -164,6 +164,9 @@ namespace Microsoft.UI.Composition
 			=> new ExpressionAnimation(this) { Expression = expression };
 
 		internal void InvalidateRender(Visual visual) => InvalidateRenderPartial(visual);
+		public CompositionBackdropBrush CreateBackdropBrush()
+			=> new CompositionBackdropBrush();
+
 		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect)
 			=> new CompositionEffectFactory(graphicsEffect);
 

@@ -33,7 +33,18 @@ namespace Microsoft.UI.Composition
 
 					fill.UpdatePaint(fillPaint, geometry.Bounds);
 
-					session.Surface.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+					if (FillBrush is CompositionEffectBrush { HasBackdropBrushInput: true })
+					{
+						// workaround until SkiaSharp adds support for SaveLayerRec
+						session.Surface.Canvas.SaveLayer(fillPaint);
+						session.Surface.Canvas.Scale(1.0f / session.Surface.Canvas.TotalMatrix.ScaleX);
+						session.Surface.Canvas.DrawSurface(session.Surface, new(-session.Surface.Canvas.TotalMatrix.TransX, -session.Surface.Canvas.DeviceClipBounds.Top + session.Surface.Canvas.LocalClipBounds.Top));
+						session.Surface.Canvas.Restore();
+					}
+					else
+					{
+						session.Surface.Canvas.DrawPath(geometryWithTransformations, fillPaint);
+					}
 				}
 
 				if (StrokeBrush is { } stroke && StrokeThickness > 0)

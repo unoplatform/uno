@@ -51,10 +51,21 @@ namespace Microsoft.UI.Composition
 
 			_paint.ColorFilter = session.Filters.OpacityColorFilter;
 
-			session.Surface.Canvas.DrawRect(
-				new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),
-				_paint
-			);
+			if (Brush is CompositionEffectBrush { HasBackdropBrushInput: true })
+			{
+				// workaround until SkiaSharp adds support for SaveLayerRec
+				session.Surface.Canvas.SaveLayer(_paint);
+				session.Surface.Canvas.Scale(1.0f / session.Surface.Canvas.TotalMatrix.ScaleX);
+				session.Surface.Canvas.DrawSurface(session.Surface, new(-session.Surface.Canvas.TotalMatrix.TransX, -session.Surface.Canvas.DeviceClipBounds.Top + session.Surface.Canvas.LocalClipBounds.Top));
+				session.Surface.Canvas.Restore();
+			}
+			else
+			{
+				session.Surface.Canvas.DrawRect(
+					new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),
+					_paint
+				);
+			}
 		}
 	}
 }
