@@ -16,6 +16,7 @@ namespace Windows.UI.Xaml
 #if HAS_UNO_WINUI
 		public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; }
 #endif
+
 		object GetValue(DependencyProperty dp);
 
 		void SetValue(DependencyProperty dp, object value);
