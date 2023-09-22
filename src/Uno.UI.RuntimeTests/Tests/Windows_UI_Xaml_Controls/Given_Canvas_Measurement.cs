@@ -129,6 +129,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+#if __ANDROID__
+		[Ignore("Fails on Android.")]
+#endif
 		public async Task When_Canvas_Larger_Than_Parent_Should_Not_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))

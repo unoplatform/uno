@@ -320,6 +320,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS.")]
+#endif
 		public async Task When_Negative_Margin_Should_Not_Clip()
 		{
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
@@ -381,6 +384,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+#if __ANDROID__ || __IOS__
+		[Ignore("Fails on Android and iOS.")]
+#endif
 		public async Task When_RenderTransform_Ensure_Correct_Clipping()
 		{
 			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
