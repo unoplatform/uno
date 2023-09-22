@@ -83,6 +83,18 @@ namespace Private.Infrastructure
 #endif
 		}
 
+		internal static bool HasDispatcherAccess
+		{
+			get
+			{
+#if __WASM__
+				return false;
+#else
+				return WindowHelper.RootElementDispatcher.HasThreadAccess;
+#endif
+			}
+		}
+
 		internal static void EnsureInitialized() { }
 
 		public static void VERIFY_IS_NOT_NULL(object value)

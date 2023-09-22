@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests.Common
 			ScrollOrientation = o;
 			m_useLayoutRounding = useLayoutRounding;
 
-			var hasThreadAccess = TestServices.WindowHelper.RootElementDispatcherQueue.HasThreadAccess;
+			var hasThreadAccess = TestServices.HasDispatcherAccess;
 			if (useLayoutRounding && hasThreadAccess)
 			{
 				m_rawPixelsPerViewPixel = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
