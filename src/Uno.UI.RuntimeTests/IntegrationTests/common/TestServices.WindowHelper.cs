@@ -4,12 +4,10 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using System.Runtime.CompilerServices;
-using Windows.System;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Tests.Enterprise;
 using Windows.UI.Core;
 using MUXControlsTestApp.Utilities;
-using Uno.UI.RuntimeTests.Extensions;
 #if NETFX_CORE
 using Uno.UI.Extensions;
 #elif __IOS__
@@ -51,7 +49,7 @@ namespace Private.Infrastructure
 			public static UIElement WindowContent
 			{
 				get => UseActualWindowRoot
-					? (IsXamlIsland ? GetXamlIslandRootContentControl().Content as UIElement : XamlRoot.Content)
+					? (IsXamlIsland ? GetXamlIslandRootContentControl().Content as UIElement : CurrentTestWindow.Content)
 					: EmbeddedTestRoot.getContent?.Invoke();
 				internal set
 				{
@@ -119,11 +117,12 @@ namespace Private.Infrastructure
 			public static (UIElement control, Func<UIElement> getContent, Action<UIElement> setContent) EmbeddedTestRoot { get; set; }
 
 			public static UIElement RootElement => UseActualWindowRoot ?
-				XamlRoot.Content : EmbeddedTestRoot.control;
+				CurrentTestWindow.Content : EmbeddedTestRoot.control;
 
-			// Dispatcher is a separate property, as accessing CurrentTestWindow.Content when
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
 			// not on the UI thread will throw an exception in WinUI.
-			public static DispatcherQueue RootElementDispatcherQueue => DispatcherQueue.Main;
+			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
+				CurrentTestWindow.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
 
 			internal static Page SetupSimulatedAppPage()
 			{
@@ -140,8 +139,8 @@ namespace Private.Infrastructure
 
 			internal static async Task WaitForIdle()
 			{
-				await RootElementDispatcherQueue.EnqueueAsync(() => { /* Empty to wait for the idle queue to be reached */ }, DispatcherQueuePriority.Low);
-				await RootElementDispatcherQueue.EnqueueAsync(() => { /* Empty to wait for the idle queue to be reached */ }, DispatcherQueuePriority.Low);
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
+				await RootElementDispatcher.RunIdleAsync(_ => { /* Empty to wait for the idle queue to be reached */ });
 			}
 
 			/// <summary>
