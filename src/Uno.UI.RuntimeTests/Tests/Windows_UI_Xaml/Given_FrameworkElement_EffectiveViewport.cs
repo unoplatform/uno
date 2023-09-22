@@ -7,18 +7,18 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using Windows.UI;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Disposables;
 using Uno.Extensions;
+using Windows.Foundation;
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using static Private.Infrastructure.TestServices.WindowHelper;
 using static Windows.Foundation.Rect;
 using EffectiveViewportChangedEventArgs = Windows.UI.Xaml.EffectiveViewportChangedEventArgs;
@@ -46,9 +46,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #else
 		private Rect WindowBounds =>
 #if HAS_UNO
-			TestServices.WindowHelper.XamlRoot.Bounds ??
+			TestServices.WindowHelper.XamlRoot.Bounds;
+#else
+			Windows.UI.Xaml.Window.Current?.Bounds ?? default;
 #endif
-			Window.Current.Bounds;
 #endif
 
 		private Point RootLocation
