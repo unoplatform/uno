@@ -22,6 +22,10 @@ using Windows.UI;
 using Microsoft.UI.Xaml.Controls;
 #endif
 
+#if HAS_UNO
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+#endif
+
 namespace SampleControl.Presentation
 {
 	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
@@ -408,7 +412,7 @@ namespace SampleControl.Presentation
 				var updateReason = ResourceUpdateReason.ThemeResource;
 				Application.Current.Resources?.UpdateThemeBindings(updateReason);
 				Uno.UI.ResourceResolver.UpdateSystemThemeBindings(updateReason);
-				foreach (var root in CoreServices.Instance.ContentRootCoordinator.ContentRoots)
+				foreach (var root in WinUICoreServices.Instance.ContentRootCoordinator.ContentRoots)
 				{
 					Application.PropagateResourcesChanged(root.XamlRoot?.Content, updateReason);
 				}
