@@ -2,11 +2,14 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.UI.Xaml;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.UI.Xaml;
+
+#if !HAS_UNO_WINUI
 using Windows.UI.Xaml;
+#endif
 
 namespace Uno.UI.Xaml.Controls;
 
