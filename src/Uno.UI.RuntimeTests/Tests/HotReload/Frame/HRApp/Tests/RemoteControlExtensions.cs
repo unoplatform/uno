@@ -58,17 +58,12 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		try
-		{
-			await RemoteControlClient.Instance.WaitForConnection();
+		await RemoteControlClient.Instance.WaitForConnection();
 
-			await UpdateServerFile<T>(originalText, replacementText, ct);
+		await UpdateServerFile<T>(originalText, replacementText, ct);
 
-			await callback();
-		}
-		finally
-		{
-			await UpdateServerFile<T>(replacementText, originalText, ct);
-		}
+		await callback();
+
+		await UpdateServerFile<T>(replacementText, originalText, ct);
 	}
 }

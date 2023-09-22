@@ -9,6 +9,8 @@ using Uno.UI.Extensions;
 using System.Diagnostics;
 using DirectUI;
 using Windows.Devices.AllJoyn;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
 {
@@ -19,33 +21,53 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
 
 		public static async Task ValidateTextBlockOnCurrentPageText(this Windows.UI.Xaml.UIElement element, string expectedText, int index = 0, TimeSpan? timeout = null)
 		{
-			timeout ??= TimeSpan.FromSeconds(3);
-
-			if (element is FrameworkElement fe)
+			try
 			{
-				await UnitTestsUIContentHelper.WaitForLoaded(fe);
+				timeout ??= TimeSpan.FromSeconds(3);
 
-				var sw = Stopwatch.StartNew();
-
-				TextBlock? firstText = null;
-
-				while (sw.Elapsed < timeout)
+				if (element is FrameworkElement fe)
 				{
-					firstText = element
-						.EnumerateDescendants()
-						.OfType<TextBlock>()
-						.Skip(index)
-						.FirstOrDefault();
+					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Wait for loaded - {expectedText}");
+					await UnitTestsUIContentHelper.WaitForLoaded(fe);
+					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Wait for loaded completed - {expectedText}");
 
-					if (firstText?.Text == expectedText)
+
+					var sw = Stopwatch.StartNew();
+
+					TextBlock? firstText = null;
+
+					while (sw.Elapsed < timeout)
 					{
-						break;
+						firstText = element
+							.EnumerateDescendants()
+							.OfType<TextBlock>()
+							.Skip(index)
+							.FirstOrDefault();
+
+						if (firstText?.Text == expectedText)
+						{
+							typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Text matches - {expectedText}");
+							break;
+						}
+
+						await Task.Delay(100);
 					}
 
-					await Task.Delay(100);
-				}
+					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ After wait - Null: {firstText is null} Match: {expectedText == firstText?.Text} - {expectedText}");
+					Assert.IsNotNull(firstText);
 
-				Assert.AreEqual(expectedText, firstText?.Text);
+					Assert.AreEqual(expectedText, firstText?.Text);
+				}
+				typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ End-Try");
+			}
+			catch (Exception ex)
+			{
+				typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Catch - {ex.Message}");
+				throw;
+			}
+			finally
+			{
+				typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Finally");
 			}
 		}
 

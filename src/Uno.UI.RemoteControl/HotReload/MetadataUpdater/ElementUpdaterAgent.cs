@@ -107,6 +107,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 		_elementHandlerActions.Clear();
 		foreach (var assembly in sortedAssemblies)
 		{
+			_log($"Loading ElementMetatdataUpdateHandlerAttribute from {assembly.FullName}");
 			foreach (var attr in assembly.GetCustomAttributesData())
 			{
 				// Look up the attribute by name rather than by type. This would allow netstandard targeting libraries to
@@ -136,6 +137,9 @@ internal sealed class ElementUpdateAgent : IDisposable
 		Type handlerType)
 	{
 		bool methodFound = false;
+
+		_log($"Loading ElementMetatdataUpdateHandlerAttribute with constructor arguments {elementType.Name} and {handlerType.Name}");
+
 
 		var updateActions = new ElementUpdateHandlerActions();
 		_elementHandlerActions[elementType] = updateActions;
