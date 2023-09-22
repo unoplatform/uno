@@ -1,6 +1,5 @@
-﻿#if HAS_UNO_WINUI
-#nullable enable
-
+﻿#nullable enable
+#if HAS_UNO_WINUI
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
