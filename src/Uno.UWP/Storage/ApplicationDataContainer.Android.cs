@@ -27,7 +27,11 @@ namespace Windows.Storage
 			}
 
 			private ISharedPreferences CreatePreferences()
+#pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
 				=> PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext())!;
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore 618
 
 			public object this[string key]
 			{
