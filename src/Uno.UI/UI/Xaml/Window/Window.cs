@@ -201,7 +201,7 @@ public partial class Window
 	/// <summary>
 	/// Always null in Uno.WinUI.
 	/// </summary>
-	public CoreDispatcher Dispatcher => null;
+	public CoreDispatcher Dispatcher => null!; //TODO:MZ: Nullable!
 #else
 	/// <summary>
 	/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
