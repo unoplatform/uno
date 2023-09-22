@@ -304,13 +304,7 @@ namespace Windows.UI.Xaml
 
 			var firstArrangeDone = IsFirstArrangeDone;
 
-			if (Visibility == Visibility.Collapsed
-				// If the layout is clipped, and the arranged size is empty, we can skip arranging children
-				// This scenario is particularly important for the Canvas which always sets its desired size
-				// zero, even after measuring its children.
-				|| (firstArrangeDone
-					&& finalRect == default
-					&& (this is not ICustomClippingElement clipElement || clipElement.AllowClippingToLayoutSlot)))
+			if (Visibility == Visibility.Collapsed)
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
