@@ -21,7 +21,10 @@ using _View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Canvas : ICustomClippingElement
+	public partial class Canvas
+#if !__CROSSRUNTIME__
+		: ICustomClippingElement
+#endif
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -67,7 +70,11 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
+#if __CROSSRUNTIME__
+		private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin) => null;
+#else
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }
