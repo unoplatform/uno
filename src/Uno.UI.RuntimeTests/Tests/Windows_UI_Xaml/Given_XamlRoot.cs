@@ -28,8 +28,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			};
 			TestServices.WindowHelper.WindowContent = border;
 			var xamlRoot = await completionSource.Task;
-			Assert.AreEqual(Window.CurrentSafe!.Content, xamlRoot.Content);
-			Assert.AreEqual(Window.CurrentSafe!.Content!.RenderSize, xamlRoot.Size);
+			Assert.AreEqual(Window.Current.Content, xamlRoot.Content);
+			Assert.AreEqual(Window.Current.Content!.RenderSize, xamlRoot.Size);
 		}
 	}
 }
