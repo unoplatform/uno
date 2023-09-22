@@ -58,7 +58,12 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_UI_Toolkit
 				await WindowHelper.WaitForLoaded(inner);
 
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
-				var windowBounds = WindowHelper.XamlRoot.Bounds;
+				var windowBounds =
+#if HAS_UNO
+					WindowHelper.XamlRoot.Bounds;
+#else
+					Window.Current.Bounds;
+#endif
 				RectAssert.AreNotEqual(windowBounds, visibleBounds);
 
 				var containerBounds = container.GetOnScreenBounds();
