@@ -3,7 +3,10 @@
 using Microsoft.UI.Xaml;
 using Windows.Foundation;
 using Windows.UI.Core;
+
+#if !HAS_UNO_WINUI
 using Windows.UI.Xaml;
+#endif
 
 namespace Uno.UI.Xaml.Controls;
 

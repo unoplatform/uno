@@ -8,7 +8,7 @@ public
 #else
 internal
 #endif
-sealed class WindowEventArgs
+sealed partial class WindowEventArgs
 {
 	internal WindowEventArgs()
 	{
