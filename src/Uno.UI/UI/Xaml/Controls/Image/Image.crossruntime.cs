@@ -12,9 +12,8 @@ partial class Image : FrameworkElement
 
 	internal override bool IsViewHit() => Source != null || base.IsViewHit();
 
+#if !__NETSTD_REFERENCE__
 	private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
-	{
-		Console.WriteLine($"Clipping to {RenderSize}");
-		return new Rect(default, RenderSize);
-	}
+		=> new Rect(default, RenderSize);
+#endif
 }

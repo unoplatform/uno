@@ -70,9 +70,9 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-#if __CROSSRUNTIME__
+#if __SKIA__ || __WASM__
 		private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin) => null;
-#else
+#elif !__NETSTD_REFERENCE__
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 #endif
