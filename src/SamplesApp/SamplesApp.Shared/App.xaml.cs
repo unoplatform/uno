@@ -4,8 +4,10 @@ using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -16,6 +18,7 @@ using System.Globalization;
 using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
+using Uno;
 using Uno.UI.RuntimeTests.Extensions;
 
 #if !HAS_UNO
