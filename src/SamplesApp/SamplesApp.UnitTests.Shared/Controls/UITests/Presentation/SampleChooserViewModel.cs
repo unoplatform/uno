@@ -75,6 +75,8 @@ namespace SampleControl.Presentation
 		private static readonly Windows.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
 	new Windows.UI.Xaml.Media.SolidColorBrush(Windows.UI.Colors.White);
 
+		private CoreDispatcher _coreDispatcher;
+
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
 
@@ -93,6 +95,7 @@ namespace SampleControl.Presentation
 		{
 			Instance = this;
 			Owner = owner;
+			_coreDispatcher = owner.Dispatcher;
 
 #if TRACK_REFS
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
@@ -115,7 +118,7 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = Window.Current.DispatcherQueue.EnqueueAsync(
+			_ = owner.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
 				async () =>
 				{
 					// Initialize favorites and recents list as soon as possible.
@@ -212,7 +215,7 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.DispatcherQueue.EnqueueAsync(
+			await RunOnUIThreadAsync(
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -291,7 +294,7 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.DispatcherQueue.EnqueueAsync(
+				await RunOnUIThreadAsync(
 					async () =>
 					{
 						try
@@ -507,7 +510,7 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					_ = Window.Current.DispatcherQueue.EnqueueAsync(
+					_ = RunOnUIThreadAsync(
 						async () =>
 						{
 							CurrentSelectedSample = newContent;
@@ -572,7 +575,7 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			_ = Window.Current.DispatcherQueue.EnqueueAsync(
+			_ = RunOnUIThreadAsync(
 				async () =>
 				{
 					await Task.Delay(200);
@@ -821,7 +824,7 @@ description: {sample.Description}";
 		private async Task UpdateFavoriteForSample(CancellationToken ct, SampleChooserContent sample, bool isFavorite)
 		{
 			// Have to update favorite on UI thread for the INotifyPropertyChanged in SampleChooserControl
-			await Window.Current.DispatcherQueue.EnqueueAsync(() => sample.IsFavorite = isFavorite);
+			await RunOnUIThreadAsync(() => sample.IsFavorite = isFavorite);
 		}
 
 		/// <summary>
@@ -1220,6 +1223,11 @@ description: {sample.Description}";
 				await Task.Yield();
 			}
 #endif
+		}
+
+		private async Task RunOnUIThreadAsync(Action action)
+		{
+			await _coreDispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
 		}
 	}
 }
