@@ -9,10 +9,6 @@ public partial class Compass
 {
 	private CLLocationManager? _locationManager;
 
-	private Compass()
-	{
-	}
-
 	private static Compass? TryCreateInstance() => !CLLocationManager.HeadingAvailable ?
 			null :
 			new Compass();

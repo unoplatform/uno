@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+﻿#if !(__ANDROID__ || __IOS__)
+#nullable enable
+
 namespace Windows.Devices.Sensors
 {
 	public partial class Barometer
@@ -11,7 +13,7 @@ namespace Windows.Devices.Sensors
 		/// API not supported, always returns null.
 		/// </summary>
 		/// <returns>Null.</returns>
-		public static Barometer GetDefault() => null;
+		public static Barometer? GetDefault() => null;
 	}
 }
 #endif

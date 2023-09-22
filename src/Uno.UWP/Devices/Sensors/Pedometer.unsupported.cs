@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || __WASM__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
+﻿#if !(__IOS__ || __ANDROID__)
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;

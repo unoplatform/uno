@@ -17,6 +17,13 @@ public partial class Compass
 	private TypedEventHandler<Compass, CompassReadingChangedEventArgs> _readingChanged;
 
 	/// <summary>
+	/// Hides the public parameterless constructor
+	/// </summary>
+	private Compass()
+	{
+	}
+
+	/// <summary>
 	/// Returns the default compass.
 	/// </summary>
 	/// <returns>The default compass or null if no integrated compasses are found.</returns>
