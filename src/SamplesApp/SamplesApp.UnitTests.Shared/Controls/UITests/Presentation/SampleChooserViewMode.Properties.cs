@@ -10,7 +10,6 @@ using Windows.UI.Xaml;
 using Uno.UI.Common;
 using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
-using Uno.UI.Xaml.Core;
 
 #if XAMARIN || UNO_REFERENCE_API
 using Windows.UI.Xaml.Controls;
@@ -23,6 +22,7 @@ using Windows.UI.Xaml.Controls;
 #endif
 
 #if HAS_UNO
+using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 

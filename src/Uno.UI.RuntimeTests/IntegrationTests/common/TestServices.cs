@@ -56,7 +56,7 @@ namespace Private.Infrastructure
 			action();
 			return Task.CompletedTask;
 #else
-			await WindowHelper.RootElementDispatcherQueue.EnqueueAsync(() => action());
+			await WindowHelper.RootElementDispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
 #endif
 		}
 
