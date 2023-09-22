@@ -11,6 +11,13 @@ namespace Windows.UI.Composition
 {
 	public partial class CompositionEffectBrush : CompositionBrush
 	{
+		private bool _isCurrentInputBackdrop;
+
+		private SKRect _currentBounds;
+		private SKImageFilter? _filter;
+
+		internal bool HasBackdropBrushInput { get; private set; }
+
 		private SKImageFilter? GenerateEffectFilter(object effect, SKRect bounds)
 		{
 			// TODO: https://user-images.githubusercontent.com/34550324/264485558-d7ee5062-b0e0-4f6e-a8c7-0620ec561d3d.png
@@ -23,6 +30,15 @@ namespace Windows.UI.Composition
 						CompositionBrush? brush = GetSourceParameter(effectSourceParameter.Name);
 						if (brush is not null)
 						{
+							if (brush is CompositionBackdropBrush)
+							{
+								_isCurrentInputBackdrop = true;
+								HasBackdropBrushInput = true;
+								return null;
+							}
+
+							_isCurrentInputBackdrop = false;
+
 							SKPaint paint = new SKPaint() { IsAntialias = true, IsAutohinted = true, FilterQuality = SKFilterQuality.High };
 							brush.UpdatePaint(paint, bounds);
 
@@ -40,10 +56,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("BlurAmount", out uint sigmaProp, out _);
 										effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
@@ -63,10 +81,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -87,10 +107,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -111,10 +133,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Angle", out uint angleProp, out GraphicsEffectPropertyMapping angleMapping);
 										float angle = (float)effectInterop.GetProperty(angleProp);
@@ -143,10 +167,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 /* only the Color property is required */ && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										// Note: ColorHdr isn't supported by Composition (as of 10.0.25941.1000)
 										effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
@@ -223,16 +249,18 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource bg && effectInterop.GetSource(1) is IGraphicsEffectSource fg)
 									{
 										SKImageFilter? bgFilter = GenerateEffectFilter(bg, bounds);
-										if (bgFilter is null)
+										if (bgFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
 
 										SKImageFilter? fgFilter = GenerateEffectFilter(fg, bounds);
-										if (fgFilter is null)
+										if (fgFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
 										D2D1BlendEffectMode mode = (D2D1BlendEffectMode)effectInterop.GetProperty(modeProp);
@@ -253,10 +281,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() > 1 && effectInterop.GetPropertyCount() == 1)
 									{
 										SKImageFilter? currentFilter = GenerateEffectFilter(effectInterop.GetSource(0), bounds);
-										if (currentFilter is null)
+										if (currentFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
 										D2D1CompositeMode mode = (D2D1CompositeMode)effectInterop.GetProperty(modeProp);
@@ -272,10 +302,12 @@ namespace Windows.UI.Composition
 										{
 											SKImageFilter? nextFilter = GenerateEffectFilter(effectInterop.GetSource(idx), bounds);
 
-											if (nextFilter is not null)
+											if (nextFilter is not null && !_isCurrentInputBackdrop)
 											{
 												currentFilter = SKImageFilter.CreateBlendMode(skMode, currentFilter, nextFilter, new(bounds));
 											}
+
+											_isCurrentInputBackdrop = false;
 										}
 
 										return currentFilter;
@@ -301,10 +333,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Opacity", out uint opacityProp, out _);
 										float opacity = (float)effectInterop.GetProperty(opacityProp);
@@ -329,10 +363,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 /* only the Contrast property is required */ && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Contrast", out uint contrastProp, out _);
 										effectInterop.GetNamedPropertyMapping("ClampSource", out uint clampProp, out _);
@@ -452,16 +488,18 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource bg && effectInterop.GetSource(1) is IGraphicsEffectSource fg)
 									{
 										SKImageFilter? bgFilter = GenerateEffectFilter(bg, bounds);
-										if (bgFilter is null)
+										if (bgFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
 
 										SKImageFilter? fgFilter = GenerateEffectFilter(fg, bounds);
-										if (fgFilter is null)
+										if (fgFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										float? multiplyAmount = effectInterop.GetProperty(0) as float?;
 										float? source1Amount = effectInterop.GetProperty(1) as float?;
@@ -508,10 +546,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Exposure", out uint exposureProp, out _);
 
@@ -570,16 +610,18 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource sourceA && effectInterop.GetSource(1) is IGraphicsEffectSource sourceB)
 									{
 										SKImageFilter? sourceFilter1 = GenerateEffectFilter(sourceB, bounds);
-										if (sourceFilter1 is null)
+										if (sourceFilter1 is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
 
 										SKImageFilter? sourceFilter2 = GenerateEffectFilter(sourceA, bounds);
-										if (sourceFilter2 is null)
+										if (sourceFilter2 is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("CrossFade", out uint crossfadeProp, out _);
 
@@ -643,10 +685,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										return SKImageFilter.CreateColorFilter(SKColorFilter.CreateLumaColor(), sourceFilter, new(bounds));
 									}
@@ -658,10 +702,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 13 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("RedOffset", out uint redOffsetProp, out _);
 										effectInterop.GetNamedPropertyMapping("RedSlope", out uint redSlopeProp, out _);
@@ -855,10 +901,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 17 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("RedAmplitude", out uint redAmplitudeProp, out _);
 										effectInterop.GetNamedPropertyMapping("RedExponent", out uint redExponentProp, out _);
@@ -1073,10 +1121,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("TransformMatrix", out uint matrixProp, out _);
 										Matrix3x2? matrix = effectInterop.GetProperty(matrixProp) as Matrix3x2?;
@@ -1105,10 +1155,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("ExtendX", out uint modeXProp, out _);
 										effectInterop.GetNamedPropertyMapping("ExtendY", out uint modeYProp, out _);
@@ -1151,10 +1203,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Intensity", out uint intensityProp, out _);
 										float intensity = (float)effectInterop.GetProperty(intensityProp);
@@ -1179,10 +1233,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Temperature", out uint tempProp, out _);
 										effectInterop.GetNamedPropertyMapping("Tint", out uint tintProp, out _);
@@ -1211,10 +1267,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("ColorMatrix", out uint matrixProp, out _);
 										float[] matrix = (float[])effectInterop.GetProperty(matrixProp);
@@ -1238,10 +1296,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Azimuth", out uint azimuthProp, out GraphicsEffectPropertyMapping azimuthMapping);
 										effectInterop.GetNamedPropertyMapping("Elevation", out uint elevationProp, out GraphicsEffectPropertyMapping elevationMapping);
@@ -1275,10 +1335,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 5 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Azimuth", out uint azimuthProp, out GraphicsEffectPropertyMapping azimuthMapping);
 										effectInterop.GetNamedPropertyMapping("Elevation", out uint elevationProp, out GraphicsEffectPropertyMapping elevationMapping);
@@ -1315,10 +1377,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 6 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightTarget", out uint targetProp, out _);
@@ -1352,10 +1416,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 7 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightTarget", out uint targetProp, out _);
@@ -1391,10 +1457,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 3 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
@@ -1414,10 +1482,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() >= 4 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("LightPosition", out uint positionProp, out _);
 										effectInterop.GetNamedPropertyMapping("SpecularExponent", out uint exponentProp, out _);
@@ -1439,16 +1509,18 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 2 && effectInterop.GetSource(0) is IGraphicsEffectSource source && effectInterop.GetSource(1) is IGraphicsEffectSource mask)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
 
 										SKImageFilter? maskFilter = GenerateEffectFilter(mask, bounds);
-										if (maskFilter is null)
+										if (maskFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										return SKImageFilter.CreateBlendMode(SKBlendMode.SrcIn, maskFilter, sourceFilter, new(bounds));
 									}
@@ -1460,10 +1532,12 @@ namespace Windows.UI.Composition
 									if (effectInterop.GetSourceCount() == 1 && effectInterop.GetPropertyCount() == 1 && effectInterop.GetSource(0) is IGraphicsEffectSource source)
 									{
 										SKImageFilter? sourceFilter = GenerateEffectFilter(source, bounds);
-										if (sourceFilter is null)
+										if (sourceFilter is null && !_isCurrentInputBackdrop)
 										{
 											return null;
 										}
+
+										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Saturation", out uint saturationProp, out _);
 
@@ -1550,9 +1624,14 @@ namespace Windows.UI.Composition
 
 		internal override void UpdatePaint(SKPaint paint, SKRect bounds)
 		{
-			SKImageFilter filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
+			if (_currentBounds != bounds || _filter is null)
+			{
+				_filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
+				_currentBounds = bounds;
+			}
+
 			paint.Shader = null;
-			paint.ImageFilter = filter;
+			paint.ImageFilter = _filter;
 			paint.FilterQuality = SKFilterQuality.High;
 		}
 	}

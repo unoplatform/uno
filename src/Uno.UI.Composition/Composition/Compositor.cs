@@ -155,6 +155,9 @@ namespace Windows.UI.Composition
 		public CompositionNineGridBrush CreateNineGridBrush()
 			=> new CompositionNineGridBrush(this);
 
+		public CompositionBackdropBrush CreateBackdropBrush()
+			=> new CompositionBackdropBrush();
+
 		public CompositionEffectFactory CreateEffectFactory(IGraphicsEffect graphicsEffect)
 			=> new CompositionEffectFactory(graphicsEffect);
 

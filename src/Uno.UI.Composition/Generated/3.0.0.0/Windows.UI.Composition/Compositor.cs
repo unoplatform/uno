@@ -172,13 +172,7 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member CompositionAnimationGroup Compositor.CreateAnimationGroup() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionAnimationGroup%20Compositor.CreateAnimationGroup%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionBackdropBrush CreateBackdropBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionBackdropBrush Compositor.CreateBackdropBrush() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionBackdropBrush%20Compositor.CreateBackdropBrush%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateBackdropBrush()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.DistantLight CreateDistantLight()
