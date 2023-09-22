@@ -7,14 +7,14 @@ namespace Microsoft.UI.Xaml;
 
 public sealed partial class Window
 {
-	public Window() : this(false)
+	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
 	{
 	}
 
 	/// <summary>
 	/// Occurs when the window has closed.
 	/// </summary>
-	public event TypedEventHandler<object,WindowEventArgs> Closed
+	public event TypedEventHandler<object, WindowEventArgs> Closed
 	{
 		add => _windowImplementation.Closed += value;
 		remove => _windowImplementation.Closed -= value;
