@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Private.Infrastructure;
-using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UI.Xaml;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
