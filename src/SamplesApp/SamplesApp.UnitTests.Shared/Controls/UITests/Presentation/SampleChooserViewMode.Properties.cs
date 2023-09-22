@@ -26,6 +26,10 @@ using Microsoft.UI.Xaml.Controls;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 
+#if HAS_UNO
+using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+#endif
+
 namespace SampleControl.Presentation
 {
 	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
