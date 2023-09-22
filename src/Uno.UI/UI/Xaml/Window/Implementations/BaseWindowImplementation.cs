@@ -11,6 +11,12 @@ using Microsoft.UI.Xaml;
 using Windows.UI.Xaml;
 #endif
 
+#if HAS_UNO_WINUI
+using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+#else
+using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+#endif
+
 namespace Uno.UI.Xaml.Controls;
 
 abstract partial class BaseWindowImplementation : IWindowImplementation
