@@ -443,8 +443,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 #if __IOS__
 	private void ParseUriAndLauchMailto(Uri mailtoUri)
 	{
-		_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-			Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+		_ = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
 			async (ct) =>
 			{
 				try

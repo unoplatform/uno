@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml
 		{
 			if (
 #if __WASM__
-				Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported &&
+				Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported &&
 #endif
 				_inputManager.ContentRoot.Dispatcher is { } dispatcher &&
 				!dispatcher.HasThreadAccess)

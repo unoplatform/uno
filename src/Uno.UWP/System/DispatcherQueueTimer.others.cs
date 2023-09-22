@@ -25,13 +25,13 @@ partial class DispatcherQueueTimer
 	private void DispatchRaiseTick()
 	{
 #if __WASM__
-		if (!CoreDispatcher.IsThreadingSupported)
+		if (!NativeDispatcher.IsThreadingSupported)
 		{
 			RaiseTick();
 			return;
 		}
 #endif
-		_ = CoreDispatcher.Main.RunAsync(Uno.UI.Dispatching.CoreDispatcherPriority.Normal, () => RaiseTick());
+		NativeDispatcher.Main.Enqueue(() => RaiseTick());
 	}
 
 	private void StopNative()

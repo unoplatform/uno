@@ -21,6 +21,7 @@ using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
+using Uno.UI.Dispatching;
 
 
 #if HAS_UNO_WINUI
@@ -83,7 +84,7 @@ namespace Windows.UI.Xaml
 				_startInvoked = true;
 
 				SynchronizationContext.SetSynchronizationContext(
-					new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+					new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 				);
 
 				var isLoadEventsEnabled = !FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded;

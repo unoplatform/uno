@@ -35,7 +35,7 @@ namespace Uno.UI {
 
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
-			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
+			Uno.UI.Dispatching.NativeDispatcher.init(WindowManager.buildReadyPromise());
 
 			this.current = new WindowManager(containerElementId, loadingElementId);
 			MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
