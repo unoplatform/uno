@@ -90,6 +90,7 @@ stages:
   displayName: Tests - Skia
   dependsOn:
     - Setup
+    - convert_tree
 
   jobs:
   - template: .azure-devops-skia-tests.yml
