@@ -369,7 +369,7 @@ namespace Windows.UI.Xaml
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
 
-		public Visual GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
+		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
 
 #if DEBUG
 		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);
