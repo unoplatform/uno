@@ -39,8 +39,6 @@ namespace Windows.UI.Xaml
 
 		public double ActualHeight => GetActualHeight();
 
-		public int InvalidateMeasureCallCount { get; private set; }
-
 		private bool IsTopLevelXamlView() => false;
 
 		internal void SuspendRendering() => throw new NotSupportedException();
