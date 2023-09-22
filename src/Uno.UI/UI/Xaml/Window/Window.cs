@@ -29,7 +29,9 @@ namespace Windows.UI.Xaml;
 [ContentProperty(Name = nameof(Content))]
 public partial class Window
 {
+#if !HAS_UNO_WINUI
 	private static Window? _current;
+#endif
 
 	private readonly IWindowImplementation _windowImplementation;
 
