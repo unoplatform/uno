@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 		{
 		}
 #endif
-#if false || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || __IOS__ || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint ReportInterval
 		{
@@ -135,7 +135,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member Compass Compass.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compass%20Compass.GetDefault%28%29");
 		}
 #endif
-#if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || IS_UNIT_TESTS || false || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Compass, global::Windows.Devices.Sensors.CompassReadingChangedEventArgs> ReadingChanged
 		{

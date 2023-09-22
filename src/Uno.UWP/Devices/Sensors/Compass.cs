@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ || __WASM__
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
