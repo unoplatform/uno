@@ -13,8 +13,10 @@ using Windows.UI.Xaml;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
+using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
+using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
 #endif
 
 namespace Uno.UI.Xaml.Controls;
@@ -94,7 +96,9 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 #endif
 		XamlRoot?.NotifyChanged();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);
+#if !HAS_UNO_WINUI // CoreWindow has a different WindowSizeChangedEventArgs type, let's skip raising it completely.
 		CoreWindow?.OnSizeChanged(windowSizeChanged);
+#endif
 		SizeChanged?.Invoke(this, windowSizeChanged);
 	}
 
