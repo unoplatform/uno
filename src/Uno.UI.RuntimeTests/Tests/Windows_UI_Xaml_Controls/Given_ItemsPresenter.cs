@@ -25,6 +25,102 @@ public class Given_ItemsPresenter
 		0.0f;
 #endif
 
+	[TestMethod]
+	[RunsOnUIThread]
+	public async Task When_Vertical_With_Padding()
+	{
+		var grid = (Grid)XamlReader.Load(
+		"""
+		<Grid x:Name="g" Width="300" Height="300"
+			  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			  mc:Ignorable="d">
+			<Border BorderBrush="Bisque" BorderThickness="5">
+				<ItemsControl x:Name="ic">
+					<ItemsControl.Items>
+						<Border Width="30" Height="40" Margin="1">
+							<Ellipse Fill="Red" />
+						</Border>
+						<Border Width="30" Height="40" Margin="3">
+							<Ellipse Fill="Green" />
+						</Border>
+					</ItemsControl.Items>
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+					<ItemsControl.Template>
+						<ControlTemplate TargetType="ItemsControl">
+							<ItemsPresenter Padding="100">
+								<ItemsPresenter.Header>
+									<Border Width="30" Height="20">
+										<Ellipse Fill="Yellow" />
+									</Border>
+								</ItemsPresenter.Header>
+								<ItemsPresenter.Footer>
+									<Border Width="30" Height="20">
+										<Ellipse Fill="Pink" />
+									</Border>
+								</ItemsPresenter.Footer>
+							</ItemsPresenter>
+						</ControlTemplate>
+					</ItemsControl.Template>
+				</ItemsControl>
+			</Border>
+		</Grid>
+		""");
+
+		WindowHelper.WindowContent = grid;
+		await WindowHelper.WaitForLoaded(grid);
+		await WindowHelper.WaitForIdle();
+
+		var ic = (ItemsControl)grid.FindName("ic");
+		var ip = grid.FindVisualChildByType<ItemsPresenter>();
+		var header = (ContentControl)VisualTreeHelper.GetChild(ip, 0);
+		var footer = (ContentControl)VisualTreeHelper.GetChild(ip, 2);
+		var panel = grid.FindVisualChildByType<StackPanel>();
+		var item1 = (FrameworkElement)panel.Children[0];
+		var item2 = (FrameworkElement)panel.Children[1];
+
+		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 290, 290), Epsilon);
+		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 290, 290), Epsilon);
+		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(100, 100, 90, 20), Epsilon);
+		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(100, 270, 90, 20), Epsilon);
+		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(100, 120, 90, 150), Epsilon);
+		LayoutInformation.GetLayoutSlot(item1).Should().Be(new Rect(0, 0, 90, 42), Epsilon);
+		LayoutInformation.GetLayoutSlot(item2).Should().Be(new Rect(0, 42, 90, 46), Epsilon);
+
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Near).Should().BeNull();
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Far).Should().BeNull();
+		ip.GetIrregularSnapPoints(Orientation.Horizontal, SnapPointsAlignment.Center).Should().BeNull();
+
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
+		{
+			100,
+			120,
+			162,
+			208
+		}, Epsilon);
+
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
+		{
+			120,
+			162,
+			208,
+			228
+		}, Epsilon);
+
+		ip.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEquivalentToWithTolerance<float>(new float[]
+		{
+			110,
+			141,
+			185,
+			218
+		}, Epsilon);
+	}
 
 	[TestMethod]
 	[RunsOnUIThread]
