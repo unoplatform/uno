@@ -23,7 +23,7 @@ using System.Linq;
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 [TestClass]
-#if !__SKIA__
+#if !__SKIA__ || HAS_UNO_WINUI // Disabled due to #13757
 [Ignore("Hot reload tests are only available on Skia targets")]
 #endif
 internal partial class Given_HotReloadWorkspace
