@@ -12,11 +12,13 @@ using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
 
 #if HAS_UNO
@@ -314,6 +316,116 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(27, SUT.ActualHeight);
 			NumberAssert.Greater(SUT.ActualWidth, 0);
 #endif
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Negative_Margin_Should_Not_Clip()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			var yellowGrid = new Grid()
+			{
+				Margin = new Thickness(0, -4, -4, 0),
+				Background = new SolidColorBrush(Colors.Yellow),
+				VerticalAlignment = VerticalAlignment.Top,
+				HorizontalAlignment = HorizontalAlignment.Right,
+				Children =
+						{
+							new Ellipse
+							{
+								Height = 30,
+								Width = 30,
+								Fill = new SolidColorBrush(Colors.Red),
+							},
+						},
+			};
+
+			var parentGrid = new Grid()
+			{
+				Padding = new Thickness(10),
+				Children =
+				{
+					new Grid()
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Colors.Purple),
+						Children =
+						{
+							yellowGrid,
+						}
+					}
+				},
+			};
+
+			TestServices.WindowHelper.WindowContent = parentGrid;
+			await TestServices.WindowHelper.WaitForLoaded(parentGrid);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(parentGrid);
+			var bitmap = await RawBitmap.From(renderer, parentGrid);
+
+			var purpleBounds = ImageAssert.GetColorBounds(bitmap, Colors.Purple, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(10, 10), new Size(99, 99)), purpleBounds);
+
+			var yellowBounds = ImageAssert.GetColorBounds(bitmap, Colors.Yellow, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(84, 6), new Size(29, 29)), yellowBounds);
+
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(84, 6), new Size(29, 29)), redBounds);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_RenderTransform_Ensure_Correct_Clipping()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // System.NotImplementedException: RenderTargetBitmap is not supported on this platform.;
+			}
+
+			var grid = new Grid
+			{
+				Padding = new Thickness(100),
+				Children =
+				{
+					new Grid
+					{
+						Width = 100,
+						Height = 100,
+						Background = new SolidColorBrush(Colors.Blue),
+						Children =
+						{
+							new Ellipse
+							{
+								Fill = new SolidColorBrush(Colors.Red),
+								Width = 120,
+								Height = 120,
+								RenderTransform = new RotateTransform
+								{
+									Angle = 45,
+								},
+							},
+						},
+					}
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = grid;
+			await TestServices.WindowHelper.WaitForLoaded(grid);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(grid);
+			var bitmap = await RawBitmap.From(renderer, grid);
+
+			var blueBounds = ImageAssert.GetColorBounds(bitmap, Colors.Blue, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(100, 100), new Size(99, 99)), blueBounds);
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(41, 125), new Size(117, 114)), redBounds);
 		}
 
 #if __ANDROID__
