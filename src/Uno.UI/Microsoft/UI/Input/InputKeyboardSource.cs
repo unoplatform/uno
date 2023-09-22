@@ -1,6 +1,13 @@
 ﻿namespace Microsoft.UI.Input;
 
-public partial class InputKeyboardSource
+namespace Microsoft.UI.Input;
+
+#if HAS_UNO_WINUI
+public
+#else
+internal
+#endif
+partial class InputKeyboardSource
 {
 #if HAS_UNO_WINUI
 	public
