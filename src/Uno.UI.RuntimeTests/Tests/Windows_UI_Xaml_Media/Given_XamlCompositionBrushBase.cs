@@ -22,7 +22,7 @@ public class Given_XamlCompositionBrushBase
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
-	public async void When_CompositionBrush_Changes()
+	public async Task When_CompositionBrush_Changes()
 	{
 		var dpi = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
 

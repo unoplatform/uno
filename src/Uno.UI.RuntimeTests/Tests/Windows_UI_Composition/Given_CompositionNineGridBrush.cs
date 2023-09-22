@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
+using Uno.UI.Xaml;
 using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -20,7 +21,7 @@ public class Given_CompositionNineGridBrush
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
-	public async void When_Source_Changes()
+	public async Task When_Source_Changes()
 	{
 		var compositor = Window.Current.Compositor;
 
@@ -56,6 +57,8 @@ public class Given_CompositionNineGridBrush
 		online.Background = new TestBrush(onlineNineGridBrush);
 
 		var surface = Windows.UI.Xaml.Media.LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/test_image_100_100.png"));
+
+		bool loadCompleted = false;
 		surface.LoadCompleted += async (s, o) =>
 		{
 			if (o.Status == Windows.UI.Xaml.Media.LoadedImageSourceLoadStatus.Success)
@@ -70,12 +73,16 @@ public class Given_CompositionNineGridBrush
 
 				var result = await Render(onlineSource, online, offline);
 				await ImageAssert.AreEqualAsync(result.actual, result.expected);
+
+				loadCompleted = true;
 			}
 			else
 			{
 				Assert.Fail();
 			}
 		};
+
+		await TestServices.WindowHelper.WaitFor(() => loadCompleted);
 	}
 
 	private class TestBrush : Windows.UI.Xaml.Media.XamlCompositionBrushBase

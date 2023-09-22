@@ -20,7 +20,7 @@ public class Given_CompositionVisualSurface
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
-	public async void When_SourceVisual_Changes()
+	public async Task When_SourceVisual_Changes()
 	{
 		var compositor = Window.Current.Compositor;
 		var expected = new Image

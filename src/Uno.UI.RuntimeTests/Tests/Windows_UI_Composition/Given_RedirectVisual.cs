@@ -20,7 +20,7 @@ public class Given_RedirectVisual
 #if __SKIA__
 	[TestMethod]
 	[RunsOnUIThread]
-	public async void When_Source_Changes()
+	public async Task When_Source_Changes()
 	{
 		var compositor = Window.Current.Compositor;
 		var expected = new Image
