@@ -4,33 +4,32 @@
 
 using Windows.UI.Xaml.Media.Animation;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides data for the NavigationView.SelectionChanged event.
+/// </summary>
+public partial class NavigationViewSelectionChangedEventArgs
 {
 	/// <summary>
-	/// Provides data for the NavigationView.SelectionChanged event.
+	/// Gets the newly selected menu item.
 	/// </summary>
-	public partial class NavigationViewSelectionChangedEventArgs
-	{
-		/// <summary>
-		/// Gets the newly selected menu item.
-		/// </summary>
-		public object SelectedItem { get; internal set; }
+	public object SelectedItem { get; internal set; }
 
-		/// <summary>
-		/// Gets a value that indicates whether the SelectedItem
-		/// is the menu item for Settings.
-		/// </summary>
-		public bool IsSettingsSelected { get; internal set; }
+	/// <summary>
+	/// Gets a value that indicates whether the SelectedItem
+	/// is the menu item for Settings.
+	/// </summary>
+	public bool IsSettingsSelected { get; internal set; }
 
-		/// <summary>
-		/// Gets the container for the selected item.
-		/// </summary>
-		public NavigationViewItemBase SelectedItemContainer { get; internal set; }
+	/// <summary>
+	/// Gets the container for the selected item.
+	/// </summary>
+	public NavigationViewItemBase SelectedItemContainer { get; internal set; }
 
-		/// <summary>
-		/// Gets the navigation transition recommended for the direction
-		/// of the navigation.
-		/// </summary>
-		public NavigationTransitionInfo RecommendedNavigationTransitionInfo { get; internal set; }
-	}
+	/// <summary>
+	/// Gets the navigation transition recommended for the direction
+	/// of the navigation.
+	/// </summary>
+	public NavigationTransitionInfo RecommendedNavigationTransitionInfo { get; internal set; }
 }

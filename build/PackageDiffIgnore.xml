@@ -643,6 +643,7 @@
 			<Member fullName="Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
 			<Member fullName="Uno.UI.Runtime.Skia.GtkHost" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.GtkHost" />
 			<Member fullName="Uno.UI.Skia.Platform.WpfHost" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.WpfHost" />
+			<Member fullName="Uno.UI.Runtime.Skia.FrameBufferHost" reason="Renamed to Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost" />
 			<Member fullName="Uno.UI.Runtime.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType" />
 			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
 
@@ -881,6 +882,9 @@
 			<!-- END PopupRoot alignment -->
 
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase::ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
+			
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings::OpenPaneWidth()" reason="Does not exist in UWP" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings::OpenPaneWidthProperty()" reason="Does not exist in UWP" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
@@ -1674,6 +1678,10 @@
 
 			<Member fullName="Android.Graphics.Paint Windows.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
 			<Member fullName="Android.Graphics.Paint Microsoft.UI.Xaml.Media.Brush.GetPaintInner(Windows.Foundation.Rect destinationRect)" reason="Does not exist in UWP" />
+
+			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidth()" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneWidth(System.Double value)" reason="Does not exist in UWP" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
 		</Methods>
 	</IgnoreSet>
 	  <!--

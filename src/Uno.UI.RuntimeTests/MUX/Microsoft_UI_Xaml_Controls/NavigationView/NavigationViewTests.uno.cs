@@ -66,6 +66,23 @@ public partial class NavigationViewTests : MUXApiTestBase
 		finger.Press(chevron.GetAbsoluteBounds().GetCenter());
 		finger.Release();
 
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsFalse(mi1.IsExpanded);
+
+		var bounds = mi1.GetAbsoluteBounds().GetCenter();
+		finger.Press(bounds);
+		finger.Release();
+
+		await WindowHelper.WaitForIdle();
+
+		Assert.IsTrue(mi1.IsExpanded);
+
+		finger.Press(bounds);
+		finger.Release();
+
+		await WindowHelper.WaitForIdle();
+
 		Assert.IsFalse(mi1.IsExpanded);
 	}
 }

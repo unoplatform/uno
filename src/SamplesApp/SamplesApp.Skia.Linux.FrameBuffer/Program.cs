@@ -2,7 +2,7 @@
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
 using System.Threading;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
 

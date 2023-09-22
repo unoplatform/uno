@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// FlowLayoutAlgorithm.cpp, commit 7d1c1c7
+// FlowLayoutAlgorithm.cpp, commit 5116379
 
 using System;
 using System.Collections.Specialized;
@@ -95,9 +95,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 
-			m_elementManager.OnBeginMeasure(orientation);
+			if (!disableVirtualization)
+			{
+				m_elementManager.OnBeginMeasure(orientation);
+			}
 
-			int anchorIndex = GetAnchorIndex(availableSize, isWrapping, minItemSpacing, layoutId);
+			int anchorIndex = GetAnchorIndex(availableSize, isWrapping, minItemSpacing, disableVirtualization, layoutId);
 			Generate(GenerateDirection.Forward, anchorIndex, availableSize, minItemSpacing, lineSpacing, maxItemsPerLine, disableVirtualization, layoutId);
 			Generate(GenerateDirection.Backward, anchorIndex, availableSize, minItemSpacing, lineSpacing, maxItemsPerLine, disableVirtualization, layoutId);
 			if (isWrapping && IsReflowRequired)
@@ -172,16 +175,17 @@ namespace Microsoft.UI.Xaml.Controls
 		#region Measure related private methods
 
 		int GetAnchorIndex(
-		Size availableSize,
-		bool isWrapping,
-		double minItemSpacing,
-		string layoutId)
+			Size availableSize,
+			bool isWrapping,
+			double minItemSpacing,
+			bool disableVirtualization,
+			string layoutId)
 		{
 			int anchorIndex = -1;
 			Point anchorPosition = default;
 			var context = m_context;
 
-			if (!IsVirtualizingContext)
+			if (!IsVirtualizingContext || disableVirtualization)
 			{
 				// Non virtualizing host, start generating from the element 0
 				anchorIndex = context.ItemCount > 0 ? 0 : -1;

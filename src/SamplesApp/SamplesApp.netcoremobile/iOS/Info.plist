@@ -70,5 +70,7 @@
 	<true/>
 	<key>XSAppIconAssets</key>
 	<string>Assets.xcassets/iconapp.appiconset</string>
+	<key>ITSAppUsesNonExemptEncryption</key>
+	<false/>
 </dict>
 </plist>

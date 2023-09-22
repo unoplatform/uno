@@ -62,5 +62,16 @@ namespace Uno.UI.Helpers
 			MappedTypeToOrignalTypeMapings[mappedType] = originalType;
 			OriginalTypeToMappedType[originalType] = mappedType;
 		}
+
+		/// <summary>
+		/// This method is required for testing purposes. A typical test will navigate
+		/// to a specific page and expect that page (not a replacement type) as a starting 
+		/// point. For this to work, we need to reset the mappings.
+		/// </summary>
+		internal static void ClearMappings()
+		{
+			MappedTypeToOrignalTypeMapings.Clear();
+			OriginalTypeToMappedType.Clear();
+		}
 	}
 }

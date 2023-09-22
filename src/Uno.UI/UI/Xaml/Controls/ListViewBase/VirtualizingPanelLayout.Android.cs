@@ -753,7 +753,7 @@ namespace Windows.UI.Xaml.Controls
 
 			CorrectForEstimationErrors();
 
-			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
+			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");

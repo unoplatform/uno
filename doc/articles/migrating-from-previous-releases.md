@@ -116,9 +116,9 @@ This change has no effect on Controls behavior.
 #### Remove `FontWeightExtensions` and `CssProviderExtensions`
 `Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions` and `Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions` don't exist in UWP/WinUI. So they are made internal.
 
-#### Change `GtkHost` and `WpfHost` namespaces
+#### Change `GtkHost`, `WpfHost`, `FrameBufferHost` namespaces
 
-`GtkHost` and `WpfHost` are now `Uno.UI.Runtime.Skia.Gtk.GtkHost` and `Uno.UI.Runtime.Skia.Wpf.WpfHost` instead of `Uno.UI.Runtime.Skia.GtkHost` and `Uno.UI.Skia.Platform`, respectively.
+`GtkHost`, `WpfHost`, and `FrameBufferHost` are now `Uno.UI.Runtime.Skia.Gtk.GtkHost`, `Uno.UI.Runtime.Skia.Wpf.WpfHost`, and `Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost` instead of `Uno.UI.Runtime.Skia.GtkHost`, `Uno.UI.Skia.Platform.WpfHost`, and `Uno.UI.Runtime.Skia.FrameBufferHost`, respectively.
 
 #### Change `RenderSurfaceType` namespace
 There used two be two `RenderSurfaceType`s, `Uno.UI.Runtime.Skia.RenderSurfaceType` (for Gtk) and `Uno.UI.Skia.RenderSurfaceType` (for Skia). They are now `Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType` and `Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType` respectively.
