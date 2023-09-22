@@ -643,6 +643,7 @@
 			<Member fullName="Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions" reason="Made internal with renamed namespace to Gtk instead of GTK" />
 			<Member fullName="Uno.UI.Runtime.Skia.GtkHost" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.GtkHost" />
 			<Member fullName="Uno.UI.Skia.Platform.WpfHost" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.WpfHost" />
+			<Member fullName="Uno.UI.Runtime.Skia.FrameBufferHost" reason="Renamed to Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost" />
 			<Member fullName="Uno.UI.Runtime.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType" />
 			<Member fullName="Uno.UI.Skia.RenderSurfaceType" reason="Renamed to Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType" />
 
