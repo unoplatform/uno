@@ -1,9 +1,9 @@
-﻿#if HAS_UNO_WINUI
-#nullable enable
-
+﻿#nullable enable
+#if HAS_UNO_WINUI
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
-namespace Windows.UI.Xaml;
+namespace Microsoft.UI.Xaml;
 
 public sealed partial class Window
 {
