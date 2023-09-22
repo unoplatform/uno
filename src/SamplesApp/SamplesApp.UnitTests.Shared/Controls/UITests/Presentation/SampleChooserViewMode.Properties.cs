@@ -10,7 +10,6 @@ using Microsoft.UI.Xaml;
 using Uno.UI.Common;
 using Microsoft/* UWP don't rename */.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
-using Uno.UI.Xaml.Core;
 
 #if XAMARIN || UNO_REFERENCE_API
 using Microsoft.UI.Xaml.Controls;
@@ -27,6 +26,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 
 #if HAS_UNO
+using Uno.UI.Xaml.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 #endif
 

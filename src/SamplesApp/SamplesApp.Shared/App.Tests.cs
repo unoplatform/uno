@@ -66,7 +66,7 @@ partial class App
 
 			var testId = Interlocked.Increment(ref _testIdCounter);
 
-			_ = _mainWindow.DispatcherQueue.EnqueueAsync(
+			_ = _mainWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
 				async () =>
 				{
 					try

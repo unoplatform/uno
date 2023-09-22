@@ -76,6 +76,8 @@ namespace SampleControl.Presentation
 		private static readonly Microsoft.UI.Xaml.Media.SolidColorBrush _screenshotBackground =
 	new Microsoft.UI.Xaml.Media.SolidColorBrush(Microsoft.UI.Colors.White);
 
+		private CoreDispatcher _coreDispatcher;
+
 		// A static instance used during UI Testing automation
 		public static SampleChooserViewModel Instance { get; private set; }
 
@@ -94,6 +96,7 @@ namespace SampleControl.Presentation
 		{
 			Instance = this;
 			Owner = owner;
+			_coreDispatcher = owner.Dispatcher;
 
 #if TRACK_REFS
 			Uno.UI.DataBinding.BinderReferenceHolder.IsEnabled = true;
@@ -116,7 +119,6 @@ namespace SampleControl.Presentation
 				_log.Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
 			}
 
-			_ = _mainWindow.DispatcherQueue.EnqueueAsync(
 			_ = UnitTestDispatcherCompat
 				.From(SamplesApp.App.MainWindow.Content)
 				.RunAsync(
@@ -216,7 +218,7 @@ namespace SampleControl.Presentation
 
 		private async Task LogViewDump(CancellationToken ct)
 		{
-			await Window.Current.DispatcherQueue.EnqueueAsync(
+			await RunOnUIThreadAsync(
 				() =>
 				{
 					var currentContent = ContentPhone as Control;
@@ -295,7 +297,7 @@ namespace SampleControl.Presentation
 
 				await DumpOutputFolderName(ct, folderName);
 
-				await Window.Current.DispatcherQueue.EnqueueAsync(
+				await RunOnUIThreadAsync(
 					async () =>
 					{
 						try
@@ -525,8 +527,7 @@ namespace SampleControl.Presentation
 					{
 						return;
 					}
-					_ = Window.Current.DispatcherQueue.EnqueueAsync(
-					UnitTestDispatcherCompat
+					_ = UnitTestDispatcherCompat
 						.From(SamplesApp.App.MainWindow.Content)
 						.RunAsync(
 						async () =>
@@ -592,7 +593,7 @@ namespace SampleControl.Presentation
 
 			var search = SearchTerm;
 
-			_ = Window.Current.DispatcherQueue.EnqueueAsync(
+			_ = RunOnUIThreadAsync(
 				async () =>
 				{
 					await Task.Delay(200);
@@ -1236,6 +1237,11 @@ namespace SampleControl.Presentation
 				await Task.Yield();
 			}
 #endif
+		}
+
+		private async Task RunOnUIThreadAsync(Action action)
+		{
+			await _coreDispatcher.RunAsync(CoreDispatcherPriority.Normal, () => action());
 		}
 	}
 }
