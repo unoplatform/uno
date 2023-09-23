@@ -52,6 +52,11 @@ jobs:
       xCodeRoot: ${{ parameters.xCodeRoot }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
+  - bash: |
+      rm -f ${HOME}/Library/Preferences/Xamarin/Settings.plist
+    # https://github.com/actions/virtual-environments/issues/1932
+    displayName: Apply workaround for Azure Devops issue 1932
+
   - task: PowerShell@2
     displayName: 'Fill Rerun Variable'
     inputs:
