@@ -5,7 +5,6 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.System;
 using Windows.UI.Core;
 using Uno.UI.RuntimeTests.Extensions;
 using Private.Infrastructure;
