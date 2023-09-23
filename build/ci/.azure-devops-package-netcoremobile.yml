@@ -44,7 +44,7 @@ jobs:
     PublishTrimmed: false
 
     # Disable AOT for this job
-    AotAssemblies: false
+    RunAOTCompilation: false
 
     # Use pre-defined local nuget cache for restore
     NUGET_PACKAGES: 'C:\NugetPackages'
