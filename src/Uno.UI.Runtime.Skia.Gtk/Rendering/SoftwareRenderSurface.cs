@@ -96,9 +96,10 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			{
 				Compositor.GetSharedCompositor().RenderRootVisual(_surface, rootVisual);
 
-				if (WUX.Window.Current.Compositor.IsSoftwareRenderer is null)
+				// TODO: Adjust for multiwindow
+				if (WUX.Window.Current is { } window && window.Compositor.IsSoftwareRenderer is null)
 				{
-					WUX.Window.Current.Compositor.IsSoftwareRenderer = true;
+					window.Compositor.IsSoftwareRenderer = true;
 				}
 			}
 		}
