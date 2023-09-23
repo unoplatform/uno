@@ -151,10 +151,9 @@ stages:
 
 - stage: test_finalization
   displayName: Tests - Results
+  # This stage only run screenshot comparison, which is not relevant for unit tests and also uap_tests.
   dependsOn:
-    - unit_tests
     - wasm_tests
-    - uap_tests
     - ios_tests
     - android_tests
     - macos_tests
