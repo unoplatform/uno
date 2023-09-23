@@ -89,6 +89,7 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
+        !**\Uno.UI.Tests.ViewLibraryProps.dll
         !**\testhost*.*
         !**\Microsoft*.dll
 
