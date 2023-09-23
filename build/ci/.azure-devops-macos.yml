@@ -23,10 +23,6 @@ jobs:
 
   - template: templates/dotnet7-mobile-install-mac.yml
 
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}

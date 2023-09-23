@@ -18,10 +18,6 @@ jobs:
   - checkout: self
     clean: true
 
-  - template: templates/nuget-cache.yml
-    parameters:
-      nugetPackages: $(NUGET_PACKAGES)
-
   - template: templates/dotnet-install.yml
 
   - template: templates/gitversion.yml
