@@ -13,6 +13,12 @@ using Uno.UI.RuntimeTests.Extensions;
 using Uno.Logging;
 #endif
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
+
 namespace SamplesApp;
 
 partial class App
@@ -143,17 +149,17 @@ partial class App
 				throw new InvalidOperationException("Main window must be initialized before running screenshot tests");
 			}
 
-			var n = _mainWindow.DispatcherQueue.EnqueueAsync(
+			var n = _mainWindow.DispatcherQueue.TryEnqueue(
+				DispatcherQueuePriority.Low,
 				() =>
 				{
-					_ = _mainWindow.DispatcherQueue.EnqueueAsync(
+					_ = _mainWindow.DispatcherQueue.TryEnqueue(
 						async () =>
 						{
 							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
 						}
 					);
-				},
-				DispatcherQueuePriority.Low
+				}
 				);
 
 			return true;
