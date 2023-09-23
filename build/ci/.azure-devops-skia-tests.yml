@@ -8,8 +8,7 @@ jobs:
   displayName: 'Build Skia Samples App UI Tests'
   timeoutInMinutes: 60
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU

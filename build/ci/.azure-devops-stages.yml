@@ -97,7 +97,7 @@ stages:
     parameters:
       vmImage: '$(windows2022HostedVMImage)'
       vmMacImage: '$(macOSVMImage)'
-      poolName: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
   
 - stage: macos_tests
   displayName: Tests - macOS
