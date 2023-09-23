@@ -23,11 +23,12 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
 using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UIElement : DependencyObject
+	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
 		private ShapeVisual _visual;
 		private Rect _currentFinalRect;
@@ -367,6 +368,8 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
 
 #if DEBUG
 		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);

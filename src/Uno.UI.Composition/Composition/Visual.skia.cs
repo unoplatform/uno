@@ -104,7 +104,7 @@ public partial class Visual : global::Windows.UI.Composition.CompositionObject
 	/// Draws the content of this visual.
 	/// </summary>
 	/// <param name="session">The drawing session to use.</param>
-	private protected virtual void Draw(in DrawingSession session)
+	internal virtual void Draw(in DrawingSession session)
 	{
 	}
 
