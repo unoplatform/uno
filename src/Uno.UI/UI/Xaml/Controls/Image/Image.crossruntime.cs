@@ -1,5 +1,4 @@
-﻿using System;
-using Windows.Foundation;
+﻿using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls;
@@ -14,6 +13,6 @@ partial class Image : FrameworkElement
 
 #if !__NETSTD_REFERENCE__
 	private protected override Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
-		=> new Rect(default, RenderSize);
+		=> base.GetClipRect(needsClipToSlot, finalRect, maxSize, margin) ?? new Rect(default, RenderSize);
 #endif
 }
