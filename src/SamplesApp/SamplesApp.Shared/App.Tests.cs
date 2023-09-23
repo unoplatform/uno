@@ -14,6 +14,12 @@ using Private.Infrastructure;
 using Uno.Logging;
 #endif
 
+#if HAS_UNO_WINUI
+using Microsoft.UI.Dispatching;
+#else
+using Windows.System;
+#endif
+
 namespace SamplesApp;
 
 partial class App
@@ -155,8 +161,7 @@ partial class App
 							await SampleControl.Presentation.SampleChooserViewModel.Instance.RecordAllTests(CancellationToken.None, screenshotsPath, () => System.Environment.Exit(0));
 						}
 					);
-				},
-				DispatcherQueuePriority.Low
+				}
 				);
 
 			return true;
