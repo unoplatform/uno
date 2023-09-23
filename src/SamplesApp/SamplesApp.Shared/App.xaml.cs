@@ -183,6 +183,8 @@ namespace SamplesApp
 #else
 				Window.Current;
 #endif
+			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
+				_mainWindow;
 		}
 
 #if __IOS__
