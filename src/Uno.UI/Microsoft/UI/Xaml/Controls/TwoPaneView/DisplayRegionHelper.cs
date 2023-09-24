@@ -45,7 +45,7 @@ internal partial class DisplayRegionHelper
 			ApplicationView view = null;
 			try
 			{
-				view = ApplicationView.GetForCurrentView();
+				view = ApplicationView.IShouldntUseGetForCurrentView();
 			}
 			catch { }
 
