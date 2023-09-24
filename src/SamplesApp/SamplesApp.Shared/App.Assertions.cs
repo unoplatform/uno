@@ -9,6 +9,7 @@ using Windows.ApplicationModel;
 #if __SKIA__
 using Uno.Foundation.Extensibility;
 using Uno.UI.Xaml.Controls.Extensions;
+using Uno.UI.Xaml.Core;
 #endif
 
 namespace SamplesApp;
