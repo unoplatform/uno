@@ -91,7 +91,7 @@ namespace Uno.UI.Toolkit
 					return new();
 				}
 
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 				var bounds = window.Bounds;
 				var result = new Thickness
 				{
@@ -158,7 +158,7 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
-				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 
 				if (GetCurrentWindow() is Window window)
 				{
@@ -176,7 +176,7 @@ namespace Uno.UI.Toolkit
 		/// might arise transiently when the screen orientation changes.
 		/// </summary>
 		private static bool AreBoundsAspectRatiosConsistent
-			=> ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetCurrentWindow()?.Bounds.GetOrientation();
+			=> ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds.GetOrientation() == GetCurrentWindow()?.Bounds.GetOrientation();
 
 		public class VisibleBoundsDetails
 		{
@@ -206,9 +206,9 @@ namespace Uno.UI.Toolkit
 				owner.Loaded += (s, e) =>
 				{
 					UpdatePadding();
-					ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+					ApplicationView.IShouldntUseGetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
 				};
-				owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
+				owner.Unloaded += (s, e) => ApplicationView.IShouldntUseGetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
 			}
 
 			private FrameworkElement? Owner => _owner.Target as FrameworkElement;
