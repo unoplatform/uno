@@ -30,7 +30,7 @@ internal class UnoWpfWindow : WpfWindow
 		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
 		WpfManager.XamlRootMap.Register(xamlRoot, Host);
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		ApplicationView.IShouldntUseGetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }
@@ -59,7 +59,7 @@ internal class UnoWpfWindow : WpfWindow
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.GetForCurrentView();
+		var appView = ApplicationView.IShouldntUseGetForCurrentView();
 		Title = appView.Title;
 		MinWidth = appView.PreferredMinSize.Width;
 		MinHeight = appView.PreferredMinSize.Height;
@@ -99,9 +99,9 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		if (string.IsNullOrEmpty(ApplicationView.IShouldntUseGetForCurrentView().Title))
 		{
-			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			ApplicationView.IShouldntUseGetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 }

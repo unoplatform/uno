@@ -392,5 +392,5 @@ partial class PopupPanel
 
 	private Rect GetVisibleBounds() =>
 		WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly ?
-			(XamlRoot?.Bounds ?? default) : ApplicationView.GetForCurrentView().VisibleBounds;
+			(XamlRoot?.Bounds ?? default) : ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 }

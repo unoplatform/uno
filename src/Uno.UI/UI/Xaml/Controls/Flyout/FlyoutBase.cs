@@ -392,7 +392,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					}
 					else
 					{
-						visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+						visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 					}
 					positionValue = new Point(
 						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
@@ -593,7 +593,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				return xamlRoot.Bounds;
 			}
 
-			return ApplicationView.GetForCurrentView().VisibleBounds;
+			return ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 		}
 
 		internal void SetPresenterStyle(

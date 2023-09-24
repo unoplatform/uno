@@ -75,7 +75,7 @@ internal partial class PopupPanel : Panel
 			Rect visibleBounds;
 			if (XamlRoot is not { } xamlRoot || xamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
 			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 			}
 			else
 			{
@@ -218,7 +218,7 @@ internal partial class PopupPanel : Panel
 			}
 			else
 			{
-				visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+				visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 			}
 
 			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
