@@ -27,7 +27,13 @@ namespace Windows.UI.Xaml.Controls
 			var widthSpec = ViewHelper.SpecFromLogicalSize(slotSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(slotSize.Height);
 
-			var needsForceLayout = double.IsPositiveInfinity(slotSize.Width) || double.IsPositiveInfinity(slotSize.Height);
+			var needsForceLayout =
+				(double.IsPositiveInfinity(slotSize.Width) || double.IsPositiveInfinity(slotSize.Height)) ||
+				// uno12315: ensure the native measure cache is not used when measure-spec has changed since.
+				FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure && (
+					view.MeasuredWidth != ViewHelper.LogicalToPhysicalPixels(slotSize.Width) ||
+					view.MeasuredHeight != ViewHelper.LogicalToPhysicalPixels(slotSize.Height)
+				);
 
 			Uno.UI.Controls.BindableView.TryFastRequestLayout(view, needsForceLayout);
 
