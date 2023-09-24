@@ -225,7 +225,11 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			var disposables = new CompositeDisposable();
 
-			brush.OnConnectedInternal();
+			if (brush.CompositionBrush is null)
+			{
+				brush.OnConnectedInternal();
+			}
+
 			var compositionBrush = brush.CompositionBrush ?? compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
 
 			brush.RegisterDisposablePropertyChangedCallback(

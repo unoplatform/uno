@@ -6,7 +6,7 @@ namespace Microsoft.UI.Xaml.Media
 	/// Paints an area with a semi-transparent material that uses multiple
 	/// effects including blur and a noise texture.
 	/// </summary>
-	/// <remarks>Currently uses blurring only in Uno.</remarks>
+	/// <remarks>Currently uses blurring only in non-Skia Uno heads.</remarks>
 	public partial class AcrylicBrush : XamlCompositionBrushBase
 	{
 		/// <summary>
@@ -116,9 +116,9 @@ namespace Microsoft.UI.Xaml.Media
 				typeof(AcrylicBrush),
 				new FrameworkPropertyMetadata(
 					// Due to the fact that additional subviews are added to acrylic owner views
-					// on non-WASM platforms, we default to using fallback where not completely safe
+					// on platforms other than WASM and Skia, we default to using fallback where not completely safe
 					// When this is explicitly set to false, Acrylic will be displayed
-#if __WASM__
+#if __WASM__ || __SKIA__
 					false
 #else
 					true

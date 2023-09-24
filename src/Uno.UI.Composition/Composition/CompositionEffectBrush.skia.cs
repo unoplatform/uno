@@ -18,6 +18,8 @@ namespace Windows.UI.Composition
 
 		internal bool HasBackdropBrushInput { get; private set; }
 
+		internal bool UseBlurPadding { get; set; }
+
 		private SKImageFilter? GenerateEffectFilter(object effect, SKRect bounds)
 		{
 			// TODO: https://user-images.githubusercontent.com/34550324/264485558-d7ee5062-b0e0-4f6e-a8c7-0620ec561d3d.png
@@ -71,7 +73,7 @@ namespace Windows.UI.Composition
 										_ = (uint)effectInterop.GetProperty(optProp); // TODO
 										_ = (uint)effectInterop.GetProperty(borderProp); // TODO
 
-										return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, new(bounds));
+										return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, new(UseBlurPadding ? bounds with { Left = -100, Top = -100, Right = bounds.Right + 100, Bottom = bounds.Bottom + 100 } : bounds));
 									}
 
 									return null;
