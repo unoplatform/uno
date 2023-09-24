@@ -29,7 +29,7 @@ internal class FrameBufferWindowWrapper : INativeWindowWrapper
 
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
-		ApplicationView.GetForCurrentView()?.SetVisibleBounds(new Rect(default, newWindowSize));
+		ApplicationView.IShouldntUseGetForCurrentView()?.SetVisibleBounds(new Rect(default, newWindowSize));
 
 		if (_previousWindowSize != newWindowSize)
 		{

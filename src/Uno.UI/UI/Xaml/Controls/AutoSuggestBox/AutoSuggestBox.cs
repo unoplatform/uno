@@ -185,7 +185,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					windowRect = ApplicationView.GetForCurrentView().VisibleBounds;
+					windowRect = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 				}
 
 				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;

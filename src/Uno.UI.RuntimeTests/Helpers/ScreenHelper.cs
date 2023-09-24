@@ -27,7 +27,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			return null;
 #else
 			var fullBounds = Window.Current.Bounds;
-			var applicationView = ApplicationView.GetForCurrentView();
+			var applicationView = ApplicationView.IShouldntUseGetForCurrentView();
 			if (skipIfHasNativeUnsafeArea && fullBounds != applicationView.VisibleBounds)
 			{
 				return null;
@@ -43,7 +43,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 		public static Thickness GetUnsafeArea()
 		{
 			var windowBounds = Window.Current.Bounds;
-			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+			var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 			return new Thickness(
 				visibleBounds.Left - windowBounds.Left,
 				visibleBounds.Top - windowBounds.Top,

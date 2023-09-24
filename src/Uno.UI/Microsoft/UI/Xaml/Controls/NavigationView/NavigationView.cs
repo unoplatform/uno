@@ -5259,7 +5259,7 @@ public partial class NavigationView : ContentControl
 		// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 		if (m_applicationView == null)
 		{
-			m_applicationView = ApplicationView.GetForCurrentView();
+			m_applicationView = ApplicationView.IShouldntUseGetForCurrentView();
 		}
 
 		// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings

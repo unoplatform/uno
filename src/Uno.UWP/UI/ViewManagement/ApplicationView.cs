@@ -88,7 +88,11 @@ namespace Windows.UI.ViewManagement
 
 		public global::Windows.UI.ViewManagement.ApplicationViewTitleBar TitleBar => _titleBar;
 
-		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView() => _instance; //TODO:MZ: Does not make sense in WinAppSDK
+		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView() => _instance;
+
+		internal static global::Windows.UI.ViewManagement.ApplicationView IShouldntUseGetForCurrentView() => _instance; //TODO:MZ: Does not make sense in WinAppSDK
+
+		internal static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentViewSafe() => _instance; //TODO:MZ: Does not make sense in WinAppSDK
 
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;

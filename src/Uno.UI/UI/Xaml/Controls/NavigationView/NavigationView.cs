@@ -3386,7 +3386,7 @@ namespace Windows.UI.Xaml.Controls
 			// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 			if (m_applicationView == null)
 			{
-				m_applicationView = ApplicationView.GetForCurrentView();
+				m_applicationView = ApplicationView.IShouldntUseGetForCurrentView();
 			}
 
 			// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings
@@ -3395,7 +3395,7 @@ namespace Windows.UI.Xaml.Controls
 				m_uiViewSettings = UIViewSettings.GetForCurrentView();
 			}
 
-			bool isFullScreenMode = m_applicationView.IsFullScreenMode;
+			bool isFullScreenMode = m_applicationView?.IsFullScreenMode ?? false;
 			bool isTabletMode = m_uiViewSettings.UserInteractionMode == UserInteractionMode.Touch;
 
 			return isFullScreenMode || isTabletMode;

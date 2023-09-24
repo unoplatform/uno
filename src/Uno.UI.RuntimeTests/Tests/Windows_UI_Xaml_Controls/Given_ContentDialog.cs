@@ -360,7 +360,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					var originalButtonBounds = SUT.PrimaryButton.GetOnScreenBounds();
 					var originalBackgroundBounds = SUT.BackgroundElement.GetOnScreenBounds();
-					var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+					var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 					RectAssert.Contains(visibleBounds, originalButtonBounds);
 
 					await FocusTextBoxWithSoftKeyboard(tb);

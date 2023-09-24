@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// **************************************************************************************
 			var childRect = ((FrameworkElement)_popup.Child).GetAbsoluteBoundsRect();
 			var rect = new Rect(point, childRect.Size);
-			var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
+			var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
 
 			if (rect.Right > visibleBounds.Right)
 			{

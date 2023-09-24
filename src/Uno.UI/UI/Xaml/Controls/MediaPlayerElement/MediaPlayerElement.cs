@@ -153,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 				if (showFullscreen)
 				{
-					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+					ApplicationView.IShouldntUseGetForCurrentView().TryEnterFullScreenMode();
 
 #if __ANDROID__
 					this.RemoveView(_layoutRoot);
@@ -168,7 +168,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					ApplicationView.GetForCurrentView().ExitFullScreenMode();
+					ApplicationView.IShouldntUseGetForCurrentView().ExitFullScreenMode();
 #if !__NETSTD_REFERENCE__ && !IS_UNIT_TESTS
 					XamlRoot?.VisualTree?.FullWindowMediaRoot?.DisplayFullscreen(null);
 #endif

@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return availableSize;
 			}
 
-			var visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+			var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().TrueVisibleBounds;
 
 			if (availableSize.Width > visibleBounds.Width)
 			{
@@ -86,7 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				visibleBounds = ApplicationView.GetForCurrentView().TrueVisibleBounds;
+				visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().TrueVisibleBounds;
 			}
 
 			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
