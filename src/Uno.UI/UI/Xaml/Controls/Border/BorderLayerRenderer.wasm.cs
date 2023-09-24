@@ -107,7 +107,6 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				var outer = cornerRadius.GetRadii(element.RenderSize, thickness).Outer;
 				WindowManagerInterop.SetCornerRadius(element.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
-				element.SetStyle("overflow", "hidden"); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 			}
 		}
 
