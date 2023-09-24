@@ -1,10 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Effects;
 using Windows.Graphics.Effects;
@@ -43,25 +39,30 @@ namespace Windows.UI.Xaml.Media
 			_noiseBrush = null;
 		}
 
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			switch (args.Property.Name)
+			{
+				case nameof(TintColor):
+				case nameof(TintOpacity):
+				case nameof(TintLuminosityOpacity):
+				case nameof(AlwaysUseFallback):
+					UpdateAcrylicBrush();
+					break;
+				default:
+					return;
+			}
+		}
+
 		private void UpdateAcrylicBrush()
 		{
 			if (_isConnected)
 			{
-				//const bool isUsingWindowAcrylic = BackgroundSource() == winrt::AcrylicBackgroundSource::HostBackdrop;
-				bool shouldUseOpaqueBrush = GetEffectiveTintColor().A == 255;
+				//bool isUsingWindowAcrylic = BackgroundSource == AcrylicBackgroundSource.HostBackdrop;
+				//bool shouldUseOpaqueBrush = GetEffectiveTintColor().A == 255;
 
-				// Covers cases where we need a new brush (no animations)
-				if (_brush is null ||                              // Create brush for the first time
-					(_isUsingOpaqueBrush != shouldUseOpaqueBrush)) // Recreate the brush with (or without) the opaque tint optimization
-				{
-					CreateAcrylicBrush(false /* useCrossFadeEffect */, true /* forceCreateAcrylicBrush */);
-				}
-				// Covers cases were we switch between fallback and acrylic (needs animations)
-				else
-				{
-					// TODO: Currently we are doing the same as above because Composition animations aren't implemented yet
-					CreateAcrylicBrush(false /* useCrossFadeEffect */, true /* forceCreateAcrylicBrush */);
-				}
+				// TODO: Currently we are force recreating the brush even if it exists because Composition animations aren't implemented yet
+				CreateAcrylicBrush(false /* useCrossFadeEffect */, true /* forceCreateAcrylicBrush */);
 			}
 		}
 
@@ -95,17 +96,18 @@ namespace Windows.UI.Xaml.Media
 
 				// Set noise image source
 				acrylicBrush.SetSourceParameter("Noise", _noiseBrush);
-				//acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
 
+				// TODO: Composition properties aren't supported yet
+				/*acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
 				if (!_isUsingOpaqueBrush)
 				{
-					//acrylicBrush.Properties.InsertColor("LuminosityColor.Color", luminosityColor);
+					acrylicBrush.Properties.InsertColor("LuminosityColor.Color", luminosityColor);
 				}
 
 				if (useCrossFadeEffect)
 				{
-					//acrylicBrush.Properties.InsertColor("FallbackColor.Color", FallbackColor);
-				}
+					acrylicBrush.Properties.InsertColor("FallbackColor.Color", FallbackColor);
+				}*/
 
 				acrylicBrush.UseBlurPadding = true;
 
@@ -222,7 +224,6 @@ namespace Windows.UI.Xaml.Media
 
 			// Create noise with alpha:
 			CompositionEffectSourceParameter noiseEffectSourceParameter = new("Noise");
-			// OpacityEffect applied to wrapped noise
 			var noiseOpacityEffect = new OpacityEffect();
 			noiseOpacityEffect.Name = "NoiseOpacity";
 			noiseOpacityEffect.Opacity = _noiseOpacity;
@@ -241,7 +242,7 @@ namespace Windows.UI.Xaml.Media
 				fallbackColorEffect.Name = "FallbackColor";
 				fallbackColorEffect.Color = initialFallbackColor;
 
-				// CrossFade with the fallback color. Weight = 0 means full fallback, 1 means full acrylic.
+				// CrossFade with the fallback color. CrossFade = 0 means full fallback, 1 means full acrylic.
 				var fadeInOutEffect = new CrossFadeEffect();
 				fadeInOutEffect.Name = "FadeInOut";
 				fadeInOutEffect.Source1 = fallbackColorEffect;
@@ -273,7 +274,7 @@ namespace Windows.UI.Xaml.Media
 
 			// Luminosity blend
 			var luminosityBlendEffect = new BlendEffect();
-			// NOTE: There is currently a bug where the names of BlendEffectMode::Luminosity and BlendEffectMode::Color are flipped.
+			// NOTE: There is currently a bug in Windows where the names of BlendEffectMode::Luminosity and BlendEffectMode::Color are flipped.
 			// This should be changed to Luminosity when/if the bug is fixed.
 			luminosityBlendEffect.Mode = BlendEffectMode.Color;
 			luminosityBlendEffect.Background = blurredSource;
@@ -283,7 +284,7 @@ namespace Windows.UI.Xaml.Media
 
 			// Color blend
 			var colorBlendEffect = new BlendEffect();
-			// NOTE: There is currently a bug where the names of BlendEffectMode::Luminosity and BlendEffectMode::Color are flipped.
+			// NOTE: There is currently a bug in Windows where the names of BlendEffectMode::Luminosity and BlendEffectMode::Color are flipped.
 			// This should be changed to Color when/if the bug is fixed.
 			colorBlendEffect.Mode = BlendEffectMode.Luminosity;
 			colorBlendEffect.Background = luminosityBlendEffect;
