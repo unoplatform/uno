@@ -247,12 +247,6 @@
 
 		<_IsUnitTests>false</_IsUnitTests>
 		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
-
-		<_IsNetCore>false</_IsNetCore>
-		<_IsNetCore Condition="'$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
-
-		<_IsNetStd>false</_IsNetStd>
-		<_IsNetStd Condition="$(_IsNetCore) and !$(_IsUnitTests)">true</_IsNetStd>
 	</PropertyGroup>
 
 	<PropertyGroup>

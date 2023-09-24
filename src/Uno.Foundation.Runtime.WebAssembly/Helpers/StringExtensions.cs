@@ -30,14 +30,7 @@ namespace Uno.Foundation.Runtime.WebAssembly.Helpers
 			return !string.IsNullOrWhiteSpace(instance);
 		}
 
-#if !DISABLE_GENERATED_REGEX
 		[GeneratedRegex("^", RegexOptions.Multiline)]
-#endif
 		private static partial Regex NewLineFast();
-
-#if DISABLE_GENERATED_REGEX
-		private static partial Regex NewLineFast()
-			=> new Regex("^", RegexOptions.Multiline);
-#endif
 	}
 }
