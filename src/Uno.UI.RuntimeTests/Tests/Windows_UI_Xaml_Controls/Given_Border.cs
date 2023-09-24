@@ -564,6 +564,96 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_CornerRadius()
+		{
+			var case1A = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				CornerRadius = new(200),
+				Background = new SolidColorBrush(Colors.Red),
+			};
+
+			var case1B = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				CornerRadius = new(100),
+				Background = new SolidColorBrush(Colors.Red),
+			};
+
+			var case1Expected = new Ellipse()
+			{
+				Width = 200,
+				Height = 100,
+				Fill = new SolidColorBrush(Colors.Red),
+			};
+
+			var case2 = new Border()
+			{
+				Width = 200,
+				Height = 100,
+				CornerRadius = new(200, 0, 0, 0),
+				Background = new SolidColorBrush(Colors.Blue),
+			};
+
+			var case2Expected = new Grid()
+			{
+				Width = 200,
+				Height = 100,
+				Children =
+				{
+					new Ellipse()
+					{
+						Width = 400,
+						Height = 200,
+						Fill = new SolidColorBrush(Colors.Blue),
+					}
+				}
+			};
+
+			var stackPanel = new StackPanel()
+			{
+				Children =
+				{
+					case1A,
+					case1B,
+					case1Expected,
+					case2,
+					case2Expected,
+				}
+			};
+
+			WindowHelper.WindowContent = stackPanel;
+			await WindowHelper.WaitForLoaded(stackPanel);
+
+			var renderer1A = new RenderTargetBitmap();
+			await renderer1A.RenderAsync(case1A);
+			var bitmap1A = await RawBitmap.From(renderer1A, case1A);
+
+			var renderer1B = new RenderTargetBitmap();
+			await renderer1B.RenderAsync(case1B);
+			var bitmap1B = await RawBitmap.From(renderer1B, case1B);
+
+			var renderer1Expected = new RenderTargetBitmap();
+			await renderer1Expected.RenderAsync(case1Expected);
+			var bitmap1Expected = await RawBitmap.From(renderer1Expected, case1Expected);
+
+			await ImageAssert.AreSimilarAsync(bitmap1A, bitmap1Expected, imperceptibilityThreshold: 0.7);
+			await ImageAssert.AreSimilarAsync(bitmap1B, bitmap1Expected, imperceptibilityThreshold: 0.7);
+
+			var renderer2 = new RenderTargetBitmap();
+			await renderer2.RenderAsync(case2);
+			var bitmap2 = await RawBitmap.From(renderer2, case2);
+
+			var renderer2Expected = new RenderTargetBitmap();
+			await renderer2Expected.RenderAsync(case2Expected);
+			var bitmap2Expected = await RawBitmap.From(renderer2Expected, case2Expected);
+
+			await ImageAssert.AreSimilarAsync(bitmap2, bitmap2Expected, imperceptibilityThreshold: 0.7);
+		}
+
+		[TestMethod]
 		public async Task Border_AntiAlias()
 		{
 
