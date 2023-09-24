@@ -29,9 +29,7 @@ namespace Windows.UI.Xaml;
 [ContentProperty(Name = nameof(Content))]
 public partial class Window
 {
-#if !HAS_UNO_WINUI
 	private static Window? _current;
-#endif
 
 	private readonly IWindowImplementation _windowImplementation;
 
@@ -176,7 +174,7 @@ public partial class Window
 	/// <summary>
 	/// Always null in Uno.WinUI.
 	/// </summary>
-	public static Window? Current => null;
+	public static Window? Current => _current;
 #else
 	/// <summary>
 	/// Gets the window of the current thread.		
