@@ -42,8 +42,9 @@
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
-  - UNO_REFERENCE_API: Used when the netstandard 2.0 Reference API is used.
-  - __NETSTD_REFERENCE__: Used when building the reference assemblies for the netstandard 2.0 target
+  - UNO_REFERENCE_API: Used when the Reference API is used (it's true for Skia, Wasm, and Reference).
+  - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
+  - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
   - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
 										UIElements. On iOS, this means additional weak references
 										backed fields to handle opaque native reference pinning and avoid
@@ -57,20 +58,20 @@
   -->
 
 	<PropertyGroup Condition="$(IsCrossruntime)">
-		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__</DefineConstants>
+		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__;UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
-		<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
+		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
 		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
-		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
+		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_IsUnitTests)">
