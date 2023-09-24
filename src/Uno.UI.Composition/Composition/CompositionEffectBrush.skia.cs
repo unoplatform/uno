@@ -1636,5 +1636,10 @@ namespace Windows.UI.Composition
 			paint.ImageFilter = _filter;
 			paint.FilterQuality = SKFilterQuality.High;
 		}
+
+		private protected override void DisposeInternal()
+		{
+			_filter?.Dispose();
+		}
 	}
 }
