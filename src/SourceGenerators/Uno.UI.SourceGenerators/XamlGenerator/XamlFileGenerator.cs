@@ -4269,7 +4269,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
 				var dataTypeSymbol = GetType(dataType);
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
 				if (contextFunction.MethodDeclaration is not null)
 				{
 					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
@@ -4310,14 +4310,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (contextFunction.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(contextFunction.Properties[0], dataTypeSymbol).GetFullyQualifiedTypeIncludingGlobal();
-								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType);
-								// There is no "TryGet*" method declaration for LValue usages.
-								Debug.Assert(contextFunctionLValue.MethodDeclaration is null);
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
+								if (contextFunctionLValue.MethodDeclaration is not null)
+								{
+									RegisterXBindTryGetDeclaration(contextFunctionLValue.MethodDeclaration);
+									return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression}; }} }}";
+								}
+								else
+								{
+									return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								}
 							}
 							else
 							{
-								Debugger.Launch();
 								throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
 							}
 						}
@@ -4336,7 +4341,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var rewrittenRValue = string.IsNullOrEmpty(rawFunction)
 					? (MethodDeclaration: null, Expression: "(true, ___ctx)", Properties: ImmutableArray<string>.Empty, HasFunction: false)
-					: XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+					: XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
 
 				if (rewrittenRValue.MethodDeclaration is not null)
 				{
@@ -4362,16 +4367,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (rewrittenRValue.Properties.Length == 1)
 							{
-								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType).Expression;
 								var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0]).GetFullyQualifiedTypeIncludingGlobal();
-								return $"(___ctx, __value) => {{ " +
-									$"if(___ctx is {_xClassName} ___tctx) " +
-									$"{rewrittenLValue} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
-									$" }}";
+
+								if (string.IsNullOrEmpty(rawFunction))
+								{
+									return $"(___ctx, __value) => {{ " +
+										$"if(___ctx is {_xClassName} ___tctx) " +
+										$"___ctx = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+										$" }}";
+								}
+
+								var rewrittenLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
+								if (rewrittenLValue.MethodDeclaration is not null)
+								{
+									RegisterXBindTryGetDeclaration(rewrittenLValue.MethodDeclaration);
+									return $"(___ctx, __value) => {{ if(___ctx is {_xClassName} ___tctx) {rewrittenLValue.Expression}; }}";
+								}
+								else
+								{
+									return $"(___ctx, __value) => {{ " +
+										$"if(___ctx is {_xClassName} ___tctx) " +
+										$"{rewrittenLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+										$" }}";
+								}
 							}
 							else
 							{
-								Debugger.Launch();
 								throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
 							}
 						}
