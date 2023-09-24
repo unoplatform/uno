@@ -50,7 +50,7 @@ internal class UnoGtkWindow : Window
 		}
 		GtkManager.XamlRootMap.Register(xamlRoot, Host);
 
-		ApplicationView.GetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		ApplicationView.IShouldntUseGetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
 	}
 
 	internal UnoGtkWindowHost Host { get; }
@@ -89,9 +89,9 @@ internal class UnoGtkWindow : Window
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.GetForCurrentView().Title))
+		if (string.IsNullOrEmpty(ApplicationView.IShouldntUseGetForCurrentView().Title))
 		{
-			ApplicationView.GetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			ApplicationView.IShouldntUseGetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 
@@ -99,7 +99,7 @@ internal class UnoGtkWindow : Window
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.GetForCurrentView();
+		var appView = ApplicationView.IShouldntUseGetForCurrentView();
 		Title = appView.Title;
 		SetSizeRequest((int)appView.PreferredMinSize.Width, (int)appView.PreferredMinSize.Height);
 	}
