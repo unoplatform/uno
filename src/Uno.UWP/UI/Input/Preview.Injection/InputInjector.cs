@@ -15,7 +15,7 @@ public partial class InputInjector
 	[ThreadStatic] private static IInputInjectorTarget? _inputManager;
 
 	internal static void SetTargetForCurrentThread(IInputInjectorTarget manager)
-		=> _inputManager = manager;
+		=> _inputManager ??= manager; // Set only once per thread.
 
 	[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__NETSTD_REFERENCE__", "__MACOS__")]
 	public static InputInjector? TryCreate()
