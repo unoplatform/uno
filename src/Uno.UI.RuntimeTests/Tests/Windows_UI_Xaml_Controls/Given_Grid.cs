@@ -7,12 +7,19 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
+using Uno.Disposables;
+using Uno.UI.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.GridPages;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+
+#if HAS_UNO
+using DirectUI;
+using Uno.UI.Helpers;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -257,6 +264,69 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			NumberAssert.Greater(SUT.ActualWidth, 0);
 #endif
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Grid_Remeasure()
+		{
+			// uno#12315: rows/columns of Grid can sometimes fail to re-measure due to android measure caching
+			// causing incorrect measure/arrange for views belonging to that rows/columns.
+
+			// ensure the flag is active, and will be restored after test
+			var flag = FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure;
+			using var restore = Disposable.Create(() => FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure = flag);
+			FeatureConfiguration.FrameworkElement.InvalidateNativeCacheOnRemeasure = true;
+
+			var setup = XamlHelper.LoadXaml<Border>("""
+				<Border BorderThickness="5" BorderBrush="Red">
+					<Grid x:Name="SutGrid" Height="400" Width="600">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<StackPanel>
+							<!--<Button x:Name="ToggleVisibility" Content="ON|OFF" Style="{StaticResource BasicButtonStyle}" />-->
+							<Border x:Name="TogglableBorder" Height="50" Background="SkyBlue" />
+						</StackPanel>
+
+						<ListView x:Name="SutLV" Grid.Row="1" ItemsSource="{Binding}" />
+						<TextBlock Grid.Row="1" Text="TEXT MUST BE HERE" HorizontalAlignment="Center" VerticalAlignment="Bottom" />
+					</Grid>
+				</Border>
+				""");
+			setup.DataContext = Enumerable.Range(0, 50);
+
+			var grid = setup.FindFirstDescendant<Grid>(x => x.Name == "SutGrid");
+			var togglableBorder = setup.FindFirstDescendant<Border>(x => x.Name == "TogglableBorder");
+			var lv = setup.FindFirstDescendant<ListView>(x => x.Name == "SutLV");
+
+			TestServices.WindowHelper.WindowContent = setup;
+			await TestServices.WindowHelper.WaitForLoaded(setup);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var initial = lv.ActualHeight;
+
+			// On first cycle, everything will be normal.
+			togglableBorder.Visibility = Visibility.Collapsed; // C = 1
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(lv.ActualHeight > initial, $"C1: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			togglableBorder.Visibility = Visibility.Visible; // C = 2
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C2: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");
+
+			// On the following cycles, everything should still be normal.
+			// [Android:] However, in context of uno12315, it would fail on C4,C6,C8...
+			// due to measure caching of Android.Views.View.Measure inside the measure pass of Grid.
+			togglableBorder.Visibility = Visibility.Collapsed; // C = 3
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(lv.ActualHeight > initial, $"C3: SutLV should've expanded with the border collapsed: Lv.ActualHeight>initial --> ({lv.ActualHeight}>{initial})");
+			togglableBorder.Visibility = Visibility.Visible; // C = 4
+			await TestServices.WindowHelper.WaitForIdle();
+			Assert.IsTrue(DoubleUtil.AreWithinTolerance(lv.ActualHeight, initial, 0.1), $"C4: SutLV should've returned to initial size with the border visible: Lv.ActualHeight==initial --> ({lv.ActualHeight}=={initial})");
+		}
+#endif
 
 		private static void AddChild(Grid parent, FrameworkElement child, int row, int col, int? rowSpan = null, int? colSpan = null)
 		{
