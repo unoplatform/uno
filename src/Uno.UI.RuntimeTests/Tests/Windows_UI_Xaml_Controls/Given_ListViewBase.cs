@@ -230,39 +230,39 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 #if HAS_UNO
-	[TestMethod]
-	[RunsOnUIThread]
-	public async Task ContainerParentIsKept_OnRemoveAndAdd()
-	{
-		var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerParentIsKept_OnRemoveAndAdd()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
 
-		var indexToAssert = 1;
-		var item2 = source[indexToAssert];
-		var SUT = new ListView { ItemsSource = source };
-		WindowHelper.WindowContent = SUT;
+			var indexToAssert = 1;
+			var item2 = source[indexToAssert];
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
 
-		await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForIdle();
 
-		source.RemoveAt(indexToAssert);
-		await WindowHelper.WaitForIdle();
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
 
-		source.Insert(indexToAssert, item2);
-		await WindowHelper.WaitForIdle();
+			source.Insert(indexToAssert, item2);
+			await WindowHelper.WaitForIdle();
 
-		Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
 
-		// There are situations where the isse occurs the second time.
-		indexToAssert = 3;
-		var item4 = source[indexToAssert];
+			// There are situations where the isse occurs the second time.
+			indexToAssert = 3;
+			var item4 = source[indexToAssert];
 
-		source.RemoveAt(indexToAssert);
-		await WindowHelper.WaitForIdle();
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
 
-		source.Insert(indexToAssert, item4);
-		await WindowHelper.WaitForIdle();
+			source.Insert(indexToAssert, item4);
+			await WindowHelper.WaitForIdle();
 
-		Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
-	}
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+		}
 #endif
 
 		[TestMethod]

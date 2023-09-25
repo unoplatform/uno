@@ -19,10 +19,10 @@
 
 				<TextBlock>
 					<Run Text="Parent data context:" />
-					<Run Text="{Binding DataContext, ElementName=Parent}" />
+					<Run Text="{Binding DataContext, ElementName=ParentListView}" />
 				</TextBlock>
 
-				<Button Command="{Binding DataContext.Command, ElementName=Parent}"
+				<Button Command="{Binding DataContext.Command, ElementName=ParentListView}"
 						CommandParameter="{Binding}"
 						Content="Click" />
 			</StackPanel>
@@ -30,14 +30,8 @@
 	</UserControl.Resources>
 
 	<StackPanel Margin="8, 32">
-		<TextBlock>
-			<Run Text="Page DataContext:" />
-			<Run Text="{Binding DataContext, ElementName=Parent}" />
-		</TextBlock>
-		<Button Command="{Binding DataContext.Command, ElementName=Parent}"
-				Content="Click" />
 		<ListView ItemsSource="{Binding Items}"
-				  x:Name="Parent"
+				  x:Name="ParentListView"
 				  ItemTemplate="{StaticResource ItemTemplate}" />
 	</StackPanel>
 </UserControl>
