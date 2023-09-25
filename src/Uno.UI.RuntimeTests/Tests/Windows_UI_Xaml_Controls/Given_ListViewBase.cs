@@ -3594,6 +3594,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task When_SelectionMode_Is_Multiple()
 		{
@@ -3617,6 +3618,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsNotNull(vsg, "VisualStateGroup[Name=MultiSelectStates] was not found.");
 			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
 		}
+#endif
 
 		[TestMethod]
 		public async Task Valid_MultipleSelectionMode_ValidSelectionStates()
