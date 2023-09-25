@@ -431,33 +431,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-        public async Task When_Popup_Open_Tabbed()
-        {
-        	var SUT = new ComboBox
-        	{
-        		Items =
-        		{
+		public async Task When_Popup_Open_Tabbed()
+		{
+			var SUT = new ComboBox
+			{
+				Items =
+				{
 					new ComboBoxItem { Content = new TextBox { Text = "item1" } },
 					new ComboBoxItem { Content = new TextBox { Text = "item2" } }
-        		}
-        	};
-        	var btn = new Button();
-        	var grid = new Grid
-        	{
-        		Children =
-        		{
-        			SUT,
+				}
+			};
+			var btn = new Button();
+			var grid = new Grid
+			{
+				Children =
+				{
+					SUT,
 					btn
-        		}
-        	};
+				}
+			};
 
-        	WindowHelper.WindowContent = grid;
-        	await WindowHelper.WaitForIdle();
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
 
-        	SUT.Focus(FocusState.Programmatic);
-        	await WindowHelper.WaitForIdle();
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
 
-        	Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
+			Assert.AreEqual(SUT, FocusManager.GetFocusedElement(SUT.XamlRoot));
 
 			KeyboardHelper.Space();
 			await WindowHelper.WaitForIdle();
@@ -465,12 +465,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.IsDropDownOpen);
 			Assert.IsTrue(FocusManager.GetFocusedElement(SUT.XamlRoot) is ComboBoxItem);
 
-        	KeyboardHelper.Tab();
-        	await WindowHelper.WaitForIdle();
+			KeyboardHelper.Tab();
+			await WindowHelper.WaitForIdle();
 
 			Assert.IsFalse(SUT.IsDropDownOpen);
-        	Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
-        }
+			Assert.AreEqual(btn, FocusManager.GetFocusedElement(SUT.XamlRoot));
+		}
 
 		[TestMethod]
 		public void When_Index_Is_Out_Of_Range_And_Later_Becomes_Valid()
