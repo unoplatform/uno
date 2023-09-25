@@ -17,6 +17,7 @@ using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
+using Windows.UI.ViewManagement;
 #endif
 
 namespace Uno.UI.Xaml.Controls;
@@ -100,6 +101,9 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnSizeChanged(windowSizeChanged);
 #endif
 		SizeChanged?.Invoke(this, windowSizeChanged);
+
+		// TODO:MZ: This should be probably platform-specific and also done per Window.
+		ApplicationView.GetForCurrentView().SetVisibleBounds(Bounds);
 	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
