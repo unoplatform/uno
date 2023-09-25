@@ -180,7 +180,7 @@ namespace TestRepro
 			{
 			}
 		}
-		private bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
+		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
 		{
 			o = null;
 			var sub1 = ___tctx.ViewModel;
@@ -188,7 +188,7 @@ namespace TestRepro
 			o = sub1.P;
 			return true;
 		}
-		private bool TrySetInstance_xBind_1(global::TestRepro.MainPage ___tctx, object __value)
+		private static bool TrySetInstance_xBind_1(global::TestRepro.MainPage ___tctx, object __value)
 		{
 			var sub1 = ___tctx.ViewModel;
 			if (sub1 == null) return false;
