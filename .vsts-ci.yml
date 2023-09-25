@@ -51,6 +51,7 @@ variables:
   windows2022HostedVMImage: 'windows-2022'
   windowsScaledPool: 'Windows2022-20230918'
   linuxVMImage: 'ubuntu-latest'
+  linuxScaledPool: 'Ubuntu2204-20230918'
   macOSVMImage: 'macOS-12'
   macOSVMImage_UITests: 'macOS-12'
   xCodeRoot: '/Applications/Xcode_14.1.app'

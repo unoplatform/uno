@@ -37,15 +37,15 @@ stages:
   
   - template: .azure-devops-package-wasm.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
   
   - template: .azure-devops-package-reference.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
       
   - template: .azure-devops-package-skia.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
 
 - stage: packages_build
   displayName: Generate Packages
@@ -61,7 +61,7 @@ stages:
     parameters:
       poolName: '$(windowsScaledPool)'
       vmImageWindows: $(windows2022HostedVMImage)
-      vmImageLinux: '$(linuxVMImage)'
+      vmPoolLinux: '$(linuxScaledPool)'
 
 - stage: unit_tests
   displayName: Tests - Unit
@@ -84,7 +84,7 @@ stages:
   
   - template: .azure-devops-wasm-uitests.yml
     parameters:
-      vmImage: '$(linuxVMImage)'
+      poolName: '$(linuxScaledPool)'
 
 - stage: skia_tests
   displayName: Tests - Skia

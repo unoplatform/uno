@@ -6,8 +6,7 @@ jobs:
   displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
