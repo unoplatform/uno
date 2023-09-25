@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
@@ -25,9 +27,9 @@ namespace Microsoft.Graphics.Canvas.Effects
 
 		public float CrossFade { get; set; } = 0.5f;
 
-		public IGraphicsEffectSource Source1 { get; set; }
+		public IGraphicsEffectSource? Source1 { get; set; }
 
-		public IGraphicsEffectSource Source2 { get; set; }
+		public IGraphicsEffectSource? Source2 { get; set; }
 
 		public Guid GetEffectId() => _id;
 
@@ -52,7 +54,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 			}
 		}
 
-		public object GetProperty(uint index)
+		public object? GetProperty(uint index)
 		{
 			switch (index)
 			{
@@ -64,7 +66,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		}
 
 		public uint GetPropertyCount() => 1;
-		public IGraphicsEffectSource GetSource(uint index) => index is 0 ? Source1 : Source2;
+		public IGraphicsEffectSource? GetSource(uint index) => index is 0 ? Source1 : Source2;
 		public uint GetSourceCount() => 2;
 
 		public void Dispose() { }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
@@ -25,7 +27,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 
 		public float Opacity { get; set; } = 1.0f;
 
-		public IGraphicsEffectSource Source { get; set; }
+		public IGraphicsEffectSource? Source { get; set; }
 
 		public Guid GetEffectId() => _id;
 
@@ -48,7 +50,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 			}
 		}
 
-		public object GetProperty(uint index)
+		public object? GetProperty(uint index)
 		{
 			switch (index)
 			{
@@ -60,7 +62,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		}
 
 		public uint GetPropertyCount() => 1;
-		public IGraphicsEffectSource GetSource(uint index) => Source;
+		public IGraphicsEffectSource? GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
 
 		public void Dispose() { }

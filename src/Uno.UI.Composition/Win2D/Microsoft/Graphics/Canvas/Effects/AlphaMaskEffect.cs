@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
@@ -19,9 +21,9 @@ namespace Microsoft.Graphics.Canvas.Effects
 
 		public static bool IsSupported => true;
 
-		public IGraphicsEffectSource AlphaMask { get; set; }
+		public IGraphicsEffectSource? AlphaMask { get; set; }
 
-		public IGraphicsEffectSource Source { get; set; }
+		public IGraphicsEffectSource? Source { get; set; }
 
 		public CanvasBufferPrecision? BufferPrecision { get; set; }
 
@@ -34,7 +36,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public object GetProperty(uint index) => throw new NotSupportedException();
 
 		public uint GetPropertyCount() => 0;
-		public IGraphicsEffectSource GetSource(uint index) => index == 0 ? Source : AlphaMask;
+		public IGraphicsEffectSource? GetSource(uint index) => index == 0 ? Source : AlphaMask;
 		public uint GetSourceCount() => 2;
 
 		public void Dispose() { }
