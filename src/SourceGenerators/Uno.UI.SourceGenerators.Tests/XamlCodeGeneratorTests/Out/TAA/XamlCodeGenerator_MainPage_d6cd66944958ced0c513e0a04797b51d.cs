@@ -180,7 +180,7 @@ namespace TestRepro
 			{
 			}
 		}
-		private bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
+		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
 		{
 			o = null;
 			var sub1 = ___tctx.MyArray;
