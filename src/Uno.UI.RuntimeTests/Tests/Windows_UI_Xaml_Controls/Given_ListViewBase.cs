@@ -3618,6 +3618,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
 		}
 
+#if HAS_UNO
 		[TestMethod]
 		public async Task Valid_MultipleSelectionMode_ValidSelectionStates()
 		{
@@ -3652,6 +3653,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(vsgCommonStates.CurrentState?.Name, "Selected");
 			Assert.AreEqual(mscfe.Opacity, 1);
 		}
+#endif
 
 		[TestMethod]
 		[DataRow(nameof(ListView), "add")]
