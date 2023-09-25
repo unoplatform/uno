@@ -146,8 +146,18 @@ jobs:
     condition: always()
     retryCountOnTaskFailure: 3
     inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
+      PathtoPublish: $(build.artifactstagingdirectory)/screenshots
       ArtifactName: uitests-results
+      ArtifactType: Container
+
+  # logs files are large, so we publish them in a separate artifacts container.
+  # This is needed so that screenshot comparison doesn't unnecessarily download large files, which slows it down.
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)/ios-ui-tests-logs
+      ArtifactName: uitests-results-ios-logs
       ArtifactType: Container
 
   - task: PublishBuildArtifacts@1
