@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.UI;
 using Windows.Graphics.Effects;
@@ -52,7 +54,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 			}
 		}
 
-		public object GetProperty(uint index)
+		public object? GetProperty(uint index)
 		{
 			switch (index)
 			{

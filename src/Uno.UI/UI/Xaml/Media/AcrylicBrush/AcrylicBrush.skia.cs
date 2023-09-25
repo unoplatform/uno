@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Microsoft.Graphics.Canvas;
@@ -10,13 +12,13 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class AcrylicBrush
 	{
-		private CompositionSurfaceBrush _noiseBrush;
-		private CompositionBrush _brush;
+		private CompositionSurfaceBrush? _noiseBrush;
+		private CompositionBrush? _brush;
 		private bool _isUsingOpaqueBrush;
 		private bool _isConnected;
 
-		private const float _blurRadius = 30.0f;
-		private const float _noiseOpacity = 0.02f;
+		private const float BlurRadius = 30.0f;
+		private const float NoiseOpacity = 0.02f;
 
 		protected override void OnConnected()
 		{
@@ -73,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 			//if forceCreateAcrylicBrush=true, _isUsingAcrylicBrush is ignored.
 			if (forceCreateAcrylicBrush /* || _isUsingAcrylicBrush */)
 			{
-				if (!EnsureNoiseBrush())
+				if (!EnsureNoiseBrush() || _noiseBrush is null)
 				{
 					CreateAcrylicBrush(false, false);
 					return;
@@ -93,9 +95,17 @@ namespace Windows.UI.Xaml.Media
 					FallbackColor,
 					_isUsingOpaqueBrush);
 
+				if (acrylicBrush is null)
+				{
+					CreateAcrylicBrush(false, false);
+					return;
+				}
 
 				// Set noise image source
 				acrylicBrush.SetSourceParameter("Noise", _noiseBrush);
+
+				// Expand the blur region
+				acrylicBrush.UseBlurPadding = true;
 
 				// TODO: Composition properties aren't supported yet
 				/*acrylicBrush.Properties.InsertColor("TintColor.Color", tintColor);
@@ -108,8 +118,6 @@ namespace Windows.UI.Xaml.Media
 				{
 					acrylicBrush.Properties.InsertColor("FallbackColor.Color", FallbackColor);
 				}*/
-
-				acrylicBrush.UseBlurPadding = true;
 
 				// Update the AcrylicBrush
 				_brush = acrylicBrush;
@@ -129,9 +137,9 @@ namespace Windows.UI.Xaml.Media
 				Compositor compositor = Window.Current.Compositor;
 				CompositionSurfaceBrush surfaceBrush = compositor.CreateSurfaceBrush();
 				SkiaCompositionSurface surface = new SkiaCompositionSurface();
-				using Stream imgStream = GetType().Assembly.GetManifestResourceStream("Uno.UI.Resources.NoiseAsset256x256.png");
+				using Stream? imgStream = GetType().Assembly.GetManifestResourceStream("Uno.UI.Resources.NoiseAsset256x256.png");
 
-				if (surface.LoadFromStream(256, 256, imgStream).success)
+				if (imgStream is not null && surface.LoadFromStream(256, 256, imgStream).success)
 				{
 					surfaceBrush.Surface = surface;
 					surfaceBrush.Stretch = CompositionStretch.None;
@@ -147,7 +155,7 @@ namespace Windows.UI.Xaml.Media
 			return true;
 		}
 
-		private CompositionEffectBrush CreateAcrylicBrushWorker(Compositor compositor, bool useWindowAcrylic, bool useCrossFadeEffect, Color initialTintColor, Color initialLuminosityColor, Color initialFallbackColor, bool shouldBrushBeOpaque)
+		private CompositionEffectBrush? CreateAcrylicBrushWorker(Compositor compositor, bool useWindowAcrylic, bool useCrossFadeEffect, Color initialTintColor, Color initialLuminosityColor, Color initialFallbackColor, bool shouldBrushBeOpaque)
 		{
 
 			var effectFactory = CreateAcrylicBrushCompositionEffectFactory(
@@ -155,7 +163,7 @@ namespace Windows.UI.Xaml.Media
 				initialTintColor, initialLuminosityColor, initialFallbackColor);
 
 			// Create the Comp effect Brush
-			CompositionEffectBrush acrylicBrush = effectFactory.CreateBrush();
+			CompositionEffectBrush? acrylicBrush = effectFactory.CreateBrush();
 
 			// Set the backdrop source
 			if (!shouldBrushBeOpaque)
@@ -164,12 +172,12 @@ namespace Windows.UI.Xaml.Media
 				{
 					//var hostBackdropBrush = compositor.CreateHostBackdropBrush();
 					var hostBackdropBrush = compositor.CreateBackdropBrush(); // We don't have HostBackdropBrush support yet
-					acrylicBrush.SetSourceParameter("Backdrop", hostBackdropBrush);
+					acrylicBrush?.SetSourceParameter("Backdrop", hostBackdropBrush);
 				}
 				else
 				{
 					var backdropBrush = compositor.CreateBackdropBrush();
-					acrylicBrush.SetSourceParameter("Backdrop", backdropBrush);
+					acrylicBrush?.SetSourceParameter("Backdrop", backdropBrush);
 				}
 			}
 
@@ -178,7 +186,7 @@ namespace Windows.UI.Xaml.Media
 
 		private CompositionEffectFactory CreateAcrylicBrushCompositionEffectFactory(Compositor compositor, bool shouldBrushBeOpaque, bool useWindowAcrylic, bool useCrossFadeEffect, Color initialTintColor, Color initialLuminosityColor, Color initialFallbackColor)
 		{
-			CompositionEffectFactory effectFactory = null;
+			CompositionEffectFactory? effectFactory = null;
 
 			// The part of the effect graph below the noise layer. This is either a semi-transparent tint (common) or an opaque tint (uncommon).
 			// Opaque tint may be used by apps wishing add the complexity of noise to their brand color, for example.
@@ -214,7 +222,7 @@ namespace Windows.UI.Xaml.Media
 					var gaussianBlurEffect = new GaussianBlurEffect();
 					gaussianBlurEffect.Name = "Blur";
 					gaussianBlurEffect.BorderMode = EffectBorderMode.Hard;
-					gaussianBlurEffect.BlurAmount = _blurRadius;
+					gaussianBlurEffect.BlurAmount = BlurRadius;
 					gaussianBlurEffect.Source = backdropEffectSourceParameter;
 					blurredSource = gaussianBlurEffect;
 				}
@@ -226,7 +234,7 @@ namespace Windows.UI.Xaml.Media
 			CompositionEffectSourceParameter noiseEffectSourceParameter = new("Noise");
 			var noiseOpacityEffect = new OpacityEffect();
 			noiseOpacityEffect.Name = "NoiseOpacity";
-			noiseOpacityEffect.Opacity = _noiseOpacity;
+			noiseOpacityEffect.Opacity = NoiseOpacity;
 			noiseOpacityEffect.Source = noiseEffectSourceParameter;
 
 			// Blend noise on top of tint
@@ -261,7 +269,7 @@ namespace Windows.UI.Xaml.Media
 			return effectFactory;
 		}
 
-		private IGraphicsEffect CombineNoiseWithTintEffect(IGraphicsEffectSource blurredSource, ColorSourceEffect tintColorEffect, Color initialLuminosityColor, IList<string> animatedProperties = null)
+		private IGraphicsEffect CombineNoiseWithTintEffect(IGraphicsEffectSource blurredSource, ColorSourceEffect tintColorEffect, Color initialLuminosityColor, IList<string>? animatedProperties = null)
 		{
 			animatedProperties?.Add("LuminosityColor.Color");
 
@@ -274,7 +282,7 @@ namespace Windows.UI.Xaml.Media
 
 			// Luminosity blend
 			var luminosityBlendEffect = new BlendEffect();
-			// NOTE: There is currently a bug in Windows where the names of BlendEffectMode::Luminosity and BlendEffectMode::Color are flipped.
+			// NOTE: There is currently a bug in Windows where the names of BlendEffectMode.Luminosity and BlendEffectMode.Color are flipped.
 			// This should be changed to Luminosity when/if the bug is fixed.
 			luminosityBlendEffect.Mode = BlendEffectMode.Color;
 			luminosityBlendEffect.Background = blurredSource;
@@ -284,7 +292,7 @@ namespace Windows.UI.Xaml.Media
 
 			// Color blend
 			var colorBlendEffect = new BlendEffect();
-			// NOTE: There is currently a bug in Windows where the names of BlendEffectMode::Luminosity and BlendEffectMode::Color are flipped.
+			// NOTE: There is currently a bug in Windows where the names of BlendEffectMode.Luminosity and BlendEffectMode.Color are flipped.
 			// This should be changed to Color when/if the bug is fixed.
 			colorBlendEffect.Mode = BlendEffectMode.Luminosity;
 			colorBlendEffect.Background = luminosityBlendEffect;
@@ -466,7 +474,6 @@ namespace Windows.UI.Xaml.Media
 				hue += 360.0;
 			}
 
-			// We similarly clamp saturation and value between 0 and 1.
 			saturation = saturation < 0.0 ? 0.0 : saturation;
 			saturation = saturation > 1.0 ? 1.0 : saturation;
 

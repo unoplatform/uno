@@ -11,8 +11,8 @@ namespace Windows.Graphics.Effects.Interop
 		Guid GetEffectId();
 		void GetNamedPropertyMapping(string name, out uint index, out GraphicsEffectPropertyMapping mapping);
 		uint GetPropertyCount();
-		object GetProperty(uint index); // This should be IPropertyValue but because PropertyValue and WinRT type boxing behaves differently under .NET than on native runtimes/languages (e.g. C++) we have to use object instead, for more info check Windows::Foundation::ValueFactory::CreateInspectableArray(...) at "onecore\com\winrt\wintypes\valuestore\valuefactory.cpp"
-		IGraphicsEffectSource GetSource(uint index);
+		object? GetProperty(uint index); // This should be IPropertyValue but because PropertyValue and WinRT type boxing behaves differently under .NET than on native runtimes/languages (e.g. C++) we have to use object instead, for more info check Windows::Foundation::ValueFactory::CreateInspectableArray(...) at "onecore\com\winrt\wintypes\valuestore\valuefactory.cpp"
+		IGraphicsEffectSource? GetSource(uint index);
 		uint GetSourceCount();
 	}
 }

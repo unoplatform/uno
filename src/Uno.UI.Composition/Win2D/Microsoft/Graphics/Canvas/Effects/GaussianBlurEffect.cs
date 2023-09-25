@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
@@ -21,7 +23,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 
 		public bool CacheOutput { get; set; }
 
-		public IGraphicsEffectSource Source { get; set; }
+		public IGraphicsEffectSource? Source { get; set; }
 
 		public float BlurAmount { get; set; } = 3.0f;
 
@@ -62,7 +64,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 			}
 		}
 
-		public object GetProperty(uint index)
+		public object? GetProperty(uint index)
 		{
 			switch (index)
 			{
@@ -78,7 +80,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		}
 
 		public uint GetPropertyCount() => 3;
-		public IGraphicsEffectSource GetSource(uint index) => Source;
+		public IGraphicsEffectSource? GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
 
 		public void Dispose() { }

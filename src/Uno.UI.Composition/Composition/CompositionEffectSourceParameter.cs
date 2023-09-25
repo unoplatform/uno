@@ -1,4 +1,6 @@
-﻿using Windows.Graphics.Effects;
+﻿#nullable enable
+
+using Windows.Graphics.Effects;
 
 namespace Windows.UI.Composition
 {

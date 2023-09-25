@@ -1,4 +1,6 @@
-﻿namespace Microsoft.Graphics.Canvas.Effects
+﻿#nullable enable
+
+namespace Microsoft.Graphics.Canvas.Effects
 {
 	public struct Matrix5x4
 	{
@@ -59,7 +61,7 @@
 			};
 		}
 
-		public override bool Equals(object obj) => base.Equals(obj);
+		public override bool Equals(object? obj) => base.Equals(obj);
 
 		public override int GetHashCode() => base.GetHashCode();
 

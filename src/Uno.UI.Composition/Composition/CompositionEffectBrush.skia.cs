@@ -20,7 +20,7 @@ namespace Windows.UI.Composition
 
 		internal bool UseBlurPadding { get; set; }
 
-		private SKImageFilter? GenerateEffectFilter(object effect, SKRect bounds)
+		private SKImageFilter? GenerateEffectFilter(object? effect, SKRect bounds)
 		{
 			// TODO: https://user-images.githubusercontent.com/34550324/264485558-d7ee5062-b0e0-4f6e-a8c7-0620ec561d3d.png
 			// TODO: Cache pixel shaders (see dwmcore.dll!CCompiledEffectCache), needed in order to implement animations and online rendering
@@ -69,9 +69,9 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("Optimization", out uint optProp, out _);
 										effectInterop.GetNamedPropertyMapping("BorderMode", out uint borderProp, out _);
 
-										float sigma = (float)effectInterop.GetProperty(sigmaProp);
-										_ = (uint)effectInterop.GetProperty(optProp); // TODO
-										_ = (uint)effectInterop.GetProperty(borderProp); // TODO
+										float sigma = (float)(effectInterop.GetProperty(sigmaProp) ?? throw new NullReferenceException("The effect property was null"));
+										_ = (uint?)effectInterop.GetProperty(optProp); // TODO
+										_ = (uint?)effectInterop.GetProperty(borderProp); // TODO
 
 										return SKImageFilter.CreateBlur(sigma, sigma, sourceFilter, new(UseBlurPadding ? bounds with { Left = -100, Top = -100, Right = bounds.Right + 100, Bottom = bounds.Bottom + 100 } : bounds));
 									}
@@ -143,7 +143,7 @@ namespace Windows.UI.Composition
 										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Angle", out uint angleProp, out GraphicsEffectPropertyMapping angleMapping);
-										float angle = (float)effectInterop.GetProperty(angleProp);
+										float angle = (float)(effectInterop.GetProperty(angleProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
 										{
@@ -180,8 +180,8 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
 										effectInterop.GetNamedPropertyMapping("ClampOutput", out uint clampProp, out _);
 
-										Color color = (Color)effectInterop.GetProperty(colorProp);
-										bool clamp = clampProp != 0xFF ? (bool)effectInterop.GetProperty(clampProp) : false;
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool clamp = clampProp != 0xFF ? (bool?)effectInterop.GetProperty(clampProp) ?? false : false;
 
 										string shader = $@"
 											uniform shader input;
@@ -265,7 +265,7 @@ namespace Windows.UI.Composition
 										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
-										D2D1BlendEffectMode mode = (D2D1BlendEffectMode)effectInterop.GetProperty(modeProp);
+										D2D1BlendEffectMode mode = (D2D1BlendEffectMode)(effectInterop.GetProperty(modeProp) ?? throw new NullReferenceException("The effect property was null"));
 										SKBlendMode skMode = mode.ToSkia();
 
 										if (skMode == (SKBlendMode)0xFF) // Unsupported mode, fallback to default mode, we can add support for other modes when we move to Skia 3 through pixel shaders
@@ -291,7 +291,7 @@ namespace Windows.UI.Composition
 										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Mode", out uint modeProp, out _);
-										D2D1CompositeMode mode = (D2D1CompositeMode)effectInterop.GetProperty(modeProp);
+										D2D1CompositeMode mode = (D2D1CompositeMode)(effectInterop.GetProperty(modeProp) ?? throw new NullReferenceException("The effect property was null"));
 										SKBlendMode skMode = mode.ToSkia();
 
 										if (skMode == (SKBlendMode)0xFF) // Unsupported mode, fallback to default mode, we can add support for other modes when we move to Skia 3 through pixel shaders
@@ -323,7 +323,7 @@ namespace Windows.UI.Composition
 									{
 										// Note: ColorHdr isn't supported by Composition (as of 10.0.25941.1000)
 										effectInterop.GetNamedPropertyMapping("Color", out uint colorProp, out _);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										return SKImageFilter.CreatePaint(new SKPaint() { Color = color.ToSKColor() }, new(bounds));
 									}
@@ -343,7 +343,7 @@ namespace Windows.UI.Composition
 										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Opacity", out uint opacityProp, out _);
-										float opacity = (float)effectInterop.GetProperty(opacityProp);
+										float opacity = (float)(effectInterop.GetProperty(opacityProp) ?? throw new NullReferenceException("The effect property was null"));
 
 
 										return SKImageFilter.CreateColorFilter(
@@ -375,8 +375,8 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("Contrast", out uint contrastProp, out _);
 										effectInterop.GetNamedPropertyMapping("ClampSource", out uint clampProp, out _);
 
-										float contrast = (float)effectInterop.GetProperty(contrastProp);
-										bool clamp = clampProp != 0xFF ? (bool)effectInterop.GetProperty(clampProp) : false;
+										float contrast = (float)(effectInterop.GetProperty(contrastProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool clamp = clampProp != 0xFF ? (bool?)effectInterop.GetProperty(clampProp) ?? false : false;
 
 										string shader = $@"
 											uniform shader input;
@@ -557,7 +557,7 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("Exposure", out uint exposureProp, out _);
 
-										float exposure = (float)effectInterop.GetProperty(exposureProp);
+										float exposure = (float)(effectInterop.GetProperty(exposureProp) ?? throw new NullReferenceException("The effect property was null"));
 										float multiplier = MathF.Pow(2.0f, exposure);
 
 										return SKImageFilter.CreateColorFilter(
@@ -627,7 +627,7 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("CrossFade", out uint crossfadeProp, out _);
 
-										float crossfade = (float)effectInterop.GetProperty(crossfadeProp);
+										float crossfade = (float)(effectInterop.GetProperty(crossfadeProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										if (crossfade <= 0.0f)
 										{
@@ -729,23 +729,23 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("ClampOutput", out uint clampProp, out _);
 
-										float redOffset = (float)effectInterop.GetProperty(redOffsetProp);
-										float redSlope = (float)effectInterop.GetProperty(redSlopeProp);
-										bool redDisable = (bool)effectInterop.GetProperty(redDisableProp);
+										float redOffset = (float)(effectInterop.GetProperty(redOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										float redSlope = (float)(effectInterop.GetProperty(redSlopeProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool redDisable = (bool)(effectInterop.GetProperty(redDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										float greenOffset = (float)effectInterop.GetProperty(greenOffsetProp);
-										float greenSlope = (float)effectInterop.GetProperty(greenSlopeProp);
-										bool greenDisable = (bool)effectInterop.GetProperty(greenDisableProp);
+										float greenOffset = (float)(effectInterop.GetProperty(greenOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										float greenSlope = (float)(effectInterop.GetProperty(greenSlopeProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool greenDisable = (bool)(effectInterop.GetProperty(greenDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										float blueOffset = (float)effectInterop.GetProperty(blueOffsetProp);
-										float blueSlope = (float)effectInterop.GetProperty(blueSlopeProp);
-										bool blueDisable = (bool)effectInterop.GetProperty(blueDisableProp);
+										float blueOffset = (float)(effectInterop.GetProperty(blueOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										float blueSlope = (float)(effectInterop.GetProperty(blueSlopeProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool blueDisable = (bool)(effectInterop.GetProperty(blueDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										float alphaOffset = (float)effectInterop.GetProperty(alphaOffsetProp);
-										float alphaSlope = (float)effectInterop.GetProperty(alphaSlopeProp);
-										bool alphaDisable = (bool)effectInterop.GetProperty(alphaDisableProp);
+										float alphaOffset = (float)(effectInterop.GetProperty(alphaOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										float alphaSlope = (float)(effectInterop.GetProperty(alphaSlopeProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool alphaDisable = (bool)(effectInterop.GetProperty(alphaDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										bool clamp = clampProp != 0xFF ? (bool)effectInterop.GetProperty(clampProp) : false;
+										bool clamp = clampProp != 0xFF ? (bool?)effectInterop.GetProperty(clampProp) ?? false : false;
 
 										string shader = $@"
 											uniform shader input;
@@ -932,27 +932,27 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("ClampOutput", out uint clampProp, out _);
 
-										float redAmplitude = (float)effectInterop.GetProperty(redAmplitudeProp);
-										float redExponent = (float)effectInterop.GetProperty(redExponentProp);
-										float redOffset = (float)effectInterop.GetProperty(redOffsetProp);
-										bool redDisable = (bool)effectInterop.GetProperty(redDisableProp);
+										float redAmplitude = (float)(effectInterop.GetProperty(redAmplitudeProp) ?? throw new NullReferenceException("The effect property was null"));
+										float redExponent = (float)(effectInterop.GetProperty(redExponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float redOffset = (float)(effectInterop.GetProperty(redOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool redDisable = (bool)(effectInterop.GetProperty(redDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										float greenAmplitude = (float)effectInterop.GetProperty(greenAmplitudeProp);
-										float greenExponent = (float)effectInterop.GetProperty(greenExponentProp);
-										float greenOffset = (float)effectInterop.GetProperty(greenOffsetProp);
-										bool greenDisable = (bool)effectInterop.GetProperty(greenDisableProp);
+										float greenAmplitude = (float)(effectInterop.GetProperty(greenAmplitudeProp) ?? throw new NullReferenceException("The effect property was null"));
+										float greenExponent = (float)(effectInterop.GetProperty(greenExponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float greenOffset = (float)(effectInterop.GetProperty(greenOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool greenDisable = (bool)(effectInterop.GetProperty(greenDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										float blueAmplitude = (float)effectInterop.GetProperty(blueAmplitudeProp);
-										float blueExponent = (float)effectInterop.GetProperty(blueExponentProp);
-										float blueOffset = (float)effectInterop.GetProperty(blueOffsetProp);
-										bool blueDisable = (bool)effectInterop.GetProperty(blueDisableProp);
+										float blueAmplitude = (float)(effectInterop.GetProperty(blueAmplitudeProp) ?? throw new NullReferenceException("The effect property was null"));
+										float blueExponent = (float)(effectInterop.GetProperty(blueExponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float blueOffset = (float)(effectInterop.GetProperty(blueOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool blueDisable = (bool)(effectInterop.GetProperty(blueDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										float alphaAmplitude = (float)effectInterop.GetProperty(alphaAmplitudeProp);
-										float alphaExponent = (float)effectInterop.GetProperty(alphaExponentProp);
-										float alphaOffset = (float)effectInterop.GetProperty(alphaOffsetProp);
-										bool alphaDisable = (bool)effectInterop.GetProperty(alphaDisableProp);
+										float alphaAmplitude = (float)(effectInterop.GetProperty(alphaAmplitudeProp) ?? throw new NullReferenceException("The effect property was null"));
+										float alphaExponent = (float)(effectInterop.GetProperty(alphaExponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float alphaOffset = (float)(effectInterop.GetProperty(alphaOffsetProp) ?? throw new NullReferenceException("The effect property was null"));
+										bool alphaDisable = (bool)(effectInterop.GetProperty(alphaDisableProp) ?? throw new NullReferenceException("The effect property was null"));
 
-										bool clamp = clampProp != 0xFF ? (bool)effectInterop.GetProperty(clampProp) : false;
+										bool clamp = clampProp != 0xFF ? (bool?)effectInterop.GetProperty(clampProp) ?? false : false;
 
 										string shader = $@"
 											uniform shader input;
@@ -1166,8 +1166,8 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("ExtendX", out uint modeXProp, out _);
 										effectInterop.GetNamedPropertyMapping("ExtendY", out uint modeYProp, out _);
-										D2D1BorderEdgeMode xmode = (D2D1BorderEdgeMode)effectInterop.GetProperty(modeXProp);
-										D2D1BorderEdgeMode ymode = (D2D1BorderEdgeMode)effectInterop.GetProperty(modeYProp);
+										D2D1BorderEdgeMode xmode = (D2D1BorderEdgeMode)(effectInterop.GetProperty(modeXProp) ?? throw new NullReferenceException("The effect property was null"));
+										D2D1BorderEdgeMode ymode = (D2D1BorderEdgeMode)(effectInterop.GetProperty(modeYProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										SKShaderTileMode mode;
 
@@ -1213,7 +1213,7 @@ namespace Windows.UI.Composition
 										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("Intensity", out uint intensityProp, out _);
-										float intensity = (float)effectInterop.GetProperty(intensityProp);
+										float intensity = (float)(effectInterop.GetProperty(intensityProp) ?? throw new NullReferenceException("The effect property was null"));
 
 
 										return SKImageFilter.CreateColorFilter(
@@ -1245,8 +1245,8 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("Temperature", out uint tempProp, out _);
 										effectInterop.GetNamedPropertyMapping("Tint", out uint tintProp, out _);
 
-										float temp = (float)effectInterop.GetProperty(tempProp);
-										float tint = (float)effectInterop.GetProperty(tintProp);
+										float temp = (float)(effectInterop.GetProperty(tempProp) ?? throw new NullReferenceException("The effect property was null"));
+										float tint = (float)(effectInterop.GetProperty(tintProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										var gains = TempAndTintUtils.NormalizedTempTintToGains(temp, tint);
 
@@ -1277,7 +1277,7 @@ namespace Windows.UI.Composition
 										_isCurrentInputBackdrop = false;
 
 										effectInterop.GetNamedPropertyMapping("ColorMatrix", out uint matrixProp, out _);
-										float[] matrix = (float[])effectInterop.GetProperty(matrixProp);
+										float[] matrix = (float[])(effectInterop.GetProperty(matrixProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -1310,10 +1310,10 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
 
-										float azimuth = (float)effectInterop.GetProperty(azimuthProp);
-										float elevation = (float)effectInterop.GetProperty(elevationProp);
-										float amount = (float)effectInterop.GetProperty(amountProp);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										float azimuth = (float)(effectInterop.GetProperty(azimuthProp) ?? throw new NullReferenceException("The effect property was null"));
+										float elevation = (float)(effectInterop.GetProperty(elevationProp) ?? throw new NullReferenceException("The effect property was null"));
+										float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new NullReferenceException("The effect property was null"));
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										if (azimuthMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
 										{
@@ -1350,11 +1350,11 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("SpecularAmount", out uint amountProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
 
-										float azimuth = (float)effectInterop.GetProperty(azimuthProp);
-										float elevation = (float)effectInterop.GetProperty(elevationProp);
-										float exponent = (float)effectInterop.GetProperty(exponentProp);
-										float amount = (float)effectInterop.GetProperty(amountProp);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										float azimuth = (float)(effectInterop.GetProperty(azimuthProp) ?? throw new NullReferenceException("The effect property was null"));
+										float elevation = (float)(effectInterop.GetProperty(elevationProp) ?? throw new NullReferenceException("The effect property was null"));
+										float exponent = (float)(effectInterop.GetProperty(exponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new NullReferenceException("The effect property was null"));
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										if (azimuthMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
 										{
@@ -1393,12 +1393,12 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
 
-										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
-										Vector3 target = (Vector3)effectInterop.GetProperty(targetProp);
-										float focus = (float)effectInterop.GetProperty(focusProp);
-										float angle = (float)effectInterop.GetProperty(angleProp);
-										float amount = (float)effectInterop.GetProperty(amountProp);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										Vector3 position = (Vector3)(effectInterop.GetProperty(positionProp) ?? throw new NullReferenceException("The effect property was null"));
+										Vector3 target = (Vector3)(effectInterop.GetProperty(targetProp) ?? throw new NullReferenceException("The effect property was null"));
+										float focus = (float)(effectInterop.GetProperty(focusProp) ?? throw new NullReferenceException("The effect property was null"));
+										float angle = (float)(effectInterop.GetProperty(angleProp) ?? throw new NullReferenceException("The effect property was null"));
+										float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new NullReferenceException("The effect property was null"));
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
 										{
@@ -1433,13 +1433,13 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("SpecularAmount", out uint amountProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
 
-										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
-										Vector3 target = (Vector3)effectInterop.GetProperty(targetProp);
-										float focus = (float)effectInterop.GetProperty(focusProp);
-										float angle = (float)effectInterop.GetProperty(angleProp);
-										float exponent = (float)effectInterop.GetProperty(exponentProp);
-										float amount = (float)effectInterop.GetProperty(amountProp);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										Vector3 position = (Vector3)(effectInterop.GetProperty(positionProp) ?? throw new NullReferenceException("The effect property was null"));
+										Vector3 target = (Vector3)(effectInterop.GetProperty(targetProp) ?? throw new NullReferenceException("The effect property was null"));
+										float focus = (float)(effectInterop.GetProperty(focusProp) ?? throw new NullReferenceException("The effect property was null"));
+										float angle = (float)(effectInterop.GetProperty(angleProp) ?? throw new NullReferenceException("The effect property was null"));
+										float exponent = (float)(effectInterop.GetProperty(exponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new NullReferenceException("The effect property was null"));
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										if (angleMapping == GraphicsEffectPropertyMapping.RadiansToDegrees)
 										{
@@ -1470,9 +1470,9 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("DiffuseAmount", out uint amountProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
 
-										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
-										float amount = (float)effectInterop.GetProperty(amountProp);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										Vector3 position = (Vector3)(effectInterop.GetProperty(positionProp) ?? throw new NullReferenceException("The effect property was null"));
+										float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new NullReferenceException("The effect property was null"));
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										return SKImageFilter.CreatePointLitDiffuse(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, sourceFilter, new(bounds));
 									}
@@ -1496,10 +1496,10 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("SpecularAmount", out uint amountProp, out _);
 										effectInterop.GetNamedPropertyMapping("LightColor", out uint colorProp, out _);
 
-										Vector3 position = (Vector3)effectInterop.GetProperty(positionProp);
-										float exponent = (float)effectInterop.GetProperty(exponentProp);
-										float amount = (float)effectInterop.GetProperty(amountProp);
-										Color color = (Color)effectInterop.GetProperty(colorProp);
+										Vector3 position = (Vector3)(effectInterop.GetProperty(positionProp) ?? throw new NullReferenceException("The effect property was null"));
+										float exponent = (float)(effectInterop.GetProperty(exponentProp) ?? throw new NullReferenceException("The effect property was null"));
+										float amount = (float)(effectInterop.GetProperty(amountProp) ?? throw new NullReferenceException("The effect property was null"));
+										Color color = (Color)(effectInterop.GetProperty(colorProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										return SKImageFilter.CreatePointLitSpecular(new SKPoint3(position.X, position.Y, position.Z), color.ToSKColor(), 1.0f, amount, exponent, sourceFilter, new(bounds));
 									}
@@ -1543,7 +1543,7 @@ namespace Windows.UI.Composition
 
 										effectInterop.GetNamedPropertyMapping("Saturation", out uint saturationProp, out _);
 
-										float saturation = MathF.Min((float)effectInterop.GetProperty(saturationProp), 2);
+										float saturation = MathF.Min((float)(effectInterop.GetProperty(saturationProp) ?? throw new NullReferenceException("The effect property was null")), 2);
 
 										return SKImageFilter.CreateColorFilter(
 											SKColorFilter.CreateColorMatrix(
@@ -1566,8 +1566,8 @@ namespace Windows.UI.Composition
 										effectInterop.GetNamedPropertyMapping("Frequency", out uint frequencyProp, out _);
 										effectInterop.GetNamedPropertyMapping("Offset", out uint offsetProp, out _);
 
-										Vector2 frequency = (Vector2)effectInterop.GetProperty(frequencyProp);
-										Vector2 offset = (Vector2)effectInterop.GetProperty(offsetProp);
+										Vector2 frequency = (Vector2)(effectInterop.GetProperty(frequencyProp) ?? throw new NullReferenceException("The effect property was null"));
+										Vector2 offset = (Vector2)(effectInterop.GetProperty(offsetProp) ?? throw new NullReferenceException("The effect property was null"));
 
 										string shader = $@"
 											uniform half2 frequency;

@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
@@ -47,7 +49,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 			}
 		}
 
-		public object GetProperty(uint index)
+		public object? GetProperty(uint index)
 		{
 			switch (index)
 			{
@@ -60,7 +62,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 
 		public uint GetPropertyCount() => 1;
 
-		public IGraphicsEffectSource GetSource(uint index) => index < Sources.Count ? Sources[(int)index] : null;
+		public IGraphicsEffectSource? GetSource(uint index) => index < Sources.Count ? Sources[(int)index] : null;
 
 		public uint GetSourceCount() => (uint)Sources.Count;
 

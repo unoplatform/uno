@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Runtime.InteropServices;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
@@ -21,7 +23,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 
 		public bool CacheOutput { get; set; }
 
-		public IGraphicsEffectSource Source { get; set; }
+		public IGraphicsEffectSource? Source { get; set; }
 
 		public Guid GetEffectId() => _id;
 
@@ -30,7 +32,7 @@ namespace Microsoft.Graphics.Canvas.Effects
 		public object GetProperty(uint index) => throw new NotSupportedException();
 
 		public uint GetPropertyCount() => 0;
-		public IGraphicsEffectSource GetSource(uint index) => Source;
+		public IGraphicsEffectSource? GetSource(uint index) => Source;
 		public uint GetSourceCount() => 1;
 
 		public void Dispose() { }
