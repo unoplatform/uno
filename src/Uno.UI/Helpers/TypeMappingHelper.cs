@@ -15,13 +15,27 @@ namespace Uno.UI.Helpers
 		/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
 		/// of the original type.
 		/// </summary>
-		private static IDictionary<Type, Type> MappedTypeToOrignalTypeMapings { get; } = new Dictionary<Type, Type>();
+		private static IDictionary<Type, Type> AllMappedTypeToOrignalTypeMapings { get; } = new Dictionary<Type, Type>();
+
+		/// <summary>
+		/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
+		/// of the original type.
+		/// Similiar to AllMappedTypeToOrignalTypeMapings but doesn't update whilst hot reload is paused
+		/// </summary>
+		private static IDictionary<Type, Type> MappedTypeToOrignalTypeMapings { get; set; } = new Dictionary<Type, Type>();
 
 		/// <summary>
 		/// This maps an original type to the most recent replacement type. This dictionary will only grow when
 		/// a different original type is modified.
 		/// </summary>
-		private static IDictionary<Type, Type> OriginalTypeToMappedType { get; } = new Dictionary<Type, Type>();
+		private static IDictionary<Type, Type> AllOriginalTypeToMappedType { get; } = new Dictionary<Type, Type>();
+
+		/// <summary>
+		/// This maps an original type to the most recent replacement type. This dictionary will only grow when
+		/// a different original type is modified.
+		/// Similiar to AllOriginalTypeToMappedType but doesn't update whilst hot reload is paused
+		/// </summary>
+		private static IDictionary<Type, Type> OriginalTypeToMappedType { get; set; } = new Dictionary<Type, Type>();
 
 		/// <summary>
 		/// Extension method to return the replacement type for a given instance type
@@ -59,8 +73,13 @@ namespace Uno.UI.Helpers
 
 		internal static void RegisterMapping(Type mappedType, Type originalType)
 		{
-			MappedTypeToOrignalTypeMapings[mappedType] = originalType;
-			OriginalTypeToMappedType[originalType] = mappedType;
+			AllMappedTypeToOrignalTypeMapings[mappedType] = originalType;
+			AllOriginalTypeToMappedType[originalType] = mappedType;
+			if (_pauseReloadingCompletion is null)
+			{
+				MappedTypeToOrignalTypeMapings[mappedType] = originalType;
+				OriginalTypeToMappedType[originalType] = mappedType;
+			}
 		}
 
 		/// <summary>
@@ -72,6 +91,32 @@ namespace Uno.UI.Helpers
 		{
 			MappedTypeToOrignalTypeMapings.Clear();
 			OriginalTypeToMappedType.Clear();
+			AllMappedTypeToOrignalTypeMapings.Clear();
+			AllOriginalTypeToMappedType.Clear();
+		}
+
+		private static TaskCompletionSource _pauseReloadingCompletion;
+
+		internal static Task WaitToReload()
+		{
+			return _pauseReloadingCompletion is not null ? _pauseReloadingCompletion.Task : default;
+		}
+
+		public static void PauseReloading()
+		{
+			_pauseReloadingCompletion ??= new TaskCompletionSource();
+		}
+
+		public static void ResumeReloading()
+		{
+			var completion = _pauseReloadingCompletion;
+			_pauseReloadingCompletion = null;
+			if (completion is not null)
+			{
+				MappedTypeToOrignalTypeMapings= AllMappedTypeToOrignalTypeMapings.ToDictionary(x=>x.Key,x=>x.Value);
+				OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
+				completion.TrySetResult();
+			}
 		}
 	}
 }

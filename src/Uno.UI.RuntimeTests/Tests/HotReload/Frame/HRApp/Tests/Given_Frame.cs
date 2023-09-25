@@ -2,6 +2,7 @@
 using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
@@ -12,14 +13,25 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
 public static class TestingUpdateHandler
 {
+	private static TaskCompletionSource _visualTreeUpdateCompletion = new TaskCompletionSource();
 	public static void BeforeVisualTreeUpdate(Type[]? updatedTypes)
 	{
-		typeof(TestingUpdateHandler).Log().LogWarning("--------------------------Before Visaul Tree Update");
+		//throw new Exception("BeforeVisualTreeUpdate");
+		typeof(TestingUpdateHandler).Log().LogWarning("--------------------------Before Visual Tree Update");
 	}
 
 	public static void AfterVisualTreeUpdate(Type[]? updatedTypes)
 	{
-		typeof(TestingUpdateHandler).Log().LogWarning("--------------------------After Visaul Tree Update");
+		//throw new Exception("AfterVisualTreeUpdate");
+		typeof(TestingUpdateHandler).Log().LogWarning("--------------------------After Visual Tree Update");
+		var oldCompletion = _visualTreeUpdateCompletion;
+		_visualTreeUpdateCompletion = new TaskCompletionSource();
+		oldCompletion.TrySetResult();
+	}
+
+	public static async Task WaitForVisualTreeUpdate()
+	{
+		await _visualTreeUpdateCompletion.Task;
 	}
 }
 
@@ -66,7 +78,7 @@ public class Given_Frame : BaseTestClass
 	/// Change Page1
 	/// </summary>
 	[TestMethod]
-	public async Task Check_Can_Change_Page1()
+	public async Task Check_Can_Change_Page1_NoPause()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
@@ -111,6 +123,7 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
 
 		// Pause HR
+		TypeMappingHelper.PauseReloading();
 
 		// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
@@ -118,12 +131,13 @@ public class Given_Frame : BaseTestClass
 			FirstPageTextBlockChangedText,
 			async () =>
 			{
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
 				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+				//await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
 			},
 			ct);
 
 		// Resume HR
+		TypeMappingHelper.ResumeReloading();
 
 		// Check that the text has been updated
 		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);

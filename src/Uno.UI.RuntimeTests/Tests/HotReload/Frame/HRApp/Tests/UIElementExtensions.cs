@@ -36,22 +36,11 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
 
 					TextBlock? firstText = null;
 
-					while (sw.Elapsed < timeout)
-					{
-						firstText = element
-							.EnumerateDescendants()
-							.OfType<TextBlock>()
-							.Skip(index)
-							.FirstOrDefault();
-
-						if (firstText?.Text == expectedText)
-						{
-							typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Text matches - {expectedText}");
-							break;
-						}
-
-						await Task.Delay(100);
-					}
+					firstText = element
+						.EnumerateDescendants()
+						.OfType<TextBlock>()
+						.Skip(index)
+						.FirstOrDefault();
 
 					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ After wait - Null: {firstText is null} Match: {expectedText == firstText?.Text} - {expectedText}");
 					Assert.IsNotNull(firstText);

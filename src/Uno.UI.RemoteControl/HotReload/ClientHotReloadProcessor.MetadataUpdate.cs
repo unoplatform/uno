@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using System.Threading;
+using static Windows.UI.Xaml.Markup.Reader.XamlConstants;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -170,56 +171,108 @@ namespace Uno.UI.RemoteControl.HotReload
 			return values;
 		}
 #endif
-		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
+
+		private static int _isReloading;
+
+		private static async void ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
-			if (updatedTypes.Length == 0)
+			if (_log.IsEnabled(LogLevel.Trace))
+			{
+				_log.Trace($"ReloadWithUpdatedTypes - start");
+			}
+
+			if (Interlocked.CompareExchange(ref _isReloading, 1, 0) == 1)
 			{
 				return;
 			}
-
-			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
-
-			// Action: BeforeVisualTreeUpdate
-			// This is called before the visual tree is updated
-			handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes));
-
-			// Iterate through the visual tree and either invole ElementUpdate, 
-			// or replace the element with a new one
-			foreach (
-				var (element, elementHandler, elementMappedType) in
-				EnumerateHotReloadInstances(
-					Window.Current.Content,
-					fe =>
-						{
-							// Get the original type of the element, in case it's been replaced
-							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
-
-							// Get the handler for the type specified
-							var handler = (from h in handlerActions
-										   where originalType == h.Key ||
-												originalType.IsSubclassOf(h.Key)
-										   select h.Value).FirstOrDefault();
-
-							// Get the replacement type, or null if not replaced
-							var mappedType = originalType.GetMappedType();
-
-							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
-						},
-					enumerateChildrenAfterMatch: true))
+			try
 			{
-
-				// Action: ElementUpdate
-				// This is invoked for each existing element that is in the tree that needs to be replaced
-				elementHandler?.ElementUpdate(element, updatedTypes);
-
-				if (elementMappedType is not null)
+				var task = TypeMappingHelper.WaitToReload();
+				if (task != null)
 				{
-					ReplaceViewInstance(element, elementMappedType, elementHandler);
+					// If a Task is returned, it means reloading has been paused
+					// The task will complete when reload should resume
+					await task;
 				}
 			}
+			finally
+			{
+				Interlocked.Exchange(ref _isReloading, 0);
+			}
 
-			// Action: AfterVisualTreeUpdate
-			handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes));
+			try
+			{
+
+				var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
+
+				if (_log.IsEnabled(LogLevel.Trace))
+				{
+					if (handlerActions is null)
+					{
+						_log.Trace($"ReloadWithUpdatedTypes - handlerActions is null");
+					}
+					else
+					{
+						_log.Trace($"ReloadWithUpdatedTypes - There are {handlerActions.Count} ElementHandlerActions registered");
+					}
+				}
+
+				// Action: BeforeVisualTreeUpdate
+				// This is called before the visual tree is updated
+				_ = handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes)).ToArray();
+
+				// Iterate through the visual tree and either invole ElementUpdate, 
+				// or replace the element with a new one
+				foreach (
+					var (element, elementHandler, elementMappedType) in
+					EnumerateHotReloadInstances(
+						Window.Current.Content,
+						fe =>
+							{
+								// Get the original type of the element, in case it's been replaced
+								var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+								// Get the handler for the type specified
+								var handler = (from h in handlerActions
+											   where originalType == h.Key ||
+													originalType.IsSubclassOf(h.Key)
+											   select h.Value).FirstOrDefault();
+
+								// Get the replacement type, or null if not replaced
+								var mappedType = originalType.GetMappedType();
+
+								return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+							},
+						enumerateChildrenAfterMatch: true))
+				{
+
+					// Action: ElementUpdate
+					// This is invoked for each existing element that is in the tree that needs to be replaced
+					elementHandler?.ElementUpdate(element, updatedTypes);
+
+					if (elementMappedType is not null)
+					{
+						ReplaceViewInstance(element, elementMappedType, elementHandler);
+					}
+				}
+
+				// Action: AfterVisualTreeUpdate
+				_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
+
+				if (_log.IsEnabled(LogLevel.Trace))
+				{
+					_log.Trace($"ReloadWithUpdatedTypes - end");
+				}
+			}
+			catch (Exception ex)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error($"ReloadWithUpdatedTypes error", ex);
+				}
+				throw;
+			}
+
 		}
 
 		private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)

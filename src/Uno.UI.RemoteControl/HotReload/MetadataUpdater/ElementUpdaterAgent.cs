@@ -146,18 +146,21 @@ internal sealed class ElementUpdateAgent : IDisposable
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.BeforeVisualTreeUpdate)) is MethodInfo beforeVisualTreeUpdate)
 		{
-			updateActions.BeforeVisualTreeUpdate = CreateAction(beforeVisualTreeUpdate);
+			_log($"Adding handler for {nameof(updateActions.BeforeVisualTreeUpdate)} for {handlerType}");
+			updateActions.BeforeVisualTreeUpdate = CreateAction(beforeVisualTreeUpdate, handlerType);
 			methodFound = true;
 		}
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.AfterVisualTreeUpdate)) is MethodInfo afterVisualTreeUpdate)
 		{
-			updateActions.AfterVisualTreeUpdate = CreateAction(afterVisualTreeUpdate);
+			_log($"Adding handler for {nameof(updateActions.AfterVisualTreeUpdate)} for {handlerType}");
+			updateActions.AfterVisualTreeUpdate = CreateAction(afterVisualTreeUpdate, handlerType);
 			methodFound = true;
 		}
 
 		if (GetHandlerMethod(handlerType, nameof(ElementUpdateHandlerActions.ElementUpdate), new[] { typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo elementUpdate)
 		{
+			_log($"Adding handler for {nameof(updateActions.ElementUpdate)} for {handlerType}");
 			updateActions.ElementUpdate = CreateHandlerAction<Action<FrameworkElement, Type[]?>>(elementUpdate);
 			methodFound = true;
 		}
@@ -167,6 +170,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			nameof(ElementUpdateHandlerActions.BeforeElementReplaced),
 			new[] { typeof(FrameworkElement), typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo beforeElementReplaced)
 		{
+			_log($"Adding handler for {nameof(updateActions.BeforeElementReplaced)} for {handlerType}");
 			updateActions.BeforeElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(beforeElementReplaced);
 			methodFound = true;
 		}
@@ -176,6 +180,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			nameof(ElementUpdateHandlerActions.AfterElementReplaced),
 			new[] { typeof(FrameworkElement), typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo afterElementReplaced)
 		{
+			_log($"Adding handler for {nameof(updateActions.AfterElementReplaced)} for {handlerType}");
 			updateActions.AfterElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(afterElementReplaced);
 			methodFound = true;
 		}
@@ -218,18 +223,19 @@ internal sealed class ElementUpdateAgent : IDisposable
 		return null;
 	}
 
-	private Action<Type[]?> CreateAction(MethodInfo update)
+	private Action<Type[]?> CreateAction(MethodInfo update, Type handlerType)
 	{
 		var action = CreateHandlerAction<Action<Type[]?>>(update);
 		return types =>
 		{
 			try
 			{
-				action(types);
+				_log($"Invoking '{update.Name}' on {handlerType.Name} (Action null: {action is null})");
+				action?.Invoke(types);
 			}
 			catch (Exception ex)
 			{
-				_log($"Exception from '{action}': {ex}");
+				_log($"Exception from '{update.Name}' on {handlerType.Name}: {ex}");
 			}
 		};
 	}

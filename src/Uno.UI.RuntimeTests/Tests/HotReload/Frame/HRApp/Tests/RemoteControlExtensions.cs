@@ -8,6 +8,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 using Windows.UI.Xaml;
 
@@ -36,15 +37,38 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-		var cts = new TaskCompletionSource();
-		ct.Register(() => cts.TrySetCanceled());
 
-		void UpdateReceived(object? sender, object? args) => cts.TrySetResult();
-
-		MetadataUpdaterHelper.MetadataUpdated += UpdateReceived;
-
-		await cts.Task;
+		var reloadWaiter = TypeMappingHelper.WaitToReload();
+		if (reloadWaiter != null)
+		{
+			// Reloads are paused, so don't wait for any update
+			return;
+		}
+		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 	}
+
+	public static void UpdateServerFileFireAndForget<T>(string originalText, string replacementText)
+		where T : FrameworkElement, new()
+	{
+		if (RemoteControlClient.Instance is null)
+		{
+			return;
+		}
+
+		var message = new T().CreateUpdateFileMessage(
+			originalText: originalText,
+			replacementText: replacementText);
+
+		if (message is null)
+		{
+			return;
+		}
+		Task.Run(() =>
+		{
+			_ = RemoteControlClient.Instance.SendMessage(message);
+		});
+	}
+
 
 	public static async Task UpdateServerFileAndRevert<T>(
 		string originalText,
