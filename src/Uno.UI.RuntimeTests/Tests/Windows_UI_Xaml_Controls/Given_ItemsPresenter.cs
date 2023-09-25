@@ -87,7 +87,7 @@ public class Given_ItemsPresenter
 
 		LayoutInformation.GetLayoutSlot(ic).Should().Be(new Rect(5, 5, 290, 290), Epsilon);
 		LayoutInformation.GetLayoutSlot(ip).Should().Be(new Rect(0, 0, 290, 290), Epsilon);
-		LayoutInformation.GetDesiredSize(ip).Should().Be(new Size (236, 288), Epsilon);
+		LayoutInformation.GetDesiredSize(ip).Should().Be(new Size(236, 288), Epsilon);
 		LayoutInformation.GetLayoutSlot(header).Should().Be(new Rect(100, 100, 90, 20), Epsilon);
 		LayoutInformation.GetLayoutSlot(footer).Should().Be(new Rect(100, 270, 90, 20), Epsilon);
 		LayoutInformation.GetLayoutSlot(panel).Should().Be(new Rect(100, 120, 90, 150), Epsilon);
