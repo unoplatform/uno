@@ -786,7 +786,8 @@ namespace Uno.UI.Samples.Tests
 							var methodArguments = testCase.Parameters;
 							if (test.PassFiltersAsFirstParameter)
 							{
-								methodArguments = methodArguments.ToImmutableArray().Insert(0, string.Join(";", config.Filters)).ToArray();
+								var configFilters = config.Filters ??= Array.Empty<string>();
+								methodArguments = methodArguments.ToImmutableArray().Insert(0, string.Join(";", configFilters)).ToArray();
 							}
 							if (test.RunsOnUIThread)
 							{
