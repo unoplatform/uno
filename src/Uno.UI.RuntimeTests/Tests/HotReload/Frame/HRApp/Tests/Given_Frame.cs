@@ -76,8 +76,11 @@ public class Given_Frame : BaseTestClass
 			FirstPageTextBlockChangedText,
 			() => frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText),
 			ct);
-	}
 
+		// Validate that the page has been returned to the original text
+		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+	}
+	
 	/// <summary>
 	/// Checks that a simple xaml change to the current page will be retained when
 	/// navigating forward to a new page and then going back to the original page	

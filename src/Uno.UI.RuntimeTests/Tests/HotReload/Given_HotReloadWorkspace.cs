@@ -19,6 +19,7 @@ using System.Threading;
 using System.Xml;
 using Windows.Storage.AccessCache;
 using System.Linq;
+using System.Collections.Immutable;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
@@ -53,9 +54,12 @@ internal partial class Given_HotReloadWorkspace
 	/// </remarks>
 	[TestMethod]
 	[Timeout(5 * 60 * 1000)]
-	public async Task When_HotReloadScenario()
+	[Filters]
+	public async Task When_HotReloadScenario(string filters)
 	{
-		var resultFile = await RunTestApp(CancellationToken.None);
+		// Remove this class and this method from the filters
+		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(x => x == nameof(Given_HotReloadWorkspace) || x == nameof(When_HotReloadScenario)));
+		var resultFile = await RunTestApp(filters, CancellationToken.None);
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
@@ -108,7 +112,7 @@ internal partial class Given_HotReloadWorkspace
 		}
 	}
 
-	public static async Task<string> RunTestApp(CancellationToken ct)
+	public static async Task<string> RunTestApp(string filters, CancellationToken ct)
 	{
 		var testOutput = Path.GetTempFileName();
 
@@ -128,8 +132,11 @@ internal partial class Given_HotReloadWorkspace
 				"Debug",
 
 				"--no-build",
+				"--",
 				"--uitest",
-				testOutput
+				testOutput,
+				"--filters",
+				filters
 			},
 			hrAppPath,
 			"HRApp",
