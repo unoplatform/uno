@@ -458,40 +458,30 @@ namespace Windows.UI.Xaml.Controls
 
 				var measuredSize = MeasureElement(view, unpaddedSize);
 
-				// Footers don't get counted in desiredSize
-				if (view != FooterContentControl)
+				if (isHorizontal)
 				{
-					if (isHorizontal)
+					if (!PanelIsScrollSpInfo || view == Panel)
 					{
 						desiredSize.Width += measuredSize.Width;
-						desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
 					}
-					else
+					desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
+				}
+				else
+				{
+					if (!PanelIsScrollSpInfo || view == Panel)
 					{
-						desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
 						desiredSize.Height += measuredSize.Height;
 					}
+					desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
 				}
 			}
 
-			// TODO: find a more precise condition for this
-			// From obsering ItemsPresenter in WinUI templates, the "ending" padding in
-			// the direction of Orientation is only counted when inside the template of ListView, GridView, etc.
-			if (isHorizontal)
-			{
-				return new Size(
-					desiredSize.Width + padding.Left + (TemplatedParent is Selector ? padding.Right : 0),
-					desiredSize.Height + padding.Top + padding.Bottom
-				);
-			}
-			else
-			{
-				return new Size(
-					desiredSize.Width + padding.Left + padding.Right,
-					desiredSize.Height + padding.Top + (TemplatedParent is Selector ? padding.Bottom : 0)
-				);
-			}
+			return new Size(
+				desiredSize.Width + padding.Left + padding.Right,
+				desiredSize.Height + padding.Top + padding.Bottom
+			);
 		}
+		private bool PanelIsScrollSpInfo => Panel is IScrollSnapPointsInfo;
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{
