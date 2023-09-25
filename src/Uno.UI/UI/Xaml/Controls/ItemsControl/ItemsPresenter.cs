@@ -474,11 +474,13 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			// The "ending" padding in the direction of Orientation is not counted
+			// TODO: find a more precise condition for this
+			// From obsering ItemsPresenter in WinUI templates, the "ending" padding in
+			// the direction of Orientation is only counted when inside the template of ListView, GridView, etc.
 			if (isHorizontal)
 			{
 				return new Size(
-					desiredSize.Width + padding.Left,
+					desiredSize.Width + padding.Left + (TemplatedParent is Selector ? padding.Right : 0),
 					desiredSize.Height + padding.Top + padding.Bottom
 				);
 			}
@@ -486,7 +488,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return new Size(
 					desiredSize.Width + padding.Left + padding.Right,
-					desiredSize.Height + padding.Top
+					desiredSize.Height + padding.Top + (TemplatedParent is Selector ? padding.Bottom : 0)
 				);
 			}
 		}
