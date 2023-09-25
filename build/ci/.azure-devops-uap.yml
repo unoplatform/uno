@@ -21,6 +21,10 @@ jobs:
   steps:
   - checkout: self
 
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
   - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
