@@ -22,10 +22,18 @@ namespace Uno.UI.Xaml
 
 		private readonly ManagedWeakReference _owner;
 
+		/// <summary>
+		/// Store the materialized value of the resource so it can be reused
+		/// in the context of Control.GetTemplateChild for a non-materialized x:Name.
+		/// This assumes that WeakResourceInitializer gets collected when materialized
+		/// in its target ResourceDictionary.
+		/// </summary>
+		private object? __value;
+
 		public WeakResourceInitializer(object owner, ResourceInitializerWithOwner initializer)
 		{
 			_owner = WeakReferencePool.RentWeakReference(this, owner);
-			Initializer = () => initializer(_owner?.Target);
+			Initializer = () => __value ??= initializer(_owner?.Target);
 		}
 
 		public ResourceDictionary.ResourceInitializer Initializer { get; }

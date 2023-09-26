@@ -514,14 +514,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private static object FindNameInScope(IFrameworkElement root, string name)
 		{
-			return root != null
+			if (root != null
 				&& name != null
-				&& NameScope.GetNameScope(root) is INameScope nameScope
-				&& nameScope.FindName(name) is DependencyObject element
-				// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
-				&& !(element is ElementStub)
-					? element
-					: null;
+				&& NameScope.GetNameScope(root) is INameScope nameScope)
+			{
+				return nameScope.FindName(name) switch
+				{
+					// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
+					ElementStub => null,
+
+					// Find by name may find a non-materialized x:Name
+					// in a resource dictionary. In this case, return the instance
+					// and let the normal scope registration replace the WeakResourceInitializer.
+					WeakResourceInitializer wri => wri.Initializer(),
+
+					DependencyObject element => element,
+					_ => null
+				};
+			}
+			else
+			{
+				return null;
+			}
 		}
 
 		private void CleanupView(View view)
