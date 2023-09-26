@@ -13,7 +13,6 @@ using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.WindowManagement;
-using static Android.Provider.CalendarContract;
 
 namespace Windows.UI.ViewManagement
 {
