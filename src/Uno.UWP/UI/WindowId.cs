@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Linq.Expressions;
 
 #if HAS_UNO_WINUI
 namespace Microsoft.UI;
@@ -6,6 +8,7 @@ namespace Microsoft.UI;
 namespace Windows.UI;
 #endif
 
+[DebuggerDisplay("{Value}")]
 public partial struct WindowId : IEquatable<WindowId>
 {
 	public ulong Value;
