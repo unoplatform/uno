@@ -42,7 +42,7 @@ public partial class Window
 	internal Window(WindowType windowType)
 	{
 #if WINUI_WINDOWING
-		_current = this; // TODO:MZ: Do we want this?
+		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
 		AppWindow = new AppWindow();
