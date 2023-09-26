@@ -325,6 +325,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented("using Uno.Extensions;");
 			writer.AppendLineIndented("using Uno;");
+			writer.AppendLineIndented("using Uno.UI.Helpers;");
 			writer.AppendLineIndented("using Uno.UI.Helpers.Xaml;");
 
 			writer.AppendLineInvariantIndented("using {0};", _defaultNamespace);
