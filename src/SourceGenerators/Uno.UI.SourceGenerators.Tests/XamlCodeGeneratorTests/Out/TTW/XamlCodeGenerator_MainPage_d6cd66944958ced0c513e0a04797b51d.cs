@@ -66,9 +66,9 @@ namespace TestRepro
 							global::Windows.UI.Xaml.Controls.TextBlock.TextProperty,
 							new Windows.UI.Xaml.Data.Binding()
 							{
-								Mode = BindingMode.OneTime,
+								Mode = global::Windows.UI.Xaml.Data.BindingMode.TwoWay,
 							}
-								.BindingApply(___b =>  /*defaultBindModeOneTime MyArray.Length*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), null ))
+								.BindingApply(___b =>  /*defaultBindModeOneTime ViewModel.P*/ global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, __that, ___ctx => ___ctx is global::TestRepro.MainPage ___tctx ? (TryGetInstance_xBind_1(___tctx, out var bindResult1) ? (true, bindResult1) : (false, default)) : (false, default), (___ctx, __value) => { if(___ctx is global::TestRepro.MainPage ___tctx) TrySetInstance_xBind_1(___tctx, __value); } , new [] {"ViewModel.P"}))
 						);
 						global::Uno.UI.FrameworkElementHelper.SetBaseUri(c0, __baseUri_MainPage_d6cd66944958ced0c513e0a04797b51d);
 						c0.CreationComplete();
@@ -183,9 +183,16 @@ namespace TestRepro
 		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
 		{
 			o = null;
-			var sub1 = ___tctx.MyArray;
+			var sub1 = ___tctx.ViewModel;
 			if (sub1 == null) return false;
-			o = sub1.Length;
+			o = sub1.P;
+			return true;
+		}
+		private static bool TrySetInstance_xBind_1(global::TestRepro.MainPage ___tctx, object __value)
+		{
+			var sub1 = ___tctx.ViewModel;
+			if (sub1 == null) return false;
+			sub1.P = (string)global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof(string), __value);
 			return true;
 		}
 	}
