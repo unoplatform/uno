@@ -53,9 +53,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			if (Flyout?.IsOpen ?? false)
+			if (Flyout is { IsOpen: true } flyout)
 			{
-				Flyout?.Close();
+				flyout.Close();
 			}
 		}
 	}

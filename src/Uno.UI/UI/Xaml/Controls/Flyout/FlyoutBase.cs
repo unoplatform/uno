@@ -305,7 +305,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				OnClosed();
 
-				if (_openFlyouts.IndexOf(this) == 0)
+				if (_openFlyouts.Count > 0 && _openFlyouts[0] == this)
 				{
 					_openFlyouts.Remove(this);
 

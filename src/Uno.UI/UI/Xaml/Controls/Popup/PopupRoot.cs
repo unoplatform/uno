@@ -25,8 +25,9 @@ internal partial class PopupRoot : Panel
 
 	private void CloseFlyouts()
 	{
-		foreach (var reference in Enumerable.Reverse(_openPopups))
+		for (var i = _openPopups.Count - 1; i >= 0; i--)
 		{
+			var reference = _openPopups[i];
 			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
 			{
 				var f = popup.AssociatedFlyout;

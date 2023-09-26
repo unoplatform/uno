@@ -874,7 +874,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -938,7 +938,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -1048,7 +1048,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -1101,7 +1101,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -1147,7 +1147,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -1200,7 +1200,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -1251,7 +1251,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 					""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{
@@ -1378,7 +1378,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				""";
 
-				Assert.AreEqual(expected.ReplaceLineEndings("\n"), output);
+				Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 			}
 			finally
 			{

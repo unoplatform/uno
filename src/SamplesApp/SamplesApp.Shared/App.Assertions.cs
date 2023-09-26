@@ -42,10 +42,12 @@ partial class App
 	{
 		//On Wasm and XamlIslands the DisplayName is currently empty, as it is not being load from manifest
 #if !__WASM__
+#if __SKIA__
 		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
 		{
 			return;
 		}
+#endif
 
 		var displayName = Package.Current.DisplayName;
 
