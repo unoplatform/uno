@@ -147,7 +147,7 @@ stages:
   jobs:
   - template: .azure-devops-uap.yml
     parameters:
-      vmImage: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
 
 - stage: test_finalization
   displayName: Tests - Results

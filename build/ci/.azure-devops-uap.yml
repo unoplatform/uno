@@ -5,8 +5,7 @@ jobs:
 - job: UAP_Build
   displayName: 'Build UWP Samples App UI Tests'
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
