@@ -40,8 +40,13 @@ partial class App
 	/// </summary>
 	public void AssertIssue12936()
 	{
-		//On Wasm the DisplayName is currently empty, as it is not being load from manifest
+		//On Wasm and XamlIslands the DisplayName is currently empty, as it is not being load from manifest
 #if !__WASM__
+		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+		{
+			return;
+		}
+
 		var displayName = Package.Current.DisplayName;
 
 		Assert.IsFalse(string.IsNullOrEmpty(displayName), "DisplayName is empty.");
@@ -57,6 +62,11 @@ partial class App
 	{
 		//The ApplicationModel Package properties are currently only supported on Skia
 #if __SKIA__
+		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+		{
+			return;
+		}
+
 		var description = Package.Current.Description;
 		var publisherName = Package.Current.PublisherDisplayName;
 
