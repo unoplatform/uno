@@ -13,13 +13,12 @@ using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : INativeWindowWrapper
+internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
 	private readonly ActivationPreDrawListener _preDrawListener;
-
-	private Size _previousWindowSize = new Size(-1, -1);
+	private Rect _previousTrueVisibleBounds;
 
 	internal static NativeWindowWrapper Instance => _instance.Value; // TODO: Temporary until proper multi-window support is added.
 
@@ -29,32 +28,20 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 	}
 
-	public event EventHandler<Size> SizeChanged;
-	public event EventHandler<CoreWindowActivationState> ActivationChanged;
-	public event EventHandler<bool> VisibilityChanged;
-	public event EventHandler Closed;
-	public event EventHandler Shown;
-
-	public bool Visible { get; private set; }
-
 	internal int SystemUiVisibility { get; set; }
 
-	public void Activate()
+	public override void Activate()
 	{
 		// TODO: MZ: Bring window to the foreground?
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible)
-	{
-		Visible = visible;
-		VisibilityChanged?.Invoke(this, visible);
-	}
-
-	internal void OnNativeClosed() => Closed?.Invoke(this, EventArgs.Empty);
+	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
 	internal void OnActivityCreated() => AddPreDrawListener();
 
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationChanged?.Invoke(this, state);
+	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
+
+	internal void OnNativeClosed() => RaiseClosed();
 
 	internal bool IsStatusBarTranslucent()
 	{
@@ -71,22 +58,19 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 	{
 		var (windowSize, visibleBounds, trueVisibleBounds) = GetVisualBounds();
 
-		ApplicationView.GetForCurrentView()?.SetVisibleBounds(visibleBounds);
-		ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
+		Bounds = new Rect(default, windowSize);
+		VisibleBounds = visibleBounds;
 
-		if (_previousWindowSize != windowSize)
+		if (_previousTrueVisibleBounds != trueVisibleBounds)
 		{
-			_previousWindowSize = windowSize;
+			_previousTrueVisibleBounds = trueVisibleBounds;
 
-			SizeChanged?.Invoke(this, windowSize);
+			// TODO: Adjust whe multiple windows are supported on Android
+			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
 		}
 	}
 
-	public void Show()
-	{
-		RemovePreDrawListener();
-		Shown?.Invoke(this, EventArgs.Empty);
-	}
+	protected override void ShowCore() => RemovePreDrawListener();
 
 	private (Size windowSize, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
 	{

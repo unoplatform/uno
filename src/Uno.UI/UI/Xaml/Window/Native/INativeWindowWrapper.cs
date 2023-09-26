@@ -9,9 +9,17 @@ namespace Uno.UI.Xaml.Controls;
 
 internal interface INativeWindowWrapper
 {
+	Rect Bounds { get; }
+
+	Rect VisibleBounds { get; }
+
+	CoreWindowActivationState ActivationState { get; }
+
 	bool Visible { get; }
 
 	event EventHandler<Size>? SizeChanged;
+
+	event EventHandler<Rect>? VisibleBoundsChanged;
 
 	event EventHandler<CoreWindowActivationState>? ActivationChanged;
 

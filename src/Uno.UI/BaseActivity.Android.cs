@@ -18,6 +18,7 @@ using Microsoft.UI.Xaml;
 using Android.OS;
 using Windows.UI.ViewManagement;
 using Uno.UI.Xaml.Controls;
+using Windows.UI.WindowManagement;
 
 namespace Uno.UI
 {
@@ -158,7 +159,7 @@ namespace Uno.UI
 		{
 			// Eagerly create the ApplicationView instance for IBaseActivityEvents
 			// to be useable (specifically for the Create event)
-			ApplicationView.GetForCurrentView();
+			ApplicationView.InitializeForWindowId(AppWindow.MainWindowId);
 
 			NotifyCreatingInstance();
 		}

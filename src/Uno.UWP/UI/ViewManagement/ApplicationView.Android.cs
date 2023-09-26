@@ -12,8 +12,6 @@ namespace Windows.UI.ViewManagement
 	{
 		public ApplicationView()
 		{
-			Initialize();
-
 			TryInitializeSpanningRectsExtension();
 		}
 
@@ -107,11 +105,6 @@ namespace Windows.UI.ViewManagement
 			}
 
 			return activity;
-		}
-
-		private void Initialize()
-		{
-			_instance = this;
 		}
 	}
 }

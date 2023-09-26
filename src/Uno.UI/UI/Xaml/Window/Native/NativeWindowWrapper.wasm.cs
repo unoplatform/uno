@@ -3,6 +3,7 @@ using System.Runtime.InteropServices.JavaScript;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+
 namespace Uno.UI.Xaml.Controls;
 
 public partial class NativeWindowWrapper : INativeWindowWrapper

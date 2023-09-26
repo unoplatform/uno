@@ -142,8 +142,7 @@ namespace SamplesApp
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
-			//TODO:MZ: Uncomment and enable
-			//AssertInitialWindowSize();
+			AssertInitialWindowSize();
 
 
 			InitializeFrame(e.Arguments);

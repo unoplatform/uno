@@ -50,7 +50,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	public abstract XamlRoot? XamlRoot { get; }
 
-	public Rect Bounds { get; private set; }
+	public Rect Bounds => NativeWindowWrapper?.Bounds ?? default;
 
 	public virtual void Activate()
 	{
@@ -80,6 +80,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		nativeWindow.SizeChanged += OnNativeSizeChanged;
 		nativeWindow.Closed += OnNativeClosed;
 		nativeWindow.Shown += OnNativeShown;
+		nativeWindow.VisibleBoundsChanged += OnNativeVisibleBoundsChanged;
 
 		NativeWindowWrapper = nativeWindow;
 	}
@@ -90,7 +91,6 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
-		Bounds = new Rect(0, 0, size.Width, size.Height);
 		OnSizeChanged(size);
 #if __SKIA__ || __WASM__ // TODO:MZ: What about Android & iOS
 		XamlRoot?.InvalidateMeasure(); // Should notify before or after?
@@ -101,10 +101,10 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		CoreWindow?.OnSizeChanged(windowSizeChanged);
 #endif
 		SizeChanged?.Invoke(this, windowSizeChanged);
-
-		// TODO:MZ: This should be probably platform-specific and also done per Window.
-		ApplicationView.GetForCurrentView().SetVisibleBounds(Bounds);
 	}
+
+	private void OnNativeVisibleBoundsChanged(object? sender, Rect args) =>
+		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(args);
 
 	protected virtual void OnSizeChanged(Size newSize) { }
 
