@@ -1301,9 +1301,7 @@ public partial class TabView : Control
 							var listview = m_listView;
 							if (listview != null)
 							{
-								// TODO: Uno specific: Apply visibility directly to scroll viewer
-								// until attached property template binding is supported (issue #4259)
-								tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Visible);
+								ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Visible);
 								UpdateScrollViewerDecreaseAndIncreaseButtonsViewState();
 							}
 						}
@@ -1318,9 +1316,7 @@ public partial class TabView : Control
 							{
 								if (shouldUpdateWidths && fillAllAvailableSpace)
 								{
-									// TODO: Uno specific: Apply visibility directly to scroll viewer
-									// until attached property template binding is supported (issue #4259)
-									tabListView?.SetHorizontalScrollBarVisibility(ScrollBarVisibility.Hidden);
+									ScrollViewer.SetHorizontalScrollBarVisibility(listview, ScrollBarVisibility.Hidden);
 								}
 								else
 								{
@@ -1356,7 +1352,7 @@ public partial class TabView : Control
 								var visible = itemsPresenter.ActualWidth > availableWidth;
 								// TODO: Uno specific: Apply visibility directly to scroll viewer
 								// until attached property template binding is supported (issue #4259)
-								tabListView?.SetHorizontalScrollBarVisibility(visible
+								ScrollViewer.SetHorizontalScrollBarVisibility(listview, visible
 									? ScrollBarVisibility.Visible
 									: ScrollBarVisibility.Hidden);
 								if (visible)
