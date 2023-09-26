@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,7 +14,7 @@ namespace Windows.UI.WindowManagement;
 
 partial class AppWindow
 {
-	private static readonly Dictionary<WindowId, AppWindow> _appWindowIdMap = new();
+	private static readonly ConcurrentDictionary<WindowId, AppWindow> _windowIdMap = new();
 	private static ulong _windowIdIterator;
 
 #if HAS_UNO_WINUI
@@ -21,7 +22,7 @@ partial class AppWindow
 #else
 	internal
 #endif
-	WindowId WindowId
+	WindowId Id
 	{ get; }
 
 #if HAS_UNO_WINUI
@@ -29,5 +30,5 @@ partial class AppWindow
 #else
 	internal
 #endif
-	static AppWindow GetFromWindowId(WindowId windowId) => _appWindowIdMap[windowId];
+	static AppWindow GetFromWindowId(WindowId windowId) => _windowIdMap[windowId];
 }

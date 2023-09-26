@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.UI;
+﻿using System.Threading;
+using Windows.UI.ViewManagement;
 
 #if HAS_UNO_WINUI
 namespace Microsoft.UI.Windowing;
@@ -16,7 +11,11 @@ public partial class AppWindow
 {
 	internal AppWindow()
 	{
-		WindowId = new(Interlocked.Increment(ref _windowIdIterator));
-		_appWindowIdMap[WindowId] = this;
+		Id = new(Interlocked.Increment(ref _windowIdIterator));
+
+		_windowIdMap[Id] = this;
+		ApplicationView.InitializeForWindowId(Id);
 	}
+
+	internal static WindowId MainWindowId { get; } = new WindowId(1);
 }
