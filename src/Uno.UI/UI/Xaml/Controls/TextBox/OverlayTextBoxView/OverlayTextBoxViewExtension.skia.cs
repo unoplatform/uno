@@ -2,6 +2,7 @@
 
 using System;
 using System.Globalization;
+using Windows.Foundation;
 using Uno.Disposables;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml;
@@ -115,6 +116,7 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 	{
 		UpdateSize();
 		UpdatePosition();
+		UpdateClip();
 	}
 
 	public void UpdateProperties()
@@ -163,6 +165,51 @@ internal abstract class OverlayTextBoxViewExtension : IOverlayTextBoxViewExtensi
 			_lastPosition = new Point(pointX, pointY);
 			_textBoxView.SetPosition(pointX, pointY);
 		}
+	}
+
+	public void UpdateClip()
+	{
+		var clip = CalculateClipping(_contentElement.FindFirstChild<TextBlock>(), _contentElement.GetParent() as FrameworkElement);
+		_textBoxView?.SetClip((int)clip.clippingLeft, (int)clip.clippingRight, (int)clip.clippingTop, (int)clip.clippingBottom);
+
+		if (_lastSize.Width < clip.clippingLeft + clip.clippingRight || _lastSize.Height < clip.clippingTop + clip.clippingBottom)
+		{
+			_textBoxView?.SetVisibility(false);
+		}
+		else
+		{
+			_textBoxView?.SetVisibility(true);
+			if (_owner.TextBox?.FocusState != FocusState.Unfocused)
+			{
+				_textBoxView?.SetFocus();
+			}
+		}
+	}
+
+	private (double clippingLeft, double clippingRight, double clippingTop, double clippingBottom) CalculateClipping(FrameworkElement element, FrameworkElement? parent)
+	{
+		if (parent == null)
+		{
+			return (0, 0, 0, 0);
+		}
+
+		var elementRect = element.TransformToVisual(null).TransformBounds(new Rect(0, 0, element.ActualWidth, element.ActualHeight));
+		var parentRect = parent.TransformToVisual(null).TransformBounds(new Rect(0, 0, parent.ActualWidth, parent.ActualHeight));
+
+		if (parent is Windows.UI.Xaml.Controls.ScrollContentPresenter)
+		{
+			// SCP can lie wildly about bounds.
+			parentRect = elementRect;
+		}
+
+		var recursive = CalculateClipping(element, parent.GetParent() as FrameworkElement);
+
+		var clippingTop = (parentRect.Top - elementRect.Top).AtLeast(recursive.clippingTop).AtLeast(0);
+		var clippingBottom = (elementRect.Bottom - parentRect.Bottom).AtLeast(recursive.clippingBottom).AtLeast(0);
+		var clippingLeft = (parentRect.Left - elementRect.Left).AtLeast(recursive.clippingLeft).AtLeast(0);
+		var clippingRight = (elementRect.Right - parentRect.Right).AtLeast(recursive.clippingRight).AtLeast(0);
+
+		return (clippingLeft, clippingRight, clippingTop, clippingBottom);
 	}
 
 	public void SetPasswordRevealState(PasswordRevealState revealState)

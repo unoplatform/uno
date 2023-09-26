@@ -29,6 +29,10 @@ internal interface IOverlayTextBoxView
 
 	void SetFocus();
 
+	void SetClip(int clipLeft, int clipRight, int clipTop, int clipBottom);
+
+	void SetVisibility(bool visible);
+
 	void SetPasswordRevealState(PasswordRevealState passwordRevealState);
 
 	void AddToTextInputLayer(XamlRoot xamlRoot);

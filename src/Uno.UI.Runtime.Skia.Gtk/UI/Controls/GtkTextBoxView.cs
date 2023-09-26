@@ -23,6 +23,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	private static bool _warnedAboutSelectionColorChanges;
 
+	private (int x, int y) _position = (-1, -1);
+
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
@@ -90,6 +92,27 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void SetFocus() => InputWidget.HasFocus = true;
 
+	public void SetClip(int clipLeft, int clipRight, int clipTop, int clipBottom)
+	{
+		if (_position.x != -1)
+		{
+			RootWidget.GetSizeRequest(out var inputWidth, out var inputHeight);
+
+			var clip = new Gdk.Rectangle(
+				Math.Min(_position.x + inputWidth, _position.x + clipLeft),
+				Math.Min(_position.y + inputHeight, _position.y + clipTop),
+				Math.Max(0, inputWidth - clipRight - clipLeft),
+				Math.Max(0, inputHeight - clipBottom - clipTop)
+			);
+			RootWidget.SetClip(clip);
+		}
+	}
+
+	public void SetVisibility(bool visible)
+	{
+		RootWidget.Visible = visible;
+	}
+
 	public void SetSize(double width, double height)
 	{
 		RootWidget.SetSizeRequest((int)width, (int)height);
@@ -101,6 +124,7 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 		if (RootWidget.Parent is Fixed layer)
 		{
 			layer.Move(RootWidget, (int)x, (int)y);
+			_position = ((int)x, (int)y);
 		}
 	}
 

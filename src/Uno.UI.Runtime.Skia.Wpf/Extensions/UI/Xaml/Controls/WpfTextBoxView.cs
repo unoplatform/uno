@@ -1,10 +1,13 @@
 ﻿#nullable enable
 
 using System;
+using System.Windows;
+using System.Windows.Media;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml;
+using Visibility = System.Windows.Visibility;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfElement = System.Windows.FrameworkElement;
@@ -61,6 +64,30 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	public abstract void UpdateProperties(Windows.UI.Xaml.Controls.TextBox textBox);
 
 	public abstract void SetFocus();
+
+	public void SetClip(int clipLeft, int clipRight, int clipTop, int clipBottom)
+	{
+		var inputHeight = RootElement.ActualHeight;
+		var inputWidth = RootElement.ActualWidth;
+
+		var clip = new RectangleGeometry(new Rect(
+			Math.Min(inputWidth, clipLeft),
+			Math.Min(inputHeight, clipTop),
+			Math.Max(0, inputWidth - clipRight - clipLeft),
+			Math.Max(0, inputHeight - clipBottom - clipTop)
+		));
+
+		if (RootElement.IsMeasureValid)
+		{
+			RootElement.Clip = clip;
+		}
+		else
+		{
+			RootElement.Clip = null;
+		}
+	}
+
+	public void SetVisibility(bool visible) => RootElement.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
 	public void SetSize(double width, double height)
 	{
