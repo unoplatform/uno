@@ -179,7 +179,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.Core.Extensions.Logging.Singleton" Version="4.0.0-dev.7" />
 		<PackageReference Include="Uno.Fonts.Fluent" />
-		<PackageReference Include="Uno.Resizetizer" />
+		<!--<PackageReference Include="Uno.Resizetizer" />-->
 	</ItemGroup>
 
 	<ItemGroup>
@@ -215,14 +215,14 @@
 
 	<Import Project="..\..\..\build\nuget\uno.winui.single-project.targets" />
 
-	<Target Name="_UnoRemoveGeneratedIcon" 
+	<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
+	<!--<Target Name="_UnoRemoveGeneratedIcon" 
 			BeforeTargets="CoreCompile"
 			DependsOnTargets="_AddResizetizerWindowIconExtensions">
-		<!-- Remove Uno.Resizetizer generated SetIcon that is compatible only with WinUI -->
 		<ItemGroup>
 			<Compile Remove="@(_WindowIconExtension)"/>
 		</ItemGroup>
-	</Target>
+	</Target>-->
 
 	<Target Name="GenerateVersion" 
 			BeforeTargets="BeforeBuild;_CompileAppManifest;_GetAndroidPackageName" 
