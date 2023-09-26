@@ -1,4 +1,8 @@
-using Windows.ApplicationModel.Activation;
+#if HAS_UNO_WINUI
+using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
+#else
+using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
 
 namespace UnoApp50
 {
