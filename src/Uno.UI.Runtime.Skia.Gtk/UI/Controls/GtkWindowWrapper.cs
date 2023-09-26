@@ -13,7 +13,7 @@ using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
-internal class GtkWindowWrapper : INativeWindowWrapper
+internal class GtkWindowWrapper : NativeWindowWrapperBase
 {
 	private bool _wasShown;
 	private readonly UnoGtkWindow _gtkWindow;
@@ -29,19 +29,23 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 		_gtkWindow.WindowStateEvent += OnWindowStateChanged;
 	}
 
-	public async void Show()
+	/// <summary>
+	/// GTK overrides show as the initialization is asynchronous.
+	/// </summary>
+	public override async void Show()
 	{
 		try
 		{
 			await _gtkWindow.Host.InitializeAsync();
-			_gtkWindow.ShowAll();
-			Shown?.Invoke(this, EventArgs.Empty);
+			base.Show();
 		}
 		catch (Exception ex)
 		{
 			this.Log().Error("Failed to initialize the UnoGtkWindow", ex);
 		}
 	}
+
+	protected override void ShowCore() => _gtkWindow.ShowAll();
 
 	private void OnWindowShown(object? sender, EventArgs e)
 	{
@@ -51,20 +55,9 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 
 	public UnoGtkWindow NativeWindow => _gtkWindow;
 
-	public bool Visible => _gtkWindow.IsVisible;
+	public override void Activate() => _gtkWindow.Activate();
 
-	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
-	public event EventHandler<bool>? VisibilityChanged;
-	public event EventHandler? Closed;
-	public event EventHandler<Size>? SizeChanged;
-	public event EventHandler? Shown;
-
-	public void Activate() => _gtkWindow.Activate();
-
-	private void OnWindowClosed(object? sender, EventArgs e)
-	{
-		Closed?.Invoke(this, EventArgs.Empty);
-	}
+	private void OnWindowClosed(object? sender, EventArgs e) => RaiseClosed();
 
 	private void OnWindowClosing(object sender, DeleteEventArgs args)
 	{
@@ -87,10 +80,7 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 		Main.Quit();
 	}
 
-	private void OnHostSizeChanged(object? sender, Windows.Foundation.Size e)
-	{
-		SizeChanged?.Invoke(this, e);
-	}
+	private void OnHostSizeChanged(object? sender, Windows.Foundation.Size size) => Bounds = new Rect(default, size);
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 	{
@@ -145,25 +135,25 @@ internal class GtkWindowWrapper : INativeWindowWrapper
 
 		if (!focused && focusChanged)
 		{
-			ActivationChanged?.Invoke(this, Windows.UI.Core.CoreWindowActivationState.Deactivated);
+			ActivationState = CoreWindowActivationState.Deactivated;
 		}
 
 		if (isVisibleChanged)
 		{
 			if (isVisible)
 			{
-				winUIApplication?.RaiseLeavingBackground(() => VisibilityChanged?.Invoke(this, true));
+				winUIApplication?.RaiseLeavingBackground(() => Visible = _gtkWindow.IsVisible);
 			}
 			else
 			{
-				VisibilityChanged?.Invoke(this, false);
+				Visible = _gtkWindow.IsVisible;
 				winUIApplication?.RaiseEnteredBackground(null);
 			}
 		}
 
 		if (focused && focusChanged)
 		{
-			ActivationChanged?.Invoke(this, Windows.UI.Core.CoreWindowActivationState.CodeActivated);
+			ActivationState = Windows.UI.Core.CoreWindowActivationState.CodeActivated;
 		}
 	}
 }

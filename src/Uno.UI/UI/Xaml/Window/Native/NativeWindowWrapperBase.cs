@@ -74,7 +74,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public abstract void Activate();
 
-	public void Show()
+	public virtual void Show()
 	{
 		ShowCore();
 		Shown?.Invoke(this, EventArgs.Empty);
