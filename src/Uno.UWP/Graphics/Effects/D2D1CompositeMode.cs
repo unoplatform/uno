@@ -26,7 +26,7 @@ namespace Windows.Graphics.Effects
 		DestinationAtop = 7,
 		Xor = 8,
 		Add = 9, // Plus
-		Copy = 10, // SourceCopy
+		Copy = 10,
 		//BoundedCopy = 11, // Note: Composition doesn't support BoundedCopy yet (as of 10.0.25941.1000)
 		MaskInvert = 12
 	}

@@ -1628,6 +1628,8 @@ namespace Windows.UI.Composition
 		{
 			if (_currentBounds != bounds || _filter is null)
 			{
+				_isCurrentInputBackdrop = false;
+				HasBackdropBrushInput = false;
 				_filter = GenerateEffectFilter(_effect, bounds) ?? throw new NotSupportedException($"Unsupported effect description.\r\nEffect name: {_effect.Name}");
 				_currentBounds = bounds;
 			}
