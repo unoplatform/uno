@@ -32,7 +32,8 @@ internal partial class PopupPanel : Panel
 		get => _popup?.Target as Popup;
 		set
 		{
-			_popup = new WeakReference(value);
+			WeakReferencePool.ReturnWeakReference(this, _popup);
+			_popup = WeakReferencePool.RentWeakReference(this, value);
 		}
 	}
 #else
