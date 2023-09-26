@@ -119,7 +119,6 @@ internal partial class Given_HotReloadWorkspace
 		var hrAppPath = GetHotReloadAppPath();
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
-
 		var p = await ProcessHelpers.RunProcess(
 			ct,
 			"dotnet",
@@ -160,6 +159,7 @@ internal partial class Given_HotReloadWorkspace
 
 	public static async Task BuildTestApp()
 	{
+		var builder = new StringBuilder();
 		var process = ProcessHelpers.StartProcess(
 			"dotnet",
 			new() {
@@ -173,14 +173,15 @@ internal partial class Given_HotReloadWorkspace
 				"Debug"
 			},
 			GetHotReloadAppPath(),
-			"HRAppBuild"
+			"HRAppBuild",
+			output: builder
 		);
 
 		await process.WaitForExitAsync();
 
 		if (process.ExitCode != 0)
 		{
-			throw new InvalidOperationException("Failed to build app");
+			throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
 		}
 	}
 
