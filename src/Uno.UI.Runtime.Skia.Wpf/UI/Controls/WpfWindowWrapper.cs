@@ -10,7 +10,7 @@ using WinUIApplication = Windows.UI.Xaml.Application;
 
 namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 
-internal class WpfWindowWrapper : INativeWindowWrapper
+internal class WpfWindowWrapper : NativeWindowWrapperBase
 {
 	private readonly UnoWpfWindow _wpfWindow;
 
@@ -18,40 +18,24 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
 		_wpfWindow.Host.SizeChanged += OnHostSizeChanged;
-		_wpfWindow.Closing += OnClosing;
-		_wpfWindow.Activated += OnActivated;
-		_wpfWindow.Deactivated += OnDeactivated;
-		_wpfWindow.IsVisibleChanged += OnIsVisibleChanged;
-		_wpfWindow.Closed += OnClosed;
+		_wpfWindow.Closing += OnNativeClosing;
+		_wpfWindow.Activated += OnNativeActivated;
+		_wpfWindow.Deactivated += OnNativeDeactivated;
+		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
+		_wpfWindow.Closed += OnNativeClosed;
 	}
 
 	public UnoWpfWindow NativeWindow => _wpfWindow;
 
-	public bool Visible => _wpfWindow.IsVisible;
+	protected override void ShowCore() => _wpfWindow.Show();
 
-	public event EventHandler<Size>? SizeChanged;
+	public override void Activate() => _wpfWindow.Activate();
 
-	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
+	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => Bounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
 
-	public event EventHandler<bool>? VisibilityChanged;
+	private void OnNativeClosed(object? sender, EventArgs e) => RaiseClosed();
 
-	public event EventHandler? Closed;
-	public event EventHandler? Shown;
-
-	public void Show()
-	{
-		_wpfWindow.Show();
-		Shown?.Invoke(this, EventArgs.Empty);
-	}
-
-	public void Activate() => _wpfWindow.Activate();
-
-	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) =>
-		SizeChanged?.Invoke(this, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
-
-	private void OnClosed(object? sender, EventArgs e) => Closed?.Invoke(this, EventArgs.Empty);
-
-	private void OnClosing(object? sender, CancelEventArgs e)
+	private void OnNativeClosing(object? sender, CancelEventArgs e)
 	{
 		// TODO: Support multi-window approach properly #8341
 		var manager = SystemNavigationManagerPreview.GetForCurrentView();
@@ -69,26 +53,24 @@ internal class WpfWindowWrapper : INativeWindowWrapper
 		WinUIApplication.Current.RaiseSuspending();
 	}
 
-	private void OnDeactivated(object? sender, EventArgs e) =>
-		ActivationChanged?.Invoke(this, Windows.UI.Core.CoreWindowActivationState.Deactivated);
+	private void OnNativeDeactivated(object? sender, EventArgs e) => ActivationState = CoreWindowActivationState.Deactivated;
 
-	private void OnActivated(object? sender, EventArgs e) =>
-		ActivationChanged?.Invoke(this, Windows.UI.Core.CoreWindowActivationState.PointerActivated);
+	private void OnNativeActivated(object? sender, EventArgs e) => ActivationState = CoreWindowActivationState.PointerActivated;
 
-	private void OnIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
 	{
-		var isVisible = (bool)e.NewValue;
-
-		if (isVisible)
-		{
-			// TODO:MZ: Only do this for single Window (but visibilityChanged always)
-			WinUIApplication.Current?.RaiseLeavingBackground(() => VisibilityChanged?.Invoke(this, isVisible));
-		}
-		else if (isVisible)
-		{
-			VisibilityChanged?.Invoke(this, _wpfWindow.IsVisible);
-			// TODO:MZ: Only do this for single Window!
-			WinUIApplication.Current?.RaiseEnteredBackground(null);
-		}
+		Visible = _wpfWindow.IsVisible;
+		// TODO:MZ: Incorporate RaiseLeavingBackground and RaiseEnteredBackground in general manner
+		//if (isVisible)
+		//{
+		//	// TODO:MZ: Only do this for single Window (but visibilityChanged always)
+		//	WinUIApplication.Current?.RaiseLeavingBackground(() => VisibilityChanged?.Invoke(this, isVisible));
+		//}
+		//else if (isVisible)
+		//{
+		//	VisibilityChanged?.Invoke(this, _wpfWindow.IsVisible);
+		//	// TODO:MZ: Only do this for single Window!
+		//	WinUIApplication.Current?.RaiseEnteredBackground(null);
+		//}
 	}
 }

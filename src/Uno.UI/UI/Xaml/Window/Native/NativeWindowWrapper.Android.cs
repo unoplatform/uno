@@ -20,7 +20,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private Rect _previousTrueVisibleBounds;
 
-	internal static NativeWindowWrapper Instance => _instance.Value; // TODO: Temporary until proper multi-window support is added.
+	internal static NativeWindowWrapper Instance => _instance.Value; // TODO: Temporary until proper multi-window support is added #13827
 
 	public NativeWindowWrapper()
 	{
@@ -65,7 +65,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 			_previousTrueVisibleBounds = trueVisibleBounds;
 
-			// TODO: Adjust whe multiple windows are supported on Android
+			// TODO: Adjust when multiple windows are supported on Android #13827
 			ApplicationView.GetForCurrentView()?.SetTrueVisibleBounds(trueVisibleBounds);
 		}
 	}
