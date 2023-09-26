@@ -80,7 +80,11 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		Main.Quit();
 	}
 
-	private void OnHostSizeChanged(object? sender, Windows.Foundation.Size size) => Bounds = new Rect(default, size);
+	private void OnHostSizeChanged(object? sender, Windows.Foundation.Size size)
+	{
+		Bounds = new Rect(default, size);
+		VisibleBounds = Bounds;
+	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)
 	{

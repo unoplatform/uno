@@ -33,7 +33,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		{
 			if (_visibleBounds != value)
 			{
-				_visibleBounds = value; 
+				_visibleBounds = value;
 				VisibleBoundsChanged?.Invoke(this, value);
 			}
 		}
