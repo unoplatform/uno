@@ -185,7 +185,7 @@
 	<Target Name="BuildCIMobile">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="..\src\Uno.UI-netcoremobile-only.slnf"
+             Projects="filters\Uno.UI-packages-netcoremobile.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
