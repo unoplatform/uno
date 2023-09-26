@@ -2,12 +2,9 @@
 using System.Runtime.CompilerServices;
 using Android.App;
 using Android.Views;
-using Uno.Extensions;
-using Uno.Foundation.Logging;
 using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Uno.UI.ViewManagement;
 
 namespace Windows.UI.ViewManagement
 {
@@ -17,15 +14,8 @@ namespace Windows.UI.ViewManagement
 		{
 			Initialize();
 
-			if (ContextHelper.Current is IBaseActivityEvents activityEvents)
-			{
-				BaseActivityEvents = activityEvents;
-			}
-
 			TryInitializeSpanningRectsExtension();
 		}
-
-		internal IBaseActivityEvents BaseActivityEvents { get; private set; }
 
 		public bool IsScreenCaptureEnabled
 		{
