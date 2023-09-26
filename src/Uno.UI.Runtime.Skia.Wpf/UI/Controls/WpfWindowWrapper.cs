@@ -31,7 +31,11 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate() => _wpfWindow.Activate();
 
-	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e) => Bounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
+	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
+	{
+		Bounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
+		VisibleBounds = Bounds;
+	}
 
 	private void OnNativeClosed(object? sender, EventArgs e) => RaiseClosed();
 
