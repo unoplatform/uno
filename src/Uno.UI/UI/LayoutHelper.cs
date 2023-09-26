@@ -93,53 +93,41 @@ namespace Uno.UI
 		}
 
 		[Pure]
-		internal static (Point offset, bool overflow) GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
+		internal static Point GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
 		{
-			// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
-			var offset = new Point(
-				clientSize.Width - renderSize.Width,
-				clientSize.Height - renderSize.Height
-			);
-
-			var overflow = false;
-
+			double offsetX = 0;
+			double offsetY = 0;
 			switch (e.HorizontalAlignment)
 			{
 				case HorizontalAlignment.Stretch when renderSize.Width > clientSize.Width:
-					offset.X = 0;
-					overflow = true;
-					break;
 				case HorizontalAlignment.Left:
-					offset.X = 0;
+					offsetX = 0;
 					break;
 				case HorizontalAlignment.Stretch:
 				case HorizontalAlignment.Center:
-					offset.X *= 0.5;
+					offsetX = (clientSize.Width - renderSize.Width) / 2.0;
 					break;
 				case HorizontalAlignment.Right:
-					offset.X *= 1;
+					offsetX = clientSize.Width - renderSize.Width;
 					break;
 			}
 
 			switch (e.VerticalAlignment)
 			{
 				case VerticalAlignment.Stretch when renderSize.Height > clientSize.Height:
-					offset.Y = 0;
-					overflow = true;
-					break;
 				case VerticalAlignment.Top:
-					offset.Y = 0;
+					offsetY = 0;
 					break;
 				case VerticalAlignment.Stretch:
 				case VerticalAlignment.Center:
-					offset.Y *= 0.5;
+					offsetY = (clientSize.Height - renderSize.Height) / 2.0;
 					break;
 				case VerticalAlignment.Bottom:
-					offset.Y *= 1;
+					offsetY = clientSize.Height - renderSize.Height;
 					break;
 			}
 
-			return (offset, overflow);
+			return new Point(offsetX, offsetY);
 		}
 
 		[Pure]
