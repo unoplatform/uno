@@ -165,6 +165,9 @@ jobs:
     UnoDisableNetCurrent: true
 
   steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
