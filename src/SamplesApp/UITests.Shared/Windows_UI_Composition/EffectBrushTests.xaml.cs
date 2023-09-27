@@ -4,6 +4,7 @@ using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
 #if !WINDOWS_UWP // Making the sample buildable on UWP
+using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Effects;
 #endif
 
@@ -12,7 +13,6 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Microsoft.Graphics.Canvas;
 using Windows.UI.Composition.Effects;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -177,11 +177,26 @@ namespace UITests.Windows_UI_Composition
 
 			var swapRedAndBlue = new Matrix5x4
 			{
-				M11 = 0, M12 = 0, M13 = 1, M14 = 0,
-				M21 = 0, M22 = 1, M23 = 0, M24 = 0,
-				M31 = 1, M32 = 0, M33 = 0, M34 = 0,
-				M41 = 0, M42 = 0, M43 = 0, M44 = 1,
-				M51 = 0, M52 = 0, M53 = 0, M54 = 0
+				M11 = 0,
+				M12 = 0,
+				M13 = 1,
+				M14 = 0,
+				M21 = 0,
+				M22 = 1,
+				M23 = 0,
+				M24 = 0,
+				M31 = 1,
+				M32 = 0,
+				M33 = 0,
+				M34 = 0,
+				M41 = 0,
+				M42 = 0,
+				M43 = 0,
+				M44 = 1,
+				M51 = 0,
+				M52 = 0,
+				M53 = 0,
+				M54 = 0
 			};
 
 			var effect21 = new ColorMatrixEffect() { Source = new CompositionEffectSourceParameter("sourceBrush"), ColorMatrix = swapRedAndBlue };
