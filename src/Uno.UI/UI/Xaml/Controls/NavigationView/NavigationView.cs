@@ -3399,7 +3399,7 @@ namespace Windows.UI.Xaml.Controls
 			// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 			if (m_applicationView == null)
 			{
-				m_applicationView = ApplicationView.IShouldntUseGetForCurrentView();
+				m_applicationView = ApplicationView.GetForCurrentViewSafe();
 			}
 
 			// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings
