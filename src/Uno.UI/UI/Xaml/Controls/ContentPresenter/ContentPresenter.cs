@@ -40,7 +40,10 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
+	public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
