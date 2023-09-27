@@ -945,5 +945,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertEx.AssertContainsColorBrushResource(resources, "LarcenousColorBrush", Colors.PaleVioletRed);
 			Assert.AreEqual(initialCreationCount, SomeNotImplType.CreationAttempts);
 		}
+
+		[TestMethod]
+		public void ThemeResource_Named_ResourceDictionary_Override()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var SUT = new ThemeResource_Named_ResourceDictionary_Override();
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(Colors.Red, (SUT.border01.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Blue, (SUT.border02.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (SUT.border03.Background as SolidColorBrush)?.Color);
+		}
 	}
 }

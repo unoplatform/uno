@@ -427,7 +427,25 @@ namespace Windows.UI.Xaml
 			// In order to ensure the theme updates covers all of them, we need to keep track of this source instance for theme updates before it is lost.
 			_sourceDictionary = WeakReferencePool.RentWeakReference(this, source);
 
-			_values.AddRange(source._values);
+			_values.EnsureCapacity(source._values.Count);
+
+			foreach (var pair in source._values)
+			{
+				var (key, value) = pair;
+
+				// Lazy resource initialization needs the current XamlScope
+				// to resolve values, and the originally defined scope that 
+				// was set when the source dictionary was created may not be 
+				// value for the current XAML scope. We rewrite the initializer
+				// in order for the name resolution to work properly.
+				if (value is LazyInitializer lazy)
+				{
+					value = new LazyInitializer(ResourceResolver.CurrentScope, lazy.Initializer);
+				}
+
+				_values.Add(key, value);
+			}
+
 			_mergedDictionaries.AddRange(source._mergedDictionaries);
 			if (source._themeDictionaries != null)
 			{
