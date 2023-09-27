@@ -45,6 +45,7 @@ using Windows.UI.Core;
 #else
 using View = Windows.UI.Xaml.UIElement;
 using ViewGroup = Windows.UI.Xaml.UIElement;
+using DirectUI;
 #endif
 
 namespace Windows.UI.Xaml

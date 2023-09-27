@@ -31,12 +31,15 @@ namespace Uno.UI.Xaml.Core
 		/// </summary>
 		public ContentRootCoordinator ContentRootCoordinator { get; }
 
-		// TODO Uno: Set initialization type based on UWP/WinUI build of Uno, for now
-		// keeping the same for both.
 		/// <summary>
 		/// Initialization type.
 		/// </summary>
-		public InitializationType InitializationType { get; internal set; } = InitializationType.MainView;
+		public InitializationType InitializationType { get; internal set; } =
+#if HAS_UNO_WINUI || WINUI_WINDOWING
+			InitializationType.IslandsOnly;
+#else
+			InitializationType.MainView;
+#endif
 
 		public RootVisual? MainRootVisual => _mainVisualTree?.RootVisual;
 
