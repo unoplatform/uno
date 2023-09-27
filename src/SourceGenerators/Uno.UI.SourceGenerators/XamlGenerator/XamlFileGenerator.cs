@@ -2775,7 +2775,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							if (resource.Members.FirstOrDefault(m => m.Member.Name == "Name") is { } nameMember
 								&& nameMember.Value?.ToString() is { } nameValue
-								&& !string.IsNullOrEmpty(nameValue))
+								&& !string.IsNullOrEmpty(nameValue)
+
+								// Skip generating namescope if the resource is declared directly
+								// inside a top level dictionary (there's no __nameScope available there).
+								&& resource.Owner?.Owner != null)
 							{
 								using (var blockWriter = CreateApplyBlock(writer, null, out var closureName))
 								{
