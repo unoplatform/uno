@@ -50,6 +50,7 @@ namespace SampleControl.Presentation
 			ReloadCurrentTestCommand = new DelegateCommand(() => _ = ReloadCurrentTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			LoadNextTestCommand = new DelegateCommand(() => _ = LoadNextTest(CancellationToken.None)) { CanExecuteEnabled = false };
 			OpenRuntimeTestsCommand = new DelegateCommand(() => _ = OpenRuntimeTests(CancellationToken.None));
+			CreateNewWindowCommand = new DelegateCommand(() => CreateNewWindow());
 		}
 
 		public ICommand LogViewDumpCommand { get; private set; }
@@ -61,5 +62,6 @@ namespace SampleControl.Presentation
 		public ICommand ReloadCurrentTestCommand { get; private set; }
 		public ICommand LoadNextTestCommand { get; private set; }
 		public ICommand OpenRuntimeTestsCommand { get; private set; }
+		public ICommand CreateNewWindowCommand { get; private set; }
 	}
 }

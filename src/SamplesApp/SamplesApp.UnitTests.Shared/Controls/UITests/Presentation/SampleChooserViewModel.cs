@@ -460,6 +460,13 @@ namespace SampleControl.Presentation
 				.Replace("\\", "_")
 				.Replace("\\", "_");
 
+		internal void CreateNewWindow()
+		{
+			var newWindow = new Window();
+			newWindow.Content = new MainPage();
+			newWindow.Activate();
+		}
+
 		internal async Task OpenRuntimeTests(CancellationToken ct)
 		{
 			IsSplitVisible = false;
