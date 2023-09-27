@@ -9,11 +9,9 @@ partial class Window
 {
 	private bool _windowCreatedRaised;
 
-#if DEBUG
 	internal Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
 	{
 	}
-#endif
 
 	partial void InitializeWindowingFlavor()
 	{
