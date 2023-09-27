@@ -128,7 +128,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
+    <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj">
       <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
       <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
