@@ -8,9 +8,4 @@
     <UnoRemoteControlPort>53487</UnoRemoteControlPort>
   </PropertyGroup>
 
-  <ItemGroup>
-    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
-    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
-  </ItemGroup>
-
 </Project>
