@@ -21,42 +21,25 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
 
 		public static async Task ValidateTextBlockOnCurrentPageText(this Windows.UI.Xaml.UIElement element, string expectedText, int index = 0, TimeSpan? timeout = null)
 		{
-			try
+			timeout ??= TimeSpan.FromSeconds(3);
+
+			if (element is FrameworkElement fe)
 			{
-				timeout ??= TimeSpan.FromSeconds(3);
+				await UnitTestsUIContentHelper.WaitForLoaded(fe);
 
-				if (element is FrameworkElement fe)
-				{
-					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Wait for loaded - {expectedText}");
-					await UnitTestsUIContentHelper.WaitForLoaded(fe);
-					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Wait for loaded completed - {expectedText}");
+				var sw = Stopwatch.StartNew();
 
+				TextBlock? firstText = null;
 
-					var sw = Stopwatch.StartNew();
+				firstText = element
+					.EnumerateDescendants()
+					.OfType<TextBlock>()
+					.Skip(index)
+					.FirstOrDefault();
 
-					TextBlock? firstText = null;
+				Assert.IsNotNull(firstText);
 
-					firstText = element
-						.EnumerateDescendants()
-						.OfType<TextBlock>()
-						.Skip(index)
-						.FirstOrDefault();
-
-					typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ After wait - Null: {firstText is null} Match: {expectedText == firstText?.Text} - {expectedText}");
-					Assert.IsNotNull(firstText);
-
-					Assert.AreEqual(expectedText, firstText?.Text);
-				}
-				typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ End-Try");
-			}
-			catch (Exception ex)
-			{
-				typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Catch - {ex.Message}");
-				throw;
-			}
-			finally
-			{
-				typeof(UIElementExtensions).Log().LogWarning($"$$$$$$$$$$$$$$$$ Finally");
+				Assert.AreEqual(expectedText, firstText?.Text);
 			}
 		}
 

@@ -106,7 +106,6 @@ public class Given_Frame : BaseTestClass
 				async () =>
 				{
 					await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
-					//await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
 				},
 				ct);
 		}
