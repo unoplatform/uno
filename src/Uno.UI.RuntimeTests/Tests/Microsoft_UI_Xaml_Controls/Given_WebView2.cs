@@ -299,6 +299,7 @@ public class Given_WebView2
 			string message = "";
 			webView.WebMessageReceived += (s, e) =>
 			{
+				Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
 				message = e.WebMessageAsJson;
 			};
 			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
@@ -356,6 +357,7 @@ public class Given_WebView2
 		string message = null;
 		webView.WebMessageReceived += (s, e) =>
 		{
+			Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
 			message = e.WebMessageAsJson;
 		};
 
