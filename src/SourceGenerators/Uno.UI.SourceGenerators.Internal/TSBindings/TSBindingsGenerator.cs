@@ -392,7 +392,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else
 			{
-				throw new NotSupportedException($"The field [{field} {field.Type}] is not supported");
+				throw new NotSupportedException($"GetNativeFieldSize: The field [{field} {field.Type}] is not supported");
 			}
 		}
 
@@ -566,7 +566,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else
 			{
-				throw new NotSupportedException($"The type {type} is not supported");
+				throw new NotSupportedException($"GetTSType: The type {type} is not supported (SpecialType: {type.SpecialType}, original type: {type.OriginalDefinition})");
 			}
 		}
 
@@ -604,7 +604,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else
 			{
-				throw new NotSupportedException($"The type {type} is not supported");
+				throw new NotSupportedException($"GetTSFieldType: The type {type} is not supported (SpecialType: {type.SpecialType}, original type: {type.OriginalDefinition})");
 			}
 		}
 
