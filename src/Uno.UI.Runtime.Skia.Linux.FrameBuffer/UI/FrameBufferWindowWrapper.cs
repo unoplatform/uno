@@ -2,12 +2,11 @@
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
 using Windows.UI.Core;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 
 namespace Uno.WinUI.Runtime.Skia.Linux.FrameBuffer.UI;
 
-internal class FrameBufferWindowWrapper : INativeWindowWrapper
+internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<FrameBufferWindowWrapper> _instance = new Lazy<FrameBufferWindowWrapper>(() => new());
 
@@ -19,39 +18,21 @@ internal class FrameBufferWindowWrapper : INativeWindowWrapper
 
 	internal XamlRoot? XamlRoot { get; private set; }
 
-	public bool Visible { get; private set; }
-
-	public event EventHandler<Size>? SizeChanged;
-	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
-	public event EventHandler<bool>? VisibilityChanged;
-	public event EventHandler? Closed;
-	public event EventHandler? Shown;
-
 	internal void RaiseNativeSizeChanged(Size newWindowSize)
 	{
-		ApplicationView.IShouldntUseGetForCurrentView()?.SetVisibleBounds(new Rect(default, newWindowSize));
-
-		if (_previousWindowSize != newWindowSize)
-		{
-			_previousWindowSize = newWindowSize;
-
-			SizeChanged?.Invoke(this, newWindowSize);
-		}
+		Bounds = new Rect(default, newWindowSize);
+		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
-	internal void OnNativeVisibilityChanged(bool visible)
-	{
-		Visible = visible;
-		VisibilityChanged?.Invoke(this, visible);
-	}
+	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationChanged?.Invoke(this, state);
+	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => Closed?.Invoke(this, EventArgs.Empty); //TODO:MZ: Handle closing
+	internal void OnNativeClosed() => RaiseClosed();
 
-	public void Activate() { }
+	public override void Activate() { }
 
-	public void Show() => Shown?.Invoke(this, EventArgs.Empty);
+	protected override void ShowCore() => throw new NotImplementedException();
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
