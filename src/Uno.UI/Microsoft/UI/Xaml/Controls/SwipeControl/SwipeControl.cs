@@ -929,7 +929,7 @@ namespace Microsoft.UI.Xaml.Controls
 				m_swipeContentRoot.Children.Add(swipeContentStackPanel);
 			}
 
-			m_swipeContentStackPanel.Orientation(m_isHorizontal ? Orientation.Horizontal : Orientation.Vertical);
+			m_swipeContentStackPanel.Orientation = m_isHorizontal ? Orientation.Horizontal : Orientation.Vertical;
 
 			var lookedUpStyle = SharedHelpers.FindInApplicationResources(s_swipeItemStyleName, null);
 			if (lookedUpStyle is { })

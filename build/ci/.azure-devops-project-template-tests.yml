@@ -99,8 +99,7 @@ jobs:
     - templates_package_build
     - Generate_Packages
 
-  pool:
-    vmImage: ${{ parameters.vmImageLinux }}
+  pool: ${{ parameters.vmPoolLinux }}
 
   container: unoplatform/wasm-build:2.3
 

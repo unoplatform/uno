@@ -46,8 +46,8 @@ jobs:
     # Disable AOT for this job
     AotAssemblies: false
 
-    # This is required to be able to use hard links as much as possible
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
   steps:
   - checkout: self

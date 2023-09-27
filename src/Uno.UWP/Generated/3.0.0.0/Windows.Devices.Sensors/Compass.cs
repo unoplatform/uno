@@ -3,12 +3,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-#if false || false || false || false || __SKIA__ || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented("__SKIA__")]
 #endif
 	public partial class Compass
 	{
-#if false || false || false || false || __SKIA__ || false || false
+#if false || false || false || false || false || false || false
 		internal Compass()
 		{
 		}
@@ -128,8 +128,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Compass> Compass.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CCompass%3E%20Compass.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-#if false || false || false || false || __SKIA__ || false || false
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sensors.Compass GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member Compass Compass.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Compass%20Compass.GetDefault%28%29");

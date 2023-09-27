@@ -1,4 +1,4 @@
-﻿#if __MACOS__ || IS_UNIT_TESTS || __NETSTD_REFERENCE__
+﻿#if !(__IOS__ || __ANDROID__ || __WASM__)
 namespace Windows.Devices.Sensors
 {
 	public partial class Magnetometer

@@ -2,6 +2,9 @@ using System;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Represents a gyrometer reading.
+	/// </summary>
 	public partial class GyrometerReading
 	{
 		internal GyrometerReading(
@@ -16,12 +19,24 @@ namespace Windows.Devices.Sensors
 			Timestamp = timestamp;
 		}
 
+		/// <summary>
+		/// Gets the angular velocity, in degrees per second, about the x-axis.
+		/// </summary>
 		public double AngularVelocityX { get; }
 
+		/// <summary>
+		/// Gets the angular velocity, in degrees per second, about the y-axis.
+		/// </summary>
 		public double AngularVelocityY { get; }
 
+		/// <summary>
+		/// Gets the angular velocity, in degrees per second, about the z-axis.
+		/// </summary>
 		public double AngularVelocityZ { get; }
 
+		/// <summary>
+		/// Gets the time at which the sensor reported the reading.
+		/// </summary>
 		public DateTimeOffset Timestamp { get; }
 	}
 }

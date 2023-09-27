@@ -150,6 +150,17 @@ jobs:
       ArtifactName: uitests-results
       ArtifactType: Container
 
+  # logs files are large, so we create them outside of `artifactstagingdirectory` and publish
+  # them in a separate artifacts container.
+  # This is needed so that screenshot comparison doesn't unnecessarily download large files, which slows it down.
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.sourcesdirectory)/ios-ui-tests-logs
+      ArtifactName: uitests-results-ios-logs
+      ArtifactType: Container
+
   - task: PublishBuildArtifacts@1
     condition: always()
     retryCountOnTaskFailure: 3

@@ -325,6 +325,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineIndented("using Uno.Extensions;");
 			writer.AppendLineIndented("using Uno;");
+			writer.AppendLineIndented("using Uno.UI.Helpers;");
 			writer.AppendLineIndented("using Uno.UI.Helpers.Xaml;");
 
 			writer.AppendLineInvariantIndented("using {0};", _defaultNamespace);
@@ -2683,7 +2684,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else if (source != null)
 				{
 					writer.AppendLineIndented("Resources = ");
-					BuildDictionaryFromSource(writer, source);
+					BuildDictionaryFromSource(writer, source, dictObject: null);
 					writer.AppendLineIndented(isInInitializer ? "," : ";");
 				}
 			}
@@ -2900,25 +2901,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Populate MergedDictionaries property of a ResourceDictionary.
 		/// </summary>
-		private void BuildMergedDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition? mergedDictionaries, bool isInInitializer, string? dictIdentifier = null)
+		private void BuildMergedDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition? mergedDictionaries, bool isInInitializer, string? dictIdentifier = null, bool isSetExtensionMethod = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			BuildDictionaryCollection(writer, mergedDictionaries, isInInitializer, propertyName: "MergedDictionaries", isDict: false, dictIdentifier);
+			BuildDictionaryCollection(writer, mergedDictionaries, isInInitializer, propertyName: "MergedDictionaries", isDict: false, dictIdentifier, isSetExtensionMethod);
 		}
 
 		/// <summary>
 		/// Populate ThemeDictionaries property of a ResourceDictionary.
 		/// </summary>
-		private void BuildThemeDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition? themeDictionaries, bool isInInitializer, string? dictIdentifier = null)
+		private void BuildThemeDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition? themeDictionaries, bool isInInitializer, string? dictIdentifier = null, bool isSetExtensionMethod = false)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			BuildDictionaryCollection(writer, themeDictionaries, isInInitializer, propertyName: "ThemeDictionaries", isDict: true, dictIdentifier);
+			BuildDictionaryCollection(writer, themeDictionaries, isInInitializer, propertyName: "ThemeDictionaries", isDict: true, dictIdentifier, isSetExtensionMethod);
 		}
 
 		/// <summary>
 		/// Build a collection of ResourceDictionaries.
 		/// </summary>
-		private void BuildDictionaryCollection(IIndentedStringBuilder writer, XamlMemberDefinition? dictionaries, bool isInInitializer, string propertyName, bool isDict, string? dictIdentifier)
+		private void BuildDictionaryCollection(IIndentedStringBuilder writer, XamlMemberDefinition? dictionaries, bool isInInitializer, string propertyName, bool isDict, string? dictIdentifier, bool isSetExtensionMethod)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			if (dictionaries == null)
@@ -2934,8 +2935,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				writer.AppendLineInvariantIndented("// {0}", propertyName);
 			}
-			foreach (var dictObject in dictionaries.Objects)
+
+			for (int i = 0; i < dictionaries.Objects.Count; i++)
 			{
+				var dictObject = dictionaries.Objects[i];
 				var source = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Source");
 				if (source != null && dictObject.Members.Any(m => m.Member.Name == "_UnknownContent"))
 				{
@@ -2954,24 +2957,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_themeDictionaryCurrentlyBuilding = key;
 				}
 
-				if (!isInInitializer && !isDict)
+				if (!isSetExtensionMethod)
 				{
-					writer.AppendLineInvariantIndented("{0}.{1}.Add(", dictIdentifier, propertyName);
-				}
-				else if (!isInInitializer && isDict)
-				{
-					writer.AppendLineInvariantIndented("{0}.{1}[\"{2}\"] = ", dictIdentifier, propertyName, key);
-				}
-				else if (isInInitializer && isDict)
-				{
-					writer.AppendLineInvariantIndented("[\"{0}\"] = ", key);
+					if (!isInInitializer && !isDict)
+					{
+						writer.AppendLineInvariantIndented("{0}.{1}.Add(", dictIdentifier, propertyName);
+					}
+					else if (!isInInitializer && isDict)
+					{
+						writer.AppendLineInvariantIndented("{0}.{1}[\"{2}\"] = ", dictIdentifier, propertyName, key);
+					}
+					else if (isInInitializer && isDict)
+					{
+						writer.AppendLineInvariantIndented("[\"{0}\"] = ", key);
+					}
 				}
 
 				using (isDict ? BuildLazyResourceInitializer(writer) : null)
 				{
 					if (source != null)
 					{
-						BuildDictionaryFromSource(writer, source);
+						BuildDictionaryFromSource(writer, source, dictObject);
 					}
 					else
 					{
@@ -2979,7 +2985,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-				if (isInInitializer)
+				if (isSetExtensionMethod)
+				{
+					if (i < dictionaries.Objects.Count - 1)
+					{
+						writer.AppendLineIndented(",");
+					}
+				}
+				else if (isInInitializer)
 				{
 					writer.AppendLineIndented(",");
 				}
@@ -2995,7 +3008,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_themeDictionaryCurrentlyBuilding = former;
 			}
 
-			if (isInInitializer)
+			if (isInInitializer && !isSetExtensionMethod)
 			{
 				writer.AppendLineIndented("},");
 			}
@@ -3004,7 +3017,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Try to create a ResourceDictionary assignment from supplied Source property.
 		/// </summary>
-		private void BuildDictionaryFromSource(IIndentedStringBuilder writer, XamlMemberDefinition sourceDef)
+		private void BuildDictionaryFromSource(IIndentedStringBuilder writer, XamlMemberDefinition sourceDef, XamlObjectDefinition? dictObject)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var source = (sourceDef?.Value as string)?.Replace('\\', '/');
@@ -3032,6 +3045,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var currentAbsolutePath = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
 				writer.AppendLineIndented("// Source not resolved statically, falling back on external resource retrieval.");
 				writer.AppendLineInvariantIndented("global::Uno.UI.ResourceResolver.RetrieveDictionaryForSource({0}, \"{1}\")", innerSource, currentAbsolutePath);
+			}
+
+			if (dictObject is not null)
+			{
+				var mergedDictionaries = dictObject.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries");
+				if (mergedDictionaries is not null)
+				{
+					writer.AppendLineInvariantIndented(".AddMergedDictionaries(");
+					BuildMergedDictionaries(writer, mergedDictionaries, isInInitializer: false, isSetExtensionMethod: true);
+					writer.AppendLineInvariantIndented(")");
+				}
+
+				var themeDictionaries = dictObject.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries");
+				if (themeDictionaries is not null)
+				{
+					writer.AppendLineIndented("#error Nested ThemeDictionaries are not yet supported.");
+				}
 			}
 		}
 
@@ -4269,7 +4299,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var dataType = RewriteNamespaces(dataTypeObject.Value.ToString() ?? "");
 				var dataTypeSymbol = GetType(dataType);
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
 				if (contextFunction.MethodDeclaration is not null)
 				{
 					RegisterXBindTryGetDeclaration(contextFunction.MethodDeclaration);
@@ -4310,14 +4340,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (contextFunction.Properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(contextFunction.Properties[0], dataTypeSymbol).GetFullyQualifiedTypeIncludingGlobal();
-								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType);
-								// There is no "TryGet*" method declaration for LValue usages.
-								Debug.Assert(contextFunctionLValue.MethodDeclaration is null);
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								var contextFunctionLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, dataTypeSymbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
+								if (contextFunctionLValue.MethodDeclaration is not null)
+								{
+									RegisterXBindTryGetDeclaration(contextFunctionLValue.MethodDeclaration);
+									return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression}; }} }}";
+								}
+								else
+								{
+									return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunctionLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
+								}
 							}
 							else
 							{
-								Debugger.Launch();
 								throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
 							}
 						}
@@ -4336,7 +4371,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var rewrittenRValue = string.IsNullOrEmpty(rawFunction)
 					? (MethodDeclaration: null, Expression: "(true, ___ctx)", Properties: ImmutableArray<string>.Empty, HasFunction: false)
-					: XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType);
+					: XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: true, _xBindCounter, FindType, targetPropertyType: null);
 
 				if (rewrittenRValue.MethodDeclaration is not null)
 				{
@@ -4362,16 +4397,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							if (rewrittenRValue.Properties.Length == 1)
 							{
-								var rewrittenLValue = string.IsNullOrEmpty(rawFunction) ? "___ctx" : XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType).Expression;
 								var targetPropertyType = GetXBindPropertyPathType(rewrittenRValue.Properties[0]).GetFullyQualifiedTypeIncludingGlobal();
-								return $"(___ctx, __value) => {{ " +
-									$"if(___ctx is {_xClassName} ___tctx) " +
-									$"{rewrittenLValue} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
-									$" }}";
+
+								if (string.IsNullOrEmpty(rawFunction))
+								{
+									return $"(___ctx, __value) => {{ " +
+										$"if(___ctx is {_xClassName} ___tctx) " +
+										$"___ctx = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+										$" }}";
+								}
+
+								var rewrittenLValue = XBindExpressionParser.Rewrite("___tctx", rawFunction, _xClassName.Symbol, _metadataHelper.Compilation.GlobalNamespace, isRValue: false, _xBindCounter, FindType, targetPropertyType);
+								if (rewrittenLValue.MethodDeclaration is not null)
+								{
+									RegisterXBindTryGetDeclaration(rewrittenLValue.MethodDeclaration);
+									return $"(___ctx, __value) => {{ if(___ctx is {_xClassName} ___tctx) {rewrittenLValue.Expression}; }}";
+								}
+								else
+								{
+									return $"(___ctx, __value) => {{ " +
+										$"if(___ctx is {_xClassName} ___tctx) " +
+										$"{rewrittenLValue.Expression} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value);" +
+										$" }}";
+								}
 							}
 							else
 							{
-								Debugger.Launch();
 								throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
 							}
 						}

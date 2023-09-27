@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
@@ -255,18 +256,20 @@ namespace Windows.UI.Xaml
 				needsClipToSlot = true;
 			}
 
-			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
+			if (allowClipToSlot &&
+				(IsLessThanAndNotCloseTo(clientSize.Width, clippedInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clientSize.Height, clippedInkSize.Height)))
+			{
+				needsClipToSlot = true;
+			}
+
+			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
 
 			offset = new Point(
 				offset.X + finalRect.X + margin.Left,
 				offset.Y + finalRect.Y + margin.Top
 			);
-
-			if (overflow)
-			{
-				needsClipToSlot = true;
-			}
 
 			_logDebug?.Debug(
 				$"{DepthIndentation}[{FormatDebugName()}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
@@ -280,31 +283,65 @@ namespace Windows.UI.Xaml
 			}
 #endif
 
-			if (needsClipToSlot)
-			{
-				var layoutFrame = new Rect(offset, clippedInkSize);
-
-				// Calculate clipped frame.
-				var finalRectWithMargin = new Rect(finalRect.Location, finalRect.Size.Add(margin));
-				var clippedFrameWithParentOrigin = layoutFrame.IntersectWith(finalRectWithMargin.DeflateBy(margin)) ?? Rect.Empty;
-
-				// Rebase the origin of the clipped frame to layout
-				var clippedFrame = new Rect(
-					clippedFrameWithParentOrigin.X - layoutFrame.X,
-					clippedFrameWithParentOrigin.Y - layoutFrame.Y,
-					clippedFrameWithParentOrigin.Width,
-					clippedFrameWithParentOrigin.Height);
-
-				clippedFrame = clippedFrame.AtMost(clientSize);
-
-				ArrangeNative(offset, true, clippedFrame);
-			}
-			else
+			var clippedFrame = GetClipRect(needsClipToSlot, finalRect, maxSize, margin);
+			if (clippedFrame is null)
 			{
 				ArrangeNative(offset, false);
 			}
+			else
+			{
+				ArrangeNative(offset, true, clippedFrame.Value);
+			}
 
 			OnLayoutUpdated();
+		}
+
+		// Part of this code originates from https://github.com/dotnet/wpf/blob/b9b48871d457fc1f78fa9526c0570dae8e34b488/src/Microsoft.DotNet.Wpf/src/PresentationFramework/System/Windows/FrameworkElement.cs#L4877
+		private protected virtual Rect? GetClipRect(bool needsClipToSlot, Rect finalRect, Size maxSize, Thickness margin)
+		{
+			if (needsClipToSlot)
+			{
+				Rect clippedFrame = default;
+				var inkSize = RenderSize;
+
+				var maxClip = maxSize.FiniteOrDefault(inkSize);
+
+				//need to clip because the computed sizes exceed MaxWidth/MaxHeight/Width/Height
+				bool needToClipLocally = IsLessThanAndNotCloseTo(maxClip.Width, inkSize.Width) || IsLessThanAndNotCloseTo(maxClip.Height, inkSize.Height);
+
+				inkSize = inkSize.AtMost(maxSize);
+
+				var marginSize = new Size(margin.Left + margin.Right, margin.Top + margin.Bottom);
+				Size clippingSize = finalRect.Size.Subtract(marginSize).AtLeastZero();
+				bool needToClipSlot = IsLessThanAndNotCloseTo(clippingSize.Width, inkSize.Width) || IsLessThanAndNotCloseTo(clippingSize.Height, inkSize.Height);
+
+				if (needToClipSlot)
+				{
+					var offset = LayoutHelper.GetAlignmentOffset(this, clippingSize, inkSize);
+					clippedFrame = new Rect(-offset.X, -offset.Y, clippingSize.Width, clippingSize.Height);
+					if (needToClipLocally)
+					{
+						clippedFrame = clippedFrame.IntersectWith(new Rect(default, maxClip)) ?? Rect.Empty;
+					}
+				}
+				else if (needToClipLocally)
+				{
+					clippedFrame = new Rect(default, maxClip);
+				}
+
+				if (needToClipSlot || needToClipLocally)
+				{
+					if (this is Panel && RenderTransform is { } renderTransform)
+					{
+						clippedFrame.X -= renderTransform.MatrixCore.M31;
+						clippedFrame.Y -= renderTransform.MatrixCore.M32;
+					}
+
+					return clippedFrame;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>

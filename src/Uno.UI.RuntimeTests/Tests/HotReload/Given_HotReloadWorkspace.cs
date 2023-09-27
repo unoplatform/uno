@@ -19,11 +19,12 @@ using System.Threading;
 using System.Xml;
 using Windows.Storage.AccessCache;
 using System.Linq;
+using System.Collections.Immutable;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
 [TestClass]
-#if !__SKIA__ || HAS_UNO_WINUI // Disabled due to #13757
+#if !__SKIA__
 [Ignore("Hot reload tests are only available on Skia targets")]
 #endif
 internal partial class Given_HotReloadWorkspace
@@ -53,9 +54,12 @@ internal partial class Given_HotReloadWorkspace
 	/// </remarks>
 	[TestMethod]
 	[Timeout(5 * 60 * 1000)]
-	public async Task When_HotReloadScenario()
+	[Filters]
+	public async Task When_HotReloadScenario(string filters)
 	{
-		var resultFile = await RunTestApp(CancellationToken.None);
+		// Remove this class and this method from the filters
+		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(x => x == nameof(Given_HotReloadWorkspace) || x == nameof(When_HotReloadScenario)));
+		var resultFile = await RunTestApp(filters, CancellationToken.None);
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
@@ -108,14 +112,13 @@ internal partial class Given_HotReloadWorkspace
 		}
 	}
 
-	public static async Task<string> RunTestApp(CancellationToken ct)
+	public static async Task<string> RunTestApp(string filters, CancellationToken ct)
 	{
 		var testOutput = Path.GetTempFileName();
 
 		var hrAppPath = GetHotReloadAppPath();
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
-
 		var p = await ProcessHelpers.RunProcess(
 			ct,
 			"dotnet",
@@ -128,8 +131,11 @@ internal partial class Given_HotReloadWorkspace
 				"Debug",
 
 				"--no-build",
+				"--",
 				"--uitest",
-				testOutput
+				testOutput,
+				"--filters",
+				filters
 			},
 			hrAppPath,
 			"HRApp",
@@ -153,6 +159,7 @@ internal partial class Given_HotReloadWorkspace
 
 	public static async Task BuildTestApp()
 	{
+		var builder = new StringBuilder();
 		var process = ProcessHelpers.StartProcess(
 			"dotnet",
 			new() {
@@ -166,14 +173,15 @@ internal partial class Given_HotReloadWorkspace
 				"Debug"
 			},
 			GetHotReloadAppPath(),
-			"HRAppBuild"
+			"HRAppBuild",
+			output: builder
 		);
 
 		await process.WaitForExitAsync();
 
 		if (process.ExitCode != 0)
 		{
-			throw new InvalidOperationException("Failed to build app");
+			throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
 		}
 	}
 

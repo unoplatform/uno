@@ -14,6 +14,8 @@ public partial class Compositor
 {
 	private bool _isDirty;
 
+	internal bool? IsSoftwareRenderer { get; set; }
+
 	internal void RenderRootVisual(SKSurface surface, ContainerVisual rootVisual)
 	{
 		if (rootVisual is null)

@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!-- This project is referenced by the source generator, so it should be netstandard2.0 to be compatible with it. -->
 		<TargetFrameworks>netstandard2.0</TargetFrameworks>

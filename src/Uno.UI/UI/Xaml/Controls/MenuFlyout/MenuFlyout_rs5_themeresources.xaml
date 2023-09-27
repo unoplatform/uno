@@ -398,7 +398,7 @@
                             </Grid.ColumnDefinitions>
                             <FontIcon x:Name="CheckGlyph"
                                 FontFamily="{ThemeResource SymbolThemeFontFamily}"
-								win:Glyph="&#xE001;"
+								                win:Glyph="&#xE001;"
                                 not_win:Glyph="&#xE73E;"
                                 FontSize="16"
                                 Foreground="{ThemeResource ToggleMenuFlyoutItemCheckGlyphForeground}"
