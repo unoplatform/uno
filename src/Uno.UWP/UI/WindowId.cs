@@ -3,10 +3,10 @@ using System.Diagnostics;
 using System.Linq.Expressions;
 
 //TODO:MZ: Waiting for https://github.com/unoplatform/uno/pull/13842
-//#if HAS_UNO_WINUI
-//namespace Microsoft.UI;
+//#if !HAS_UNO_WINUI
+//namespace Windows.UI;
 //#else
-namespace Windows.UI;
+namespace Microsoft.UI;
 
 [DebuggerDisplay("{Value}")]
 public partial struct WindowId : IEquatable<WindowId>
