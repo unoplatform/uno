@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using MUXWindowId = Microsoft.UI.WindowId;
 
 #if HAS_UNO_WINUI
 namespace Microsoft.UI.Windowing;
@@ -14,7 +15,7 @@ namespace Windows.UI.WindowManagement;
 
 partial class AppWindow
 {
-	private static readonly ConcurrentDictionary<WindowId, AppWindow> _windowIdMap = new();
+	private static readonly ConcurrentDictionary<MUXWindowId, AppWindow> _windowIdMap = new();
 	private static ulong _windowIdIterator;
 
 #if HAS_UNO_WINUI
@@ -22,7 +23,7 @@ partial class AppWindow
 #else
 	internal
 #endif
-	WindowId Id
+	MUXWindowId Id
 	{ get; }
 
 #if HAS_UNO_WINUI
@@ -30,5 +31,5 @@ partial class AppWindow
 #else
 	internal
 #endif
-	static AppWindow GetFromWindowId(WindowId windowId) => _windowIdMap[windowId];
+	static AppWindow GetFromWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
 }

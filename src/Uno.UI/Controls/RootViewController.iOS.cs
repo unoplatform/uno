@@ -49,7 +49,7 @@ namespace Uno.UI.Controls
 
 		private void Initialize()
 		{
-			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #8341.
+			// TODO Uno: When we support multi-window, this should close popups for the appropriate XamlRoot #13847.
 
 			// Dismiss on device rotation: this reproduces the windows behavior
 			UIApplication.Notifications
