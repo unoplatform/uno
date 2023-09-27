@@ -463,11 +463,9 @@ namespace SampleControl.Presentation
 
 		internal void CreateNewWindow()
 		{
-#if HAS_UNO //TODO: Enable UWP-style new window #8978
 			var newWindow = new Window();
 			newWindow.Content = new MainPage();
 			newWindow.Activate();
-#endif
 		}
 
 		internal async Task OpenRuntimeTests(CancellationToken ct)
