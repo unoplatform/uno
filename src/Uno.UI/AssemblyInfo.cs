@@ -26,6 +26,8 @@ using Uno.Foundation.Diagnostics.CodeAnalysis;
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v1")]
 [assembly: InternalsVisibleTo("Uno.UI.FluentTheme.v2")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
+[assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
 
 [assembly: AssemblyMetadata("IsTrimmable", "True")]
 
