@@ -147,9 +147,11 @@ jobs:
   strategy:
     matrix:
       UWP:
+        UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
 
       WinUI:
+        UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
 
   dependsOn: Skia_Tests_Build
@@ -164,6 +166,9 @@ jobs:
     UnoDisableNetCurrent: true
 
   steps:
+
+  - template: templates/download-winui-converted-tree.yml
+
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: $(SamplesAppArtifactName)
@@ -250,9 +255,11 @@ jobs:
   strategy:
     matrix:
       UWP:
+        UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
 
       WinUI:
+        UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
 
   dependsOn: Skia_Tests_Build
