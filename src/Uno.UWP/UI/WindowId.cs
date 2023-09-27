@@ -2,11 +2,11 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
-#if HAS_UNO_WINUI
-namespace Microsoft.UI;
-#else
+//TODO:MZ: Waiting for https://github.com/unoplatform/uno/pull/13842
+//#if HAS_UNO_WINUI
+//namespace Microsoft.UI;
+//#else
 namespace Windows.UI;
-#endif
 
 [DebuggerDisplay("{Value}")]
 public partial struct WindowId : IEquatable<WindowId>
