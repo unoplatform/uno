@@ -63,7 +63,7 @@ namespace Microsoft.UI.Xaml.Controls
 				return availableSize;
 			}
 
-			var visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().TrueVisibleBounds;
+			var visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
 
 			if (availableSize.Width > visibleBounds.Width)
 			{
@@ -79,15 +79,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Rect CalculateDialogPlacement(Size desiredSize, Size finalSize)
 		{
-			Rect visibleBounds;
-			if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is null)
-			{
-				visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? new Rect(0, 0, finalSize.Width, finalSize.Height);
-			}
-			else
-			{
-				visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().TrueVisibleBounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.TrueVisibleBounds ?? default;
 
 			var maximumWidth = Math.Min(visibleBounds.Width, finalSize.Width);
 			var maximumHeight = Math.Min(visibleBounds.Height, finalSize.Height);

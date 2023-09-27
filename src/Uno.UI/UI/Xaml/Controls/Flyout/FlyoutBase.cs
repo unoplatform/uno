@@ -384,16 +384,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						throw new ArgumentException("Invalid flyout position");
 					}
 
-					Rect visibleBounds;
-					if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-					{
-						var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
-						visibleBounds = xamlRoot.Bounds;
-					}
-					else
-					{
-						visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
-					}
+					var xamlRoot = XamlRoot ?? placementTarget?.XamlRoot;
+					Rect visibleBounds = xamlRoot.VisualTree.VisibleBounds;
 					positionValue = new Point(
 						positionValue.X.Clamp(visibleBounds.Left, visibleBounds.Right),
 						positionValue.Y.Clamp(visibleBounds.Top, visibleBounds.Bottom));
@@ -587,13 +579,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			// UNO TODO: UWP also uses values coming from the input pane and app bars, if any.
 			// Make sure of migrate to XamlRoot: https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.xamlroot
-			if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-			{
-				var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
-				return xamlRoot.Bounds;
-			}
-
-			return ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
+			var xamlRoot = popup.XamlRoot ?? popup.Child?.XamlRoot;
+			return xamlRoot.VisualTree.VisibleBounds;
 		}
 
 		internal void SetPresenterStyle(

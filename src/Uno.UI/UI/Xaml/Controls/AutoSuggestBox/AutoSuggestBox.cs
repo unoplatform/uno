@@ -178,15 +178,7 @@ namespace Microsoft.UI.Xaml.Controls
 				popupChild.MinWidth = _layoutRoot.ActualWidth;
 				popupChild.MaxHeight = MaxSuggestionListHeight;
 
-				Rect windowRect;
-				if (WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-				{
-					windowRect = XamlRoot.VisualTree.VisibleBounds;
-				}
-				else
-				{
-					windowRect = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
-				}
+				Rect windowRect = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 				var inputPaneRect = InputPane.GetForCurrentView().OccludedRect;
 
