@@ -19,6 +19,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private string[] _sourceAssemblies;
 
 		private static INamedTypeSymbol _intPtrSymbol;
+		private static INamedTypeSymbol _uintPtrSymbol;
 		private static INamedTypeSymbol _structLayoutSymbol;
 		private static INamedTypeSymbol _interopMessageSymbol;
 
@@ -38,6 +39,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					Directory.CreateDirectory(_bindingsPaths);
 
 					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
+					_uintPtrSymbol = context.Compilation.GetTypeByMetadataName("System.UIntPtr");
 					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
 					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
@@ -375,6 +377,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				field.Type.SpecialType is SpecialType.System_Int32 ||
 				field.Type.SpecialType is SpecialType.System_UInt32 ||
 				SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol) ||
+				SymbolEqualityComparer.Default.Equals(field.Type, _uintPtrSymbol) ||
 				field.Type.SpecialType is SpecialType.System_Single ||
 				field.Type.SpecialType is SpecialType.System_Boolean ||
 				field.Type.SpecialType is SpecialType.System_Byte ||
@@ -400,6 +403,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			if (
 				fieldType.SpecialType == SpecialType.System_String
 				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
+				|| SymbolEqualityComparer.Default.Equals(fieldType, _uintPtrSymbol)
 				|| fieldType is IArrayTypeSymbol
 			)
 			{
@@ -444,6 +448,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
 				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				SymbolEqualityComparer.Default.Equals(fieldType, _uintPtrSymbol) ||
 				fieldType is IArrayTypeSymbol
 			)
 			{
@@ -488,6 +493,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
 				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				SymbolEqualityComparer.Default.Equals(fieldType, _uintPtrSymbol) ||
 				fieldType is IArrayTypeSymbol ||
 				fieldType.SpecialType == SpecialType.System_Int32 ||
 				fieldType.SpecialType == SpecialType.System_Boolean
@@ -548,7 +554,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				type.SpecialType == SpecialType.System_Double ||
 				type.SpecialType == SpecialType.System_Byte ||
 				type.SpecialType == SpecialType.System_Int16 ||
-				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
+				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol) ||
+				SymbolEqualityComparer.Default.Equals(type, _uintPtrSymbol)
 			)
 			{
 				return "Number";
@@ -585,7 +592,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				type.SpecialType == SpecialType.System_Double ||
 				type.SpecialType == SpecialType.System_Byte ||
 				type.SpecialType == SpecialType.System_Int16 ||
-				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
+				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol) ||
+				SymbolEqualityComparer.Default.Equals(type, _uintPtrSymbol)
 			)
 			{
 				return "number";
