@@ -148,9 +148,11 @@ jobs:
   strategy:
     matrix:
       UWP:
+        UNO_UWP_BUILD: true
         XAML_FLAVOR_BUILD: UWP
 
       WinUI:
+        UNO_UWP_BUILD: false
         XAML_FLAVOR_BUILD: WinUI
 
   dependsOn: Skia_Tests_Build
