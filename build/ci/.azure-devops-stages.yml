@@ -73,7 +73,7 @@ stages:
 
   - template: .azure-devops-unit-tests.yml
     parameters:
-      vmImage: '$(windows2022HostedVMImage)'
+      poolName: '$(windowsScaledPool)'
 
 - stage: wasm_tests
   displayName: Tests - WebAssembly
