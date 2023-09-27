@@ -31,7 +31,7 @@ namespace SamplesApp.UITests.Runtime
 		// [Timeout(3000000)] // Timeout is now moved to individual platorms runners configuration in CI
 		public async Task RunRuntimeTests()
 		{
-			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
+			Run("SamplesApp.Samples.UnitTests.UnitTestsPage", sampleLoadTimeout: 10);
 
 			IAppQuery AllQuery(IAppQuery query)
 				// .All() is not yet supported for wasm.
