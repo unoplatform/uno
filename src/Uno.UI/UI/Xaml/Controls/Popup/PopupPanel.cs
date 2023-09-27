@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Primitives;
 internal partial class PopupPanel : Panel
 {
 #if UNO_HAS_UIELEMENT_IMPLICIT_PINNING
-	private WeakReference _popup;
+	private ManagedWeakReference _popup;
 
 	public Popup Popup
 	{
