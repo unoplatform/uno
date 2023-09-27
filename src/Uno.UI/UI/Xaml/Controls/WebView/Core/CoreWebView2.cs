@@ -193,7 +193,20 @@ public partial class CoreWebView2
 		CanGoForward = canGoForward;
 	}
 
-	internal void RaiseWebMessageReceived(string message) => WebMessageReceived?.Invoke(this, new(message));
+	internal void RaiseWebMessageReceived(string message)
+	{
+		// WebMessageReceived must be called on the UI thread.
+		if (_owner.Dispatcher.HasThreadAccess)
+		{
+			WebMessageReceived?.Invoke(this, new(message));
+		}
+		else
+		{
+			_ = _owner.Dispatcher.RunAsync(
+				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				() => WebMessageReceived?.Invoke(this, new(message)));
+		}
+	}
 
 	internal void RaiseUnsupportedUriSchemeIdentified(Uri targetUri, out bool handled)
 	{
