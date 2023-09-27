@@ -390,7 +390,5 @@ partial class PopupPanel
 		return fits;
 	}
 
-	private Rect GetVisibleBounds() =>
-		WinUICoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly ?
-			(XamlRoot?.Bounds ?? default) : ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
+	private Rect GetVisibleBounds() => XamlRoot?.VisualTree.VisibleBounds ?? default;
 }
