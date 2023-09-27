@@ -1,18 +1,14 @@
 ﻿#nullable enable
 
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
-using System.Runtime.InteropServices.JavaScript;
 using Gtk;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Gtk.UI.Core;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
-using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
-using XamlRoot = Windows.UI.Xaml.XamlRoot;
 using IOPath = System.IO.Path;
 using WinUIApplication = Microsoft.UI.Xaml.Application;
 using WinUIWindow = Microsoft.UI.Xaml.Window;
@@ -22,6 +18,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 internal class UnoGtkWindow : Window
 {
 	private readonly WinUIWindow _winUIWindow;
+	private readonly ApplicationView _applicationView;
 
 	public UnoGtkWindow(WinUIWindow winUIWindow, XamlRoot xamlRoot) : base(WindowType.Toplevel)
 	{
@@ -51,7 +48,8 @@ internal class UnoGtkWindow : Window
 		}
 		GtkManager.XamlRootMap.Register(xamlRoot, Host);
 
-		ApplicationView.IShouldntUseGetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged; //TODO:MZ: Unsubscribe
 	}
 
 	internal UnoGtkWindowHost Host { get; }
@@ -90,9 +88,9 @@ internal class UnoGtkWindow : Window
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.IShouldntUseGetForCurrentView().Title))
+		if (string.IsNullOrEmpty(_applicationView.Title))
 		{
-			ApplicationView.IShouldntUseGetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 
@@ -100,9 +98,8 @@ internal class UnoGtkWindow : Window
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.IShouldntUseGetForCurrentView();
-		Title = appView.Title;
-		SetSizeRequest((int)appView.PreferredMinSize.Width, (int)appView.PreferredMinSize.Height);
+		Title = _applicationView.Title;
+		SetSizeRequest((int)_applicationView.PreferredMinSize.Width, (int)_applicationView.PreferredMinSize.Height);
 	}
 
 	internal void UpdateWindowPropertiesFromCoreApplication()

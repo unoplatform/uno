@@ -5,8 +5,6 @@
 #nullable enable
 
 using System;
-
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
@@ -792,31 +790,6 @@ namespace Uno.UI.Xaml.Core
 					}
 
 					return Window.CurrentSafe.Bounds.Size;
-				}
-				else
-				{
-					throw new InvalidOperationException("Invalid VisualTree root type");
-				}
-			}
-		}
-
-		internal Rect VisibleBounds
-		{
-			get
-			{
-				if (RootElement is XamlIsland xamlIsland)
-				{
-					var size = Size;
-					return new Rect(0, 0, size.Width, size.Height);
-				}
-				else if (RootElement is RootVisual rootVisual)
-				{
-					if (Window.CurrentSafe is null)
-					{
-						throw new InvalidOperationException("RootVisual should not exist in a Uno.WinUI application.");
-					}
-
-					return Window.CurrentSafe.Bounds;
 				}
 				else
 				{

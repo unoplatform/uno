@@ -121,7 +121,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.ApiTests
 				navView.Height = 200.0;
 				navView.Content = "This test should have enough NavigationViewItems to scroll.";
 				Content = navView;
-				Windows.UI.ViewManagement.ApplicationView.IShouldntUseGetForCurrentView().TryEnterFullScreenMode();
+				Windows.UI.ViewManagement.ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 			});
 
 			IdleSynchronizer.Wait();

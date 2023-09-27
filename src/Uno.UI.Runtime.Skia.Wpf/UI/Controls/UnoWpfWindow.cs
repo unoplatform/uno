@@ -15,6 +15,7 @@ namespace Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 internal class UnoWpfWindow : WpfWindow
 {
 	private readonly WinUI.Window _winUIWindow;
+	private readonly ApplicationView _applicationView;
 
 	public UnoWpfWindow(WinUI.Window winUIWindow, XamlRoot xamlRoot)
 	{
@@ -30,7 +31,8 @@ internal class UnoWpfWindow : WpfWindow
 		Content = Host = new UnoWpfWindowHost(this, winUIWindow);
 		WpfManager.XamlRootMap.Register(xamlRoot, Host);
 
-		ApplicationView.IShouldntUseGetForCurrentView().PropertyChanged += OnApplicationViewPropertyChanged;
+		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged; //TODO:MZ: Unsubscribe
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }
@@ -59,10 +61,9 @@ internal class UnoWpfWindow : WpfWindow
 
 	internal void UpdateWindowPropertiesFromApplicationView()
 	{
-		var appView = ApplicationView.IShouldntUseGetForCurrentView();
-		Title = appView.Title;
-		MinWidth = appView.PreferredMinSize.Width;
-		MinHeight = appView.PreferredMinSize.Height;
+		Title = _applicationView.Title;
+		MinWidth = _applicationView.PreferredMinSize.Width;
+		MinHeight = _applicationView.PreferredMinSize.Height;
 	}
 
 	internal void UpdateWindowPropertiesFromPackage()
@@ -99,9 +100,9 @@ internal class UnoWpfWindow : WpfWindow
 			}
 		}
 
-		if (string.IsNullOrEmpty(ApplicationView.IShouldntUseGetForCurrentView().Title))
+		if (string.IsNullOrEmpty(_applicationView.Title))
 		{
-			ApplicationView.IShouldntUseGetForCurrentView().Title = Windows.ApplicationModel.Package.Current.DisplayName;
+			_applicationView.Title = Windows.ApplicationModel.Package.Current.DisplayName;
 		}
 	}
 }

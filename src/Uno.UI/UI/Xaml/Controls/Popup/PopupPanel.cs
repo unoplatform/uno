@@ -72,15 +72,7 @@ internal partial class PopupPanel : Panel
 		}
 		else
 		{
-			Rect visibleBounds;
-			if (XamlRoot is not { } xamlRoot || xamlRoot.VisualTree.ContentRoot.Type == ContentRootType.CoreWindow)
-			{
-				visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
-			}
-			else
-			{
-				visibleBounds = xamlRoot.VisualTree.VisibleBounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 			visibleBounds.Width = Math.Min(availableSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(availableSize.Height, visibleBounds.Height);
 
@@ -211,15 +203,7 @@ internal partial class PopupPanel : Panel
 		{
 			// Defer to the popup owner the responsibility to place the popup (e.g. ComboBox)
 
-			Rect visibleBounds;
-			if (XamlRoot is { } xamlRoot && xamlRoot.VisualTree.ContentRoot.Type != ContentRootType.CoreWindow)
-			{
-				visibleBounds = xamlRoot.VisualTree.VisibleBounds;
-			}
-			else
-			{
-				visibleBounds = ApplicationView.IShouldntUseGetForCurrentView().VisibleBounds;
-			}
+			Rect visibleBounds = XamlRoot?.VisualTree.VisibleBounds ?? default;
 
 			visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 			visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
