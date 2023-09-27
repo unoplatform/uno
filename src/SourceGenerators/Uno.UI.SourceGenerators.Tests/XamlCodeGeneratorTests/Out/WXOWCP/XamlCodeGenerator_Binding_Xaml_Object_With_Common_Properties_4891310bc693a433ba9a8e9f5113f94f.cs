@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
