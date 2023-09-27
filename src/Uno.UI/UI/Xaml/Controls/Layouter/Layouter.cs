@@ -220,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 					needsClipToSlot = customClippingElement.ForceClippingToLayoutSlot;
 				}
 				else
-	#endif
+#endif
 				{
 					allowClipToSlot = true;
 					needsClipToSlot = false;
