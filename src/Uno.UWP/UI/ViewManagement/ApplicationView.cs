@@ -13,6 +13,7 @@ using Windows.ApplicationModel.Resources.Core;
 using Windows.Foundation;
 using Windows.Storage;
 using Windows.UI.WindowManagement;
+using MUXWindowId = Microsoft.UI.WindowId;
 
 namespace Windows.UI.ViewManagement
 {
@@ -22,7 +23,7 @@ namespace Windows.UI.ViewManagement
 		private const string PreferredLaunchViewWidthKey = "__Uno.PreferredLaunchViewSizeKey.Width";
 		private const string PreferredLaunchViewHeightKey = "__Uno.PreferredLaunchViewSizeKey.Height";
 
-		private static readonly Dictionary<WindowId, ApplicationView> _windowIdMap = new();
+		private static readonly Dictionary<MUXWindowId, ApplicationView> _windowIdMap = new();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
 		private IReadOnlyList<Rect> _defaultSpanningRects;
@@ -97,9 +98,9 @@ namespace Windows.UI.ViewManagement
 
 		internal static global::Windows.UI.ViewManagement.ApplicationView IShouldntUseGetForCurrentView() => GetForWindowId(AppWindow.MainWindowId); //TODO:MZ: Does not make sense in WinAppSDK
 
-		internal static global::Windows.UI.ViewManagement.ApplicationView GetForWindowId(WindowId windowId) => _windowIdMap[windowId];
+		internal static global::Windows.UI.ViewManagement.ApplicationView GetForWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
 
-		internal static void InitializeForWindowId(WindowId windowId)
+		internal static void InitializeForWindowId(MUXWindowId windowId)
 		{
 			if (!_windowIdMap.ContainsKey(windowId))
 			{

@@ -38,7 +38,6 @@ namespace Microsoft.UI.Xaml.Input
 			}
 		}
 
-		// TODO Uno: This should probably apply to multi-window as well #8341.
 		private static bool InIslandsMode() => WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly;
 
 		private static object? FindNextFocus(

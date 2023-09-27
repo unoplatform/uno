@@ -1,5 +1,6 @@
 ﻿using System.Threading;
 using Windows.UI.ViewManagement;
+using MUXWindowId = Microsoft.UI.WindowId;
 
 #if HAS_UNO_WINUI
 namespace Microsoft.UI.Windowing;
@@ -17,5 +18,5 @@ public partial class AppWindow
 		ApplicationView.InitializeForWindowId(Id);
 	}
 
-	internal static WindowId MainWindowId { get; } = new WindowId(1);
+	internal static MUXWindowId MainWindowId { get; } = new(1);
 }
