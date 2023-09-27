@@ -39,12 +39,13 @@ internal static class HotReloadHelper
 
 
 		var reloadWaiter = TypeMappings.WaitForMappingsToResume();
-		if (!(reloadWaiter?.IsCompleted ?? true))
+		if (!reloadWaiter.IsCompleted)
 		{
 			// Reloads are paused (ie task hasn't completed), so don't wait for any update
 			// This is to handle testing the pause/resume feature of HR
 			return;
 		}
+
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 	}
 

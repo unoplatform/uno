@@ -1,10 +1,6 @@
 ﻿
 using System.Reflection.Metadata;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Uno.Extensions;
-using Uno.UI.Helpers;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 [assembly: ElementMetadataUpdateHandler(typeof(TestingUpdateHandler))]
 

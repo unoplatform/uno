@@ -115,11 +115,12 @@ internal sealed class ElementUpdateAgent : IDisposable
 				{
 
 					var ctorArgs = attr.ConstructorArguments;
-					if (ctorArgs.Count != 2 ||
-						ctorArgs[0].Value is not Type elementType ||
-						ctorArgs[1].Value is not Type handlerType)
+					var elementType = ctorArgs.Count == 2 ? ctorArgs[0].Value as Type : typeof(object);
+					var handlerType = ctorArgs.Count == 2 ? ctorArgs[1].Value as Type :
+											ctorArgs.Count == 1 ? ctorArgs[0].Value as Type : default;
+					if (elementType is null || handlerType is null)
 					{
-						_log($"'{attr}' found with invalid arguments.");
+						_log($"'{attr}' found with invalid arguments. elementType '{elementType?.Name}', handlerType '{handlerType?.Name}'");
 						continue;
 					}
 
