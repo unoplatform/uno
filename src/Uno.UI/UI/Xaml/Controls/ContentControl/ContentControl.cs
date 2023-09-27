@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
 			{
-				args.Handled = Focus(FocusState.Pointer);;
+				args.Handled = Focus(FocusState.Pointer);
 			}
 		}
 

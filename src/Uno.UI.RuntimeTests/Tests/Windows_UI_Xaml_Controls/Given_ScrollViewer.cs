@@ -229,6 +229,73 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_ArrowKeys_Pressed()
+		{
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center,
+				BorderBrush = new SolidColorBrush(Colors.Blue),
+				BorderThickness = new Thickness(6),
+				Child = new ScrollViewer
+				{
+					VerticalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollMode = ScrollMode.Enabled,
+					Content = new ItemsControl
+					{
+						ItemsSource = new[]
+						{
+							"Does the first item matter, or the non-databound template?",
+							"Alas, poor Yorick!",
+							"I knew him, Horatio: a fellow of infinite jest, of most excellent fancy:",
+							"he hath borne me on his back a thousand times;",
+							"and now, how abhorred in my imagination it is!",
+							"my gorge rims at it.",
+							"Here hung those lips that I have kissed I know not how oft.",
+							"Where be your gibes now?",
+							"your gambols?",
+							"your songs?",
+							"your flashes of merriment, that were wont to set the table on a roar?",
+							"Not one now, to mock your own grinning?",
+							"quite chap-fallen?",
+							"Now get you to my lady's chamber, and tell her, let her paint an inch thick, to this favour she must come;",
+							"make her laugh at that.",
+							"Prithee, Horatio, tell me one thing.",
+							"Stockholm",
+							"Perpignan",
+							"This is a very large item. No, seriously, it's very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very large!!!"
+						}
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(72, border.FindVisualChildByType<ScrollViewer>().VerticalOffset);
+
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(24, border.FindVisualChildByType<ScrollViewer>().VerticalOffset);
+		}
+
+
+		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
 		{
 			var SUT = new ScrollViewer
