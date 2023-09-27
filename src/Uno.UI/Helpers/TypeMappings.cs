@@ -9,7 +9,7 @@ namespace Uno.UI.Helpers
 	/// <summary>
 	/// Helper class to map types to their original types and vice versa as part of hot reload
 	/// </summary>
-	public static class TypeMappingHelper
+	public static class TypeMappings
 	{
 		/// <summary>
 		/// This maps a replacement type to the original type. This dictionary will grow with each iteration 
@@ -75,7 +75,7 @@ namespace Uno.UI.Helpers
 		{
 			AllMappedTypeToOrignalTypeMapings[mappedType] = originalType;
 			AllOriginalTypeToMappedType[originalType] = mappedType;
-			if (_pauseReloadingCompletion is null)
+			if (_mappingsPaused is null)
 			{
 				MappedTypeToOrignalTypeMapings[mappedType] = originalType;
 				OriginalTypeToMappedType[originalType] = mappedType;
@@ -95,25 +95,40 @@ namespace Uno.UI.Helpers
 			AllOriginalTypeToMappedType.Clear();
 		}
 
-		private static TaskCompletionSource _pauseReloadingCompletion;
+		private static TaskCompletionSource _mappingsPaused;
 
-		internal static Task WaitToReload()
-		{
-			return _pauseReloadingCompletion is not null ? _pauseReloadingCompletion.Task : default;
-		}
+		/// <summary>
+		/// Gets a Task that can be awaited to ensure type mappings
+		/// are being applied. This is useful particularly for testing 
+		/// HR the pause/resume function of type mappings
+		/// </summary>
+		/// <returns>A task that will complete when type mapping collection
+		/// has resumed. Returns a completed task if type mapping collection
+		/// is currently active</returns>
+		public static Task WaitForMappingsToResume()
+			=> _mappingsPaused is not null ? _mappingsPaused.Task : Task.CompletedTask;
 
-		public static void PauseReloading()
-		{
-			_pauseReloadingCompletion ??= new TaskCompletionSource();
-		}
+		/// <summary>
+		/// Pause the collection of type mappings.
+		/// Internally the type mappings are still collected but will only be
+		/// applied to the mapping dictionaries after Resume is called
+		/// </summary>
+		public static void Pause()
+			=> _mappingsPaused ??= new TaskCompletionSource();
 
-		public static void ResumeReloading()
+		/// <summary>
+		/// Resumes the collection of type mappings
+		/// If new types have been created whilst type mapping
+		/// was paused, those new mappings will be applied before
+		/// the WaitForMappingsToResume task completes
+		/// </summary>
+		public static void Resume()
 		{
-			var completion = _pauseReloadingCompletion;
-			_pauseReloadingCompletion = null;
+			var completion = _mappingsPaused;
+			_mappingsPaused = null;
 			if (completion is not null)
 			{
-				MappedTypeToOrignalTypeMapings= AllMappedTypeToOrignalTypeMapings.ToDictionary(x=>x.Key,x=>x.Value);
+				MappedTypeToOrignalTypeMapings = AllMappedTypeToOrignalTypeMapings.ToDictionary(x => x.Key, x => x.Value);
 				OriginalTypeToMappedType = AllOriginalTypeToMappedType.ToDictionary(x => x.Key, x => x.Value);
 				completion.TrySetResult();
 			}

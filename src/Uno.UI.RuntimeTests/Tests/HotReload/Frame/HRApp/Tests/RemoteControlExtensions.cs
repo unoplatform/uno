@@ -38,37 +38,15 @@ internal static class HotReloadHelper
 		await RemoteControlClient.Instance.SendMessage(message);
 
 
-		var reloadWaiter = TypeMappingHelper.WaitToReload();
-		if (reloadWaiter != null)
+		var reloadWaiter = TypeMappings.WaitForMappingsToResume();
+		if (!(reloadWaiter?.IsCompleted ?? true))
 		{
-			// Reloads are paused, so don't wait for any update
+			// Reloads are paused (ie task hasn't completed), so don't wait for any update
+			// This is to handle testing the pause/resume feature of HR
 			return;
 		}
 		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 	}
-
-	public static void UpdateServerFileFireAndForget<T>(string originalText, string replacementText)
-		where T : FrameworkElement, new()
-	{
-		if (RemoteControlClient.Instance is null)
-		{
-			return;
-		}
-
-		var message = new T().CreateUpdateFileMessage(
-			originalText: originalText,
-			replacementText: replacementText);
-
-		if (message is null)
-		{
-			return;
-		}
-		Task.Run(() =>
-		{
-			_ = RemoteControlClient.Instance.SendMessage(message);
-		});
-	}
-
 
 	public static async Task UpdateServerFileAndRevert<T>(
 		string originalText,

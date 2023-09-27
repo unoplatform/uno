@@ -8,7 +8,7 @@ public class BaseTestClass
 	[TestInitialize]
 	public void InitHotReload()
 	{
-		TypeMappingHelper.ClearMappings();
+		TypeMappings.ClearMappings();
 	}
 
 }

@@ -18,12 +18,13 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using System.Threading;
-using static Windows.UI.Xaml.Markup.Reader.XamlConstants;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
+		private static int _isReloading;
+
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
 		private ElementUpdateAgent? _elementAgent;
@@ -172,50 +173,34 @@ namespace Uno.UI.RemoteControl.HotReload
 		}
 #endif
 
-		private static int _isReloading;
-
-		private static async void ReloadWithUpdatedTypes(Type[] updatedTypes)
+		private static async Task<bool> ShouldReload()
 		{
-			if (_log.IsEnabled(LogLevel.Trace))
-			{
-				_log.Trace($"ReloadWithUpdatedTypes - start");
-			}
-
 			if (Interlocked.CompareExchange(ref _isReloading, 1, 0) == 1)
 			{
-				return;
+				return false;
 			}
 			try
 			{
-				var task = TypeMappingHelper.WaitToReload();
-				if (task != null)
-				{
-					// If a Task is returned, it means reloading has been paused
-					// The task will complete when reload should resume
-					await task;
-				}
+				await TypeMappings.WaitForMappingsToResume();
 			}
 			finally
 			{
 				Interlocked.Exchange(ref _isReloading, 0);
+			}
+			return true;
+		}
+
+		private static async void ReloadWithUpdatedTypes(Type[] updatedTypes)
+		{
+			if (!await ShouldReload())
+			{
+				return;
 			}
 
 			try
 			{
 
 				var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
-
-				if (_log.IsEnabled(LogLevel.Trace))
-				{
-					if (handlerActions is null)
-					{
-						_log.Trace($"ReloadWithUpdatedTypes - handlerActions is null");
-					}
-					else
-					{
-						_log.Trace($"ReloadWithUpdatedTypes - There are {handlerActions.Count} ElementHandlerActions registered");
-					}
-				}
 
 				// Action: BeforeVisualTreeUpdate
 				// This is called before the visual tree is updated
@@ -258,11 +243,6 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				// Action: AfterVisualTreeUpdate
 				_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
-
-				if (_log.IsEnabled(LogLevel.Trace))
-				{
-					_log.Trace($"ReloadWithUpdatedTypes - end");
-				}
 			}
 			catch (Exception ex)
 			{
@@ -331,7 +311,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
 				{
-					TypeMappingHelper.RegisterMapping(t, update.OriginalType);
+					TypeMappings.RegisterMapping(t, update.OriginalType);
 				}
 			}
 

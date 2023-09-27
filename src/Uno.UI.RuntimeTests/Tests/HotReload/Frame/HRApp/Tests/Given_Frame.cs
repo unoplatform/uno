@@ -95,21 +95,26 @@ public class Given_Frame : BaseTestClass
 		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
 
 		// Pause HR
-		TypeMappingHelper.PauseReloading();
+		TypeMappings.Pause();
+		try
+		{
 
-		// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
-			FirstPageTextBlockOriginalText,
-			FirstPageTextBlockChangedText,
-			async () =>
-			{
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
-				//await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
-			},
-			ct);
-
-		// Resume HR
-		TypeMappingHelper.ResumeReloading();
+			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
+			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+				FirstPageTextBlockOriginalText,
+				FirstPageTextBlockChangedText,
+				async () =>
+				{
+					await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+					//await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
+				},
+				ct);
+		}
+		finally
+		{
+			// Resume HR
+			TypeMappings.Resume();
+		}
 
 		// Check that the text has been updated
 		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);

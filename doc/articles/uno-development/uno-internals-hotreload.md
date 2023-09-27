@@ -25,6 +25,7 @@ The main extensibility point for developers wanting to integrate with Hot Reload
 To intercept the UI Update the first thing to do is to create a static class with static methods that will be invoked at different points in the UI Update. The static class needs to be registered using the ElementMetadataUpdateHandler attribute.
 
 In this example, the FrameUpdateHandler is registered as a handler for the Frame class. As the visual tree is traversed, when a Frame is encountered the appropriate methods on the FrameUpdateHandler will be invoked.
+
 ```csharp
 [assembly:ElementMetadataUpdateHandler(typeof(Frame), typeof(FrameUpdateHandler))]
 ```
