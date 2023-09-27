@@ -18,10 +18,10 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		private string _bindingsPaths;
 		private string[] _sourceAssemblies;
 
-		private static INamedTypeSymbol _intPtrSymbol;
-		private static INamedTypeSymbol _uintPtrSymbol;
-		private static INamedTypeSymbol _structLayoutSymbol;
-		private static INamedTypeSymbol _interopMessageSymbol;
+		private INamedTypeSymbol _intPtrSymbol;
+		private INamedTypeSymbol _uintPtrSymbol;
+		private INamedTypeSymbol _structLayoutSymbol;
+		private INamedTypeSymbol _interopMessageSymbol;
 
 		public void Initialize(GeneratorInitializationContext context)
 		{
@@ -443,7 +443,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private static string GetEMField(ITypeSymbol fieldType)
+		private string GetEMField(ITypeSymbol fieldType)
 		{
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
@@ -532,7 +532,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private static string GetTSType(ITypeSymbol type)
+		private string GetTSType(ITypeSymbol type)
 		{
 			if (type == null)
 			{
@@ -570,7 +570,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private static string GetTSFieldType(ITypeSymbol type)
+		private string GetTSFieldType(ITypeSymbol type)
 		{
 			if (type == null)
 			{
