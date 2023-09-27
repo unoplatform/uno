@@ -9,7 +9,7 @@ using Windows.UI.ViewManagement;
 
 namespace Uno.UI.Xaml.Controls;
 
-internal class NativeWindowWrapper : INativeWindowWrapper
+internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
 
@@ -17,7 +17,6 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
-	private Size _previousWindowSize = new Size(-1, -1);
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
@@ -36,50 +35,31 @@ internal class NativeWindowWrapper : INativeWindowWrapper
 #endif
 	}
 
-	public bool Visible { get; private set; }
+	public override void Activate() { } //TODO:MZ: Handle activation
 
-	public event EventHandler<Size> SizeChanged;
-	public event EventHandler<CoreWindowActivationState> ActivationChanged;
-	public event EventHandler<bool> VisibilityChanged;
-	public event EventHandler Closed;
-	public event EventHandler Shown;
-
-	public void Activate() { } //TODO:MZ: Handle activation
-
-	public void Show()
+	protected override void ShowCore()
 	{
 		_nativeWindow.RootViewController = _mainController;
 		_nativeWindow.MakeKeyAndVisible();
 		Visible = true;
-		Shown?.Invoke(this, EventArgs.Empty);
 	}
 
 	internal Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal RootViewController MainController => _mainController;
 
-	internal void OnNativeVisibilityChanged(bool visible)
-	{
-		Visible = visible;
-		VisibilityChanged?.Invoke(this, visible);
-	}
+	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
-	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationChanged?.Invoke(this, state);
+	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
-	internal void OnNativeClosed() => Closed?.Invoke(this, EventArgs.Empty); //TODO:MZ: Handle closing
+	internal void OnNativeClosed() => RaiseClosed(); // TODO: Handle closing when multiwindow #13847
 
 	internal void RaiseNativeSizeChanged()
 	{
 		var newWindowSize = GetWindowSize();
 
-		ApplicationView.GetForCurrentView()?.SetVisibleBounds(_nativeWindow, newWindowSize);
-
-		if (_previousWindowSize != newWindowSize)
-		{
-			_previousWindowSize = newWindowSize;
-
-			SizeChanged?.Invoke(this, newWindowSize);
-		}
+		Bounds = new Rect(default, newWindowSize);
+		VisibleBounds = new Rect(default, newWindowSize);
 	}
 
 	private void ObserveOrientationAndSize()
