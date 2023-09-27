@@ -1,11 +1,13 @@
 ﻿#nullable enable
 
-using Windows.Graphics.Effects;
-using Windows.Graphics.Effects.Interop;
 using System;
 using SkiaSharp;
+using Windows.UI;
+using Microsoft.UI;
 using System.Numerics;
 using Uno.UI.Composition;
+using Windows.Graphics.Effects;
+using Windows.Graphics.Effects.Interop;
 
 namespace Windows.UI.Composition
 {
