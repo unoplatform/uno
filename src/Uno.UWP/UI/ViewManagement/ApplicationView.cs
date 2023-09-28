@@ -15,6 +15,12 @@ using Windows.Storage;
 using Windows.UI.WindowManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
 
+#if HAS_UNO_WINUI
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
+#else
+using AppWindow = Windows.UI.WindowManagement.AppWindow;
+#endif
+
 namespace Windows.UI.ViewManagement
 {
 	public partial class ApplicationView
