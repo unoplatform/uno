@@ -6,33 +6,15 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
-using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Windows.Storage.Pickers.Provider;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Microsoft.UI.Xaml.Markup;
-using Microsoft.UI.Xaml.Media;
 #if __IOS__
 using _View = UIKit.UIView;
 #else
-using _View = Microsoft.UI.Xaml.FrameworkElement;
 using System.Runtime.Loader;
 using System.Runtime.CompilerServices;
-using Java.Lang;
-using System.Diagnostics.CodeAnalysis;
 using System.Diagnostics;
-using static System.Diagnostics.DebuggableAttribute;
-
-
-
-
-
-
-
 #endif
 #if __IOS__
 using UIKit;
@@ -182,7 +164,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					from asm in AssemblyLoadContext.Default.Assemblies
 					let debuggableAttribute = asm.GetCustomAttribute<DebuggableAttribute>()
 					where debuggableAttribute is not null
-						&& (debuggableAttribute.DebuggingFlags & DebuggingModes.DisableOptimizations) != 0
+						&& (debuggableAttribute.DebuggingFlags & DebuggableAttribute.DebuggingModes.DisableOptimizations) != 0
 					from type in asm.GetTypes()
 					let originalType = type.GetCustomAttribute<MetadataUpdateOriginalTypeAttribute>()
 					where originalType is not null
