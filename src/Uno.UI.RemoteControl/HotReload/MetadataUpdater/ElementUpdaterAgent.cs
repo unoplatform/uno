@@ -92,6 +92,26 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// The newElement is attached to the visual tree and will have data context update, either inherited from parent or copies from the oldElement.
 		/// </summary>
 		public Action<FrameworkElement, FrameworkElement, Type[]?> AfterElementReplaced { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// as part of a preliminary pass through the visual tree prior
+		/// to applying ui updates. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches the type registered for by the handler. 
+		/// Add key-value-pairs to the dictionary parameter
+		/// </summary>
+		public Action<FrameworkElement, IDictionary<string, object>, Type[]?> CaptureState { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// as part of a pass through the visual tree after applying 
+		/// ui updates. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches the type registered for by the handler. 
+		/// Restore properties from the key-value-pairs to the dictionary parameter
+		/// </summary>
+		public Action<FrameworkElement, IDictionary<string, object>, Type[]?> RestoreState { get; set; } = (_, _, _) => { };
 	}
 
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
@@ -182,6 +202,26 @@ internal sealed class ElementUpdateAgent : IDisposable
 		{
 			_log($"Adding handler for {nameof(updateActions.AfterElementReplaced)} for {handlerType}");
 			updateActions.AfterElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(afterElementReplaced);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(
+			handlerType,
+			nameof(ElementUpdateHandlerActions.CaptureState),
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) }) is MethodInfo captureState)
+		{
+			_log($"Adding handler for {nameof(updateActions.CaptureState)} for {handlerType}");
+			updateActions.CaptureState = CreateHandlerAction<Action<FrameworkElement, IDictionary<string, object>, Type[]?>>(captureState);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(
+			handlerType,
+			nameof(ElementUpdateHandlerActions.RestoreState),
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) }) is MethodInfo restoreState)
+		{
+			_log($"Adding handler for {nameof(updateActions.RestoreState)} for {handlerType}");
+			updateActions.RestoreState = CreateHandlerAction<Action<FrameworkElement, IDictionary<string, object>, Type[]?>>(restoreState);
 			methodFound = true;
 		}
 

@@ -40,7 +40,7 @@ public class Given_Frame : BaseTestClass
 			replacementText: FirstPageTextBlockChangedText);
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateFirstTextBlockOnCurrentPageText(message.OriginalXaml);
+		await frame.ValidateTextOnChildTextBlock(message.OriginalXaml);
 	}
 
 	/// <summary>
@@ -60,17 +60,17 @@ public class Given_Frame : BaseTestClass
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Check the updated text of the TextBlock
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
 			FirstPageTextBlockChangedText,
-			() => frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText),
+			() => frame.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText),
 			ct);
 
 		// Validate that the page has been returned to the original text
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
 	/// <summary>
@@ -92,7 +92,7 @@ public class Given_Frame : BaseTestClass
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Pause HR
 		TypeMappings.Pause();
@@ -105,7 +105,7 @@ public class Given_Frame : BaseTestClass
 				FirstPageTextBlockChangedText,
 				async () =>
 				{
-					await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+					await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 				},
 				ct);
 		}
@@ -116,7 +116,7 @@ public class Given_Frame : BaseTestClass
 		}
 
 		// Check that the text has been updated
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
 
@@ -139,7 +139,7 @@ public class Given_Frame : BaseTestClass
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
@@ -147,20 +147,20 @@ public class Given_Frame : BaseTestClass
 			async () =>
 			{
 				// Check to make sure the TextBlock was updated (see Check_Can_Change_Page1 for this test)
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
+				await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText);
 
 				// Navigate to the second page, verify navigation worked, and then navigate back
 				frame.Navigate(typeof(HR_Frame_Pages_Page2));
-				await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockOriginalText);
+				await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 				frame.GoBack();
 
 				// Validate again that the TextBlock still has the updated value
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
+				await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText);
 			},
 			ct);
 
 		// Check that after the test has executed, the xaml is back to the original text
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
 
@@ -183,7 +183,7 @@ public class Given_Frame : BaseTestClass
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page2>(
 			SecondPageTextBlockOriginalText,
@@ -191,21 +191,21 @@ public class Given_Frame : BaseTestClass
 			async () =>
 			{
 				// Check to make sure the current page wasn't changed
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+				await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 				// Navigate to the second page, verify the TextBlock on the second page has the updated value
 				(frame.Content as HR_Frame_Pages_Page1)?.Page2Click(this, new RoutedEventArgs());
 
-				await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockChangedText);
+				await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockChangedText);
 
 				// Go back and Validate again that the TextBlock still has same value
 				frame.GoBack();
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+				await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 			},
 			ct);
 
 		// Check that after the test has executed, the xaml is back to the original text
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
 	/// <summary>
@@ -228,11 +228,11 @@ public class Given_Frame : BaseTestClass
 		frame.Navigate(typeof(HR_Frame_Pages_Page1));
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Navigate to the second page, verify the TextBlock on the second page has the updated value
 		frame.Navigate(typeof(HR_Frame_Pages_Page2));
-		await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
@@ -240,16 +240,16 @@ public class Given_Frame : BaseTestClass
 			async () =>
 			{
 				// Check to make sure the current page wasn't changed
-				await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockOriginalText);
+				await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 
 				// Go back and Validate again that the TextBlock has changed value
 				frame.GoBack();
-				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText);
+				await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText);
 			},
 			ct);
 
 		// Check that after the test has executed, the xaml is back to the original text
-		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 	}
 
 }

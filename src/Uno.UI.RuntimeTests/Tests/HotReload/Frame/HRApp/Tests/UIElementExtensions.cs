@@ -1,64 +1,44 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Uno.UI;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Extensions;
-using System.Diagnostics;
-using DirectUI;
-using Windows.Devices.AllJoyn;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
-using Uno.Extensions;
 
-namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
+namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame;
+
+internal static class UIElementExtensions
 {
-	public static class UIElementExtensions
+	public static Task ValidateTextOnChildTextBlock(this UIElement element, string expectedText, int index = 0)
+		=> element.ValidateChildElement<TextBlock>(
+			textBlock =>
+			{
+				Assert.AreEqual(expectedText, textBlock.Text);
+				return Task.CompletedTask;
+			},
+			index);
+
+	public static Task ValidateChildElement<TElement>(this UIElement element, Action<TElement> validation, int index = 0)
+		where TElement : FrameworkElement
+		=> element.ValidateChildElement<TElement>(
+				selectedElement =>
+				{
+					validation(selectedElement);
+					return Task.CompletedTask;
+				},
+				index);
+
+	public static async Task ValidateChildElement<TElement>(this UIElement element, Func<TElement, Task> validation, int index = 0)
+		where TElement : FrameworkElement
 	{
-		public static async Task ValidateFirstTextBlockOnCurrentPageText(this Windows.UI.Xaml.UIElement element, string expectedText)
-			=> await element.ValidateTextBlockOnCurrentPageText(expectedText);
-
-		public static async Task ValidateTextBlockOnCurrentPageText(this Windows.UI.Xaml.UIElement element, string expectedText, int index = 0, TimeSpan? timeout = null)
+		if (element is FrameworkElement fe)
 		{
-			timeout ??= TimeSpan.FromSeconds(3);
+			await UnitTestsUIContentHelper.WaitForLoaded(fe);
 
-			if (element is FrameworkElement fe)
-			{
-				await UnitTestsUIContentHelper.WaitForLoaded(fe);
+			var selectedElement = element
+				.EnumerateDescendants()
+				.OfType<TElement>()
+				.Skip(index)
+				.FirstOrDefault();
 
-				var sw = Stopwatch.StartNew();
-
-				TextBlock? firstText = null;
-
-				firstText = element
-					.EnumerateDescendants()
-					.OfType<TextBlock>()
-					.Skip(index)
-					.FirstOrDefault();
-
-				Assert.IsNotNull(firstText);
-
-				Assert.AreEqual(expectedText, firstText?.Text);
-			}
-		}
-
-		public static async Task ValidateElementOnCurrentPageText<TElement>(this Windows.UI.Xaml.UIElement element, Func<TElement, Task> validation, int index = 0)
-			where TElement : FrameworkElement
-		{
-			if (element is FrameworkElement fe)
-			{
-				await UnitTestsUIContentHelper.WaitForLoaded(fe);
-
-				var firstText = element
-					.EnumerateDescendants()
-					.OfType<TElement>()
-					.Skip(index)
-					.FirstOrDefault();
-
-				Assert.IsNotNull(firstText);
-				await validation(firstText);
-			}
+			Assert.IsNotNull(selectedElement);
+			await validation(selectedElement);
 		}
 	}
 }
