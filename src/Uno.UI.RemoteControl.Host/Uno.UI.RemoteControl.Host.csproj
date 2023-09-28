@@ -42,7 +42,7 @@
 
 			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
 			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId).RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId).DevServer\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />

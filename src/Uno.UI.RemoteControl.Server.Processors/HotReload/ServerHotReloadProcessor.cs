@@ -111,9 +111,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 					.Buffer(TimeSpan.FromMilliseconds(250))
 					.Subscribe(filePaths =>
 					{
-						foreach (var file in filePaths.Distinct().Where(f => Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)))
+						var files = filePaths
+							.Distinct()
+							.Where(f =>
+								Path.GetExtension(f).Equals(".xaml", StringComparison.OrdinalIgnoreCase)
+								|| Path.GetExtension(f).Equals(".cs", StringComparison.OrdinalIgnoreCase));
+
+						foreach (var file in filePaths)
 						{
-							OnXamlFileChanged(file);
+							OnSourceFileChanged(file);
 						}
 					}, e => Console.WriteLine($"Error {e}"));
 
@@ -121,7 +127,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 			}
 		}
 
-		private void OnXamlFileChanged(string fullPath)
+		private void OnSourceFileChanged(string fullPath)
 			=> Task.Run(async () =>
 			{
 				if (this.Log().IsEnabled(LogLevel.Debug))

@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Uno.UI.SourceGenerators.Helpers;
 using System.Diagnostics;
 using Uno.Extensions;
+using Uno.Roslyn;
 
 namespace Uno.UI.SourceGenerators.NativeCtor
 {
@@ -19,7 +20,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 		public void Execute(GeneratorExecutionContext context)
 		{
-			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
+			if (PlatformHelper.IsValidPlatform(context))
 			{
 
 				var visitor = new SerializationMethodsGenerator(context);
@@ -37,6 +38,9 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 			private readonly INamedTypeSymbol? _intPtrSymbol;
 			private readonly INamedTypeSymbol? _jniHandleOwnershipSymbol;
 			private readonly INamedTypeSymbol?[]? _javaCtorParams;
+			private readonly string _configuration;
+			private readonly bool _isDebug;
+			private readonly bool _isHotReloadEnabled;
 
 			public SerializationMethodsGenerator(GeneratorExecutionContext context)
 			{
@@ -49,6 +53,20 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
 				_jniHandleOwnershipSymbol = context.Compilation.GetTypeByMetadataName("Android.Runtime.JniHandleOwnership");
 				_javaCtorParams = new[] { _intPtrSymbol, _jniHandleOwnershipSymbol };
+
+				_configuration = context.GetMSBuildPropertyValue("Configuration")
+					?? throw new InvalidOperationException("The configuration property must be provided");
+
+				_isDebug = string.Equals(_configuration, "Debug", StringComparison.OrdinalIgnoreCase);
+
+				if (bool.TryParse(context.GetMSBuildPropertyValue("UnoForceHotReloadCodeGen"), out var isHotReloadEnabled))
+				{
+					_isHotReloadEnabled = isHotReloadEnabled;
+				}
+				else
+				{
+					_isHotReloadEnabled = _isDebug;
+				}
 			}
 
 			public override void VisitNamedType(INamedTypeSymbol type)
@@ -137,11 +155,31 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					Action<IIndentedStringBuilder> beforeClassHeaderAction = builder =>
 					{
 						// These will be generated just before `partial class ClassName {`
-						builder.Append("#if __IOS__ || __MACOS__");
-						builder.AppendLine();
-						builder.AppendLineIndented("[global::Foundation.Register]");
-						builder.Append("#endif");
-						builder.AppendLine();
+						builder.AppendLineIndented("#if __IOS__ || __MACOS__");
+
+						// When C# hot reload is enabled types get replaced with a new type
+						// that has a different name. We need to register the new type
+						// with its original name in order to have the runtime map the
+						// existing native type to the new type. native types cannot be 
+						// generated at runtime
+
+						var registerParamApple = _isHotReloadEnabled
+							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "_")}\"" 
+							: "";
+
+						builder.AppendLineIndented($"[global::Foundation.Register({registerParamApple})]");
+
+						builder.AppendLineIndented("#endif");
+
+						builder.AppendLineIndented("#if __ANDROID__");
+
+						var registerParamAndroid = _isHotReloadEnabled 
+							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "/")}\"" 
+							: "";
+
+						builder.AppendLineIndented($"[global::Android.Runtime.Register({registerParamAndroid})]");
+
+						builder.AppendLineIndented("#endif");
 					};
 
 					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction))
