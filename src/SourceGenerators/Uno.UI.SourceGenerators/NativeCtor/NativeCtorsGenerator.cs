@@ -164,7 +164,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 						// generated at runtime
 
 						var registerParamApple = _isHotReloadEnabled
-							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "_")}\"" 
+							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "_")}\""
 							: "";
 
 						builder.AppendLineIndented($"[global::Foundation.Register({registerParamApple})]");
@@ -173,8 +173,8 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 						builder.AppendLineIndented("#if __ANDROID__");
 
-						var registerParamAndroid = _isHotReloadEnabled 
-							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "/")}\"" 
+						var registerParamAndroid = _isHotReloadEnabled
+							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "/")}\""
 							: "";
 
 						builder.AppendLineIndented($"[global::Android.Runtime.Register({registerParamAndroid})]");
