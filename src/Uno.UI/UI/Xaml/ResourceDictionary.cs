@@ -58,6 +58,14 @@ namespace Windows.UI.Xaml
 		public IList<ResourceDictionary> MergedDictionaries => _mergedDictionaries;
 		public IDictionary<object, object> ThemeDictionaries => GetOrCreateThemeDictionaries();
 
+		/// <summary>
+		/// Determines if this instance is empty
+		/// </summary>
+		internal bool IsEmpty
+			=> Count == 0 
+				&& ThemeDictionaries.Count == 0
+				&& MergedDictionaries.Count == 0;
+
 		private ResourceDictionary GetOrCreateThemeDictionaries()
 		{
 			if (_themeDictionaries is null)

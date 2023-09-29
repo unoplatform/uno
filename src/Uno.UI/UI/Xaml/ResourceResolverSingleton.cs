@@ -25,15 +25,19 @@ namespace Uno.UI
 	public sealed class ResourceResolverSingleton
 	{
 		private static ResourceResolverSingleton _instance;
-		public static ResourceResolverSingleton Instance => _instance ??= new ResourceResolverSingleton();
+		public static ResourceResolverSingleton Instance
+			=> _instance ??= new ResourceResolverSingleton();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public object ResolveResourceStatic(object key, Type type, object context) => ResourceResolver.ResolveResourceStatic(key, type, context);
+		public object ResolveResourceStatic(object key, Type type, object context) 
+			=> ResourceResolver.ResolveResourceStatic(key, type, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context) => ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, isHotReloadSupported, context);
+		public void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context)
+			=> ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, isHotReloadSupported, true, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public object ResolveStaticResourceAlias(string resourceKey, object parseContext) => ResourceResolver.ResolveStaticResourceAlias(resourceKey, parseContext);
+		public object ResolveStaticResourceAlias(string resourceKey, object parseContext) 
+			=> ResourceResolver.ResolveStaticResourceAlias(resourceKey, parseContext);
 	}
 }

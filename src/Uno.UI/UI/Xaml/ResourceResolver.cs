@@ -244,7 +244,7 @@ namespace Uno.UI
 		/// <param name="isThemeResourceExtension">True for {ThemeResource Foo}, false for {StaticResource Foo}</param>
 		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, object context = null)
+		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, bool isHotReloadSupported, bool fromXamlParser = false, object context = null)
 		{
 			var updateReason = ResourceUpdateReason.None;
 			if (isThemeResourceExtension)
@@ -260,13 +260,24 @@ namespace Uno.UI
 				updateReason |= ResourceUpdateReason.HotReload;
 			}
 
+			if (fromXamlParser && ResourceResolver.CurrentScope.Sources.IsEmpty)
+			{
+				updateReason |= ResourceUpdateReason.XamlParser;
+			}
+
 			ApplyResource(owner, property, new SpecializedResourceDictionary.ResourceKey(resourceKey), updateReason, context, null);
 		}
 
 		internal static void ApplyResource(DependencyObject owner, DependencyProperty property, SpecializedResourceDictionary.ResourceKey specializedKey, ResourceUpdateReason updateReason, object context, DependencyPropertyValuePrecedences? precedence)
 		{
+			// If the invocation comes from XAML and from theme resources, resolution
+			// must happen lazily, done through walking the visual tree.
+			var immediateResolution =
+				(updateReason & ResourceUpdateReason.XamlParser) != 0
+				&& (updateReason & ResourceUpdateReason.ThemeResource) != 0;
+
 			// Set initial value based on statically-available top-level resources.
-			if (TryStaticRetrieval(specializedKey, context, out var value))
+			if (!immediateResolution && TryStaticRetrieval(specializedKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value), precedence);
 
@@ -383,9 +394,12 @@ namespace Uno.UI
 		internal static bool TryTopLevelRetrieval(in SpecializedResourceDictionary.ResourceKey resourceKey, object context, out object value)
 		{
 			value = null;
-			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) ||
-				TryAssemblyResourceRetrieval(resourceKey, context, out value) ||
-				TrySystemResourceRetrieval(resourceKey, out value);
+			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) 
+				|| (
+					FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries 
+					&& TryAssemblyResourceRetrieval(resourceKey, context, out value)
+				) 
+				|| TrySystemResourceRetrieval(resourceKey, out value);
 		}
 
 		/// <summary>

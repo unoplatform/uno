@@ -169,6 +169,15 @@ namespace Uno.UI
 				= true;
 		}
 
+		public static class ResourceDictionary
+		{
+			/// <summary>
+			/// Determines whether unreferenced ResourceDictionary present in the assembly
+			/// are accessible from app resources.
+			/// </remarks>
+			public static bool IncludeUnreferencedDictionaries { get; set; }
+		}
+
 		public static class Font
 		{
 			private static string _symbolsFont =
