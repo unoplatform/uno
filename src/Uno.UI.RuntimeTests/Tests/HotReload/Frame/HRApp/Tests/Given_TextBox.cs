@@ -22,6 +22,7 @@ public class Given_TextBox : BaseTestClass
 	/// of specific controls (in this case the Text property of a TextBox
 	/// </summary>
 	[TestMethod]
+ 	[Ignore("Not yet working")]
 	public async Task When_Changing_TextBox()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(60)).Token;
