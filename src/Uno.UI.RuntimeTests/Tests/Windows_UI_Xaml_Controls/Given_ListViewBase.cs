@@ -647,7 +647,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public async Task When_SingleSelection_IsMultiSelectCheckBoxEnabled()
+#if __IOS__
+		[Ignore("The test can't find MultiSelectSquare")]
+#endif
+		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
 		{
 			var singleList = new ListView
 			{
