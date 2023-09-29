@@ -19,6 +19,7 @@ using Android.OS;
 using Windows.UI.ViewManagement;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.WindowManagement;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace Uno.UI
 {

@@ -142,7 +142,9 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			_screenHeight = Window.Current is not null ? Window.Current.Bounds.Height : XamlRoot.Size.Height;
+			_screenHeight = Windows.UI.Xaml.Window.Current is not null ?
+				Windows.UI.Xaml.Window.Current.Bounds.Height :
+				XamlRoot.Size.Height;
 
 			var applied = _mainListview.ApplyTemplate();
 			_mainScrollViewer = _mainListview.FindFirstChild<Microsoft.UI.Xaml.Controls.ScrollViewer>();
