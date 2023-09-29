@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
 
 namespace Uno.UI.Xaml.Core;
 
