@@ -395,6 +395,7 @@ namespace Uno.UI.Toolkit
 		}
 #endif
 
+#pragma warning disable IDE0051
 		private static Window? GetCurrentWindow()
 		{
 #if !HAS_UNO
