@@ -2,14 +2,16 @@ using System;
 using System.Diagnostics;
 using System.Linq.Expressions;
 
-//TODO:MZ: Waiting for https://github.com/unoplatform/uno/pull/13842
-//#if !HAS_UNO_WINUI
-//namespace Windows.UI;
-//#else
+// TODO: There is also WUX WindowId, but should be only in UWP - #13842
 namespace Microsoft.UI;
 
 [DebuggerDisplay("{Value}")]
-public partial struct WindowId : IEquatable<WindowId>
+#if HAS_UNO_WINUI
+public
+#else
+internal
+#endif
+partial struct WindowId : IEquatable<WindowId>
 {
 	public ulong Value;
 
