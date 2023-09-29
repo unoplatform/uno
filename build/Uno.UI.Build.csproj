@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFramework>net462</TargetFramework>
+		<TargetFramework>net7.0</TargetFramework>
 		<UpdateAssemblyInfo>false</UpdateAssemblyInfo>
 	</PropertyGroup>
 
@@ -232,7 +232,8 @@
 				 BuildInParallel="true" />
 
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
-		<MSBuild Properties="Configuration=Release;Platform=x86" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Restore;Build" />
+		<MSBuild Properties="Configuration=Release;Platform=x86" Projects="..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj" Targets="Restore;Build" Condition="'$(UNO_UWP_BUILD)'=='true'" />
+		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator.Reference.WinUI\Uno.UWPSyncGenerator.Reference.WinUI.csproj" Targets="Restore;Build" Condition="'$(UNO_UWP_BUILD)'=='false'" />
 
 		<ItemGroup>
 			<MixinTargetFrameworks Include="net7.0-ios" />

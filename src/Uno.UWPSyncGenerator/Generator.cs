@@ -135,15 +135,26 @@ namespace Uno.UWPSyncGenerator
 			InitializeRoslyn();
 		}
 
-		public virtual async Task Build(string basePath, string baseName, string sourceAssembly)
+		public virtual async Task Build(
+#if !HAS_UNO_WINUI
+			string baseName, string sourceAssembly
+#endif
+			)
 		{
+#if !HAS_UNO_WINUI
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
-
-			s_referenceCompilation ??= await LoadUWPReferenceProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt");
+#endif
+			const string referencesPath =
+#if HAS_UNO_WINUI
+				@"..\..\..\Uno.UWPSyncGenerator.Reference.WinUI\references.txt";
+#else
+				@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt";
+#endif
+			s_referenceCompilation ??= await LoadUWPReferenceProject(referencesPath);
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			var topProject = Path.Combine(Path.GetDirectoryName(basePath), "Uno.UI", "Uno.UI");
+			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
 			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-ios");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-android");
@@ -161,6 +172,7 @@ namespace Uno.UWPSyncGenerator
 			FlagsAttributeSymbol = s_referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 
+#if !HAS_UNO_WINUI
 			var origins = from externalRedfs in s_referenceCompilation.ExternalReferences
 						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
 						  where fileNameWithoutExtension.StartsWith("Windows.Foundation", StringComparison.Ordinal)
@@ -182,7 +194,6 @@ namespace Uno.UWPSyncGenerator
 			var excludeNamespaces = new List<string>();
 			var includeNamespaces = new List<string>();
 
-#if !HAS_UNO_WINUI
 			// For UWP compilation we need to ignore these namespaces when not explicitly generating
 			// for related projects.
 			if (baseName == "Uno.UI.Dispatching")
@@ -198,7 +209,6 @@ namespace Uno.UWPSyncGenerator
 				excludeNamespaces.Add("Windows.UI.Dispatching");
 				excludeNamespaces.Add("Windows.UI.Composition");
 			}
-#endif
 
 			var q = from asm in origins
 					where asm.Name == sourceAssembly
@@ -228,9 +238,62 @@ namespace Uno.UWPSyncGenerator
 					ProcessType(type, ns.Namespace);
 				}
 			}
+#else
+			foreach (var reference in s_referenceCompilation.ExternalReferences)
+			{
+				if (s_referenceCompilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
+				{
+					if (ShouldGenerateForAssembly(assembly.Name))
+					{
+						foreach (var type in GetNamespaceTypes(assembly.Modules.First().GlobalNamespace))
+						{
+							if (!SkipNamespace(type) && type.DeclaredAccessibility == Accessibility.Public)
+							{
+								ProcessType(type, type.ContainingNamespace);
+							}
+						}
+					}
+				}
+
+			}
+#endif
 		}
 
-		private bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
+#if HAS_UNO_WINUI
+		private static bool ShouldGenerateForAssembly(string assemblyName)
+		{
+			switch (assemblyName)
+			{
+				case "Microsoft.InteractiveExperiences.Projection":
+				case "Microsoft.WinUI":
+				case "Microsoft.Windows.AppLifecycle.Projection":
+				case "Microsoft.Windows.ApplicationModel.Resources.Projection":
+				case "Microsoft.Windows.PushNotifications.Projection":
+				case "Microsoft.Windows.System.Power.Projection":
+				case "Microsoft.WindowsAppRuntime.Bootstrap.Net":
+				case "Microsoft.Windows.SDK.NET":
+				case "WinRT.Runtime":
+					return true;
+
+				case "Microsoft.Windows.ApplicationModel.DynamicDependency.Projection":
+				case "Microsoft.Windows.ApplicationModel.WindowsAppRuntime.Projection":
+				case "Microsoft.Windows.AppNotifications.Builder.Projection":
+				case "Microsoft.Windows.AppNotifications.Projection":
+				case "Microsoft.Windows.Security.AccessControl.Projection":
+				case "Microsoft.Windows.System.Projection":
+				case "Microsoft.Windows.Widgets.Projection":
+					return false;
+
+				default:
+					// This can be hit if WinUI reference is updated to newer version that has new assemblies.
+					// In this case, those new assemblies should be reviewed whether we should generate types for them or not.
+					// You should also modify `GetNamespaceBasePath` to specify where types from this assemblies should be generated.
+					throw new InvalidOperationException($"Unexpected assembly name '{assemblyName}'");
+			}
+		}
+#endif
+
+		private static bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
 		{
 			if (namedTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("Microsoft.UI.Input.Experimental", StringComparison.Ordinal))
 			{
@@ -292,41 +355,20 @@ namespace Uno.UWPSyncGenerator
 
 		protected string GetNamespaceBasePath(INamedTypeSymbol type)
 		{
+#if !HAS_UNO_WINUI
 			if (type.ContainingAssembly.Name == "Windows.Foundation.FoundationContract")
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
 
 			var containingNamespaceName = type.ContainingNamespace.ToString();
-#if !HAS_UNO_WINUI
 			if (containingNamespaceName.StartsWith("Windows.UI.Composition", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
-#else
-			if (containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.Graphics", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
-			}
-			else if (containingNamespaceName.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal))
-			{
-				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
-			}
-#endif
 			else if (containingNamespaceName.StartsWith("Windows.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal)
 				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
-#if HAS_UNO_WINUI
-				|| containingNamespaceName.StartsWith("Microsoft.System", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.UI.Text", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.Graphics", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.ApplicationModel.Resources", StringComparison.Ordinal)
-				|| containingNamespaceName.StartsWith("Microsoft.Web", StringComparison.Ordinal)
-#endif
 			)
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
@@ -335,6 +377,38 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
+#else
+			var @namespace = type.ContainingNamespace.ToString();
+			if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
+			}
+			else if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
+			}
+
+			switch (type.ContainingAssembly.Name)
+			{
+				case "Microsoft.InteractiveExperiences.Projection":
+				case "Microsoft.Windows.ApplicationModel.Resources.Projection":
+				case "Microsoft.Windows.AppLifecycle.Projection":
+				case "Microsoft.Windows.PushNotifications.Projection":
+				case "Microsoft.Windows.System.Power.Projection":
+				case "Microsoft.WindowsAppRuntime.Bootstrap.Net":
+				case "Microsoft.Windows.SDK.NET":
+					return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+
+				case "WinRT.Runtime.dll":
+					return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
+
+				case "Microsoft.WinUI":
+					return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+
+				default:
+					throw new InvalidOperationException($"Unknown assembly '{type.ContainingAssembly.Name}'.");
+			}
+#endif
 		}
 
 		protected class PlatformSymbols<T> where T : ISymbol
