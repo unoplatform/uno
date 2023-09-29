@@ -19,6 +19,7 @@
 
 		<PackageId>Uno.UI.DevServer</PackageId>
 		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</PackageId>
+		<CommonOverridePackageId>$(PackageId)</CommonOverridePackageId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -66,21 +67,4 @@
 		</ProjectReference>
 	</ItemGroup>
 
-	<Target Name="_UnoRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
-
-		<PropertyGroup>
-			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-		</PropertyGroup>
-		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)\*.*" />
-		</ItemGroup>
-		<MakeDir Directories="$(_TargetNugetFolder)" />
-
-		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
-
-		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
-	</Target>
 </Project>

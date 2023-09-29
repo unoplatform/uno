@@ -49,7 +49,7 @@
 			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
 			<_UnoOverrideTargetVSVersion>16.0</_UnoOverrideTargetVSVersion>
 			<_UnoOverrideTargetVSVersion Condition="'$(TargetFramework)'=='net48'">17.0</_UnoOverrideTargetVSVersion>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(_OverridePackageId).RemoteControl\$(UnoNugetOverrideVersion)\tools\rc\$(_UnoOverrideTargetVSVersion)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(_OverridePackageId).DevServer\$(UnoNugetOverrideVersion)\tools\rc\$(_UnoOverrideTargetVSVersion)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
