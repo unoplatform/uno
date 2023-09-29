@@ -171,15 +171,16 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 						builder.AppendLineIndented("#endif");
 
-						builder.AppendLineIndented("#if __ANDROID__");
+						if (_isHotReloadEnabled)
+						{
+							builder.AppendLineIndented("#if __ANDROID__");
 
-						var registerParamAndroid = _isHotReloadEnabled
-							? $"\"{typeSymbol.GetFullMetadataName().Replace(".", "/")}\""
-							: "";
+							var registerParamAndroid = $"\"{typeSymbol.GetFullMetadataName().Replace(".", "/")}\"";
 
-						builder.AppendLineIndented($"[global::Android.Runtime.Register({registerParamAndroid})]");
+							builder.AppendLineIndented($"[global::Android.Runtime.Register({registerParamAndroid})]");
 
-						builder.AppendLineIndented("#endif");
+							builder.AppendLineIndented("#endif");
+						}
 					};
 
 					using (typeSymbol.AddToIndentedStringBuilder(builder, beforeClassHeaderAction))
