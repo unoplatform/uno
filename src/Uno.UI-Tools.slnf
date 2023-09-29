@@ -6,6 +6,7 @@
       "Uno.ReferenceImplComparer\\Uno.ReferenceImplComparer.csproj",
       "Uno.UI.TestComparer\\Uno.UI.TestComparer.csproj",
       "Uno.UWPSyncGenerator.Reference\\Uno.UWPSyncGenerator.Reference.csproj",
+      "Uno.UWPSyncGenerator.Reference.WinUI\\Uno.UWPSyncGenerator.Reference.WinUI.csproj",
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj"
     ]
   }
