@@ -14,7 +14,7 @@ Some steps and questions to answer:
 1. Attach a .zip file of that repro to the issue.
    > [!TIP]
    > Watch out for the size of zip created. Check the section below on reducing the sample size.
-1. If you can, add a video or screenshots reproducing the issue. Github supports uploading `mp4`` files in issues.
+1. If you can, add a video or screenshots reproducing the issue. Github supports uploading `mp4` files in issues.
 
 ## Tips on how to create the simplest repro app
 - Find the smallest piece of API used by your app (XAML Control, method, type) and extract that code into the repro app
