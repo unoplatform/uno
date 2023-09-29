@@ -21,9 +21,10 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
+			
 			if (Selector is GridView gv)
 			{
-				ApplyMultiSelectState(gv.IsSelectionMultiple);
+				ApplyMultiSelectState(gv.SelectionMode == ListViewSelectionMode.Multiple);
 			}
 		}
 	}

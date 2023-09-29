@@ -284,12 +284,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			UpdateCommonStates();
 
-			//if (Selector is ListView lv)
-			//{
-			//	ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
-			//}
-
-
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
 			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
 			VisualStateManager.GoToState(this, state, true);
