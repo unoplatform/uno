@@ -462,9 +462,11 @@ namespace SampleControl.Presentation
 
 		internal void CreateNewWindow()
 		{
+#if HAS_UNO //TODO:MZ: Enable UWP-style new window
 			var newWindow = new Window();
 			newWindow.Content = new MainPage();
 			newWindow.Activate();
+#endif
 		}
 
 		internal async Task OpenRuntimeTests(CancellationToken ct)
