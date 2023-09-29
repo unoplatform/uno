@@ -26,8 +26,8 @@ public sealed partial class Window
 	/// </summary>
 	public string Title
 	{
-		get => ApplicationView.GetForCurrentView().Title;
-		set => ApplicationView.GetForCurrentView().Title = value;
+		get => ApplicationView.GetForWindowId(AppWindow.Id).Title;
+		set => ApplicationView.GetForWindowId(AppWindow.Id).Title = value;
 	}
 #endif
 
