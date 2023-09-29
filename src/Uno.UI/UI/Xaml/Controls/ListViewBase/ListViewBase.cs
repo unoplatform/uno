@@ -1095,7 +1095,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="selectorItem"></param>
 		internal void ApplyMultiSelectState(SelectorItem selectorItem)
 		{
-			selectorItem.ApplyMultiSelectState(IsSelectionMultiple);
+			selectorItem.ApplyMultiSelectState(SelectionMode == ListViewSelectionMode.Multiple);
 		}
 
 		/// <summary>
