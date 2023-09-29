@@ -98,7 +98,7 @@ namespace Windows.UI.Core
 		/// <summary>
 		/// Always null in Uno.WinUI.
 		/// </summary>
-		public static CoreWindow? GetForCurrentThread() => null;
+		public static CoreWindow? GetForCurrentThread() => _current;
 #else
 		/// <summary>
 		/// Gets the CoreWindow instance for the currently active thread.
