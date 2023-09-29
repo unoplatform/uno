@@ -19,6 +19,21 @@ internal partial class PopupRoot : Panel
 	public PopupRoot()
 	{
 		KeyDown += OnKeyDown;
+		Windows.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
+		Windows.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+	}
+
+	private void CloseFlyouts()
+	{
+		for (var i = _openPopups.Count - 1; i >= 0; i--)
+		{
+			var reference = _openPopups[i];
+			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			{
+				var f = popup.AssociatedFlyout;
+				f.Hide();
+			}
+		}
 	}
 
 	protected override void OnChildrenChanged()

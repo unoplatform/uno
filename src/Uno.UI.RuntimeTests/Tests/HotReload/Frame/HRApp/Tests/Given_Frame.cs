@@ -1,18 +1,10 @@
-﻿#nullable disable
-
-using System;
-using System.Formats.Asn1;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-using Uno.Disposables;
-using Uno.UI.RemoteControl;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
-using Uno.UI.RuntimeTests.Tests.HotReload;
-using Uno.UI.RuntimeTests.Tests.HotReload.Frame;
+﻿
+using System.Reflection.Metadata;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 using Uno.UI.Helpers;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 
@@ -58,7 +50,7 @@ public class Given_Frame : BaseTestClass
 	/// Change Page1
 	/// </summary>
 	[TestMethod]
-	public async Task Check_Can_Change_Page1()
+	public async Task Check_Can_Change_Page1_NoPause()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
 
@@ -76,7 +68,57 @@ public class Given_Frame : BaseTestClass
 			FirstPageTextBlockChangedText,
 			() => frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText),
 			ct);
+
+		// Validate that the page has been returned to the original text
+		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
 	}
+
+	/// <summary>
+	/// Checks that a simple change to a XAML element (change Text on TextBlock) will not be applied to
+	/// the currently visible page when HR is paused and that the change will be applied once HR is resumed
+	/// Open Page1
+	/// Pause HR
+	/// Change Page1 (no changes to Page1 UI)
+	/// Resume HR (changes applied to Page1 UI)
+	/// </summary>
+	[TestMethod]
+	public async Task Check_Can_Change_Page1_Pause_HR()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+
+		var frame = new Windows.UI.Xaml.Controls.Frame();
+		UnitTestsUIContentHelper.Content = frame;
+
+		frame.Navigate(typeof(HR_Frame_Pages_Page1));
+
+		// Check the initial text of the TextBlock
+		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+
+		// Pause HR
+		TypeMappings.Pause();
+		try
+		{
+
+			// Check the text of the TextBlock is the same even after a HR change (since HR is paused)
+			await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
+				FirstPageTextBlockOriginalText,
+				FirstPageTextBlockChangedText,
+				async () =>
+				{
+					await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+				},
+				ct);
+		}
+		finally
+		{
+			// Resume HR
+			TypeMappings.Resume();
+		}
+
+		// Check that the text has been updated
+		await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+	}
+
 
 	/// <summary>
 	/// Checks that a simple xaml change to the current page will be retained when
@@ -152,7 +194,7 @@ public class Given_Frame : BaseTestClass
 				await frame.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
 
 				// Navigate to the second page, verify the TextBlock on the second page has the updated value
-				(frame.Content as HR_Frame_Pages_Page1)?.Page2Click(null, null);
+				(frame.Content as HR_Frame_Pages_Page1)?.Page2Click(this, new RoutedEventArgs());
 
 				await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockChangedText);
 

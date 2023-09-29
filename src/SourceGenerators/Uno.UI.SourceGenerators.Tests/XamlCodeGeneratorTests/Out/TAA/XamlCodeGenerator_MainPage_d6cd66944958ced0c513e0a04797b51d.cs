@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Shapes;
 using Windows.UI.Text;
 using Uno.Extensions;
 using Uno;
+using Uno.UI.Helpers;
 using Uno.UI.Helpers.Xaml;
 using MyProject;
 
@@ -180,7 +181,7 @@ namespace TestRepro
 			{
 			}
 		}
-		private bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
+		private static bool TryGetInstance_xBind_1(global::TestRepro.MainPage ___tctx, out object o)
 		{
 			o = null;
 			var sub1 = ___tctx.MyArray;

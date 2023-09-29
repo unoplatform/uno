@@ -284,15 +284,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return null;
 		}
 
-#if !DISABLE_GENERATED_REGEX
 		[GeneratedRegex("^-?([^-+/*\\(\\)\\^\\s]+)")]
-#endif
-
 		private static partial Regex NextNumberParsing();
-
-#if DISABLE_GENERATED_REGEX
-		private static partial Regex NextNumberParsing()
-			=> new Regex("^-?([^-+/*\\(\\)\\^\\s]+)");
-#endif
 	}
 }

@@ -8,10 +8,6 @@
 		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
-	</ItemGroup>
-
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />

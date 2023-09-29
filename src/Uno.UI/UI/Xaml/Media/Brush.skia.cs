@@ -39,9 +39,9 @@ namespace Windows.UI.Xaml.Media
 			{
 				return AssignAndObserveRadialGradientBrush(radialGradientBrush, compositor, brushSetter);
 			}
-			else if (brush is XamlCompositionBrushBase unimplementedCompositionBrush)
+			else if (brush is XamlCompositionBrushBase compositionBrush)
 			{
-				return AssignAndObserveXamlCompositionBrush(unimplementedCompositionBrush, compositor, brushSetter);
+				return AssignAndObserveXamlCompositionBrush(compositionBrush, compositor, brushSetter);
 			}
 			else
 			{
@@ -197,25 +197,28 @@ namespace Windows.UI.Xaml.Media
 			return disposables;
 		}
 
-		/// <summary>
-		/// Apply fallback colour for unimplemented <see cref="XamlCompositionBrushBase"/> types. For implemented types a more specific method
-		/// should be supplied.
-		/// </summary>
 		private static IDisposable AssignAndObserveXamlCompositionBrush(XamlCompositionBrushBase brush, Compositor compositor, BrushSetterHandler brushSetter)
 		{
 			var disposables = new CompositeDisposable();
 
-			var compositionBrush = compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
+			brush.OnConnectedInternal();
+			var compositionBrush = brush.CompositionBrush ?? compositor.CreateColorBrush(brush.FallbackColorWithOpacity);
 
 			brush.RegisterDisposablePropertyChangedCallback(
 				XamlCompositionBrushBase.FallbackColorProperty,
-				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
+				(s, colorArg) => compositionBrush.TrySetColorFromBrush(brush)
 			)
 			.DisposeWith(disposables);
 
 			brush.RegisterDisposablePropertyChangedCallback(
 				XamlCompositionBrushBase.OpacityProperty,
-				(s, colorArg) => compositionBrush.Color = brush.FallbackColorWithOpacity
+				(s, colorArg) => compositionBrush.TrySetColorFromBrush(brush)
+			)
+			.DisposeWith(disposables);
+
+			brush.RegisterDisposablePropertyChangedCallback(
+				XamlCompositionBrushBase.CompositionBrushProperty,
+				(s, brushArg) => { if (brush.CompositionBrush is CompositionBrush compBrush) brushSetter(compBrush); }
 			)
 			.DisposeWith(disposables);
 
@@ -305,6 +308,17 @@ namespace Windows.UI.Xaml.Media
 				case BrushMappingMode.RelativeToBoundingBox:
 				default:
 					return CompositionMappingMode.Relative;
+			}
+		}
+	}
+
+	internal static class BrushExtensions
+	{
+		internal static void TrySetColorFromBrush(this CompositionBrush brush, XamlCompositionBrushBase srcBrush)
+		{
+			if (brush is CompositionColorBrush colorBrush)
+			{
+				colorBrush.Color = srcBrush.FallbackColor;
 			}
 		}
 	}

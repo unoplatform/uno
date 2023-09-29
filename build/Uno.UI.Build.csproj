@@ -42,10 +42,6 @@
 		<CallTarget Targets="PrepareNuGetPackage" />
 	</Target>
 
-	<Target Name="GeneratePackages" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'==''">
-		<CallTarget Targets="BuildNuGetPackage" Condition="'$(Configuration)'=='Release'" />
-	</Target>
-
 	<Target Name="UpdateFileVersions">
 		<PropertyGroup>
 			<MSBuildDeveloperNamespace>
@@ -56,10 +52,6 @@
 		<ItemGroup>
 
 			<_legacyProject Include="..\src\SolutionTemplate\**\*.Uwp.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.iOS.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj" Exclude="**\bin\**;**\obj\**"/>
-			<_legacyProject Include="..\src\SolutionTemplate\**\*.Wpf.Host.csproj" Exclude="**\bin\**;**\obj\**"/>
 
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Mobile.csproj" Exclude="**\bin\**;**\obj\**"/>
 			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj" Exclude="**\bin\**;**\obj\**"/>
@@ -175,17 +167,16 @@
 			<_Sha1Replace Include="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks*.*" />
 		</ItemGroup>
 
-    <WriteLinesToFile
-        File="%(_Sha1Replace.Identity)"
-        Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(GITVERSION_VersionSourceSha)'))"
-        Overwrite="true" />
-
+		<WriteLinesToFile
+			File="%(_Sha1Replace.Identity)"
+			Lines="$([System.IO.File]::ReadAllText('%(_Sha1Replace.Identity)').Replace('v0','v$(GITVERSION_VersionSourceSha)'))"
+			Overwrite="true" />
 	</Target>
 
 	<Target Name="BuildCIMobile">
 
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest-netcoremobile;PackageVersion=$(GITVERSION_SemVer)"
-             Projects="..\src\Uno.UI-netcoremobile-only.slnf"
+             Projects="filters\Uno.UI-packages-netcoremobile.slnf"
              Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
@@ -463,7 +454,7 @@
 		<Move SourceFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\Uno.UI.Runtime.WebAssembly.targets" DestinationFiles="..\src\Uno.UI.Runtime.WebAssembly\buildTransitive\$(PackageNamePrefix).Runtime.WebAssembly.targets" />
 	</Target>
 
-	<Target Name="BuildNuGetPackage">
+	<Target Name="BuildNuGetPackage" AfterTargets="Build" DependsOnTargets="PrepareBuildAssets" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(Configuration)'=='Release'">
 		<PropertyGroup>
 			<NuSpecProperties>NoWarn=NU5100,NU5105,NU5131;branch=$(GITVERSION_BranchName);commitid=$(GITVERSION_VersionSourceSha)</NuSpecProperties>
 

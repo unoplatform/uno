@@ -5,8 +5,7 @@ jobs:
 - job: reference_package_build
   displayName: 'Reference Package Binaries'
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   strategy:
     matrix:

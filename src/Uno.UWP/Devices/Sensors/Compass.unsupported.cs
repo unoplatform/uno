@@ -1,4 +1,6 @@
-﻿#if __MACOS__ || IS_UNIT_TESTS || __WASM__ || __NETSTD_REFERENCE__
+﻿#if !(__IOS__ || __ANDROID__)
+#nullable enable
+
 namespace Windows.Devices.Sensors;
 
 public partial class Compass
@@ -11,6 +13,6 @@ public partial class Compass
 	/// API not supported, always returns null.
 	/// </summary>
 	/// <returns>Null.</returns>
-	public static Compass GetDefault() => null;
+	public static Compass? GetDefault() => null;
 }
 #endif

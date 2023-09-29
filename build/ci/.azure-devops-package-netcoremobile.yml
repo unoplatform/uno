@@ -44,10 +44,10 @@ jobs:
     PublishTrimmed: false
 
     # Disable AOT for this job
-    AotAssemblies: false
+    RunAOTCompilation: false
 
-    # This is required to be able to use hard links as much as possible
-    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
 
   steps:
   - checkout: self
@@ -69,8 +69,6 @@ jobs:
 
   - template: templates/dotnet-mobile-install-windows.yml
 
-  - template: templates/install-windows-sdk.yml
-
   # This task is required to run in separately to avoid hitting targets file
   # caching issues with msbuild 17.3 or later
   - task: DotNetCoreCLI@2
@@ -91,7 +89,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-binaries.binlog
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

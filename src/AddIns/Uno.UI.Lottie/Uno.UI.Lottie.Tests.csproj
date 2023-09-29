@@ -14,8 +14,6 @@
 		<RootNamespace>Uno.UI.Lottie</RootNamespace>
 
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_SKOTTIE</DefineConstants>
-
-		<UnoRuntimeIdentifier>Reference</UnoRuntimeIdentifier>
 	</PropertyGroup>
 
 	<ItemGroup>

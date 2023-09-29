@@ -349,6 +349,11 @@ namespace Windows.UI.Xaml.Controls
 			var isHorizontal = Orientation == Orientation.Horizontal;
 			var padding = AppliedPadding;
 
+			var unpaddedSize = new Size(
+				finalSize.Width - padding.Left - padding.Right,
+				finalSize.Height - padding.Top - padding.Bottom
+			);
+
 			var childRect = new Rect(new Point(padding.Left, padding.Top), default(Size));
 			var previousChildSize = 0.0;
 
@@ -373,7 +378,7 @@ namespace Windows.UI.Xaml.Controls
 					childRect.X += previousChildSize;
 
 					childRect.Width = desiredChildSize.Width;
-					childRect.Height = Math.Max(finalSize.Height, desiredChildSize.Height);
+					childRect.Height = Math.Max(unpaddedSize.Height, desiredChildSize.Height);
 
 					if (view == _itemsPanel)
 					{
@@ -389,7 +394,7 @@ namespace Windows.UI.Xaml.Controls
 					childRect.Y += previousChildSize;
 
 					childRect.Height = desiredChildSize.Height;
-					childRect.Width = Math.Max(finalSize.Width, desiredChildSize.Width);
+					childRect.Width = Math.Max(unpaddedSize.Width, desiredChildSize.Width);
 
 					if (view == _itemsPanel)
 					{
@@ -455,13 +460,19 @@ namespace Windows.UI.Xaml.Controls
 
 				if (isHorizontal)
 				{
-					desiredSize.Width += measuredSize.Width;
+					if (!PanelIsScrollSpInfo || view == Panel)
+					{
+						desiredSize.Width += measuredSize.Width;
+					}
 					desiredSize.Height = Math.Max(desiredSize.Height, measuredSize.Height);
 				}
 				else
 				{
+					if (!PanelIsScrollSpInfo || view == Panel)
+					{
+						desiredSize.Height += measuredSize.Height;
+					}
 					desiredSize.Width = Math.Max(desiredSize.Width, measuredSize.Width);
-					desiredSize.Height += measuredSize.Height;
 				}
 			}
 
@@ -470,6 +481,7 @@ namespace Windows.UI.Xaml.Controls
 				desiredSize.Height + padding.Top + padding.Bottom
 			);
 		}
+		private bool PanelIsScrollSpInfo => Panel is IScrollSnapPointsInfo;
 
 		public IReadOnlyList<float> GetIrregularSnapPoints(Orientation orientation, SnapPointsAlignment alignment)
 		{

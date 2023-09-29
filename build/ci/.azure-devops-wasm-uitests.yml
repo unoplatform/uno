@@ -6,8 +6,7 @@ jobs:
   displayName: 'Build WebAssembly SamplesApp UI Tests'
   container: nv-bionic-wasm
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -70,8 +69,7 @@ jobs:
 
   container: nv-bionic-wasm
 
-  pool:
-    vmImage: 'ubuntu-20.04'
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
@@ -187,8 +185,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP: 2
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget

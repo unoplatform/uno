@@ -1,10 +1,14 @@
 ﻿<Project>
 
+	<PropertyGroup>
+		<IsCrossruntime>false</IsCrossruntime>
+		<IsCrossruntime Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">true</IsCrossruntime>
+	</PropertyGroup>
 	<ItemGroup>
 		<AndroidResource Include="Resources\**\*.xml" Condition="$(IsAndroid)" />
 
-		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(_IsNetStd)" />
-		<Compile Remove="**\*.crossruntime.cs" Condition="!$(_IsNetStd)" />
+		<None Include="**\*.crossruntime.cs" Exclude="bin\**\*.crossruntime.cs;obj\**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
+		<Compile Remove="**\*.crossruntime.cs" Condition="!$(IsCrossruntime)" />
 
 		<None Include="**\*.wasm.cs" Exclude="bin\**\*.wasm.cs;obj\**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
 		<Compile Remove="**\*.wasm.cs" Condition="'$(UnoRuntimeIdentifier)'!='WebAssembly'" />
@@ -12,8 +16,8 @@
 		<None Include="**\*.skia.cs" Exclude="bin\**\*.skia.cs;obj\**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 		<Compile Remove="**\*.skia.cs" Condition="'$(UnoRuntimeIdentifier)'!='Skia'" />
 
-		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
-		<Compile Remove="**\*.reference.cs" Condition="!$(_IsNetStd) or '$(UnoRuntimeIdentifier)'!='Reference'" />
+		<None Include="**\*.reference.cs" Exclude="bin\**\*.reference.cs;obj\**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
+		<Compile Remove="**\*.reference.cs" Condition="'$(UnoRuntimeIdentifier)'!='Reference'" />
 
 		<None Include="**\*.iOS.cs" Exclude="bin\**\*.iOS.cs;obj\**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
 		<Compile Remove="**\*.iOS.cs" Condition="!$(IsIOSOrCatalyst)" />
@@ -38,8 +42,9 @@
   List of known constants:
   - __SKIA__: Used when building for the Skia backend
   - __WASM__: Used when building for the WebAssembly backend
-  - UNO_REFERENCE_API: Used when the netstandard 2.0 Reference API is used.
-  - __NETSTD_REFERENCE__: Used when building the reference assemblies for the netstandard 2.0 target
+  - UNO_REFERENCE_API: Used when the Reference API is used (it's true for Skia, Wasm, and Reference).
+  - __CROSSRUNTIME__: Currently have the same semantics as UNO_REFERENCE_API
+  - __NETSTD_REFERENCE__: Used when building the reference assemblies (only true for Reference)
   - UNO_HAS_UIELEMENT_IMPLICIT_PINNING: Used to mark targets that have specific constraints on
 										UIElements. On iOS, this means additional weak references
 										backed fields to handle opaque native reference pinning and avoid
@@ -52,21 +57,21 @@
   - Constants for Xamarin backends and SDK versions: https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/platform-divergence-abstraction-divergent-implementation#conditional-compilation
   -->
 
-	<PropertyGroup Condition="$(_IsNetStd)">
-		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__</DefineConstants>
+	<PropertyGroup Condition="$(IsCrossruntime)">
+		<DefineConstants>$(DefineConstants);__CROSSRUNTIME__;UNO_REFERENCE_API</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='WebAssembly'">
-		<DefineConstants>$(DefineConstants);__WASM__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='WebAssembly'">
+		<DefineConstants>$(DefineConstants);__WASM__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Skia'">
-		<DefineConstants>$(DefineConstants);__SKIA__;UNO_REFERENCE_API;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia'">
+		<DefineConstants>$(DefineConstants);__SKIA__;UNO_HAS_ENHANCED_HIT_TEST_PROPERTY;UNO_HAS_MANAGED_SCROLL_PRESENTER;UNO_HAS_MANAGED_POINTERS;SUPPORTS_RTL</DefineConstants>
 		<DefineConstants>$(DefineConstants);UNO_SUPPORTS_NATIVEHOST</DefineConstants>
 	</PropertyGroup>
 
-	<PropertyGroup Condition="$(_IsNetStd) and '$(UnoRuntimeIdentifier)'=='Reference'">
-		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__;UNO_REFERENCE_API</DefineConstants>
+	<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Reference'">
+		<DefineConstants>$(DefineConstants);__NETSTD_REFERENCE__</DefineConstants>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="$(_IsUnitTests)">
@@ -101,16 +106,6 @@
 		<TargetPlatformVersion>10.0.19041.0</TargetPlatformVersion>
 		<TargetPlatformMinVersion>10.0.19041.0</TargetPlatformMinVersion>
 		<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>
-	</PropertyGroup>
-
-	<PropertyGroup Condition=" '$(TargetFramework)'=='net8.0' and '$(UnoRuntimeIdentifier)'=='WebAssembly' ">
-
-		<!--
-		Generated regex does not yet work with missing member on
-		bootstrapper 7.0, remove when bootstrapper is updated.
-		-->
-		<DefineConstants>$(DefineConstants);DISABLE_GENERATED_REGEX</DefineConstants>
-		<NoWarn>$(NoWarn);SYSLIB1045</NoWarn>
 	</PropertyGroup>
 
 	<Target Name="_UnoOverrideNuget"

@@ -228,6 +228,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerParentIsKept_OnRemoveAndAdd()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+
+			var indexToAssert = 1;
+			var item2 = source[indexToAssert];
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(indexToAssert, item2);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+
+			// There are situations where the isse occurs the second time.
+			indexToAssert = 3;
+			var item4 = source[indexToAssert];
+
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(indexToAssert, item4);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void InvalidChanges_ShouldNotBeReflectedOnSelectedItem()
@@ -643,6 +680,157 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 
 			Assert.AreEqual(list.SelectedIndex, -1);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__
+		[Ignore("The test can't find MultiSelectSquare")]
+#endif
+		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
+		{
+			var singleList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var singleList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var singleList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					singleList,
+					multipleList,
+					extendedList,
+					singleList2,
+					multipleList2,
+					extendedList2,
+					singleList3,
+					multipleList3,
+					extendedList3
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Visible, ((Border)multipleList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Visible, ((Border)multipleList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList3.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)multipleList3.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList3.FindName("MultiSelectSquare")).Visibility);
 		}
 
 #if HAS_UNO

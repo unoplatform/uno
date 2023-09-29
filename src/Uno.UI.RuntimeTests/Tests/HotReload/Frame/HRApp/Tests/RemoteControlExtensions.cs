@@ -8,6 +8,7 @@ using Uno.UI.Helpers;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
 using Uno.UI.RuntimeTests.Tests.HotReload.Frame.Pages;
 using Windows.UI.Xaml;
 
@@ -36,14 +37,16 @@ internal static class HotReloadHelper
 
 		await RemoteControlClient.Instance.SendMessage(message);
 
-		var cts = new TaskCompletionSource();
-		ct.Register(() => cts.TrySetCanceled());
 
-		void UpdateReceived(object? sender, object? args) => cts.TrySetResult();
+		var reloadWaiter = TypeMappings.WaitForMappingsToResume();
+		if (!reloadWaiter.IsCompleted)
+		{
+			// Reloads are paused (ie task hasn't completed), so don't wait for any update
+			// This is to handle testing the pause/resume feature of HR
+			return;
+		}
 
-		MetadataUpdaterHelper.MetadataUpdated += UpdateReceived;
-
-		await cts.Task;
+		await TestingUpdateHandler.WaitForVisualTreeUpdate().WaitAsync(ct);
 	}
 
 	public static async Task UpdateServerFileAndRevert<T>(
@@ -58,17 +61,12 @@ internal static class HotReloadHelper
 			return;
 		}
 
-		try
-		{
-			await RemoteControlClient.Instance.WaitForConnection();
+		await RemoteControlClient.Instance.WaitForConnection();
 
-			await UpdateServerFile<T>(originalText, replacementText, ct);
+		await UpdateServerFile<T>(originalText, replacementText, ct);
 
-			await callback();
-		}
-		finally
-		{
-			await UpdateServerFile<T>(replacementText, originalText, ct);
-		}
+		await callback();
+
+		await UpdateServerFile<T>(replacementText, originalText, ct);
 	}
 }

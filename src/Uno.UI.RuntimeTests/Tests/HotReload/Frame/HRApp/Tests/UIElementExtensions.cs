@@ -9,6 +9,8 @@ using Uno.UI.Extensions;
 using System.Diagnostics;
 using DirectUI;
 using Windows.Devices.AllJoyn;
+using Uno.UI.RuntimeTests.Tests.HotReload.Frame.HRApp.Tests;
+using Uno.Extensions;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
 {
@@ -29,21 +31,13 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload.Frame
 
 				TextBlock? firstText = null;
 
-				while (sw.Elapsed < timeout)
-				{
-					firstText = element
-						.EnumerateDescendants()
-						.OfType<TextBlock>()
-						.Skip(index)
-						.FirstOrDefault();
+				firstText = element
+					.EnumerateDescendants()
+					.OfType<TextBlock>()
+					.Skip(index)
+					.FirstOrDefault();
 
-					if (firstText?.Text == expectedText)
-					{
-						break;
-					}
-
-					await Task.Delay(100);
-				}
+				Assert.IsNotNull(firstText);
 
 				Assert.AreEqual(expectedText, firstText?.Text);
 			}

@@ -655,6 +655,7 @@
 			<!-- END Skia clipping -->
 
 			<Member fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase" reason="Shapes refactoring" />
+			<Member fullName="Windows.UI.Xaml.Controls.StackPanelExtensions" reason="Shouldn't be public, and removed completely" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -1673,6 +1674,8 @@
 			<Member fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Double Windows.UI.Xaml.Shapes.ArbitraryShapeBase.LimitWithUserSize(System.Double availableSize, System.Double userSize, System.Double naNFallbackValue)" reason="Cleanup shapes on Wasm" />
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase.get_ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
+			
+			<Member fullName="Windows.Devices.Sensors.Pedometer Windows.Devices.Sensors.Pedometer.TryCreateInstance()" reason="Not available in WinUI" />
 
 			<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.ItemsControl.ResolveInternalItemsPanel(Android.Views.View itemsPanel)" reason="ItemsPanel should be a ViewGroup not a View, since it has children" />
 

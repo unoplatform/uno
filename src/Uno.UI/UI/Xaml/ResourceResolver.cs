@@ -405,14 +405,17 @@ namespace Uno.UI
 				return false;
 			}
 
-			if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict))
+			if (parseContext.AssemblyName is not null)
 			{
-				foreach (var kvp in assemblyDict)
+				if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict))
 				{
-					var rd = kvp.Value as ResourceDictionary;
-					if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+					foreach (var kvp in assemblyDict)
 					{
-						return true;
+						var rd = kvp.Value as ResourceDictionary;
+						if (rd.TryGetValue(resourceKey, out value, shouldCheckSystem: false))
+						{
+							return true;
+						}
 					}
 				}
 			}

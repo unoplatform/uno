@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal void ApplyMultiSelectState(bool isSelectionMultiple)
 		{
-			if (isSelectionMultiple)
+			if (isSelectionMultiple && Selector is not ListViewBase { IsMultiSelectCheckBoxEnabled: false })
 			{
 				// We can safely always go to multiselect state
 				VisualStateManager.GoToState(this, "MultiSelectEnabled", useTransitions: true);
@@ -283,6 +283,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 
 			UpdateCommonStates();
+
+			//if (Selector is ListView lv)
+			//{
+			//	ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
+			//}
+
 
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
 			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;

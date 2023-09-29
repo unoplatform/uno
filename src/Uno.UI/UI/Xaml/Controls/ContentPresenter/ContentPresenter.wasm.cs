@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		public ContentPresenter()
 		{
 			InitializeContentPresenter();
+			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		private void SetUpdateTemplate()
@@ -39,12 +40,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateCornerRadius(CornerRadius radius)
 		{
-			SetCornerRadius(radius);
+			UpdateBorder();
 		}
 
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush);
+			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 		}
 
 		private void ClearBorder()
