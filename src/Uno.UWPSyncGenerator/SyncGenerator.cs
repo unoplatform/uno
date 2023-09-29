@@ -225,6 +225,7 @@ namespace Uno.UWPSyncGenerator
 		private static bool IsIgnoredAttribute(AttributeData attributeData)
 		{
 			return attributeData.AttributeClass.ToString() is
+				"WinRT.WindowsRuntimeTypeAttribute" or
 				"System.Runtime.InteropServices.GuidAttribute" or
 				"System.ComponentModel.EditorBrowsableAttribute" or
 				"Windows.Foundation.Metadata.GuidAttribute" or
