@@ -75,7 +75,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					if (this.Log().IsEnabled(LogLevel.Debug))
 					{
-						this.Log().Debug($"LightweightReload: Waiting for existing type observer");
+						this.Log().Debug($"PartialReload: Waiting for existing type observer");
 					}
 				}
 			}
