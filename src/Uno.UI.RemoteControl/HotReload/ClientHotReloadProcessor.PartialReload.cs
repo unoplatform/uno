@@ -9,22 +9,9 @@ using System.Threading.Tasks;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.RemoteControl.HotReload.Messages;
-#if __IOS__
-using _View = UIKit.UIView;
-#else
 using System.Runtime.Loader;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
-#endif
-#if __IOS__
-using UIKit;
-#elif __MACOS__
-using AppKit;
-#elif __ANDROID__
-using Uno.UI;
-#endif
-
-[assembly: System.Reflection.Metadata.MetadataUpdateHandler(typeof(Uno.UI.RemoteControl.HotReload.ClientHotReloadProcessor))]
 
 namespace Uno.UI.RemoteControl.HotReload
 {
