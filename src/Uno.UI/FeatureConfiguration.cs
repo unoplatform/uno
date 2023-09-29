@@ -174,7 +174,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Determines whether unreferenced ResourceDictionary present in the assembly
 			/// are accessible from app resources.
-			/// </remarks>
+			/// </summary>
 			public static bool IncludeUnreferencedDictionaries { get; set; }
 		}
 

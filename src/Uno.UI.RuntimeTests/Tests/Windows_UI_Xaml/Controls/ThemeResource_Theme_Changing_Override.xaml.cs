@@ -57,9 +57,4 @@ public class ThemeResource_Theme_Changing_Override_Custom : ResourceDictionary
 			MergedDictionaries.Add(myButton);
 		}
 	}
-
-	public ThemeResource_Theme_Changing_Override_Custom()
-	{
-		
-	}
 }

@@ -1285,11 +1285,11 @@ namespace Windows.UI.Xaml
 
 			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
-			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
+			var bindings = _resourceBindings.GetAllBindings();
 
-			foreach (var (property, binding) in bindings)
+			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 
 			UpdateChildResourceBindings(updateReason);
@@ -1332,6 +1332,9 @@ namespace Windows.UI.Xaml
 
 			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
 			{
+				// Add the current dictionaries to the resolver scope,
+				// this allows for StaticResource.ResourceKey to resolve properly
+
 				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
 				{
 					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
@@ -1499,7 +1502,7 @@ namespace Windows.UI.Xaml
 
 				if (candidateFE is not null)
 				{
-					if (candidateFE.Resources is { IsEmpty: false}) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (candidateFE.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
 						yield return candidateFE.Resources;
 					}

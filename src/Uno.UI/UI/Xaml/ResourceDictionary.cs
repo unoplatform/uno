@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml
 		/// Determines if this instance is empty
 		/// </summary>
 		internal bool IsEmpty
-			=> Count == 0 
+			=> Count == 0
 				&& ThemeDictionaries.Count == 0
 				&& MergedDictionaries.Count == 0;
 
@@ -203,14 +203,14 @@ namespace Windows.UI.Xaml
 				return true;
 			}
 
-			if (activeTheme.IsEmpty)
-			{
-				activeTheme = Themes.Active;
-			}
-
 			if (GetFromMerged(resourceKey, out value))
 			{
 				return true;
+			}
+
+			if (activeTheme.IsEmpty)
+			{
+				activeTheme = Themes.Active;
 			}
 
 			if (GetFromTheme(resourceKey, activeTheme, out value))
@@ -280,10 +280,24 @@ namespace Windows.UI.Xaml
 			if (value is LazyInitializer lazyInitializer)
 			{
 				object newValue = null;
+				bool hasEmptyCurrentScope = lazyInitializer.CurrentScope.Sources.IsEmpty;
 				try
 				{
 					_values.Remove(key); // Temporarily remove the key to make this method safely reentrant, if it's a framework- or application-level theme dictionary
-					ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
+
+					if (!hasEmptyCurrentScope)
+					{
+						ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
+					}
+
+					// Lazy initialized resources must also resolve using the current dictionary
+					// In previous versions of Uno (4 and earlier), this used to not be needed because all ResourceDictionary
+					// files where implicitly available at the app level.
+					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+					{
+						ResourceResolver.PushSourceToScope(this);
+					}
+
 					newValue = lazyInitializer.Initializer();
 				}
 				finally
@@ -294,7 +308,16 @@ namespace Windows.UI.Xaml
 					{
 						ResourceDictionaryValueChange?.Invoke(this, EventArgs.Empty);
 					}
-					ResourceResolver.PopScope();
+
+					if (!FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries)
+					{
+						ResourceResolver.PopSourceFromScope();
+					}
+
+					if (!hasEmptyCurrentScope)
+					{
+						ResourceResolver.PopScope();
+					}
 				}
 			}
 		}

@@ -29,7 +29,7 @@ namespace Uno.UI
 			=> _instance ??= new ResourceResolverSingleton();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public object ResolveResourceStatic(object key, Type type, object context) 
+		public object ResolveResourceStatic(object key, Type type, object context)
 			=> ResourceResolver.ResolveResourceStatic(key, type, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -37,7 +37,7 @@ namespace Uno.UI
 			=> ResourceResolver.ApplyResource(owner, property, resourceKey, isThemeResourceExtension, isHotReloadSupported, true, context);
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public object ResolveStaticResourceAlias(string resourceKey, object parseContext) 
+		public object ResolveStaticResourceAlias(string resourceKey, object parseContext)
 			=> ResourceResolver.ResolveStaticResourceAlias(resourceKey, parseContext);
 	}
 }
