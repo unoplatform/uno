@@ -172,10 +172,10 @@
 
 		<ItemGroup>
 			<!-- Explicit exclusion of the assets when building for a ASP.NET hosted server project -->
-			<_HasUnoBootstrapServerReference Include="@(PackageReference)" Condition="'%(Identity)'=='Uno.Wasm.Bootstrap.Server'" />
+			<_UnoBootstrapServerReference Include="@(PackageReference)" Condition="'%(Identity)'=='Uno.Wasm.Bootstrap.Server'" />
 		</ItemGroup>
 
-		<ItemGroup Condition="'@(_HasUnoBootstrapServerReference)'==''">
+		<ItemGroup Condition="'@(_UnoBootstrapServerReference)'==''">
 			<_AllChildProjectItemsWithTargetPath Include="@(ContentFilesProjectOutputGroupOutput)">
 				<!-- Update link metadata only if available, prefer TargetPath otherwise -->
 				<Link Condition="'%(ContentFilesProjectOutputGroupOutput.Link)' != ''">$(UnoPriInitialPath)$(_UnoDirectorySeparator)%(ContentFilesProjectOutputGroupOutput.Link)</Link>
