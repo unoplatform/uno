@@ -28,7 +28,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-	// TODO:MZ: This might not be a border potentially, behaves differently on XamlIslands https://github.com/unoplatform/uno/issues/8978
+	// TODO: This might not be a border potentially, behaves differently on XamlIslands #8978
 	/// <summary>
 	/// Gets the root element of the XAML element tree.
 	/// </summary>
@@ -64,10 +64,7 @@ public sealed partial class XamlRoot
 
 	internal Window? HostWindow => VisualTree.ContentRoot.GetOwnerWindow();
 
-	internal void NotifyChanged()
-	{
-		Changed?.Invoke(this, new XamlRootChangedEventArgs());
-	}
+	internal void NotifyChanged() => Changed?.Invoke(this, new XamlRootChangedEventArgs());
 
 	internal static XamlRoot? GetForElement(DependencyObject element)
 	{
