@@ -21,6 +21,12 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 
+#if HAS_UNO_WINUI
+using AppWindow = Microsoft.UI.Windowing.AppWindow;
+#else
+using AppWindow = Windows.UI.WindowManagement.AppWindow;
+#endif
+
 namespace Windows.UI.Xaml;
 
 /// <summary>
