@@ -225,6 +225,7 @@ namespace Uno.UWPSyncGenerator
 		private static bool IsIgnoredAttribute(AttributeData attributeData)
 		{
 			return attributeData.AttributeClass.ToString() is
+				"System.ComponentModel.EditorBrowsableAttribute" or
 				"Windows.Foundation.Metadata.GuidAttribute" or
 				"Windows.Foundation.Metadata.StaticAttribute" or
 				"Windows.Foundation.Metadata.AllowMultipleAttribute" or
