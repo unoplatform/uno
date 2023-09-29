@@ -15,18 +15,6 @@ namespace Windows.UI.ViewManagement
 		private string _title = string.Empty;
 		private Size _preferredMinSize = Size.Empty;
 
-		internal void SetCoreBounds(NSWindow keyWindow, Foundation.Rect windowBounds)
-		{
-			VisibleBounds = windowBounds;
-
-			if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
-			{
-				this.Log().Debug($"Updated visible bounds {VisibleBounds}");
-			}
-
-			VisibleBoundsChanged?.Invoke(this, null);
-		}
-
 		public string Title
 		{
 			get => IsKeyWindowInitialized() ? NSApplication.SharedApplication.KeyWindow.Title : _title;

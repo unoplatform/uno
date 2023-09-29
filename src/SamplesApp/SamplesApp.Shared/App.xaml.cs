@@ -202,7 +202,7 @@ namespace SamplesApp
 			{
 				Console.WriteLine("Starting dispatcher WatchDog...");
 
-				var dispatcher = CoreWindow.GetForCurrentThread().Dispatcher;
+				var dispatcher = _mainWindow!.Dispatcher;
 				var timeout = TimeSpan.FromSeconds(240);
 
 				Task.Run(async () =>
