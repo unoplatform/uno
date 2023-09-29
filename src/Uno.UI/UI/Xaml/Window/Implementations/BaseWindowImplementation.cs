@@ -6,6 +6,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Microsoft.UI.Xaml;
+using Windows.UI.ViewManagement;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml;
@@ -17,7 +18,6 @@ using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
-using Windows.UI.ViewManagement;
 #endif
 
 namespace Uno.UI.Xaml.Controls;
