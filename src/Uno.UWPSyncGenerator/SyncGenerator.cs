@@ -225,6 +225,8 @@ namespace Uno.UWPSyncGenerator
 		private static bool IsIgnoredAttribute(AttributeData attributeData)
 		{
 			return attributeData.AttributeClass.ToString() is
+				"System.Runtime.InteropServices.DynamicInterfaceCastableImplementationAttribute" or
+				"System.Runtime.Versioning.SupportedOSPlatformAttribute" or
 				"System.Reflection.DefaultMemberAttribute" or
 				"WinRT.ObjectReferenceWrapperAttribute" or
 				"WinRT.ProjectedRuntimeClassAttribute" or
