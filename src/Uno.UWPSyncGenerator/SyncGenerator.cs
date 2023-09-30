@@ -225,6 +225,7 @@ namespace Uno.UWPSyncGenerator
 		private static bool IsIgnoredAttribute(AttributeData attributeData)
 		{
 			return attributeData.AttributeClass.ToString() is
+				"System.Reflection.DefaultMemberAttribute" or
 				"WinRT.ObjectReferenceWrapperAttribute" or
 				"WinRT.ProjectedRuntimeClassAttribute" or
 				"WinRT.WindowsRuntimeHelperTypeAttribute" or
