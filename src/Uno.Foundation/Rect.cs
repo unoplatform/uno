@@ -39,7 +39,7 @@ public partial struct Rect
 		Height = double.PositiveInfinity
 	};
 
-	public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
+	public Rect(Point location, Size size) : this(location.X, location.Y, size.Width, size.Height) { }
 
 	public Rect(double x, double y, double width, double height)
 		: this((float)x, (float)y, (float)width, (float)height)
