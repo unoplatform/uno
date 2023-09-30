@@ -243,9 +243,10 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 #else
-			foreach (var reference in _winuiReferences)
+			var winuiReferenceDisplays = _winuiReferences.Select(r => r.Display).ToArray();
+			foreach (var reference in s_referenceCompilation.ExternalReferences)
 			{
-				if (s_referenceCompilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
+				if (s_referenceCompilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly && winuiReferenceDisplays.Contains(reference.Display))
 				{
 					if (ShouldGenerateForAssembly(assembly.Name))
 					{
@@ -299,9 +300,14 @@ namespace Uno.UWPSyncGenerator
 
 		private static bool SkipNamespace(INamedTypeSymbol namedTypeSymbol)
 		{
-			if (namedTypeSymbol.ContainingNamespace.ToDisplayString().StartsWith("Microsoft.UI.Input.Experimental", StringComparison.Ordinal))
+			var @namespace = namedTypeSymbol.ContainingNamespace.ToDisplayString();
+			if (@namespace.StartsWith("Microsoft.UI.Input.Experimental", StringComparison.Ordinal))
 			{
 				// Skip Microsoft.UI.Input.Experimental as it is not part of WinAppSDK desktop APIs
+				return true;
+			}
+			else if (@namespace.StartsWith("ABI.", StringComparison.Ordinal))
+			{
 				return true;
 			}
 
