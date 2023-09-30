@@ -309,6 +309,10 @@ namespace Uno.UWPSyncGenerator
 			{
 				return true;
 			}
+			else if (@namespace == "WinRT")
+			{
+				return true;
+			}
 
 			return false;
 		}
