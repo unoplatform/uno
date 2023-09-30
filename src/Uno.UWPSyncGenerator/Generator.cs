@@ -90,9 +90,6 @@ namespace Uno.UWPSyncGenerator
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
 			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
-
-			"Windows.Foundation.Rect",
-			"Windows.Foundation.Point",
 		};
 
 		private Compilation _iOSCompilation;
@@ -322,6 +319,7 @@ namespace Uno.UWPSyncGenerator
 				return namedTypeSymbol.Name is
 					"IUnknownVftbl" or
 					"IWeakReference" or
+					"IWeakReferenceSource" or
 					"_add_EventHandler" or
 					"_remove_EventHandler";
 			}
@@ -936,6 +934,13 @@ namespace Uno.UWPSyncGenerator
 
 			foreach (var iface in type.Interfaces)
 			{
+				if (type.Name is "Rect" or "Point" && iface.Name == "IFormattable")
+				{
+					// Skip for now.
+					// This should be fixed in the future. Currently, just removing this condition doesn't work
+					// since the generator doesn't properly generate an explicit interface implementation of IFormattable.ToString(string, System.IFormatProvider)
+					continue;
+				}
 				if (iface.DeclaredAccessibility == Accessibility.Public
 					&& iface.MetadataName != "Windows.Foundation.IStringable")
 				{
