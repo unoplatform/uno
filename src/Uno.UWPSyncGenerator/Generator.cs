@@ -86,6 +86,9 @@ namespace Uno.UWPSyncGenerator
 			// Mismatching public inheritance hierarchy because RadioMenuFlyoutItem has a double inheritance in WinUI.
 			// Remove this and update RadioMenuFlyoutItem if WinUI 3 removed the double inheritance.
 			"Microsoft.UI.Xaml.Controls.RadioMenuFlyoutItem",
+
+			"Windows.Foundation.Rect",
+			"Windows.Foundation.Point",
 		};
 
 		private Compilation _iOSCompilation;
@@ -305,6 +308,14 @@ namespace Uno.UWPSyncGenerator
 			else if (@namespace == "WinRT")
 			{
 				return true;
+			}
+			else if (@namespace == "WinRT.Interop")
+			{
+				return namedTypeSymbol.Name is
+					"IUnknownVftbl" or
+					"IWeakReference" or
+					"_add_EventHandler" or
+					"_remove_EventHandler";
 			}
 
 			return false;
@@ -953,6 +964,23 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
+				// These are public on WinUI.
+				// TODO: Verify whether we want to match the API surface for a bad public API like this.
+				if (type.Name == "Point" && field.Name is "_x" or "_y")
+				{
+					continue;
+				}
+
+				if (type.Name == "Rect" && field.Name is "_x" or "_y" or "_width" or "_height")
+				{
+					continue;
+				}
+
+				if (type.Name == "Size" && field.Name is "_width" or "_height")
+				{
+					continue;
+				}
+
 				var allmembers = GetAllGetNonGeneratedMembers(types, field.Name, q => q.FirstOrDefault(f => SymbolMatchingHelpers.AreMatching(field, f)), field);
 
 				if (allmembers.HasUndefined)
