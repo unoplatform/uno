@@ -325,8 +325,8 @@ public partial struct Rect
 			&& value.Width == Width
 			&& value.Height == Height;
 
-	public override bool Equals(object? obj)
-		=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
+	public override bool Equals(object? o)
+		=> o is Rect r ? r.Equals(this) : base.Equals(o);
 
 	public static bool operator ==(Rect left, Rect right) => left.Equals(right);
 
