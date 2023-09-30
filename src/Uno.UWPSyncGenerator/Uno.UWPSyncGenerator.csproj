@@ -25,6 +25,7 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common" Version="$(SyncGeneratorCodeAnalysisVersion)" />
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.MSBuild" Version="$(SyncGeneratorCodeAnalysisVersion)" />
+		<PackageReference Include="Basic.Reference.Assemblies.Net70" />
 		<PackageReference Include="Uno.Core.Extensions" />
 		<PackageReference Include="Uno.Core.Extensions.Compatibility" />
 	</ItemGroup>
