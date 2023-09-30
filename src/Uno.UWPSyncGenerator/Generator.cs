@@ -1878,7 +1878,8 @@ namespace Uno.UWPSyncGenerator
 			var ws = new AdhocWorkspace();
 
 			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
-			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)));
+			// Add .NET 7 ref assemblies to make sure things like System.Object are properly resolved and are not error symbols.
+			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)).Concat(Basic.Reference.Assemblies.Net70.References.All));
 			return await p.GetCompilationAsync();
 		}
 
