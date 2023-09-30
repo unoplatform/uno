@@ -14,6 +14,9 @@ namespace Uno.UWPSyncGenerator
 {
 	abstract class Generator
 	{
+#if HAS_UNO_WINUI
+		private static IEnumerable<PortableExecutableReference> _winuiReferences;
+#endif
 		internal const string CSharpLangVersion = "11.0";
 
 		private const string UnitTestsDefine = "IS_UNIT_TESTS";
@@ -239,7 +242,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 #else
-			foreach (var reference in s_referenceCompilation.ExternalReferences)
+			foreach (var reference in _winuiReferences)
 			{
 				if (s_referenceCompilation.GetAssemblyOrModuleSymbol(reference) is IAssemblySymbol assembly)
 				{
@@ -399,7 +402,7 @@ namespace Uno.UWPSyncGenerator
 				case "Microsoft.Windows.SDK.NET":
 					return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 
-				case "WinRT.Runtime.dll":
+				case "WinRT.Runtime":
 					return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 
 				case "Microsoft.WinUI":
@@ -707,7 +710,7 @@ namespace Uno.UWPSyncGenerator
 				{
 					if (
 						iface.MetadataName == "Windows.Foundation.IAsyncAction"
-						|| iface.ToDisplayString() == "Windows.Foundation.IStringable"
+						|| iface.ToDisplayString() is "Windows.Foundation.IStringable" or "WinRT.IWinRTObject"
 						|| iface.OriginalDefinition.MetadataName == "Windows.Foundation.Collections.IIterator`1"
 						|| iface.OriginalDefinition.MetadataName == "Windows.Foundation.IAsyncOperation`1"
 					)
@@ -1438,28 +1441,36 @@ namespace Uno.UWPSyncGenerator
 
 		private bool IsNotUWPMapping(INamedTypeSymbol type, IPropertySymbol property)
 		{
-			foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
+			try
 			{
-				var uwpIface = GetUWPIFace(iface);
-
-				if (uwpIface != null)
+				foreach (var iface in type.Interfaces.SelectMany(GetAllInterfaces))
 				{
-					var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
+					var uwpIface = GetUWPIFace(iface);
 
-					var t3 = type2.Construct(iface.TypeArguments.ToArray());
-
-					var q = from sourceProperty in t3.GetMembers(property.Name).OfType<IPropertySymbol>()
-							where SymbolEqualityComparer.Default.Equals(sourceProperty.Type, property.Type)
-							select sourceProperty;
-
-					if (q.Any())
+					if (uwpIface != null)
 					{
-						return false;
+						var type2 = s_referenceCompilation.GetTypeByMetadataName(uwpIface);
+
+						var t3 = type2.Construct(iface.TypeArguments.ToArray());
+
+						var q = from sourceProperty in t3.GetMembers(property.Name).OfType<IPropertySymbol>()
+								where SymbolEqualityComparer.Default.Equals(sourceProperty.Type, property.Type)
+								select sourceProperty;
+
+						if (q.Any())
+						{
+							return false;
+						}
 					}
 				}
-			}
 
-			return true;
+				return true;
+			}
+			catch (Exception e)
+			{
+				_ = e;
+				return true;
+			}
 		}
 
 		private string GetUWPIFace(INamedTypeSymbol iface)
@@ -1474,28 +1485,30 @@ namespace Uno.UWPSyncGenerator
 					return "Windows.Foundation.Collections.IMapView";
 				case "System.Collections.Generic.IDictionary<TKey, TValue>":
 					return "Windows.Foundation.Collections.IMap`2";
-				case "System.Nullable":
-					return "Windows.Foundation.IReference";
 				case "System.Collections.Generic.IReadOnlyList<T>":
 					return "Windows.Foundation.Collections.IVectorView`1";
 				case "System.Collections.Generic.IList<T>":
 					return "Windows.Foundation.Collections.IVector`1";
+				case "System.Collections.Generic.KeyValuePair":
+					return "Windows.Foundation.Collections.IKeyValuePair";
+				case "System.Collections.Specialized.INotifyCollectionChanged":
+					return "Windows.UI.Xaml.Interop.INotifyCollectionChanged";
+#if !HAS_UNO_WINUI
+				case "System.Nullable":
+					return "Windows.Foundation.IReference";
+				case "System.Windows.Input.ICommand":
+					return BaseXamlNamespace + ".Input.ICommand";
 				case "System.DateTimeOffset":
 					return "Windows.Foundation.DateTime";
 				case "System.EventHandler":
 					return "Windows.Foundation.EventHandler";
 				case "System.TimeSpan":
 					return "Windows.Foundation.TimeSpan";
-				case "System.Collections.Generic.KeyValuePair":
-					return "Windows.Foundation.Collections.IKeyValuePair";
-				case "System.Collections.Specialized.INotifyCollectionChanged":
-					return "Windows.UI.Xaml.Interop.INotifyCollectionChanged";
 				case "System.Type":
 					return BaseXamlNamespace + ".Interop.TypeName";
 				case "System.Uri":
 					return "Windows.Foundation.Uri";
-				case "System.Windows.Input.ICommand":
-					return BaseXamlNamespace + ".Input.ICommand";
+#endif
 			}
 
 			return null;
@@ -1853,8 +1866,13 @@ namespace Uno.UWPSyncGenerator
 			var ws = new AdhocWorkspace();
 
 			var p = ws.AddProject("uwpref", LanguageNames.CSharp);
+#if HAS_UNO_WINUI
+			_winuiReferences = File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference));
 			// Add .NET 7 ref assemblies to make sure things like System.Object are properly resolved and are not error symbols.
-			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)).Concat(Basic.Reference.Assemblies.Net70.References.All));
+			p = p.AddMetadataReferences(_winuiReferences.Concat(Basic.Reference.Assemblies.Net70.References.All));
+#else
+			p = p.AddMetadataReferences(File.ReadAllLines(referencesFile).Select(reference => MetadataReference.CreateFromFile(reference)));
+#endif
 			return await p.GetCompilationAsync();
 		}
 
