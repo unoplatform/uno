@@ -99,12 +99,12 @@
 		<PackageReference Update="SkiaSharp.Views" Version="2.88.3" NoWarn="NU1903" />
 		<PackageReference Update="SkiaSharp.Views.Uno" Version="2.88.3" NoWarn="NU1903" />
 		<PackageReference Update="SkiaSharp.Views.Uno.WinUI" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.3"NoWarn="NU1903"  />
+		<PackageReference Update="SkiaSharp.Views.WPF" Version="2.88.3" NoWarn="NU1903"  />
 		<PackageReference Update="SkiaSharp" Version="2.88.3" NoWarn="NU1903"  />
 		<PackageReference Update="SkiaSharp.NativeAssets.Linux" Version="2.88.3" NoWarn="NU1903" />
 		<PackageReference Update="SkiaSharp.Harfbuzz" Version="2.88.3" NoWarn="NU1903" />
 		<PackageReference Update="SkiaSharp.Skottie" Version="2.88.3" NoWarn="NU1903" />
-		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.3"NoWarn="NU1903"  />
+		<PackageReference Update="SkiaSharp.NativeAssets.Android" Version="2.88.3" NoWarn="NU1903"  />
 		<PackageReference Update="SkiaSharp.NativeAssets.iOS" Version="2.88.3" NoWarn="NU1903" />
 		<PackageReference Update="SkiaSharp.NativeAssets.MacCatalyst" Version="2.88.3" NoWarn="NU1903" />
 		<PackageReference Update="SkiaSharp.NativeAssets.macos" Version="2.88.3" NoWarn="NU1903" />
