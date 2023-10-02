@@ -73,8 +73,8 @@ internal partial class ContentManager
 			return;
 		}
 
-		if (xamlRoot?.VisualTree?.RootElement is not { } rootElement ||
-			(rootElement.IsLoading || rootElement.IsLoaded))
+		if (xamlRoot?.VisualTree?.RootElement is not FrameworkElement rootElement ||
+			rootElement.IsLoaded)
 		{
 			return;
 		}
