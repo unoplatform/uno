@@ -947,7 +947,8 @@ namespace Uno.UWPSyncGenerator
 					continue;
 				}
 				if (iface.DeclaredAccessibility == Accessibility.Public
-					&& iface.MetadataName != "Windows.Foundation.IStringable")
+					&& iface.MetadataName != "Windows.Foundation.IStringable"
+					&& iface.MetadataName != "WinRT.IWinRTObject")
 				{
 					ifaces.Add(MapUWPTypes(SanitizeType(iface)));
 				}
