@@ -212,7 +212,7 @@ internal static class SymbolMatchingHelpers
 			uapMethod.IsVararg == unoMethod.IsVararg &&
 			uapMethod.MethodKind == unoMethod.MethodKind &&
 			AreMatching(uapMethod.ReturnType, unoMethod.ReturnType) &&
-			uapMethod.TypeArguments == unoMethod.TypeArguments;
+			AreTypeArgumentsMatching(uapMethod.TypeArguments, unoMethod.TypeArguments);
 	}
 
 	private static bool AreTypeParametersMatching(ITypeParameterSymbol uapTypeParameter, ITypeParameterSymbol unoTypeParameter)
@@ -239,6 +239,24 @@ internal static class SymbolMatchingHelpers
 		for (int i = 0; i < uapParameters.Length; i++)
 		{
 			if (!AreParametersMatching(uapParameters[i], unoParameters[i]))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	private static bool AreTypeArgumentsMatching(ImmutableArray<ITypeSymbol> uapTypeArguments, ImmutableArray<ITypeSymbol> unoTypeArguments)
+	{
+		if (uapTypeArguments.Length != unoTypeArguments.Length)
+		{
+			return false;
+		}
+
+		for (int i = 0; i < uapTypeArguments.Length; i++)
+		{
+			if (uapTypeArguments[i].Name != unoTypeArguments[i].Name)
 			{
 				return false;
 			}

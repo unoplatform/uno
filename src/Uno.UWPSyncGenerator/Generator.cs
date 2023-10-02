@@ -1718,6 +1718,12 @@ namespace Uno.UWPSyncGenerator
 				// These are implementations of IWinRTObject interface, which we want to ignore.
 				return true;
 			}
+
+			if (!property.ExplicitInterfaceImplementations.IsEmpty && property.ExplicitInterfaceImplementations.All(p => p.ContainingSymbol.DeclaredAccessibility != Accessibility.Public))
+			{
+				// For public types implementing a non-public interface explicitly, the explicit implementation should be skipped.
+				return true;
+			}
 #endif
 
 			if (property.ContainingType.Name == "WebView2")
