@@ -733,8 +733,8 @@ namespace Uno.UWPSyncGenerator
 				foreach (var iface in type.Interfaces.Where(i => i.DeclaredAccessibility == Accessibility.Public))
 				{
 					if (
-						iface.MetadataName == "Windows.Foundation.IAsyncAction"
-						|| iface.ToDisplayString() is "Windows.Foundation.IStringable" or "WinRT.IWinRTObject"
+						iface.MetadataName is "Windows.Foundation.IAsyncAction" or "IWinRTObject"
+						|| iface.ToDisplayString() == "Windows.Foundation.IStringable"
 						|| iface.OriginalDefinition.MetadataName == "Windows.Foundation.Collections.IIterator`1"
 						|| iface.OriginalDefinition.MetadataName == "Windows.Foundation.IAsyncOperation`1"
 					)
@@ -948,7 +948,7 @@ namespace Uno.UWPSyncGenerator
 				}
 				if (iface.DeclaredAccessibility == Accessibility.Public
 					&& iface.MetadataName != "Windows.Foundation.IStringable"
-					&& iface.MetadataName != "WinRT.IWinRTObject")
+					&& iface.MetadataName != "IWinRTObject")
 				{
 					ifaces.Add(MapUWPTypes(SanitizeType(iface)));
 				}
@@ -1713,7 +1713,7 @@ namespace Uno.UWPSyncGenerator
 		private bool SkipProperty(IPropertySymbol property)
 		{
 #if HAS_UNO_WINUI
-			if (property.Name is "HasUnwrappableNativeObject" or "NativeObject")
+			if (property.Name is "WinRT.IWinRTObject.HasUnwrappableNativeObject" or "WinRT.IWinRTObject.NativeObject")
 			{
 				// These are implementations of IWinRTObject interface, which we want to ignore.
 				return true;
