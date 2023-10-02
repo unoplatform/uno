@@ -1342,6 +1342,10 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+			if (method.Name == "FromAbi")
+			{
+				return true;
+			}
 #endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
