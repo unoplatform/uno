@@ -28,7 +28,11 @@ namespace Uno.UWPSyncGenerator
 		private const string WasmDefine = "__WASM__";
 		private const string SkiaDefine = "__SKIA__";
 
+#if HAS_UNO_WINUI
 		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
+#else
+		private const string BaseXamlNamespace = "Windows.UI.Xaml";
+#endif
 
 		private static readonly string[] _skipBaseTypes = new[]
 		{
@@ -111,6 +115,9 @@ namespace Uno.UWPSyncGenerator
 			"Windows.UI.Xaml",
 			"Windows.UI.Composition",
 			"Windows.UI.Dispatching",
+			"Microsoft.UI.Xaml",
+			"Microsoft.Web",
+#if HAS_UNO_WINUI
 			"Microsoft.Foundation",
 			"Microsoft.UI.Xaml",
 			"Microsoft.UI.Composition",
@@ -123,7 +130,8 @@ namespace Uno.UWPSyncGenerator
 			"Microsoft.Graphics",
 			"Microsoft.Windows.ApplicationModel.Resources",
 			"Microsoft.Web",
-		};
+#endif
+			};
 
 		static Generator()
 		{
@@ -694,6 +702,7 @@ namespace Uno.UWPSyncGenerator
 					// Skipped because the types are hidden from the projections in WinAppSDK
 					return true;
 
+#if HAS_UNO_WINUI
 				case "Windows.UI.Text.FontWeights":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
@@ -701,6 +710,14 @@ namespace Uno.UWPSyncGenerator
 				case "Windows.UI.Colors":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
+#else
+				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
+				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource2":
+				case "Microsoft.UI.Xaml.Controls.IDynamicAnimatedVisualSource":
+					// Skipped because the implementation is currently incorrectly placed in WUX namespace
+					return true;
+#endif
 			}
 
 
@@ -1277,6 +1294,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
+#if HAS_UNO_WINUI
 			if (method.ContainingType.Name == "SwapChainPanel")
 			{
 				switch (method.Name)
@@ -1316,6 +1334,8 @@ namespace Uno.UWPSyncGenerator
 						return true;
 				}
 			}
+
+#endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
 			{
