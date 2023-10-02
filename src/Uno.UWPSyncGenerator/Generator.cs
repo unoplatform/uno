@@ -1713,7 +1713,7 @@ namespace Uno.UWPSyncGenerator
 		private bool SkipProperty(IPropertySymbol property)
 		{
 #if HAS_UNO_WINUI
-			if (property.Name is "WinRT.IWinRTObject.HasUnwrappableNativeObject" or "WinRT.IWinRTObject.NativeObject")
+			if (property.Name.StartsWith("WinRT.IWinRTObject", StringComparison.Ordinal))
 			{
 				// These are implementations of IWinRTObject interface, which we want to ignore.
 				return true;
