@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>
+		<!--<TargetFrameworks>$(NetMobilePreviousAndCurrent)</TargetFrameworks>-->
+		<TargetFrameworks>net7.0-android</TargetFrameworks>
 	</PropertyGroup>
 
-	<Import Project="../targetframework-override.props" />
+	<!--<Import Project="../targetframework-override.props" />-->
 
 	<PropertyGroup>
 		<AssemblyName>Uno.UI.Dispatching</AssemblyName>
@@ -31,6 +32,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.netcoremobile.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 	</ItemGroup>
 </Project>

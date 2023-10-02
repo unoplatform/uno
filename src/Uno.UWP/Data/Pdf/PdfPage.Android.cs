@@ -107,7 +107,7 @@ public partial class PdfPage : IDisposable
 
 		#region create bitmap
 		var bitmap = Bitmap.CreateBitmap((int)destination.Width, (int)destination.Height, Bitmap.Config.Argb8888);
-		RectF destinationRect = new Rect(new Foundation.Point(), destination);
+		RectF destinationRect = new RectF(0, 0, (float)destination.Width, (float)destination.Height);
 		#endregion
 
 		#region fill with background color

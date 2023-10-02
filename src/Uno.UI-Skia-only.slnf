@@ -12,6 +12,7 @@
       "SamplesApp\\SamplesApp.Skia.Gtk\\SamplesApp.Skia.Gtk.csproj",
       "SamplesApp\\SamplesApp.Skia.WebAssembly.Browser\\SamplesApp.Skia.WebAssembly.Browser.csproj",
       "SamplesApp\\SamplesApp.Skia.Wpf\\SamplesApp.Skia.Wpf.csproj",
+      "SamplesApp\\SamplesApp.Skia.netcoremobile\\SamplesApp.Skia.netcoremobile.csproj",
       "SamplesApp\\SamplesApp.Skia\\SamplesApp.Skia.csproj",
       "SamplesApp\\SamplesApp.UITests.Generator\\Uno.Samples.UITest.Generator.csproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
@@ -38,6 +39,7 @@
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Reference.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Skia.csproj",
       "Uno.UI.Dispatching\\Uno.UI.Dispatching.Wasm.csproj",
+      "Uno.UI.Dispatching\\Uno.UI.Dispatching.netcoremobile.csproj",
       "Uno.UI.FluentTheme.v1\\Uno.UI.FluentTheme.v1.Skia.csproj",
       "Uno.UI.FluentTheme.v2\\Uno.UI.FluentTheme.v2.Skia.csproj",
       "Uno.UI.FluentTheme\\Uno.UI.FluentTheme.Skia.csproj",
@@ -64,7 +66,8 @@
       "Uno.UWPSyncGenerator\\Uno.UWPSyncGenerator.csproj",
       "Uno.UWP\\Uno.Reference.csproj",
       "Uno.UWP\\Uno.Skia.csproj",
-      "Uno.UWP\\Uno.Wasm.csproj"
+      "Uno.UWP\\Uno.Wasm.csproj",
+      "Uno.UWP\\Uno.netcoremobile.csproj"
     ]
   }
 }

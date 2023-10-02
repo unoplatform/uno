@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using Android.App;
 using Android.Content.PM;
 using Uno.Extensions;
@@ -39,6 +40,10 @@ namespace Windows.ApplicationModel
 #pragma warning restore CS0618 // Type or member is obsolete
 
 			return DateTimeOffset.FromUnixTimeMilliseconds(packageInfo.FirstInstallTime);
+		}
+
+		internal static void SetEntryAssembly(Assembly entryAssembly)
+		{
 		}
 	}
 }
