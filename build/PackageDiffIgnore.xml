@@ -883,6 +883,8 @@
 			<Member fullName="System.Boolean Windows.UI.Xaml.Shapes.ArbitraryShapeBase::ShouldPreserveOrigin()" reason="Cleanup shapes on Wasm" />
 		</Properties>
 		<Methods>
+			<Member fullName="System.Void Windows.UI.Core.CoreDispatcher..ctor()" reason="Align with UWP" />
+
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow.RaisePointerCancelled(Windows.UI.Core.PointerEventArgs args)" reason="Not present in WInUI" />
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationFailedEventArgs.get_WebErrorStatus()" reason="Wrong type" />
 			<Member fullName="Uno.UI.Web.WebErrorStatus Windows.UI.Xaml.Controls.WebViewNavigationCompletedEventArgs.get_WebErrorStatus()" reason="Wrong type" />
