@@ -410,6 +410,10 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
+			else if (@namespace.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+			}
 
 			if (type.Name.StartsWith("IAsyncAction", StringComparison.Ordinal) ||
 				type.Name.StartsWith("IAsyncOperation", StringComparison.Ordinal) ||
