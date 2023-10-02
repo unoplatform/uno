@@ -1184,8 +1184,13 @@ namespace Uno.UWPSyncGenerator
 					if (methods.HasUndefined)
 					{
 						methods.AppendIf(b);
+						string genericParameters = string.Empty;
+						if (method.TypeParameters.Length > 0)
+						{
+							genericParameters = $"<{string.Join(", ", method.TypeParameters.Select(p => p.Name))}>";
+						}
 
-						var declaration = $"{SanitizeType(method.ReturnType)} {method.Name}({parameters})";
+						var declaration = $"{SanitizeType(method.ReturnType)} {method.Name}{genericParameters}({parameters})";
 
 						if (type.TypeKind == TypeKind.Interface || type.Name == "DependencyObject")
 						{
