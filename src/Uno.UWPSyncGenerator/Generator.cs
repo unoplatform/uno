@@ -1665,7 +1665,8 @@ namespace Uno.UWPSyncGenerator
 						else
 						{
 							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
-							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							string propertyName = property.ExplicitInterfaceImplementations.IsEmpty ? property.Name : $"global::{property.Name}";
+							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {propertyName}"))
 							{
 								if (property.GetMethod != null)
 								{
