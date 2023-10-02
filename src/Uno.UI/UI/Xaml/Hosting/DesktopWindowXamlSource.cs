@@ -50,11 +50,7 @@ public partial class DesktopWindowXamlSource : IDisposable
 	public UIElement Content
 	{
 		get => _xamlIsland.Content;
-		set
-		{
-			_xamlIsland.Content = value;
-			ContentManager.TryLoadRootVisual(_xamlIsland.XamlRoot!);
-		}
+		set => _xamlIsland.Content = value;
 	}
 
 	internal XamlIsland XamlIsland => _xamlIsland;

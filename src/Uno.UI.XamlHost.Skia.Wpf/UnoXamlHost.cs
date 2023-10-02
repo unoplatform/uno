@@ -29,6 +29,7 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 		private void OnLoaded(object sender, System.Windows.RoutedEventArgs e)
 		{
 			Child = CreateXamlContent();
+			TryLoadContent();
 		}
 
 		/// <summary>

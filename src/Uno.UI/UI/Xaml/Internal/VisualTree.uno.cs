@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using System.Reflection.Metadata.Ecma335;
 using Uno.UI.DataBinding;
 using Microsoft.UI.Xaml.Controls;
 
@@ -31,6 +32,28 @@ internal partial class VisualTree : IWeakReferenceProvider
 
 	ManagedWeakReference IWeakReferenceProvider.WeakReference =>
 		_selfWeakReference ??= WeakReferencePool.RentSelfWeakReference(this);
+
+	internal bool IsVisible
+	{
+		get
+		{
+			if (RootElement is XamlIsland xamlIsland)
+			{
+				if (xamlIsland.OwnerWindow is Window) // For full window XamlIsland we don't need to check visibility
+				{
+					return true;
+				}
+
+				return xamlIsland.IsSiteVisible;
+			}
+			else if (RootElement is RootVisual)
+			{
+				return true;
+			}
+
+			return false;
+		}
+	}
 
 	internal Rect VisibleBounds
 	{
