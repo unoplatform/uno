@@ -25,6 +25,11 @@ namespace Windows.UI.Xaml.Data
 		HotReload = 4,
 
 		/// <summary>
+		/// Update marked as XamlLoader
+		/// </summary>
+		XamlParser = 8,
+
+		/// <summary>
 		/// Updates that should be propagated recursively through the visual tree
 		/// </summary>
 		PropagatesThroughTree = ThemeResource | HotReload,

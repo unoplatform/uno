@@ -159,6 +159,42 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 
+		[TestMethod]
+		public async Task When_Theme_Changed()
+		{
+			using var _ = StyleHelper.UseFluentStyles();
+
+			var control = new ThemeResource_Theme_Changing_Override();
+			WindowHelper.WindowContent = control;
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Colors.Red, (control.button01.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button02.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button03.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Red, (control.button04.Background as SolidColorBrush)?.Color);
+
+			Assert.AreEqual(Colors.Green, (control.button01_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button02_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button03_override.Background as SolidColorBrush)?.Color);
+			Assert.AreEqual(Colors.Green, (control.button04_override.Background as SolidColorBrush)?.Color);
+
+			using (ThemeHelper.UseDarkTheme())
+			{
+				await WindowHelper.WaitForIdle();
+
+				Assert.AreEqual(Colors.DarkRed, (control.button01.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button02.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button03.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkRed, (control.button04.Background as SolidColorBrush)?.Color);
+
+				Assert.AreEqual(Colors.DarkGreen, (control.button01_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button02_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button03_override.Background as SolidColorBrush)?.Color);
+				Assert.AreEqual(Colors.DarkGreen, (control.button04_override.Background as SolidColorBrush)?.Color);
+			}
+		}
+
 		private async Task When_DefaultForeground(Color lightThemeColor, Color darkThemeColor)
 		{
 			var run = new Run()

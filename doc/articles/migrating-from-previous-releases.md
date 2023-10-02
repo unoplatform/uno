@@ -35,6 +35,14 @@ This change ensures that the XAML parser will only look for types in an explicit
 
 In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
 
+#### ResourceDictionary now require an explicit Uri reference
+
+Resources dictionaries are now required to be explicitly referenced by URI to be considered during resource resolution. Applications that are already running properly on WinAppSDK should not be impacted by this change.
+
+The reason for this change is the alignment of the inclusion behavior with WinUI, which does not automatically place dictionaries as ambiently available. 
+
+This behavior can be disabled by using `FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries`, by setting the value `true`.
+
 #### `IsEnabled` property is moved from `FrameworkElement` to `Control`
 This property was incorrectly located on `FrameworkElement` but its behavior has not changed.
 
