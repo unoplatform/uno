@@ -1344,6 +1344,7 @@ namespace Uno.UWPSyncGenerator
 						return true;
 				}
 			}
+
 #endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
