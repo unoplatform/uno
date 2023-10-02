@@ -57,46 +57,46 @@ namespace System.IO
 			return new RandomAccessStreamOverStream(stream);
 		}
 
-		public static Stream AsStream(this IRandomAccessStream windowsRuntimeStream)
-			=> AsStream(windowsRuntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
+		public static Stream AsStream(this IRandomAccessStream windowsruntimeStream)
+			=> AsStream(windowsruntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
 
-		public static Stream AsStream(this IRandomAccessStream windowsRuntimeStream, int bufferSize)
+		public static Stream AsStream(this IRandomAccessStream windowsruntimeStream, int bufferSize)
 		{
-			if (windowsRuntimeStream is IStreamWrapper wrapper
+			if (windowsruntimeStream is IStreamWrapper wrapper
 				&& wrapper.FindStream() is { } raw)
 			{
 				return raw;
 			}
 
-			return new StreamOverRandomAccessStream(windowsRuntimeStream, bufferSize);
+			return new StreamOverRandomAccessStream(windowsruntimeStream, bufferSize);
 		}
 
-		public static Stream AsStreamForRead(this IInputStream windowsRuntimeStream)
-			=> AsStreamForRead(windowsRuntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
+		public static Stream AsStreamForRead(this IInputStream windowsruntimeStream)
+			=> AsStreamForRead(windowsruntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
 
-		public static Stream AsStreamForRead(this IInputStream windowsRuntimeStream, int bufferSize)
+		public static Stream AsStreamForRead(this IInputStream windowsruntimeStream, int bufferSize)
 		{
-			if (windowsRuntimeStream is IStreamWrapper wrapper
+			if (windowsruntimeStream is IStreamWrapper wrapper
 				&& wrapper.FindStream() is { } raw)
 			{
 				return raw;
 			}
 
-			return new StreamOverInputStream(windowsRuntimeStream, bufferSize);
+			return new StreamOverInputStream(windowsruntimeStream, bufferSize);
 		}
 
-		public static Stream AsStreamForWrite(this IOutputStream windowsRuntimeStream)
-			=> AsStreamForWrite(windowsRuntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
+		public static Stream AsStreamForWrite(this IOutputStream windowsruntimeStream)
+			=> AsStreamForWrite(windowsruntimeStream, global::Windows.Storage.Streams.Buffer.DefaultCapacity);
 
-		public static Stream AsStreamForWrite(this IOutputStream windowsRuntimeStream, int bufferSize)
+		public static Stream AsStreamForWrite(this IOutputStream windowsruntimeStream, int bufferSize)
 		{
-			if (windowsRuntimeStream is IStreamWrapper wrapper
+			if (windowsruntimeStream is IStreamWrapper wrapper
 				&& wrapper.FindStream() is { } raw)
 			{
 				return raw;
 			}
 
-			return new StreamOverOutputStream(windowsRuntimeStream, bufferSize);
+			return new StreamOverOutputStream(windowsruntimeStream, bufferSize);
 		}
 
 		internal static IAsyncOperationWithProgress<IBuffer, uint> ReadAsyncOperation(this Stream stream, IBuffer buffer, uint count, InputStreamOptions options)
