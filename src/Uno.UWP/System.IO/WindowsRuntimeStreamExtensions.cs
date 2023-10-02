@@ -7,7 +7,7 @@ using Windows.Storage.Streams;
 
 namespace System.IO
 {
-	public static class WindowsRuntimeStreamExtensions
+	public static partial class WindowsRuntimeStreamExtensions
 	{
 		public static IInputStream AsInputStream(this Stream stream)
 		{
