@@ -22,7 +22,7 @@ namespace UnoApp50
 			_window.EnableHotReload();
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
-			if (_window.Content is not Frame rootFrame)
+			if (_window?.Content is not Frame rootFrame)
 			{
 				// Create a Frame to act as the navigation context and navigate to the first page
 				rootFrame = new Frame();

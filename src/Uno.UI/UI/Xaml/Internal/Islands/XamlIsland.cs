@@ -31,4 +31,6 @@ internal partial class XamlIsland : Panel
 	}
 
 	internal Window? OwnerWindow { get; set; }
+
+	internal bool IsSiteVisible { get; set; }
 }

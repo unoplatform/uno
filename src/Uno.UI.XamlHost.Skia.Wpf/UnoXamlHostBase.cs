@@ -320,6 +320,17 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			if (_xamlSource != null)
 			{
 				_xamlSource.Content = _childInternal;
+				_xamlSource.XamlIsland.IsSiteVisible = true;
+				TryLoadContent();
+			}
+		}
+
+
+		protected void TryLoadContent()
+		{
+			if (IsLoaded && _childInternal.XamlRoot is not null)
+			{
+				ContentManager.TryLoadRootVisual(_xamlSource.XamlIsland.XamlRoot);
 			}
 		}
 
