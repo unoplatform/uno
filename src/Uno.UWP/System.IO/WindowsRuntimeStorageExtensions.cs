@@ -7,7 +7,7 @@ using Windows.Storage;
 
 namespace System.IO
 {
-	public static class WindowsRuntimeStorageExtensions
+	public static partial class WindowsRuntimeStorageExtensions
 	{
 		public static async Task<Stream> OpenStreamForReadAsync(this IStorageFile windowsRuntimeFile)
 		{
