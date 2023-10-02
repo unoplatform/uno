@@ -710,6 +710,11 @@ namespace Uno.UWPSyncGenerator
 				case "Windows.UI.Colors":
 					// Skipped because the type not present WinAppSDK projection
 					return true;
+
+				case "Microsoft.Windows.ApplicationModel.DynamicDependency.Bootstrap":
+					// This class has a nested enum. So proper generation for nested types would be needed first.
+					// Also it's not clear if it's useful to generate it or not.
+					return true;
 #else
 				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
