@@ -411,7 +411,7 @@ namespace Uno.UWPSyncGenerator
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
 
-			if (type.Name == "IAsyncActionWithProgress")
+			if (type.Name is "IAsyncActionWithProgress" or "IAsyncOperationWithProgress")
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
@@ -1657,7 +1657,8 @@ namespace Uno.UWPSyncGenerator
 						}
 						else
 						{
-							using (b.BlockInvariant($"public {staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
+							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
+							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
