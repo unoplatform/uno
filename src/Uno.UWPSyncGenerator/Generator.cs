@@ -414,10 +414,26 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
+			else if (@namespace.StartsWith("Windows.Foundation.Collections", StringComparison.Ordinal) ||
+				@namespace.StartsWith("Windows.Foundation.Metadata", StringComparison.Ordinal))
+			{
+				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
+			}
 
-			if (type.Name.StartsWith("IAsyncAction", StringComparison.Ordinal) ||
-				type.Name.StartsWith("IAsyncOperation", StringComparison.Ordinal) ||
-				type.Name == "IAsyncInfo")
+			if (type.Name.Contains("AsyncAction", StringComparison.Ordinal) ||
+				type.Name.Contains("AsyncOperation", StringComparison.Ordinal) ||
+				type.Name is
+					"IAsyncInfo" or
+					"AsyncStatus" or
+					"Deferral" or
+					"DeferralCompletedHandler" or
+					"TypedEventHandler" or
+					"FoundationContract" or
+					"PropertyValue" or
+					"IPropertyValue" or
+					"PropertyType" or
+					"IStringable" or
+					"IReferenceArray")
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
@@ -1347,6 +1363,12 @@ namespace Uno.UWPSyncGenerator
 			}
 
 			if (method.Name == "FromAbi")
+			{
+				return true;
+			}
+
+			if (method.MethodKind == MethodKind.Constructor && method.Parameters.Length == 1 &&
+				method.Parameters[0].Type.Name is "IObjectReference" or "DerivedComposed")
 			{
 				return true;
 			}
