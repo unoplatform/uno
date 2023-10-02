@@ -6,6 +6,8 @@
 using System;
 using Uno.UI.Runtime.Skia.Wpf;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
+using Uno.UI.Xaml.Controls;
+using Uno.UI.Xaml.Islands;
 using Windows.UI.Xaml;
 using WpfControl = global::System.Windows.Controls.Control;
 using WUX = Windows.UI.Xaml;
@@ -320,6 +322,17 @@ namespace Uno.UI.XamlHost.Skia.Wpf
 			if (_xamlSource != null)
 			{
 				_xamlSource.Content = _childInternal;
+				_xamlSource.XamlIsland.IsSiteVisible = true;
+				TryLoadContent();
+			}
+		}
+
+
+		protected void TryLoadContent()
+		{
+			if (IsLoaded && _childInternal.XamlRoot is not null)
+			{
+				ContentManager.TryLoadRootVisual(_xamlSource.XamlIsland.XamlRoot);
 			}
 		}
 
