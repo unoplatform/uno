@@ -94,13 +94,6 @@ namespace Uno.UI.Samples.Tests
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow ??=
 				Windows.UI.Xaml.Window.Current;
 
-			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
-#if HAS_UNO
-				Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Xaml.Core.InitializationType.IslandsOnly;
-#else
-				false;
-#endif
-
 			DataContext = null;
 
 			SampleChooserViewModel.Instance.SampleChanging += OnSampleChanging;
@@ -113,6 +106,13 @@ namespace Uno.UI.Samples.Tests
 		private void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			Private.Infrastructure.TestServices.WindowHelper.XamlRoot = XamlRoot;
+
+			Private.Infrastructure.TestServices.WindowHelper.IsXamlIsland =
+#if HAS_UNO
+				XamlRoot.HostWindow is null;
+#else
+				false;
+#endif
 		}
 
 		private static void OverrideDebugProviderAsserts()
