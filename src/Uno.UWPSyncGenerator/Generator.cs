@@ -411,7 +411,9 @@ namespace Uno.UWPSyncGenerator
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
 
-			if (type.Name is "IAsyncActionWithProgress" or "IAsyncOperationWithProgress")
+			if (type.Name.StartsWith("IAsyncAction", StringComparison.Ordinal) ||
+				type.Name.StartsWith("IAsyncOperation", StringComparison.Ordinal) ||
+				type.Name == "IAsyncInfo")
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
