@@ -1702,9 +1702,19 @@ namespace Uno.UWPSyncGenerator
 						else
 						{
 							string accessModifier = property.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
-							string propertyName = property.ExplicitInterfaceImplementations.IsEmpty || property.Name.StartsWith("global::", StringComparison.Ordinal)
+							string propertyName;
+
+							if (property.IsIndexer)
+							{
+								var parms = string.Join(", ", property.GetMethod?.Parameters.Select(p => $"{TransformType(p.Type)} {SanitizeParameter(p.Name)}") ?? Array.Empty<string>());
+								propertyName = $"this[{parms}]";
+							}
+							else
+							{
+								propertyName = property.ExplicitInterfaceImplementations.IsEmpty || property.Name.StartsWith("global::", StringComparison.Ordinal)
 								? property.Name
 								: $"global::{property.Name}";
+							}
 
 							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {propertyName}"))
 							{
