@@ -11,7 +11,6 @@ using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Islands;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
