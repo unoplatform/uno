@@ -398,9 +398,14 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Composition\Generated\3.0.0.0";
 			}
-			else if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal))
+			else if (@namespace.StartsWith("Microsoft.UI.Dispatching", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
+			}
+
+			if (type.Name == "IAsyncActionWithProgress")
+			{
+				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
 
 			switch (type.ContainingAssembly.Name)
@@ -1534,14 +1539,14 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var property in type.GetMembers().OfType<IPropertySymbol>())
 			{
-				var allMembers = GetAllGetNonGeneratedMembers(types, property.Name, q => q?.FirstOrDefault(p => SymbolMatchingHelpers.AreMatching(property, p)));
-
-				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static " : "";
-
 				if (SkipProperty(property))
 				{
 					continue;
 				}
+
+				var allMembers = GetAllGetNonGeneratedMembers(types, property.Name, q => q?.FirstOrDefault(p => SymbolMatchingHelpers.AreMatching(property, p)));
+
+				var staticQualifier = ((property.GetMethod?.IsStatic ?? false) || (property.SetMethod?.IsStatic ?? false)) ? "static " : "";
 
 				if (allMembers.HasUndefined)
 				{
@@ -1666,6 +1671,14 @@ namespace Uno.UWPSyncGenerator
 
 		private bool SkipProperty(IPropertySymbol property)
 		{
+#if HAS_UNO_WINUI
+			if (property.Name is "HasUnwrappableNativeObject" or "NativeObject")
+			{
+				// These are implementations of IWinRTObject interface, which we want to ignore.
+				return true;
+			}
+#endif
+
 			if (property.ContainingType.Name == "WebView2")
 			{
 				switch (property.Name)
