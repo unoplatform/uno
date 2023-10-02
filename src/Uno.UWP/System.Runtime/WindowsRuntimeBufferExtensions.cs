@@ -5,7 +5,7 @@ using UwpBuffer = Windows.Storage.Streams.Buffer;
 
 namespace System.Runtime.InteropServices.WindowsRuntime
 {
-	public static class WindowsRuntimeBufferExtensions
+	public static partial class WindowsRuntimeBufferExtensions
 	{
 		public static IBuffer AsBuffer(this byte[] source)
 			=> AsBuffer(source, 0, source.Length, source.Length);

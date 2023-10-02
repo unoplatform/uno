@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace System.Runtime.InteropServices.WindowsRuntime
 {
-	public static class AsyncInfo
+	public static partial class AsyncInfo
 	{
 		[Uno.NotImplemented]
 		public static IAsyncAction Run(Func<CancellationToken, Task> taskProvider) { throw new NotImplementedException(); }
