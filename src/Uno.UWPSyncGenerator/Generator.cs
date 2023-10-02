@@ -1334,27 +1334,7 @@ namespace Uno.UWPSyncGenerator
 						return true;
 				}
 			}
-#else
-			if (method.ContainingType.Name == "CoreIndependentInputSourceController")
-			{
-				switch (method.Name)
-				{
-					// Avoid circular reference in UWP
-					case "CreateForVisual":
-					case "CreateForIVisualElement":
-						return true;
-				}
-			}
 
-			if (method.ContainingType.Name == "ElementCompositionPreview")
-			{
-				switch (method.Name)
-				{
-					// Adjust for already implemented member
-					case "SetElementChildVisual":
-						return true;
-				}
-			}
 #endif
 
 			if (method.ContainingType.Name == "GraphicsCaptureItem")
