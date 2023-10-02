@@ -1083,17 +1083,24 @@ namespace Uno.UWPSyncGenerator
 					allMembers.AppendIf(b);
 
 					var staticQualifier = eventMember.AddMethod.IsStatic ? "static " : "";
-					var declaration = $"{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name}";
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
-						b.AppendLineInvariant($"{declaration};");
+						b.AppendLineInvariant($"{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventMember.Name};");
 					}
 					else
 					{
 						var notImplementedList = allMembers.GenerateNotImplementedList();
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({notImplementedList})]");
-						using (b.BlockInvariant($"public {declaration}"))
+
+						string accessModifier = eventMember.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
+						string eventName = eventMember.ExplicitInterfaceImplementations.IsEmpty || eventMember.Name.StartsWith("global::", StringComparison.Ordinal)
+							? eventMember.Name
+							: $"global::{eventMember.Name}";
+
+						string declaration = $"{accessModifier}{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventName}";
+
+						using (b.BlockInvariant(declaration))
 						{
 							b.AppendLineInvariant($"[global::Uno.NotImplemented({notImplementedList})]");
 							using (b.BlockInvariant($"add"))
