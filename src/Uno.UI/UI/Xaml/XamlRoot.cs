@@ -53,7 +53,7 @@ public sealed partial class XamlRoot
 	/// <summary>
 	/// Gets a value that indicates whether the XamlRoot is visible.
 	/// </summary>
-	public bool IsHostVisible { get; internal set; } // TODO: This should reflect the actual state of the visual tree
+	public bool IsHostVisible => VisualTree.IsVisible;
 
 #if !HAS_UNO_WINUI // This is a UWP-only property
 	/// <summary>

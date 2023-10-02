@@ -68,10 +68,14 @@ internal partial class ContentManager
 
 	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
 	{
-		//TODO:MZ: Implement this for all platforms!
-		if (xamlRoot?.VisualTree?.RootElement is not { } rootElement) //TODO:MZ: What if the Content is null?
+		if (!xamlRoot.IsHostVisible)
 		{
-			// TODO:MZ: Indicate failure!
+			return;
+		}
+
+		if (xamlRoot?.VisualTree?.RootElement is not { } rootElement ||
+			(rootElement.IsLoading || rootElement.IsLoaded))
+		{
 			return;
 		}
 
