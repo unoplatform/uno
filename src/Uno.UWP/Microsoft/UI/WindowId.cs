@@ -2,7 +2,7 @@ using System;
 
 namespace Microsoft.UI
 {
-	public struct WindowId : IEquatable<WindowId>
+	public partial struct WindowId : IEquatable<WindowId>
 	{
 		public ulong Value;
 
