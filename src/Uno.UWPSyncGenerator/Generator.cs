@@ -434,6 +434,10 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
+			else if (@namespace == "Microsoft.UI" && type.Name is "Colors" or "ColorHelper" or "FontWeights")
+			{
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
+			}
 
 			if (type.Name.Contains("AsyncAction", StringComparison.Ordinal) ||
 				type.Name.Contains("AsyncOperation", StringComparison.Ordinal) ||
