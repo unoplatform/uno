@@ -1213,7 +1213,7 @@ namespace Uno.UWPSyncGenerator
 
 						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? Array.Empty<string>());
 
-						var baseParams = type.BaseType?.SpecialType != SpecialType.System_Object && q.Any() ? $" : base({baseParamString})" : "";
+						var baseParams = type.TypeKind != TypeKind.Struct && type.BaseType?.SpecialType != SpecialType.System_Object && q.Any() ? $" : base({baseParamString})" : "";
 
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({methods.GenerateNotImplementedList()})]");
 						using (b.BlockInvariant($"{visiblity} {type.Name}({parameters}){baseParams}"))
