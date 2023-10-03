@@ -9,11 +9,11 @@ internal static class SymbolMatchingHelpers
 {
 	public static bool AreMatching(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
-		//if (uapSymbol?.Name == "SizeInt32" ||
-		//	unoSymbol?.Name == "Size" && unoSymbol?.ContainingType?.Name == "AppWindow")
-		//{
-		//	global::System.Diagnostics.Debugger.Break();
-		//}
+		if (ShouldSkipSymbol(uapSymbol))
+		{
+			return true;
+		}
+
 		if (uapSymbol is IEventSymbol uapEvent)
 		{
 			var result = unoSymbol is IEventSymbol unoEvent && AreEventsMatching(uapEvent, unoEvent);
