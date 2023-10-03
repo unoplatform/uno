@@ -87,7 +87,7 @@ internal static class SymbolMatchingHelpers
 			return true;
 		}
 
-		if (uapSymbol.ContainingSymbol.Name is
+		if (uapSymbol.ContainingSymbol?.Name is
 			"ColorKeyFrameCollection" or
 			"Matrix" or
 			"KeyTime" or
