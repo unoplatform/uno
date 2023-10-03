@@ -390,7 +390,7 @@ namespace Uno.UI.Samples.Content.UITests
 			var story = GetNewStoryBoard();
 
 			var animation = (DoubleAnimation)story.Children.First();
-			animation.RepeatBehavior = RepeatBehaviorHelper.FromCount(3);
+			animation.RepeatBehavior = new RepeatBehavior(3);
 
 			story.Begin();
 		}
@@ -403,7 +403,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 			var stopTime = animation.Duration.TimeSpan.TotalMilliseconds * 1.5;
 
-			animation.RepeatBehavior = RepeatBehaviorHelper.FromDuration(TimeSpan.FromMilliseconds(stopTime));
+			animation.RepeatBehavior = new RepeatBehavior(TimeSpan.FromMilliseconds(stopTime));
 
 			story.Begin();
 		}
@@ -413,7 +413,7 @@ namespace Uno.UI.Samples.Content.UITests
 			var story = GetNewStoryBoard();
 
 			var animation = (DoubleAnimation)story.Children.First();
-			animation.RepeatBehavior = RepeatBehaviorHelper.Forever;
+			animation.RepeatBehavior = RepeatBehavior.Forever;
 
 			story.Begin();
 		}
