@@ -2,6 +2,7 @@
 
 using SkiaSharp;
 using Windows.UI;
+using Windows.UI.Composition;
 
 namespace Uno.UI.Composition.Composition;
 
@@ -15,6 +16,6 @@ internal record ShadowState(float Dx, float Dy, float SigmaX, float SigmaY, Colo
 	public SKPaint Paint =>
 		_paint ??= new SKPaint()
 		{
-			ImageFilter = SKImageFilter.CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color)
+			ImageFilter = SKImageFilter.CreateDropShadow(Dx, Dy, SigmaX, SigmaY, Color.ToSKColor())
 		};
 }
