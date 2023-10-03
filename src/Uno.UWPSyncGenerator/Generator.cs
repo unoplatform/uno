@@ -993,11 +993,12 @@ namespace Uno.UWPSyncGenerator
 
 			foreach (var iface in type.Interfaces)
 			{
-				if (type.Name is "Rect" or "Point" && iface.Name == "IFormattable")
+				if (iface.Name is "IFormattable" or "IEquatable")
 				{
 					// Skip for now.
-					// This should be fixed in the future. Currently, just removing this condition doesn't work
-					// since the generator doesn't properly generate an explicit interface implementation of IFormattable.ToString(string, System.IFormatProvider)
+					// This should be fixed in the future. Currently, just removing this condition doesn't work.
+					// The implementation isn't generated properly.
+					// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
 					continue;
 				}
 				if (iface.DeclaredAccessibility == Accessibility.Public
@@ -1196,7 +1197,7 @@ namespace Uno.UWPSyncGenerator
 
 				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)}{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
 				var staticQualifier = method.IsStatic ? "static " : "";
-				var overrideQualifier = method is { Name: "ToString", Parameters.IsEmpty: true } || method.IsOverride ? "override " : "";
+				var overrideQualifier = method is { Name: "ToString" or "GetHashCode", Parameters.IsEmpty: true } || method.IsOverride ? "override " : "";
 				var virtualQualifier = method.IsVirtual ? "virtual " : "";
 				var visiblity = method.DeclaredAccessibility.ToString().ToLowerInvariant();
 
@@ -1412,6 +1413,11 @@ namespace Uno.UWPSyncGenerator
 			}
 
 			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented")
+			{
+				return true;
+			}
+
+			if (method.Name == "As" && method.TypeParameters.Length == 1 && method.TypeParameters[0].Name == "I")
 			{
 				return true;
 			}
