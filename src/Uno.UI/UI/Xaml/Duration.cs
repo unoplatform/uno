@@ -226,9 +226,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public static bool Equals(Duration first, Duration second)
+		public static bool Equals(Duration t1, Duration t2)
 		{
-			return first.Equals(second);
+			return t1.Equals(t2);
 
 		}
 
@@ -237,14 +237,14 @@ namespace Microsoft.UI.Xaml
 			return Compare(this, other);
 		}
 
-		public static int Compare(Duration first, Duration second)
+		public static int Compare(Duration t1, Duration t2)
 		{
-			if (first.Type == second.Type)
+			if (t1.Type == t2.Type)
 			{
 				// Both are TimeSpan
-				if (first.Type == DurationType.TimeSpan)
+				if (t1.Type == DurationType.TimeSpan)
 				{
-					return first.TimeSpan.CompareTo(second.TimeSpan);
+					return t1.TimeSpan.CompareTo(t2.TimeSpan);
 				}
 
 				// Both are Automatic or Forever
@@ -252,19 +252,19 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// First is Forever and second is not
-			if (first.Type == DurationType.Forever)
+			if (t1.Type == DurationType.Forever)
 			{
 				return 1;
 			}
 
 			// First is Automatic and second is not
-			if (first.Type == DurationType.Automatic)
+			if (t1.Type == DurationType.Automatic)
 			{
 				return -1;
 			}
 
 			// First is Timespan and second is Automatic
-			if (second.Type == DurationType.Automatic)
+			if (t2.Type == DurationType.Automatic)
 			{
 				return 1;
 			}

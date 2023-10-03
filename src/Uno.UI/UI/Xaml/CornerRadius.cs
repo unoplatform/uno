@@ -63,8 +63,8 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			&& left.BottomRight == right.BottomRight;
 
 	/// <inheritdoc />
-	public bool Equals(CornerRadius other)
-		=> Equals(this, other);
+	public bool Equals(CornerRadius cornerRadius)
+		=> Equals(this, cornerRadius);
 
 	/// <inheritdoc />
 	public override bool Equals(object obj)
