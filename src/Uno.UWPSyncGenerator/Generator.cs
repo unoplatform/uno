@@ -879,7 +879,7 @@ namespace Uno.UWPSyncGenerator
 					continue;
 				}
 
-				if (!property.ExplicitInterfaceImplementations.IsEmpty)
+				if (ownerType.FindImplementationForInterfaceMember(property) is IPropertySymbol { ExplicitInterfaceImplementations.Length: > 0 })
 				{
 					// The explicit interface implementation will be generated while generating other members of ownerType.
 					// We shouldn't generate an implicit implementation.
