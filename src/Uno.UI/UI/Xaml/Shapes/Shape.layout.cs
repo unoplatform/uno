@@ -9,7 +9,6 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using static System.Double;
-using Windows.Phone.Media.Devices;
 using System.Diagnostics;
 
 #if __APPLE_UIKIT__

@@ -401,6 +401,11 @@ namespace Uno.UWPSyncGenerator
 				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
 #else
+			if (type.Name == "CreateFromStringAttribute")
+			{
+				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
+			}
+
 			var @namespace = type.ContainingNamespace.ToString();
 			if (@namespace.StartsWith("Microsoft.UI.Composition", StringComparison.Ordinal))
 			{
