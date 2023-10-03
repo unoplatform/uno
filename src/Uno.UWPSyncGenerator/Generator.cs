@@ -797,6 +797,11 @@ namespace Uno.UWPSyncGenerator
 
 					foreach (var inner in enumerable)
 					{
+						if (ShouldSkipInterface(inner))
+						{
+							continue;
+						}
+
 						if (implementedInterfaces.Add(inner))
 						{
 							BuildInterfaceImplementation(b, type, inner, types, writtenMethods);
@@ -986,6 +991,15 @@ namespace Uno.UWPSyncGenerator
 			return typeSymbol.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 		}
 
+		private static bool ShouldSkipInterface(INamedTypeSymbol iface)
+		{
+			// Skip for now.
+			// For IFormattable and IEquatable, this should be fixed in the future. Currently, just removing this condition doesn't work as the implementation isn't generated properly.
+			// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
+			// For IDynamicInterfaceCastable or ICustomQueryInterface, they are not important for now.
+			return iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface";
+		}
+
 		protected string BuildInterfaces(INamedTypeSymbol type)
 		{
 			var ifaces = new List<string>();
@@ -997,12 +1011,8 @@ namespace Uno.UWPSyncGenerator
 
 			foreach (var iface in type.Interfaces)
 			{
-				if (iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface")
+				if (ShouldSkipInterface(iface))
 				{
-					// Skip for now.
-					// For IFormattable and IEquatable, this should be fixed in the future. Currently, just removing this condition doesn't work as the implementation isn't generated properly.
-					// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
-					// For IDynamicInterfaceCastable or ICustomQueryInterface, they are not important for now.
 					continue;
 				}
 				if (iface.DeclaredAccessibility == Accessibility.Public
