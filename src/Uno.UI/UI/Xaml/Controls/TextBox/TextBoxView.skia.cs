@@ -7,6 +7,7 @@ using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -25,7 +26,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_textBox = new WeakReference<TextBox>(textBox);
 			_isPasswordBox = textBox is PasswordBox;
-			if (!ApiExtensibility.CreateInstance(this, out _textBoxExtension))
+			if (FeatureConfiguration.TextBox.UseOverlayOnSkia && !ApiExtensibility.CreateInstance(this, out _textBoxExtension))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -37,7 +38,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public (int start, int length) SelectionBeforeKeyDown =>
-			(_textBoxExtension!.GetSelectionStartBeforeKeyDown(), _textBoxExtension.GetSelectionLengthBeforeKeyDown());
+			(_textBoxExtension?.GetSelectionStartBeforeKeyDown() ?? 0, _textBoxExtension?.GetSelectionLengthBeforeKeyDown() ?? 0);
 
 		internal IOverlayTextBoxViewExtension? Extension => _textBoxExtension;
 
@@ -108,6 +109,11 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnFocusStateChanged(FocusState focusState)
 		{
+			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				return;
+			}
+
 			if (focusState != FocusState.Unfocused)
 			{
 				DisplayBlock.Opacity = 0;

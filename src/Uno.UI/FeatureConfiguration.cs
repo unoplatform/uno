@@ -503,6 +503,12 @@ namespace Uno.UI
 			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
 			public static bool HideCaret { get; set; }
 
+			/// <summary>
+			/// Determines if a native (Gtk/Wpf) TextBox overlay should be used on the skia targets instead of the
+			/// Uno skia-based TextBox implementation.
+			/// </summary>
+			public static bool UseOverlayOnSkia { get; set; } = false;
+
 #if __ANDROID__
 			/// <summary>
 			/// The legacy <see cref="Windows.UI.Xaml.Controls.TextBox.InputScope"/> prevents invalid input on hardware keyboard.

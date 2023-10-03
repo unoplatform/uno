@@ -22,6 +22,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
+using Uno.UI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -116,6 +117,10 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
+
+#if __SKIA__
+			_timer.Tick += TimerOnTick;
+#endif
 		}
 
 		private protected override void OnLoaded()
@@ -150,10 +155,15 @@ namespace Windows.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
+#if __SKIA__
+				if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+#endif
+				{
+					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
+				}
 #endif
 			}
 		}
@@ -896,6 +906,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateVisualState();
+#if __SKIA__
+			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				// this is needed so that we UpdateScrolling after the button appears.
+				UpdateLayout();
+				UpdateScrolling();
+			}
+#endif
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
@@ -946,7 +964,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+
+			OnPointerPressedNative(args);
 		}
+
+		partial void OnPointerPressedNative(PointerRoutedEventArgs e);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -971,7 +993,16 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTappedPartial();
 
 		/// <inheritdoc />
-		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		protected override void OnKeyDown(KeyRoutedEventArgs args) => OnKeyDownPartial(args);
+
+		private partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+
+#if !__SKIA__
+		private partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
+
+#endif
+
+		private void OnKeyDownInternal(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
 

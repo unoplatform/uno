@@ -6,6 +6,7 @@ using SkiaSharp;
 using Windows.Foundation;
 using Windows.UI.Composition;
 using Windows.UI.Text;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Composition;
@@ -16,6 +17,8 @@ namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
+		internal const float CaretThicknessAsRatioOfLineHeight = 0.05f;
+
 		// This is safe as a static field.
 		// 1) It's only accessed from UI thread.
 		// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
@@ -32,6 +35,11 @@ namespace Windows.UI.Xaml.Documents
 		private float _lastDefaultLineHeight;
 		private Size _lastDesiredSize;
 		private Size _lastArrangedSize;
+
+		// these should only be used by TextBox.
+		internal (int startLine, int startIndex, int endLine, int endIndex)? Selection { get; set; }
+		internal (bool atEndOfSelection, Color color)? Caret { get; set; }
+		internal bool RenderSelectionAndCaret { get; set; }
 
 		/// <summary>
 		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
@@ -63,7 +71,7 @@ namespace Windows.UI.Xaml.Documents
 			bool previousLineWrapped = false;
 
 			float availableWidth = wrapping == TextWrapping.NoWrap ? float.PositiveInfinity : (float)availableSize.Width;
-			float widestLineWidth = 0;
+			float widestLineWidth = 0, widestLineHeight = 0;
 
 			float x = 0;
 			float height = 0;
@@ -230,17 +238,12 @@ namespace Windows.UI.Xaml.Documents
 			}
 			else
 			{
-				_lastDesiredSize = new Size(widestLineWidth, height);
+				_lastDesiredSize = new Size(widestLineWidth + (RenderSelectionAndCaret && Caret is { } c && c.color != Colors.Transparent ? widestLineHeight * CaretThicknessAsRatioOfLineHeight : 0), height);
 			}
 
 			return _lastDesiredSize;
 
 			// Local functions
-
-			static float GetGlyphWidthWithSpacing(GlyphInfo glyph, float characterSpacing)
-			{
-				return glyph.AdvanceX > 0 ? glyph.AdvanceX + characterSpacing : glyph.AdvanceX;
-			}
 
 			// Gets rendering info for a segment, excluding any trailing spaces.
 
@@ -269,12 +272,18 @@ namespace Windows.UI.Xaml.Documents
 				if (x > widestLineWidth)
 				{
 					widestLineWidth = x;
+					widestLineHeight = lineHeight;
 				}
 
 				x = 0;
 				height += renderLine.Height;
 				previousLineWrapped = currentLineWrapped;
 			}
+		}
+
+		private static float GetGlyphWidthWithSpacing(GlyphInfo glyph, float characterSpacing)
+		{
+			return glyph.AdvanceX > 0 ? glyph.AdvanceX + characterSpacing : glyph.AdvanceX;
 		}
 
 		internal Size Arrange(Size finalSize)
@@ -303,7 +312,7 @@ namespace Windows.UI.Xaml.Documents
 		/// <summary>
 		/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
-		internal void Draw(in DrawingSession session)
+		internal virtual void Draw(in DrawingSession session)
 		{
 			if (_renderLines.Count == 0)
 			{
@@ -325,8 +334,9 @@ namespace Windows.UI.Xaml.Documents
 
 			float y = 0;
 
-			foreach (var line in _renderLines)
+			for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
 			{
+				var line = _renderLines[lineIndex];
 				// TODO: (Performance) Stop rendering when the lines exceed the available height
 
 				(float x, float justifySpaceOffset) = line.GetOffsets((float)_lastArrangedSize.Width, alignment);
@@ -334,9 +344,13 @@ namespace Windows.UI.Xaml.Documents
 				y += line.Height;
 				float baselineOffsetY = line.BaselineOffsetY;
 
+				var characterCountSoFar = 0;
 				for (int s = 0; s < line.RenderOrderedSegmentSpans.Count; s++)
 				{
 					var segmentSpan = line.RenderOrderedSegmentSpans[s];
+
+					var currentCharacterCount = segmentSpan.GlyphsLength;
+					characterCountSoFar += currentCharacterCount;
 
 					if (segmentSpan.GlyphsLength == 0)
 					{
@@ -437,8 +451,128 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
+					{
+						if (RenderSelectionAndCaret && Selection is { } bg && bg.startLine <= lineIndex && lineIndex <= bg.endLine)
+						{
+							var spanStartingIndex = characterCountSoFar - currentCharacterCount;
+
+							float left;
+							if (bg.startLine == lineIndex)
+							{
+								if (bg.startIndex - spanStartingIndex < 0)
+								{
+									if (positions.Length > 0)
+									{
+										left = positions[0].X;
+									}
+									else
+									{
+										// no glyphs, so we're at the start
+										left = x;
+									}
+								}
+								else if (bg.startIndex - spanStartingIndex < positions.Length)
+								{
+									left = positions[bg.startIndex - spanStartingIndex].X;
+								}
+								else if (bg.startIndex - spanStartingIndex < currentCharacterCount) // positions.Length + TrailingSpaces
+								{
+									// x is set to the end of the glyph sequence (no accounting for spaces yet)
+									left = x + justifySpaceOffset * (currentCharacterCount - (bg.startIndex - spanStartingIndex));
+								}
+								else
+								{
+									left = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+								}
+							}
+							else
+							{
+								if (positions.Length > 0)
+								{
+									left = positions[0].X;
+								}
+								else
+								{
+									// no glyphs, so we're at the start
+									left = x;
+								}
+							}
+
+							float right;
+							if (bg.endLine == lineIndex)
+							{
+								if (bg.endIndex - spanStartingIndex < 0)
+								{
+									if (positions.Length > 0)
+									{
+										right = positions[0].X;
+									}
+									else
+									{
+										// no glyphs, so we're at the start
+										right = x;
+									}
+								}
+								else if (bg.endIndex - spanStartingIndex < positions.Length)
+								{
+									right = positions[bg.endIndex - spanStartingIndex].X;
+								}
+								else if (bg.endIndex - spanStartingIndex < currentCharacterCount) // positions.Length + TrailingSpaces
+								{
+									// x is set to the end of the glyph sequence
+									right = x + justifySpaceOffset * (currentCharacterCount - (bg.endIndex - spanStartingIndex));
+								}
+								else
+								{
+									right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+								}
+							}
+							else
+							{
+								right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+							}
+
+							canvas.DrawRect(new SKRect(left, 0, right, line.Height), new SKPaint
+							{
+								Color = ((TextBlock)parent).SelectionHighlightColor.Color.ToSKColor(),
+								Style = SKPaintStyle.Fill
+							});
+						}
+					}
+
 					using var textBlob = _textBlobBuilder.Build();
 					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+
+					{
+						var spanStartingIndex = characterCountSoFar - currentCharacterCount;
+						if (RenderSelectionAndCaret && Caret is { } caret && Selection is { } selection)
+						{
+							var (l, i) = caret.atEndOfSelection ? (selection.endLine, selection.endIndex) : (selection.startLine, selection.startIndex);
+
+							float caretLocation = -1f;
+
+							if (l == lineIndex && i >= spanStartingIndex && i <= characterCountSoFar)
+							{
+								if (i >= spanStartingIndex + positions.Length)
+								{
+									caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length)) - line.Height * 0.05f;
+								}
+								else
+								{
+									caretLocation = positions[i - spanStartingIndex].X;
+								}
+							}
+
+							if (caretLocation != -1f)
+							{
+								canvas.DrawRect(new SKRect(caretLocation, 0, caretLocation + line.Height * 0.05f, line.Height), new SKPaint
+								{
+									Color = new SKColor(caret.color.R, caret.color.G, caret.color.B, caret.color.A),
+									Style = SKPaintStyle.Fill
+								});
+							}
+						}
+					}
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 				}
@@ -451,6 +585,105 @@ namespace Windows.UI.Xaml.Documents
 				canvas.DrawLine(x, y, x + width, y, paint);
 				paint.IsStroke = false;
 			}
+		}
+
+		internal int GetIndexForTextBlock(Point p)
+		{
+			var line = GetRenderLineAt(p.Y, true)!;
+
+			if (line is not { })
+			{
+				return 0;
+			}
+
+			var characterCount = 0;
+			foreach (var currentLine in _renderLines.TakeWhile(l => l != line))
+			{
+				foreach (var SegmentSpan in currentLine.SegmentSpans)
+				{
+					characterCount += SegmentSpan.Segment.Glyphs.Count;
+				}
+			}
+
+			var (span, x) = GetRenderSegmentSpanAt(p, true)!.Value;
+
+			foreach (var currentSpan in line.SegmentSpans.TakeWhile(s => !s.Equals(span)))
+			{
+				characterCount += currentSpan.Segment.Glyphs.Count;
+			}
+
+			var segment = span.Segment;
+			var run = (Run)segment.Inline;
+			var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
+
+			var glyphStart = span.GlyphsStart;
+			var glyphEnd = glyphStart + span.GlyphsLength;
+			for (var i = glyphStart; i < glyphEnd; i++)
+			{
+				var glyph = segment.Glyphs[i];
+				var glyphWidth = GetGlyphWidthWithSpacing(glyph, characterSpacing);
+				if (p.X < x + glyphWidth / 2) // the point is closer to the left side of the glyph.
+				{
+					return characterCount;
+				}
+
+				x += glyphWidth;
+				characterCount++;
+			}
+
+			return characterCount;
+		}
+
+		internal Rect GetRectForTextBlockIndex(int index)
+		{
+			var characterCount = 0;
+			float y = 0, x = 0;
+			var parent = (IBlock)_collection.GetParent();
+
+			for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
+			{
+				var line = _renderLines[lineIndex];
+				(x, var justifySpaceOffset) = line.GetOffsets((float)_lastArrangedSize.Width, parent.TextAlignment);
+
+				var spans = line.RenderOrderedSegmentSpans;
+				for (var spanIndex = 0; spanIndex < spans.Count; spanIndex++)
+				{
+					var span = spans[spanIndex];
+					var glyphCount = span.Segment.Glyphs.Count;
+
+					if (index < characterCount + glyphCount)
+					{
+						// we found the right span
+						var segment = span.Segment;
+						var run = (Run)segment.Inline;
+						var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
+
+						var glyphStart = span.GlyphsStart;
+						var glyphEnd = glyphStart + span.GlyphsLength;
+						for (var i = glyphStart; i < glyphEnd; i++)
+						{
+							var glyph = segment.Glyphs[i];
+							var glyphWidth = GetGlyphWidthWithSpacing(glyph, characterSpacing);
+
+							if (index == characterCount)
+							{
+								return new Rect(x, y, glyphWidth, line.Height);
+							}
+
+							x += glyphWidth;
+							characterCount++;
+						}
+					}
+
+					characterCount += glyphCount;
+					x += span.Width;
+				}
+
+				y += line.Height;
+			}
+
+			// width and height default to 0 if there's nothing there
+			return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 		}
 
 		internal RenderLine? GetRenderLineAt(double y, bool extendedSelection)
@@ -478,7 +711,7 @@ namespace Windows.UI.Xaml.Documents
 			return extendedSelection ? line : null;
 		}
 
-		internal RenderSegmentSpan? GetRenderSegmentSpanAt(Point point, bool extendedSelection)
+		internal (RenderSegmentSpan span, float x)? GetRenderSegmentSpanAt(Point point, bool extendedSelection)
 		{
 			var parent = (IBlock)_collection.GetParent();
 
@@ -500,13 +733,13 @@ namespace Windows.UI.Xaml.Documents
 
 				if (point.X <= spanX && (extendedSelection || point.X >= spanX - span.Width))
 				{
-					return span;
+					return (span, spanX - span.Width);
 				}
 
 				spanX += justifySpaceOffset * span.TrailingSpaces;
 			} while (i < line.RenderOrderedSegmentSpans.Count);
 
-			return extendedSelection ? span : null;
+			return extendedSelection ? (span, spanX - span.Width) : null;
 		}
 	}
 }
