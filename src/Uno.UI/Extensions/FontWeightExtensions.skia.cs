@@ -2,14 +2,14 @@
 
 namespace Windows.UI.Text
 {
-	partial struct FontWeight
+	internal static class FontWeightExtensions
 	{
-		public SKFontStyleWeight ToSkiaWeight()
+		public static SKFontStyleWeight ToSkiaWeight(this FontWeight fontWeight)
 		{
 			// Uno weight values are using the same system,
 			// so we can convert directly to Skia system
 			// without need for a mapping.
-			return (SKFontStyleWeight)this.Weight;
+			return (SKFontStyleWeight)fontWeight.Weight;
 		}
 	}
 }
