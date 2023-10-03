@@ -184,4 +184,11 @@
 			<ServerAddress></ServerAddress>
 		</PropertyGroup>
 	</Target>
+
+	<ItemDefinitionGroup>
+		<ProjectReference>
+			 <!--Prevent projects from duplicating assemblies in every output folder-->
+			<Private Condition="'$(OutputType)' == 'library' and '$(UnoNugetOverrideVersion)'=='' and '$(DisableCommonPrivateProject)'!='false'">false</Private>
+		</ProjectReference>
+	</ItemDefinitionGroup> 
 </Project>
