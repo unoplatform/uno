@@ -61,6 +61,47 @@ internal static class SymbolMatchingHelpers
 		}
 	}
 
+	private static bool ShouldSkipSymbol(ISymbol uapSymbol)
+	{
+		if (uapSymbol.Name == "TimeSpan" && uapSymbol.ContainingSymbol.Name == "Duration")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.Name is "Left" or "Top" or "Right" or "Bottom" && uapSymbol.ContainingSymbol.Name == "Thickness")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.Name is "Value" or "GridUnitType" && uapSymbol.ContainingSymbol.Name == "GridLength")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.Name is "TopLeft" or "TopRight" or "BottomRight" or "BottomLeft" && uapSymbol.ContainingSymbol.Name == "CornerRadius")
+		{
+			// field vs property difference between Uno and WinUI.
+			return true;
+		}
+
+		if (uapSymbol.ContainingSymbol.Name is
+			"ColorKeyFrameCollection" or
+			"Matrix" or
+			"KeyTime" or
+			"PointCollection" or
+			"RepeatBehavior" or
+			"Matrix3D" or
+			"InlineCollection")
+		{
+			return true;
+		}
+
+		return false;
+	}
+
 	private static bool AreMatchingCommon(ISymbol uapSymbol, ISymbol unoSymbol)
 	{
 		if (unoSymbol.Kind == SymbolKind.ErrorType)
