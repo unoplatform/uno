@@ -707,6 +707,7 @@ namespace Uno.UWPSyncGenerator
 
 				case "Windows.UI.ViewManagement.InputPane":
 				case "Windows.UI.ViewManagement.InputPaneVisibilityEventArgs":
+				case "Windows.UI.ViewManagement.InputPaneInterop":
 					// Skipped because a dependency on FocusManager
 					return true;
 
