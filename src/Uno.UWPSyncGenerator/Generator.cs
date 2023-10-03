@@ -425,7 +425,8 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\Uno.UI.Dispatching\Generated\3.0.0.0";
 			}
-			else if (@namespace.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal))
+			else if (@namespace.StartsWith("Microsoft.UI.Input", StringComparison.Ordinal) ||
+				@namespace.StartsWith("Microsoft.UI.Xaml.Automation", StringComparison.Ordinal))
 			{
 				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
