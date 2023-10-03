@@ -94,7 +94,10 @@ internal static class SymbolMatchingHelpers
 			"PointCollection" or
 			"RepeatBehavior" or
 			"Matrix3D" or
-			"InlineCollection")
+			"InlineCollection" or
+			"GridLength" or
+			"GeneratorPosition" or
+			"ToggleSwitch")
 		{
 			return true;
 		}
