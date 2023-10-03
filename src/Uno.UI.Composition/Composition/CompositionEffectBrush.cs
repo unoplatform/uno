@@ -12,7 +12,7 @@ namespace Windows.UI.Composition
 
 		private Dictionary<string, CompositionBrush> _sourceParameters;
 
-		internal CompositionEffectBrush(IGraphicsEffect graphicsEffect, IEnumerable<string>? animatableProperties = null)
+		internal CompositionEffectBrush(Compositor compositor, IGraphicsEffect graphicsEffect, IEnumerable<string>? animatableProperties = null) : base(compositor)
 		{
 			_effect = graphicsEffect;
 			//_animatableProperties = animatableProperties; // TODO (see the TODO note above)

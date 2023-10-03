@@ -15,7 +15,7 @@ namespace Windows.UI.Composition
 		private CompositionEffectFactoryLoadStatus _loadStatus;
 		private Exception? _extendedError;
 
-		internal CompositionEffectFactory(IGraphicsEffect effect, IEnumerable<string>? animatableProperties = null)
+		internal CompositionEffectFactory(Compositor compositor, IGraphicsEffect effect, IEnumerable<string>? animatableProperties = null) : base(compositor)
 		{
 			if (effect is null)
 			{
@@ -34,7 +34,7 @@ namespace Windows.UI.Composition
 			_animatableProperties = animatableProperties;
 		}
 
-		public CompositionEffectBrush? CreateBrush() => new(_effect, _animatableProperties);
+		public CompositionEffectBrush? CreateBrush() => new(Compositor, _effect, _animatableProperties);
 
 		public CompositionEffectFactoryLoadStatus LoadStatus => _loadStatus;
 		public Exception? ExtendedError => _extendedError;
