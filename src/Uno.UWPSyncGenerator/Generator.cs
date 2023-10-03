@@ -753,6 +753,10 @@ namespace Uno.UWPSyncGenerator
 					// This class has a nested enum. So proper generation for nested types would be needed first.
 					// Also it's not clear if it's useful to generate it or not.
 					return true;
+
+				case "Microsoft.UI.Xaml.DependencyObject":
+					// On WinUI, DependencyObject has more than we currently want.
+					return true;
 #else
 				case "Microsoft.UI.Xaml.Automation.Peers.AnimatedVisualPlayerAutomationPeer":
 				case "Microsoft.UI.Xaml.Controls.IAnimatedVisualSource":
@@ -1407,7 +1411,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
-			if (method.Name == "FromAbi")
+			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented")
 			{
 				return true;
 			}
