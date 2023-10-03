@@ -1192,7 +1192,7 @@ namespace Uno.UWPSyncGenerator
 
 				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)}{SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
 				var staticQualifier = method.IsStatic ? "static " : "";
-				var overrideQualifier = method.Name == "ToString" && method.Parameters.IsEmpty ? "override " : "";
+				var overrideQualifier = method is { Name: "ToString", Parameters.IsEmpty: true } || method.IsOverride ? "override " : "";
 				var virtualQualifier = method.IsVirtual ? "virtual " : "";
 				var visiblity = method.DeclaredAccessibility.ToString().ToLowerInvariant();
 
