@@ -1027,6 +1027,11 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var field in type.GetMembers().OfType<IFieldSymbol>())
 			{
+				if (field.DeclaredAccessibility == Accessibility.Private)
+				{
+					continue;
+				}
+
 				// These are public on WinUI.
 				// TODO: Verify whether we want to match the API surface for a bad public API like this.
 				if (type.Name == "Point" && field.Name is "_x" or "_y")
