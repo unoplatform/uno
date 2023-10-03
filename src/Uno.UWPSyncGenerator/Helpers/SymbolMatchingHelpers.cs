@@ -267,7 +267,11 @@ internal static class SymbolMatchingHelpers
 
 	private static bool AreParametersMatching(IParameterSymbol uapParameters, IParameterSymbol unoParameters) =>
 		uapParameters.IsOptional == unoParameters.IsOptional &&
-		uapParameters.Name == unoParameters.Name &&
+		// The '_' check is to ignore parameter name differences for badly named WinUI parameters.
+		// For example, FontWeight constructor parameter in WinUI is called "_Weight", while we name it "weight"
+		// Our naming makes more sense, and we want to avoid this breaking change for now.
+		// We can revisit in the future if we want to match WinUI naming.
+		(uapParameters.Name == unoParameters.Name || uapParameters.Name.StartsWith('_')) &&
 		uapParameters.IsParams == unoParameters.IsParams &&
 		uapParameters.RefKind == unoParameters.RefKind &&
 		AreMatching(uapParameters.Type, unoParameters.Type);
