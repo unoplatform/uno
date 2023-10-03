@@ -997,12 +997,12 @@ namespace Uno.UWPSyncGenerator
 
 			foreach (var iface in type.Interfaces)
 			{
-				if (iface.Name is "IFormattable" or "IEquatable")
+				if (iface.Name is "IFormattable" or "IEquatable" or "IDynamicInterfaceCastable" or "ICustomQueryInterface")
 				{
 					// Skip for now.
-					// This should be fixed in the future. Currently, just removing this condition doesn't work.
-					// The implementation isn't generated properly.
+					// For IFormattable and IEquatable, this should be fixed in the future. Currently, just removing this condition doesn't work as the implementation isn't generated properly.
 					// Note that no types implement these interfaces in UWP, but there are types that implement it in WinUI.
+					// For IDynamicInterfaceCastable or ICustomQueryInterface, they are not important for now.
 					continue;
 				}
 				if (iface.DeclaredAccessibility == Accessibility.Public
@@ -1416,7 +1416,7 @@ namespace Uno.UWPSyncGenerator
 				}
 			}
 
-			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented")
+			if (method.Name is "FromAbi" or "IsOverridableInterface" or "IsInterfaceImplemented" or "GetInterfaceImplementation" or "GetInterface" or "GetHashCode" or "Equals")
 			{
 				return true;
 			}
