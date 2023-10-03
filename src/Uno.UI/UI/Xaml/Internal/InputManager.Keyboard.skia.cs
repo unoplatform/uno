@@ -31,7 +31,7 @@ partial class InputManager
 		{
 			if (!ApiExtensibility.CreateInstance(host, out _source))
 			{
-				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoCorePointerInputSource.");
+				throw new InvalidOperationException("Failed to initialize the PointerManager: cannot resolve the IUnoKeyboardInputSource.");
 			}
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
