@@ -878,6 +878,13 @@ namespace Uno.UWPSyncGenerator
 					continue;
 				}
 
+				if (!property.ExplicitInterfaceImplementations.IsEmpty)
+				{
+					// The explicit interface implementation will be generated while generating other members of ownerType.
+					// We shouldn't generate an implicit implementation.
+					continue;
+				}
+
 				if (allProperties.HasUndefined)
 				{
 					allProperties.AppendIf(b);
@@ -1093,10 +1100,20 @@ namespace Uno.UWPSyncGenerator
 						var notImplementedList = allMembers.GenerateNotImplementedList();
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({notImplementedList})]");
 
-						string accessModifier = eventMember.ExplicitInterfaceImplementations.IsEmpty ? "public " : string.Empty;
-						string eventName = eventMember.ExplicitInterfaceImplementations.IsEmpty || eventMember.Name.StartsWith("global::", StringComparison.Ordinal)
-							? eventMember.Name
-							: $"global::{eventMember.Name}";
+						string accessModifier;
+						string eventName;
+						if (eventMember.ExplicitInterfaceImplementations.IsEmpty)
+						{
+							eventName = eventMember.Name;
+							accessModifier = "public ";
+						}
+						else
+						{
+							var explicitImpl = eventMember.ExplicitInterfaceImplementations.Single();
+							var interfaceSymbol = (INamedTypeSymbol)explicitImpl.ContainingSymbol;
+							eventName = $"{MapUWPTypes(SanitizeType(interfaceSymbol))}.{explicitImpl.Name}";
+							accessModifier = string.Empty;
+						}
 
 						string declaration = $"{accessModifier}{staticQualifier}event {MapUWPTypes(SanitizeType(eventMember.Type))} {eventName}";
 
@@ -1711,9 +1728,16 @@ namespace Uno.UWPSyncGenerator
 							}
 							else
 							{
-								propertyName = property.ExplicitInterfaceImplementations.IsEmpty || property.Name.StartsWith("global::", StringComparison.Ordinal)
-								? property.Name
-								: $"global::{property.Name}";
+								if (property.ExplicitInterfaceImplementations.IsEmpty)
+								{
+									propertyName = property.Name;
+								}
+								else
+								{
+									var explicitImpl = property.ExplicitInterfaceImplementations.Single();
+									var interfaceSymbol = (INamedTypeSymbol)explicitImpl.ContainingSymbol;
+									propertyName = $"{MapUWPTypes(SanitizeType(interfaceSymbol))}.{explicitImpl.Name}";
+								}
 							}
 
 							using (b.BlockInvariant($"{accessModifier}{staticQualifier}{MapUWPTypes(SanitizeType(property.Type))} {propertyName}"))
