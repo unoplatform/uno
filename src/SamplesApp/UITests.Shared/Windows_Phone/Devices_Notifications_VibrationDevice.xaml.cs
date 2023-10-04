@@ -7,6 +7,7 @@ using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.Devices.Haptics;
 using Windows.Phone.Devices.Notification;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
