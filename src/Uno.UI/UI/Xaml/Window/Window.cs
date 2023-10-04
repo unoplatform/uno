@@ -43,6 +43,7 @@ public partial class Window
 	internal Window(WindowType windowType)
 	{
 #if WINUI_WINDOWING
+		InitialWindow ??= this;
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
@@ -193,10 +194,13 @@ public partial class Window
 
 	internal static Window? IShouldntUseCurrentWindow => CurrentSafe;
 
+	internal static Window? InitialWindow { get; private set; }
+
 #if !HAS_UNO_WINUI
 	internal static void InitializeWindowCurrent()
 	{
 		_current = new Window(WindowType.CoreWindow);
+		InitialWindow = _current;
 	}
 #endif
 

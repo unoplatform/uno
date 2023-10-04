@@ -63,8 +63,6 @@ namespace Uno.UI
 		private static Dictionary<int, BaseActivity> _instances = new Dictionary<int, BaseActivity>();
 		private static BaseActivity _current;
 
-		private protected Windows.UI.Xaml.Window WinUIWindow { get; set; }
-
 		/// <summary>
 		/// Unique identifier for this instance of an activity.
 		/// </summary>
