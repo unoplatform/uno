@@ -20,6 +20,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
 
   - template: templates/download-winui-converted-tree.yml
 

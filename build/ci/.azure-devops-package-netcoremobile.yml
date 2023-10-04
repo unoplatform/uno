@@ -52,6 +52,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
 
   - template: templates/nuget-cache.yml
     parameters:

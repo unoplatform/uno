@@ -62,6 +62,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -127,6 +128,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
 
   - task: InstallAppleCertificate@2
     displayName: Install Certificate
