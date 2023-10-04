@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
@@ -329,8 +329,9 @@ namespace Uno.UWPSyncGenerator
 					"IUnknownVftbl" or
 					"IWeakReference" or
 					"IWeakReferenceSource" or
-					"_add_EventHandler" or
-					"_remove_EventHandler";
+					"IActivationFactory" or
+					"IAgileOBject" ||
+					namedTypeSymbol.Name[0] == '_';
 			}
 
 			return false;
