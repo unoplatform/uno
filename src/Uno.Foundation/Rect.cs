@@ -1,4 +1,4 @@
-﻿#nullable enable
+#nullable enable
 using System;
 using System.Diagnostics;
 using System.Globalization;
@@ -39,7 +39,7 @@ public partial struct Rect
 		Height = double.PositiveInfinity
 	};
 
-	public Rect(Point location, Size size) : this(location.X, location.Y, size.Width, size.Height) { }
+	public Rect(Point point, Size size) : this(point.X, point.Y, size.Width, size.Height) { }
 
 	public Rect(double x, double y, double width, double height)
 		: this((float)x, (float)y, (float)width, (float)height)
@@ -348,8 +348,8 @@ public partial struct Rect
 			&& value.Width == Width
 			&& value.Height == Height;
 
-	public override bool Equals(object? o)
-		=> o is Rect r ? r.Equals(this) : base.Equals(o);
+	public override bool Equals(object? obj)
+		=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 
 	public static bool operator ==(Rect left, Rect right) => left.Equals(right);
 

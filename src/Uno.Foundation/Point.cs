@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -58,8 +58,8 @@ public partial struct Point
 	public override int GetHashCode()
 		=> X.GetHashCode() ^ Y.GetHashCode();
 
-	public override bool Equals(object o)
-		=> o is Point other && Equals(this, other);
+	public override bool Equals(object obj)
+		=> obj is Point other && Equals(this, other);
 
 	public bool Equals(Point value) // Even if not in public doc, this is public on UWP
 		=> Equals(this, value);

@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.ComponentModel;
 using System.Globalization;
@@ -63,8 +63,8 @@ public partial struct CornerRadius : IEquatable<CornerRadius>
 			&& left.BottomRight == right.BottomRight;
 
 	/// <inheritdoc />
-	public bool Equals(CornerRadius cornerRadius)
-		=> Equals(this, cornerRadius);
+	public bool Equals(CornerRadius other)
+		=> Equals(this, other);
 
 	/// <inheritdoc />
 	public override bool Equals(object obj)
