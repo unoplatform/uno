@@ -22,8 +22,76 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 		<ProjectReference Include="..\Uno.UI.Dispatching\Uno.UI.Dispatching.Wasm.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.TypeScript.MSBuild" PrivateAssets="all" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<PropertyGroup>
+		<UnoRewriteEmbeddedResources>true</UnoRewriteEmbeddedResources>
+
+		<UnoUIMSBuildTasksPath>$(MSBuildThisFileDirectory)..\SourceGenerators\Uno.UI.Tasks\bin\$(Configuration)_Shadow</UnoUIMSBuildTasksPath>
+
+		<CompileTypeScriptDependsOn>CoreCompile;_UnoSetupTSCompilation; $(CompileTypeScriptDependsOn)</CompileTypeScriptDependsOn>
+	</PropertyGroup>
+
+	<Import Project="..\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" Condition="'$(SkipUnoResourceGeneration)' == '' " />
+
+	<ItemGroup>
+		<EmbeddedResource Include="WasmScripts\**\*.js" />
+		<TypeScriptCompile Include="ts\**\*.ts;ts\**\*.tsx" />
+
+		<TypeScriptCompile Include="..\Uno.UI\ts\types\**\*.ts" />
+
+		<UpToDateCheckInput Include="ts\**\*" />
+
+		<UpToDateCheckInput Remove="ts\Windows\Storage\AssetManager.ts" />
+	
+		<Content Include="tsconfig.json" />
+		
+		<_UnoEmbeddedResourcesInjectionAfterTargets Include="CompileTypeScriptWithTSConfig" />
+	</ItemGroup>
+
+	<Target Name="_UnoSetupTSCompilation">
+		<PropertyGroup>
+			<TypeScriptConfigFileAdditionalFlags>$(TypeScriptConfigFileAdditionalFlags) --outFile $(OutputPath)/javascript/Uno.Wasm.js</TypeScriptConfigFileAdditionalFlags>
+		</PropertyGroup>
+		<MakeDir Directories="$(OutputPath)/javascript" />
+	</Target>
+
+	<Target Name="_UnoSetupTSCompilationUpdateEmbeddedResources" Condition="'$(BuildingProject)' != 'false' and '$(DesignTimeBuild)' != 'true'" BeforeTargets="_UnoEmbeddedResourcesInjection">
+		<PropertyGroup>
+			<_unoUIDTsFilePath>$(OutputPath)/javascript/Uno.Wasm.d.ts</_unoUIDTsFilePath>
+		</PropertyGroup>
+		<ItemGroup>
+			<_generatedJSFiles Include="$(OutputPath)/javascript/*.js" />
+			<EmbeddedResource Include="@(_generatedJSFiles)" LogicalName="$(RootNamespace).WasmScripts.%(FileName)%(Extension)" />
+		</ItemGroup>
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Wasm.d.ts" DestinationFolder="$(OutputPath)" Condition="exists('$(_unoUIDTsFilePath)')" />
+		<Copy SourceFiles="$(OutputPath)/javascript/Uno.Wasm.d.ts" DestinationFolder="../Uno.UI/ts/types-internal/uno.wasm" Condition="exists('$(_unoUIDTsFilePath)')" />
+	</Target>
+
+	<Target Name="_AdjustTypeScriptOutputForPublishing" AfterTargets="GetTypeScriptOutputForPublishing">
+		<ItemGroup>
+			<FilesForPackagingFromProject Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
+			<ContentWithTargetPath Remove="@(GeneratedJavascriptWithTargetPath->'%(Identity)')" />
+			<Content Remove="@(GeneratedJavascript->'%(Identity)')" />
+		</ItemGroup>
+	</Target>
+
+	<ItemGroup>
+		<Folder Include="WasmScripts\" />
 	</ItemGroup>
 
 </Project>

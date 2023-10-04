@@ -188,7 +188,7 @@
 	<ItemDefinitionGroup>
 		<ProjectReference>
 			 <!--Prevent projects from duplicating assemblies in every output folder-->
-			<Private Condition="'$(OutputType)' == 'library' and '$(UnoNugetOverrideVersion)'=='' and '$(DisableCommonPrivateProject)'!='false'">false</Private>
+			<Private Condition="'$(OutputType)' == 'library' and '$(UnoNugetOverrideVersion)'=='' and '$(IsUnoHead)'==''">false</Private>
 		</ProjectReference>
 	</ItemDefinitionGroup> 
 </Project>

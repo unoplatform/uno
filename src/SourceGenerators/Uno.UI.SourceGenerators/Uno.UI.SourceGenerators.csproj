@@ -73,6 +73,7 @@
 			<Name>Uno.Xaml</Name>
 			<Aliases>__uno</Aliases>
 			<SetTargetFramework>TargetFramework=netstandard2.0</SetTargetFramework>
+			<Private>true</Private>
 		</ProjectReference>
 	</ItemGroup>
 

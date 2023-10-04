@@ -11,9 +11,6 @@
 		<IntermediateOutputPath>$(BaseIntermediateOutputPath)$(Configuration)\$(TargetFramework)\</IntermediateOutputPath>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 
-		<!-- We're altering the default path, and this breaks "public" project references -->
-		<DisableCommonPrivateProject>true</DisableCommonPrivateProject>
-
 		<NoWarn>$(NoWarn);IDE0051</NoWarn>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<DebugType>portable</DebugType>

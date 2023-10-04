@@ -77,6 +77,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="ts\Windows\ApplicatonModel\DataTransfer\DataTransferManager.ts" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
 	  <Folder Include="obj\Uno.UI.Wasm\Debug\" />
 	  <Folder Include="tsBindings\" />
@@ -86,9 +90,6 @@
 
 	<ItemGroup>
 		<Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
-	</ItemGroup>
-	<ItemGroup>
-		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
 	<PropertyGroup>

@@ -30,8 +30,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Uno.UWP\Uno.Skia.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Skia.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.Reference.csproj" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.Reference.csproj" />
 	</ItemGroup>
 
 </Project>

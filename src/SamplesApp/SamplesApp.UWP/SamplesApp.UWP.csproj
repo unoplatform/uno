@@ -136,16 +136,16 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.Windows.csproj">
-      <Project>{2569663d-293a-4a1d-bb84-aa8c7b4b7f92}</Project>
-      <Name>Uno.UI.MSAL</Name>
+      <Project>{7E290544-2CEE-4740-A6A0-9F4505DAD772}</Project>
+      <Name>Uno.UI.MSAL.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.Windows.csproj">
-      <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
-      <Name>Uno.UI.RuntimeTests</Name>
+      <Project>{E064DF41-143F-4F03-9CDA-880060343C45}</Project>
+      <Name>Uno.UI.RuntimeTests.Windows</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.Windows.csproj">
-      <Project>{2EAF39E3-2AC9-457A-A5B2-47D6548799B3}</Project>
-      <Name>Uno.UI.Toolkit</Name>
+      <Project>{9C10FB5E-76EC-4552-B7B1-1C920E716410}</Project>
+      <Name>Uno.UI.Toolkit.Windows</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
