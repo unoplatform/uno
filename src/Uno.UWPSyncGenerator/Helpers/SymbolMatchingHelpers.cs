@@ -324,6 +324,8 @@ internal static class SymbolMatchingHelpers
 			// In Uno, we use "ref" in both flavors.
 			return true;
 		}
+
+		return false;
 	}
 
 	private static bool IgnoreParameterName(IParameterSymbol uapParameter)
@@ -351,7 +353,7 @@ internal static class SymbolMatchingHelpers
 			// Skip for now to avoid breaking changes.
 			return true;
 		}
-		else if (uapParameter.ContainingSymbol.Name == "Compare" && name.ContainingType.Name == "Duration")
+		else if (uapParameter.ContainingSymbol.Name == "Compare" && uapParameter.ContainingType.Name == "Duration")
 		{
 			// Duration.Compare(Duration,Duration) in Uno names the parameters as "first"/"second" while WinUI name it as "t1"/"t2"
 			// Skip for now to avoid breaking changes.
@@ -363,5 +365,7 @@ internal static class SymbolMatchingHelpers
 			// Skip for now to avoid breaking changes.
 			return true;
 		}
+
+		return false;
 	}
 }
