@@ -15,12 +15,6 @@ namespace Uno.UI.SourceGenerators.TSBindings
 	[Generator]
 	class TSBindingsGenerator : ISourceGenerator
 	{
-		private string _bindingsPaths;
-		private string[] _sourceAssemblies;
-
-		private INamedTypeSymbol _structLayoutSymbol;
-		private INamedTypeSymbol _interopMessageSymbol;
-
 		public void Initialize(GeneratorInitializationContext context)
 		{
 		}
@@ -29,34 +23,33 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		{
 			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
-				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath");
-				_sourceAssemblies = context.GetMSBuildPropertyValue("TSBindingAssemblySource").Split(';');
+				string bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath");
+				string[] sourceAssemblies = context.GetMSBuildPropertyValue("TSBindingAssemblySource").Split(';');
 
-				if (!string.IsNullOrEmpty(_bindingsPaths))
+				if (!string.IsNullOrEmpty(bindingsPaths))
 				{
-					Directory.CreateDirectory(_bindingsPaths);
+					Directory.CreateDirectory(bindingsPaths);
 
-					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
-					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
+					INamedTypeSymbol interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
 					var modules = from ext in context.Compilation.ExternalReferences
 								  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-								  where _sourceAssemblies.Contains(sym.Name)
+								  where sourceAssemblies.Contains(sym.Name)
 								  from module in sym.Modules
 								  select module;
 
 					modules = modules.Concat(context.Compilation.SourceModule);
 
-					GenerateTSMarshallingLayouts(modules);
+					GenerateTSMarshallingLayouts(modules, bindingsPaths, interopMessageSymbol);
 				}
 			}
 		}
 
-		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
+		private static void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules, string bindingsPaths, INamedTypeSymbol interopMessageSymbol)
 		{
 			var messages = from module in modules
 						   from type in GetNamespaceTypes(module)
-						   let attr = type.FindAttributeFlattened(_interopMessageSymbol)
+						   let attr = type.FindAttributeFlattened(interopMessageSymbol)
 						   where attr is not null && type.TypeKind is TypeKind.Struct
 						   select (type, attr);
 
@@ -113,7 +106,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					}
 				}
 
-				var outputPath = Path.Combine(_bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
+				var outputPath = Path.Combine(bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
 
 				var fileExists = File.Exists(outputPath);
 				var output = sb.ToString();
@@ -138,7 +131,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private int GetStructPack(ISymbol parametersType)
+		private static int GetStructPack(ISymbol parametersType)
 		{
 			// https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/Portable/Symbols/TypeLayout.cs is not available.
 
@@ -168,7 +161,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			throw new InvalidOperationException($"Failed to get structure layout, unknown roslyn internal structure");
 		}
 
-		private bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
+		private static bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
 		{
 			// https://github.com/dotnet/roslyn/blob/0610c79807fa59d0815f2b89e5283cf6d630b71e/src/Compilers/CSharp/Portable/Symbols/Metadata/PE/PEFieldSymbol.cs#L133 is not available.
 
@@ -193,7 +186,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		/// </summary>
 		/// <param name="symbol"></param>
 		/// <returns></returns>
-		private object GetActualSymbol(ISymbol symbol)
+		private static object GetActualSymbol(ISymbol symbol)
 		{
 			if (symbol.GetType().GetProperty("UnderlyingSymbol", BindingFlags.Instance | BindingFlags.NonPublic) is PropertyInfo info)
 			{
@@ -206,7 +199,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			return symbol;
 		}
 
-		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private static void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public marshal(pData:number)"))
 			{
@@ -257,7 +250,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private static void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
@@ -363,10 +356,10 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private bool CanUseEMHeapProperty(ITypeSymbol type)
+		private static bool CanUseEMHeapProperty(ITypeSymbol type)
 			=> type.SpecialType == SpecialType.System_UInt32;
 
-		private int GetNativeFieldSize(IFieldSymbol field)
+		private static int GetNativeFieldSize(IFieldSymbol field)
 		{
 			if (
 				field.Type.SpecialType is SpecialType.System_String ||
@@ -392,7 +385,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private int GetEMTypeShift(IFieldSymbol field)
+		private static int GetEMTypeShift(IFieldSymbol field)
 		{
 			var fieldType = field.Type;
 
@@ -439,7 +432,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private string GetEMField(ITypeSymbol fieldType)
+		private static string GetEMField(ITypeSymbol fieldType)
 		{
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
@@ -484,7 +477,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private object GetEMHeapProperty(ITypeSymbol fieldType)
+		private static object GetEMHeapProperty(ITypeSymbol fieldType)
 		{
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
@@ -528,7 +521,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private string GetTSType(ITypeSymbol type)
+		private static string GetTSType(ITypeSymbol type)
 		{
 			if (type == null)
 			{
@@ -566,7 +559,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private string GetTSFieldType(ITypeSymbol type)
+		private static string GetTSFieldType(ITypeSymbol type)
 		{
 			if (type == null)
 			{
