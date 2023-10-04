@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml
 		{
 			// Sometimes, within the same Application lifecycle, the main Activity is destroyed and a new one is created (i.e., when pressing the back button on the first page).
 			// This code transfers the content from the previous activity to the new one (if applicable).
-			if (WinUIWindow?.RootElement is View content) // TODO:MZ: Fix this!
+			if (Windows.UI.Xaml.Window.CurrentSafe?.RootElement is View content)
 			{
 				(content.GetParent() as ViewGroup)?.RemoveView(content);
 				SetContentView(content);
