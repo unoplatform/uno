@@ -238,7 +238,7 @@ namespace Microsoft.UI.Xaml
 
 		public static int Compare(Duration first, Duration second)
 		{
-			if (first.Type == t2.Type)
+			if (first.Type == second.Type)
 			{
 				// Both are TimeSpan
 				if (first.Type == DurationType.TimeSpan)
