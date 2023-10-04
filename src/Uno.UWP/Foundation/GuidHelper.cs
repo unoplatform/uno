@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 namespace Windows.Foundation
 {
@@ -24,12 +24,6 @@ namespace Windows.Foundation
 		/// <param name="target">First Guid.</param>
 		/// <param name="value">Second Guid.</param>
 		/// <returns>A value indicating whether the Guids are equal.</returns>
-		public static bool Equals(
-#if HAS_UNO_WINUI
-			in Guid target, in Guid value
-#else
-			ref Guid target, ref Guid value
-#endif
-			) => target.Equals(value);
+		public static bool Equals(ref Guid target, ref Guid value) => target.Equals(value);
 	}
 }

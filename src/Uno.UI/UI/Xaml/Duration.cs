@@ -1,4 +1,4 @@
-﻿using Uno.UI.Extensions;
+using Uno.UI.Extensions;
 using System;
 using System.Globalization;
 
@@ -226,10 +226,9 @@ namespace Microsoft.UI.Xaml
 			}
 		}
 
-		public static bool Equals(Duration t1, Duration t2)
+		public static bool Equals(Duration first, Duration second)
 		{
-			return t1.Equals(t2);
-
+			return first.Equals(second);
 		}
 
 		public int CompareTo(Duration other)
@@ -237,14 +236,14 @@ namespace Microsoft.UI.Xaml
 			return Compare(this, other);
 		}
 
-		public static int Compare(Duration t1, Duration t2)
+		public static int Compare(Duration first, Duration second)
 		{
-			if (t1.Type == t2.Type)
+			if (first.Type == t2.Type)
 			{
 				// Both are TimeSpan
-				if (t1.Type == DurationType.TimeSpan)
+				if (first.Type == DurationType.TimeSpan)
 				{
-					return t1.TimeSpan.CompareTo(t2.TimeSpan);
+					return first.TimeSpan.CompareTo(second.TimeSpan);
 				}
 
 				// Both are Automatic or Forever
@@ -252,19 +251,19 @@ namespace Microsoft.UI.Xaml
 			}
 
 			// First is Forever and second is not
-			if (t1.Type == DurationType.Forever)
+			if (first.Type == DurationType.Forever)
 			{
 				return 1;
 			}
 
 			// First is Automatic and second is not
-			if (t1.Type == DurationType.Automatic)
+			if (first.Type == DurationType.Automatic)
 			{
 				return -1;
 			}
 
 			// First is Timespan and second is Automatic
-			if (t2.Type == DurationType.Automatic)
+			if (second.Type == DurationType.Automatic)
 			{
 				return 1;
 			}
