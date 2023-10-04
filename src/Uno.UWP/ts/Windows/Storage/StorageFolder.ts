@@ -23,11 +23,9 @@ namespace Windows.Storage {
 		/**
 		 * Setup the storage persistence of a given set of paths.
 		 * */
-		private static makePersistent(pParams: number): void {
-			const params = StorageFolderMakePersistentParams.unmarshal(pParams);
-
-			for (var i = 0; i < params.Paths.length; i++) {
-				this.setupStorage(params.Paths[i])
+		private static makePersistent(paths: string[]): void {
+			for (var i = 0; i < paths.length; i++) {
+				this.setupStorage(paths[i])
 			}
 
 			// Ensure to sync pseudo file system on unload (and periodically for safety)
@@ -79,7 +77,7 @@ namespace Windows.Storage {
 			}
 			StorageFolder.dispatchStorageInitialized();
 		}
-
+			
 		/**
 		 * Synchronize the IDBFS memory cache back to IndexedDB
 		 * populate: requests the filesystem to be popuplated from the IndexedDB

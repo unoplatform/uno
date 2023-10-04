@@ -331,6 +331,12 @@ declare namespace Windows.Storage {
         private static getValueByIndex;
     }
 }
+declare namespace Windows.Storage {
+    class AssetManager {
+        static DownloadAssetsManifest(path: string): Promise<string>;
+        static DownloadAsset(path: string): Promise<string>;
+    }
+}
 declare namespace Uno.Storage {
     class NativeStorageFile {
         static getBasicPropertiesAsync(guid: string): Promise<string>;

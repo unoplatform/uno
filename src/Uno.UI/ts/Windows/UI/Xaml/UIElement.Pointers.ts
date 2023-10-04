@@ -1,7 +1,7 @@
 ﻿namespace Windows.UI.Xaml {
-	import WindowManager = Uno.UI.WindowManager;
-	import HtmlEventDispatchResult = Uno.UI.HtmlEventDispatchResult;
-	import PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
+	//import WindowManager = Uno.UI.WindowManager;
+	//import Uno.UI.HtmlEventDispatchResult = Uno.UI.Uno.UI.HtmlEventDispatchResult;
+	//import Windows.Devices.Input.PointerDeviceType = Windows.Devices.Input.Windows.Devices.Input.PointerDeviceType;
 
 	export enum NativePointerEvent {
 		pointerover = 1,
@@ -45,7 +45,7 @@
 
 		public static subscribePointerEvents(pParams: number): void {
 			const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
-			const element = WindowManager.current.getView(params.HtmlId);
+			const element = Uno.UI.WindowManager.current.getView(params.HtmlId);
 
 			if (params.Events & NativePointerEvent.pointerover) {
 				element.addEventListener("pointerover", UIElement.onPointerEventReceived);
@@ -72,7 +72,7 @@
 
 		public static unSubscribePointerEvents(pParams: number): void {
 			const params = Windows.UI.Xaml.NativePointerSubscriptionParams.unmarshal(pParams);
-			const element = WindowManager.current.getView(params.HtmlId);
+			const element = Uno.UI.WindowManager.current.getView(params.HtmlId);
 
 			if (!element) {
 				return;
@@ -136,10 +136,10 @@
 			UIElement._dispatchPointerEventMethod();
 			const response = Windows.UI.Xaml.NativePointerEventResult.unmarshal(UIElement._dispatchPointerEventResult);
 
-			if (response.Result & HtmlEventDispatchResult.StopPropagation) {
+			if (response.Result & Uno.UI.HtmlEventDispatchResult.StopPropagation) {
 				evt.stopPropagation();
 			}
-			if (response.Result & HtmlEventDispatchResult.PreventDefault) {
+			if (response.Result & Uno.UI.HtmlEventDispatchResult.PreventDefault) {
 				evt.preventDefault();
 			}
 		}
@@ -198,11 +198,11 @@
 				src = src.parentElement;
 			}
 
-			let pointerId: number, pointerType: PointerDeviceType, pressure: number;
+			let pointerId: number, pointerType: Windows.Devices.Input.PointerDeviceType, pressure: number;
 			let wheelDeltaX: number, wheelDeltaY: number;
 			if (evt instanceof WheelEvent) {
 				pointerId = (evt as any).mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
-				pointerType = PointerDeviceType.Mouse;
+				pointerType = Windows.Devices.Input.PointerDeviceType.Mouse;
 				pressure = 0.5; // like WinUI
 				wheelDeltaX = evt.deltaX;
 				wheelDeltaY = evt.deltaY;
@@ -267,17 +267,17 @@
 			}
 		}
 
-		private static toPointerDeviceType(type: string): PointerDeviceType {
+		private static toPointerDeviceType(type: string): Windows.Devices.Input.PointerDeviceType {
 			switch (type) {
 				case "touch":
-					return PointerDeviceType.Touch;
+					return Windows.Devices.Input.PointerDeviceType.Touch;
 				case "pen":
 					// Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
 					//		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
-					return PointerDeviceType.Pen;
+					return Windows.Devices.Input.PointerDeviceType.Pen;
 				case "mouse":
 				default:
-					return PointerDeviceType.Mouse;
+					return Windows.Devices.Input.PointerDeviceType.Mouse;
 			}
 		}
 		//#endregion
