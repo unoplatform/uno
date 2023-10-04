@@ -30,6 +30,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
+    fetchDepth: 1
 
   - task: DownloadBuildArtifacts@0
     displayName: 'Download iOS Samples App'

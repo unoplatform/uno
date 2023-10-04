@@ -58,7 +58,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitest-binaries
+      ArtifactName: wasm-uitest-binaries-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
 
@@ -83,7 +83,7 @@ jobs:
 
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: wasm-uitest-binaries
+        artifactName: wasm-uitest-binaries-UWP
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - bash: |

@@ -166,6 +166,16 @@ jobs:
     UnoDisableNetCurrent: true
 
   steps:
+  # If we are going to download WinUI tree from artifacts, no need to clone the repo.
+  # Otherwise, do clone.
+  - checkout: none
+    condition: eq(variables['UNO_UWP_BUILD'], 'false')
+
+  - checkout: self
+    clean: true
+    fetchTags: false
+    fetchDepth: 1
+    condition: ne(variables['UNO_UWP_BUILD'], 'false')
 
   - template: templates/download-winui-converted-tree.yml
 
