@@ -652,6 +652,13 @@ namespace Uno.UWPSyncGenerator
 
 		protected PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
 		{
+			if (name.StartsWith("global::", StringComparison.Ordinal))
+			{
+				// Sometimes, "global::" gets into the symbol name for explicitly implemented interface members.
+				// Trying to get the non-generated member with "global::" will fail, so remove it.
+				name = name.Substring("global::".Length);
+			}
+
 			var android = GetNonGeneratedMembers(types.AndroidSymbol, name);
 			var ios = GetNonGeneratedMembers(types.IOSSymbol, name);
 			var tvos = GetNonGeneratedMembers(types.TvOSSymbol, name);
