@@ -5,6 +5,7 @@ using Android.OS;
 using Android.Views;
 using Java.Interop;
 using Uno.UI;
+using Uno.UI.Composition;
 
 namespace SamplesApp.Droid
 {
@@ -49,7 +50,7 @@ namespace SamplesApp.Droid
 		[Export("GetScreenshot")]
 		public string GetScreenshot(string displayId)
 		{
-			var rootView = Windows.UI.Xaml.Window.CurrentSafe.RootElement as View;
+			var rootView = ((ICompositionRoot)this).Content;
 
 			var bitmap = Android.Graphics.Bitmap.CreateBitmap(rootView.Width, rootView.Height, Android.Graphics.Bitmap.Config.Argb8888);
 			var locationOfViewInWindow = new int[2];
