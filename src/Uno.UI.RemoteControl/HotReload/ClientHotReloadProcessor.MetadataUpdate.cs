@@ -201,7 +201,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				// This is called before the visual tree is updated
 				_ = handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes)).ToArray();
 
-				var capturedStates = new Dictionary<string, IDictionary<string, object>>();
+				var capturedStates = new Dictionary<string, Dictionary<string, object>>();
 
 				var isCapturingState = true;
 				var treeIterator = EnumerateHotReloadInstances(
@@ -224,7 +224,7 @@ namespace Uno.UI.RemoteControl.HotReload
 							{
 								if (!capturedStates.TryGetValue(key, out var dict))
 								{
-									dict = new Dictionary<string, object>();
+									dict = new();
 								}
 								if (isCapturingState)
 								{
