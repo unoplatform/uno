@@ -4557,16 +4557,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(reference.IsAlive);
 		}
+	}
 
-		public partial class OnItemsChangedListView : ListView
+	public partial class OnItemsChangedListView : ListView
+	{
+		public Action ItemsChangedAction;
+
+		protected override void OnItemsChanged(object e)
 		{
-			public Action ItemsChangedAction;
-
-			protected override void OnItemsChanged(object e)
-			{
-				base.OnItemsChanged(e);
-				ItemsChangedAction?.Invoke();
-			}
+			base.OnItemsChanged(e);
+			ItemsChangedAction?.Invoke();
 		}
 	}
 }

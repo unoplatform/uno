@@ -25,27 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public partial class Given_StackPanel
 	{
-		private partial class MyStackPanel : StackPanel
-		{
-			public int MeasureCount { get; private set; }
-			public int ArrangeCount { get; private set; }
-
-			public Size LastMeasureOverrideReturn { get; private set; }
-			public Size LastArrangeOverrideReturn { get; private set; }
-
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				MeasureCount++;
-				return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
-			}
-
-			protected override Size ArrangeOverride(Size arrangeSize)
-			{
-				ArrangeCount++;
-				return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
-			}
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 #if __IOS__
@@ -405,6 +384,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
+		}
+	}
+
+	internal partial class MyStackPanel : StackPanel
+	{
+		public int MeasureCount { get; private set; }
+		public int ArrangeCount { get; private set; }
+
+		public Size LastMeasureOverrideReturn { get; private set; }
+		public Size LastArrangeOverrideReturn { get; private set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureCount++;
+			return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
+		}
+
+		protected override Size ArrangeOverride(Size arrangeSize)
+		{
+			ArrangeCount++;
+			return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
 		}
 	}
 }
