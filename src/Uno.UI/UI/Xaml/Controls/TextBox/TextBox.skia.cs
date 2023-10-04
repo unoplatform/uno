@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Xaml.Documents;
@@ -15,10 +16,14 @@ public partial class TextBox
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
+	private bool _resetSelectionOnChange = true;
 	private readonly DispatcherTimer _timer = new DispatcherTimer
 	{
 		Interval = TimeSpan.FromSeconds(0.5)
 	};
+
+	private MenuFlyout _contextMenu;
+	private readonly Dictionary<string, MenuFlyoutItem> _flyoutItems = new();
 
 	internal TextBoxView TextBoxView => _textBoxView;
 
@@ -88,7 +93,6 @@ public partial class TextBox
 			_showCaret = true;
 			_timer.Start();
 			UpdateDisplaySelection();
-			UpdateLayout();
 			UpdateScrolling();
 		}
 	}
@@ -109,10 +113,10 @@ public partial class TextBox
 
 	internal void UpdateDisplaySelection()
 	{
-		if (TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
 			inlines.Selection = (0, SelectionStart, 0, SelectionStart + SelectionLength);
-			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused;
+			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			var showCaret = _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
 			inlines.Caret = (!_selectionEndsAtTheStart, showCaret ? Colors.Black : Colors.Transparent);
 			TextBoxView?.DisplayBlock.InvalidateInlines(true);
@@ -291,13 +295,20 @@ public partial class TextBox
 				selectionStart = 0;
 				selectionLength = text.Length;
 				break;
+			case VirtualKey.V when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				args.Handled = true;
+				PasteFromClipboard();
+				break;
+			case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+				args.Handled = true;
+				CopySelectionToClipboard();
+				break;
 			default:
 				var key = (int)args.Key;
 				if (!IsReadOnly && key is >= 'A' and <= 'Z' || args.Key == VirtualKey.Space)
 				{
 					args.Handled = true;
 					var c = args.Key == VirtualKey.Space ? ' ' : shift ? (char)key : char.ToLower((char)key);
-
 
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
@@ -309,7 +320,9 @@ public partial class TextBox
 				break;
 		}
 
+		_resetSelectionOnChange = false;
 		Text = text;
+		_resetSelectionOnChange = true;
 
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
@@ -336,20 +349,84 @@ public partial class TextBox
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
 		base.OnPointerMoved(e);
-		var displayBlock = TextBoxView.DisplayBlock;
-		var point = e.GetCurrentPoint(displayBlock);
-		var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
-		if (point.Properties.IsLeftButtonPressed)
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 		{
-			var selectionInternalStart = _selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
-			SelectInternal(selectionInternalStart, index - selectionInternalStart);
+			var displayBlock = TextBoxView.DisplayBlock;
+			var point = e.GetCurrentPoint(displayBlock);
+			if (point.Properties.HasPressedButton && !point.Properties.IsRightButtonPressed)
+			{
+				var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+				var selectionInternalStart = _selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
+				SelectInternal(selectionInternalStart, index - selectionInternalStart);
+			}
+		}
+	}
+
+	protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+	{
+		base.OnRightTapped(e);
+		e.Handled = true;
+
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+		{
+			if (_contextMenu is null)
+			{
+				_contextMenu = new MenuFlyout();
+				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
+
+				_flyoutItems.Add("Cut", new MenuFlyoutItem { Text = "Cut", Command = new TextBoxCommand(CutSelectionToClipboard), Icon = new SymbolIcon(Symbol.Cut) });
+				_flyoutItems.Add("Copy", new MenuFlyoutItem { Text = "Copy", Command = new TextBoxCommand(CopySelectionToClipboard), Icon = new SymbolIcon(Symbol.Copy) });
+				_flyoutItems.Add("Paste", new MenuFlyoutItem { Text = "Paste", Command = new TextBoxCommand(PasteFromClipboard), Icon = new SymbolIcon(Symbol.Paste) });
+				// undo/redo
+				_flyoutItems.Add("Select All", new MenuFlyoutItem { Text = "Select All", Command = new TextBoxCommand(SelectAll), Icon = new SymbolIcon(Symbol.SelectAll) });
+			}
+
+			_contextMenu.Items.Clear();
+
+			if (_selection.length == 0)
+			{
+				_contextMenu.Items.Add(_flyoutItems["Paste"]);
+				// undo/redo
+				_contextMenu.Items.Add(_flyoutItems["Select All"]);
+			}
+			else
+			{
+				_contextMenu.Items.Add(_flyoutItems["Cut"]);
+				_contextMenu.Items.Add(_flyoutItems["Copy"]);
+				_contextMenu.Items.Add(_flyoutItems["Paste"]);
+				// undo/redo
+				_contextMenu.Items.Add(_flyoutItems["Select All"]);
+			}
+
+			_contextMenu.ShowAt(this, e.GetPosition(this));
 		}
 	}
 
 	partial void OnPointerPressedNative(PointerRoutedEventArgs e)
 	{
-		var displayBlock = TextBoxView.DisplayBlock;
-		var index = displayBlock.Inlines.GetIndexForTextBlock(e.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
-		Select(index, 0);
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && (!e.GetCurrentPoint(null).Properties.IsRightButtonPressed || SelectionLength == 0))
+		{
+			var displayBlock = TextBoxView.DisplayBlock;
+			var index = displayBlock.Inlines.GetIndexForTextBlock(e.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+			Select(index, 0);
+		}
+	}
+
+	private sealed class TextBoxCommand : ICommand
+	{
+		private readonly Action _action;
+
+		public TextBoxCommand(Action action)
+		{
+			_action = action;
+		}
+
+		public bool CanExecute(object parameter) => true;
+
+		public void Execute(object parameter) => _action();
+
+		public event EventHandler CanExecuteChanged;
+
+		private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 	}
 }

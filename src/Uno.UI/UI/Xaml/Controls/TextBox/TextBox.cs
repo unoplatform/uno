@@ -294,6 +294,17 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
+#if __SKIA__
+
+			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				if (_resetSelectionOnChange)
+				{
+					Select(((string)e.NewValue).Length, 0);
+				}
+			}
+#endif
+
 			if (!_isTextChangedPending)
 			{
 				_isTextChangedPending = true;
@@ -609,6 +620,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnAcceptsReturnChanged(bool newValue)
 		{
+#if __SKIA__
+			if (newValue && !FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().LogWarning("Multiline TextBox using the skia-based implementation is not supported.");
+				}
+			}
+#endif
+
 			if (!newValue)
 			{
 				var text = Text;
@@ -909,7 +930,10 @@ namespace Windows.UI.Xaml.Controls
 #if __SKIA__
 			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 			{
-				// this is needed so that we UpdateScrolling after the button appears.
+				// this is needed so that we UpdateScrolling after the button appears/disappears.
+				UpdateLayout();
+				// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
+				_contentElement?.InvalidateMeasure();
 				UpdateLayout();
 				UpdateScrolling();
 			}
@@ -1215,7 +1239,17 @@ namespace Windows.UI.Xaml.Controls
 
 				currentText = currentText.Insert(selectionStart, clipboardText);
 
+#if __SKIA__
+				_resetSelectionOnChange = false;
+#endif
 				Text = currentText;
+#if __SKIA__
+				_resetSelectionOnChange = true;
+				if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+				{
+					Select(selectionStart + clipboardText.Length, 0);
+				}
+#endif
 			});
 		}
 

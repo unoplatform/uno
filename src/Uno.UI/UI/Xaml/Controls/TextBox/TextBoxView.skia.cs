@@ -176,6 +176,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				DisplayBlock.Text = text;
 			}
+
+			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				TextBox?.ContentElement?.InvalidateMeasure();
+				TextBox?.UpdateLayout();
+			}
 		}
 	}
 }

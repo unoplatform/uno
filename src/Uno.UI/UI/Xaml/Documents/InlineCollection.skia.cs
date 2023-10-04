@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 			else
 			{
-				_lastDesiredSize = new Size(widestLineWidth + (RenderSelectionAndCaret && Caret is { } c && c.color != Colors.Transparent ? widestLineHeight * CaretThicknessAsRatioOfLineHeight : 0), height);
+				_lastDesiredSize = new Size(widestLineWidth, height);
 			}
 
 			return _lastDesiredSize;
@@ -312,7 +312,7 @@ namespace Windows.UI.Xaml.Documents
 		/// <summary>
 		/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
-		internal virtual void Draw(in DrawingSession session)
+		internal void Draw(in DrawingSession session)
 		{
 			if (_renderLines.Count == 0)
 			{
@@ -451,6 +451,7 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
+					// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 					{
 						if (RenderSelectionAndCaret && Selection is { } bg && bg.startLine <= lineIndex && lineIndex <= bg.endLine)
 						{
@@ -543,6 +544,7 @@ namespace Windows.UI.Xaml.Documents
 					using var textBlob = _textBlobBuilder.Build();
 					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
 
+					// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 					{
 						var spanStartingIndex = characterCountSoFar - currentCharacterCount;
 						if (RenderSelectionAndCaret && Caret is { } caret && Selection is { } selection)
@@ -587,6 +589,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
+		// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 		internal int GetIndexForTextBlock(Point p)
 		{
 			var line = GetRenderLineAt(p.Y, true)!;
@@ -634,6 +637,7 @@ namespace Windows.UI.Xaml.Documents
 			return characterCount;
 		}
 
+		// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 		internal Rect GetRectForTextBlockIndex(int index)
 		{
 			var characterCount = 0;
