@@ -18,16 +18,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_Control
 	{
-		private partial class CustomControl : Control
-		{
-			public Size AvailableSizePassedToMeasureOverride { get; private set; }
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				AvailableSizePassedToMeasureOverride = availableSize;
-				return new(2000, 2000);
-			}
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Limited_By_Available_Size_Before_Margin_Application()
@@ -217,6 +207,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// Padding shouldn't affect measure
 			Assert.AreEqual(0, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+	}
+
+	public partial class CustomControl : Control
+	{
+		public Size AvailableSizePassedToMeasureOverride { get; private set; }
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			AvailableSizePassedToMeasureOverride = availableSize;
+			return new(2000, 2000);
 		}
 	}
 }
