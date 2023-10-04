@@ -15,11 +15,6 @@ public partial class Compass
 
 	private uint _reportInterval;
 
-	private Compass()
-	{
-
-	}
-
 	/// <summary>
 	/// Gets or sets the current report interval for the compass.
 	/// </summary>
