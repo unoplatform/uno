@@ -136,16 +136,19 @@ jobs:
   strategy:
     matrix:
       net7_default:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120s'
 
       net7_benchmarks:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '120s'
 
       net7_uwp_runtimetests_group_00:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -153,6 +156,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_01:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -160,6 +164,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_02:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -167,6 +172,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_00:
+        XAML_FLAVOR_BUILD: 'WinUI'
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -174,6 +180,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_01:
+        XAML_FLAVOR_BUILD: 'WinUI'
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -181,6 +188,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_02:
+        XAML_FLAVOR_BUILD: 'WinUI'
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -205,7 +213,7 @@ jobs:
 
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: wasm-uitest-binaries
+        artifactName: wasm-uitest-binaries-$(XAML_FLAVOR_BUILD)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0
