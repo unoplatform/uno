@@ -77,10 +77,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\Windows\ApplicatonModel\DataTransfer\DataTransferManager.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <Folder Include="Microsoft\UI\Xaml\Controls\Repeater\" />
 	  <Folder Include="obj\Uno.UI.Wasm\Debug\" />
 	  <Folder Include="tsBindings\" />
