@@ -25,12 +25,11 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
+    fetchDepth: 1
 
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-
-  - template: templates/gitversion.yml
   
   - template: templates/dotnet-mobile-install-windows.yml
 
