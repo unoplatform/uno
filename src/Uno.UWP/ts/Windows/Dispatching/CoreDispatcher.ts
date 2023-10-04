@@ -9,8 +9,6 @@
 		static _isWaitingReady: boolean;
 
 		public static init(isReady : Promise<boolean>) {
-			MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
-			CoreDispatcher.initMethods();
 			CoreDispatcher._isReady = isReady;
 		}
 
@@ -27,6 +25,8 @@
 				if (!CoreDispatcher._isWaitingReady) {
 					CoreDispatcher._isReady
 						.then(() => {
+							CoreDispatcher.initMethods();
+
 							CoreDispatcher.InnerWakeUp();
 							CoreDispatcher._isReady = null;
 						});
@@ -54,11 +54,7 @@
 
 		private static initMethods() {
 			if (!CoreDispatcher._coreDispatcherCallback) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					CoreDispatcher._coreDispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.CoreDispatcher.DispatcherCallback;
-				} else {
-					CoreDispatcher._coreDispatcherCallback = (<any>Module).mono_bind_static_method("[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
-				}
+				CoreDispatcher._coreDispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.CoreDispatcher.DispatcherCallback;
 			}
 		}
 	}

@@ -72,7 +72,7 @@ namespace Uno.UI.Dispatching
 			{
 				if (!IsThreadingSupported || (IsThreadingSupported && GetHasThreadAccess()))
 				{
-					WebAssemblyRuntime.InvokeJSUnmarshalled("CoreDispatcher:WakeUp", IntPtr.Zero);
+					NativeWakeUp();
 				}
 				else
 				{
@@ -90,5 +90,8 @@ namespace Uno.UI.Dispatching
 				DispatchOverride(() => DispatchItems());
 			}
 		}
+
+		[JSImport("globalThis.Windows.UI.Core.CoreDispatcher.WakeUp")]
+		private static partial void NativeWakeUp();
 	}
 }
