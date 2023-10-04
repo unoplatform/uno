@@ -147,12 +147,22 @@ internal static class SymbolMatchingHelpers
 		var result = /*uapSymbol.DeclaredAccessibility == unoSymbol.DeclaredAccessibility &&*/
 			uapSymbol.IsAbstract == unoSymbol.IsAbstract &&
 			uapSymbol.IsOverride == unoSymbol.IsOverride &&
-			uapSymbol.Name == unoSymbol.Name &&
+			StripGlobal(uapSymbol.Name) == StripGlobal(unoSymbol.Name) &&
 			// Temporary skip named type: Until we match seal-ness and static-ness with UWP.
 			(uapSymbol.IsSealed == unoSymbol.IsSealed || uapSymbol.Kind == SymbolKind.NamedType) &&
 			(uapSymbol.IsStatic == unoSymbol.IsStatic) &&
 			uapSymbol.IsVirtual == unoSymbol.IsVirtual;
 		return result;
+	}
+
+	private static string StripGlobal(string s)
+	{
+		if (s.StartsWith("global::", StringComparison.Ordinal))
+		{
+			return s.Substring("global::".Length);
+		}
+
+		return s;
 	}
 
 	private static bool AreEventsMatching(IEventSymbol uapEvent, IEventSymbol unoEvent)
