@@ -55,6 +55,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	public virtual void Activate()
 	{
 		_wasActivated = true;
+		SetVisibleBoundsFromNative();
 		NativeWindowWrapper!.Show();
 		// TODO:MZ: Raise activation if needed!
 		//_lastActivationState = CoreWindowActivationState.CodeActivated;
@@ -103,8 +104,12 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		SizeChanged?.Invoke(this, windowSizeChanged);
 	}
 
-	private void OnNativeVisibleBoundsChanged(object? sender, Rect args) =>
-		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(args);
+	private void OnNativeVisibleBoundsChanged(object? sender, Rect args) => SetVisibleBoundsFromNative();
+
+	private void SetVisibleBoundsFromNative()
+	{
+		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper!.VisibleBounds);
+	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
 
