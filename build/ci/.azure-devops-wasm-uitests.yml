@@ -29,10 +29,10 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
+    fetchDepth: 1
 
   - template: templates/download-winui-converted-tree.yml
 
-  - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
   - template: templates/nuget-cache.yml
@@ -40,7 +40,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net7.binlog
 
     displayName: 'Build sample app (net7.0)'
 
@@ -80,6 +80,7 @@ jobs:
   - checkout: self
     clean: true
     fetchTags: false
+    fetchDepth: 1
 
   - template: templates/dotnet-install.yml
 
