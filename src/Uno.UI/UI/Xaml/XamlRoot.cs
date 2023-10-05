@@ -52,7 +52,7 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public Size Size => VisualTree.Size;
 
-	internal Rect Bounds => VisualTree.VisibleBounds;
+	internal Rect Bounds => new Rect(default, Size);
 
 	internal Compositor Compositor => Compositor.GetSharedCompositor();
 
