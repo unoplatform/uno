@@ -114,4 +114,7 @@ public partial class Slider
 
 	private bool _disengagedWithA;
 
+	// This flag is used for the Thumb ToolTip of ColorPickerSlider
+	protected bool _isCustomThumbToolTipEnabled;
+
 }

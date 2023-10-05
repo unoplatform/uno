@@ -41,6 +41,7 @@ public partial class Slider
 		_usingDefaultToolTipForHorizontalThumb = false;
 		_usingDefaultToolTipForVerticalThumb = false;
 		_capturedPointerId = 0;
+		_isCustomThumbToolTipEnabled = false;
 
 		// TODO Uno specific: This is called by DirectUI automatically,
 		// we have to do it manually here.
@@ -1073,6 +1074,7 @@ public partial class Slider
 		actualHeight = Math.Max(actualHeight - padding.Top - padding.Bottom, 0.0);
 
 		isThumbToolTipEnabled = IsThumbToolTipEnabled;
+		isThumbToolTipEnabled |= _isCustomThumbToolTipEnabled;
 #if HAS_UNO
 		isThumbToolTipEnabled &= FeatureConfiguration.ToolTip.UseToolTips;
 #endif

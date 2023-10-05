@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 	{
 		private ToolTip m_toolTip;
 
-		public ColorPickerSlider()
+		public ColorPickerSlider() : base()
 		{
 			// We want the ColorPickerSlider to pick up everything for its default style from the Slider's default style,
 			// since its purpose is just to turn off keyboarding.  So we'll give it Slider's control name as its default style key
@@ -42,6 +42,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			if (m_toolTip is ToolTip toolTip)
 			{
+				_isCustomThumbToolTipEnabled = true;
 				toolTip.Content = GetToolTipString();
 			}
 		}
@@ -172,11 +173,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (m_toolTip is ToolTip toolTip)
 			{
 				toolTip.Content = GetToolTipString();
-
-				// ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves,
-				// so toggling IsEnabled induces it to do that without incurring any visual glitches.
-				toolTip.IsEnabled = false;
-				toolTip.IsEnabled = true;
+				if (Thumb.IsDragging)
+					UpdateThumbToolTipVisibility(true);
 			}
 
 			DependencyObject currentObject = this;
