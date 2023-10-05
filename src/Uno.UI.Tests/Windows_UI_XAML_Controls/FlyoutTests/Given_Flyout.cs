@@ -154,7 +154,7 @@ namespace Uno.UI.Tests.FlyoutTests
 		[TestMethod]
 		public void When_Placement_Full()
 		{
-			var SUT = new Grid() { Name = "test" };
+			var app = UnitTestsApp.App.EnsureApplication();
 
 			var flyout = new Flyout()
 			{
@@ -173,6 +173,8 @@ namespace Uno.UI.Tests.FlyoutTests
 			{
 				Flyout = flyout
 			};
+
+			button.ForceLoaded();
 
 			//button.Click;
 			button.Focus(FocusState.Programmatic);
@@ -196,7 +198,7 @@ namespace Uno.UI.Tests.FlyoutTests
 		[TestMethod]
 		public void When_Placement_Full_Max_Dims()
 		{
-			var SUT = new Grid() { Name = "test" };
+			var app = UnitTestsApp.App.EnsureApplication();
 
 			var flyout = new Flyout()
 			{
@@ -215,6 +217,8 @@ namespace Uno.UI.Tests.FlyoutTests
 			{
 				Flyout = flyout
 			};
+
+			button.ForceLoaded();
 
 			//button.Click;
 			button.Focus(FocusState.Programmatic);

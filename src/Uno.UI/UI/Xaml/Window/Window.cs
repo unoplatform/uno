@@ -194,6 +194,9 @@ public partial class Window
 
 	internal static Window? IShouldntUseCurrentWindow => CurrentSafe;
 
+	/// <summary>
+	/// Use this only as a temporary measure on single-window targets.
+	/// </summary>
 	internal static Window? InitialWindow { get; private set; }
 
 #if !HAS_UNO_WINUI

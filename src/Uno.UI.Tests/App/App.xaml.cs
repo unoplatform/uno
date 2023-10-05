@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -30,6 +31,8 @@ namespace UnitTestsApp
 	/// </summary>
 	sealed partial class App : Application
 	{
+		private Window _mainWindow;
+
 		public Grid HostView { get; private set; }
 
 		public App()
@@ -48,13 +51,16 @@ namespace UnitTestsApp
 			{
 				HostView = new Grid() { Name = "HostView" };
 
-				Window.Current.Content = HostView;
+				EnsureMainWindow();
 
-				Window.Current.Activate();
+				_mainWindow.Content = HostView;
+				_mainWindow.Activate();
 			}
 
 			OnLaunchedPartial();
 		}
+
+		internal Window MainWindow => _mainWindow;
 
 		partial void OnLaunchedPartial();
 
@@ -86,6 +92,19 @@ namespace UnitTestsApp
 #endif
 
 			return app;
+		}
+
+		[MemberNotNull(nameof(_mainWindow))]
+		private void EnsureMainWindow()
+		{
+			_mainWindow ??=
+#if HAS_UNO_WINUI || WINUI_WINDOWING
+				new Windows.UI.Xaml.Window();
+#elif HAS_UNO
+				Windows.UI.Xaml.Window.CurrentSafe!;
+#else
+				Window.Current;
+#endif
 		}
 	}
 }
