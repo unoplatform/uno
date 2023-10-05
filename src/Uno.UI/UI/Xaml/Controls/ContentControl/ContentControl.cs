@@ -11,7 +11,6 @@ using Windows.UI.Xaml.Media.Animation;
 using System.Collections;
 using System.Linq;
 using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno;
 
@@ -62,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		public ContentControl()
 		{
 			DefaultStyleKey = typeof(ContentControl);
+
 			InitializePartial();
 		}
 
@@ -314,20 +314,6 @@ namespace Windows.UI.Xaml.Controls
 			if (IsContentPresenterBypassEnabled)
 			{
 				SetUpdateTemplate();
-			}
-		}
-
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			if (args.Handled)
-			{
-				base.OnPointerPressed(args);
-				return;
-			}
-
-			if (args.GetCurrentPoint(this).Properties.IsLeftButtonPressed)
-			{
-				args.Handled = Focus(FocusState.Pointer);
 			}
 		}
 

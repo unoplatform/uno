@@ -3,7 +3,6 @@ using System;
 using Windows.Foundation;
 using Uno.UI;
 using Windows.System;
-using Windows.UI.Xaml.Input;
 #if __ANDROID__
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
@@ -270,47 +269,6 @@ namespace Windows.UI.Xaml.Controls
 				// and is the one that decides when to mark as handled. However, this alternative is visually
 				// close (even though not identical)
 				e.Handled = success;
-			}
-		}
-
-		private void KeyDownScroll(object sender, KeyRoutedEventArgs e)
-		{
-			var key = e.Key;
-			if (key != VirtualKey.Up && key != VirtualKey.Down && key != VirtualKey.Left && key != VirtualKey.Right)
-			{
-				return;
-			}
-
-			if (Content is UIElement)
-			{
-				var canScrollHorizontally = CanHorizontallyScroll;
-				var canScrollVertically = CanVerticallyScroll;
-				var delta = key is VirtualKey.Down or VirtualKey.Right ? -24 : 24;
-
-				if (canScrollHorizontally && (!canScrollVertically || key == VirtualKey.Left || key == VirtualKey.Right))
-				{
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
-					var horizontalOffset = _pendingScrollTo?.horizontal ?? HorizontalOffset;
-#else
-					var horizontalOffset = HorizontalOffset;
-#endif
-
-					Set(
-						horizontalOffset: horizontalOffset + delta,
-						disableAnimation: false);
-				}
-				else if (canScrollVertically && key is VirtualKey.Up or VirtualKey.Down)
-				{
-#if __WASM__ // On wasm the scroll might be async (especially with disableAnimation: false), so we need to use the pending value to support high speed multiple wheel events
-					var verticalOffset = _pendingScrollTo?.vertical ?? VerticalOffset;
-#else
-					var verticalOffset = VerticalOffset;
-#endif
-
-					Set(
-						verticalOffset: verticalOffset - delta,
-						disableAnimation: false);
-				}
 			}
 		}
 

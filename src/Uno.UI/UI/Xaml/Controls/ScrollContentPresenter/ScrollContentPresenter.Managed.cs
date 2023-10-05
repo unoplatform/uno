@@ -72,7 +72,6 @@ namespace Windows.UI.Xaml.Controls
 
 			// Mouse wheel support
 			PointerWheelChanged += PointerWheelScroll;
-			KeyDown += KeyDownScroll;
 
 			// Touch scroll support
 			ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY; // Updated in PrepareTouchScroll!

@@ -1587,6 +1587,86 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
+		protected override void OnPointerReleased(PointerRoutedEventArgs args)
+		{
+			if (args.GetCurrentPoint(null).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
+			{
+				args.Handled = Focus(FocusState.Pointer);
+			}
+		}
+
+		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		{
+			var key = args.Key;
+			var newOffset = key switch
+			{
+				VirtualKey.Up => VerticalOffset - GetDelta(ActualHeight),
+				VirtualKey.Down => VerticalOffset + GetDelta(ActualHeight),
+				VirtualKey.Left => HorizontalOffset - GetDelta(ActualWidth),
+				VirtualKey.Right => HorizontalOffset + GetDelta(ActualWidth),
+				VirtualKey.PageUp => VerticalOffset - ActualHeight,
+				VirtualKey.PageDown => VerticalOffset + ActualHeight,
+				VirtualKey.Home => 0,
+				VirtualKey.End => int.MaxValue,
+				_ => -1
+			};
+
+			if (newOffset == -1)
+			{
+				return;
+			}
+
+			args.Handled = key switch
+			{
+				VirtualKey.Up => newOffset != VerticalOffset,
+				VirtualKey.Down => newOffset != VerticalOffset,
+				VirtualKey.Left => newOffset != HorizontalOffset,
+				VirtualKey.Right => newOffset != HorizontalOffset,
+				VirtualKey.PageUp => true,
+				VirtualKey.PageDown => true,
+				VirtualKey.Home => newOffset != VerticalOffset,
+				VirtualKey.End => newOffset != VerticalOffset,
+				_ => false
+			};
+
+
+			if (Content is UIElement)
+			{
+				var canScrollHorizontally = Presenter?.CanHorizontallyScroll ?? false;
+				var canScrollVertically = Presenter?.CanHorizontallyScroll ?? false;
+
+				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
+				{
+					Presenter?.Set(horizontalOffset: newOffset, disableAnimation: false);
+				}
+				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
+				{
+
+					Presenter?.Set(verticalOffset: newOffset, disableAnimation: false);
+				}
+			}
+
+			int GetDelta(double l)
+			{
+				var length = (int)Math.Max(0, Math.Round(l) - 16);
+				var result = 2 + length / 20 * 3;
+
+				switch (length % 20)
+				{
+					case 0:
+						break;
+					case <= 7:
+						result += 1;
+						break;
+					case > 7:
+						result += 2;
+						break;
+				}
+
+				return result;
+			}
+		}
+
 #if __CROSSRUNTIME__ || __MACOS__
 		private static bool _warnedAboutZoomedContentAlignment;
 
