@@ -14,6 +14,7 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("Uno.UI.Svg")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.Skia.Gtk")]
 [assembly: InternalsVisibleTo("Uno.UI.MediaPlayer.WebAssembly")]
+[assembly: InternalsVisibleTo("Uno.UI.XamlHost")]
 
 [assembly: InternalsVisibleTo("SamplesApp")]
 [assembly: InternalsVisibleTo("SamplesApp.Droid")]

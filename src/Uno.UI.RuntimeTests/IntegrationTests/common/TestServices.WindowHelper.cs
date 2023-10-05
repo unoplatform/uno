@@ -25,25 +25,13 @@ namespace Private.Infrastructure
 	{
 		public static class WindowHelper
 		{
-			private static Microsoft.UI.Xaml.Window _currentTestWindow;
 			private static UIElement _originalWindowContent;
 
 			public static XamlRoot XamlRoot { get; set; }
 
 			public static bool IsXamlIsland { get; set; }
 
-			public static Windows.UI.Xaml.Window CurrentTestWindow
-			{
-				get
-				{
-					if (_currentTestWindow is null)
-					{
-						throw new InvalidOperationException("Current test window not set.");
-					}
-					return _currentTestWindow;
-				}
-				set => _currentTestWindow = value;
-			}
+			public static Windows.UI.Xaml.Window CurrentTestWindow { get; set; }
 
 			public static bool UseActualWindowRoot { get; set; }
 

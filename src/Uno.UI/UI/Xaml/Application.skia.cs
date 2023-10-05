@@ -97,7 +97,10 @@ namespace Microsoft.UI.Xaml
 
 				InitializationCompleted();
 
-				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				if (CoreApplication.IsFullFledgedApp)
+				{
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
+				}
 			}
 		}
 

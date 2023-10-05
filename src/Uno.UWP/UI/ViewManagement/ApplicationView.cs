@@ -15,6 +15,7 @@ using Windows.Storage;
 using Windows.UI.WindowManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.UI.ViewManagement
 {
@@ -91,7 +92,16 @@ namespace Windows.UI.ViewManagement
 
 		public global::Windows.UI.ViewManagement.ApplicationViewTitleBar TitleBar => _titleBar;
 
-		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView() => GetForWindowId(AppWindow.MainWindowId);
+		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentView()
+		{
+			if (!CoreApplication.IsFullFledgedApp)
+			{
+				// This is specifically needed to provide a stub for Uno Islands.
+				return new ApplicationView();
+			}
+
+			return GetForWindowId(AppWindow.MainWindowId);
+		}
 
 #pragma warning disable RS0030 // Do not use banned APIs
 		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentViewSafe() => GetForCurrentView();
