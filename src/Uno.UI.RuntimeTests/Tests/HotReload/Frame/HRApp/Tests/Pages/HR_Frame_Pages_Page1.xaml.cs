@@ -14,4 +14,9 @@ public sealed partial class HR_Frame_Pages_Page1 : Page
 	{
 		this.Frame.Navigate(typeof(HR_Frame_Pages_Page2));
 	}
+
+	public void SetTextBoxText(string text)
+	{
+		this.InputTextBox.Text = text;
+	}
 }

@@ -5,7 +5,6 @@
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d">
-
 	<StackPanel>
 		<TextBlock Text="First page"
 				   x:Name="FirstPageTextBlock" />
@@ -13,6 +12,7 @@
 		<local:HR_Frame_Pages_UC1 />
 		<Button Content="Page 2"
 				Click="Page2Click" />
+		<TextBox x:Name="InputTextBox" />
 	</StackPanel>
 </Page>
 

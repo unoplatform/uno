@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -15,9 +13,6 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using System.Threading;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
@@ -206,31 +201,58 @@ namespace Uno.UI.RemoteControl.HotReload
 				// This is called before the visual tree is updated
 				_ = handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes)).ToArray();
 
+				var capturedStates = new Dictionary<string, Dictionary<string, object>>();
+
+				var isCapturingState = true;
+				var treeIterator = EnumerateHotReloadInstances(
+						Window.Current.Content,
+						(fe, key) =>
+						{
+							// Get the original type of the element, in case it's been replaced
+							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+							// Get the handler for the type specified
+							var handler = (from h in handlerActions
+										   where originalType == h.Key ||
+												originalType.IsSubclassOf(h.Key)
+										   select h.Value).FirstOrDefault();
+
+							// Get the replacement type, or null if not replaced
+							var mappedType = originalType.GetMappedType();
+
+							if (handler is not null)
+							{
+								if (!capturedStates.TryGetValue(key, out var dict))
+								{
+									dict = new();
+								}
+								if (isCapturingState)
+								{
+									handler.CaptureState(fe, dict, updatedTypes);
+									if (dict.Any())
+									{
+										capturedStates[key] = dict;
+									}
+								}
+								else
+								{
+									handler.RestoreState(fe, dict, updatedTypes);
+								}
+							}
+
+							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+						},
+						enumerateChildrenAfterMatch: true,
+						parentKey: default);
+
+				// Forced iteration to capture all state before doing ui update
+				var instancesToUpdate = treeIterator.ToArray();
+
+
 				// Iterate through the visual tree and either invole ElementUpdate, 
 				// or replace the element with a new one
-				foreach (
-					var (element, elementHandler, elementMappedType) in
-					EnumerateHotReloadInstances(
-						Window.Current.Content,
-						fe =>
-							{
-								// Get the original type of the element, in case it's been replaced
-								var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
-
-								// Get the handler for the type specified
-								var handler = (from h in handlerActions
-											   where originalType == h.Key ||
-													originalType.IsSubclassOf(h.Key)
-											   select h.Value).FirstOrDefault();
-
-								// Get the replacement type, or null if not replaced
-								var mappedType = originalType.GetMappedType();
-
-								return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
-							},
-						enumerateChildrenAfterMatch: true))
+				foreach (var (element, elementHandler, elementMappedType) in instancesToUpdate)
 				{
-
 					// Action: ElementUpdate
 					// This is invoked for each existing element that is in the tree that needs to be replaced
 					elementHandler?.ElementUpdate(element, updatedTypes);
@@ -241,6 +263,10 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 
+				isCapturingState = false;
+				// Forced iteration again to restore all state after doing ui update
+				_ = treeIterator.ToArray();
+
 				// Action: AfterVisualTreeUpdate
 				_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
 			}
@@ -248,7 +274,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (_log.IsEnabled(LogLevel.Error))
 				{
-					_log.Error($"ReloadWithUpdatedTypes error", ex);
+					_log.Error($"Error doing UI Update - {ex.Message}", ex);
 				}
 				throw;
 			}

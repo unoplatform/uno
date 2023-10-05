@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.Storage.Pickers.Provider;
@@ -36,12 +38,17 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private static IEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
 			object instance,
-			Func<FrameworkElement, TMatch?> predicate,
-			bool enumerateChildrenAfterMatch = false)
+			Func<FrameworkElement, string, TMatch?> predicate,
+			bool enumerateChildrenAfterMatch,
+			string? parentKey)
 		{
+
 			if (instance is FrameworkElement fe)
 			{
-				var match = predicate(fe);
+				// TODO: Review as this may be too simplicitic for all scenarios
+				var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
+				var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
+				var match = predicate(fe, instanceKey);
 				if (match is not null)
 				{
 					yield return match;
@@ -58,26 +65,27 @@ namespace Uno.UI.RemoteControl.HotReload
 					switch (instance)
 					{
 						case Panel panel:
-							foreach (var child in panel.Children)
+							for (var i = 0; i < panel.Children.Count; i++)
 							{
-								yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch);
+								var child = panel.Children[i];
+								yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch, $"{instanceKey}_[{i}]");
 							}
 							break;
 
 						case Border border:
-							yield return EnumerateHotReloadInstances(border.Child, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateHotReloadInstances(border.Child, predicate, enumerateChildrenAfterMatch, instanceKey);
 							break;
 
 						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
-							yield return EnumerateHotReloadInstances(control.ContentTemplateRoot ?? control.Content, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateHotReloadInstances(control.ContentTemplateRoot ?? control.Content, predicate, enumerateChildrenAfterMatch, instanceKey);
 							break;
 
 						case Control control:
-							yield return EnumerateHotReloadInstances(control.TemplatedRoot, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateHotReloadInstances(control.TemplatedRoot, predicate, enumerateChildrenAfterMatch, instanceKey);
 							break;
 
 						case ContentPresenter presenter:
-							yield return EnumerateHotReloadInstances(presenter.Content, predicate, enumerateChildrenAfterMatch);
+							yield return EnumerateHotReloadInstances(presenter.Content, predicate, enumerateChildrenAfterMatch, instanceKey);
 							break;
 					}
 				}
