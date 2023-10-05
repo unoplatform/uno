@@ -46,10 +46,6 @@ namespace Windows.UI.Input
 			public bool HasExceedMinHoldPressure { get; private set; }
 
 			internal GestureSettings Settings { get; private set; }
-			{
-				get;
-				private set;
-			}
 
 			public Gesture(GestureRecognizer recognizer, PointerPoint down)
 			{
