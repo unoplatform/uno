@@ -420,6 +420,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.SelectedText = "1234";
 
 			Assert.AreEqual("1234ABCDEFGHIJKLMNOPQRSTUVWXYZ", textBox.Text);
+#if __SKIA__
+			FocusManager.TryMoveFocus(FocusNavigationDirection.Next); // move focus to dismiss the overlay
+#endif
 		}
 
 		[TestMethod]
