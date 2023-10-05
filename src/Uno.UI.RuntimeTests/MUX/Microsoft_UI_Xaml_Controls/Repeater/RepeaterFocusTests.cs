@@ -40,6 +40,9 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 	[TestClass]
 	[RequiresFullWindow]
 	[Uno.UI.RuntimeTests.RunsOnUIThread]
+#if WINUI_WINDOWING
+	[Ignore("The test relies on static FocusManager methods which do not work in WinUI3")]
+#endif
 	public class RepeaterFocusTests : MUXApiTestBase
 	{
 #if __MACOS__
