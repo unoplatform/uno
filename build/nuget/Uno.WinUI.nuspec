@@ -286,7 +286,7 @@
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
-uno.
+
 		<!-- net8.0-ios -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-ios\Uno.dll" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-ios\Uno.pdb" target="lib\net8.0-ios" />
