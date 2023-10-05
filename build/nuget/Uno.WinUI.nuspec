@@ -263,7 +263,7 @@
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 				<reference file="Uno.UI.FluentTheme.v1.dll" />
-				<reference file="Uno.UI.FluentTheme.v2.dll" />
+				<reference file="Uno.UI.FluentTheme.v2.dll" />Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile
 			</group>
 			<!-- Windows -->
 			<group targetFramework="uap10.0.19041">
@@ -286,14 +286,14 @@
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pdb" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit*.pri" target="lib\$winuitargetpath$" />
 		<file src="..\..\src\Uno.UI.Toolkit\bin\Uno.UI.Toolkit.Windows\Release\$winuisourcepath$\Uno.UI.Toolkit\**" target="lib\$winuitargetpath$\Uno.UI.Toolkit" />
-
+uno.
 		<!-- net8.0-ios -->
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-ios\Uno.dll" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-ios\Uno.pdb" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios\Uno.Foundation.dll" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios\Uno.Foundation.pdb" target="lib\net8.0-ios" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios\Uno.Foundation.Logging.dll" target="lib\net8.0-ios" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-ios\Uno.Foundation.Logging.pdb" target="lib\net8.0-ios" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-ios\Uno.Foundation.Logging.dll" target="lib\net8.0-ios" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-ios\Uno.Foundation.Logging.pdb" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios\Uno.UI.dll" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-ios\Uno.UI.pdb" target="lib\net8.0-ios" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-ios\Uno.UI.Composition.dll" target="lib\net8.0-ios" />
@@ -317,8 +317,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-maccatalyst\Uno.pdb" target="lib\net8.0-maccatalyst" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst\Uno.Foundation.dll" target="lib\net8.0-maccatalyst" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst\Uno.Foundation.pdb" target="lib\net8.0-maccatalyst" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net8.0-maccatalyst" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net8.0-maccatalyst" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net8.0-maccatalyst" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.dll" target="lib\net8.0-maccatalyst" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.pdb" target="lib\net8.0-maccatalyst" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-maccatalyst\Uno.UI.Composition.dll" target="lib\net8.0-maccatalyst" />
@@ -342,8 +342,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-macos\Uno.pdb" target="lib\net8.0-macos" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-macos\Uno.Foundation.dll" target="lib\net8.0-macos" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-macos\Uno.Foundation.pdb" target="lib\net8.0-macos" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-macos\Uno.Foundation.Logging.dll" target="lib\net8.0-macos" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-macos\Uno.Foundation.Logging.pdb" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-macos\Uno.Foundation.Logging.dll" target="lib\net8.0-macos" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-macos\Uno.Foundation.Logging.pdb" target="lib\net8.0-macos" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos\Uno.UI.dll" target="lib\net8.0-macos" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-macos\Uno.UI.pdb" target="lib\net8.0-macos" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-macos\Uno.UI.Composition.dll" target="lib\net8.0-macos" />
@@ -367,8 +367,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net8.0-android\Uno.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-android\Uno.Foundation.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net8.0-android\Uno.Foundation.pdb" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-android\Uno.Foundation.Logging.dll" target="lib\net8.0-android30.0" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net8.0-android\Uno.Foundation.Logging.pdb" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-android\Uno.Foundation.Logging.dll" target="lib\net8.0-android30.0" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net8.0-android\Uno.Foundation.Logging.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.dll" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net8.0-android\Uno.UI.pdb" target="lib\net8.0-android30.0" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net8.0-android\Uno.UI.Composition.dll" target="lib\net8.0-android30.0" />
@@ -395,8 +395,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net7.0-ios\Uno.pdb" target="lib\net7.0-ios" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-ios\Uno.Foundation.dll" target="lib\net7.0-ios" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-ios\Uno.Foundation.pdb" target="lib\net7.0-ios" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-ios\Uno.Foundation.Logging.dll" target="lib\net7.0-ios" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-ios\Uno.Foundation.Logging.pdb" target="lib\net7.0-ios" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-ios\Uno.Foundation.Logging.dll" target="lib\net7.0-ios" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-ios\Uno.Foundation.Logging.pdb" target="lib\net7.0-ios" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.dll" target="lib\net7.0-ios" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-ios\Uno.UI.pdb" target="lib\net7.0-ios" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net7.0-ios\Uno.UI.Composition.dll" target="lib\net7.0-ios" />
@@ -420,8 +420,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net7.0-maccatalyst\Uno.pdb" target="lib\net7.0-maccatalyst" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.dll" target="lib\net7.0-maccatalyst" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.pdb" target="lib\net7.0-maccatalyst" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net7.0-maccatalyst" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.Logging.dll" target="lib\net7.0-maccatalyst" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-maccatalyst\Uno.Foundation.Logging.pdb" target="lib\net7.0-maccatalyst" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.dll" target="lib\net7.0-maccatalyst" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.pdb" target="lib\net7.0-maccatalyst" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net7.0-maccatalyst\Uno.UI.Composition.dll" target="lib\net7.0-maccatalyst" />
@@ -445,8 +445,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net7.0-macos\Uno.pdb" target="lib\net7.0-macos" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-macos\Uno.Foundation.dll" target="lib\net7.0-macos" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-macos\Uno.Foundation.pdb" target="lib\net7.0-macos" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-macos\Uno.Foundation.Logging.dll" target="lib\net7.0-macos" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-macos\Uno.Foundation.Logging.pdb" target="lib\net7.0-macos" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-macos\Uno.Foundation.Logging.dll" target="lib\net7.0-macos" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-macos\Uno.Foundation.Logging.pdb" target="lib\net7.0-macos" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.dll" target="lib\net7.0-macos" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-macos\Uno.UI.pdb" target="lib\net7.0-macos" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net7.0-macos\Uno.UI.Composition.dll" target="lib\net7.0-macos" />
@@ -470,8 +470,8 @@
 		<file src="..\..\src\Uno.UWP\Bin\Uno.netcoremobile\Release\net7.0-android\Uno.pdb" target="lib\net7.0-android30.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-android\Uno.Foundation.dll" target="lib\net7.0-android30.0" />
 		<file src="..\..\src\Uno.Foundation\Bin\Uno.Foundation.netcoremobile\Release\net7.0-android\Uno.Foundation.pdb" target="lib\net7.0-android30.0" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-android\Uno.Foundation.Logging.dll" target="lib\net7.0-android30.0" />
-		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.netcoremobile\Release\net7.0-android\Uno.Foundation.Logging.pdb" target="lib\net7.0-android30.0" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-android\Uno.Foundation.Logging.dll" target="lib\net7.0-android30.0" />
+		<file src="..\..\src\Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile\Release\net7.0-android\Uno.Foundation.Logging.pdb" target="lib\net7.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.dll" target="lib\net7.0-android30.0" />
 		<file src="..\..\src\Uno.UI\Bin\Uno.UI.netcoremobile\Release\net7.0-android\Uno.UI.pdb" target="lib\net7.0-android30.0" />
 		<file src="..\..\src\Uno.UI.Composition\Bin\Uno.UI.Composition.netcoremobile\Release\net7.0-android\Uno.UI.Composition.dll" target="lib\net7.0-android30.0" />
