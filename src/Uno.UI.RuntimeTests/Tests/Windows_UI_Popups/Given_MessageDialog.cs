@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 		[TestMethod]
 		[RunsOnUIThread]
-		public void Should_Not_Close_Open_ContentDialogs()
+		public async Task Should_Not_Close_Open_ContentDialogs()
 		{
 			if (WindowHelper.IsXamlIsland)
 			{
@@ -64,12 +64,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 				Title = "Title",
 				Content = "My Dialog Content"
 			};
+			contentDialog.XamlRoot = WindowHelper.XamlRoot;
 
 			_ = contentDialog.ShowAsync();
 
+            await WindowHelper.WaitFor(() => GetNonMessageDialogPopupsCount() > 0);
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 
 			var messageDialog = new MessageDialog("Hello");
+#if WINUI_WINDOWING
+			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
+			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 			var asyncOperation = messageDialog.ShowAsync();
 			Assert.AreEqual(1, GetNonMessageDialogPopupsCount());
 			contentDialog.Hide();
@@ -82,11 +88,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 		{
 			if (WindowHelper.IsXamlIsland)
 			{
-				// MessageDialog is not supported in Uno Islands.
+				// MessageDialog is not supported in Uno Islands and desktop windows.
 				return;
 			}
 
 			var messageDialog = new MessageDialog("When_Cancel_Then_CloseDialog");
+#if WINUI_WINDOWING
+			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
+			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
+#endif
 			var asyncOperation = messageDialog.ShowAsync();
 
 			Assert.AreEqual(AsyncStatus.Started, asyncOperation.Status);
