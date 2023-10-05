@@ -22,6 +22,11 @@ internal class MessageDialogExtension : IMessageDialogExtension
 	public async Task<IUICommand> ShowAsync(CancellationToken ct)
 	{
 		var contentDialog = new MessageDialogContentDialog(_messageDialog);
+		if (_messageDialog.AssociatedWindow is Windows.UI.Xaml.Window window &&
+			window.RootElement?.XamlRoot is { } xamlRoot)
+		{
+			contentDialog.XamlRoot = xamlRoot;
+		}
 		return await contentDialog.ShowAsync(ct);
 	}
 }
