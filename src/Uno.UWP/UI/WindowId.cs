@@ -1,16 +1,11 @@
+#if !HAS_UNO_WINUI
 using System;
 using System.Diagnostics;
-using System.Linq.Expressions;
 
-namespace Microsoft.UI;
+namespace Windows.UI;
 
 [DebuggerDisplay("{Value}")]
-#if HAS_UNO_WINUI
-public
-#else
-internal
-#endif
-partial struct WindowId : IEquatable<WindowId>
+public partial struct WindowId : IEquatable<WindowId>
 {
 	public ulong Value;
 
@@ -32,3 +27,4 @@ partial struct WindowId : IEquatable<WindowId>
 	public override int GetHashCode()
 		=> Value.GetHashCode();
 }
+#endif
