@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
+using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
@@ -62,31 +63,11 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				IEnumerable<IEnumerable<TMatch>> Dig()
 				{
-					switch (instance)
+					var idx = 0;
+					foreach (var child in fe.EnumerateChildren())
 					{
-						case Panel panel:
-							for (var i = 0; i < panel.Children.Count; i++)
-							{
-								var child = panel.Children[i];
-								yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch, $"{instanceKey}_[{i}]");
-							}
-							break;
-
-						case Border border:
-							yield return EnumerateHotReloadInstances(border.Child, predicate, enumerateChildrenAfterMatch, instanceKey);
-							break;
-
-						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null:
-							yield return EnumerateHotReloadInstances(control.ContentTemplateRoot ?? control.Content, predicate, enumerateChildrenAfterMatch, instanceKey);
-							break;
-
-						case Control control:
-							yield return EnumerateHotReloadInstances(control.TemplatedRoot, predicate, enumerateChildrenAfterMatch, instanceKey);
-							break;
-
-						case ContentPresenter presenter:
-							yield return EnumerateHotReloadInstances(presenter.Content, predicate, enumerateChildrenAfterMatch, instanceKey);
-							break;
+						yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch, $"{instanceKey}_[{idx}]");
+						idx++;
 					}
 				}
 
