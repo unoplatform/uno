@@ -68,8 +68,6 @@ internal partial class ContentManager
 		_content = newContent;
 	}
 
-	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual);
-
 	internal static void TryLoadRootVisual(XamlRoot xamlRoot)
 	{
 		if (!xamlRoot.IsHostVisible)

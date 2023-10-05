@@ -4,7 +4,20 @@ using System;
 using AppKit;
 using CoreGraphics;
 using Uno.UI.Xaml.Core;
+using Windows.UI.Xaml;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
+using System;
+using System.Drawing;
+using System.Linq;
+using System.Runtime.InteropServices;
+using Foundation;
+using Uno.UI;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Windows.Foundation.Metadata;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Xaml.Controls;
 
@@ -12,15 +25,6 @@ partial class ContentManager
 {
 	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
 	{
-		if (WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot is { } contentRoot)
-		{
-			contentRoot.SetHost(this); // Enables input manager
-		}
-		else
-		{
-			throw new InvalidOperationException("The content root was not initialized.");
-		}
-
 		NativeWindowWrapper.Instance.MainController.View = rootElement;
 		rootElement.Frame = NativeWindowWrapper.Instance.NativeWindow.Frame;
 		rootElement.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
@@ -34,5 +38,14 @@ partial class ContentManager
 		var trackingArea = new NSTrackingArea(new CGRect(0, 0, windowSize.Width, windowSize.Height), options, rootElement, null);
 
 		rootElement.AddTrackingArea(trackingArea);
+	}
+
+	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement)
+	{
+		if (xamlRoot.HostWindow is null)
+		{
+			throw new InvalidOperationException("Host window must be set on macOS currently");
+		}
+		xamlRoot.VisualTree.ContentRoot.SetHost(xamlRoot.HostWindow);
 	}
 }
