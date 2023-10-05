@@ -22,10 +22,13 @@ namespace UITests.Windows_UI_Composition
 	[Sample("Windows.UI.Composition", Name = "CompositionEffectBrush", Description = "Paints a SpriteVisual with the output of a filter effect. The filter effect description is defined using the CompositionEffectFactory class.", IsManualTest = true)]
 	public sealed partial class EffectBrushTests : UserControl
 	{
+		private static CompositionSurfaceBrush _unoBrush;
+
 		public EffectBrushTests()
 		{
 			this.InitializeComponent();
 			this.Loaded += EffectBrushTests_Loaded;
+			this.Unloaded += EffectBrushTests_Unloaded;
 		}
 
 		private void EffectBrushTests_Loaded(object sender, RoutedEventArgs e)
@@ -79,7 +82,7 @@ namespace UITests.Windows_UI_Composition
 
 			blendGrid.Background = new EffectTesterBrushWithSecondaryBrush(effectBrush7, compositor.CreateColorBrush(Colors.LightBlue));
 
-			var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://user-images.githubusercontent.com/34550324/266135095-71c9ce0a-4e49-408f-b2ff-670a53adef10.png"));
+			var surface = LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/WinUI.png"));
 			surface.LoadCompleted += (s, o) =>
 			{
 				if (o.Status == LoadedImageSourceLoadStatus.Success)
@@ -118,7 +121,7 @@ namespace UITests.Windows_UI_Composition
 
 			exposureGrid.Background = new EffectTesterBrush(effectBrush12);
 
-			var surface2 = LoadedImageSurface.StartLoadFromUri(new Uri("https://user-images.githubusercontent.com/34550324/266135095-71c9ce0a-4e49-408f-b2ff-670a53adef10.png"));
+			var surface2 = LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/WinUI.png"));
 			surface2.LoadCompleted += (s, o) =>
 			{
 				if (o.Status == LoadedImageSourceLoadStatus.Success)
@@ -205,7 +208,7 @@ namespace UITests.Windows_UI_Composition
 
 			matrixGrid.Background = new EffectTesterBrush(effectBrush21);
 
-			var surface3 = LoadedImageSurface.StartLoadFromUri(new Uri("https://user-images.githubusercontent.com/34550324/268126129-1bb2c5e7-24a4-41dc-bcdf-59f533c0d173.png"));
+			var surface3 = LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/LightMap.png"));
 			surface3.LoadCompleted += (s, o) =>
 			{
 				if (o.Status == LoadedImageSourceLoadStatus.Success)
@@ -290,6 +293,12 @@ namespace UITests.Windows_UI_Composition
 #endif
 		}
 
+		private void EffectBrushTests_Unloaded(object sender, RoutedEventArgs e)
+		{
+			_unoBrush?.Dispose();
+			_unoBrush = null;
+		}
+
 		private class EffectTesterBrush : XamlCompositionBrushBase
 		{
 			private CompositionEffectBrush _effectBrush;
@@ -304,17 +313,34 @@ namespace UITests.Windows_UI_Composition
 			protected override void OnConnected()
 			{
 				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
-				var surface = LoadedImageSurface.StartLoadFromUri(new Uri($"https://avatars.githubusercontent.com/u/52228309?s={_imgSize}&v=4"));
-				surface.LoadCompleted += (s, o) =>
-				{
-					if (o.Status == LoadedImageSourceLoadStatus.Success)
-					{
-						var brush = compositor.CreateSurfaceBrush(surface);
 
-						_effectBrush.SetSourceParameter("sourceBrush", brush);
-						CompositionBrush = _effectBrush;
-					}
-				};
+				if (_unoBrush is null || _imgSize != 200)
+				{
+					var surface = LoadedImageSurface.StartLoadFromUri(new Uri($"ms-appx:///Assets/Uno{_imgSize}x{_imgSize}.png"));
+					surface.LoadCompleted += (s, o) =>
+					{
+						if (o.Status == LoadedImageSourceLoadStatus.Success)
+						{
+							CompositionSurfaceBrush brush;
+							if (_imgSize != 200)
+							{
+								brush = compositor.CreateSurfaceBrush(surface);
+							}
+							else
+							{
+								_unoBrush = brush = compositor.CreateSurfaceBrush(surface);
+							}
+
+							_effectBrush.SetSourceParameter("sourceBrush", brush);
+							CompositionBrush = _effectBrush;
+						}
+					};
+				}
+				else
+				{
+					_effectBrush.SetSourceParameter("sourceBrush", _unoBrush);
+					CompositionBrush = _effectBrush;
+				}
 			}
 		}
 
@@ -332,18 +358,28 @@ namespace UITests.Windows_UI_Composition
 			protected override void OnConnected()
 			{
 				var compositor = Windows.UI.Xaml.Window.Current.Compositor;
-				var surface = LoadedImageSurface.StartLoadFromUri(new Uri("https://avatars.githubusercontent.com/u/52228309?s=200&v=4"));
-				surface.LoadCompleted += (s, o) =>
-				{
-					if (o.Status == LoadedImageSourceLoadStatus.Success)
-					{
-						var brush = compositor.CreateSurfaceBrush(surface);
 
-						_effectBrush.SetSourceParameter("sourceBrush", brush);
-						_effectBrush.SetSourceParameter("secondaryBrush", _secondaryBrush);
-						CompositionBrush = _effectBrush;
-					}
-				};
+				if (_unoBrush is null)
+				{
+					var surface = LoadedImageSurface.StartLoadFromUri(new Uri("ms-appx:///Assets/Uno200x200.png"));
+					surface.LoadCompleted += (s, o) =>
+					{
+						if (o.Status == LoadedImageSourceLoadStatus.Success)
+						{
+							_unoBrush = compositor.CreateSurfaceBrush(surface);
+
+							_effectBrush.SetSourceParameter("sourceBrush", _unoBrush);
+							_effectBrush.SetSourceParameter("secondaryBrush", _secondaryBrush);
+							CompositionBrush = _effectBrush;
+						}
+					};
+				}
+				else
+				{
+					_effectBrush.SetSourceParameter("sourceBrush", _unoBrush);
+					_effectBrush.SetSourceParameter("secondaryBrush", _secondaryBrush);
+					CompositionBrush = _effectBrush;
+				}
 			}
 		}
 

@@ -8,12 +8,11 @@ using System.Threading.Tasks;
 using Windows.Graphics.Effects;
 using Windows.Graphics.Effects.Interop;
 
-namespace Microsoft.Graphics.Canvas.Effects
-{
-	public interface ICanvasEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop, IDisposable
-	{
-		public CanvasBufferPrecision? BufferPrecision { get; set; }
+namespace Microsoft.Graphics.Canvas.Effects;
 
-		public bool CacheOutput { get; set; }
-	}
+public interface ICanvasEffect : IGraphicsEffect, IGraphicsEffectSource, IGraphicsEffectD2D1Interop, IDisposable
+{
+	public CanvasBufferPrecision? BufferPrecision { get; set; }
+
+	public bool CacheOutput { get; set; }
 }

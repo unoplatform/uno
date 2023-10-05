@@ -1,9 +1,8 @@
-﻿namespace Microsoft.Graphics.Canvas
+﻿namespace Microsoft.Graphics.Canvas;
+
+public enum CanvasAlphaMode
 {
-	public enum CanvasAlphaMode
-	{
-		Premultiplied = 0,
-		Straight = 1,
-		Ignore = 2
-	}
+	Premultiplied = 0,
+	Straight = 1,
+	Ignore = 2
 }

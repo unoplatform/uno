@@ -1,9 +1,8 @@
 ﻿#nullable enable
 
-namespace Windows.UI.Composition
+namespace Windows.UI.Composition;
+
+public partial class CompositionBackdropBrush : CompositionBrush
 {
-	public partial class CompositionBackdropBrush : CompositionBrush
-	{
-		internal CompositionBackdropBrush(Compositor compositor) : base(compositor) { }
-	}
+	internal CompositionBackdropBrush(Compositor compositor) : base(compositor) { }
 }

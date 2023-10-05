@@ -1247,6 +1247,11 @@ namespace SampleControl.Presentation
 #if __WASM__
 			throw new NotSupportedException($"GenerateBitmap is not supported by this platform");
 #else
+
+#if __SKIA__
+			bool? previousCompMode = Window.Current.Compositor.IsSoftwareRenderer;
+			Window.Current.Compositor.IsSoftwareRenderer = true;
+#endif
 			var element = content?.Parent is FrameworkElement parent
 				? parent
 				: (FrameworkElement)content ?? throw new Exception("Invalid element");
@@ -1314,6 +1319,11 @@ namespace SampleControl.Presentation
 					(oldMinWidth, oldMinHeight, oldWidth, oldHeight);
 				await Task.Yield();
 			}
+
+#if __SKIA__
+			Window.Current.Compositor.IsSoftwareRenderer = previousCompMode;
+#endif
+
 #endif
 		}
 

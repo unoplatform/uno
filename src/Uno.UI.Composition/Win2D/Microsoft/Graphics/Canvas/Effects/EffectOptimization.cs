@@ -1,9 +1,8 @@
-﻿namespace Microsoft.Graphics.Canvas.Effects
+﻿namespace Microsoft.Graphics.Canvas.Effects;
+
+public enum EffectOptimization
 {
-	public enum EffectOptimization
-	{
-		Speed = 0,
-		Balanced = 1,
-		Quality = 2
-	}
+	Speed = 0,
+	Balanced = 1,
+	Quality = 2
 }

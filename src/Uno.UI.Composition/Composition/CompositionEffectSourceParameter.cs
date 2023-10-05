@@ -2,14 +2,13 @@
 
 using Windows.Graphics.Effects;
 
-namespace Windows.UI.Composition
+namespace Windows.UI.Composition;
+
+public partial class CompositionEffectSourceParameter : IGraphicsEffectSource
 {
-	public partial class CompositionEffectSourceParameter : IGraphicsEffectSource
-	{
-		private string _name;
+	private string _name;
 
-		public CompositionEffectSourceParameter(string name) => _name = name;
+	public CompositionEffectSourceParameter(string name) => _name = name;
 
-		public string Name => _name;
-	}
+	public string Name => _name;
 }

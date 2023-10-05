@@ -40,13 +40,17 @@ _There are a few known issues associated with the used of the compositor thread,
 On Skia targets (GTK and WPF), anti-aliasing is disabled by default for brushes, you can request it to be anti-aliased by setting this in your application's constructor:
 
 ```csharp
-Uno.CompositionConfiguration.Configuration |= Uno.CompositionConfiguration.Options.UseBrushAntialiasing;
+#if HAS_UNO
+    Uno.CompositionConfiguration.Configuration |= Uno.CompositionConfiguration.Options.UseBrushAntialiasing;
+#endif
 ```
 
 Or alternatively this, if you want to enable all available Composition capabilities:
 
 ```csharp
-Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Options.Enabled;
+#if HAS_UNO
+    Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Options.Enabled;
+#endif
 ```
 
 ## Implemented APIs [GTK/WPF]
@@ -134,3 +138,5 @@ Uno.CompositionConfiguration.Configuration = Uno.CompositionConfiguration.Option
 ## Known issues
 
 * When using the compositor thread, the native ripple effect of Android (used in native buttons) does not work.
+
+* [GTK/WPF] Some Composition effects don't render properly (or at all) on software rendering (CPU), to check if Uno is running on the software rendering (CPU) or the hardware rendering (GPU), you can call `CompositionCapabilities.GetForCurrentView().AreEffectsFast()`.

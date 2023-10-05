@@ -23,7 +23,7 @@
 			<Ellipse Fill="Magenta" Height="150" Width="150" HorizontalAlignment="Center" VerticalAlignment="Center"/>
 			<Rectangle Fill="Yellow" Height="100" Width="80" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
 		</Grid>
-		<Border x:Name="CustomAcrylicShapeInApp" Margin="12" CornerRadius="12">
+		<Border x:Name="CustomAcrylicShapeInApp" Margin="12">
 			<Border.Background>
 				<AcrylicBrush x:Name="acrylicBrush" BackgroundSource="Backdrop" TintOpacity="0.5" TintColor="Red" FallbackColor="Green" />
 			</Border.Background>

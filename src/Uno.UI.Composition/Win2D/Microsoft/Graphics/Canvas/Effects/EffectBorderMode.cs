@@ -1,8 +1,7 @@
-﻿namespace Microsoft.Graphics.Canvas.Effects
+﻿namespace Microsoft.Graphics.Canvas.Effects;
+
+public enum EffectBorderMode
 {
-	public enum EffectBorderMode
-	{
-		Soft = 0,
-		Hard = 1
-	}
+	Soft = 0,
+	Hard = 1
 }
