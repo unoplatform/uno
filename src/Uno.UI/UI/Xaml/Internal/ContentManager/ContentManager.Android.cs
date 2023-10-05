@@ -13,8 +13,8 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
 	{
-		ApplicationActivity.Instance?.SetContentView(_rootVisual);
+		ApplicationActivity.Instance?.SetContentView(rootElement);
 	}
 }

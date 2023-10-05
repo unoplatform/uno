@@ -8,13 +8,13 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
 	{
-		WindowManagerInterop.SetRootElement(rootVisual.HtmlId);
-		UpdateRootAttributes(rootVisual);
+		WindowManagerInterop.SetRootElement(rootElement.HtmlId);
+		UpdateRootAttributes(rootElement);
 	}
 
-	private void UpdateRootAttributes(UIElement rootElement)
+	private static void UpdateRootAttributes(UIElement rootElement)
 	{
 		if (rootElement is null)
 		{

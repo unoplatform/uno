@@ -58,7 +58,11 @@ internal partial class ContentManager
 				throw new InvalidOperationException("The root visual was not created.");
 			}
 
-			SetupCoreWindowRootVisualPlatform(_rootVisual);
+			if (_owner is not Windows.UI.Xaml.Window window)
+			{
+				throw new InvalidOperationException("Owner of ContentManager should be a Window");
+			}
+			AttachToWindow(_rootVisual, window);
 		}
 
 		_content = newContent;
@@ -92,4 +96,8 @@ internal partial class ContentManager
 	}
 
 	static partial void LoadRootElementPlatform(XamlRoot xamlRoot, UIElement rootElement);
+
+	internal static void AttachToWindow(UIElement rootElement, Windows.UI.Xaml.Window window) => AttachToWindowPlatform(rootElement, window);
+
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window);
 }
