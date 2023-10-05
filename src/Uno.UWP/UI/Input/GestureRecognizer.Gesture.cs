@@ -45,7 +45,7 @@ namespace Windows.UI.Input
 
 			public bool HasExceedMinHoldPressure { get; private set; }
 
-			internal GestureSettings Settings
+			internal GestureSettings Settings { get; private set; }
 			{
 				get;
 				private set;
@@ -54,8 +54,7 @@ namespace Windows.UI.Input
 			public Gesture(GestureRecognizer recognizer, PointerPoint down)
 			{
 				_recognizer = recognizer;
-				Settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
-				Settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
+				Settings = GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
