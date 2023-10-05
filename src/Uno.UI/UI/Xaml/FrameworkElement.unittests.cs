@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
-using View = Windows.UI.Xaml.UIElement;
-using System.Collections;
 using Uno.UI;
+using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
+using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
@@ -98,6 +98,11 @@ namespace Windows.UI.Xaml
 
 		private void EnterTree()
 		{
+			if (XamlRoot is null)
+			{
+				XamlRoot = Window.InitialWindow?.RootElement?.XamlRoot;
+			}
+
 			if (IsLoaded)
 			{
 				OnLoading();
