@@ -9,15 +9,10 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class ContentManager
 {
-	partial void SetupCoreWindowRootVisualPlatform(RootVisual rootVisual)
+	static partial void AttachToWindowPlatform(UIElement rootElement, Windows.UI.Xaml.Window window)
 	{
-		if (_owner is not Window window)
-		{
-			throw new InvalidOperationException("The owner of the ContentManager should be a Window.");
-		}
-
-		NativeWindowWrapper.Instance.MainController.View!.AddSubview(rootVisual);
-		rootVisual.Frame = NativeWindowWrapper.Instance.MainController.View.Bounds;
-		rootVisual.AutoresizingMask = UIViewAutoresizing.All;
+		NativeWindowWrapper.Instance.MainController.View!.AddSubview(rootElement);
+		rootElement.Frame = NativeWindowWrapper.Instance.MainController.View.Bounds;
+		rootElement.AutoresizingMask = UIViewAutoresizing.All;
 	}
 }
