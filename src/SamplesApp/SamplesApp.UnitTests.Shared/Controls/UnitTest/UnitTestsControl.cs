@@ -275,12 +275,12 @@ namespace Uno.UI.Samples.Tests
 				RunningStateForUITest = runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
 #if HAS_UNO_WINUI || WINUI_WINDOWING
-				_applicationView.Title = message;
-#else
 				if (Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow is Windows.UI.Xaml.Window window)
 				{
 					window.Title = message;
 				}
+#else
+				_applicationView.Title = message;
 #endif
 			}
 

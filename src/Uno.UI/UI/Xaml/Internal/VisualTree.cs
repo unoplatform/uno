@@ -779,6 +779,13 @@ namespace Uno.UI.Xaml.Core
 			{
 				if (RootElement is XamlIsland xamlIsland)
 				{
+					// If the size is set explicitly, prefer this, as ActualSize property values may be
+					// a frame behind.
+					if (!double.IsNaN(xamlIsland.Width) && !double.IsNaN(xamlIsland.Height))
+					{
+						return new(xamlIsland.Width, xamlIsland.Height);
+					}
+
 					var actualSize = xamlIsland.ActualSize;
 					return new Size(actualSize.X, actualSize.Y);
 				}
