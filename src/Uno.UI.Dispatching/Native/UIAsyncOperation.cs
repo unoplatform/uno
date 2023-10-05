@@ -1,13 +1,11 @@
-﻿using Uno.Diagnostics.Eventing;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.Foundation;
-using System.Runtime.CompilerServices;
+
+using Uno.Diagnostics.Eventing;
 using Uno.Threading;
-using Uno;
+using Windows.Foundation;
 
 namespace Uno.UI.Dispatching
 {
@@ -22,7 +20,7 @@ namespace Uno.UI.Dispatching
 		/// </summary>
 		/// <param name="action">A handler</param>
 		/// <param name="scheduleActivity">An ID that defines the activity being scheduled, used for tracing.</param>
-		internal UIAsyncOperation(DispatchedHandler action, EventActivity scheduleActivity)
+		internal UIAsyncOperation(Action action, EventActivity scheduleActivity = null)
 		{
 			Action = action;
 			ScheduleEventActivity = scheduleActivity;
@@ -46,7 +44,7 @@ namespace Uno.UI.Dispatching
 			return CompletionSource.Task;
 		}
 
-		public DispatchedHandler Action { get; }
+		public Action Action { get; }
 
 		public bool IsCancelled { get; private set; }
 
@@ -161,8 +159,5 @@ namespace Uno.UI.Dispatching
 
 		void IAsyncInfo.Close()
 			=> Cancel();
-
-		internal string GetDiagnosticsName()
-			=> Action.Method.DeclaringType.FullName + "." + Action.Method.Name;
 	}
 }

@@ -206,7 +206,7 @@ namespace Private.Infrastructure
 				{
 					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
 #if __WASM__
-					if (!Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported)
+					if (!Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported)
 					{
 						raiseSynchronously = true;
 					}

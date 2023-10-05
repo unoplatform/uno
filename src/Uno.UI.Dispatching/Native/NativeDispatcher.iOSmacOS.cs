@@ -1,12 +1,8 @@
 ﻿using Foundation;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Uno.UI.Dispatching
 {
-	internal sealed partial class CoreDispatcher
+	internal sealed partial class NativeDispatcher
 	{
 		private CoreFoundation.DispatchQueue _mainQueue = CoreFoundation.DispatchQueue.MainQueue;
 

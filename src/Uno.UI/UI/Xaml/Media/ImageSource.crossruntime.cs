@@ -121,8 +121,7 @@ namespace Windows.UI.Xaml.Media
 				{
 					_opening.Disposable = null;
 
-					_opening.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+					_opening.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
 						ct => _ = Open(ct, targetWidth, targetHeight));
 				}
 			}

@@ -65,6 +65,6 @@ class FrameworkTemplatePoolDefaultPlatformProvider : IFrameworkTemplatePoolPlatf
 	public Task Delay(TimeSpan duration)
 		=> Task.Delay(duration);
 
-	public void Schedule(IdleDispatchedHandler action)
-		=> _ = CoreDispatcher.Main.RunIdleAsync(action);
+	public void Schedule(Action action)
+		=> NativeDispatcher.Main.Enqueue(action, NativeDispatcherPriority.Idle);
 }

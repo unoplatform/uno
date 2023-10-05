@@ -11,7 +11,7 @@ namespace MUXControlsTestApp.Utilities
 		public static void Wait()
 		{
 #if __WASM__
-			if (!Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported)
+			if (!Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported)
 			{
 				return;
 			}
