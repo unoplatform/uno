@@ -49,21 +49,13 @@ public partial class Window
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
+#if !__SKIA__ // Currently only Skia supports proper multiwindowing, use CoreWindow-based window elsewhere even for WinUI tree
+		windowType = WindowType.CoreWindow;
+#endif
+
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
-#if !__SKIA__
-		if (windowType != WindowType.CoreWindow)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning(
-					"Creating a secondary Window instance is currently not supported in Uno Platform targets. " +
-					"Use the Window.Current property instead (you can use #if HAS_UNO to differentiate " +
-					"between Uno Platform targets and Windows App SDK).");
-			}
-		}
-#endif
 		if (windowType is WindowType.CoreWindow)
 		{
 			WinUICoreServices.Instance.InitCoreWindowContentRoot();
