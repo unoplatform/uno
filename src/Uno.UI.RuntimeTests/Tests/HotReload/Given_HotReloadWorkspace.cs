@@ -229,19 +229,14 @@ internal partial class Given_HotReloadWorkspace
 
 	private static void StartServer(int port)
 	{
-		if (_process?.HasExited ?? true)
+		if (_process is null or {HasExited: true})
 		{
 			var version = GetDotnetMajorVersion();
 			var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
 
-			var basePath = Path.GetDirectoryName(Application.Current.GetType().Assembly.Location)!;
-
 			// Use the debug configuration so that remote control
 			// gets properly enabled.
 			var toolsPath = Path.Combine(GetRCHostAppPath(), "Debug");
-
-			var sb = new StringBuilder();
-
 			var hostBinPath = Path.Combine(toolsPath, runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
 
 			if (!File.Exists(hostBinPath))
@@ -250,7 +245,7 @@ internal partial class Given_HotReloadWorkspace
 				throw new InvalidOperationException($"Unable to find {hostBinPath}");
 			}
 
-			string arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {Process.GetCurrentProcess().Id} --metadata-updates true";
+			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {Process.GetCurrentProcess().Id} --metadata-updates true";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,
