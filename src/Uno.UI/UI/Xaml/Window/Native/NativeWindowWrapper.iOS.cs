@@ -59,7 +59,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		var newWindowSize = GetWindowSize();
 
 		Bounds = new Rect(default, newWindowSize);
-		VisibleBounds = new Rect(default, newWindowSize);
+
+		SetVisibleBounds(_nativeWindow, newWindowSize);
 	}
 
 	private void ObserveOrientationAndSize()
@@ -95,4 +96,33 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		return new Size(nativeFrame.Width, nativeFrame.Height);
 	}
+
+	private void SetVisibleBounds(UIKit.UIWindow keyWindow, Windows.Foundation.Size windowSize)
+	{
+		var windowBounds = new Windows.Foundation.Rect(default, windowSize);
+
+		var inset = UseSafeAreaInsets
+				? keyWindow.SafeAreaInsets
+				: UIEdgeInsets.Zero;
+
+		// Not respecting its own documentation. https://developer.apple.com/documentation/uikit/uiview/2891103-safeareainsets?language=objc
+		// iOS returns all zeros for SafeAreaInsets on non-iPhones and iOS11. (ignoring nav bars or status bars)
+		// So we need to update the top inset depending of the status bar visibility on other devices
+		var statusBarHeight = UIApplication.SharedApplication.StatusBarHidden
+				? 0
+				: UIApplication.SharedApplication.StatusBarFrame.Size.Height;
+
+		inset.Top = (nfloat)Math.Max(inset.Top, statusBarHeight);
+
+		var newVisibleBounds = new Windows.Foundation.Rect(
+			x: windowBounds.Left + inset.Left,
+			y: windowBounds.Top + inset.Top,
+			width: windowBounds.Width - inset.Right - inset.Left,
+			height: windowBounds.Height - inset.Top - inset.Bottom
+		);
+
+		VisibleBounds = newVisibleBounds;
+	}
+
+	private static bool UseSafeAreaInsets => UIDevice.CurrentDevice.CheckSystemVersion(11, 0);
 }
