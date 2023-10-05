@@ -1,12 +1,13 @@
 ﻿#nullable enable
-#if HAS_UNO_WINUI
+
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
-namespace Microsoft.UI.Xaml;
+namespace Windows.UI.Xaml;
 
 public sealed partial class Window
 {
+#if HAS_UNO_WINUI
 	public Window() : this(Uno.UI.Xaml.WindowType.DesktopXamlSource)
 	{
 	}
@@ -19,12 +20,18 @@ public sealed partial class Window
 		add => _windowImplementation.Closed += value;
 		remove => _windowImplementation.Closed -= value;
 	}
+#endif
 
 #if !__IOS__ // This can be added when iOS uses SceneDelegate #8341.
 	/// <summary>
 	/// Gets or sets a string used for the window title.
 	/// </summary>
-	public string Title
+#if HAS_UNO_WINUI
+	public
+#else
+	internal
+#endif
+	string Title
 	{
 		get => ApplicationView.GetForWindowId(AppWindow.Id).Title;
 		set => ApplicationView.GetForWindowId(AppWindow.Id).Title = value;
@@ -38,4 +45,3 @@ public sealed partial class Window
 	public event TypedEventHandler<object, WindowEventArgs>? Closed;
 #pragma warning restore CS0067
 }
-#endif

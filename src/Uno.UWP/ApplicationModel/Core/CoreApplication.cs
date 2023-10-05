@@ -97,4 +97,6 @@ public static partial class CoreApplication
 	/// native UI elements in non Uno.UWP to resolve the currently set Application theme.
 	/// </summary>
 	internal static SystemTheme RequestedTheme { get; set; }
+
+	internal static bool IsFullFledgedApp { get; set; } = true;
 }
