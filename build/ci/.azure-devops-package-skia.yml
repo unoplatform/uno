@@ -30,7 +30,6 @@ jobs:
   steps:
   - checkout: self
     clean: true
-    fetchTags: false
 
   - template: templates/linux-install-zip.yml
   - template: templates/download-winui-converted-tree.yml
