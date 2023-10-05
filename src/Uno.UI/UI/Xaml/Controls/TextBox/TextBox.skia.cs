@@ -17,6 +17,8 @@ public partial class TextBox
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
 	private bool _resetSelectionOnChange = true;
+	private bool _wasJustDoubleTapped;
+	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
 	private readonly DispatcherTimer _timer = new DispatcherTimer
 	{
 		Interval = TimeSpan.FromSeconds(0.5)
@@ -159,6 +161,7 @@ public partial class TextBox
 
 		var text = Text;
 		var shift = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Shift);
+		var ctrl = args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control);
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
@@ -194,17 +197,27 @@ public partial class TextBox
 
 					if (shift)
 					{
-						selectionLength -= 1;
-					}
-					else
-					{
-						if (selectionLength != 0)
+						var end = selectionStart + selectionLength;
+						if (ctrl)
 						{
-							selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
+							end = FindChunkAt(end, false).start;
 						}
 						else
 						{
-							selectionStart -= 1;
+							end--;
+						}
+
+						selectionLength = end - selectionStart;
+					}
+					else
+					{
+						if (selectionLength == 0)
+						{
+							selectionStart = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+						}
+						else
+						{
+							selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
 						}
 						selectionLength = 0;
 					}
@@ -218,24 +231,43 @@ public partial class TextBox
 
 					if (shift)
 					{
-						selectionLength += 1;
-					}
-					else
-					{
-						if (selectionLength != 0)
+						var end = selectionStart + selectionLength;
+						if (ctrl)
 						{
-							selectionStart = Math.Max(selectionStart, selectionStart + selectionLength);
+							var chunk = FindChunkAt(end, true);
+							end = chunk.start + chunk.length;
 						}
 						else
 						{
-							selectionStart += 1;
+							end++;
+						}
+
+						selectionLength = end - selectionStart;
+					}
+					else
+					{
+						if (selectionLength == 0)
+						{
+							if (ctrl)
+							{
+								var chunk = FindChunkAt(selectionStart, true);
+								selectionStart = chunk.start + chunk.length;
+							}
+							else
+							{
+								selectionStart += 1;
+							}
+						}
+						else
+						{
+							selectionStart = Math.Max(selectionStart, selectionStart + selectionLength);
 						}
 						selectionLength = 0;
 					}
 				}
 				break;
 			case VirtualKey.Home:
-				args.Handled = true;
+				args.Handled = selectionLength != 0 || selectionStart > 0;
 				if (shift)
 				{
 					selectionLength = -selectionStart;
@@ -247,7 +279,7 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.End:
-				args.Handled = true;
+				args.Handled = selectionLength != 0 || selectionStart < text.Length;
 				if (shift)
 				{
 					selectionLength = text.Length - selectionStart;
@@ -259,7 +291,6 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Back when !IsReadOnly:
-				args.Handled = true;
 				if (selectionLength != 0)
 				{
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
@@ -270,8 +301,9 @@ public partial class TextBox
 				}
 				else if (selectionStart != 0)
 				{
-					text = text[..(selectionStart - 1)] + text[selectionStart..];
-					selectionStart -= 1;
+					var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+					text = text[..index] + text[selectionStart..];
+					selectionStart = index;
 				}
 				break;
 			case VirtualKey.Delete when !IsReadOnly:
@@ -286,30 +318,35 @@ public partial class TextBox
 				}
 				else if (selectionStart != text.Length)
 				{
-					text = text[..selectionStart] + text[(selectionStart + 1)..];
-					selectionStart += 1;
+					int index;
+					if (ctrl)
+					{
+						var chunk = FindChunkAt(selectionStart, true);
+						index = chunk.start + chunk.length;
+					}
+					else
+					{
+						index = selectionStart + 1;
+					}
+					text = text[..selectionStart] + text[index..];
 				}
 				break;
-			case VirtualKey.A when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+			case VirtualKey.A when ctrl:
 				args.Handled = true;
 				selectionStart = 0;
 				selectionLength = text.Length;
 				break;
-			case VirtualKey.V when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+			case VirtualKey.V when ctrl:
 				args.Handled = true;
 				PasteFromClipboard();
 				break;
-			case VirtualKey.C when args.KeyboardModifiers.HasFlag(VirtualKeyModifiers.Control):
+			case VirtualKey.C when ctrl:
 				args.Handled = true;
 				CopySelectionToClipboard();
 				break;
 			default:
-				var key = (int)args.Key;
-				if (!IsReadOnly && key is >= 'A' and <= 'Z' || args.Key == VirtualKey.Space)
+				if (!IsReadOnly && args.UnicodeKey is { } c)
 				{
-					args.Handled = true;
-					var c = args.Key == VirtualKey.Space ? ' ' : shift ? (char)key : char.ToLower((char)key);
-
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
 
@@ -349,6 +386,7 @@ public partial class TextBox
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
 		base.OnPointerMoved(e);
+		_wasJustDoubleTapped = false;
 		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
@@ -402,13 +440,91 @@ public partial class TextBox
 		}
 	}
 
+	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+	{
+		base.OnDoubleTapped(e);
+		e.Handled = true;
+
+		_wasJustDoubleTapped = true;
+	}
+
 	partial void OnPointerPressedNative(PointerRoutedEventArgs e)
 	{
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && (!e.GetCurrentPoint(null).Properties.IsRightButtonPressed || SelectionLength == 0))
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && !_wasJustDoubleTapped && (!e.GetCurrentPoint(null).Properties.IsRightButtonPressed || SelectionLength == 0))
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var index = displayBlock.Inlines.GetIndexForTextBlock(e.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
 			Select(index, 0);
+		}
+	}
+
+	private (int start, int length) FindChunkAt(int index, bool right)
+	{
+		if (Text.GetHashCode() != _cachedChunks.hashCode)
+		{
+			GenerateChunks();
+		}
+
+		var i = 0;
+		foreach (var chunk in _cachedChunks.chunks)
+		{
+			if (chunk.start < index && chunk.start + chunk.length > index || chunk.start == index && right || chunk.start + chunk.length == index && !right)
+			{
+				return chunk;
+			}
+
+			i += chunk.length;
+		}
+
+		return (i, 0);
+	}
+
+	private void GenerateChunks()
+	{
+		var text = Text;
+
+		_cachedChunks.hashCode = text.GetHashCode();
+		var chunks = _cachedChunks.chunks;
+
+		chunks.Clear();
+
+		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible whitespace
+		var length = text.Length;
+		for (var i = 0; i < length;)
+		{
+			var start = i;
+			var c = text[i];
+			if (char.IsWhiteSpace(c))
+			{
+				while (i < length && char.IsWhiteSpace(text[i]))
+				{
+					i++;
+				}
+			}
+			else if (char.IsLetterOrDigit(text[i]))
+			{
+				while (i < length && char.IsLetterOrDigit(text[i]))
+				{
+					i++;
+				}
+				while (i < length && char.IsWhiteSpace(text[i]))
+				{
+					i++;
+				}
+			}
+			else
+			{
+				while (i < length && !char.IsLetterOrDigit(text[i]) && !char.IsWhiteSpace(text[i]))
+				{
+					i++;
+				}
+				while (i < length && char.IsWhiteSpace(text[i]))
+				{
+					i++;
+				}
+			}
+
+			chunks.Add((start, i - start));
 		}
 	}
 

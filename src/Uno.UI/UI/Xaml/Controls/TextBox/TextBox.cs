@@ -295,12 +295,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateButtonStates();
 
 #if __SKIA__
-
 			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 			{
 				if (_resetSelectionOnChange)
 				{
-					Select(((string)e.NewValue).Length, 0);
+					Select(0, 0);
 				}
 			}
 #endif
@@ -1005,6 +1004,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+
+#if __SKIA__
+			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && _wasJustDoubleTapped)
+			{
+				var displayBlock = TextBoxView.DisplayBlock;
+				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+				var chunk = FindChunkAt(index, true);
+				Select(chunk.start, chunk.length);
+			}
+
+			_wasJustDoubleTapped = false;
+#endif
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)
@@ -1023,7 +1034,6 @@ namespace Windows.UI.Xaml.Controls
 
 #if !__SKIA__
 		private partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
-
 #endif
 
 		private void OnKeyDownInternal(KeyRoutedEventArgs args)
