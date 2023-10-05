@@ -7,6 +7,7 @@ using Windows.Foundation;
 using Windows.Graphics.Display;
 using Uno.UI.Extensions;
 using Windows.UI.Composition;
+using Uno.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml;
 
@@ -32,9 +33,19 @@ public sealed partial class XamlRoot
 	/// <summary>
 	/// Gets the root element of the XAML element tree.
 	/// </summary>
-	public UIElement? Content =>
-		VisualTree.ContentRoot.Type == ContentRootType.CoreWindow ?
-			Microsoft.UI.Xaml.Window.CurrentSafe?.Content : VisualTree.PublicRootVisual;
+	public UIElement? Content
+	{
+		get
+		{
+			var publicRoot = VisualTree.PublicRootVisual;
+			if (publicRoot is WindowChrome chrome)
+			{
+				return chrome.Content as UIElement;
+			}
+
+			return publicRoot;
+		}
+	}
 
 	/// <summary>
 	/// Gets the width and height of the content area.
