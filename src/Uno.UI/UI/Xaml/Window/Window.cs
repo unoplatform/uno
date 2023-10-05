@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
+using System.Collections.Concurrent;
 
 namespace Windows.UI.Xaml;
 
@@ -30,6 +31,7 @@ namespace Windows.UI.Xaml;
 [ContentProperty(Name = nameof(Content))]
 public partial class Window
 {
+	private static readonly ConcurrentDictionary<AppWindow, Window> _appWindowMap = new();
 	private static Window? _current;
 
 	private readonly IWindowImplementation _windowImplementation;
@@ -48,6 +50,7 @@ public partial class Window
 #endif
 
 		AppWindow = new AppWindow();
+		_appWindowMap[AppWindow] = this;
 
 #if !__SKIA__
 		if (windowType != WindowType.CoreWindow)
@@ -86,6 +89,8 @@ public partial class Window
 
 		SizeChanged += OnWindowSizeChanged;
 	}
+
+	internal static Window GetFromAppWindow(AppWindow appWindow) => _appWindowMap[appWindow];
 
 	partial void InitializeWindowingFlavor();
 
