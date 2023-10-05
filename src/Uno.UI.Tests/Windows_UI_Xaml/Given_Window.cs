@@ -22,6 +22,7 @@ public class Given_Window
 	}
 #endif
 
+#if !WINUI_WINDOWING
 	[TestMethod]
 	public void New_Window_Does_Not_Override_Current()
 	{
@@ -33,4 +34,5 @@ public class Given_Window
 		window.Activate();
 		Assert.AreEqual(existingCurrent, Microsoft.UI.Xaml.Window.Current);
 	}
+#endif
 }
