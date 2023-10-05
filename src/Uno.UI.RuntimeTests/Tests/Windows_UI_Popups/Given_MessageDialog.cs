@@ -73,7 +73,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 
 			var messageDialog = new MessageDialog("Hello");
 #if WINUI_WINDOWING
-			var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
+            var handle = global::WinRT.Interop.WindowNative.GetWindowHandle(WindowHelper.CurrentTestWindow);
 			global::WinRT.Interop.InitializeWithWindow.Initialize(messageDialog, handle);
 #endif
 			var asyncOperation = messageDialog.ShowAsync();

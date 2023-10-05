@@ -53,9 +53,9 @@ internal class UnoWpfWindowHost : WpfControl, IWpfWindowHost
 
 	WpfCanvas? IWpfXamlRootHost.NativeOverlayLayer => _nativeOverlayLayer;
 
-	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current!.IgnorePixelScaling;
+	bool IWpfXamlRootHost.IgnorePixelScaling => WpfHost.Current?.IgnorePixelScaling ?? false;
 
-	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current!.RenderSurfaceType;
+	RenderSurfaceType? IWpfXamlRootHost.RenderSurfaceType => WpfHost.Current?.RenderSurfaceType ?? null;
 
 	public bool IsIsland => false;
 

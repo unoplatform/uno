@@ -26,6 +26,11 @@ namespace Microsoft.UI.Xaml
 
 		private void UpdateState()
 		{
+			if (Window.IShouldntUseCurrentWindow is null)
+			{
+				return;
+			}
+
 			var size = Window.IShouldntUseCurrentWindow.Bounds;
 
 			var w = size.Width;
@@ -82,6 +87,11 @@ namespace Microsoft.UI.Xaml
 			base.OnOwnerChanged();
 
 			_sizeChangedSubscription.Disposable = null;
+
+			if (Window.IShouldntUseCurrentWindow is null)
+			{
+				return;
+			}
 
 			if (Owner != null)
 			{
