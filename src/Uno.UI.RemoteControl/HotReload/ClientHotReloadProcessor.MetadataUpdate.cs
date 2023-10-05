@@ -242,7 +242,6 @@ namespace Uno.UI.RemoteControl.HotReload
 
 							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
 						},
-						enumerateChildrenAfterMatch: true,
 						parentKey: default);
 
 				// Forced iteration to capture all state before doing ui update

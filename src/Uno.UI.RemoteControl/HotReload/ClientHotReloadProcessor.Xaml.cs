@@ -40,7 +40,6 @@ namespace Uno.UI.RemoteControl.HotReload
 		private static IEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
 			object instance,
 			Func<FrameworkElement, string, TMatch?> predicate,
-			bool enumerateChildrenAfterMatch,
 			string? parentKey)
 		{
 
@@ -53,18 +52,12 @@ namespace Uno.UI.RemoteControl.HotReload
 				if (match is not null)
 				{
 					yield return match;
-
-					// If we found a match, we don't need to enumerate the children
-					if (!enumerateChildrenAfterMatch)
-					{
-						yield break;
-					}
 				}
 
 				var idx = 0;
 				foreach (var child in fe.EnumerateChildren())
 				{
-					var inner = EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch, $"{instanceKey}_[{idx}]");
+					var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
 					idx++;
 					foreach (var validElement in inner)
 					{
