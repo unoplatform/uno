@@ -49,10 +49,6 @@ public partial class Window
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
-#if !__SKIA__ // Currently only Skia supports proper multiwindowing, use CoreWindow-based window elsewhere even for WinUI tree
-		windowType = WindowType.CoreWindow;
-#endif
-
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
