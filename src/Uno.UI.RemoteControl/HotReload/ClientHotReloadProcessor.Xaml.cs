@@ -61,18 +61,11 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 
-				IEnumerable<IEnumerable<TMatch>> Dig()
+				var idx = 0;
+				foreach (var child in fe.EnumerateChildren())
 				{
-					var idx = 0;
-					foreach (var child in fe.EnumerateChildren())
-					{
-						yield return EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch, $"{instanceKey}_[{idx}]");
-						idx++;
-					}
-				}
-
-				foreach (var inner in Dig())
-				{
+					var inner = EnumerateHotReloadInstances(child, predicate, enumerateChildrenAfterMatch, $"{instanceKey}_[{idx}]");
+					idx++;
 					foreach (var validElement in inner)
 					{
 						yield return validElement;
