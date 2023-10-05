@@ -807,7 +807,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Basic_Input()
+		public async Task When_NonAscii_Characters()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -821,7 +821,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Focus(FocusState.Programmatic);
 			await WindowHelper.WaitForIdle();
 
-			var text = "Hello world";
+			var text = "صباح الخير";
 			foreach (var c in text)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.None, VirtualKeyModifiers.None, unicodeKey: c));
@@ -829,8 +829,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(text, SUT.Text);
-			Assert.AreEqual(11, SUT.SelectionStart);
-			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable

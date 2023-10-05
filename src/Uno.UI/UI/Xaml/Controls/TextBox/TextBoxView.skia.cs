@@ -1,7 +1,6 @@
 ﻿#nullable enable
 
 using System;
-
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;

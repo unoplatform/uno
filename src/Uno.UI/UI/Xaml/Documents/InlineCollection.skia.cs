@@ -121,8 +121,8 @@ namespace Windows.UI.Xaml.Documents
 							int trailingSpaces = 0;
 
 							while (start + length < end &&
-								   (width + GetGlyphWidthWithSpacing(segment.Glyphs[length], characterSpacing)) is var newWidth &&
-								   newWidth <= remainingWidth)
+								(width + GetGlyphWidthWithSpacing(segment.Glyphs[length], characterSpacing)) is var newWidth &&
+								newWidth <= remainingWidth)
 							{
 								width = newWidth;
 								length++;
@@ -161,8 +161,8 @@ namespace Windows.UI.Xaml.Documents
 							}
 
 							while (spaces < segment.LeadingSpaces &&
-								   (width + GetGlyphWidthWithSpacing(segment.Glyphs[spaces], characterSpacing)) is var newWidth &&
-								   newWidth < remainingWidth)
+								(width + GetGlyphWidthWithSpacing(segment.Glyphs[spaces], characterSpacing)) is var newWidth &&
+								newWidth < remainingWidth)
 							{
 								width = newWidth;
 								spaces++;

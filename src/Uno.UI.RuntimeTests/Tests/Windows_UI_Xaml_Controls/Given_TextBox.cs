@@ -140,7 +140,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 			textBox.Focus(FocusState.Programmatic);
-			Assert.AreEqual(0, textBox.SelectionStart);
+			// On WinUI, TextBoxes start their selection at 0
+			Assert.AreEqual(
+#if __SKIA__
+				FeatureConfiguration.TextBox.UseOverlayOnSkia? textBox.Text.Length :
+#endif
+				0,
+				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 7);
 			Assert.AreEqual(1, textBox.SelectionStart);
@@ -161,7 +167,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 			textBox.Focus(FocusState.Programmatic);
-			Assert.AreEqual(0, textBox.SelectionStart);
+			// On WinUI, TextBoxes start their selection at 0
+			Assert.AreEqual(
+#if __SKIA__
+				FeatureConfiguration.TextBox.UseOverlayOnSkia? textBox.Text.Length :
+#endif
+					0,
+				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 20);
 			Assert.AreEqual(1, textBox.SelectionStart);
@@ -182,7 +194,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 			textBox.Focus(FocusState.Programmatic);
-			Assert.AreEqual(0, textBox.SelectionStart);
+			// On WinUI, TextBoxes start their selection at 0
+			Assert.AreEqual(
+#if __SKIA__
+				FeatureConfiguration.TextBox.UseOverlayOnSkia? textBox.Text.Length :
+#endif
+					0,
+				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(20, 5);
 			Assert.AreEqual(10, textBox.SelectionStart);

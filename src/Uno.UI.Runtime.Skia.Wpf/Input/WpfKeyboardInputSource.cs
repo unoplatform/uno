@@ -4,7 +4,6 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using Uno.Foundation.Logging;
-using Uno.UI.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;

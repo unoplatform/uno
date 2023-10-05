@@ -3,7 +3,6 @@
 #endif
 
 using System;
-
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
