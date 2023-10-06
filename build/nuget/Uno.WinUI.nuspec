@@ -263,7 +263,7 @@
 				<reference file="Uno.UI.Toolkit.dll" />
 				<reference file="Uno.UI.FluentTheme.dll" />
 				<reference file="Uno.UI.FluentTheme.v1.dll" />
-				<reference file="Uno.UI.FluentTheme.v2.dll" />Uno.Foundation.Logging\Bin\Uno.Foundation.Logging.netcoremobile
+				<reference file="Uno.UI.FluentTheme.v2.dll" />
 			</group>
 			<!-- Windows -->
 			<group targetFramework="uap10.0.19041">
