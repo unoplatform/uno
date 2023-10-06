@@ -229,6 +229,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			;
 		}
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER
 		[TestMethod]
 		[DataRow(175, 175, 26, 26)]
 		// [DataRow(1, 0, 2, 2)] // https://github.com/unoplatform/uno/issues/13907
@@ -522,6 +523,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(3, keyDownCount);
 		}
+#endif
 
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
