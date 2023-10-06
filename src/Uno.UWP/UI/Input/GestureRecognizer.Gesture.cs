@@ -122,6 +122,11 @@ namespace Windows.UI.Input
 
 			public void PreventGestures(GestureSettings gestures)
 			{
+				if ((gestures & GestureSettings.Hold) != 0)
+				{
+					StopHoldingTimer();
+				}
+
 				Settings &= ~gestures;
 				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{

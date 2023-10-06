@@ -11,9 +11,9 @@ namespace Windows.UI.Input
 	{
 		internal RightTappedEventArgs(uint pointerId, PointerDeviceType type, Point position)
 		{
+			PointerId = pointerId;
 			PointerDeviceType = type;
 			Position = position;
-			PointerId = pointerId;
 		}
 
 		public PointerDeviceType PointerDeviceType { get; }
