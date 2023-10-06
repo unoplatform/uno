@@ -5,12 +5,7 @@ using System.Linq.Expressions;
 namespace Microsoft.UI;
 
 [DebuggerDisplay("{Value}")]
-#if HAS_UNO_WINUI
-public
-#else
-internal
-#endif
-partial struct WindowId : IEquatable<WindowId>
+public partial struct WindowId : IEquatable<WindowId>
 {
 	public ulong Value;
 
