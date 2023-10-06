@@ -5226,6 +5226,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\ColorPickerSample.xaml.cs">
       <DependentUpon>ColorPickerSample.xaml</DependentUpon>
     </Compile>
+	<Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\ColorPickerInElevatedView.cs"/>
     <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\ColorPickerTests\WinUIColorPickerPage.xaml.cs">
       <DependentUpon>WinUIColorPickerPage.xaml</DependentUpon>
     </Compile>
