@@ -199,13 +199,13 @@ public static partial class ViewExtensions
 		}
 	}
 
-	private static IEnumerable<_View> EnumerateChildren(this _View? o)
+	internal static IEnumerable<_View> EnumerateChildren(this _View? o)
 	{
 		if (o is null) return Enumerable.Empty<_View>();
 		return o.Subviews;
 	}
 #elif __ANDROID__
-	private static IEnumerable<_View> EnumerateAncestors(this _View? o)
+	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
 
@@ -215,7 +215,7 @@ public static partial class ViewExtensions
 		}
 	}
 
-	private static IEnumerable<_View> EnumerateChildren(this _View? reference)
+	internal static IEnumerable<_View> EnumerateChildren(this _View? reference)
 	{
 		if (reference is Android.Views.ViewGroup vg)
 		{
@@ -228,7 +228,7 @@ public static partial class ViewExtensions
 		return Enumerable.Empty<_View>();
 	}
 #else
-	private static IEnumerable<_View> EnumerateAncestors(this _View? o)
+	internal static IEnumerable<_View> EnumerateAncestors(this _View? o)
 	{
 		if (o is null) yield break;
 		while (VisualTreeHelper.GetParent(o) is { } parent)
@@ -237,7 +237,7 @@ public static partial class ViewExtensions
 		}
 	}
 
-	private static IEnumerable<_View> EnumerateChildren(this _View? reference)
+	internal static IEnumerable<_View> EnumerateChildren(this _View? reference)
 	{
 		return Enumerable
 			.Range(0, VisualTreeHelper.GetChildrenCount(reference))
