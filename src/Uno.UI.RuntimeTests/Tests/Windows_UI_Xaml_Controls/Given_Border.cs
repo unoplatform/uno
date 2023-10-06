@@ -30,29 +30,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_Border
 	{
-		private partial class CustomControl : Control
-		{
-			public Border Child { get; set; }
-			public Size AvailableSizePassedToMeasureOverride { get; private set; }
-			public Size SizeReturnedFromMeasureOverride { get; private set; }
-			public Size FinalSizePassedToArrangeOverride { get; private set; }
-			public Size SizeReturnedFromArrangeOverride { get; private set; }
-
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				AvailableSizePassedToMeasureOverride = availableSize;
-				Child.Measure(availableSize);
-				return SizeReturnedFromMeasureOverride = Child.DesiredSize;
-			}
-
-			protected override Size ArrangeOverride(Size finalSize)
-			{
-				FinalSizePassedToArrangeOverride = finalSize;
-				Child.Arrange(new(0, 0, finalSize.Width, finalSize.Height));
-				return SizeReturnedFromArrangeOverride = new(Child.ActualSize.X, Child.ActualSize.Y);
-			}
-		}
-
 		[TestMethod]
 		[DataRow(true)]
 		[DataRow(false)]
@@ -717,6 +694,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			await UITestHelper.Load(SUT);
 			return await UITestHelper.ScreenShot(SUT);
+		}
+	}
+
+	internal partial class CustomControl : Control
+	{
+		public Border Child { get; set; }
+		public Size AvailableSizePassedToMeasureOverride { get; private set; }
+		public Size SizeReturnedFromMeasureOverride { get; private set; }
+		public Size FinalSizePassedToArrangeOverride { get; private set; }
+		public Size SizeReturnedFromArrangeOverride { get; private set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			AvailableSizePassedToMeasureOverride = availableSize;
+			Child.Measure(availableSize);
+			return SizeReturnedFromMeasureOverride = Child.DesiredSize;
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			FinalSizePassedToArrangeOverride = finalSize;
+			Child.Arrange(new(0, 0, finalSize.Width, finalSize.Height));
+			return SizeReturnedFromArrangeOverride = new(Child.ActualSize.X, Child.ActualSize.Y);
 		}
 	}
 }

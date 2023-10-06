@@ -331,16 +331,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 #endif
 
-		public partial class MyGrid : Grid
-		{
-			public Size AvailableSizeUsedForMeasure { get; private set; }
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				AvailableSizeUsedForMeasure = availableSize;
-				return base.MeasureOverride(availableSize);
-			}
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -773,6 +763,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, loadedCount, "loaded");
 		}
 #endif
+	}
+
+	public partial class MyGrid : Grid
+	{
+		public Size AvailableSizeUsedForMeasure { get; private set; }
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			AvailableSizeUsedForMeasure = availableSize;
+			return base.MeasureOverride(availableSize);
+		}
 	}
 
 	public partial class MyControl01 : FrameworkElement
