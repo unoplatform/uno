@@ -30,14 +30,14 @@ partial class FileUpdateProcessor : IServerProcessor, IDisposable
 		switch (frame.Name)
 		{
 			case nameof(UpdateFile):
-				ProcessFileUpdate(JsonConvert.DeserializeObject<UpdateFile>(frame.Content)!);
+				ProcessUpdateFile(JsonConvert.DeserializeObject<UpdateFile>(frame.Content)!);
 				break;
 		}
 
 		return Task.CompletedTask;
 	}
 
-	private void ProcessFileUpdate(UpdateFile? message)
+	private void ProcessUpdateFile(UpdateFile? message)
 	{
 		if (message?.IsValid() is not true
 			|| !File.Exists(message.FilePath))
