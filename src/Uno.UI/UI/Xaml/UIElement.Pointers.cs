@@ -548,6 +548,14 @@ namespace Windows.UI.Xaml
 
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
+			if (routedEvent != HoldingEvent && FeatureConfiguration.UIElement.DisablePointersSpecificEventPrevention)
+			{
+				// If the feature flag is set, call CompleteGesture.
+				// This is known to not be correct, but it's there just in case the prevention logic caused regressions.
+				CompleteGesture();
+				return;
+			}
+
 			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
 			if (IsGestureRecognizerCreated)
 			{

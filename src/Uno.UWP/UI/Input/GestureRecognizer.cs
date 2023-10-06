@@ -183,8 +183,7 @@ namespace Windows.UI.Input
 		{
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
-				const GestureSettings PreventionMask = GestureSettings.Tap | GestureSettings.RightTap | GestureSettings.DoubleTap | GestureSettings.Hold;
-				gesture.PreventGestures(events & PreventionMask);
+				gesture.PreventGestures(events & GestureSettingsHelper.SupportedGestures);
 
 				return gesture.Settings;
 			}
