@@ -5,7 +5,7 @@ using Windows.UI.Core;
 
 namespace Uno.UI.Runtime.Skia;
 
-internal partial class CoreWindowExtension : ICoreWindowExtension
+internal partial class CoreWindowExtension : INativeElementHostingExtension
 {
 	public bool IsNativeElement(object content) => false;
 	public void AttachNativeElement(object owner, object content) { }
