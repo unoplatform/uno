@@ -545,6 +545,49 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(1, outerBorderTaps);
 			Assert.AreEqual(1, outerBorderRightTaps);
 		}
+
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#else
+		[TestMethod]
+		[RunsOnUIThread]
+#endif
+		public async Task Parent_DoubleTapped_When_Child_Has_Tapped()
+		{
+			var SUT = new Border()
+			{
+				Child = new Border()
+				{
+					Width = 100,
+					Height = 100,
+					Background = new SolidColorBrush(Colors.Red),
+				},
+			};
+
+			var outerBorderDoubleTaps = 0;
+			var childBorderTaps = 0;
+
+			SUT.DoubleTapped += (_, _) => outerBorderDoubleTaps++;
+			SUT.Child.Tapped += (_, _) => childBorderTaps++;
+
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var borderCenter = SUT.GetAbsoluteBounds().GetCenter();
+
+			mouse.Press(borderCenter);
+			mouse.Release();
+
+			mouse.Press(borderCenter);
+			mouse.Release();
+
+			Assert.AreEqual(1, outerBorderDoubleTaps);
+			Assert.AreEqual(2, childBorderTaps); // This doesn't look right. It should be 1.
+		}
 #endif
 
 		[TestMethod]
