@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			var windowBounds = Windows.UI.Xaml.Window.Current is not null ?
 				Windows.UI.Xaml.Window.Current.Bounds :
-				new Windows.Foundation.Rect(default, XamlRoot.Size); ;
+				new Windows.Foundation.Rect(default, XamlRoot.Size);
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border1.ActualWidth, windowBounds.Height - visible.Bottom - Border1.ActualHeight);
 
@@ -62,7 +62,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			var windowBounds = Windows.UI.Xaml.Window.Current is not null ?
 				Windows.UI.Xaml.Window.Current.Bounds :
-				new Windows.Foundation.Rect(default, XamlRoot.Size); ;
+				new Windows.Foundation.Rect(default, XamlRoot.Size);
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;
@@ -78,7 +78,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			var windowBounds = Windows.UI.Xaml.Window.Current is not null ?
 				Windows.UI.Xaml.Window.Current.Bounds :
-				new Windows.Foundation.Rect(default, XamlRoot.Size); ;
+				new Windows.Foundation.Rect(default, XamlRoot.Size);
 			var visible = VisibleBoundsPadding.WindowPadding;
 			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;
