@@ -120,37 +120,9 @@ namespace Windows.UI.Input
 				TryRecognize();
 			}
 
-			public void PreventTap()
+			public void PreventGestures(GestureSettings gestures)
 			{
-				Settings &= ~GestureSettings.Tap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
-				{
-					IsCompleted = true;
-				}
-			}
-
-			public void PreventDoubleTap()
-			{
-				Settings &= ~GestureSettings.DoubleTap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
-				{
-					IsCompleted = true;
-				}
-			}
-
-			public void PreventRightTap()
-			{
-				Settings &= ~GestureSettings.RightTap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
-				{
-					IsCompleted = true;
-				}
-			}
-
-			public void PreventHolding()
-			{
-				StopHoldingTimer();
-				Settings &= ~(GestureSettings.Hold | GestureSettings.HoldWithMouse);
+				Settings &= ~gestures;
 				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{
 					IsCompleted = true;
