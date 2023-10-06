@@ -58,8 +58,7 @@ namespace Microsoft.UI.Xaml
 		[JSExport]
 		internal static int DispatchVisibilityChange(bool isVisible)
 		{
-			var application = Microsoft.UI.Xaml.Application.Current;
-			var window = Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow;
+			var application = Windows.UI.Xaml.Application.Current;
 			if (isVisible)
 			{
 				application?.RaiseLeavingBackground(() =>
@@ -109,18 +108,13 @@ namespace Microsoft.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				// Force init
-#if !HAS_UNO_WINUI
-				// Force init
-				Window.CurrentSafe?.ToString();
-#endif
-
 				var arguments = WindowManagerInterop.BeforeLaunch();
 
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
+
 				InitializationCompleted();
 
 				if (!string.IsNullOrEmpty(arguments))

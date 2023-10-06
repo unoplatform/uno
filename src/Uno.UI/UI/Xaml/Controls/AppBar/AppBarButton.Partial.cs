@@ -481,8 +481,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (flyout is { })
 			{
-				var rootVisual = Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow!.Content;
-				flyout.OverlayInputPassThroughElement = rootVisual;
+				// TODO: Uno specific - avoid using RootVisual on WinUI branch
+				if (XamlRoot is not null)
+				{
+					var rootElement = XamlRoot.VisualTree.RootElement;
+					flyout.OverlayInputPassThroughElement = rootElement;
+				}
 
 				if (flyout is IMenu flyoutAsMenu)
 				{

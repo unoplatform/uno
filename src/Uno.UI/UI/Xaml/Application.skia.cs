@@ -90,13 +90,9 @@ namespace Microsoft.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-#if !HAS_UNO_WINUI && !WINUI_WINDOWING
-				// Force init
-				Window.CurrentSafe?.ToString();
-#endif
-
 				InitializationCompleted();
 
+				// OnLaunched should execute only for full apps, not for individual islands.
 				if (CoreApplication.IsFullFledgedApp)
 				{
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, _arguments));
