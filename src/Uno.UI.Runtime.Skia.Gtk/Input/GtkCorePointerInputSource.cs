@@ -66,7 +66,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 		if (host is not UnoGtkWindowHost windowHost)
 		{
-			throw new ArgumentException($"{nameof(host)} must be a WPF Control instance", nameof(host));
+			throw new ArgumentException($"{nameof(host)} must be a Uno GTK Window host instance", nameof(host));
 		}
 
 		_windowHost = windowHost;

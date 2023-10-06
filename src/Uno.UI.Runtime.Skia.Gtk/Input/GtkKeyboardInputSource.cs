@@ -21,7 +21,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 
 	public GtkKeyboardInputSource(IXamlRootHost xamlRootHost)
 	{
-		global::Gtk.Key.SnooperInstall(OnKeySnoop);
+		global::Gtk.Key.SnooperInstall(OnKeySnoop); // TODO:MZ: Install snooper only once, make host-specific
 	}
 
 	private int OnKeySnoop(Widget grab_widget, EventKey e)
