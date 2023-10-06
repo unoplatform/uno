@@ -27,7 +27,7 @@ namespace Windows.System
 		public DispatcherQueueTimer CreateTimer()
 			=> new DispatcherQueueTimer();
 
-		internal static DispatcherQueue Main { get; } = new DispatcherQueue(); //TODO:MZ: Get rid of this
+		internal static DispatcherQueue Main { get; } = new DispatcherQueue(); // TODO: Avoid Main in the future #8978
 
 		public static DispatcherQueue GetForCurrentThread()
 		{
