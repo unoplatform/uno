@@ -140,27 +140,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 
 			_renderer = new Renderer(this);
 
-			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 			WUX.Application.StartWithArguments(CreateApp);
-		}
-
-		private void OnCoreWindowContentRootSet(object? sender, object e)
-		{
-			var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-			var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-			if (xamlRoot is null)
-			{
-				throw new InvalidOperationException("XamlRoot was not properly initialized");
-			}
-
-			contentRoot!.SetHost(this);
-			FrameBufferManager.XamlRootMap.Register(xamlRoot, this);
-
-			CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 		}
 
 		void IXamlRootHost.InvalidateRender() => _renderer?.InvalidateRender();
