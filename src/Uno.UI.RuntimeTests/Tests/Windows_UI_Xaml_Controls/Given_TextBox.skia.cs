@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
@@ -829,6 +830,106 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(text, SUT.Text);
+		}
+
+		[TestMethod]
+		public async Task When_Copy_Paste()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150
+			};
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			var dp = new DataPackage();
+			var text = "copied content";
+			dp.SetText(text);
+			Clipboard.SetContent(dp);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(text, SUT.Text);
+
+			SUT.Select(2, 4);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.C, VirtualKeyModifiers.Control, unicodeKey: 'c'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text.Substring(2, 4), await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(4, SUT.SelectionLength);
+
+			SUT.Select(SUT.Text.Length - 1, 0);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("copied contenpiedt", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(6, 3);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("copiedpiedntenpiedt", SUT.Text);
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Cut_Paste()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Select(2, 4);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.X, VirtualKeyModifiers.Control, unicodeKey: 'x'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("llo ", await Clipboard.GetContent()!.GetTextAsync());
+			Assert.AreEqual("Heworld", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(SUT.Text.Length - 1, 0);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Heworlllo d", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(6, 3);
+			await WindowHelper.WaitForIdle();
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.V, VirtualKeyModifiers.Control, unicodeKey: 'v'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("Heworlllo  d", SUT.Text);
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable

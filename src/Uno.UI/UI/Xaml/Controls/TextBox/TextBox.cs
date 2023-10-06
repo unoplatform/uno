@@ -1282,7 +1282,17 @@ namespace Windows.UI.Xaml.Controls
 		public void CutSelectionToClipboard()
 		{
 			CopySelectionToClipboard();
+#if __SKIA__
+			_resetSelectionOnChange = false;
+#endif
 			Text = Text.Remove(SelectionStart, SelectionLength);
+#if __SKIA__
+			_resetSelectionOnChange = true;
+			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				Select(_selection.start, 0);
+			}
+#endif
 		}
 
 		internal override bool CanHaveChildren() => true;

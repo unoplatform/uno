@@ -336,9 +336,15 @@ public partial class TextBox
 				selectionStart = 0;
 				selectionLength = text.Length;
 				break;
+			case VirtualKey.X when ctrl:
+				args.Handled = true;
+				CutSelectionToClipboard();
+				selectionLength = 0;
+				text = Text;
+				break;
 			case VirtualKey.V when ctrl:
 				args.Handled = true;
-				PasteFromClipboard();
+				PasteFromClipboard(); // async so doesn't actually do anything right now
 				break;
 			case VirtualKey.C when ctrl:
 				args.Handled = true;
@@ -541,8 +547,8 @@ public partial class TextBox
 
 		public void Execute(object parameter) => _action();
 
+#pragma warning disable 67 // An event was declared but never used in the class in which it was declared.
 		public event EventHandler CanExecuteChanged;
-
-		private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
+#pragma warning restore 67 // An event was declared but never used in the class in which it was declared.
 	}
 }
