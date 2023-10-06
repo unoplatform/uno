@@ -32,8 +32,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 		_gtkWindow = gtkWindow;
 		_winUIWindow = winUIWindow;
 
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet += OnCoreWindowContentRootSet;
-
 		RegisterForBackgroundColor();
 	}
 
@@ -70,8 +68,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 			if (!_firstSizeAllocated)
 			{
 				_firstSizeAllocated = true;
-				// TODO:MZ: Better place for this?
-				//_winUIWindow.OnNativeWindowCreated();
 			}
 		};
 
@@ -106,24 +102,6 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 				this.Log().Warn($"This platform only supports SolidColorBrush for the Window background");
 			}
 		}
-	}
-
-	private void OnCoreWindowContentRootSet(object? sender, object e)
-	{
-		var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-		if (xamlRoot is null)
-		{
-			throw new InvalidOperationException("XamlRoot was not properly initialized");
-		}
-
-		contentRoot!.SetHost(this);
-		GtkManager.XamlRootMap.Register(xamlRoot, this);
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
 	}
 
 	void IXamlRootHost.InvalidateRender()
