@@ -136,8 +136,7 @@ namespace SamplesApp
 
 			InitializeFrame(e.Arguments);
 
-			//TODO:MZ: Uncomment and enable
-			//AssertIssue8641NativeOverlayInitialized();
+			AssertIssue8641NativeOverlayInitialized();
 
 			ActivateMainWindow();
 
