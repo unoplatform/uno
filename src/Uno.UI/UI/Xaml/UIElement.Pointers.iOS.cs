@@ -262,8 +262,11 @@ namespace Microsoft.UI.Xaml
 						// This is expected to be done by the RootVisual, except if the "up" has been handled
 						// (in order to ensure the "up" has been fully processed, including gesture recognition).
 						// In that case we need to sent it by our-own directly from teh element that has handled the event.
-
-						WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(args, isAfterHandledUp: true); // TODO for #8341
+						if (WinUICoreServices.Instance.MainRootVisual is not IRootElement rootElement)
+						{
+							rootElement = XamlRoot?.VisualTree.RootElement as IRootElement;
+						}
+						rootElement?.RootElementLogic.ProcessPointerUp(args, isAfterHandledUp: true);
 					}
 
 					pt.Release(this);
