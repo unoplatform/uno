@@ -32,30 +32,19 @@ internal class UnoWpfWindow : WpfWindow
 		WpfManager.XamlRootMap.Register(xamlRoot, Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged; //TODO:MZ: Unsubscribe
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		Closed += UnoWpfWindow_Closed;
+
+		UpdateWindowPropertiesFromPackage();
+		UpdateWindowPropertiesFromApplicationView();
+	}
+
+	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
+	{
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 	}
 
 	internal UnoWpfWindowHost Host { get; private set; }
-
-	//TODO:MZ: Call this?
-	private void OnCoreWindowContentRootSet(object? sender, object e)
-	{
-		var contentRoot = CoreServices.Instance
-				.ContentRootCoordinator
-				.CoreWindowContentRoot;
-
-		var xamlRoot = contentRoot?.GetOrCreateXamlRoot();
-
-		if (xamlRoot is null)
-		{
-			throw new InvalidOperationException("XamlRoot was not properly initialized");
-		}
-
-		contentRoot!.SetHost(this);
-		WpfManager.XamlRootMap.Register(xamlRoot, Host);
-
-		CoreServices.Instance.ContentRootCoordinator.CoreWindowContentRootSet -= OnCoreWindowContentRootSet;
-	}
 
 	private void OnApplicationViewPropertyChanged(object? sender, PropertyChangedEventArgs e) => UpdateWindowPropertiesFromApplicationView();
 

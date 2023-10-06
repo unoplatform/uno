@@ -49,7 +49,15 @@ internal class UnoGtkWindow : Window
 		GtkManager.XamlRootMap.Register(xamlRoot, Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
-		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged; //TODO:MZ: Unsubscribe
+		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
+		Destroyed += UnoGtkWindow_Destroyed;
+		UpdateWindowPropertiesFromPackage();
+		UpdateWindowPropertiesFromApplicationView();
+	}
+
+	private void UnoGtkWindow_Destroyed(object? sender, EventArgs e)
+	{
+		_applicationView.PropertyChanged -= OnApplicationViewPropertyChanged;
 	}
 
 	internal UnoGtkWindowHost Host { get; }

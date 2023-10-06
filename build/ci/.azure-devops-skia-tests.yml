@@ -139,7 +139,7 @@ jobs:
 
 - job: Skia_Gtk_Runtime_Tests_Build
   displayName: 'Run Skia GTK Runtime Tests'
-  timeoutInMinutes: 600
+  timeoutInMinutes: 60
 
   pool:
     vmImage: ${{ parameters.vmMacImage }}
