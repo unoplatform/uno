@@ -10,7 +10,6 @@ using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Windows.UI.Xaml
-{
-	public delegate void WindowSizeChangedEventHandler(object sender, WindowSizeChangedEventArgs e);
-}
+namespace Windows.UI.Xaml;
+
+public delegate void WindowSizeChangedEventHandler(object sender, WindowSizeChangedEventArgs e);
