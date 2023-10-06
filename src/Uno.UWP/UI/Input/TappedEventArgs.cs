@@ -9,16 +9,19 @@ namespace Windows.UI.Input
 {
 	public partial class TappedEventArgs
 	{
-		internal TappedEventArgs(PointerDeviceType type, Point position, uint tapCount)
+		internal TappedEventArgs(uint pointerId, PointerDeviceType type, Point position, uint tapCount)
 		{
 			PointerDeviceType = type;
 			Position = position;
 			TapCount = tapCount;
+			PointerId = pointerId;
 		}
 
 		public PointerDeviceType PointerDeviceType { get; }
 
 		public Point Position { get; }
+
+		internal uint PointerId { get; }
 
 		public uint TapCount { get; }
 

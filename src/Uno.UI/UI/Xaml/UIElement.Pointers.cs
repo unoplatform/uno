@@ -549,18 +549,24 @@ namespace Windows.UI.Xaml
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref BubblingMode bubblingMode)
 		{
 			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
-			if (routedEvent == HoldingEvent)
+			if (IsGestureRecognizerCreated)
 			{
-				if (IsGestureRecognizerCreated)
+				if (routedEvent == TappedEvent)
+				{
+					GestureRecognizer.PreventEvents(((TappedRoutedEventArgs)args).PointerId, GestureSettings.Tap);
+				}
+				else if (routedEvent == DoubleTappedEvent)
+				{
+					GestureRecognizer.PreventEvents(((DoubleTappedRoutedEventArgs)args).PointerId, GestureSettings.DoubleTap);
+				}
+				else if (routedEvent == RightTappedEvent)
+				{
+					GestureRecognizer.PreventEvents(((RightTappedRoutedEventArgs)args).PointerId, GestureSettings.RightTap);
+				}
+				else if (routedEvent == HoldingEvent)
 				{
 					GestureRecognizer.PreventEvents(((HoldingRoutedEventArgs)args).PointerId, GestureSettings.Hold);
 				}
-			}
-			else
-			{
-				// Note: Here we should prevent only the same gesture ... but actually currently supported gestures
-				// are mutually exclusive, so if a child element detected a gesture, it's safe to prevent all of them.
-				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
 			}
 		}
 

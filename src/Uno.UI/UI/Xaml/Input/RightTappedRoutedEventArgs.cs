@@ -22,11 +22,14 @@ namespace Windows.UI.Xaml.Input
 			_originalSource = originalSource;
 			_position = args.Position;
 			PointerDeviceType = args.PointerDeviceType;
+			PointerId = args.PointerId;
 		}
 
 		public bool Handled { get; set; }
 
 		public PointerDeviceType PointerDeviceType { get; }
+
+		internal uint PointerId { get; }
 
 		public Point GetPosition(UIElement relativeTo)
 		{

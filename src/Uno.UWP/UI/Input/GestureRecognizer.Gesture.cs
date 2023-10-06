@@ -147,7 +147,7 @@ namespace Windows.UI.Input
 					// Note: Up cannot be 'null' here!
 
 					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, Up.Position);
-					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(PointerType, Down.Position, tapCount: 1));
+					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 1));
 
 					return true;
 				}
@@ -162,7 +162,7 @@ namespace Windows.UI.Input
 				if (Settings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_recognizer._lastSingleTap, Down))
 				{
 					_recognizer._lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
-					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(PointerType, Down.Position, tapCount: 2));
+					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 2));
 
 					return true;
 				}
@@ -176,7 +176,7 @@ namespace Windows.UI.Input
 			{
 				if (Settings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(this, out var isLongPress))
 				{
-					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(PointerType, Down.Position));
+					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(Down.PointerId, PointerType, Down.Position));
 
 					return true;
 				}
