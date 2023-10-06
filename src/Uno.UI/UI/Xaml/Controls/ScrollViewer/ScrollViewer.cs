@@ -1598,52 +1598,50 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			var key = args.Key;
-			var newOffset = key switch
-			{
-				VirtualKey.Up => VerticalOffset - GetDelta(ActualHeight),
-				VirtualKey.Down => VerticalOffset + GetDelta(ActualHeight),
-				VirtualKey.Left => HorizontalOffset - GetDelta(ActualWidth),
-				VirtualKey.Right => HorizontalOffset + GetDelta(ActualWidth),
-				VirtualKey.PageUp => VerticalOffset - ActualHeight,
-				VirtualKey.PageDown => VerticalOffset + ActualHeight,
-				VirtualKey.Home => 0,
-				VirtualKey.End => int.MaxValue,
-				_ => -1
-			};
 
-			if (newOffset == -1)
+			if (Presenter is null)
 			{
 				return;
 			}
 
-			args.Handled = key switch
+			var oldHorizontalOffset = Presenter.TargetHorizontalOffset;
+			var oldVerticalOffset = Presenter.TargetVerticalOffset;
+
+			var newOffset = key switch
 			{
-				VirtualKey.Up => newOffset != VerticalOffset,
-				VirtualKey.Down => newOffset != VerticalOffset,
-				VirtualKey.Left => newOffset != HorizontalOffset,
-				VirtualKey.Right => newOffset != HorizontalOffset,
-				VirtualKey.PageUp => true,
-				VirtualKey.PageDown => true,
-				VirtualKey.Home => newOffset != VerticalOffset,
-				VirtualKey.End => newOffset != VerticalOffset,
-				_ => false
+				VirtualKey.Up => oldVerticalOffset - GetDelta(ActualHeight),
+				VirtualKey.Down => oldVerticalOffset + GetDelta(ActualHeight),
+				VirtualKey.Left => oldHorizontalOffset - GetDelta(ActualWidth),
+				VirtualKey.Right => oldHorizontalOffset + GetDelta(ActualWidth),
+				VirtualKey.PageUp => oldVerticalOffset - ActualHeight,
+				VirtualKey.PageDown => oldVerticalOffset + ActualHeight,
+				VirtualKey.Home => 0,
+				VirtualKey.End => ScrollableHeight,
+				_ => double.E
 			};
 
+			if (newOffset == double.E)
+			{
+				return;
+			}
 
 			if (Content is UIElement)
 			{
-				var canScrollHorizontally = Presenter?.CanHorizontallyScroll ?? false;
-				var canScrollVertically = Presenter?.CanHorizontallyScroll ?? false;
+				var canScrollHorizontally = Presenter.CanHorizontallyScroll;
+				var canScrollVertically = Presenter.CanVerticallyScroll;
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					Presenter?.Set(horizontalOffset: newOffset, disableAnimation: false);
+					Presenter.Set(horizontalOffset: newOffset, disableAnimation: false);
+					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
-
-					Presenter?.Set(verticalOffset: newOffset, disableAnimation: false);
+					Presenter.Set(verticalOffset: newOffset, disableAnimation: false);
+					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
+
+				args.Handled |= key is VirtualKey.PageUp or VirtualKey.Down;
 			}
 
 			int GetDelta(double l)
@@ -1658,8 +1656,11 @@ namespace Windows.UI.Xaml.Controls
 					case <= 7:
 						result += 1;
 						break;
-					case > 7:
+					case <= 14:
 						result += 2;
+						break;
+					default:
+						result += 3;
 						break;
 				}
 

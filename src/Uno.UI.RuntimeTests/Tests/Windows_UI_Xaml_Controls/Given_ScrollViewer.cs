@@ -229,44 +229,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_ArrowKeys_Pressed()
+		[DataRow(175, 175, 26, 26)]
+		// [DataRow(1, 0, 2, 2)] // https://github.com/unoplatform/uno/issues/13907
+		[DataRow(1, 150, 2, 22)]
+		[DataRow(16, 17, 2, 3)]
+		[DataRow(123, 456, 18, 68)]
+		[DataRow(96, 97, 14, 15)]
+		[DataRow(393, 277, 59, 42)]
+		public async Task When_ArrowKeys_Pressed(int width, int height, int horizontalDelta, int verticalDelta)
 		{
 			var border = new Border
 			{
-				Width = 175,
-				Height = 175,
-				HorizontalAlignment = HorizontalAlignment.Center,
-				VerticalAlignment = VerticalAlignment.Center,
-				BorderBrush = new SolidColorBrush(Colors.Blue),
-				BorderThickness = new Thickness(6),
+				Width = width,
+				Height = height,
 				Child = new ScrollViewer
 				{
 					VerticalScrollMode = ScrollMode.Enabled,
 					HorizontalScrollMode = ScrollMode.Enabled,
-					Content = new ItemsControl
+					HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+					Content = new Border
 					{
-						ItemsSource = new[]
-						{
-							"Does the first item matter, or the non-databound template?",
-							"Alas, poor Yorick!",
-							"I knew him, Horatio: a fellow of infinite jest, of most excellent fancy:",
-							"he hath borne me on his back a thousand times;",
-							"and now, how abhorred in my imagination it is!",
-							"my gorge rims at it.",
-							"Here hung those lips that I have kissed I know not how oft.",
-							"Where be your gibes now?",
-							"your gambols?",
-							"your songs?",
-							"your flashes of merriment, that were wont to set the table on a roar?",
-							"Not one now, to mock your own grinning?",
-							"quite chap-fallen?",
-							"Now get you to my lady's chamber, and tell her, let her paint an inch thick, to this favour she must come;",
-							"make her laugh at that.",
-							"Prithee, Horatio, tell me one thing.",
-							"Stockholm",
-							"Perpignan",
-							"This is a very large item. No, seriously, it's very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very very large!!!"
-						}
+						// anything large enough to make it scrollable
+						Width = 2000,
+						Height = 2000,
+						Child = new ItemsControl() // any focusable element
 					}
 				}
 			};
@@ -276,24 +262,225 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var SUT = border.FindVisualChildByType<ScrollViewer>();
 
 			KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
 			KeyboardHelper.Down();
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Down();
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			KeyboardHelper.Right();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(72, border.FindVisualChildByType<ScrollViewer>().VerticalOffset);
+			// Horizontal and vertical scrolling amounts should be independent, and each depend on the corresponding ActualSize dimension
+			Assert.AreEqual(verticalDelta * 2, SUT.VerticalOffset);
+			Assert.AreEqual(horizontalDelta * 2, SUT.HorizontalOffset);
 
 			KeyboardHelper.Up();
 			await WindowHelper.WaitForIdle();
-			KeyboardHelper.Up();
+			KeyboardHelper.Left();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(24, border.FindVisualChildByType<ScrollViewer>().VerticalOffset);
+			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
+			Assert.AreEqual(horizontalDelta, SUT.HorizontalOffset);
 		}
 
+		[TestMethod]
+		public async Task When_Home_End_PageDown_PageUp()
+		{
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = new ScrollViewer
+				{
+					VerticalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+					Content = new Border
+					{
+						// anything large enough to make it scrollable
+						Width = 2000,
+						Height = 2000,
+						Child = new ItemsControl() // any focusable element
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var SUT = border.FindVisualChildByType<ScrollViewer>();
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(175, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(350, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(175, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+
+			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1825, SUT.VerticalOffset);
+			Assert.AreEqual(0, SUT.HorizontalOffset);
+		}
+
+		[TestMethod]
+		public async Task When_Args_Handled_Home_End_PageDown_PageUp()
+		{
+			var SUT = new ScrollViewer
+			{
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = new Border
+				{
+					// anything large enough to make it scrollable
+					Width = 2000,
+					Height = 2000,
+					Child = new ItemsControl() // any focusable element
+				}
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = SUT
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, keyDownCount);
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_pageup#$u$_pageup");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_end#$u$_end");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.PageDown();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+
+			KeyboardHelper.PressKeySequence("$d$_home#$u$_home");
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+		}
+
+		[TestMethod]
+		public async Task When_Args_Handled_ArrowKeys()
+		{
+			var SUT = new ScrollViewer
+			{
+				VerticalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollMode = ScrollMode.Enabled,
+				HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+				Content = new Border
+				{
+					// anything large enough to make it scrollable
+					Width = 2000,
+					Height = 2000,
+					Child = new ItemsControl() // any focusable element
+				}
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = SUT
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			border.FindVisualChildByType<ItemsControl>().Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(1, keyDownCount);
+
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Up();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			SUT.FindVisualChildByType<ScrollContentPresenter>().SetHorizontalOffset(999999);
+			SUT.FindVisualChildByType<ScrollContentPresenter>().SetVerticalOffset(999999);
+
+			KeyboardHelper.Down();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(2, keyDownCount);
+
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(3, keyDownCount);
+		}
 
 		[TestMethod]
 		public async Task When_Scrolled_ViewportSizeLargerThanContent()
