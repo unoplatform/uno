@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal static DependencyPropertyDescriptor Parse(string propertyPath)
 		{
-			if (propertyPath.Contains(":"))
+			if (propertyPath.Contains(':'))
 			{
 				// (Uno.UI.Tests.BinderTests:Attachable.MyValue)
 
