@@ -131,9 +131,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			SizeChanged += OnSizeChanged;
 
-			m_windowSizeChangedEventHandler.Disposable = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow!.RegisterSizeChangedEvent(OnWindowSizeChanged);
-
-
 			this.SetValue(TemplateSettingsProperty, new AppBarTemplateSettings());
 		}
 
@@ -148,6 +145,13 @@ namespace Windows.UI.Xaml.Controls
 			if (isOpen)
 			{
 				OnIsOpenChanged(true);
+			}
+
+			// TODO: Uno specific - use XamlRoot instead of Window
+			if (XamlRoot is not null)
+			{
+				XamlRoot.Changed += OnXamlRootChanged;
+				m_windowSizeChangedEventHandler.Disposable = Disposable.Create(() => XamlRoot.Changed -= OnXamlRootChanged);
 			}
 
 			//UNO TODO
@@ -605,7 +609,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e)
 		{
 			if (m_Mode == AppBarMode.Inline)
 			{
