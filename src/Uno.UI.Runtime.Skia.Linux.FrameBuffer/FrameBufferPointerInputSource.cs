@@ -7,6 +7,7 @@ using Windows.Graphics.Display;
 using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
+using Uno.UI.Hosting;
 
 namespace Uno.UI.Runtime.Skia;
 
@@ -24,17 +25,23 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 #pragma warning restore CS0067
 
 	private readonly DisplayInformation _displayInformation;
-	private CoreWindow? _window;
 	private Func<VirtualKeyModifiers>? _keyboardInputSource;
+	private IXamlRootHost? _host;
 
-	public FrameBufferPointerInputSource()
+	private FrameBufferPointerInputSource()
 	{
 		_displayInformation = DisplayInformation.GetForCurrentView();
 	}
 
-	public void Configure(CoreWindow window, Func<VirtualKeyModifiers> keyboardInputSource)
+	internal static FrameBufferPointerInputSource Instance { get; } = new FrameBufferPointerInputSource();
+
+	internal void SetHost(IXamlRootHost host)
 	{
-		_window = window;
+		_host = host;
+	}
+
+	public void Configure(Func<VirtualKeyModifiers> keyboardInputSource)
+	{
 		_keyboardInputSource = keyboardInputSource;
 	}
 
@@ -65,9 +72,14 @@ unsafe internal partial class FrameBufferPointerInputSource : IUnoCorePointerInp
 		=> PointerWheelChanged?.Invoke(this, args);
 
 	private void RaisePointerEvent(Action<PointerEventArgs> raisePointerEvent, PointerEventArgs args)
-		=> _ = _window?.Dispatcher.RunAsync(
-			CoreDispatcherPriority.High,
-			() => raisePointerEvent(args));
+	{
+		if (_host?.RootElement is { } rootElement)
+		{
+			_ = rootElement.Dispatcher.RunAsync(
+				CoreDispatcherPriority.High,
+				() => raisePointerEvent(args));
+		}
+	}
 
 	private VirtualKeyModifiers GetCurrentModifiersState()
 		=> _keyboardInputSource?.Invoke() ?? VirtualKeyModifiers.None;
