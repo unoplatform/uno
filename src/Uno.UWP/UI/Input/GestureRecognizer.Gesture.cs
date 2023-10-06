@@ -142,19 +142,20 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeTap()
 			{
-				if (Settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this))
+				var isTapGesture = IsTapGesture(LeftButton, this);
+				if (isTapGesture)
 				{
 					// Note: Up cannot be 'null' here!
-
 					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, Up.Position);
-					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 1));
 
-					return true;
+					if (Settings.HasFlag(GestureSettings.Tap))
+					{
+						_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 1));
+						return true;
+					}
 				}
-				else
-				{
-					return false;
-				}
+
+				return false;
 			}
 
 			private bool TryRecognizeMultiTap()
