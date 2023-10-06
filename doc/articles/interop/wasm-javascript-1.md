@@ -61,7 +61,7 @@ The [philosophy of Uno](https://platform.uno/docs/articles/concepts/overview/phi
 That also means that it is possible to control how this element is created.  By default it is a `<div>`, but it can be changed in the constructor by providing the `htmlTag` parameter to the one required. For example:
 
 ``` csharp
-public partial sealed class MyDivControl : FrameworkElement
+public sealed partial class MyDivControl : FrameworkElement
 {
     public MyDivControl() // will create a <div> HTML element (by default)
     {
@@ -69,7 +69,7 @@ public partial sealed class MyDivControl : FrameworkElement
 }
 
 [HtmlElement("input")]
-public partial sealed class MyInputControl : FrameworkElement
+public sealed partial class MyInputControl : FrameworkElement
 {
     public MyInputControl() // Will create an <input> HTML element
     {
@@ -77,7 +77,7 @@ public partial sealed class MyInputControl : FrameworkElement
 }
 
 [HtmlElement("span")]
-public partial sealed class MyInputControl : FrameworkElement
+public sealed partial class MyInputControl : FrameworkElement
 {
     public MyInputControl() // Will create a <span> HTML element
     {
