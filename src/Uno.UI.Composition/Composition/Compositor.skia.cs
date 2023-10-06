@@ -29,7 +29,7 @@ public partial class Compositor
 		if (!_isDirty)
 		{
 			_isDirty = true;
-			// TODO: Adjust for multi window #8341, make dirty flag XamlRoot specific
+			// TODO: Invalidate each ContentRoot independently, including a root-specific dirty flag #8978
 			CoreApplication.QueueInvalidateRender();
 		}
 	}
