@@ -49,6 +49,10 @@ public partial class Window
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
+#if !__SKIA__ // TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
+		windowType = WindowType.CoreWindow;
+#endif
+
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
 
@@ -143,17 +147,10 @@ public partial class Window
 		}
 	}
 
-#if HAS_UNO_WINUI
-	/// <summary>
-	/// Always null in Uno.WinUI.
-	/// </summary>
-	public CoreWindow? CoreWindow { get; }
-#else
 	/// <summary>
 	/// Gets the window of the current thread.
 	/// </summary>
 	public CoreWindow? CoreWindow => _windowImplementation.CoreWindow;
-#endif
 
 #pragma warning disable RS0030 // CoreWindow is banned
 	/// <summary>
@@ -165,17 +162,10 @@ public partial class Window
 
 	public CoreWindow? IShouldntUseCoreWindow => _windowImplementation.CoreWindow;
 
-#if HAS_UNO_WINUI
-	/// <summary>
-	/// Always null in Uno.WinUI.
-	/// </summary>
-	public static Window? Current => _current;
-#else
 	/// <summary>
 	/// Gets the window of the current thread.		
 	/// </summary>
 	public static Window? Current => _current;
-#endif
 
 #pragma warning disable RS0030 // Current is banned
 	/// <summary>
@@ -192,7 +182,7 @@ public partial class Window
 	/// </summary>
 	internal static Window? InitialWindow { get; private set; }
 
-#if !HAS_UNO_WINUI
+#if !HAS_UNO_WINUI && !WINUI_WINDOWING
 	internal static void InitializeWindowCurrent()
 	{
 		_current = new Window(WindowType.CoreWindow);
@@ -200,17 +190,10 @@ public partial class Window
 	}
 #endif
 
-#if HAS_UNO_WINUI
-	/// <summary>
-	/// Always null in WinUI.
-	/// </summary>
-	public CoreDispatcher Dispatcher => CoreDispatcher.Main;
-#else
 	/// <summary>
 	/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
 	/// </summary>
 	public CoreDispatcher Dispatcher => CoreDispatcher.Main;
-#endif
 
 #if HAS_UNO_WINUI
 	public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
