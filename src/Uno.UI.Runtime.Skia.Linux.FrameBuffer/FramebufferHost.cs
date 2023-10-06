@@ -97,6 +97,7 @@ namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => { FrameBufferPointerInputSource.Instance.SetHost(o); return FrameBufferPointerInputSource.Instance; });
 			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => { FrameBufferKeyboardInputSource.Instance.SetHost(o); return FrameBufferKeyboardInputSource.Instance; });
+			ApiExtensibility.Register(typeof(Windows.UI.Core.INativeElementHostingExtension), o => new FrameBufferNativeElementHostingExtension());
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
