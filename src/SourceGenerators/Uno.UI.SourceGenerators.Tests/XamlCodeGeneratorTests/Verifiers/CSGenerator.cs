@@ -229,35 +229,40 @@ build_metadata.AdditionalFiles.SourceItemGroup = Page
 #endif
 
 				var availableTargets = new[] {
-					Path.Combine("Uno.UI.Skia", configuration, "net7.0"),
-					Path.Combine("Uno.UI.Reference", configuration, "net7.0"),
+					"Skia",
+					"Reference",
 				};
 
 				var unoUIBase = Path.Combine(
 					Path.GetDirectoryName(typeof(HotReloadWorkspace).Assembly.Location)!,
-					"..",
-					"..",
-					"..",
-					"..",
-					"..",
-					"Uno.UI",
-					"bin"
-					);
+					"..", "..", "..", "..", "..");
 
-				var unoTarget = availableTargets
-					.Select(t => Path.Combine(unoUIBase, t, "Uno.UI.dll"))
-					.FirstOrDefault(File.Exists);
+				var targetQuery = from target in availableTargets
+								  let targetPath = Path.Combine(unoUIBase, "Uno.UI", "bin", "Uno.UI." + target, configuration, "net7.0", "Uno.UI.dll")
+								  where File.Exists(targetPath)
+								  select target;
+
+				var unoTarget = targetQuery.FirstOrDefault();
 
 				if (unoTarget is null)
 				{
 					throw new InvalidOperationException($"Unable to find Uno.UI.dll in {string.Join(",", availableTargets)}");
 				}
 
-				return Directory.GetFiles(Path.GetDirectoryName(unoTarget)!, "*.dll")
-							.Select(f => MetadataReference.CreateFromFile(Path.GetFullPath(f)))
-							.ToArray();
-			}
+				var paths = new[] {
+					Path.Combine(unoUIBase, "Uno.Foundation", "bin", "Uno.Foundation." + unoTarget, configuration, "net7.0", "Uno.Foundation.dll"),
+					Path.Combine(unoUIBase, "Uno.Foundation.Logging", "bin", "Uno.Foundation.Logging." + unoTarget, configuration, "net7.0", "Uno.Foundation.Logging.dll"),
+					Path.Combine(unoUIBase, "Uno.UI.Dispatching", "bin", "Uno.UI.Dispatching." + unoTarget, configuration, "net7.0", "Uno.UI.Dispatching.dll"),
+					Path.Combine(unoUIBase, "Uno.UI.Composition", "bin", "Uno.UI.Composition." + unoTarget, configuration, "net7.0", "Uno.UI.Composition.dll"),
+					Path.Combine(unoUIBase, "SourceGenerators", "System.Xaml", "bin", configuration, "netstandard2.0", "Uno.Xaml.dll"),
+					Path.Combine(unoUIBase, "Uno.Uwp", "bin", "Uno." + unoTarget, configuration, "net7.0", "Uno.dll"),
+					Path.Combine(unoUIBase, "Uno.UI", "bin", "Uno.UI." + unoTarget, configuration, "net7.0", "Uno.UI.dll"),
+				};
 
+				return paths
+					.Select(f => MetadataReference.CreateFromFile(Path.GetFullPath(f)))
+					.ToArray();
+			}
 		}
 	}
 }
