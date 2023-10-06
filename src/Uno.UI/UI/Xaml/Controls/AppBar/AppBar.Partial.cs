@@ -1156,7 +1156,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else
 				{
-					layoutBounds = Microsoft.UI.Xaml.Window.IShouldntUseCurrentWindow!.Bounds;
+					layoutBounds = Microsoft.UI.Xaml.Window.CurrentSafe?.Bounds ?? default;
 
 					if (WinUICoreServices.Instance.InitializationType == InitializationType.IslandsOnly)
 					{
