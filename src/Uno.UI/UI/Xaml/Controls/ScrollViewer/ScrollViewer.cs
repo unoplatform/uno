@@ -1632,12 +1632,12 @@ namespace Windows.UI.Xaml.Controls
 
 				if (canScrollHorizontally && key is VirtualKey.Left or VirtualKey.Right)
 				{
-					Presenter.Set(horizontalOffset: newOffset, disableAnimation: false);
+					ScrollToHorizontalOffset(newOffset);
 					args.Handled = !NumericExtensions.AreClose(oldHorizontalOffset, Presenter.TargetHorizontalOffset);
 				}
 				else if (canScrollVertically && key is not (VirtualKey.Left or VirtualKey.Right))
 				{
-					Presenter.Set(verticalOffset: newOffset, disableAnimation: false);
+					ScrollToVerticalOffset(newOffset);
 					args.Handled = !NumericExtensions.AreClose(oldVerticalOffset, Presenter.TargetVerticalOffset);
 				}
 

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Input;
 using MUXControlsTestApp.Utilities;
 using static Private.Infrastructure.TestServices;
 using Uno.Disposables;
@@ -286,6 +287,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(verticalDelta, SUT.VerticalOffset);
 			Assert.AreEqual(horizontalDelta, SUT.HorizontalOffset);
+		}
+
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_ScrollViewer_Pressed()
+		{
+			var border = new Border
+			{
+				Width = 175,
+				Height = 175,
+				Child = new ScrollViewer
+				{
+					VerticalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollMode = ScrollMode.Enabled,
+					HorizontalScrollBarVisibility = ScrollBarVisibility.Visible,
+					Content = new Border
+					{
+						// anything large enough to make it scrollable
+						Width = 2000,
+						Height = 2000,
+						Child = new ItemsControl() // any focusable element
+					}
+				}
+			};
+
+			WindowHelper.WindowContent = border;
+			await WindowHelper.WaitForLoaded(border);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(border.GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(border.FindVisualChildByType<ItemsControl>(), FocusManager.GetFocusedElement(border.XamlRoot));
 		}
 
 		[TestMethod]
