@@ -124,7 +124,11 @@ namespace Microsoft.UI.Xaml
 					// but if the event has been handled, we need to raise it after the 'up' has been processed.
 					if (OnNativePointerUp(args))
 					{
-						WinUICoreServices.Instance.MainRootVisual?.ProcessPointerUp(args, isAfterHandledUp: true); // TODO for #8341
+						if (WinUICoreServices.Instance.MainRootVisual is not IRootElement rootElement)
+						{
+							rootElement = XamlRoot?.VisualTree.RootElement as IRootElement;
+						}
+						rootElement?.RootElementLogic.ProcessPointerUp(args, isAfterHandledUp: true);
 						return true;
 					}
 					else
