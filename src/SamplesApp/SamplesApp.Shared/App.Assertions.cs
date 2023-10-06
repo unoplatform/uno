@@ -5,6 +5,7 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.ApplicationModel;
+using Windows.ApplicationModel.Core;
 
 #if __SKIA__
 using Uno.Foundation.Extensibility;
@@ -44,12 +45,11 @@ partial class App
 		//On Wasm and XamlIslands the DisplayName is currently empty, as it is not being load from manifest
 #if !__WASM__
 #if __SKIA__
-		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+		if (!CoreApplication.IsFullFledgedApp)
 		{
 			return;
 		}
 #endif
-
 		var displayName = Package.Current.DisplayName;
 
 		Assert.IsFalse(string.IsNullOrEmpty(displayName), "DisplayName is empty.");
@@ -65,7 +65,7 @@ partial class App
 	{
 		//The ApplicationModel Package properties are currently only supported on Skia
 #if __SKIA__
-		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
+		if (!CoreApplication.IsFullFledgedApp)
 		{
 			return;
 		}
@@ -99,10 +99,6 @@ partial class App
 	public void AssertIssue8641NativeOverlayInitialized()
 	{
 #if __SKIA__
-		if (Uno.UI.Xaml.Core.CoreServices.Instance.InitializationType == Uno.UI.Xaml.Core.InitializationType.IslandsOnly)
-		{
-			return;
-		}
 		// Temporarily add a TextBox to the current page's content to verify native overlay is available
 		if (_mainWindow?.Content is not Frame rootFrame)
 		{
