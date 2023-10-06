@@ -51,5 +51,32 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		internal bool IsFlyoutOpen { get; set; }
+
+		internal void OnMenuBarItemFlyoutPresenterPointerMoved(PointerRoutedEventArgs e)
+		{
+			if (IsFlyoutOpen)
+			{
+				MenuBarItem oldOpenItem = null;
+				MenuBarItem newOpenItem = null;
+				foreach (var menuBarItem in Items)
+				{
+					var position = e.GetCurrentPoint(menuBarItem).Position;
+					if (position.X >= 0 && position.X < menuBarItem.ActualWidth && position.Y >= 0 && position.Y < menuBarItem.ActualHeight)
+					{
+						newOpenItem = menuBarItem;
+					}
+					else if (menuBarItem.IsFlyoutOpen())
+					{
+						oldOpenItem = menuBarItem;
+					}
+				}
+
+				if (oldOpenItem != newOpenItem && newOpenItem is { })
+				{
+					oldOpenItem?.CloseMenuFlyout();
+					newOpenItem.ShowMenuFlyout();
+				}
+			}
+		}
 	}
 }

@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-
+using Uno;
 using AutomationPeer = Windows.UI.Xaml.Automation.Peers.AutomationPeer;
 
 namespace Microsoft.UI.Xaml.Controls
@@ -33,6 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 #pragma warning restore CS0649 // Field is never assigned to, and will always have its default value null
 
 		private CompositeDisposable _activeDisposables;
+		private readonly SerialDisposable _menuBarPointerMovedDisposable = new SerialDisposable();
 
 		public MenuBarItem()
 		{
@@ -70,7 +71,19 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		private void SynchronizeMenuBar()
-			=> m_menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
+		{
+			// m_menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
+
+			// Uno specific
+			var menuBar = SharedHelpers.GetAncestorOfType<MenuBar>(VisualTreeHelper.GetParent(this));
+
+			if (menuBar != m_menuBar)
+			{
+				_menuBarPointerMovedDisposable.Disposable = null;
+			}
+
+			m_menuBar = menuBar;
+		}
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -106,6 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 				flyout.OverlayInputPassThroughElement = m_passThroughElement;
 			}
 
+			_menuBarPointerMovedDisposable.Disposable = null;
 			m_flyout = flyout;
 
 			if (m_button != null)
@@ -350,6 +364,12 @@ namespace Microsoft.UI.Xaml.Controls
 			if (m_menuBar != null)
 			{
 				m_menuBar.IsFlyoutOpen = true;
+
+				var menuBar = m_menuBar;
+				var presenter = m_flyout.m_presenter;
+				PointerEventHandler pointerMovedHandler = (_, e) => menuBar.OnMenuBarItemFlyoutPresenterPointerMoved(e);
+				m_flyout._popup.PopupPanel.PointerMoved += pointerMovedHandler;
+				_menuBarPointerMovedDisposable.Disposable = new DisposableAction(() => presenter.PointerMoved -= pointerMovedHandler);
 			}
 
 			UpdateVisualStates();
