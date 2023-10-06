@@ -10,7 +10,6 @@ using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.Windo
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
-namespace Microsoft.UI.Xaml
-{
-	public delegate void WindowSizeChangedEventHandler(object sender, WindowSizeChangedEventArgs e);
-}
+namespace Microsoft.UI.Xaml;
+
+public delegate void WindowSizeChangedEventHandler(object sender, WindowSizeChangedEventArgs e);
