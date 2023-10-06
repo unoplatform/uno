@@ -57,7 +57,9 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					var isDesignTime = DesignTimeHelper.IsDesignTime(context);
 					var isApplication = PlatformHelper.IsApplication(context);
 
-					if (validPlatform && !isDesignTime && isApplication)
+					_ = bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out var disableBindableTypeProvidersGeneration);
+					
+					if (validPlatform && !isDesignTime && isApplication && !disableBindableTypeProvidersGeneration)
 					{
 						_cancellationToken = context.CancellationToken;
 

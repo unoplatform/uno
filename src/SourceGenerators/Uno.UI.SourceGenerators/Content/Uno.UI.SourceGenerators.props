@@ -88,6 +88,7 @@
 		<CompilerVisibleProperty Include="UnoRemoteControlHost" />
 		<CompilerVisibleProperty Include="UnoRemoteControlProcessorsPath" />
 		<CompilerVisibleProperty Include="UnoSkipUserControlsInVisualTree" />
+		<CompilerVisibleProperty Include="UnoDisableBindableTypeProvidersGeneration" />
 		<CompilerVisibleProperty Include="ShouldWriteErrorOnInvalidXaml" />
 		<CompilerVisibleProperty Include="IsUiAutomationMappingEnabled" />
 		<CompilerVisibleProperty Include="ShouldAnnotateGeneratedXaml" />
