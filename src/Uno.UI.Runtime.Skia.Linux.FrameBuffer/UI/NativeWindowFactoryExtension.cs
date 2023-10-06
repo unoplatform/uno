@@ -27,6 +27,7 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 			throw new InvalidOperationException("FrameBuffer currently supports single window only");
 		}
 
+		_initialWindow = window;
 		FrameBufferWindowWrapper.Instance.SetWindow(window, xamlRoot);
 		FrameBufferManager.XamlRootMap.Register(xamlRoot, _host);
 
