@@ -176,15 +176,12 @@ namespace Uno.UI.Toolkit
 			}
 			else
 			{
-#if __WASM__
-				this.SetElevationInternal(Elevation, ShadowColor);
-				this.SetBorder(BorderThickness, BorderBrush, CornerRadius);
-#elif __IOS__ || __MACOS__
+#if __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;
 				((ViewGroup)this).Invalidate();
-#elif __SKIA__
+#elif __SKIA__ || __WASM__
 				this.SetElevationInternal(Elevation, ShadowColor);
 #elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
