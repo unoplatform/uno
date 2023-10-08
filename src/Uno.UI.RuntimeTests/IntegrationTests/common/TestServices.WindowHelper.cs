@@ -107,7 +107,7 @@ namespace Private.Infrastructure
 			public static UIElement RootElement => UseActualWindowRoot ?
 				CurrentTestWindow.Content : EmbeddedTestRoot.control;
 
-			// Dispatcher is a separate property, as accessing CurrentTestWindow.COntent when
+			// Dispatcher is a separate property, as accessing CurrentTestWindow.Content when
 			// not on the UI thread will throw an exception in WinUI.
 			public static CoreDispatcher RootElementDispatcher => UseActualWindowRoot ?
 				CurrentTestWindow.Dispatcher : EmbeddedTestRoot.control.Dispatcher;
