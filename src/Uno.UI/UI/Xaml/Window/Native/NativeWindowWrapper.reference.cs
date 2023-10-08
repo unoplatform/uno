@@ -8,9 +8,9 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
-	public override void Activate()
-	{
-	}
+	public override void Activate() { }
+
+	public override void Close() { }
 
 	protected override void ShowCore()
 	{

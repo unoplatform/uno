@@ -74,6 +74,8 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 
 	public abstract void Activate();
 
+	public abstract void Close();
+
 	public virtual void Show()
 	{
 		ShowCore();
