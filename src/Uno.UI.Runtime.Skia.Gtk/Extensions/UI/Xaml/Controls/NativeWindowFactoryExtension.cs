@@ -12,6 +12,8 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 	{
 	}
 
+	public bool SupportsMultipleWindows => true;
+
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
 		var unoGtkWindow = new UnoGtkWindow(window, xamlRoot);

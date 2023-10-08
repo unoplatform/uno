@@ -49,9 +49,11 @@ public partial class Window
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
-#if !__SKIA__ // TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
-		windowType = WindowType.CoreWindow;
-#endif
+		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			windowType = WindowType.CoreWindow;
+		}
 
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
@@ -159,8 +161,6 @@ public partial class Window
 	/// </summary>
 	internal CoreWindow? CoreWindowSafe => CoreWindow;
 #pragma warning restore RS0030
-
-	public CoreWindow? IShouldntUseCoreWindow => _windowImplementation.CoreWindow;
 
 	/// <summary>
 	/// Gets the window of the current thread.		
