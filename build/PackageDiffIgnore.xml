@@ -1687,6 +1687,12 @@
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidth()" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneWidth(System.Double value)" reason="Does not exist in UWP" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+
+			<!-- Multiple XamlRoots -->
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
