@@ -41,14 +41,14 @@ namespace Windows.UI.Core
 			set;
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || false || false || __NETSTD_REFERENCE__ || false
 		global::Windows.UI.Core.CoreCursor PointerCursor
 		{
 			get;
 			set;
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		global::Windows.Foundation.Point PointerPosition
 		{
 			get;

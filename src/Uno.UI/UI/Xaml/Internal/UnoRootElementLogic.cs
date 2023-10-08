@@ -48,20 +48,9 @@ internal class UnoRootElementLogic
 			handledEventsToo: true);
 		rootElement.AddHandler(
 			UIElement.PointerReleasedEvent,
-			new PointerEventHandler((snd, args) => ProcessPointerUp(args)),
+			new PointerEventHandler((snd, args) => ProcessPointerUp(args, false)),
 			handledEventsToo: true);
 	}
-
-
-
-
-	//internal PopupRoot? AssociatedPopupRoot =>
-	//	AssociatedVisualTree?.PopupRoot ?? this.GetContext().MainPopupRoot;
-
-	//internal UIElement? AssociatedPublicRoot =>
-	//	AssociatedVisualTree?.PublicRootVisual ?? this.GetContext().VisualRoot as UIElement;
-
-
 
 	// As focus event are either async or cancellable,
 	// the FocusManager will explicitly notify us instead of listing to its events
@@ -82,7 +71,7 @@ internal class UnoRootElementLogic
 		=> PointerIdentifierPool.ReleaseManaged(args.Pointer.UniqueId);
 #endif
 
-	internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp = false)
+	internal void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp)
 	{
 		// We don't want handled events raised on RootVisual,
 		// instead we wait for the element that handled it to directly forward it to us,

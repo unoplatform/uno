@@ -1863,7 +1863,7 @@ namespace Microsoft.UI.Xaml.Input
 			// TODO Uno specific: We need to do a full redraw, as render loop does not yet check for focus visuals rendering.
 			UpdateFocusRect(focusNavigationDirection, false);
 			FocusNative(_focusedElement as UIElement);
-			(_contentRoot.VisualTree.RootElement as IRootElement)?.RootElementLogic.NotifyFocusChanged();
+			(_contentRoot.VisualTree.RootElement as IRootElement)?.NotifyFocusChanged();
 
 			// At this point the focused pointer has been switched.  So success is true
 			// even in the case we run into trouble raising the event(s) to notify as such.

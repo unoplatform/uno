@@ -827,7 +827,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			//	}
 			//}
 
-			if (CoreWindow.IShouldntUseGetForCurrentThread() is { } coreWindow)
+			if (CoreWindow.GetForCurrentThreadSafe() is { } coreWindow)
 			{
 				if (coreWindow.Dispatcher is { } dispatcher)
 				{

@@ -32,7 +32,7 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate() { }
 
-	protected override void ShowCore() => throw new NotImplementedException();
+	protected override void ShowCore() { }
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{

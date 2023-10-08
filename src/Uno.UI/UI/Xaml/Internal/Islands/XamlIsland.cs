@@ -8,21 +8,19 @@ using WinUICoreServices = global::Uno.UI.Xaml.Core.CoreServices;
 
 namespace Uno.UI.Xaml.Islands;
 
-internal partial class XamlIsland : Panel, IRootElement
+internal partial class XamlIsland : Panel
 {
 	private readonly ContentManager _contentManager;
-	private readonly UnoRootElementLogic _rootElementLogic;
 
 	public XamlIsland()
 	{
 		_contentManager = new(this, false);
+		// TODO: Uno specific - additional root logic required by Uno.
 		_rootElementLogic = new(this);
 		InitializeRoot(WinUICoreServices.Instance);
 	}
 
 	internal ContentManager ContentManager => _contentManager;
-
-	UnoRootElementLogic IRootElement.RootElementLogic => _rootElementLogic;
 
 	public UIElement? Content
 	{

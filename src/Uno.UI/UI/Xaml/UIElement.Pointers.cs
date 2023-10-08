@@ -309,7 +309,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(src, that, args));
 		};
@@ -317,7 +317,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(src, that, sender, args));
 		};
@@ -325,7 +325,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(src, that, sender, args));
 		};
@@ -333,7 +333,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(src, that, args));
 		};
@@ -341,7 +341,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 #if NEEDS_IMPLICIT_CAPTURE
 			foreach (var pointer in args.Pointers)
@@ -356,7 +356,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			if (args.TapCount == 1)
 			{
@@ -371,7 +371,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(src, args));
 		};
@@ -379,7 +379,7 @@ namespace Microsoft.UI.Xaml
 		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			var src = CoreWindow.IShouldntUseGetForCurrentThread()?.LastPointerEvent?.OriginalSource as UIElement ?? that;
+			var src = PointerRoutedEventArgs.LastPointerEvent?.OriginalSource as UIElement ?? that;
 
 			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(src, args));
 		};
@@ -710,7 +710,7 @@ namespace Microsoft.UI.Xaml
 
 		private async Task<DataPackageOperation> StartDragAsyncCore(PointerPoint pointer, PointerRoutedEventArgs ptArgs, CancellationToken ct)
 		{
-			ptArgs ??= CoreWindow.IShouldntUseGetForCurrentThread()!.LastPointerEvent as PointerRoutedEventArgs;
+			ptArgs ??= PointerRoutedEventArgs.LastPointerEvent;
 			if (ptArgs is null || ptArgs.Pointer.PointerDeviceType != pointer.PointerDeviceType)
 			{
 				// Fairly impossible case ...
