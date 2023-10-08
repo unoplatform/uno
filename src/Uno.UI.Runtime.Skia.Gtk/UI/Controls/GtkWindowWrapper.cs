@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using Gtk;
+using Uno.Extensions.Specialized;
 using Uno.Foundation.Logging;
 using Uno.UI.Xaml.Controls;
 using Windows.Foundation;
@@ -59,7 +60,16 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	public override void Close() => _gtkWindow.Close();
 
-	private void OnWindowClosed(object? sender, EventArgs e) => RaiseClosed();
+	private void OnWindowClosed(object? sender, EventArgs e)
+	{
+		RaiseClosed();
+
+		var windows = global::Gtk.Window.ListToplevels();
+		if (!windows.Where(w => w is UnoGtkWindow && w != NativeWindow).Any())
+		{
+			global::Gtk.Application.Quit();
+		}
+	}
 
 	private void OnWindowClosing(object sender, DeleteEventArgs args)
 	{
