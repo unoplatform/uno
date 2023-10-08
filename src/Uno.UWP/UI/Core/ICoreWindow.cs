@@ -19,7 +19,7 @@ namespace Windows.UI.Core
 		/// </summary>
 		bool Visible { get; }
 
-#if !__WASM__ && !__MACOS__ && !__SKIA__
+#if __WASM__ || __MACOS__ || __SKIA__
 		global::Windows.UI.Core.CoreCursor PointerCursor { get; set; }
 #endif
 
