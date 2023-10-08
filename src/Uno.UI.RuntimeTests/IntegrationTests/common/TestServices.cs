@@ -51,7 +51,7 @@ namespace Private.Infrastructure
 #endif
 			Task RunOnUIThread(Action action)
 		{
-#if __WASM__
+#if __WASM__ // TODO Uno: To be adjusted for #2302
 			action();
 			return Task.CompletedTask;
 #else
@@ -87,7 +87,7 @@ namespace Private.Infrastructure
 		{
 			get
 			{
-#if __WASM__
+#if __WASM__ // TODO Uno: To be adjusted for #2302
 				return false;
 #else
 				return WindowHelper.RootElementDispatcher.HasThreadAccess;

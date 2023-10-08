@@ -28,13 +28,18 @@ namespace Microsoft.UI.Xaml.Input
 		internal const bool PlatformSupportsNativeBubbling = true;
 #endif
 
-		public PointerRoutedEventArgs()
+		public PointerRoutedEventArgs() // TODO: This should be made internal
 		{
-			// This is acceptable as all ctors of this class are internal
-			CoreWindow.IShouldntUseGetForCurrentThread().LastPointerEvent = this;
+			LastPointerEvent = this;
+			if (CoreWindow.GetForCurrentThreadSafe() is { } coreWindow)
+			{
+				coreWindow.LastPointerEvent = this;
+			}
 
 			CanBubbleNatively = PlatformSupportsNativeBubbling;
 		}
+
+		internal static PointerRoutedEventArgs LastPointerEvent { get; private set; }
 
 		/// <inheritdoc />
 		Windows.UI.Input.PointerPoint CoreWindow.IPointerEventArgs.GetLocation(object relativeTo)
