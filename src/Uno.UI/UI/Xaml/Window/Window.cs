@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Media;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using System.Collections.Concurrent;
+using Uno.UI;
 
 namespace Windows.UI.Xaml;
 
@@ -82,7 +83,12 @@ public partial class Window
 		Background = SolidColorBrushHelper.White;
 
 		SizeChanged += OnWindowSizeChanged;
+		Closed += OnWindowClosed;
+
+		ApplicationHelper.AddWindow(this);
 	}
+
+	private void OnWindowClosed(object sender, object e) => ApplicationHelper.RemoveWindow(this);
 
 	internal static Window GetFromAppWindow(AppWindow appWindow) => _appWindowMap[appWindow];
 
