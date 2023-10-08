@@ -64,10 +64,10 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		WinUIApplication.Current.RaiseSuspending();
 	}
 
-	private void OnNativeDeactivated(object? sender, EventArgs e) => 
+	private void OnNativeDeactivated(object? sender, EventArgs e) =>
 		ActivationState = CoreWindowActivationState.Deactivated;
 
-	private void OnNativeActivated(object? sender, EventArgs e) => 
+	private void OnNativeActivated(object? sender, EventArgs e) =>
 		ActivationState = CoreWindowActivationState.PointerActivated;
 
 	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)

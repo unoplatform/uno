@@ -30,11 +30,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal int SystemUiVisibility { get; set; }
 
-    public override void Activate() { }
+	public override void Activate() { }
 
-    public override void Close() { }
+	public override void Close() { }
 
-    internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
 	internal void OnActivityCreated() => AddPreDrawListener();
 
