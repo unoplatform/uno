@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Uno.UI.Runtime.MacOS;
 using ObjCRuntime;
 using NSDraggingInfo = AppKit.INSDraggingInfo;
+using Microsoft.UI.Windowing;
 using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls
@@ -399,6 +400,12 @@ namespace Uno.UI.Controls
 
 			public override bool WindowShouldClose(NSObject sender)
 			{
+				var closingArgs = NativeWindowWrapper.Instance.OnNativeClosing();
+				if (closingArgs.Cancel)
+				{
+					return false;
+				}
+
 				var manager = SystemNavigationManagerPreview.GetForCurrentView();
 				if (!manager.HasConfirmedClose)
 				{

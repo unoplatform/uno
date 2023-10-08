@@ -63,6 +63,13 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 	private void OnWindowClosing(object sender, DeleteEventArgs args)
 	{
+		var closingArgs = RaiseClosing();
+		if (closingArgs.Cancel)
+		{
+			args.RetVal = true;
+			return;
+		}
+
 		var manager = SystemNavigationManagerPreview.GetForCurrentView();
 		if (!manager.HasConfirmedClose)
 		{
@@ -79,7 +86,6 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 
 		// All prerequisites passed, can safely close.
 		args.RetVal = false;
-		Main.Quit();
 	}
 
 	private void OnHostSizeChanged(object? sender, Windows.Foundation.Size size)

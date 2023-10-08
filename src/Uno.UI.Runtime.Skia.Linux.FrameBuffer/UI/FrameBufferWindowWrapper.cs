@@ -32,6 +32,8 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate() { }
 
+	public override void Close() { }
+
 	protected override void ShowCore() { }
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)

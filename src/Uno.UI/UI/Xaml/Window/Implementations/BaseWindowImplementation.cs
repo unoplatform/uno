@@ -90,12 +90,15 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		nativeWindow.ActivationChanged += OnNativeActivationChanged;
 		nativeWindow.VisibilityChanged += OnNativeVisibilityChanged;
 		nativeWindow.SizeChanged += OnNativeSizeChanged;
+		nativeWindow.Closing += OnNativeClosing;
 		nativeWindow.Closed += OnNativeClosed;
 		nativeWindow.Shown += OnNativeShown;
 		nativeWindow.VisibleBoundsChanged += OnNativeVisibleBoundsChanged;
 
 		NativeWindowWrapper = nativeWindow;
 	}
+
+	private void OnNativeClosing(object? sender, Microsoft.UI.Windowing.AppWindowClosingEventArgs e) => Window.AppWindow.RaiseClosing(e);
 
 	private void OnNativeShown(object? sender, EventArgs e) => ContentManager.TryLoadRootVisual(XamlRoot!);
 
@@ -113,7 +116,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		// There are two "versions" of WindowSizeChangedEventArgs in Uno currently
 		// when using WinUI, we need to use "legacy" version to work with CoreWindow
 		// (which will eventually be removed as a legacy API as well.
-		var coreWindowSizeChangedEventArgs = new Windows.UI.Core.WindowSizeChangedEventArgs(state);
+		var coreWindowSizeChangedEventArgs = new Windows.UI.Core.WindowSizeChangedEventArgs(size);
 #else
 		var coreWindowSizeChangedEventArgs = windowSizeChanged;
 #endif

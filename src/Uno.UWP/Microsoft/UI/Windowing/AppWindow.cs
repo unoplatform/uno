@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Threading;
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using MUXWindowId = Microsoft.UI.WindowId;
 
@@ -23,9 +24,13 @@ partial class AppWindow
 		ApplicationView.InitializeForWindowId(Id);
 	}
 
+	public event TypedEventHandler<AppWindow, AppWindowClosingEventArgs> Closing;
+
 	internal static MUXWindowId MainWindowId { get; } = new(1);
 
 	public MUXWindowId Id { get; }
 
 	public static AppWindow GetFromWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
+
+	internal void RaiseClosing(AppWindowClosingEventArgs args) => Closing?.Invoke(this, args);
 }
