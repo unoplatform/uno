@@ -24,8 +24,7 @@ namespace Windows.UI.Core
 		private Point? _pointerPosition;
 		private CoreWindowActivationState _lastActivationState;
 
-		internal static CoreWindow GetOrCreateForCurrentThread()
-			=> _current ??= new CoreWindow();
+		internal static CoreWindow GetOrCreateForCurrentThread() => _current ??= new CoreWindow();
 
 		private CoreWindow()
 		{
@@ -94,28 +93,19 @@ namespace Windows.UI.Core
 
 		internal IPointerEventArgs? LastPointerEvent { get; set; }
 
-#if HAS_UNO_WINUI
-		/// <summary>
-		/// Always null in Uno.WinUI.
-		/// </summary>
-		public static CoreWindow? GetForCurrentThread() => _current;
-#else
 		/// <summary>
 		/// Gets the CoreWindow instance for the currently active thread.
+		/// Always null in Uno.WinUI.
 		/// </summary>
-		/// <returns>The CoreWindow for the currently active thread.</returns>
-		public static CoreWindow? GetForCurrentThread() => _current;
-#endif
+		public static CoreWindow? GetForCurrentThread() => GetOrCreateForCurrentThread();
 
 #pragma warning disable RS0030 // GetForCurrentThread is banned
 		/// <summary>
-		/// Use this instead of Window.Current throughout this codebase
-		/// to prove it is intentional (the property is null throughout Uno.WinUI).
+		/// Use this instead of GetForCurrentThread throughout this codebase
+		/// to prove it is intentional (the property will be null in future versions of Uno.WinUI).
 		/// </summary>
 		internal static CoreWindow? GetForCurrentThreadSafe() => GetForCurrentThread();
 #pragma warning restore RS0030
-
-		internal static CoreWindow? IShouldntUseGetForCurrentThread() => GetForCurrentThreadSafe();
 
 		public CoreVirtualKeyStates GetAsyncKeyState(System.VirtualKey virtualKey)
 			=> KeyboardStateTracker.GetAsyncKeyState(virtualKey);

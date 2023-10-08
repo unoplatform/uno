@@ -1,5 +1,6 @@
 ﻿#nullable enable
 
+using System.DirectoryServices.ActiveDirectory;
 using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml;
@@ -11,6 +12,8 @@ internal class NativeWindowFactoryExtension : INativeWindowFactoryExtension
 	internal NativeWindowFactoryExtension()
 	{
 	}
+
+	public bool SupportsMultipleWindows => true;
 
 	public INativeWindowWrapper CreateWindow(Window window, XamlRoot xamlRoot)
 	{
