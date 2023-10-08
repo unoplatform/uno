@@ -176,12 +176,15 @@ namespace Uno.UI.Toolkit
 			}
 			else
 			{
-#if __IOS__ || __MACOS__
+#if __WASM__
+				this.SetElevationInternal(Elevation, ShadowColor);
+				this.SetCornerRadius();
+#elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
 				_invalidateShadow = true;
 				((ViewGroup)this).Invalidate();
-#elif __SKIA__ || __WASM__
+#elif __SKIA__
 				this.SetElevationInternal(Elevation, ShadowColor);
 #elif (NETFX_CORE || NETCOREAPP) && !HAS_UNO
 				_border.SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
@@ -190,6 +193,23 @@ namespace Uno.UI.Toolkit
 		}
 
 #if HAS_UNO
+
+#if __WASM__
+		private void SetCornerRadius()
+		{
+  			var cornerRadius = CornerRadius;
+			if (cornerRadius == CornerRadius.None)
+			{
+				element.ResetStyle("border-radius", "overflow");
+			}
+			else
+			{
+				var outer = cornerRadius.GetRadii(element.RenderSize, thickness).Outer;
+				WindowManagerInterop.SetCornerRadius(element.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
+			}
+		}
+#endif
+
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
