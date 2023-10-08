@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -69,6 +70,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler<Rect>? VisibleBoundsChanged;
 	public event EventHandler<CoreWindowActivationState>? ActivationChanged;
 	public event EventHandler<bool>? VisibilityChanged;
+	public event EventHandler<AppWindowClosingEventArgs>? Closing;
 	public event EventHandler? Closed;
 	public event EventHandler? Shown;
 
@@ -83,6 +85,13 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	}
 
 	protected abstract void ShowCore();
+
+	protected AppWindowClosingEventArgs RaiseClosing()
+	{
+		var args = new AppWindowClosingEventArgs();
+		Closing?.Invoke(this, args);
+		return args;
+	}
 
 	protected void RaiseClosed() => Closed?.Invoke(this, EventArgs.Empty);
 }

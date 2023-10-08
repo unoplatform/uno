@@ -1,6 +1,7 @@
 ﻿#nullable enable
 
 using System;
+using Microsoft.UI.Windowing;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -24,6 +25,8 @@ internal interface INativeWindowWrapper
 	event EventHandler<CoreWindowActivationState>? ActivationChanged;
 
 	event EventHandler<bool>? VisibilityChanged;
+
+	event EventHandler<AppWindowClosingEventArgs>? Closing;
 
 	event EventHandler? Closed;
 

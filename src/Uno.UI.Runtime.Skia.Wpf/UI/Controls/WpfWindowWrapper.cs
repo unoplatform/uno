@@ -18,10 +18,10 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 	{
 		_wpfWindow = wpfWindow ?? throw new ArgumentNullException(nameof(wpfWindow));
 		_wpfWindow.Host.SizeChanged += OnHostSizeChanged;
-		_wpfWindow.Closing += OnNativeClosing;
 		_wpfWindow.Activated += OnNativeActivated;
 		_wpfWindow.Deactivated += OnNativeDeactivated;
 		_wpfWindow.IsVisibleChanged += OnNativeIsVisibleChanged;
+		_wpfWindow.Closing += OnNativeClosing;
 		_wpfWindow.Closed += OnNativeClosed;
 	}
 
@@ -43,7 +43,13 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	private void OnNativeClosing(object? sender, CancelEventArgs e)
 	{
-		// TODO: Support multi-window approach properly #8341
+		var closingArgs = RaiseClosing();
+		if (closingArgs.Cancel)
+		{
+			e.Cancel = true;
+			return;
+		}
+
 		var manager = SystemNavigationManagerPreview.GetForCurrentView();
 		if (!manager.HasConfirmedClose)
 		{

@@ -12,6 +12,7 @@ using Windows.Foundation.Metadata;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
+using Microsoft.UI.Windowing;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
@@ -80,6 +81,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
+
+	internal AppWindowClosingEventArgs OnNativeClosing() => RaiseClosing();
 
 	internal void OnNativeClosed() => RaiseClosed();
 
