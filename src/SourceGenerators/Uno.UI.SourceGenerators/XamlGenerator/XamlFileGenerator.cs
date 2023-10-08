@@ -132,6 +132,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private readonly string[] _includeXamlNamespaces;
 
+		private readonly bool _disableBindableTypeProvidersGeneration;
+
 		/// <summary>
 		/// Information about types used in .Apply() scenarios
 		/// </summary>
@@ -207,6 +209,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isUnoFluentAssembly,
 			bool isLazyVisualStateManagerEnabled,
 			bool enableFuzzyMatching,
+			bool disableBindableTypeProvidersGeneration,
 			GeneratorExecutionContext generatorContext,
 			bool xamlResourcesTrimming,
 			IDictionary<INamedTypeSymbol, XamlType> xamlTypeToXamlTypeBaseMap,
@@ -235,6 +238,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlResourcesTrimming = xamlResourcesTrimming;
 			_xamlTypeToXamlTypeBaseMap = xamlTypeToXamlTypeBaseMap;
 			_includeXamlNamespaces = includeXamlNamespaces;
+			_disableBindableTypeProvidersGeneration = disableBindableTypeProvidersGeneration;
 
 			InitCaches();
 
@@ -500,7 +504,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineIndented($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
 
-			if (!_isDesignTimeBuild)
+			if (!_isDesignTimeBuild && !_disableBindableTypeProvidersGeneration)
 			{
 				writer.AppendLineIndented($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 			}
