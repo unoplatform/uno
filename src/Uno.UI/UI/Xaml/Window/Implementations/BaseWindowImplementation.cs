@@ -18,6 +18,7 @@ using WindowActivatedEventArgs = Microsoft.UI.Xaml.WindowActivatedEventArgs;
 #else
 using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 using WindowActivatedEventArgs = Windows.UI.Core.WindowActivatedEventArgs;
+using Uno.Helpers.Theming;
 #endif
 
 namespace Uno.UI.Xaml.Controls;
@@ -129,6 +130,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 		CoreWindow?.OnVisibilityChanged(args);
 		VisibilityChanged?.Invoke(this, args);
+		SystemThemeHelper.RefreshSystemTheme();
 	}
 
 	private void OnNativeActivationChanged(object? sender, CoreWindowActivationState state)
@@ -157,6 +159,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 #endif
 			CoreWindow?.OnActivated(coreWindowActivatedEventArgs);
 			Activated?.Invoke(this, activatedEventArgs);
+			SystemThemeHelper.RefreshSystemTheme();
 		}
 	}
 

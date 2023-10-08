@@ -18,13 +18,8 @@ partial class NativeWindowFactory
 		return factory;
 	});
 
-	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot)
-	{
-		if (_nativeWindowFactory.Value is not { } factory)
-		{
-			return null;
-		}
+	public static bool SupportsMultipleWindows => _nativeWindowFactory.Value?.SupportsMultipleWindows ?? false;
 
-		return factory.CreateWindow(window, xamlRoot);
-	}
+	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot) =>
+		_nativeWindowFactory.Value?.CreateWindow(window, xamlRoot) ?? null;
 }
