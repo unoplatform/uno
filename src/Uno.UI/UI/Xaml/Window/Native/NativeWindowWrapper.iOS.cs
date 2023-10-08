@@ -31,7 +31,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		ObserveOrientationAndSize();
 
 #if __MACCATALYST__
-		_nativeWindow.SetOwner(CoreWindow.IShouldntUseGetForCurrentThread());
+		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
 	}
 
