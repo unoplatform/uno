@@ -10,6 +10,7 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using _Debug = System.Diagnostics.Debug;
 
@@ -299,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var spPopup = Popup;
 
-			var lastPointerEnteredPoint = CoreWindow.IShouldntUseGetForCurrentThread()!.PointerPosition;
+			var lastPointerEnteredPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
 
 			left = lastPointerEnteredPoint.X;
 			top = lastPointerEnteredPoint.Y;
@@ -476,7 +477,7 @@ namespace Windows.UI.Xaml.Controls
 				var lastPointerEnteredPoint = default(Point);
 
 				// UNO TODO: PointerPoint.GetCurrentPoint(uint pointerId)
-				lastPointerEnteredPoint = CoreWindow.IShouldntUseGetForCurrentThread()!.PointerPosition;
+				lastPointerEnteredPoint = PointerRoutedEventArgs.LastPointerEvent?.GetCurrentPoint(null).Position ?? new Point();
 
 				rcDockTo.X = lastPointerEnteredPoint.X;
 				rcDockTo.Y = lastPointerEnteredPoint.Y;
