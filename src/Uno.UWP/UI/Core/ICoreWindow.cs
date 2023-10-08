@@ -19,12 +19,6 @@ namespace Windows.UI.Core
 		/// </summary>
 		bool Visible { get; }
 
-#if __WASM__ || __MACOS__ || __SKIA__
-		global::Windows.UI.Core.CoreCursor PointerCursor { get; set; }
-#endif
-
-		global::Windows.Foundation.Point PointerPosition { get; set; }
-
 		/// <summary>
 		/// Specifies the event that is fired when the window completes activation or deactivation.
 		/// </summary>
