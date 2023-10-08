@@ -36,7 +36,7 @@ partial class InputManager
 
 			if (_inputManager.ContentRoot.Type == ContentRootType.CoreWindow)
 			{
-				CoreWindow.IShouldntUseGetForCurrentThread()?.SetKeyboardInputSource(_source);
+				CoreWindow.GetForCurrentThreadSafe()?.SetKeyboardInputSource(_source);
 			}
 
 			_source.KeyDown += (s, e) => InitiateKeyDownBubblingFlow(e);

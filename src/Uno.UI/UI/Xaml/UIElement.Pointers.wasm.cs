@@ -211,7 +211,7 @@ public partial class UIElement : DependencyObject
 							{
 								rootElement = element.XamlRoot?.VisualTree.RootElement as IRootElement;
 							}
-							rootElement?.RootElementLogic.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
+							rootElement?.ProcessPointerUp(routedArgs, isAfterHandledUp: true);
 						}
 
 						break;
