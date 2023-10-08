@@ -53,28 +53,28 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		}
 
 		// Closing should continue, perform suspension.
-		// TODO:MZ: Only do this if it is the last Window!
 		WinUIApplication.Current.RaiseSuspending();
 	}
 
-	private void OnNativeDeactivated(object? sender, EventArgs e) => ActivationState = CoreWindowActivationState.Deactivated;
+	private void OnNativeDeactivated(object? sender, EventArgs e) => 
+		ActivationState = CoreWindowActivationState.Deactivated;
 
-	private void OnNativeActivated(object? sender, EventArgs e) => ActivationState = CoreWindowActivationState.PointerActivated;
+	private void OnNativeActivated(object? sender, EventArgs e) => 
+		ActivationState = CoreWindowActivationState.PointerActivated;
 
 	private void OnNativeIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
 	{
-		Visible = _wpfWindow.IsVisible;
-		// TODO:MZ: Incorporate RaiseLeavingBackground and RaiseEnteredBackground in general manner
-		//if (isVisible)
-		//{
-		//	// TODO:MZ: Only do this for single Window (but visibilityChanged always)
-		//	WinUIApplication.Current?.RaiseLeavingBackground(() => VisibilityChanged?.Invoke(this, isVisible));
-		//}
-		//else if (isVisible)
-		//{
-		//	VisibilityChanged?.Invoke(this, _wpfWindow.IsVisible);
-		//	// TODO:MZ: Only do this for single Window!
-		//	WinUIApplication.Current?.RaiseEnteredBackground(null);
-		//}
+		var isVisible = (bool)e.NewValue;
+		if (isVisible)
+		{
+			// TODO:MZ: Only do this for single Window (but visibilityChanged always)
+			WinUIApplication.Current?.RaiseLeavingBackground(() => Visible = isVisible);
+		}
+		else
+		{
+			Visible = isVisible;
+			// TODO:MZ: Only do this for single Window!
+			WinUIApplication.Current?.RaiseEnteredBackground(null);
+		}
 	}
 }

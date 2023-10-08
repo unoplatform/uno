@@ -32,4 +32,6 @@ internal interface INativeWindowWrapper
 	void Activate();
 
 	void Show();
+
+	void Close();
 }

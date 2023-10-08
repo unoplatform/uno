@@ -5,6 +5,7 @@ namespace Uno.UI
 {
 	public class ApplicationHelper
 	{
+		private static readonly List<Window> _windows = new();
 		private static string _requestedCustomTheme;
 
 		/// <summary>
@@ -49,9 +50,15 @@ namespace Uno.UI
 		public static void ReapplyApplicationTheme()
 			=> Application.Current.OnRequestedThemeChanged();
 
+		public static IReadOnlyList<Windows.UI.Xaml.Window> Windows => _windows.AsReadOnly();
+
 		public static bool IsLoadableComponent(Uri resource)
 		{
 			return Application.Current?.IsLoadableComponent(resource) ?? false;
 		}
+
+		internal static void AddWindow(Windows.UI.Xaml.Window window) => _windows.Add(window);
+
+		internal static void RemoveWindow(Windows.UI.Xaml.Window window) => _windows.Remove(window);
 	}
 }
