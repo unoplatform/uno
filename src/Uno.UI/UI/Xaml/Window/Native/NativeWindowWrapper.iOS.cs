@@ -35,7 +35,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 	}
 
-	public override void Activate() { } //TODO:MZ: Handle activation
+	public override void Activate() { }
+
+	public override void Close() { }
 
 	protected override void ShowCore()
 	{
