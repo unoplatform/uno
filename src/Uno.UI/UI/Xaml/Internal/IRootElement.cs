@@ -1,6 +1,10 @@
-﻿namespace Uno.UI.Xaml.Core;
+﻿using Windows.UI.Xaml.Input;
+
+namespace Uno.UI.Xaml.Core;
 
 internal interface IRootElement
 {
-	UnoRootElementLogic RootElementLogic { get; }
+	void NotifyFocusChanged();
+
+	void ProcessPointerUp(PointerRoutedEventArgs args, bool isAfterHandledUp);
 }

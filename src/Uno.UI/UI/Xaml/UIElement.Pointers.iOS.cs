@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml
 						{
 							rootElement = XamlRoot?.VisualTree.RootElement as IRootElement;
 						}
-						rootElement?.RootElementLogic.ProcessPointerUp(args, isAfterHandledUp: true);
+						rootElement?.ProcessPointerUp(args, isAfterHandledUp: true);
 					}
 
 					pt.Release(this);

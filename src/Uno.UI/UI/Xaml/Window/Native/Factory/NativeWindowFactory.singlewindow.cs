@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !__SKIA__
+#if !SUPPORTS_MULTIWINDOW
 
 using System;
 using Uno.Foundation.Extensibility;
@@ -9,7 +9,6 @@ namespace Uno.UI.Xaml.Controls;
 
 partial class NativeWindowFactory
 {
-	//TODO: Allow multi-window support for Wasm
 	private static INativeWindowWrapper? CreateWindowPlatform(Windows.UI.Xaml.Window window, XamlRoot xamlRoot) => NativeWindowWrapper.Instance;
 }
 #endif
