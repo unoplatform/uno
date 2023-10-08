@@ -13,6 +13,8 @@ using CoreGraphics;
 using _View = AppKit.NSView;
 #elif __ANDROID__
 using Android.Views;
+#elif __WASM__
+using Uno.UI.Xaml;
 #endif
 
 
@@ -200,12 +202,12 @@ namespace Uno.UI.Toolkit
   			var cornerRadius = CornerRadius;
 			if (cornerRadius == CornerRadius.None)
 			{
-				element.ResetStyle("border-radius", "overflow");
+				this.ResetStyle("border-radius", "overflow");
 			}
 			else
 			{
-				var outer = cornerRadius.GetRadii(element.RenderSize, BorderThickness).Outer;
-				WindowManagerInterop.SetCornerRadius(element.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
+				var outer = cornerRadius.GetRadii(this.RenderSize, BorderThickness).Outer;
+				WindowManagerInterop.SetCornerRadius(this.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
 			}
 		}
 #endif
