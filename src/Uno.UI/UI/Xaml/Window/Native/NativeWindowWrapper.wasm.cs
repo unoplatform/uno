@@ -12,7 +12,10 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate()
 	{
-		// TODO: Bring window to the foreground?
+	}
+
+	public override void Close()
+	{
 	}
 
 	internal void OnNativeClosed() => RaiseClosed();

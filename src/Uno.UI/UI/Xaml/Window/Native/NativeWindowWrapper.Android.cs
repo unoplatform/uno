@@ -30,12 +30,11 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal int SystemUiVisibility { get; set; }
 
-	public override void Activate()
-	{
-		// TODO: MZ: Bring window to the foreground?
-	}
+    public override void Activate() { }
 
-	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
+    public override void Close() { }
+
+    internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
 	internal void OnActivityCreated() => AddPreDrawListener();
 

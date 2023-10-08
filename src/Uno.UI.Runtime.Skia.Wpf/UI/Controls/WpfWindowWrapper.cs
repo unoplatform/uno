@@ -31,6 +31,8 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 
 	public override void Activate() => _wpfWindow.Activate();
 
+	public override void Close() => _wpfWindow.Close();
+
 	private void OnHostSizeChanged(object sender, System.Windows.SizeChangedEventArgs e)
 	{
 		Bounds = new Rect(default, new Windows.Foundation.Size(e.NewSize.Width, e.NewSize.Height));
@@ -67,13 +69,11 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		var isVisible = (bool)e.NewValue;
 		if (isVisible)
 		{
-			// TODO:MZ: Only do this for single Window (but visibilityChanged always)
 			WinUIApplication.Current?.RaiseLeavingBackground(() => Visible = isVisible);
 		}
 		else
 		{
 			Visible = isVisible;
-			// TODO:MZ: Only do this for single Window!
 			WinUIApplication.Current?.RaiseEnteredBackground(null);
 		}
 	}

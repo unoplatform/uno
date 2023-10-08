@@ -10,10 +10,9 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value; // TODO: Temporary until proper multi-window support is added.
 
-	public override void Activate()
-	{
-		// TODO: Bring window to the foreground?
-	}
+	public override void Activate() { }
+
+	public override void Close() { }
 
 	internal void OnNativeClosed() => RaiseClosed();
 
