@@ -2048,10 +2048,10 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+			=> new TappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
 
 		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
-			=> new RightTappedEventArgs(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
+			=> new RightTappedEventArgs(1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
 
 		public static HoldingEventArgs Hold(double x, double y, HoldingState state, PointerDeviceType? device = null, uint? ptId = null)
 			=> new HoldingEventArgs(ptId ?? 1, device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), state);
