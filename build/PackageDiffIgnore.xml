@@ -1740,6 +1740,12 @@
 			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.InfoBadge.set_TemplateSettings(Microsoft.UI.Xaml.Controls.InfoBadgeTemplateSettings value)" reason="No setter in MUX" />
+			
+			<!-- Multiple XamlRoots -->
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
+			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
