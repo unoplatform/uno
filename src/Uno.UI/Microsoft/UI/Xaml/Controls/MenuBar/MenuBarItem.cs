@@ -365,6 +365,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_menuBar.IsFlyoutOpen = true;
 
+				// This is a workaround until FlyoutBase.OverlayInputPassThroughElement is implemented.
 				var menuBar = m_menuBar;
 				var presenter = m_flyout.m_presenter;
 				PointerEventHandler pointerMovedHandler = (_, e) => menuBar.OnMenuBarItemFlyoutPresenterPointerMoved(e);

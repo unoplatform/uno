@@ -52,6 +52,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsFlyoutOpen { get; set; }
 
+		/// <summary>
+		/// This is a workaround until FlyoutBase.OverlayInputPassThroughElement is implemented.
+		/// </summary>
 		internal void OnMenuBarItemFlyoutPresenterPointerMoved(PointerRoutedEventArgs e)
 		{
 			if (IsFlyoutOpen)
