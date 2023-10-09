@@ -446,6 +446,16 @@ namespace Uno.UI.Xaml.Core
 			//	}
 			//}
 
+			if (FocusVisualRoot is not null)
+			{
+				RemoveRoot(FocusVisualRoot);
+			}
+
+			if (PopupRoot is not null)
+			{
+				RemoveRoot(PopupRoot);
+			}
+
 			//if (_printRoot != null)
 			//{
 			//	RemoveRoot(_printRoot);
@@ -456,10 +466,10 @@ namespace Uno.UI.Xaml.Core
 			//	RemoveRoot(_transitionRoot);
 			//}
 
-			//if (_fullWindowMediaRoot != null)
-			//{
-			//	RemoveRoot(_fullWindowMediaRoot);
-			//}
+			if (FullWindowMediaRoot != null)
+			{
+				RemoveRoot(FullWindowMediaRoot);
+			}
 
 			//if (_renderTargetBitmapRoot != null)
 			//{
