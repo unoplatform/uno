@@ -2,7 +2,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.System;
@@ -116,7 +115,7 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 		}
 
 		var scanCode = MapVirtualKey(keyCode, 0);
-		var inputLocaleIdentifier = GetKeyboardLayout((uint)Thread.CurrentThread.ManagedThreadId);
+		var inputLocaleIdentifier = GetKeyboardLayout((uint)Environment.CurrentManagedThreadId);
 
 		var result = new StringBuilder();
 		ToUnicodeEx(keyCode, scanCode, keyboardState, result, (int)5, (uint)0, inputLocaleIdentifier);

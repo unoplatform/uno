@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using SkiaSharp;
 using Windows.Foundation;
 using Windows.UI.Composition;
@@ -38,7 +36,7 @@ namespace Windows.UI.Xaml.Documents
 
 		// these should only be used by TextBox.
 		internal (int startLine, int startIndex, int endLine, int endIndex)? Selection { get; set; }
-		internal (bool atEndOfSelection, Color color)? Caret { get; set; }
+		internal (bool atEndOfSelection, Windows.UI.Color color)? Caret { get; set; }
 		internal bool RenderSelectionAndCaret { get; set; }
 
 		/// <summary>

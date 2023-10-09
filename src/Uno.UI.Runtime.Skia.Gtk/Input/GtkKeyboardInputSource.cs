@@ -3,7 +3,6 @@
 using System;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading;
 using Gdk;
 using Gtk;
 using Windows.System;
@@ -129,7 +128,7 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 		}
 
 		var scanCode = MapVirtualKey(keyCode, 0);
-		var inputLocaleIdentifier = GetKeyboardLayout((uint)Thread.CurrentThread.ManagedThreadId);
+		var inputLocaleIdentifier = GetKeyboardLayout((uint)Environment.CurrentManagedThreadId);
 
 		var result = new StringBuilder();
 		ToUnicodeEx(keyCode, scanCode, keyboardState, result, (int)5, (uint)0, inputLocaleIdentifier);
