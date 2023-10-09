@@ -106,14 +106,15 @@ partial class App
 		}
 
 		var textBox = new TextBox();
-		textBox.XamlRoot = rootFrame.XamlRoot;
+		var xamlRoot = _mainWindow.RootElement.XamlRoot;
+		textBox.XamlRoot = xamlRoot;
 		var textBoxView = new TextBoxView(textBox);
 		ApiExtensibility.CreateInstance<IOverlayTextBoxViewExtension>(textBoxView, out var textBoxViewExtension);
 		Assert.IsNotNull(textBoxViewExtension);
 
 		if (textBoxViewExtension is not null)
 		{
-			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(rootFrame.XamlRoot));
+			Assert.IsTrue(textBoxViewExtension.IsOverlayLayerInitialized(xamlRoot));
 		}
 		else
 		{

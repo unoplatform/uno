@@ -49,7 +49,7 @@ internal partial class ContentManager
 			{
 				throw new InvalidOperationException("Main visual tree must be initialized");
 			}
-			// TODO:MZ: Add RootScrollViewer everywhere
+			// TODO: Add RootScrollViewer everywhere
 			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
 			_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
