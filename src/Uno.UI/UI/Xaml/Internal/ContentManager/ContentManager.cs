@@ -51,18 +51,25 @@ internal partial class ContentManager
 			}
 			// TODO: Add RootScrollViewer everywhere
 			visualTree.SetPublicRootVisual(newContent, rootScrollViewer: null, rootContentPresenter: null);
-			_rootVisual = WinUICoreServices.Instance.MainRootVisual;
 
-			if (_rootVisual?.XamlRoot is null)
+			if (_rootVisual is null)
 			{
-				throw new InvalidOperationException("The root visual was not created.");
-			}
+				// Initialize root visual and attach it to owner window.
 
-			if (_owner is not Windows.UI.Xaml.Window window)
-			{
-				throw new InvalidOperationException("Owner of ContentManager should be a Window");
+				_rootVisual = WinUICoreServices.Instance.MainRootVisual;
+
+				if (_rootVisual?.XamlRoot is null)
+				{
+					throw new InvalidOperationException("The root visual was not created.");
+				}
+
+				if (_owner is not Windows.UI.Xaml.Window window)
+				{
+					throw new InvalidOperationException("Owner of ContentManager should be a Window");
+				}
+
+				AttachToWindow(_rootVisual, window);
 			}
-			AttachToWindow(_rootVisual, window);
 		}
 
 		_content = newContent;
