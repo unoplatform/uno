@@ -180,7 +180,11 @@ namespace Uno.UI.Toolkit
 			{
 #if __WASM__
 				this.SetElevationInternal(Elevation, ShadowColor);
-				this.SetCornerRadius();
+				// We don't pass BorderThickness here to avoid "double" border being created. The BorderThickness will flow through ElevatedView template to PART_Border
+				// Note that this line was necessary as of writing it even though we pass zero for BorderThickness. Setting the CornerRadius alone has a noticeable effect.
+				// and not setting CornerRadius properly results in wrong rendering.
+				// Note that the brush will not be used if we pass zero thickness, so we pass null instead of wasting time reading the dependency property.
+				this.SetBorder(default, null, CornerRadius);
 #elif __IOS__ || __MACOS__
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
@@ -195,23 +199,6 @@ namespace Uno.UI.Toolkit
 		}
 
 #if HAS_UNO
-
-#if __WASM__
-		private void SetCornerRadius()
-		{
-  			var cornerRadius = CornerRadius;
-			if (cornerRadius == CornerRadius.None)
-			{
-				this.ResetStyle("border-radius", "overflow");
-			}
-			else
-			{
-				var outer = cornerRadius.GetRadii(this.RenderSize, BorderThickness).Outer;
-				WindowManagerInterop.SetCornerRadius(this.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
-			}
-		}
-#endif
-
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
