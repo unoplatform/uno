@@ -143,9 +143,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On WinUI, TextBoxes start their selection at 0
 			Assert.AreEqual(
 #if __SKIA__
-				FeatureConfiguration.TextBox.UseOverlayOnSkia? textBox.Text.Length :
+				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
 #endif
-				0,
+					textBox.Text.Length,
 				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 7);
@@ -170,9 +170,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On WinUI, TextBoxes start their selection at 0
 			Assert.AreEqual(
 #if __SKIA__
-				FeatureConfiguration.TextBox.UseOverlayOnSkia? textBox.Text.Length :
+				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
 #endif
-					0,
+					textBox.Text.Length,
 				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 20);
@@ -197,9 +197,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			// On WinUI, TextBoxes start their selection at 0
 			Assert.AreEqual(
 #if __SKIA__
-				FeatureConfiguration.TextBox.UseOverlayOnSkia? textBox.Text.Length :
+				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
 #endif
-					0,
+					textBox.Text.Length,
 				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(20, 5);
