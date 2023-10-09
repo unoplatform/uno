@@ -22,6 +22,23 @@ public partial class AcrylicBrush
 	private const float BlurRadius = 30.0f;
 	private const float NoiseOpacity = 0.02f;
 
+	private struct EffectNames
+	{
+		public const string Backdrop = "Backdrop";
+		public const string Blur = "Blur";
+		public const string FadeInOut = "FadeInOut";
+		public const string FadeInOutCrossFade = "FadeInOut.CrossFade";
+		public const string Fallback = "FallbackColor";
+		public const string FallbackColor = "FallbackColor.Color";
+		public const string Luminosity = "LuminosityColor";
+		public const string LuminosityColor = "LuminosityColor.Color";
+		public const string Tint = "TintColor";
+		public const string TintColor = "TintColor.Color";
+		public const string Noise = "Noise";
+		public const string NoiseAsset = "Uno.UI.Resources.NoiseAsset256x256.png";
+		public const string NoiseOpacity = "NoiseOpacity";
+	}
+
 	protected override void OnConnected()
 	{
 		_isConnected = true;
@@ -141,7 +158,7 @@ public partial class AcrylicBrush
 			Compositor compositor = Window.Current.Compositor;
 			CompositionSurfaceBrush surfaceBrush = compositor.CreateSurfaceBrush();
 			SkiaCompositionSurface surface = new SkiaCompositionSurface();
-			using Stream? imgStream = GetType().Assembly.GetManifestResourceStream("Uno.UI.Resources.NoiseAsset256x256.png");
+			using Stream? imgStream = GetType().Assembly.GetManifestResourceStream(EffectNames.NoiseAsset);
 
 			if (imgStream is not null && surface.LoadFromStream(256, 256, imgStream).success)
 			{
@@ -176,12 +193,12 @@ public partial class AcrylicBrush
 			{
 				//var hostBackdropBrush = compositor.CreateHostBackdropBrush();
 				var hostBackdropBrush = compositor.CreateBackdropBrush(); // We don't have HostBackdropBrush support yet
-				acrylicBrush?.SetSourceParameter("Backdrop", hostBackdropBrush);
+				acrylicBrush?.SetSourceParameter(EffectNames.Backdrop, hostBackdropBrush);
 			}
 			else
 			{
 				var backdropBrush = compositor.CreateBackdropBrush();
-				acrylicBrush?.SetSourceParameter("Backdrop", backdropBrush);
+				acrylicBrush?.SetSourceParameter(EffectNames.Backdrop, backdropBrush);
 			}
 		}
 
@@ -198,10 +215,10 @@ public partial class AcrylicBrush
 
 		// Tint Color - either used directly or in a Color blend over a blurred backdrop
 		var tintColorEffect = new ColorSourceEffect();
-		tintColorEffect.Name = "TintColor";
+		tintColorEffect.Name = EffectNames.Tint;
 		tintColorEffect.Color = initialTintColor;
 
-		List<string> animatedProperties = new() { "TintColor.Color" };
+		List<string> animatedProperties = new() { EffectNames.TintColor };
 
 		if (shouldBrushBeOpaque)
 		{
@@ -211,7 +228,7 @@ public partial class AcrylicBrush
 		else
 		{
 			// Load the backdrop in a brush
-			CompositionEffectSourceParameter backdropEffectSourceParameter = new("Backdrop");
+			CompositionEffectSourceParameter backdropEffectSourceParameter = new(EffectNames.Backdrop);
 
 			// Get a blurred backdrop...
 			IGraphicsEffectSource blurredSource;
@@ -224,7 +241,7 @@ public partial class AcrylicBrush
 			{
 				// ...or we apply the blur ourselves
 				var gaussianBlurEffect = new GaussianBlurEffect();
-				gaussianBlurEffect.Name = "Blur";
+				gaussianBlurEffect.Name = EffectNames.Blur;
 				gaussianBlurEffect.BorderMode = EffectBorderMode.Hard;
 				gaussianBlurEffect.BlurAmount = BlurRadius;
 				gaussianBlurEffect.Source = backdropEffectSourceParameter;
@@ -235,9 +252,9 @@ public partial class AcrylicBrush
 		}
 
 		// Create noise with alpha:
-		CompositionEffectSourceParameter noiseEffectSourceParameter = new("Noise");
+		CompositionEffectSourceParameter noiseEffectSourceParameter = new(EffectNames.Noise);
 		var noiseOpacityEffect = new OpacityEffect();
-		noiseOpacityEffect.Name = "NoiseOpacity";
+		noiseOpacityEffect.Name = EffectNames.NoiseOpacity;
 		noiseOpacityEffect.Opacity = NoiseOpacity;
 		noiseOpacityEffect.Source = noiseEffectSourceParameter;
 
@@ -251,18 +268,18 @@ public partial class AcrylicBrush
 		{
 			// Fallback color
 			var fallbackColorEffect = new ColorSourceEffect();
-			fallbackColorEffect.Name = "FallbackColor";
+			fallbackColorEffect.Name = EffectNames.Fallback;
 			fallbackColorEffect.Color = initialFallbackColor;
 
 			// CrossFade with the fallback color. CrossFade = 0 means full fallback, 1 means full acrylic.
 			var fadeInOutEffect = new CrossFadeEffect();
-			fadeInOutEffect.Name = "FadeInOut";
+			fadeInOutEffect.Name = EffectNames.FadeInOut;
 			fadeInOutEffect.Source1 = fallbackColorEffect;
 			fadeInOutEffect.Source2 = blendEffectOuter;
 			fadeInOutEffect.CrossFade = 1.0f;
 
-			animatedProperties.Add("FallbackColor.Color");
-			animatedProperties.Add("FadeInOut.CrossFade");
+			animatedProperties.Add(EffectNames.FallbackColor);
+			animatedProperties.Add(EffectNames.FadeInOutCrossFade);
 			effectFactory = compositor.CreateEffectFactory(fadeInOutEffect, animatedProperties);
 		}
 		else
@@ -275,13 +292,13 @@ public partial class AcrylicBrush
 
 	private IGraphicsEffect CombineNoiseWithTintEffect(IGraphicsEffectSource blurredSource, ColorSourceEffect tintColorEffect, Color initialLuminosityColor, IList<string>? animatedProperties = null)
 	{
-		animatedProperties?.Add("LuminosityColor.Color");
+		animatedProperties?.Add(EffectNames.LuminosityColor);
 
 		// Apply luminosity:
 
 		// Luminosity Color
 		var luminosityColorEffect = new ColorSourceEffect();
-		luminosityColorEffect.Name = "LuminosityColor";
+		luminosityColorEffect.Name = EffectNames.Luminosity;
 		luminosityColorEffect.Color = initialLuminosityColor;
 
 		// Luminosity blend
