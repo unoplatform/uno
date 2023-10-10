@@ -990,7 +990,9 @@ namespace Windows.UI.Xaml.Controls
 			OnPointerPressedNative(args);
 		}
 
-		partial void OnPointerPressedNative(PointerRoutedEventArgs e);
+		partial void OnPointerPressedNative(PointerRoutedEventArgs args);
+
+		partial void OnPointerReleasedNative(PointerRoutedEventArgs args);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -1004,17 +1006,7 @@ namespace Windows.UI.Xaml.Controls
 
 			args.Handled = true;
 
-#if __SKIA__
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && _wasJustDoubleTapped)
-			{
-				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
-				var chunk = FindChunkAt(index, true);
-				Select(chunk.start, chunk.length);
-			}
-
-			_wasJustDoubleTapped = false;
-#endif
+			OnPointerReleasedNative(args);
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)

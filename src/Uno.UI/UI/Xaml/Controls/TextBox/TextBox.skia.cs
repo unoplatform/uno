@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -12,12 +13,16 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class TextBox
 {
+	private const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond / 20;
+
 	private TextBoxView _textBoxView;
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
 	private bool _resetSelectionOnChange = true;
-	private bool _wasJustDoubleTapped;
+	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
+	private bool _isPressed;
+	private (int start, int length)? _multiTapChunk;
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
 	private readonly DispatcherTimer _timer = new DispatcherTimer
 	{
@@ -392,14 +397,31 @@ public partial class TextBox
 	protected override void OnPointerMoved(PointerRoutedEventArgs e)
 	{
 		base.OnPointerMoved(e);
-		_wasJustDoubleTapped = false;
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+		e.Handled = true;
+
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && _isPressed)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			if (point.Properties.HasPressedButton && !point.Properties.IsRightButtonPressed)
+			var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+			if (_multiTapChunk is { } tt)
 			{
-				var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+				var chunk = FindChunkAt(index, true);
+				if (chunk.start < tt.start)
+				{
+					var start = tt.start + tt.length;
+					var end = chunk.start;
+					SelectInternal(start, end - start);
+				}
+				else if (chunk.start + chunk.length >= tt.start + tt.length)
+				{
+					var start = tt.start;
+					var end = chunk.start + chunk.length;
+					SelectInternal(start, end - start);
+				}
+			}
+			else
+			{
 				var selectionInternalStart = _selectionEndsAtTheStart ? _selection.start + _selection.length : _selection.start;
 				SelectInternal(selectionInternalStart, index - selectionInternalStart);
 			}
@@ -446,22 +468,74 @@ public partial class TextBox
 		}
 	}
 
-	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+	private static bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
 	{
-		base.OnDoubleTapped(e);
-		e.Handled = true;
+		var currentId = down.PointerId;
+		var currentTs = down.Timestamp;
+		var currentPosition = down.Position;
 
-		_wasJustDoubleTapped = true;
+		return previousTap.id == currentId
+			&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
+			&& !GestureRecognizer.Gesture.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
-	partial void OnPointerPressedNative(PointerRoutedEventArgs e)
+	partial void OnPointerPressedNative(PointerRoutedEventArgs args)
 	{
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && !_wasJustDoubleTapped && (!e.GetCurrentPoint(null).Properties.IsRightButtonPressed || SelectionLength == 0))
+		Console.WriteLine("Starting Pressed");
+		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && args.GetCurrentPoint(null) is var currentPoint && (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
 		{
-			var displayBlock = TextBoxView.DisplayBlock;
-			var index = displayBlock.Inlines.GetIndexForTextBlock(e.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
-			Select(index, 0);
+			if (currentPoint.Properties.IsLeftButtonPressed && _lastPointerDown.point is { } p && IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
+			{
+				// multiple left presses
+				if (_lastPointerDown.repeatedPresses == 1)
+				{
+					// triple tap
+					SelectAll();
+					_multiTapChunk = (SelectionStart, SelectionLength);
+					_lastPointerDown = (currentPoint, 2);
+				}
+				else // _lastPointerDown.repeatedPresses == 2
+				{
+					// double tap
+					var displayBlock = TextBoxView.DisplayBlock;
+					var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+					var chunk = FindChunkAt(index, true);
+					Select(chunk.start, chunk.length);
+					_multiTapChunk = (chunk.start, chunk.length);
+					_lastPointerDown = (currentPoint, 1);
+				}
+			}
+			else
+			{
+				// single click
+				var displayBlock = TextBoxView.DisplayBlock;
+				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+				Select(index, 0);
+				_lastPointerDown = (currentPoint, 0);
+			}
+
+			_isPressed = currentPoint.Properties.IsLeftButtonPressed;
 		}
+	}
+
+	partial void OnPointerReleasedNative(PointerRoutedEventArgs args)
+	{
+		Console.WriteLine("Starting Released");
+
+		_isPressed = false;
+		_multiTapChunk = null;
+	}
+
+	protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs args)
+	{
+		base.OnDoubleTapped(args);
+		args.Handled = true;
+
+		// var displayBlock = TextBoxView.DisplayBlock;
+		// var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetPosition(displayBlock) - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+		// var chunk = FindChunkAt(index, true);
+		// Select(chunk.start, chunk.length);
+		// _lastPointerDown.wasDoubleTap = true;
 	}
 
 	private (int start, int length) FindChunkAt(int index, bool right)
