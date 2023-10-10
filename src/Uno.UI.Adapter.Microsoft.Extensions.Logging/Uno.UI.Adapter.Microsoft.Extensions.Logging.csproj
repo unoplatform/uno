@@ -35,9 +35,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />
