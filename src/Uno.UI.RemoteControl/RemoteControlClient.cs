@@ -56,7 +56,7 @@ public class RemoteControlClient : IRemoteControlClient
 	private readonly (string endpoint, int port)[]? _serverAddresses;
 	private readonly Dictionary<string, IRemoteControlProcessor> _processors = new();
 	private readonly List<IRemoteControlPreProcessor> _preprocessors = new();
-	private readonly object _connectionGate = new ();
+	private readonly object _connectionGate = new();
 	private Task<Connection?> _connection; // null if no server, socket only null if connection was established once but lost since then
 	private Timer? _keepAliveTimer;
 
@@ -76,7 +76,7 @@ public class RemoteControlClient : IRemoteControlClient
 		}
 
 		// Get the addresses from the assembly attributes set by the code-gen in debug (i.e. from the IDE)
-		if (_serverAddresses is null or { Length: 0 } 
+		if (_serverAddresses is null or { Length: 0 }
 			&& appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] embeddedEndpoints)
 		{
 			IEnumerable<(string endpoint, int port)> GetAddresses()
@@ -119,9 +119,9 @@ public class RemoteControlClient : IRemoteControlClient
 	internal IRemoteControlProcessor[] RegisteredProcessors
 		=> _processors.Values.ToArray();
 
-	internal Task WaitForConnection() 
+	internal Task WaitForConnection()
 		=> WaitForConnection(CancellationToken.None);
-		
+
 	public Task WaitForConnection(CancellationToken ct)
 		=> _connection;
 
