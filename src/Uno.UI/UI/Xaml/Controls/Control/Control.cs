@@ -293,6 +293,7 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
+							_applyTemplateShouldBeInvoked = false;
 							OnApplyTemplate();
 						}
 					}
