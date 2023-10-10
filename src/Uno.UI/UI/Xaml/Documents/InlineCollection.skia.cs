@@ -330,6 +330,8 @@ namespace Windows.UI.Xaml.Documents
 				};
 			}
 
+			var characterCountSoFar = 0;
+
 			float y = 0;
 
 			for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
@@ -342,13 +344,11 @@ namespace Windows.UI.Xaml.Documents
 				y += line.Height;
 				float baselineOffsetY = line.BaselineOffsetY;
 
-				var characterCountSoFar = 0;
 				for (int s = 0; s < line.RenderOrderedSegmentSpans.Count; s++)
 				{
 					var segmentSpan = line.RenderOrderedSegmentSpans[s];
 
 					var currentCharacterCount = segmentSpan.GlyphsLength;
-					characterCountSoFar += currentCharacterCount;
 
 					if (segmentSpan.GlyphsLength == 0)
 					{
@@ -453,7 +453,7 @@ namespace Windows.UI.Xaml.Documents
 					{
 						if (RenderSelectionAndCaret && Selection is { } bg && bg.startLine <= lineIndex && lineIndex <= bg.endLine)
 						{
-							var spanStartingIndex = characterCountSoFar - currentCharacterCount;
+							var spanStartingIndex = characterCountSoFar;
 
 							float left;
 							if (bg.startLine == lineIndex)
@@ -531,7 +531,7 @@ namespace Windows.UI.Xaml.Documents
 								right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 							}
 
-							canvas.DrawRect(new SKRect(left, 0, right, line.Height), new SKPaint
+							canvas.DrawRect(new SKRect(left, y - line.Height, right, y), new SKPaint
 							{
 								Color = ((TextBlock)parent).SelectionHighlightColor.Color.ToSKColor(),
 								Style = SKPaintStyle.Fill
@@ -544,14 +544,14 @@ namespace Windows.UI.Xaml.Documents
 
 					// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 					{
-						var spanStartingIndex = characterCountSoFar - currentCharacterCount;
+						var spanStartingIndex = characterCountSoFar;
 						if (RenderSelectionAndCaret && Caret is { } caret && Selection is { } selection)
 						{
 							var (l, i) = caret.atEndOfSelection ? (selection.endLine, selection.endIndex) : (selection.startLine, selection.startIndex);
 
 							float caretLocation = -1f;
 
-							if (l == lineIndex && i >= spanStartingIndex && i <= characterCountSoFar)
+							if (l == lineIndex && i >= spanStartingIndex && i <= characterCountSoFar + currentCharacterCount)
 							{
 								if (i >= spanStartingIndex + positions.Length)
 								{
@@ -565,7 +565,7 @@ namespace Windows.UI.Xaml.Documents
 
 							if (caretLocation != -1f)
 							{
-								canvas.DrawRect(new SKRect(caretLocation, 0, caretLocation + line.Height * 0.05f, line.Height), new SKPaint
+								canvas.DrawRect(new SKRect(caretLocation, y - line.Height, caretLocation + line.Height * 0.05f, y), new SKPaint
 								{
 									Color = new SKColor(caret.color.R, caret.color.G, caret.color.B, caret.color.A),
 									Style = SKPaintStyle.Fill
@@ -575,6 +575,7 @@ namespace Windows.UI.Xaml.Documents
 					}
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
+					characterCountSoFar += currentCharacterCount;
 				}
 			}
 
@@ -590,7 +591,7 @@ namespace Windows.UI.Xaml.Documents
 		// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 		internal int GetIndexForTextBlock(Point p)
 		{
-			var line = GetRenderLineAt(p.Y, true)!;
+			var line = GetRenderLineAt(p.Y, true)?.line;
 
 			if (line is not { })
 			{
@@ -688,7 +689,7 @@ namespace Windows.UI.Xaml.Documents
 			return new Rect(x, y, 0, _renderLines.Count > 0 ? _renderLines[^1].Height : 0);
 		}
 
-		internal RenderLine? GetRenderLineAt(double y, bool extendedSelection)
+		internal (RenderLine line, int index)? GetRenderLineAt(double y, bool extendedSelection)
 		{
 			if (_renderLines.Count == 0)
 			{
@@ -706,18 +707,18 @@ namespace Windows.UI.Xaml.Documents
 
 				if (y <= lineY && (extendedSelection || y >= lineY - line.Height))
 				{
-					return line;
+					return (line, i - 1);
 				}
 			} while (i < _renderLines.Count);
 
-			return extendedSelection ? line : null;
+			return extendedSelection ? (line, i - 1) : null;
 		}
 
 		internal (RenderSegmentSpan span, float x)? GetRenderSegmentSpanAt(Point point, bool extendedSelection)
 		{
 			var parent = (IBlock)_collection.GetParent();
 
-			var line = GetRenderLineAt(point.Y, extendedSelection);
+			var line = GetRenderLineAt(point.Y, extendedSelection)?.line ?? null;
 
 			if (line == null)
 			{

@@ -94,6 +94,14 @@ namespace Windows.UI.Xaml.Controls
 			DisplayBlock.TextAlignment = textAlignment;
 		}
 
+		internal void SetWrapping()
+		{
+			if (_textBox?.GetTarget() is { } textBox)
+			{
+				DisplayBlock.TextWrapping = textBox.TextWrapping;
+			}
+		}
+
 		internal void OnForegroundChanged(Brush brush)
 		{
 			DisplayBlock.Foreground = brush;
@@ -134,9 +142,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal void OnFontFamilyChanged(FontFamily fontFamily)
+		internal void UpdateFont()
 		{
-			DisplayBlock.FontFamily = fontFamily;
+			var textBox = _textBox?.GetTarget();
+			if (textBox != null)
+			{
+				DisplayBlock.FontFamily = textBox.FontFamily;
+				DisplayBlock.FontSize = textBox.FontSize;
+				DisplayBlock.FontStyle = textBox.FontStyle;
+				DisplayBlock.FontStretch = textBox.FontStretch;
+				DisplayBlock.FontWeight = textBox.FontWeight;
+			}
 			// TODO: Propagate font family to the native InputWidget via _textBoxExtension.
 		}
 

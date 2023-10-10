@@ -534,7 +534,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(sv.ScrollableWidth, sv.HorizontalOffset);
 
-			// The TextBox should fit roughly 7 characters
+			// The TextBox should fit roughly 7-8 characters
 			for (var i = 0; i < 6; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.None));
@@ -550,7 +550,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
-			for (var i = 0; i < 6; i++)
+			for (var i = 0; i < 7; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
@@ -635,7 +635,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Release();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
@@ -668,13 +668,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(-50, 0);
 
 			Assert.AreEqual(1, SUT.SelectionStart);
-			Assert.AreEqual(8, SUT.SelectionLength);
+			Assert.AreEqual(9, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -706,14 +706,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
 			mouse.MoveBy(-150, 0);
 
 			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(10, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -745,7 +745,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			mouse.Press();
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(9, SUT.SelectionStart);
+			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
@@ -753,14 +753,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.SelectionStart);
-			Assert.AreEqual(9, SUT.SelectionLength);
+			Assert.AreEqual(10, SUT.SelectionLength);
 
 			mouse.MoveBy(0, 50);
 			mouse.MoveBy(600, 0);
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(9, SUT.SelectionStart);
-			Assert.AreEqual(SUT.Text.Length - 9, SUT.SelectionLength);
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 10, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -805,6 +805,101 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(6, SUT.SelectionStart);
 			Assert.AreEqual(4, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Chunk_DoubleTapHeld()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(6, SUT.SelectionStart);
+			Assert.AreEqual(5, SUT.SelectionLength);
+
+			mouse.MoveBy(-40, 0);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+
+			// the selection should start on the right
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Chunk_TripleTapped()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			// double tap
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+
+			// the selection should start on the left
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Left, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length - 1, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -952,6 +1047,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				FeatureConfiguration.TextBox.HideCaret = _hideCaret;
 			}
 		}
-
 	}
 }

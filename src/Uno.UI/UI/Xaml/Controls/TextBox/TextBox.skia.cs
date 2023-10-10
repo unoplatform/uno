@@ -7,6 +7,7 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.Extensions;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls;
@@ -40,7 +41,10 @@ public partial class TextBox
 
 	partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush) => TextBoxView?.OnSelectionHighlightColorChanged(brush);
 
-	partial void UpdateFontPartial() => TextBoxView?.OnFontFamilyChanged(FontFamily);
+	partial void UpdateFontPartial()
+	{
+		TextBoxView?.UpdateFont();
+	}
 
 	partial void OnMaxLengthChangedPartial(int newValue) => TextBoxView?.UpdateMaxLength();
 
@@ -48,6 +52,17 @@ public partial class TextBox
 	{
 		TextBoxView?.SetFlowDirectionAndTextAlignment();
 	}
+
+	partial void OnTextWrappingChangedPartial()
+	{
+		TextBoxView?.SetWrapping();
+		if (TextWrapping == TextWrapping.Wrap && _contentElement is ScrollViewer sv)
+		{
+			// This is to work around sv giving infinite width.
+			sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+		}
+	}
+
 
 	partial void OnTextAlignmentChangedPartial(TextAlignment newValue)
 	{
@@ -122,7 +137,9 @@ public partial class TextBox
 	{
 		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
-			inlines.Selection = (0, SelectionStart, 0, SelectionStart + SelectionLength);
+			var startLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart).GetCenter().Y, true)?.index ?? 0;
+			var endLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart + SelectionLength).GetCenter().Y, true)?.index ?? 0;
+			inlines.Selection = (startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
 			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			var showCaret = _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
 			inlines.Caret = (!_selectionEndsAtTheStart, showCaret ? Colors.Black : Colors.Transparent);

@@ -379,6 +379,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				baseString = GetFirstLine(baseString);
 			}
+#if __SKIA__
+			else if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
+			}
+#endif
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
