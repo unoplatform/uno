@@ -536,8 +536,94 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 			private void GenerateTypeTable(IndentedStringBuilder writer)
 			{
-				var types = _typeMap.Where(k => !k.Key.IsGenericType);
-				writer.AppendLineIndented($"private readonly global::Uno.UI.DataBinding.IBindableType[] _bindableTypes = new global::Uno.UI.DataBinding.IBindableType[{types.Count()}];");
+				var types = _typeMap.Where(k => !k.Key.IsGenericType).ToArray();
+
+				if (types.Length < 1000)
+				{
+					// Generate a smaller table to avoid tiering issue
+					// with large methods, see https://github.com/dotnet/runtime/issues/93192.
+					// This number is arbitrary, based on observations of generated size of
+					// switch/case static lookup.
+					// As of 2023-10-08, the performance of type reflection enumeration is still 10x
+					// slower than using a pre-built dictionaries, on WebAssembly.
+					GenerateTypeTableSwitch(writer, types);
+				}
+				else
+				{
+					GenerateTypeTableDictionary(writer, types);
+				}
+			}
+
+			private void GenerateTypeTableDictionary(IndentedStringBuilder writer, KeyValuePair<INamedTypeSymbol, GeneratedTypeInfo>[] types)
+			{
+				writer.AppendLineIndented("private delegate global::Uno.UI.DataBinding.IBindableType TypeBuilderDelegate();");
+				writer.AppendLineIndented(@$"static global::System.Collections.Hashtable _bindableTypeCacheByFullName = new global::System.Collections.Hashtable({types.Length});");
+
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
+				{
+					writer.AppendLineIndented(@"var instance = _bindableTypeCacheByFullName[fullName];");
+					writer.AppendLineIndented(@"var builder = instance as TypeBuilderDelegate;");
+
+					using (writer.BlockInvariant(@"if(builder != null)"))
+					{
+						writer.AppendLineIndented(@"_bindableTypeCacheByFullName[fullName] = instance = builder();");
+					}
+
+					writer.AppendLineIndented(@"return instance as global::Uno.UI.DataBinding.IBindableType;");
+				}
+
+				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByType(Type type)"))
+				{
+					writer.AppendLineIndented(@"var bindableType = GetBindableTypeByFullName(type.FullName);");
+
+					writer.AppendLineIndented(@"#if DEBUG");
+					using (writer.BlockInvariant(@"if(bindableType == null)"))
+					{
+						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
+						{
+							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) && !type.IsGenericType && !type.IsAbstract)"))
+							{
+								writer.AppendLineIndented(@"_knownMissingTypes.Add(type);");
+								writer.AppendLineIndented(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
+							}
+						}
+					}
+					writer.AppendLineIndented(@"#endif");
+
+					writer.AppendLineIndented(@"return bindableType;");
+				}
+
+				using (writer.BlockInvariant("static BindableMetadataProvider()"))
+				{
+					foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType && !k.Key.IsAbstract))
+					{
+						writer.AppendLineIndented($"RegisterBuilder{type.Value.Index:000}();");
+					}
+				}
+
+				// Generate small methods to avoid JIT or interpreter costs associated
+				// with large methods.
+				foreach (var type in _typeMap.Where(k => !k.Key.IsGenericType && !k.Key.IsAbstract))
+				{
+					using (writer.BlockInvariant($"static void RegisterBuilder{type.Value.Index:000}()"))
+					{
+						if (_xamlResourcesTrimming && type.Key.GetAllInterfaces().Any(i => SymbolEqualityComparer.Default.Equals(i, _dependencyObjectSymbol)))
+						{
+							var linkerHintsClassName = LinkerHintsHelpers.GetLinkerHintsClassName(_defaultNamespace);
+							var safeTypeName = LinkerHintsHelpers.GetPropertyAvailableName(type.Key.GetFullMetadataName());
+
+							writer.AppendLineIndented($"if(global::{linkerHintsClassName}.{safeTypeName})");
+						}
+
+						writer.AppendLineIndented(
+							$"_bindableTypeCacheByFullName[\"{type.Key}\"] = new TypeBuilderDelegate(MetadataBuilder_{type.Value.Index:000}.Build);");
+					}
+				}
+			}
+
+			private void GenerateTypeTableSwitch(IndentedStringBuilder writer, KeyValuePair<INamedTypeSymbol, GeneratedTypeInfo>[] types)
+			{
+				writer.AppendLineIndented($"private readonly global::Uno.UI.DataBinding.IBindableType[] _bindableTypes = new global::Uno.UI.DataBinding.IBindableType[{types.Length}];");
 				writer.AppendLineIndented($"private static global::Uno.UI.DataBinding.IBindableType _null;");
 
 				using (writer.BlockInvariant("public global::Uno.UI.DataBinding.IBindableType GetBindableTypeByFullName(string fullName)"))
