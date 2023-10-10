@@ -649,6 +649,12 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
+
+			/// <summary>
+			/// For non-holding pointer events, use CompleteGesture when bubbling gesture events.
+			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
+			/// </summary>
+			public static bool DisablePointersSpecificEventPrevention { get; set; }
 		}
 
 		public static class VisualState

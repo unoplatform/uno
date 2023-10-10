@@ -183,25 +183,7 @@ namespace Windows.UI.Input
 		{
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
-				if (events.HasFlag(GestureSettings.Tap))
-				{
-					gesture.PreventTap();
-				}
-
-				if (events.HasFlag(GestureSettings.RightTap))
-				{
-					gesture.PreventRightTap();
-				}
-
-				if (events.HasFlag(GestureSettings.DoubleTap))
-				{
-					gesture.PreventDoubleTap();
-				}
-
-				if (events.HasFlag(GestureSettings.Hold))
-				{
-					gesture.PreventHolding();
-				}
+				gesture.PreventGestures(events & GestureSettingsHelper.SupportedGestures);
 
 				return gesture.Settings;
 			}

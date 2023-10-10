@@ -120,37 +120,14 @@ namespace Windows.UI.Input
 				TryRecognize();
 			}
 
-			public void PreventTap()
+			public void PreventGestures(GestureSettings gestures)
 			{
-				Settings &= ~GestureSettings.Tap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
+				if ((gestures & GestureSettings.Hold) != 0)
 				{
-					IsCompleted = true;
+					StopHoldingTimer();
 				}
-			}
 
-			public void PreventDoubleTap()
-			{
-				Settings &= ~GestureSettings.DoubleTap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
-				{
-					IsCompleted = true;
-				}
-			}
-
-			public void PreventRightTap()
-			{
-				Settings &= ~GestureSettings.RightTap;
-				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
-				{
-					IsCompleted = true;
-				}
-			}
-
-			public void PreventHolding()
-			{
-				StopHoldingTimer();
-				Settings &= ~(GestureSettings.Hold | GestureSettings.HoldWithMouse);
+				Settings &= ~gestures;
 				if ((Settings & GestureSettingsHelper.SupportedGestures) == GestureSettings.None)
 				{
 					IsCompleted = true;
@@ -170,19 +147,20 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeTap()
 			{
-				if (Settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this))
+				var isTapGesture = IsTapGesture(LeftButton, this);
+				if (isTapGesture)
 				{
 					// Note: Up cannot be 'null' here!
-
 					_recognizer._lastSingleTap = (PointerIdentifier, Up!.Timestamp, Up.Position);
-					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(PointerType, Down.Position, tapCount: 1));
 
-					return true;
+					if (Settings.HasFlag(GestureSettings.Tap))
+					{
+						_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 1));
+						return true;
+					}
 				}
-				else
-				{
-					return false;
-				}
+
+				return false;
 			}
 
 			private bool TryRecognizeMultiTap()
@@ -190,7 +168,7 @@ namespace Windows.UI.Input
 				if (Settings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_recognizer._lastSingleTap, Down))
 				{
 					_recognizer._lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
-					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(PointerType, Down.Position, tapCount: 2));
+					_recognizer.Tapped?.Invoke(_recognizer, new TappedEventArgs(Down.PointerId, PointerType, Down.Position, tapCount: 2));
 
 					return true;
 				}
@@ -204,7 +182,7 @@ namespace Windows.UI.Input
 			{
 				if (Settings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(this, out var isLongPress))
 				{
-					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(PointerType, Down.Position));
+					_recognizer.RightTapped?.Invoke(_recognizer, new RightTappedEventArgs(Down.PointerId, PointerType, Down.Position));
 
 					return true;
 				}
