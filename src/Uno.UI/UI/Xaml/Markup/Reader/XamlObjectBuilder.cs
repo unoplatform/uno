@@ -943,7 +943,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					case "_PositionalParameters":
 					case nameof(Binding.Path):
-						binding.Path = RewriteAttachedPropertyPath(bindingProperty.Value?.ToString());
+						var path = bindingProperty.Value?.ToString();
+						if (templateBindingNode is not null && TypeResolver.IsAttachedProperty(member))
+						{
+							path = $"({path})";
+						}
+
+						binding.Path = RewriteAttachedPropertyPath(path);
 						break;
 
 					case nameof(Binding.ElementName):
