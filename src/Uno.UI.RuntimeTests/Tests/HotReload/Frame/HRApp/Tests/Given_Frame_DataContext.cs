@@ -119,7 +119,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	/// Navigate back to Page1
 	/// </summary>
 	[TestMethod]
-	[Ignore("Not yet working")]
+	//[Ignore("Not yet working")]
 	public async Task Check_Can_Change_Page1_Before_Navigating_Back_With_DataContext()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
@@ -140,7 +140,7 @@ public class Given_Frame_DataContext : BaseTestClass
 		frame.Navigate(typeof(HR_Frame_Pages_Page2));
 		await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page2>(
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
 			FirstPageTextBlockChangedText,
 			async () =>
