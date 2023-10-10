@@ -212,9 +212,13 @@ namespace Uno.UI.RemoteControl.HotReload
 							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
 
 							// Get the handler for the type specified
+							// Since we're only interested in handlers for specific element types
+							// we exclude those registered for "object". Handlers that want to run
+							// for all element types should register for FrameworkElement instead
 							var handler = (from h in handlerActions
-										   where originalType == h.Key ||
-												originalType.IsSubclassOf(h.Key)
+										   where (originalType == h.Key ||
+												originalType.IsSubclassOf(h.Key)) &&
+												h.Key != typeof(object)
 										   select h.Value).FirstOrDefault();
 
 							// Get the replacement type, or null if not replaced
