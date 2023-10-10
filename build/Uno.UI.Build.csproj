@@ -234,8 +234,9 @@
 	<Target Name="BuildSyncGenerator">
 		<!-- Restore the nuget packages for packages-* solution filters -->
 		<!-- These filters contain Uno.UI project and its dependencies, which are what needs to be restored -->
+		<!-- In addition, the reference project needs to be restored as well. -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
-				 Projects="filters\Uno.UI-packages-netcoremobile.slnf;filters\Uno.UI-packages-reference.slnf;filters\Uno.UI-packages-skia.slnf;filters\Uno.UI-packages-wasm.slnf"
+				 Projects="filters\Uno.UI-packages-netcoremobile.slnf;filters\Uno.UI-packages-reference.slnf;filters\Uno.UI-packages-skia.slnf;filters\Uno.UI-packages-wasm.slnf;..\src\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj"
 				 Targets="Restore;Clean"
 				 RebaseOutputs="false"
 				 BuildInParallel="true" />
