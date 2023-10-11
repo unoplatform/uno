@@ -23,6 +23,8 @@
 
 	<ItemGroup>
 		<Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
+		<Compile Include="..\Uno.UI\Helpers\ElementMetadataUpdateHandlerAttribute.cs" Link="ElementMetadataUpdateHandlerAttribute.cs" />
+		<Compile Include="..\Uno.UI\Helpers\TypeMappings.cs" Link="TypeMappings.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
