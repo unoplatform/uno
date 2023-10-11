@@ -430,6 +430,8 @@ namespace Uno.UI.RemoteControl
 				{
 					this.Log().LogError("Unable send message, no connection available");
 				}
+
+                NotifyOfEvent("Sending Message Failed", $"{message.Name}: {message}");
 			}
 		}
 
