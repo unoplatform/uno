@@ -164,7 +164,19 @@ namespace Windows.UI.Xaml
 
 			foreach (var list in _pooledInstances.Values)
 			{
-				removedInstancesCount += list.RemoveAll(t => isManual || now - t.CreationTime > TimeToLive);
+				removedInstancesCount += list.RemoveAll(t =>
+				{
+					var remove = isManual || now - t.CreationTime > TimeToLive;
+
+#if USE_HARD_REFERENCES
+					if (remove)
+					{
+						_activeInstances.Remove(t.Control);
+					}
+#endif
+
+					return remove;
+				});
 			}
 
 			if (removedInstancesCount > 0)
@@ -204,6 +216,7 @@ namespace Windows.UI.Xaml
 			}
 
 			_pooledInstances.Clear();
+			_activeInstances.Clear();
 		}
 
 		internal int GetPooledTemplatesCount()

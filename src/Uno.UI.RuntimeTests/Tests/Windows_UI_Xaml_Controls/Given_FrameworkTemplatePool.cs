@@ -37,19 +37,23 @@ internal class Given_FrameworkTemplatePool
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
 		{
-			FrameworkTemplatePool.Instance.ForceClear();
+			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
 
-			async Task<WeakReference> CreateAndRelease()
+			async Task<(WeakReference control, WeakReference root)> CreateAndRelease()
 			{
 				var content = new Button();
 				WindowHelper.WindowContent = content;
 				await WindowHelper.WaitForLoaded(content);
+				var templatedRoot = content.TemplatedRoot;
+
 				WindowHelper.WindowContent = null;
 
-				return new WeakReference(content);
+				return (
+					new WeakReference(content),
+					new WeakReference(templatedRoot));
 			}
 
-			var targetInstance = await CreateAndRelease();
+			var (targetInstance, targetTemplateRoot) = await CreateAndRelease();
 
 			var timeout = Stopwatch.StartNew();
 			while (targetInstance.IsAlive && timeout.Elapsed < TimeSpan.FromSeconds(5))
@@ -63,10 +67,22 @@ internal class Given_FrameworkTemplatePool
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsNull(targetInstance.Target);
+			Assert.IsNotNull(targetTemplateRoot.Target);
 
 			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount());
 
-			FrameworkTemplatePool.Instance.ForceClear();
+			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
+
+			var timeout2 = Stopwatch.StartNew();
+			while (targetTemplateRoot.IsAlive && timeout2.Elapsed < TimeSpan.FromSeconds(5))
+			{
+				GC.Collect(2);
+				GC.WaitForPendingFinalizers();
+				await WindowHelper.WaitForIdle();
+				await Task.Delay(50);
+			}
+
+			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplatesCount());
 		}
 	}
 #endif
