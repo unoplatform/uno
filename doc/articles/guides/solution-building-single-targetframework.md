@@ -1,11 +1,11 @@
 ---
 uid: Build.Solution.TargetFramework-override
 ---
-# Adjust an Uno Solution for a faster build with Visual Studio 2022
+# Improve Build Times with Visual Studio 2022
 
 The Uno Platform template provides a cross-targeted Class library that includes multiple target frameworks. While building with the command line `dotnet build -f net7.0-ios` only builds the application's head and the class library for `net7.0-ios`, Visual Studio builds all the target frameworks, [regardless of the project head's target framework](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372).
 
-Considering that during development, it is common to work on a single platform at a given time, here's a suggested set of modifications that can be performed on the solution to restrict the active build platform:
+Considering that during development, it is common to work on a single platform at a given time, here's a suggested set of modifications to Uno Platform solution that can be performed on the solution to restrict the active build platform, and therefore significantly speed up build times:
 
 1. Let's create a set of solution filters to ensure that individual project heads can be loaded:
 
