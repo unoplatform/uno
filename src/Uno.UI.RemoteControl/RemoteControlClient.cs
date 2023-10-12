@@ -33,6 +33,10 @@ namespace Uno.UI.RemoteControl
 
 		public event RemoteControlClientEventEventHandler? ClientEvent;
 
+		public delegate void SendMessageFailedEventHandler(object sender, SendMessageFailedEventArgs args);
+
+		public event SendMessageFailedEventHandler? SendMessageFailed;
+
 		public Type AppType { get; }
 
 		private readonly (string endpoint, int port)[]? _serverAddresses;
@@ -431,7 +435,7 @@ namespace Uno.UI.RemoteControl
 					this.Log().LogError("Unable send message, no connection available");
 				}
 
-				NotifyOfEvent("Sending Message Failed", $"{message.Name}: {message}");
+				SendMessageFailed?.Invoke(this, new SendMessageFailedEventArgs(message));
 			}
 		}
 
