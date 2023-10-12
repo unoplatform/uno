@@ -216,7 +216,10 @@ namespace Windows.UI.Xaml
 			}
 
 			_pooledInstances.Clear();
+
+#if USE_HARD_REFERENCES
 			_activeInstances.Clear();
+#endif
 		}
 
 		internal int GetPooledTemplatesCount()
