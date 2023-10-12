@@ -1687,6 +1687,8 @@
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidth()" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.set_OpenPaneWidth(System.Double value)" reason="Does not exist in UWP" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings.get_OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+
+			<Member fullName="System.Void Windows.Storage.Pickers.FilePickerSelectedFilesArray.set_Count(System.Int32 value)" reason="Does not exists in UWP" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
