@@ -175,6 +175,11 @@ namespace Windows.UI.Xaml
 					{
 						_trace.WriteEvent(TraceProvider.ReleaseTemplate);
 					}
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Released {removedInstancesCount} template instances");
+					}
 				}
 
 				// Under iOS and Android, we need to force the collection for the GC
@@ -190,6 +195,28 @@ namespace Windows.UI.Xaml
 		/// <remarks>The pool will periodically release templates that haven't been reused within the span of <see cref="TimeToLive"/>, so
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
+
+		internal void ForceClear()
+		{
+			foreach (var list in _pooledInstances.Values)
+			{
+				list.Clear();
+			}
+
+			_pooledInstances.Clear();
+		}
+
+		internal int GetPooledTemplatesCount()
+		{
+			int count = 0;
+
+			foreach (var list in _pooledInstances.Values)
+			{
+				count += list.Count;
+			}
+
+			return count;
+		}
 
 		internal View? DequeueTemplate(FrameworkTemplate template)
 		{
