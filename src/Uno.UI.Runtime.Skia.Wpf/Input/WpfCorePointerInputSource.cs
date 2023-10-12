@@ -7,6 +7,7 @@ using System.Windows.Interop;
 using Uno.Foundation.Logging;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Constants;
+using Uno.UI.Runtime.Skia.Wpf.Extensions;
 using Uno.UI.Runtime.Skia.Wpf.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
@@ -77,8 +78,11 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 
 	public bool HasCapture => _hostControl.IsMouseCaptured;
 
-	[NotImplemented]
-	public CoreCursor PointerCursor { get; set; } = new(CoreCursorType.Arrow, 0);
+	public CoreCursor PointerCursor
+	{
+		get => Mouse.OverrideCursor.ToCoreCursor();
+		set => Mouse.OverrideCursor = value.ToCursor();
+	}
 
 	[NotImplemented]
 	public Windows.Foundation.Point PointerPosition { get; }

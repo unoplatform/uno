@@ -29,7 +29,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void OnUnLoaded(object sender, RoutedEventArgs e)
 		{
-#if IS_UNIT_TESTS || __WASM__ || __MACOS__
+#if !__ANDROID__ && !__IOS__
 			Box.SelectionChanged -= HandleSelection;
 			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 #endif
@@ -37,7 +37,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void InitList()
 		{
-#if IS_UNIT_TESTS || __WASM__ || __MACOS__
+#if !__ANDROID__ && !__IOS__
 			var _enumval = Enum.GetValues(typeof(Windows.UI.Core.CoreCursorType));
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
@@ -57,7 +57,7 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 
 		private void ResetTapped(object sender, TappedRoutedEventArgs e)
 		{
-#if IS_UNIT_TESTS || __WASM__ || __MACOS__
+#if !__ANDROID__ && !__IOS__
 			Txt.Text = "";
 
 			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);

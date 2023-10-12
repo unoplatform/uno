@@ -16,12 +16,6 @@ namespace Uno.UI.Runtime.Skia.Wpf
 		private readonly WpfHost? _host;
 		private readonly CoreWindow _owner;
 
-		public CoreCursor PointerCursor
-		{
-			get => Mouse.OverrideCursor.ToCoreCursor();
-			set => Mouse.OverrideCursor = value.ToCursor();
-		}
-
 		public WpfCoreWindowExtension(object owner)
 		{
 			_owner = (CoreWindow)owner;
