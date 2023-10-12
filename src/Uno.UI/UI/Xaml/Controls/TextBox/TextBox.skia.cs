@@ -23,7 +23,7 @@ public partial class TextBox
 	private bool _resetSelectionOnChange = true;
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
 	private bool _isPressed;
-	private (int start, int length)? _multiTapChunk;
+	private (int start, int length, bool tripleTap)? _multiTapChunk;
 	private (int hashCode, List<(int start, int length)> chunks) _cachedChunks = (-1, new());
 	private readonly DispatcherTimer _timer = new DispatcherTimer
 	{
@@ -421,18 +421,27 @@ public partial class TextBox
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
 			var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
-			if (_multiTapChunk is { } tt)
+			if (_multiTapChunk is { } mtc)
 			{
-				var chunk = FindChunkAt(index, true);
-				if (chunk.start < tt.start)
+				(int start, int length) chunk;
+				if (mtc.tripleTap)
 				{
-					var start = tt.start + tt.length;
+					chunk = (StartOfLine(index), EndOfLine(index) + 1 - StartOfLine(index));
+				}
+				else
+				{
+					chunk = FindChunkAt(index, true);
+				}
+
+				if (chunk.start < mtc.start)
+				{
+					var start = mtc.start + mtc.length;
 					var end = chunk.start;
 					SelectInternal(start, end - start);
 				}
-				else if (chunk.start + chunk.length >= tt.start + tt.length)
+				else if (chunk.start + chunk.length >= mtc.start + mtc.length)
 				{
-					var start = tt.start;
+					var start = mtc.start;
 					var end = chunk.start + chunk.length;
 					SelectInternal(start, end - start);
 				}
@@ -498,27 +507,30 @@ public partial class TextBox
 
 	partial void OnPointerPressedNative(PointerRoutedEventArgs args)
 	{
-		Console.WriteLine("Starting Pressed");
 		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && args.GetCurrentPoint(null) is var currentPoint && (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
 		{
 			if (currentPoint.Properties.IsLeftButtonPressed && _lastPointerDown.point is { } p && IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
 			{
 				// multiple left presses
+
+				var displayBlock = TextBoxView.DisplayBlock;
+				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+
 				if (_lastPointerDown.repeatedPresses == 1)
 				{
 					// triple tap
-					SelectAll();
-					_multiTapChunk = (SelectionStart, SelectionLength);
+
+					var startOfLine = StartOfLine(index);
+					Select(startOfLine, EndOfLine(index) + 1 - startOfLine);
+					_multiTapChunk = (SelectionStart, SelectionLength, true);
 					_lastPointerDown = (currentPoint, 2);
 				}
-				else // _lastPointerDown.repeatedPresses == 2
+				else // _lastPointerDown.repeatedPresses == 0
 				{
 					// double tap
-					var displayBlock = TextBoxView.DisplayBlock;
-					var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
 					var chunk = FindChunkAt(index, true);
 					Select(chunk.start, chunk.length);
-					_multiTapChunk = (chunk.start, chunk.length);
+					_multiTapChunk = (chunk.start, chunk.length, false);
 					_lastPointerDown = (currentPoint, 1);
 				}
 			}
@@ -537,8 +549,6 @@ public partial class TextBox
 
 	partial void OnPointerReleasedNative(PointerRoutedEventArgs args)
 	{
-		Console.WriteLine("Starting Released");
-
 		_isPressed = false;
 		_multiTapChunk = null;
 	}
@@ -585,15 +595,20 @@ public partial class TextBox
 
 		chunks.Clear();
 
-		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible whitespace
+		// a chunk is possible (continuous letters/numbers or continuous non-letters/non-numbers) then possible spaces.
+		// \r and \t are always their own chunks
 		var length = text.Length;
 		for (var i = 0; i < length;)
 		{
 			var start = i;
 			var c = text[i];
-			if (char.IsWhiteSpace(c))
+			if (c == '\r' || c == '\t')
 			{
-				while (i < length && char.IsWhiteSpace(text[i]))
+				i++;
+			}
+			else if (c == ' ')
+			{
+				while (i < length && text[i] == ' ')
 				{
 					i++;
 				}
@@ -604,18 +619,18 @@ public partial class TextBox
 				{
 					i++;
 				}
-				while (i < length && char.IsWhiteSpace(text[i]))
+				while (i < length && text[i] == ' ')
 				{
 					i++;
 				}
 			}
 			else
 			{
-				while (i < length && !char.IsLetterOrDigit(text[i]) && !char.IsWhiteSpace(text[i]))
+				while (i < length && !char.IsLetterOrDigit(text[i]) && text[i] != ' ' && text[i] != '\r')
 				{
 					i++;
 				}
-				while (i < length && char.IsWhiteSpace(text[i]))
+				while (i < length && text[i] == ' ')
 				{
 					i++;
 				}
@@ -623,6 +638,29 @@ public partial class TextBox
 
 			chunks.Add((start, i - start));
 		}
+	}
+
+	private int StartOfLine(int i)
+	{
+		var text = Text;
+
+		i--;
+		for (;i >= 0; i--)
+		{
+			var c = text[i];
+			if (c == '\r')
+			{
+				break;
+			}
+		}
+
+		return i + 1;
+	}
+
+	private int EndOfLine(int i)
+	{
+        var index = Text.IndexOf('\r', i);
+		return index == -1 ? Text.Length - 1 : index;
 	}
 
 	private sealed class TextBoxCommand : ICommand

@@ -15,6 +15,7 @@ namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
+		// This is a randomly chosen number that looks clean enough.
 		internal const float CaretThicknessAsRatioOfLineHeight = 0.05f;
 
 		// This is safe as a static field.
@@ -350,11 +351,6 @@ namespace Windows.UI.Xaml.Documents
 
 					var currentCharacterCount = segmentSpan.GlyphsLength;
 
-					if (segmentSpan.GlyphsLength == 0)
-					{
-						continue;
-					}
-
 					var segment = segmentSpan.Segment;
 					var inline = segment.Inline;
 					var fontInfo = inline.FontInfo;
@@ -528,7 +524,8 @@ namespace Windows.UI.Xaml.Documents
 							}
 							else
 							{
-								right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+								// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
+								right = x + justifySpaceOffset * segmentSpan.TrailingSpaces + (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
 							}
 
 							canvas.DrawRect(new SKRect(left, y - line.Height, right, y), new SKPaint
@@ -539,8 +536,11 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					using var textBlob = _textBlobBuilder.Build();
-					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+					if (glyphs.Length != 0)
+					{
+						using var textBlob = _textBlobBuilder.Build();
+						canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
+					}
 
 					// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 					{
@@ -565,7 +565,7 @@ namespace Windows.UI.Xaml.Documents
 
 							if (caretLocation != -1f)
 							{
-								canvas.DrawRect(new SKRect(caretLocation, y - line.Height, caretLocation + line.Height * 0.05f, y), new SKPaint
+								canvas.DrawRect(new SKRect(caretLocation, y - line.Height, caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y), new SKPaint
 								{
 									Color = new SKColor(caret.color.R, caret.color.G, caret.color.B, caret.color.A),
 									Style = SKPaintStyle.Fill
@@ -575,7 +575,7 @@ namespace Windows.UI.Xaml.Documents
 					}
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-					characterCountSoFar += currentCharacterCount;
+					characterCountSoFar += currentCharacterCount + (segment.LineBreakAfter ? 1 : 0);
 				}
 			}
 
@@ -603,7 +603,7 @@ namespace Windows.UI.Xaml.Documents
 			{
 				foreach (var SegmentSpan in currentLine.SegmentSpans)
 				{
-					characterCount += SegmentSpan.Segment.Glyphs.Count;
+					characterCount += SegmentSpan.Segment.Length;
 				}
 			}
 
@@ -611,7 +611,7 @@ namespace Windows.UI.Xaml.Documents
 
 			foreach (var currentSpan in line.SegmentSpans.TakeWhile(s => !s.Equals(span)))
 			{
-				characterCount += currentSpan.Segment.Glyphs.Count;
+				characterCount += currentSpan.Segment.Length;
 			}
 
 			var segment = span.Segment;
@@ -652,7 +652,7 @@ namespace Windows.UI.Xaml.Documents
 				for (var spanIndex = 0; spanIndex < spans.Count; spanIndex++)
 				{
 					var span = spans[spanIndex];
-					var glyphCount = span.Segment.Glyphs.Count;
+					var glyphCount = span.Segment.Length;
 
 					if (index < characterCount + glyphCount)
 					{
@@ -662,7 +662,7 @@ namespace Windows.UI.Xaml.Documents
 						var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 						var glyphStart = span.GlyphsStart;
-						var glyphEnd = glyphStart + span.GlyphsLength;
+						var glyphEnd = glyphStart + span.Segment.Length;
 						for (var i = glyphStart; i < glyphEnd; i++)
 						{
 							var glyph = segment.Glyphs[i];
