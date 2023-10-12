@@ -56,9 +56,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateBorder();
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

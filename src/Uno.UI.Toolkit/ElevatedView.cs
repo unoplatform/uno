@@ -24,7 +24,7 @@ namespace Uno.UI.Toolkit
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
 	[TemplatePart(Name = "PART_ShadowHost", Type = typeof(Grid))]
 	public sealed partial class ElevatedView : Control
-#if HAS_UNO
+#if HAS_UNO && !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		, ICustomClippingElement
 #endif
 	{
@@ -198,7 +198,7 @@ namespace Uno.UI.Toolkit
 			}
 		}
 
-#if HAS_UNO
+#if HAS_UNO && !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;

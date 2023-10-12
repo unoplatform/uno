@@ -20,7 +20,10 @@ using View = UIKit.UIView;
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
+	public partial class Panel : FrameworkElement, IPanel
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 		private new UIElementCollection _children;
