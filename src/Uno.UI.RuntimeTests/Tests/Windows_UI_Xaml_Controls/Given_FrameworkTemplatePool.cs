@@ -33,6 +33,9 @@ internal class Given_FrameworkTemplatePool
 #if HAS_UNO
 	[TestMethod]
 	[RunsOnUIThread]
+#if __ANDROID__
+	[Ignore("https://github.com/unoplatform/uno/issues/13969")]
+#endif
 	public async Task When_Recycle()
 	{
 		using (FeatureConfigurationHelper.UseTemplatePooling())
@@ -66,10 +69,10 @@ internal class Given_FrameworkTemplatePool
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.IsNull(targetInstance.Target);
-			Assert.IsNotNull(targetTemplateRoot.Target);
+			Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
+			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is not null");
 
-			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount());
+			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
 
 			FrameworkTemplatePool.Instance.Scavenge(isManual: true);
 
@@ -82,7 +85,7 @@ internal class Given_FrameworkTemplatePool
 				await Task.Delay(50);
 			}
 
-			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplatesCount());
+			Assert.AreEqual(0, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
 		}
 	}
 #endif

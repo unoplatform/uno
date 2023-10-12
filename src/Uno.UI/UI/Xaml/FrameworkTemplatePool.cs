@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml
 		/// The root of the behavior is linked to WeakReferences to objects pending for finalizers are considered
 		/// null, something that does not happen on Xamarin.iOS/Android.
 		/// </remarks>
-		private readonly HashSet<UIElement> _activeInstances = new HashSet<View>();
+		private readonly HashSet<View> _activeInstances = new();
 #endif
 
 		/// <summary>
