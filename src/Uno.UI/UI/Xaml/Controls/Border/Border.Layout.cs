@@ -35,12 +35,19 @@ namespace Windows.UI.Xaml.Controls
 			var padding = Padding;
 			var borderThickness = BorderThickness;
 
-			var measuredSize = base.MeasureOverride(
-				new Size(
+			Size measuredSize;
+			if (Child is { } child)
+			{
+				var childSize = new Size(
 					availableSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
 					availableSize.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
-				)
-			);
+				);
+				measuredSize = MeasureElement(child, childSize);
+			}
+			else
+			{
+				measuredSize = default;
+			}
 
 			return new Size(
 				measuredSize.Width + padding.Left + padding.Right + borderThickness.Left + borderThickness.Right,

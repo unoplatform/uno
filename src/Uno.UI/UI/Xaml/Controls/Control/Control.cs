@@ -466,6 +466,12 @@ namespace Windows.UI.Xaml.Controls
 
 		}
 
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.
 		/// </summary>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using AppKit;
 using Foundation;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -90,5 +91,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			flyoutItem.InvokeClick();
 		}
+
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
 	}
 }

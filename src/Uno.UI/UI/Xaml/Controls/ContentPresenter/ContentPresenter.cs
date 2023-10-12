@@ -1134,7 +1134,7 @@ namespace Windows.UI.Xaml.Controls
 			var padding = Padding;
 			var borderThickness = BorderThickness;
 
-			var measuredSize = base.MeasureOverride(
+			var measuredSize = MeasureFirstChild(
 				new Size(
 					size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
 					size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
