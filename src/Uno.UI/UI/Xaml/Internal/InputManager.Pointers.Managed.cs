@@ -3,8 +3,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using Uno.Foundation.Extensibility;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
@@ -16,6 +18,8 @@ using Windows.UI.Input;
 using Windows.UI.Input.Preview.Injection;
 using Microsoft.UI.Input;
 using Microsoft.UI.Xaml;
+using Microsoft.UI.Xaml.Controls;
+using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
 using static Microsoft.UI.Xaml.UIElement;
@@ -103,16 +107,91 @@ internal partial class InputManager
 			_source.PointerCancelled += (c, e) => OnPointerCancelled(e);
 		}
 
-		private void UpdateLastInputType(PointerEventArgs e)
+		#region Current event dispatching transaction
+		private PointerDispatching? _current;
+
+		/// <summary>
+		/// Gets the currently dispatched event.
+		/// </summary>
+		/// <remarks>This is set only while a pointer event is currently being dispatched.</remarks>
+		internal PointerRoutedEventArgs? Current => _current?.Args;
+
+		private PointerDispatching StartDispatch(in PointerEvent evt, in PointerRoutedEventArgs args) 
+			=> new(this, evt, args);
+
+		private readonly record struct PointerDispatching : IDisposable
 		{
-			_inputManager.LastInputDeviceType = e.CurrentPoint?.PointerDeviceType switch
+			private readonly PointerManager _manager;
+			public PointerEvent Event { get; }
+			public PointerRoutedEventArgs Args { get; }
+
+			public PointerDispatching(PointerManager manager, PointerEvent @event, PointerRoutedEventArgs args)
 			{
-				PointerDeviceType.Touch => InputDeviceType.Touch,
-				PointerDeviceType.Pen => InputDeviceType.Pen,
-				PointerDeviceType.Mouse => InputDeviceType.Mouse,
-				_ => _inputManager.LastInputDeviceType
-			};
+				_manager = manager;
+				Args = args;
+				Event = @event;
+
+				// Before any dispatch, we make sure to reset the event to it's original state
+				Debug.Assert(args.CanBubbleNatively == PointerRoutedEventArgs.PlatformSupportsNativeBubbling);
+				args.Reset();
+
+				// Set us as the current dispatching
+				if (_manager._current is not null)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().Error($"A pointer is already being processed {_manager._current} while trying to raise {this}");
+					}
+					Debug.Fail($"A pointer is already being processed {_manager._current} while trying to raise {this}.");
+				}
+				_manager._current = this;
+
+				// Then notify all external components that the dispatching is starting
+				_manager._inputManager.LastInputDeviceType = args.Pointer.PointerDeviceType switch
+				{
+					PointerDeviceType.Touch => InputDeviceType.Touch,
+					PointerDeviceType.Pen => InputDeviceType.Pen,
+					PointerDeviceType.Mouse => InputDeviceType.Mouse,
+					_ => _manager._inputManager.LastInputDeviceType
+				};
+				UIElement.BeginPointerEventDispatch();
+			}
+
+			public PointerEventDispatchResult End()
+			{
+				Dispose();
+				var result = UIElement.EndPointerEventDispatch();
+
+				// Once this dispatching has been removed from the _current dispatch (i.e. dispatch is effectively completed),
+				// we re-dispatch the event to the requested target (if any)
+				// Note: We create a new PointerRoutedEventArgs with a new OriginalSource == reRouted.To
+				if (_manager._reRouted is { } reRouted)
+				{
+					// Note: Here we are not validating the current result.VisualTreeAltered nor we perform a new hit test as we should if `true`
+					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
+					// When the PopupRoot perform teh HitTest, the visual tree is already updated.
+					result += _manager.Raise(
+						Event, 
+						new VisualTreeHelper.Branch(reRouted.From, reRouted.To), 
+						new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
+				}
+
+				return result;
+			}
+
+			/// <inheritdoc />
+			public override string ToString()
+				=> $"[{Event.Name}] {Args.Pointer.UniqueId}";
+
+			public void Dispose()
+			{
+				if (_manager._current == this)
+				{
+					_manager._current = null;
+				}
+			}
 		}
+		#endregion
 
 		private void OnPointerWheelChanged(Windows.UI.Core.PointerEventArgs args)
 		{
@@ -223,8 +302,6 @@ internal partial class InputManager
 				Trace($"PointerEntered [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			Raise(Enter, originalSource, routedArgs);
@@ -264,8 +341,6 @@ internal partial class InputManager
 			{
 				Trace($"PointerExited [{overBranchLeaf.GetDebugName()}]");
 			}
-
-			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -307,8 +382,6 @@ internal partial class InputManager
 				Trace($"PointerPressed [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			_pressedElements[routedArgs.Pointer] = originalSource;
@@ -345,8 +418,6 @@ internal partial class InputManager
 			{
 				Trace($"PointerReleased [{originalSource.GetDebugName()}]");
 			}
-
-			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -391,8 +462,6 @@ internal partial class InputManager
 			{
 				Trace($"PointerMoved [{originalSource.GetDebugName()}]");
 			}
-
-			UpdateLastInputType(args);
 
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
@@ -446,8 +515,6 @@ internal partial class InputManager
 				Trace($"PointerCancelled [{originalSource.GetDebugName()}]");
 			}
 
-			UpdateLastInputType(args);
-
 			var routedArgs = new PointerRoutedEventArgs(args, originalSource);
 
 			RaiseUsingCaptures(Cancelled, originalSource, routedArgs, false);
@@ -455,6 +522,28 @@ internal partial class InputManager
 			SetSourceCursor(originalSource);
 			ClearPressedState(routedArgs);
 		}
+
+		/// <summary>
+		/// Re-route the given event args (cf. <see cref="FlyoutBase.OverlayInputPassThroughElement"/>).
+		/// </summary>
+		public void ReRoute(PointerRoutedEventArgs routedArgs, UIElement from, UIElement to)
+		{
+			if (Current != routedArgs)
+			{
+				throw new InvalidOperationException("Cannot reroute a pointer event args that is not currently being dispatched.");
+			}
+
+			if (_reRouted is not null)
+			{
+				throw new InvalidOperationException("Pointer event args can be re-routed only once per bubbling.");
+			}
+
+			_reRouted = new ReRouted(routedArgs, from, to);
+		}
+
+		private ReRouted? _reRouted;
+
+		private readonly record struct ReRouted(PointerRoutedEventArgs Args, UIElement From, UIElement To);
 
 		#region Captures
 		internal void SetPointerCapture(PointerIdentifier uniqueId)
@@ -559,32 +648,33 @@ internal partial class InputManager
 			}
 
 			routedArgs.Handled = false;
-			UIElement.BeginPointerEventDispatch();
+			using var dispatch = StartDispatch(evt, routedArgs);
 
 			evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
 
-			return EndPointerEventDispatch();
+			return dispatch.End();
 		}
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
 		{
+			using var _ = StartDispatch(evt, routedArgs);
 			if (_trace)
 			{
 				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to branch [{branch}]");
 			}
 
 			routedArgs.Handled = false;
-			UIElement.BeginPointerEventDispatch();
+			using var dispatch = StartDispatch(evt, routedArgs);
 
 			evt.Invoke(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
 
-			return UIElement.EndPointerEventDispatch();
+			return dispatch.End();
 		}
 
 		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs, bool setCursor)
 		{
 			routedArgs.Handled = false;
-			UIElement.BeginPointerEventDispatch();
+			using var dispatch = StartDispatch(evt, routedArgs);
 
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
 			{
@@ -605,8 +695,7 @@ internal partial class InputManager
 							Trace($"[Implicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to capture target [{originalSource.GetDebugName()}] (-- no bubbling--)");
 						}
 
-						routedArgs.Handled = false;
-						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
+						evt.Invoke(target.Element, routedArgs.Reset(), BubblingContext.NoBubbling);
 					}
 
 					if (setCursor)
@@ -637,8 +726,7 @@ internal partial class InputManager
 							Trace($"[Explicit capture] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to alternative (implicit) target [{explicitTarget.Element.GetDebugName()}] (-- no bubbling--)");
 						}
 
-						routedArgs.Handled = false;
-						evt.Invoke(target.Element, routedArgs, BubblingContext.NoBubbling);
+						evt.Invoke(target.Element, routedArgs.Reset(), BubblingContext.NoBubbling);
 					}
 
 					if (setCursor)
@@ -662,7 +750,7 @@ internal partial class InputManager
 				}
 			}
 
-			return UIElement.EndPointerEventDispatch();
+			return dispatch.End();
 		}
 
 		private void SetSourceCursor(UIElement element)

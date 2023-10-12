@@ -260,6 +260,9 @@ namespace Microsoft.UI.Xaml
 			/// </remarks>
 			/// <remarks>This is used only for managed dispatch.</remarks>
 			public bool VisualTreeAltered { get; set; }
+
+			public static PointerEventDispatchResult operator +(PointerEventDispatchResult left, PointerEventDispatchResult right)
+				=> new() { VisualTreeAltered = left.VisualTreeAltered || right.VisualTreeAltered };
 		}
 
 		/// <summary>

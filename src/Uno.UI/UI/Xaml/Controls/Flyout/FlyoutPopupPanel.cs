@@ -10,6 +10,8 @@ using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Input;
 using Microsoft.UI.Xaml.Media;
+using Uno.UI.Extensions;
+using Uno.UI.Xaml.Core;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -39,28 +41,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override int PopupPlacementTargetMargin => 5;
 
-		private protected override void OnPointerPressed(object sender, PointerRoutedEventArgs args)
+		private protected override void OnPointerPressedDismissed(PointerRoutedEventArgs args)
 		{
-			base.OnPointerPressed(sender, args);
-
-			// Make sure we are the original source.  We do not want to handle PointerPressed on the Popup itself.
-			if (args.OriginalSource == this)
+			if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement
+				|| !Flyout.EnumerateAncestors().Contains(passThroughElement))
 			{
-				if (Flyout.OverlayInputPassThroughElement is UIElement passThroughElement)
-				{
-					var (elementToBeHit, _) = VisualTreeHelper.SearchDownForTopMostElementAt(
-						args.GetCurrentPoint(null).Position,
-						passThroughElement.XamlRoot.VisualTree.RootElement,
-						VisualTreeHelper.DefaultGetTestability,
-						childrenFilter: elements => elements.Where(e => e != this));
-
-					var eventArgs = new PointerRoutedEventArgs(
-						new PointerEventArgs(args.GetCurrentPoint(null), args.KeyModifiers),
-						args.OriginalSource as UIElement);
-
-					elementToBeHit.OnPointerDown(eventArgs);
-				}
+				// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
+				return;
 			}
+
+			var point = args.GetCurrentPoint(null);
+			var hitTestIgnoringThis = VisualTreeHelper.DefaultGetTestability.Except(this);
+			var (elementHitUnderOverlay, _) = VisualTreeHelper.HitTest(point.Position, passThroughElement.XamlRoot, hitTestIgnoringThis);
+
+			if (elementHitUnderOverlay?.EnumerateAncestors().Contains(passThroughElement) is not true)
+			{
+				// The element found by the HitTest is not a child of the pass-through element.
+				return;
+			}
+
+#if UNO_HAS_MANAGED_POINTERS
+			XamlRoot?.VisualTree.ContentRoot.InputManager.Pointers.ReRoute(args, from: this, to: elementHitUnderOverlay);
+#else
+			XamlRoot?.VisualTree.RootVisual.ReRoutePointerDownEvent(args, from: this, to: elementHitUnderOverlay);
+#endif
 		}
 	}
 }
