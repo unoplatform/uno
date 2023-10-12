@@ -6,12 +6,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using System.Globalization;
 using System.Reflection;
-using Uno.UI.DataBinding;
-using Uno;
+
 using Windows.UI.Xaml;
 using System.Collections;
 
@@ -55,7 +55,10 @@ namespace Uno.UI.DataBinding
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler> _getSubstituteValueGetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueGetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler> _getValueUnsetter = new Dictionary<CachedTuple<Type, string, DependencyPropertyValuePrecedences>, ValueUnsetterHandler>(CachedTuple<Type, string, DependencyPropertyValuePrecedences>.Comparer);
 		private static Dictionary<CachedTuple<Type, string>, bool> _isEvent = new Dictionary<CachedTuple<Type, string>, bool>(CachedTuple<Type, string>.Comparer);
-		private static Dictionary<CachedTuple<Type, string, bool>, Type?> _getPropertyType = new Dictionary<CachedTuple<Type, string, bool>, Type?>(CachedTuple<Type, string, bool>.Comparer);
+
+		private static HashtableEx _getPropertyType = new HashtableEx(GetPropertyTypeKey.Comparer, usePooling: false);
+		private static GetPropertyTypeKey _getPropertyTypeKey = new();
+
 		private static Type? _unoGetMemberBindingType;
 		private static Type? _unoSetMemberBindingType;
 
@@ -110,19 +113,16 @@ namespace Uno.UI.DataBinding
 
 		public static Type? GetPropertyType(Type type, string property, bool allowPrivateMembers)
 		{
-			var key = CachedTuple.Create(type, property, allowPrivateMembers);
+			_getPropertyTypeKey.Update(type, property, allowPrivateMembers);
 
-			Type? result;
+			object? result;
 
-			lock (_getPropertyType)
+			if (!_getPropertyType.TryGetValue(_getPropertyTypeKey, out result))
 			{
-				if (!_getPropertyType.TryGetValue(key, out result))
-				{
-					_getPropertyType.Add(key, result = InternalGetPropertyType(type, property, allowPrivateMembers));
-				}
+				_getPropertyType.Add(_getPropertyTypeKey.Clone(), result = InternalGetPropertyType(type, property, allowPrivateMembers));
 			}
 
-			return result;
+			return Unsafe.As<Type>(result);
 		}
 
 		internal static ValueGetterHandler GetValueGetter(Type type, string property)
