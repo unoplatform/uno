@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using System;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 {
@@ -12,30 +13,58 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 		public Flyout_OverlayInputPassThroughElement()
 		{
 			this.InitializeComponent();
+		}
 
-			stackPanel.Loaded += (_, _) =>
+		private void SubscribeToPointerPressed(object sender, RoutedEventArgs e)
+		{
+			((UIElement)sender).AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressed), true);
+			((UIElement)sender).AddHandler(UIElement.PointerPressedEvent, new PointerEventHandler(OnPointerPressedUnHandled), false);
+		}
+
+		private void OnPointerPressed(object sender, PointerRoutedEventArgs e)
+		{
+			PressedOutput.Text += $"{DateTime.Now:mm:ss} - {((FrameworkElement)sender).Name} - {e.Handled} - {GetSourceName(e)}\r\n";
+		}
+
+		private void OnPointerPressedUnHandled(object sender, PointerRoutedEventArgs e)
+		{
+			PressedUnhandledOutput.Text += $"{DateTime.Now:mm:ss} - {((FrameworkElement)sender).Name} - {e.Handled} - {GetSourceName(e)}\r\n";
+		}
+
+		private void OnElementTapped(object sender, TappedRoutedEventArgs e)
+		{
+			TappedOutput.Text += $"{DateTime.Now:mm:ss} - {((FrameworkElement)sender).Name} tapped\r\n";;
+			e.Handled = true;
+		}
+
+		private void OnButtonClicked(object sender, RoutedEventArgs e)
+		{
+			TappedOutput.Text += $"{DateTime.Now:mm:ss} - {((FrameworkElement)sender).Name} clicked\r\n";
+		}
+
+		private void ClearLog(object sender, RoutedEventArgs e)
+		{
+			TappedOutput.Text = "";
+			PressedOutput.Text = "";
+			PressedUnhandledOutput.Text = "";
+		}
+
+		private static string GetSourceName(PointerRoutedEventArgs args)
+			=> args.OriginalSource switch
 			{
-				stackPanel.AddHandler(PointerPressedEvent, new PointerEventHandler(StackPanel_Click), true);
+				FrameworkElement { Name: { Length: > 0 } name } => name,
+				null => "-null-",
+				{ } src => $"{src.GetType().Name}:{src.GetHashCode():X8}"
 			};
+
+		private void OnFlyoutOpened(object sender, object e)
+		{
+			IsFlyoutOpened.Text = "True";
 		}
 
-		private void Button_Click(object sender, RoutedEventArgs e)
+		private void OnFlyoutClosed(object sender, object e)
 		{
-			textBlock.Text += " Button_Click";
-		}
-
-		private void FlyoutBase_OnClosed(object sender, object e)
-		{
-			textBlock.Text += " FlyoutBase_OnClosed";
-		}
-		private void FlyoutBase_OnClosing(FlyoutBase sender, FlyoutBaseClosingEventArgs args)
-		{
-			textBlock.Text += " FlyoutBase_OnClosing";
-		}
-
-		private void StackPanel_Click(object sender, RoutedEventArgs e)
-		{
-			textBlock.Text += " StackPanel_Click";
+			IsFlyoutOpened.Text = "False";
 		}
 	}
 }

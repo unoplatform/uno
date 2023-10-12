@@ -167,6 +167,8 @@ internal partial class InputManager
 				// Note: We create a new PointerRoutedEventArgs with a new OriginalSource == reRouted.To
 				if (_manager._reRouted is { } reRouted)
 				{
+					_manager._reRouted = null;
+
 					// Note: Here we are not validating the current result.VisualTreeAltered nor we perform a new hit test as we should if `true`
 					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
 					// When the PopupRoot perform teh HitTest, the visual tree is already updated.
@@ -642,13 +644,12 @@ internal partial class InputManager
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs)
 		{
+			using var dispatch = StartDispatch(evt, routedArgs);
+
 			if (_trace)
 			{
 				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to original source [{originalSource.GetDebugName()}]");
 			}
-
-			routedArgs.Handled = false;
-			using var dispatch = StartDispatch(evt, routedArgs);
 
 			evt.Invoke(originalSource, routedArgs, BubblingContext.Bubble);
 
@@ -657,14 +658,12 @@ internal partial class InputManager
 
 		private PointerEventDispatchResult Raise(PointerEvent evt, VisualTreeHelper.Branch branch, PointerRoutedEventArgs routedArgs)
 		{
-			using var _ = StartDispatch(evt, routedArgs);
+			using var dispatch = StartDispatch(evt, routedArgs);
+
 			if (_trace)
 			{
 				Trace($"[Ignoring captures] raising event {evt.Name} (args: {routedArgs.GetHashCode():X8}) to branch [{branch}]");
 			}
-
-			routedArgs.Handled = false;
-			using var dispatch = StartDispatch(evt, routedArgs);
 
 			evt.Invoke(branch.Leaf, routedArgs, BubblingContext.BubbleUpTo(branch.Root));
 
@@ -673,7 +672,6 @@ internal partial class InputManager
 
 		private PointerEventDispatchResult RaiseUsingCaptures(PointerEvent evt, UIElement originalSource, PointerRoutedEventArgs routedArgs, bool setCursor)
 		{
-			routedArgs.Handled = false;
 			using var dispatch = StartDispatch(evt, routedArgs);
 
 			if (PointerCapture.TryGet(routedArgs.Pointer, out var capture))
