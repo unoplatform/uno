@@ -4,7 +4,7 @@ using Uno.Extensions;
 using Uno.UI.Runtime.Skia;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.GTK.UI.Core
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Core
 {
 	internal static class Cursors
 	{

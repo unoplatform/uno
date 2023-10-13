@@ -1,7 +1,7 @@
 ﻿using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
 
-namespace Uno.UI.Runtime.Skia.GTK;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal static class GtkManager
 {

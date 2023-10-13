@@ -6,7 +6,7 @@ using Gtk;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia.UI.Xaml.Controls;
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
 internal class SinglelineTextBoxView : GtkTextBoxView
 {

@@ -40,6 +40,8 @@ parameters:
     value: '02'
   - key: '3'
     value: '03'
+  - key: '4'
+    value: '04'
 
 jobs:
 - job: iOS_Build
@@ -53,9 +55,9 @@ jobs:
     SourceLinkEnabled: falses
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
-    # Only build for net7
-    UnoDisableNet8Mobile: true
-    UnoDisableNet8: true
+    # Only build for NetPrevious
+    UnoDisableNetCurrentMobile: true
+    UnoDisableNetCurrent: true
 
   steps:
   - checkout: self
@@ -71,6 +73,8 @@ jobs:
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
+
+  - template: templates/gitversion.yml
 
   - bash: |
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
@@ -96,6 +100,92 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: ios-uitest-build
+      ArtifactType: Container
+
+- job: iOS_TestFlight
+  displayName: 'Build iOS Samples App For TestFlight'
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/master')
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    - group: unoplatform.apple.ios.appstore.distribution
+    - name: CI_Build
+      value: true
+    - name: SourceLinkEnabled
+      value: false
+    - name: NUGET_PACKAGES
+      value: $(Pipeline.Workspace)/.nuget/packages
+
+    # Only build for NetPrevious
+    - name: UnoDisableNetCurrentMobile
+      value: true
+    - name: UnoDisableNetCurrent
+      value: true
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: InstallAppleCertificate@2
+    displayName: Install Certificate
+    inputs:
+      certSecureFile: UnoPlatform-Apple-Distribution.p12
+      certPwd: $(appleappstorecertificatepassword)
+      keychain: temp
+
+  - task: InstallAppleProvisioningProfile@1
+    displayName: Install Provisioning Profile
+    inputs:
+      provisioningProfileLocation: secureFiles
+      provProfileSecureFile: Uno_Dev_Samples.mobileprovision
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/dotnet7-mobile-install-mac.yml
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRootBuild }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
+
+  - template: templates/gitversion.yml
+
+  - bash: |
+      cd $(BUILD.SOURCESDIRECTORY)/src/SamplesApp/SamplesApp.netcoremobile
+      dotnet publish \
+        -f net7.0-ios \
+        -c Release \
+        -r:ios-arm64 \
+        -p:BuildForTestFlight=true \
+        -p:UnoTargetFrameworkOverride=net7.0-ios \
+        -p:UnoUIDisableNet8Build=true \
+        /bl:$(build.artifactstagingdirectory)/ios-netcoremobile-sampleapp-testflight.binlog
+
+    displayName: Build iOS App for TestFlight
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.netcoremobile/bin/Release/net7.0-ios/ios-arm64/publish
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)/TestFlight
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: ios-testflight
       ArtifactType: Container
 
 ##
@@ -129,7 +219,7 @@ jobs:
       vmImage: ${{ parameters.vmImageTest }}
       UITEST_SNAPSHOTS_ONLY: false
       UITEST_TEST_TIMEOUT: '70m'
-      UITEST_AUTOMATED_GROUP: 4
+      UITEST_AUTOMATED_GROUP: RuntimeTests
       UITEST_RUNTIME_TEST_GROUP: ${{ RuntimeTestGroup.key }}
       UITEST_RUNTIME_TEST_GROUP_COUNT: ${{ parameters.UITEST_RUNTIME_TEST_GROUP_COUNT }}
       UITEST_ALLOW_RERUN: 'false'

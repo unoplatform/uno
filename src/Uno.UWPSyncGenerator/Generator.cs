@@ -74,11 +74,6 @@ namespace Uno.UWPSyncGenerator
 			BaseXamlNamespace + ".Data.CollectionView",
 			BaseXamlNamespace + ".Controls.WebView",
 			BaseXamlNamespace + ".Controls.UIElementCollection",
-			BaseXamlNamespace + ".Shapes.Polygon",
-			BaseXamlNamespace + ".Shapes.Polyline",
-			BaseXamlNamespace + ".Shapes.Ellipse",
-			BaseXamlNamespace + ".Shapes.Line",
-			BaseXamlNamespace + ".Shapes.Path",
 			BaseXamlNamespace + ".Media.Animation.FadeInThemeAnimation",
 			BaseXamlNamespace + ".Media.Animation.FadeOutThemeAnimation",
 			BaseXamlNamespace + ".Media.ImageBrush",
@@ -148,14 +143,16 @@ namespace Uno.UWPSyncGenerator
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			_iOSCompilation = await LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-ios");
-			_androidCompilation = await LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-android");
-			_unitTestsCompilation = await LoadProject($@"{basePath}\{baseName}.Tests.csproj", "net7.0");
-			_macCompilation = await LoadProject($@"{basePath}\{baseName}.netcoremobile.csproj", "net7.0-macos");
+			var topProject = Path.Combine(Path.GetDirectoryName(basePath), "Uno.UI", "Uno.UI");
 
-			_netstdReferenceCompilation = await LoadProject($@"{basePath}\{baseName}.Reference.csproj", "net7.0");
-			_wasmCompilation = await LoadProject($@"{basePath}\{baseName}.Wasm.csproj", "net7.0");
-			_skiaCompilation = await LoadProject($@"{basePath}\{baseName}.Skia.csproj", "net7.0");
+			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-ios");
+			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-android");
+			_unitTestsCompilation = await LoadProject($@"{topProject}.Tests.csproj", "net7.0");
+			_macCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-macos");
+
+			_netstdReferenceCompilation = await LoadProject($@"{topProject}.Reference.csproj", "net7.0");
+			_wasmCompilation = await LoadProject($@"{topProject}.Wasm.csproj", "net7.0");
+			_skiaCompilation = await LoadProject($@"{topProject}.Skia.csproj", "net7.0");
 
 			_iOSBaseSymbol = _iOSCompilation.GetTypeByMetadataName("UIKit.UIView");
 			_androidBaseSymbol = _androidCompilation.GetTypeByMetadataName("Android.Views.View");
@@ -510,7 +507,7 @@ namespace Uno.UWPSyncGenerator
 			  );
 		}
 
-		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
+		protected PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
 		{
 			var android = GetNonGeneratedMembers(types.AndroidSymbol, name);
 			var ios = GetNonGeneratedMembers(types.IOSSymbol, name);
@@ -850,7 +847,7 @@ namespace Uno.UWPSyncGenerator
 
 			if (ifaces.Any())
 			{
-				return $" : {string.Join(",", ifaces)}";
+				return $" : {string.Join(", ", ifaces)}";
 			}
 
 			return "";
@@ -1043,10 +1040,10 @@ namespace Uno.UWPSyncGenerator
 
 						var baseParamString = string.Join(", ", q.FirstOrDefault()?.Parameters.Select(p => p.Name) ?? Array.Empty<string>());
 
-						var baseParams = type.BaseType?.SpecialType != SpecialType.System_Object && q.Any() ? $": base({baseParamString})" : "";
+						var baseParams = type.BaseType?.SpecialType != SpecialType.System_Object && q.Any() ? $" : base({baseParamString})" : "";
 
 						b.AppendLineInvariant($"[global::Uno.NotImplemented({methods.GenerateNotImplementedList()})]");
-						using (b.BlockInvariant($"{visiblity} {type.Name}({parameters}) {baseParams}"))
+						using (b.BlockInvariant($"{visiblity} {type.Name}({parameters}){baseParams}"))
 						{
 							BuildNotImplementedException(b, method, false);
 						}

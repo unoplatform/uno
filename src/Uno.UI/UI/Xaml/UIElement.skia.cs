@@ -1,4 +1,8 @@
-﻿using Windows.Foundation;
+﻿#if DEBUG
+#define ENABLE_CONTAINER_VISUAL_TRACKING
+#endif
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using System;
@@ -18,14 +22,15 @@ using Uno.UI.Xaml.Input;
 using Uno.UI.Xaml.Core;
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Uno.UI.Media;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UIElement : DependencyObject
+	public partial class UIElement : DependencyObject, IVisualElement, IVisualElement2
 	{
-		private ContainerVisual _visual;
-		internal double _canvasTop;
-		internal double _canvasLeft;
+		private ShapeVisual _visual;
 		private Rect _currentFinalRect;
 		private Rect? _currentClippedFrame;
 
@@ -35,9 +40,6 @@ namespace Windows.UI.Xaml
 
 			Initialize();
 			InitializePointers();
-			InitializeKeyboard();
-
-			this.RegisterPropertyChangedCallbackStrong(OnPropertyChanged);
 
 			UpdateHitTest();
 		}
@@ -57,20 +59,6 @@ namespace Windows.UI.Xaml
 
 		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
 
-		partial void InitializeKeyboard();
-
-		private void OnPropertyChanged(ManagedWeakReference instance, DependencyProperty property, DependencyPropertyChangedEventArgs args)
-		{
-			if (property == Controls.Canvas.TopProperty)
-			{
-				_canvasTop = (double)args.NewValue;
-			}
-			else if (property == Controls.Canvas.LeftProperty)
-			{
-				_canvasLeft = (double)args.NewValue;
-			}
-		}
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
@@ -86,20 +74,32 @@ namespace Windows.UI.Xaml
 			Visual.Opacity = Visibility == Visibility.Visible ? (float)Opacity : 0;
 		}
 
-		internal ContainerVisual Visual
+		internal ShapeVisual Visual
 		{
 			get
 			{
 
-				if (_visual == null)
+				if (_visual is null)
 				{
-					_visual = Window.Current.Compositor.CreateContainerVisual();
-					_visual.Comment = $"Owner:{GetType()}/{(this as FrameworkElement)?.Name}";
+					_visual = Window.Current.Compositor.CreateShapeVisual();
+#if ENABLE_CONTAINER_VISUAL_TRACKING
+					_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+#endif
 				}
 
 				return _visual;
 			}
 		}
+
+#if ENABLE_CONTAINER_VISUAL_TRACKING // Make sure to update the Comment to have the valid depth
+		partial void OnLoading()
+		{
+			if (_visual is not null)
+			{
+				_visual.Comment = $"{this.GetDebugDepth():D2}-{this.GetDebugName()}";
+			}
+		}
+#endif
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
@@ -228,8 +228,6 @@ namespace Windows.UI.Xaml
 
 		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		partial void InitializeCapture();
-
 		internal bool IsPointerCaptured { get; set; }
 
 		public virtual IEnumerable<UIElement> GetChildren() => _children;
@@ -273,7 +271,8 @@ namespace Windows.UI.Xaml
 
 			var oldClip = oldClippedFrame;
 			var newClip = clippedFrame;
-			if (oldRect != newRect || oldClip != newClip)
+
+			if (oldRect != newRect || oldClip != newClip || (_renderTransform?.FlowDirectionTransform ?? Matrix3x2.Identity) != GetFlowDirectionTransform())
 			{
 				if (
 					newRect.Width < 0
@@ -317,8 +316,27 @@ namespace Windows.UI.Xaml
 			visual.Offset = new Vector3((float)roundedRect.X, (float)roundedRect.Y, 0) + _translation;
 			visual.Size = new Vector2((float)roundedRect.Width, (float)roundedRect.Height);
 			visual.CenterPoint = new Vector3((float)RenderTransformOrigin.X, (float)RenderTransformOrigin.Y, 0);
+			if (_renderTransform is null && !GetFlowDirectionTransform().IsIdentity)
+			{
+				_renderTransform = new NativeRenderTransformAdapter(this, RenderTransform, RenderTransformOrigin);
+			}
 
-			ApplyNativeClip(clip ?? Rect.Empty);
+			_renderTransform?.UpdateFlowDirectionTransform();
+
+			// The clipping applied by our parent due to layout constraints are pushed to the visual through the ViewBox property
+			// This allows special handling of this clipping by the compositor (cf. ShapeVisual.Render).
+			if (clip is null)
+			{
+				visual.ViewBox = null;
+			}
+			else
+			{
+				var viewBox = visual.Compositor.CreateViewBox();
+				viewBox.Offset = clip.Value.Location.ToVector2();
+				viewBox.Size = clip.Value.Size.ToVector2();
+
+				visual.ViewBox = viewBox;
+			}
 		}
 
 		partial void ApplyNativeClip(Rect rect)
@@ -350,6 +368,8 @@ namespace Windows.UI.Xaml
 
 		partial void HideVisual()
 			=> Visual.IsVisible = false;
+
+		Visual IVisualElement2.GetVisualInternal() => ElementCompositionPreview.GetElementVisual(this);
 
 #if DEBUG
 		public string ShowLocalVisualTree() => this.ShowLocalVisualTree(1000);

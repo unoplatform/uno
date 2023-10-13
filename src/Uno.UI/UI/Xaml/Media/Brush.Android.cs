@@ -21,22 +21,20 @@ namespace Windows.UI.Xaml.Media
 	//Android partial for Brush
 	public partial class Brush
 	{
-		private static Paint.Style _strokeCache;
-		private static Paint.Style _fillCache;
-
-		private static Paint.Style SystemStroke => _strokeCache ??= Paint.Style.Stroke;
-		private static Paint.Style SystemFill => _fillCache ??= Paint.Style.Fill;
-
 		/// <summary>
 		/// Return a paint with Fill style
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Fill style</returns>
-		internal Paint GetFillPaint(Windows.Foundation.Rect destinationRect)
+		internal void ApplyToFillPaint(Windows.Foundation.Rect destinationRect, Paint paint)
 		{
-			var paint = GetPaintInner(destinationRect);
-			paint?.SetStyle(SystemFill);
-			return paint;
+			if (paint is null)
+			{
+				throw new ArgumentNullException(nameof(paint));
+			}
+
+			BrushNative.ResetPaintForFill(paint);
+			ApplyToPaintInner(destinationRect, paint);
 		}
 
 		/// <summary>
@@ -44,14 +42,18 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		/// <param name="destinationRect">RectF that will be drawn into - used by ImageBrush</param>
 		/// <returns>A Paint with Stroke style</returns>
-		internal Paint GetStrokePaint(Windows.Foundation.Rect destinationRect)
+		internal void ApplyToStrokePaint(Windows.Foundation.Rect destinationRect, Paint paint)
 		{
-			var paint = GetPaintInner(destinationRect);
-			paint?.SetStyle(SystemStroke);
-			return paint;
+			if (paint is null)
+			{
+				throw new ArgumentNullException(nameof(paint));
+			}
+
+			BrushNative.ResetPaintForStroke(paint);
+			ApplyToPaintInner(destinationRect, paint);
 		}
 
-		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
+		private protected virtual void ApplyToPaintInner(Rect destinationRect, Paint paint) => throw new InvalidOperationException();
 
 		internal static Drawable GetBackgroundDrawable(Brush background, Windows.Foundation.Rect drawArea, Paint fillPaint, Path maskingPath = null, bool antiAlias = true)
 		{

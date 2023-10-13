@@ -7,6 +7,8 @@ using Uno.UI.Xaml.Core;
 using Uno.UI.Xaml.Islands;
 using Uno.UI.DataBinding;
 using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls.Primitives;
 
@@ -16,6 +18,22 @@ internal partial class PopupRoot : Panel
 
 	public PopupRoot()
 	{
+		KeyDown += OnKeyDown;
+		Windows.UI.Xaml.Window.Current.Activated += (_, _) => CloseFlyouts();
+		Windows.UI.Xaml.Window.Current.SizeChanged += (_, _) => CloseFlyouts();
+	}
+
+	private void CloseFlyouts()
+	{
+		for (var i = _openPopups.Count - 1; i >= 0; i--)
+		{
+			var reference = _openPopups[i];
+			if (!reference.IsDisposed && reference.Target is Popup { IsForFlyout: true } popup)
+			{
+				var f = popup.AssociatedFlyout;
+				f.Hide();
+			}
+		}
 	}
 
 	protected override void OnChildrenChanged()
@@ -102,6 +120,19 @@ internal partial class PopupRoot : Panel
 			if (_openPopups[i].IsDisposed || _openPopups[i].Target is null)
 			{
 				_openPopups.RemoveAt(i);
+			}
+		}
+	}
+
+	protected void OnKeyDown(object sender, KeyRoutedEventArgs args)
+	{
+		if (args.Key == VirtualKey.Escape)
+		{
+			var popup = GetTopmostPopup(PopupFilter.LightDismissOrFlyout);
+			if (popup is { })
+			{
+				popup.IsOpen = false;
+				args.Handled = popup.IsOpen;
 			}
 		}
 	}

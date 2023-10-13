@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.CodeAnalysis;
-using System.Text;
+﻿using System.Diagnostics.CodeAnalysis;
 using Newtonsoft.Json;
 using Uno.Extensions;
 
@@ -18,7 +15,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public string? Content { get; set; }
 
 		[JsonIgnore]
-		public string Scope => HotReloadConstants.ScopeName;
+		public string Scope => HotReloadConstants.HotReload;
 
 		[JsonIgnore]
 		string IMessage.Name => Name;

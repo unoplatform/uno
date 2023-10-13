@@ -29,7 +29,7 @@ using WpfApplication = System.Windows.Application;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf;
 
-namespace Uno.UI.Skia.Platform
+namespace Uno.UI.Runtime.Skia.Wpf
 {
 	internal class WpfDragDropExtension : IDragDropExtension
 	{

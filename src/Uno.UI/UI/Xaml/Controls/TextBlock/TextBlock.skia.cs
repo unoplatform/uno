@@ -31,6 +31,14 @@ namespace Windows.UI.Xaml.Controls
 			Visual.Children.InsertAtBottom(_textVisual);
 		}
 
+#if DEBUG
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			_textVisual.Comment = $"{Visual.Comment}#text";
+		}
+#endif
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			var padding = Padding;
@@ -40,6 +48,18 @@ namespace Windows.UI.Xaml.Controls
 			return desiredSize.Add(padding);
 		}
 
+		private void ApplyFlowDirection(float width)
+		{
+			if (this.FlowDirection == FlowDirection.RightToLeft)
+			{
+				_textVisual.TransformMatrix = new Matrix4x4(new Matrix3x2(-1.0f, 0.0f, 0.0f, 1.0f, width, 0.0f));
+			}
+			else
+			{
+				_textVisual.TransformMatrix = Matrix4x4.Identity;
+			}
+		}
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var padding = Padding;
@@ -47,8 +67,17 @@ namespace Windows.UI.Xaml.Controls
 			var arrangedSizeWithoutPadding = Inlines.Arrange(availableSizeWithoutPadding);
 			_textVisual.Size = new Vector2((float)arrangedSizeWithoutPadding.Width, (float)arrangedSizeWithoutPadding.Height);
 			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
-
+			ApplyFlowDirection((float)finalSize.Width);
 			return base.ArrangeOverride(finalSize);
+		}
+
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FlowDirectionProperty)
+			{
+				ApplyFlowDirection((float)this.RenderSize.Width);
+			}
 		}
 
 		private Hyperlink? FindHyperlinkAt(Point point)

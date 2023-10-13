@@ -118,15 +118,6 @@ namespace Windows.UI.Xaml
 
 		public event SizeChangedEventHandler SizeChanged;
 
-		internal void RaiseSizeChanged(SizeChangedEventArgs args)
-		{
-			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
-		}
-
-		internal void SetActualSize(Size size)
-			=> AssignedActualSize = size;
-
 		private event TypedEventHandler<FrameworkElement, object> _loading;
 		public event TypedEventHandler<FrameworkElement, object> Loading
 		{
@@ -216,11 +207,8 @@ namespace Windows.UI.Xaml
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		protected void SetCornerRadius(CornerRadius cornerRadius)
-			=> BorderLayerRenderer.SetCornerRadius(this, cornerRadius);
-
-		protected void SetBorder(Thickness thickness, Brush brush)
-			=> BorderLayerRenderer.SetBorder(this, thickness, brush);
+		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
+			=> BorderLayerRenderer.SetBorder(this, thickness, brush, cornerRadius);
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
 		{

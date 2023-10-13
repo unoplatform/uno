@@ -9,6 +9,9 @@ using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Represents the hinge angle sensor in a dual-screen device.
+	/// </summary>
 	public partial class HingeAngleSensor
 	{
 		private static readonly object _syncLock = new object();
@@ -19,10 +22,17 @@ namespace Windows.Devices.Sensors
 
 		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
 
+		/// <summary>
+		/// Hides the public parameterless constructor
+		/// </summary>
 		private HingeAngleSensor()
 		{
 		}
 
+		/// <summary>
+		/// Asynchronously retrieves the default hinge angle sensor.
+		/// </summary>
+		/// <returns>When this method completes, it returns a reference to the default HingeAngleSensor.</returns>
 		public static IAsyncOperation<HingeAngleSensor> GetDefaultAsync()
 		{
 			// avoid locking if possible
@@ -46,6 +56,9 @@ namespace Windows.Devices.Sensors
 			return Task.FromResult(_instance).AsAsyncOperation();
 		}
 
+		/// <summary>
+		/// Occurs when the hinge angle sensor in a dual-screen device reports a change in opening angle.
+		/// </summary>
 		public event TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> ReadingChanged
 		{
 			add

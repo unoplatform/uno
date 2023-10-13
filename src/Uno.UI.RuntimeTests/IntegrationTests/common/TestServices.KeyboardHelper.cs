@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Threading.Tasks;
 using Windows.System;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Input;
 
@@ -118,10 +120,16 @@ namespace Private.Infrastructure
 			};
 
 
-			public static void PressKeySequence(string keys, UIElement element = null)
+			public static async void PressKeySequence(string keys, UIElement element = null)
 			{
 #if !NETFX_CORE
-				if (string.IsNullOrEmpty(keys) || element == null)
+				if (string.IsNullOrEmpty(keys))
+				{
+					return;
+				}
+
+				element ??= FocusManager.GetFocusedElement(WindowHelper.XamlRoot) as UIElement;
+				if (element is null)
 				{
 					return;
 				}
@@ -153,7 +161,7 @@ namespace Private.Infrastructure
 						var key = keyInstruction.Substring(4, keyInstruction.Length - 4);
 						if (m_vKeyMapping.TryGetValue(key, out var vKey))
 						{
-							element.SafeRaiseEvent(keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey));
+							await RaiseOnElementDispatcherAsync(element, keyDownCodePos == 0 ? UIElement.KeyDownEvent : UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, VirtualKeyModifiers.None));
 						}
 					}
 					else
@@ -169,21 +177,22 @@ namespace Private.Infrastructure
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey));
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
 								}
 							}
 
 							if (m_vKeyMapping.TryGetValue(key, out var vKey))
 							{
-								element.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey));
-								element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey));
+								var modifiers = shouldShift ? VirtualKeyModifiers.Shift : VirtualKeyModifiers.None;
+								await RaiseOnElementDispatcherAsync(element, UIElement.KeyDownEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
+								await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vKey, modifiers));
 							}
 
 							if (shouldShift)
 							{
 								if (m_vKeyMapping.TryGetValue("shift", out var vShiftKey))
 								{
-									element.SafeRaiseEvent(UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey));
+									await RaiseOnElementDispatcherAsync(element, UIElement.KeyUpEvent, new KeyRoutedEventArgs(element, vShiftKey, VirtualKeyModifiers.None));
 								}
 							}
 						}
@@ -191,6 +200,26 @@ namespace Private.Infrastructure
 
 					posStart = posEnd + 1;
 					posEnd = keys.IndexOf("#", posStart);
+				}
+
+				async Task RaiseOnElementDispatcherAsync(UIElement element, RoutedEvent routedEvent, RoutedEventArgs args)
+				{
+					bool raiseSynchronously = element.Dispatcher.HasThreadAccess;
+#if __WASM__
+					if (!Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported)
+					{
+						raiseSynchronously = true;
+					}
+#endif
+
+					if (raiseSynchronously)
+					{
+						element.SafeRaiseEvent(routedEvent, args);
+					}
+					else
+					{
+						await element.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => element.SafeRaiseEvent(routedEvent, args));
+					}
 				}
 #endif
 			}

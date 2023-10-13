@@ -120,11 +120,11 @@ public record struct ExpectedPixels
 	public ExpectedPixels WithTolerance(PixelTolerance tolerance)
 		=> this with { Tolerance = tolerance };
 
-	public ExpectedPixels WithColorTolerance(byte tolerance)
-		=> this with { Tolerance = Tolerance.WithColor(tolerance) };
+	public ExpectedPixels WithColorTolerance(byte tolerance, ColorToleranceKind kind = default)
+		=> this with { Tolerance = Tolerance.WithColor(tolerance, kind) };
 
-	public ExpectedPixels WithPixelTolerance(int x = 0, int y = 0)
-		=> this with { Tolerance = Tolerance.WithOffset(x, y) };
+	public ExpectedPixels WithPixelTolerance(int x = 0, int y = 0, LocationToleranceKind kind = default)
+		=> this with { Tolerance = Tolerance.WithOffset(x, y, kind) };
 
 	public ExpectedPixels Or(ExpectedPixels alternative)
 		=> this with

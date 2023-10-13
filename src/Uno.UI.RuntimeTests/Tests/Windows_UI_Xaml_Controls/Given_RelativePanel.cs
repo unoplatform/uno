@@ -3,8 +3,12 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Extensions;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
+using Private.Infrastructure;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -17,6 +21,41 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public class Given_RelativePanel
 	{
+		[TestMethod]
+		public async Task When_Padding_Set_In_SizeChanged()
+		{
+			var SUT = new RelativePanel()
+			{
+				Width = 200,
+				Height = 200,
+				Children =
+				{
+					new Border()
+					{
+						Child = new Ellipse()
+						{
+							Fill = new SolidColorBrush(Colors.DarkOrange)
+						}
+					}
+				}
+			};
+
+			SUT.SizeChanged += (sender, args) => SUT.Padding = new Thickness(0, 200, 0, 0);
+
+			TestServices.WindowHelper.WindowContent = SUT;
+			await TestServices.WindowHelper.WaitForLoaded(SUT);
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// We have a problem on IOS and Android where SUT isn't relayouted after the padding
+			// change even though IsMeasureDirty is true. This is a workaround to explicity relayout.
+#if __IOS__ || __ANDROID__
+			SUT.InvalidateMeasure();
+			SUT.UpdateLayout();
+#endif
+
+			Assert.AreEqual(200, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+
 		[TestMethod]
 		public async Task When_Child_Aligns_Horizontal_Center_With_Panel()
 		{

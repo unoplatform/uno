@@ -22,7 +22,10 @@ using Font = AppKit.NSFont;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ContentControl : ICustomClippingElement
+	public partial class ContentControl
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		: ICustomClippingElement
+#endif
 	{
 #if XAMARIN
 		protected override Size MeasureOverride(Size availableSize)
@@ -79,6 +82,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot
 		{
 			get
@@ -102,5 +106,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+#endif
 	}
 }

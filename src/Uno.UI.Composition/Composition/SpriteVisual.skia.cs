@@ -1,6 +1,7 @@
 #nullable enable
 
 using SkiaSharp;
+using Uno.UI.Composition;
 
 namespace Windows.UI.Composition
 {
@@ -22,27 +23,22 @@ namespace Windows.UI.Composition
 			Brush?.UpdatePaint(_paint, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
 		}
 
-		internal override void Render(SKSurface surface)
+		internal override void Draw(in DrawingSession session)
 		{
-			base.Render(surface);
+			base.Draw(in session);
 
-			surface.Canvas.Save();
-
-			if (Compositor.CurrentOpacity != 1.0f)
+			if (Brush is IOnlineBrush onlineBrush && onlineBrush.IsOnline)
 			{
-				_paint.ColorFilter = Compositor.CurrentOpacityColorFilter;
-			}
-			else
-			{
-				_paint.ColorFilter = null;
+				onlineBrush.Draw(session, new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y));
+				return;
 			}
 
-			surface.Canvas.DrawRect(
+			_paint.ColorFilter = session.Filters.OpacityColorFilter;
+
+			session.Surface.Canvas.DrawRect(
 				new SKRect(left: 0, top: 0, right: Size.X, bottom: Size.Y),
 				_paint
 			);
-
-			surface.Canvas.Restore();
 		}
 	}
 }

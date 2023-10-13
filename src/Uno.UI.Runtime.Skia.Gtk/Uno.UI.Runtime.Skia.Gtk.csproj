@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0;net8.0</TargetFrameworks>
+		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
 
 	<Import Project="../targetframework-override.props" />
@@ -16,7 +16,7 @@
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Runtime.Skia.Gtk</PackageId>
 
-		<RootNamespace>Uno.UI.Runtime.Skia.GTK</RootNamespace>
+		<RootNamespace>Uno.UI.Runtime.Skia.Gtk</RootNamespace>
 
 		<UseCommonOverridePackage>true</UseCommonOverridePackage>
 

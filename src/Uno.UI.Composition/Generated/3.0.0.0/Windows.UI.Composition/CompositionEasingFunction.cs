@@ -9,6 +9,11 @@ namespace Windows.UI.Composition
 	public partial class CompositionEasingFunction : global::Windows.UI.Composition.CompositionObject
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal CompositionEasingFunction()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Composition.CubicBezierEasingFunction CreateCubicBezierEasingFunction(global::Windows.UI.Composition.Compositor owner, global::System.Numerics.Vector2 controlPoint1, global::System.Numerics.Vector2 controlPoint2)
 		{

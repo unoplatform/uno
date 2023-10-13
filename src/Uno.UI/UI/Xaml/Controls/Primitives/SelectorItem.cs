@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal void ApplyMultiSelectState(bool isSelectionMultiple)
 		{
-			if (isSelectionMultiple)
+			if (isSelectionMultiple && Selector is not ListViewBase { IsMultiSelectCheckBoxEnabled: false })
 			{
 				// We can safely always go to multiselect state
 				VisualStateManager.GoToState(this, "MultiSelectEnabled", useTransitions: true);
@@ -261,6 +261,19 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return state;
 		}
 
+		internal override void PrepareForRecycle()
+		{
+			// It's important to clear the index on the way out (recycle) and not wait to set it on the way in (reuse)
+			// because this property is used e.g. in ItemsControl.ContainerFromIndexInner which is used by e.g.
+			// ListView to get a clicked container.
+			ClearValue(ItemsControl.IndexForItemContainerProperty);
+
+			// Reset visual state so that the container doesn't come back looking like it's hovered or clicked.
+			VisualStateManager.GoToState(this, "Normal", false);
+
+			base.PrepareForRecycle();
+		}
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -272,7 +285,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			UpdateCommonStates();
 			if (Selector is ListView lv)
 			{
-				ApplyMultiSelectState(lv.IsSelectionMultiple);
+				ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
 			}
 
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
@@ -342,7 +355,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_canRaiseClickOnPointerRelease = false;
 
 				update = ManipulationUpdateKind.Clicked;
-				Selector?.OnItemClicked(this);
+				Selector?.OnItemClicked(this, args.KeyModifiers);
 
 				// This should be automatically done by the pointers due to release, but if for any reason
 				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
@@ -392,6 +405,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnGotFocus(e);
 			ChangeVisualState(true);
+
+			if (Selector is ListViewBase lvb)
+			{
+				var index = lvb.IndexFromContainer(this);
+				lvb.FocusedIndexContainerItem = (index, this, lvb.ItemFromIndex(index));
+			}
 		}
 
 		protected override void OnLostFocus(RoutedEventArgs e)

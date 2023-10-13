@@ -6,7 +6,8 @@ using System.ComponentModel;
 using System.IO;
 using Gtk;
 using Uno.Foundation.Logging;
-using Uno.UI.Runtime.Skia.GTK.UI.Core;
+using Uno.UI.Runtime.Skia.Gtk.UI.Core;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core.Preview;
 using Windows.UI.ViewManagement;
@@ -14,9 +15,9 @@ using IOPath = System.IO.Path;
 using WinUIApplication = Windows.UI.Xaml.Application;
 using WinUIWindow = Windows.UI.Xaml.Window;
 
-namespace Uno.UI.Runtime.Skia.GTK.UI.Controls;
+namespace Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 
-internal class UnoGtkWindow : Gtk.Window
+internal class UnoGtkWindow : Window
 {
 	private readonly WinUIWindow _winUIWindow;
 
@@ -38,7 +39,7 @@ internal class UnoGtkWindow : Gtk.Window
 		{
 			SetDefaultSize(1024, 800);
 		}
-		SetPosition(Gtk.WindowPosition.Center);
+		SetPosition(WindowPosition.Center);
 		Realized += (s, e) =>
 		{
 			// Load the correct cursors before the window is shown
@@ -90,7 +91,7 @@ internal class UnoGtkWindow : Gtk.Window
 
 		// All prerequisites passed, can safely close.
 		args.RetVal = false;
-		Gtk.Main.Quit();
+		Main.Quit();
 	}
 
 	internal void UpdateWindowPropertiesFromPackage()
@@ -140,6 +141,12 @@ internal class UnoGtkWindow : Gtk.Window
 		var appView = ApplicationView.GetForCurrentView();
 		Title = appView.Title;
 		SetSizeRequest((int)appView.PreferredMinSize.Width, (int)appView.PreferredMinSize.Height);
+	}
+
+	internal void UpdateWindowPropertiesFromCoreApplication()
+	{
+		var coreApplicationView = CoreApplication.GetCurrentView();
+		Decorated = !coreApplicationView.TitleBar.ExtendViewIntoTitleBar;
 	}
 
 	private void OnWindowStateChanged(object o, WindowStateEventArgs args)

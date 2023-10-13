@@ -15,6 +15,10 @@
 			ElementType = elementType;
 			HandlerType = handlerType;
 		}
+
+		public ElementMetadataUpdateHandlerAttribute(Type handlerType) : this(typeof(object), handlerType)
+		{
+		}
 	}
 
 }

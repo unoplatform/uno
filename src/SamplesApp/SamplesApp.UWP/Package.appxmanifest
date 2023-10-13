@@ -16,8 +16,9 @@
   <mp:PhoneIdentity PhoneProductId="1897f84c-689e-44d3-a8b7-c521a62818ae" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>SamplesApp</DisplayName>
-    <PublisherDisplayName>Uno Platform</PublisherDisplayName>
+    <DisplayName>ms-resource:ApplicationName</DisplayName>
+	<Description>ms-resource:ApplicationDescription</Description>
+	<PublisherDisplayName>ms-resource:PublisherDisplayName</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 

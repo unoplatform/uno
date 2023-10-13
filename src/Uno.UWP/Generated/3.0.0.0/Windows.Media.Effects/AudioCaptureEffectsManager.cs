@@ -8,6 +8,11 @@ namespace Windows.Media.Effects
 #endif
 	public partial class AudioCaptureEffectsManager
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal AudioCaptureEffectsManager()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.AudioCaptureEffectsChanged.add
 		// Forced skipping of method Windows.Media.Effects.AudioCaptureEffectsManager.AudioCaptureEffectsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

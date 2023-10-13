@@ -7,20 +7,18 @@ namespace Windows.UI.Composition
 {
 	public partial class Compositor : global::System.IDisposable
 	{
+		internal static Compositor? Current;
+
+		public Compositor() { Current = this; }
+
 		public ContainerVisual CreateContainerVisual()
-			=> new ContainerVisual(this)
-			{
-			};
+			=> new ContainerVisual(this);
 
 		public SpriteVisual CreateSpriteVisual()
-			=> new SpriteVisual(this)
-			{
-			};
+			=> new SpriteVisual(this);
 
 		public CompositionColorBrush CreateColorBrush()
-			=> new CompositionColorBrush(this)
-			{
-			};
+			=> new CompositionColorBrush(this);
 
 		public CompositionColorBrush CreateColorBrush(Color color)
 			=> new CompositionColorBrush(this)
@@ -136,6 +134,24 @@ namespace Windows.UI.Composition
 				Offset = offset,
 				Color = color
 			};
+
+		public CompositionViewBox CreateViewBox()
+			=> new CompositionViewBox(this);
+
+		public RedirectVisual CreateRedirectVisual()
+			=> new RedirectVisual(this);
+
+		public RedirectVisual CreateRedirectVisual(Visual source)
+			=> new RedirectVisual(this) { Source = source };
+
+		public CompositionVisualSurface CreateVisualSurface()
+			=> new CompositionVisualSurface(this);
+
+		public CompositionMaskBrush CreateMaskBrush()
+			=> new CompositionMaskBrush(this);
+
+		public CompositionNineGridBrush CreateNineGridBrush()
+			=> new CompositionNineGridBrush(this);
 
 		internal void InvalidateRender() => InvalidateRenderPartial();
 

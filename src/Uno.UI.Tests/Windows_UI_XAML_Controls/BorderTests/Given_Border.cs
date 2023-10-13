@@ -23,10 +23,6 @@ namespace Uno.UI.Tests.BorderTests
 #endif
 	public partial class Given_Border : Context
 	{
-		private partial class View : FrameworkElement
-		{
-		}
-
 		[TestMethod]
 		public void When_Border_Has_Fixed_Size()
 		{
@@ -300,6 +296,10 @@ namespace Uno.UI.Tests.BorderTests
 #endif
 			}
 		}
+	}
+
+	public partial class View : FrameworkElement
+	{
 	}
 }
 #endif

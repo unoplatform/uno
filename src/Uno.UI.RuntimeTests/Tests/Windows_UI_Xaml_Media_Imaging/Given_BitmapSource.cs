@@ -180,10 +180,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media_Imaging
 
 			await WindowHelper.WaitForIdle();
 
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(parent);
-			var snapshot = await RawBitmap.From(renderer, rect);
+			var snapshot = await UITestHelper.ScreenShot(parent);
 			var coords = parent.GetRelativeCoords(rect);
 			await WindowHelper.WaitForIdle();
 

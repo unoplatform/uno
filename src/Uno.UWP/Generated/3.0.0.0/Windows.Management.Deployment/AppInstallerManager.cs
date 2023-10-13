@@ -9,6 +9,11 @@ namespace Windows.Management.Deployment
 	public partial class AppInstallerManager
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal AppInstallerManager()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public void SetAutoUpdateSettings(string packageFamilyName, global::Windows.Management.Deployment.AutoUpdateSettingsOptions appInstallerInfo)
 		{

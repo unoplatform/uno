@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -75,7 +76,8 @@ namespace Windows.UI
 		/// </summary>
 		internal double Luminance => (0.299 * _r + 0.587 * _g + 0.114 * _b) / 255;
 
-		internal Color WithOpacity(double opacity) => new Color((byte)(_a * opacity), _r, _g, _b);
+		// Note: This method has an equivalent in Toolkit.ColorExtensions for usage with Windows
+		internal Color WithOpacity(double opacity) => new((byte)(_a * opacity), _r, _g, _b);
 
 		internal uint AsUInt32() => _color;
 

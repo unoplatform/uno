@@ -164,6 +164,29 @@ namespace Uno.UWPSyncGenerator
 				{
 					if (type.TypeKind != TypeKind.Enum)
 					{
+						if (type.TypeKind == TypeKind.Class && !type.IsStatic && !type.GetMembers(WellKnownMemberNames.InstanceConstructorName).Any(c => c.DeclaredAccessibility is Accessibility.Public or Accessibility.Protected))
+						{
+							// The type in reference compilation (UWP/WinUI) doesn't have an accessible constructor.
+							// So, generated code will generate an internal constructor if there is no constructor defined by individual platforms.
+							// TODO: Consider producing an error if the individual platforms has a publicly accessible constructor.
+							var nonGeneratedConstructors = GetAllGetNonGeneratedMembers(
+								allSymbols,
+								WellKnownMemberNames.InstanceConstructorName,
+								constructors => constructors.FirstOrDefault(c => c is IMethodSymbol { IsImplicitlyDeclared: false }));
+							if (nonGeneratedConstructors.HasUndefined)
+							{
+								nonGeneratedConstructors.AppendIf(b);
+								using (b.BlockInvariant($"internal {type.Name}()"))
+								{
+								}
+
+								using (b.Indent(-b.CurrentLevel))
+								{
+									b.AppendLineInvariant($"#endif");
+								}
+							}
+						}
+
 						BuildProperties(type, b, allSymbols);
 						BuildMethods(type, b, allSymbols, writtenMethods);
 						BuildEvents(type, b, allSymbols);

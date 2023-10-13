@@ -38,7 +38,12 @@
 
 	<ItemGroup>
 		<EmbeddedResource Include="Assets\Border_Snapshot.bgra8" />
-
+		<EmbeddedResource Include="Assets\UnoA4.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Crop.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
+		<EmbeddedResource Include="Assets\UnoA4_100x141.png" />
 		<Content Include="Assets\**" />
 	</ItemGroup>
 

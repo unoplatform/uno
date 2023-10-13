@@ -21,24 +21,19 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel : IEnumerable
 	{
-		private WeakBrushChangedProxy _borderBrushChangedProxy;
 		private Action _borderBrushChanged;
 
 		public Panel()
 		{
 			Initialize();
-		}
-
-		~Panel()
-		{
-			_borderBrushChangedProxy?.Unsubscribe();
+			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		partial void Initialize();
 
 		partial void UpdateBorder()
 		{
-			SetBorder(BorderThicknessInternal, BorderBrushInternal);
+			SetBorder(BorderThicknessInternal, BorderBrushInternal, CornerRadiusInternal);
 		}
 
 		protected virtual void OnChildrenChanged()
@@ -53,9 +48,8 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
 		{
-			_borderBrushChangedProxy ??= new();
-			_borderBrushChanged ??= () => UpdateBorder();
-			_borderBrushChangedProxy.Subscribe(newValue, _borderBrushChanged);
+			var newOnInvalidateRender = _borderBrushChanged ?? (() => UpdateBorder());
+			Brush.SetupBrushChanged(oldValue, newValue, ref _borderBrushChanged, newOnInvalidateRender);
 		}
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
@@ -65,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusChangedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			SetCornerRadius(newValue);
+			UpdateBorder();
 		}
 
 		/// <summary>        
@@ -92,8 +86,5 @@ namespace Windows.UI.Xaml.Controls
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

@@ -3,7 +3,7 @@ using System.Linq;
 using Gdk;
 using Gtk;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal class UnoEventBox : EventBox
 {

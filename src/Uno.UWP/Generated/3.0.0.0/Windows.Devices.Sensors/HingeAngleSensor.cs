@@ -3,11 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-#if false || false || false || false || __SKIA__ || false || false
-	[global::Uno.NotImplemented("__SKIA__")]
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class HingeAngleSensor
 	{
+#if false || false || false || false || false || false || false
+		internal HingeAngleSensor()
+		{
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public double ReportThresholdInDegrees
@@ -62,8 +67,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member string HingeAngleSensor.GetDeviceSelector() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=string%20HingeAngleSensor.GetDeviceSelector%28%29");
 		}
 #endif
-#if false || false || false || false || __SKIA__ || false || false
-		[global::Uno.NotImplemented("__SKIA__")]
+#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.HingeAngleSensor> GetDefaultAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<HingeAngleSensor> HingeAngleSensor.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CHingeAngleSensor%3E%20HingeAngleSensor.GetDefaultAsync%28%29");

@@ -121,8 +121,7 @@ namespace Windows.UI.Xaml.Media
 				{
 					_opening.Disposable = null;
 
-					_opening.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-						Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+					_opening.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
 						ct => _ = Open(ct, targetWidth, targetHeight));
 				}
 			}
@@ -160,9 +159,9 @@ namespace Windows.UI.Xaml.Media
 		{
 			_imageData = data; // We should also cache the targetWidth and targetHeight
 
-			if (this.Log().IsEnabled(LogLevel.Information))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().Info($"Image {this} opened with {data}");
+				this.Log().Debug($"Image {this} opened with {data}");
 			}
 
 			var listeners = _subscriptions.ToList();

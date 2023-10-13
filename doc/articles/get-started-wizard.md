@@ -102,7 +102,7 @@ The XAML Hot reload provides a Visual Studio for Windows output window name "Uno
 
 Some common troubleshooting steps:
 - Make sure to rebuild your application if the XAML changes are not applied
-- Ensure that the Uno.UI.RemoteControl package has the same version as the Uno.UI package (Similar step is valid for Uno.WinUI packages)
+- Ensure that the Uno.WinUI.DevServer package has the same version as the Uno.UI package (Similar step is valid for Uno.WinUI packages)
 
 More troubleshooting information is available [in this section](features/working-with-xaml-hot-reload.md).
 

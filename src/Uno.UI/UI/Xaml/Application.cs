@@ -32,6 +32,7 @@ using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 using DependencyObject = System.Object;
+using Windows.UI.Xaml.Controls;
 #elif __IOS__
 using View = UIKit.UIView;
 using ViewGroup = UIKit.UIView;
@@ -140,6 +141,8 @@ namespace Windows.UI.Xaml
 				SetExplicitRequestedTheme(value);
 			}
 		}
+
+		internal bool IsSuspended { get; set; }
 
 		private void InitializeSystemTheme()
 		{
@@ -358,17 +361,24 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseResuming()
 		{
+			if (!IsSuspended)
+			{
+				return;
+			}
+
 			Resuming?.Invoke(null, null);
 			CoreApplication.RaiseResuming();
-
-			OnResumingPartial();
+			IsSuspended = false;
 		}
-
-		partial void OnResumingPartial();
 
 		internal void RaiseSuspending()
 		{
-			var suspendingOperation = CreateSuspendingOperation();
+			if (IsSuspended)
+			{
+				return;
+			}
+
+			var suspendingOperation = new SuspendingOperation(GetSuspendingOffset(), () => IsSuspended = true);
 			var suspendingEventArgs = new SuspendingEventArgs(suspendingOperation);
 
 			Suspending?.Invoke(this, suspendingEventArgs);
@@ -386,13 +396,12 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-#if !__IOS__ && !__ANDROID__ && !__MACOS__
+#if !__IOS__ && !__ANDROID__
 		/// <summary>
 		/// On platforms which don't support asynchronous suspension we indicate that with immediate
 		/// deadline and warning in logs.
 		/// </summary>
-		private SuspendingOperation CreateSuspendingOperation() =>
-			new SuspendingOperation(DateTimeOffset.Now.AddSeconds(0), null);
+		private DateTimeOffset GetSuspendingOffset() => DateTimeOffset.Now;
 #endif
 
 		private void SetRequestedTheme(ApplicationTheme requestedTheme)
@@ -467,6 +476,17 @@ namespace Windows.UI.Xaml
 			}
 			else if (instance is ViewGroup g)
 			{
+#if __ANDROID__
+				// We need to propagate for list view items that were materialized but not visible.
+				// Without this, theme changes will not propagate properly to all list view items.
+				if (instance is NativeListViewBase nativeListViewBase)
+				{
+					foreach (var selectorItem in nativeListViewBase.CachedItemViews)
+					{
+						PropagateResourcesChanged(selectorItem, updateReason);
+					}
+				}
+#endif
 				foreach (object o in g.GetChildren())
 				{
 					PropagateResourcesChanged(o, updateReason);

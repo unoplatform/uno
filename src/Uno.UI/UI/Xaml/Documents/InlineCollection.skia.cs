@@ -8,6 +8,7 @@ using Windows.UI.Composition;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Composition;
 
 #nullable enable
 
@@ -291,16 +292,25 @@ namespace Windows.UI.Xaml.Documents
 		/// <summary>
 		/// Renders a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
-		internal void Render(SKSurface surface, Compositor compositor)
+		internal void Draw(in DrawingSession session)
 		{
 			if (_renderLines.Count == 0)
 			{
 				return;
 			}
 
-			var canvas = surface.Canvas;
+			var canvas = session.Surface.Canvas;
 			var parent = (IBlock)_collection.GetParent();
 			var alignment = parent.TextAlignment;
+			if (parent.FlowDirection == FlowDirection.RightToLeft)
+			{
+				alignment = alignment switch
+				{
+					TextAlignment.Left => TextAlignment.Right,
+					TextAlignment.Right => TextAlignment.Left,
+					_ => alignment,
+				};
+			}
 
 			float y = 0;
 
@@ -339,7 +349,7 @@ namespace Windows.UI.Xaml.Documents
 							red: scb.Color.R,
 							green: scb.Color.G,
 							blue: scb.Color.B,
-							alpha: (byte)(scb.Color.A * scb.Opacity * compositor.CurrentOpacity));
+							alpha: (byte)(scb.Color.A * scb.Opacity * session.Filters.Opacity));
 					}
 
 					var decorations = inline.TextDecorations;

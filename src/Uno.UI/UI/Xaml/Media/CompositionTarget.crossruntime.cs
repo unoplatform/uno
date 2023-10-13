@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 using Uno.UI;
-using Windows.UI.Core;
+using Uno.UI.Dispatching;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -12,22 +11,23 @@ namespace Windows.UI.Xaml.Media
 		{
 			add
 			{
-				CoreDispatcher.CheckThreadAccess();
+				NativeDispatcher.CheckThreadAccess();
 
-				var currentlyRaisingEvents = Uno.UI.Dispatching.CoreDispatcher.Main.ShouldRaiseRenderEvents;
-				Uno.UI.Dispatching.CoreDispatcher.Main.Rendering += value;
-				Uno.UI.Dispatching.CoreDispatcher.Main.RenderEventThrottle = FeatureConfiguration.CompositionTarget.RenderEventThrottle;
-				Uno.UI.Dispatching.CoreDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
+				var currentlyRaisingEvents = NativeDispatcher.Main.IsRendering;
+				NativeDispatcher.Main.Rendering += value;
+				NativeDispatcher.Main.RenderingEventThrottle = FeatureConfiguration.CompositionTarget.RenderEventThrottle;
+				NativeDispatcher.Main.RenderingEventArgsGenerator ??= (d => new RenderingEventArgs(d));
+
 				if (!currentlyRaisingEvents)
 				{
-					Uno.UI.Dispatching.CoreDispatcher.Main.WakeUp();
+					NativeDispatcher.Main.WakeUp();
 				}
 			}
 			remove
 			{
-				Uno.UI.Dispatching.CoreDispatcher.CheckThreadAccess();
+				NativeDispatcher.CheckThreadAccess();
 
-				Uno.UI.Dispatching.CoreDispatcher.Main.Rendering -= value;
+				NativeDispatcher.Main.Rendering -= value;
 			}
 		}
 	}

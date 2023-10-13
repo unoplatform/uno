@@ -19,6 +19,7 @@ using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
+using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Data;
@@ -470,11 +471,10 @@ namespace Windows.UI.Xaml.Controls
 			//We get the view token early to avoid nullvalues when the view has already been detached
 			var viewWindowToken = _textBoxView.WindowToken;
 
-			_keyboardDisposable.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
+			_keyboardDisposable.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main
 				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
 				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
-				.RunAsync(
-					Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+				.EnqueueOperation(
 					async () =>
 					{
 						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));
@@ -554,9 +554,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			//We need to force a keypress event on editor action.
 			//the key press event is not triggered if we press the enter key depending on the ime.options
-
-			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter));
-			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter));
+			var modifiers = e is not null ? VirtualKeyHelper.FromModifiers(e.Modifiers) : VirtualKeyModifiers.None;
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
+			RaiseEvent(KeyUpEvent, new KeyRoutedEventArgs(this, global::Windows.System.VirtualKey.Enter, modifiers));
 
 			// Action will be ImeNull if AcceptsReturn is true, in which case we return false to allow the new line to register.
 			// Otherwise we return true to allow the focus to change correctly.

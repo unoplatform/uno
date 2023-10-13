@@ -70,7 +70,7 @@ namespace Windows.Devices.Display.Core
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public DisplayWireFormat(global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace, global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf, global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata) 
+		public DisplayWireFormat(global::Windows.Devices.Display.Core.DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, global::Windows.Devices.Display.Core.DisplayWireFormatColorSpace colorSpace, global::Windows.Devices.Display.Core.DisplayWireFormatEotf eotf, global::Windows.Devices.Display.Core.DisplayWireFormatHdrMetadata hdrMetadata)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Display.Core.DisplayWireFormat", "DisplayWireFormat.DisplayWireFormat(DisplayWireFormatPixelEncoding pixelEncoding, int bitsPerChannel, DisplayWireFormatColorSpace colorSpace, DisplayWireFormatEotf eotf, DisplayWireFormatHdrMetadata hdrMetadata)");
 		}

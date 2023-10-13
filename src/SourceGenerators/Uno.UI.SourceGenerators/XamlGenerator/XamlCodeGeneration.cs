@@ -81,6 +81,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _enableFuzzyMatching;
 
+		/// <summary>
+		/// Disables support for bindable type providers
+		/// </summary>
+		private readonly bool _disableBindableTypeProvidersGeneration;
+
 		private readonly GeneratorExecutionContext _generatorContext;
 
 		private bool IsUnoAssembly
@@ -231,6 +236,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableXamlFuzzyMatching"), out _enableFuzzyMatching))
 			{
 				_enableFuzzyMatching = true;
+			}
+
+			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out _disableBindableTypeProvidersGeneration))
+			{
+				_disableBindableTypeProvidersGeneration = false;
 			}
 
 			_targetPath = Path.Combine(
@@ -447,6 +457,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						isUnoFluentAssembly: IsUnoFluentAssembly,
 						isLazyVisualStateManagerEnabled: _isLazyVisualStateManagerEnabled,
 						enableFuzzyMatching: _enableFuzzyMatching,
+						disableBindableTypeProvidersGeneration: _disableBindableTypeProvidersGeneration,
 						generatorContext: _generatorContext,
 						xamlResourcesTrimming: _xamlResourcesTrimming,
 						xamlTypeToXamlTypeBaseMap: xamlTypeToXamlTypeBaseMap,

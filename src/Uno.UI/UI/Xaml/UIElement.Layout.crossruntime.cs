@@ -10,15 +10,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
-		private Size _size;
-
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElement)this).DesiredSize;
-
-		internal void SetDesiredSize(Size size)
-		{
-			var iUIElement = ((IUIElement)this);
-			iUIElement.DesiredSize = size;
-		}
 
 		/// <summary>
 		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a re-layout.
@@ -312,13 +304,7 @@ namespace Windows.UI.Xaml
 
 			var firstArrangeDone = IsFirstArrangeDone;
 
-			if (Visibility == Visibility.Collapsed
-				// If the layout is clipped, and the arranged size is empty, we can skip arranging children
-				// This scenario is particularly important for the Canvas which always sets its desired size
-				// zero, even after measuring its children.
-				|| (firstArrangeDone
-					&& finalRect == default
-					&& (this is not ICustomClippingElement clipElement || clipElement.AllowClippingToLayoutSlot)))
+			if (Visibility == Visibility.Collapsed)
 			{
 				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
@@ -447,28 +433,6 @@ namespace Windows.UI.Xaml
 		internal virtual void ArrangeCore(Rect finalRect)
 		{
 			throw new NotSupportedException("UIElement doesn't implement ArrangeCore. Inherit from FrameworkElement, which properly implements ArrangeCore.");
-		}
-
-		public Size RenderSize
-		{
-			get => Visibility == Visibility.Collapsed ? new Size() : _size;
-			internal set
-			{
-				Debug.Assert(value.Width >= 0, "Invalid width");
-				Debug.Assert(value.Height >= 0, "Invalid height");
-
-				var previousSize = _size;
-				_size = value;
-
-				if (_size != previousSize)
-				{
-					if (this is FrameworkElement frameworkElement)
-					{
-						frameworkElement.SetActualSize(_size);
-						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
-					}
-				}
-			}
 		}
 	}
 }

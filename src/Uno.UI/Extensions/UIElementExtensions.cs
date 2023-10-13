@@ -95,13 +95,13 @@ namespace Uno.UI.Extensions
 		private static readonly IndentationFormat _defaultIndentationFormat = IndentationFormat.NumberedSpaces;
 
 		/// <summary>
-		/// The name (<see cref="GetDebugName"/>) indented (<see cref="GetDebugIndent(object?)"/>) for log usage.
+		/// The name (<see cref="GetDebugName"/>) indented (<see cref="GetDebugIndent(object?, IndentationFormat, bool)"/>) for log usage.
 		/// </summary>
 		internal static string GetDebugIdentifier(this object? elt)
 			=> GetDebugIdentifier(elt, _defaultIndentationFormat);
 
 		/// <summary>
-		/// The name (<see cref="GetDebugName"/>) indented (<see cref="GetDebugIndent(object?)"/>) for log usage.
+		/// The name (<see cref="GetDebugName"/>) indented (<see cref="GetDebugIndent(object?, IndentationFormat, bool)"/>) for log usage.
 		/// </summary>
 		internal static string GetDebugIdentifier(this object? elt, IndentationFormat format)
 			=> $"{elt.GetDebugIndent(format)} [{elt.GetDebugName()}]";

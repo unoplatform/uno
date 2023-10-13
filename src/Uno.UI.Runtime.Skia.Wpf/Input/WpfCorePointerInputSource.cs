@@ -13,7 +13,6 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
-using Windows.UI.Xaml.Controls;
 using WpfControl = System.Windows.Controls.Control;
 using WpfMouseEventArgs = System.Windows.Input.MouseEventArgs;
 
@@ -315,6 +314,29 @@ internal sealed class WpfCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers()
-		=> VirtualKeyModifiers.None;
+	{
+		VirtualKeyModifiers modifiers = VirtualKeyModifiers.None;
+		if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+		{
+			modifiers |= VirtualKeyModifiers.Shift;
+		}
+
+		if (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl))
+		{
+			modifiers |= VirtualKeyModifiers.Control;
+		}
+
+		if (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt))
+		{
+			modifiers |= VirtualKeyModifiers.Menu;
+		}
+
+		if (Keyboard.IsKeyDown(Key.LWin) || Keyboard.IsKeyDown(Key.RWin))
+		{
+			modifiers |= VirtualKeyModifiers.Windows;
+		}
+
+		return modifiers;
+	}
 	#endregion
 }

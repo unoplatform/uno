@@ -80,8 +80,6 @@ namespace Windows.UI.Xaml
 
 		~UIElement()
 		{
-			_brushSubscription?.Unsubscribe();
-
 			try
 			{
 				if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
@@ -677,7 +675,8 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) { CanBubbleNatively = true };
+			// TODO: include modifier info
+			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload), VirtualKeyModifiers.None) { CanBubbleNatively = true };
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)

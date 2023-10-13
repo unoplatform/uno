@@ -20,7 +20,10 @@ using View = UIKit.UIView;
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement, ICustomClippingElement, IPanel
+	public partial class Panel : FrameworkElement, IPanel
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 #if IS_UNIT_TESTS || UNO_REFERENCE_API
 		private new UIElementCollection _children;
@@ -105,6 +108,16 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
+
+		/// <summary>
+		/// Panels don't have an Orientation in UWP, but many derived types do.
+		/// This should be overriden by the derived types to refer to match their
+		/// own Orientation. We don't set a default here since different scenarios
+		/// use different defaults. E.g. ListView assumes a vertical orientation
+		/// for keyboard navigation by default, but ItemsPresenter assumes a
+		/// horizontal orientation for header/footer placement.
+		/// </summary>
+		internal virtual Orientation? InternalOrientation { get; }
 
 		internal Thickness PaddingInternal { get; set; }
 

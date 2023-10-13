@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.Extensions;
-using System.Linq;
-using System.Drawing;
-using Uno.Disposables;
-using Windows.UI.Xaml.Media;
-using Uno.UI;
-
-namespace Windows.UI.Xaml.Controls
+﻿namespace Windows.UI.Xaml.Controls
 {
 	public partial class Border
 	{
 		public Border()
 		{
+			this.SizeChanged += (_, _) => UpdateBorder();
 		}
 
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue)
@@ -28,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateBorder()
 		{
-			SetBorder(BorderThickness, BorderBrush);
+			SetBorder(BorderThickness, BorderBrush, CornerRadius);
 		}
 
 		private protected override void OnLoaded()
@@ -54,7 +45,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
 		{
-			SetCornerRadius(newValue);
+			UpdateBorder();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
@@ -62,8 +53,5 @@ namespace Windows.UI.Xaml.Controls
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

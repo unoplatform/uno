@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Media
 #if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
-	public partial class Brush : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Composition.IAnimationObject
+	public partial class Brush : global::Windows.UI.Xaml.DependencyObject, global::Windows.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Transform
 		// Skipping already declared property RelativeTransform

@@ -753,7 +753,7 @@ namespace Windows.UI.Xaml.Controls
 
 			CorrectForEstimationErrors();
 
-			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + headerExtent + footerExtent +
+			var range = ContentOffset + remainingItemExtent + remainingGroupExtent + footerExtent +
 				//TODO: An inline group header might actually be the view at the bottom of the viewport, we should take this into account
 				GetChildEndWithMargin(base.GetChildAt(FirstItemView + ItemViewCount - 1));
 			Debug.Assert(range > 0, "Must report a non-negative scroll range.");
@@ -1053,7 +1053,8 @@ namespace Windows.UI.Xaml.Controls
 			var frame = new Windows.Foundation.Rect(new Windows.Foundation.Point(left, top), size);
 			_layouter.ArrangeChild(child, frame);
 
-			Debug.Assert(direction == GeneratorDirection.Forward || GetChildEndWithMargin(child) == extentOffset, GetAssertMessage("Extent offset not applied correctly"));
+			// Due to conversions between physical and logical coordinates, the actual child end can differ from the end we sent to the layouter by a little bit.
+			Debug.Assert(direction == GeneratorDirection.Forward || Math.Abs(GetChildEndWithMargin(child) - extentOffset) < 2, GetAssertMessage("Extent offset not applied correctly"));
 		}
 
 		/// <summary>

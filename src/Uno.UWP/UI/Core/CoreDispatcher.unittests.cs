@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Uno.UI.Dispatching;
 
 namespace Windows.UI.Core
 {
@@ -10,8 +6,8 @@ namespace Windows.UI.Core
 	{
 		public static bool HasThreadAccessOverride
 		{
-			get => Uno.UI.Dispatching.CoreDispatcher.HasThreadAccessOverride;
-			set => Uno.UI.Dispatching.CoreDispatcher.HasThreadAccessOverride = value;
+			get => NativeDispatcher.HasThreadAccessOverride;
+			set => NativeDispatcher.HasThreadAccessOverride = value;
 		}
 
 		public void ProcessEvents(CoreProcessEventsOption options)

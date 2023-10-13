@@ -118,10 +118,6 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder();
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
-
 		partial void ArrangeNativeElement(Rect arrangeRect)
 		{
 			if (IsNativeHost)

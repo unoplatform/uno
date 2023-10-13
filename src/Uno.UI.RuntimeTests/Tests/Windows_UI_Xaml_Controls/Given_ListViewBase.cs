@@ -2,24 +2,30 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI;
+using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
 using FluentAssertions;
 using FluentAssertions.Execution;
+using MUXControlsTestApp.Utilities;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.ListViewPages;
+using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 
 #if NETFX_CORE
 using Uno.UI.Extensions;
@@ -33,6 +39,7 @@ using Uno.UI;
 #endif
 
 using static Private.Infrastructure.TestServices;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -218,6 +225,43 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				))
 				.OrderBy(x => x.Index)
 				.ToArray();
+		}
+#endif
+
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task ContainerParentIsKept_OnRemoveAndAdd()
+		{
+			var source = new ObservableCollection<string>(Enumerable.Range(0, 5).Select(i => $"Item #{i}"));
+
+			var indexToAssert = 1;
+			var item2 = source[indexToAssert];
+			var SUT = new ListView { ItemsSource = source };
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(indexToAssert, item2);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
+
+			// There are situations where the isse occurs the second time.
+			indexToAssert = 3;
+			var item4 = source[indexToAssert];
+
+			source.RemoveAt(indexToAssert);
+			await WindowHelper.WaitForIdle();
+
+			source.Insert(indexToAssert, item4);
+			await WindowHelper.WaitForIdle();
+
+			Assert.IsNotNull((SUT.ContainerFromIndex(indexToAssert) as ListViewItem)?.GetParent());
 		}
 #endif
 
@@ -639,6 +683,605 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__
+		[Ignore("The test can't find MultiSelectSquare")]
+#endif
+		public async Task When_Different_Selections_IsMultiSelectCheckBoxEnabled()
+		{
+			var singleList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var singleList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList2 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				IsMultiSelectCheckBoxEnabled = true,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var singleList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Single,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var multipleList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var extendedList3 = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+				IsMultiSelectCheckBoxEnabled = false,
+				Items =
+				{
+					new ListViewItem
+					{
+						Content = "child 1"
+					}
+				}
+			};
+
+			var sp = new StackPanel
+			{
+				Children =
+				{
+					singleList,
+					multipleList,
+					extendedList,
+					singleList2,
+					multipleList2,
+					extendedList2,
+					singleList3,
+					multipleList3,
+					extendedList3
+				}
+			};
+
+			WindowHelper.WindowContent = sp;
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Visible, ((Border)multipleList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Visible, ((Border)multipleList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList2.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)singleList3.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)multipleList3.FindName("MultiSelectSquare")).Visibility);
+			Assert.AreEqual(Visibility.Collapsed, ((Border)extendedList3.FindName("MultiSelectSquare")).Visibility);
+		}
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Multiple_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var centers = items.Select(item => item.GetAbsoluteBounds().GetCenter()).ToList();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(centers[1]);
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(centers[3], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[6]);
+			mouse.Release();
+
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			mouse.Press(centers[8], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 6 and <= 8));
+			await AssertSelected();
+
+			mouse.Press(centers[8]);
+			mouse.Release();
+
+			selected.Remove(items[8]);
+			await AssertSelected();
+
+			mouse.Press(centers[0], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i < 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Multiple_Selection_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+			KeyboardHelper.Down(list);
+
+			await AssertSelected();
+
+			KeyboardHelper.Space(list);
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is >= 5 and <= 8).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, VirtualKeyModifiers.Shift));
+
+			items.Where((_, i) => i is >= 7 and <= 8).ForEach(item => selected.Remove(item));
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Extended_Selection_Pointer()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var centers = items.Select(item => item.GetAbsoluteBounds().GetCenter()).ToList();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			mouse.Press(centers[1]);
+			mouse.Release();
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			mouse.Press(centers[3]);
+			mouse.Release();
+
+			selected.Remove(items[1]);
+			selected.Add(items[3]);
+			await AssertSelected();
+
+			mouse.Press(centers[5], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 3 and <= 5).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[7], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is > 5 and <= 7).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[1], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is > 3 and <= 7).ForEach(item => selected.Remove(item));
+			selected.AddRange(items.Where((_, i) => i is >= 1 and < 3).ToList());
+			await AssertSelected();
+
+			mouse.Press(centers[8], VirtualKeyModifiers.Control);
+			mouse.Release(VirtualKeyModifiers.Control);
+
+			selected.Add(items[8]);
+			await AssertSelected();
+
+			mouse.Press(centers[4], VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.AddRange(items.Where((_, i) => i is >= 4 and < 8).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Extended_Selection_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[4]);
+			await AssertSelected();
+
+			KeyboardHelper.Down(list);
+
+			selected.Remove(items[4]);
+			selected.Add(items[5]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Control));
+
+			selected.Add(items[7]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Up, modifiers: VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is >= 4 and < 7 && i != 5).ToList());
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Control));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Space, VirtualKeyModifiers.Shift));
+
+			items.Where((_, i) => i is >= 4 and < 7).ForEach(item => selected.Remove(item));
+			selected.Add(items[8]);
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Extended_Selection_SelectedIndex_Changed_Keyboard()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			list.SelectedIndex = 6;
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.Remove(items[6]);
+			selected.AddRange(items.Where((_, i) => i is >= 1 and <= 4).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Extended_Selection_SelectedIndex_Changed_Mixed()
+		{
+			var items = Enumerable.Range(0, 10).Select(i => new ListViewItem { Content = i }).ToArray();
+			var list = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Extended,
+			};
+
+			items.ForEach((ListViewItem item) => list.Items.Add(item));
+
+			WindowHelper.WindowContent = list;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var selected = new List<ListViewItem>();
+			await AssertSelected();
+
+			list.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(list.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			selected.Add(items[1]);
+			await AssertSelected();
+
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+			list.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(list, VirtualKey.Down, VirtualKeyModifiers.Shift));
+
+			selected.AddRange(items.Where((_, i) => i is > 1 and <= 3).ToList());
+			await AssertSelected();
+
+			list.SelectedIndex = 6;
+			items.Where((_, i) => i is >= 1 and <= 3).ForEach(item => selected.Remove(item));
+			selected.Add(items[6]);
+			await AssertSelected();
+
+			mouse.Press(((ListViewItem)list.ContainerFromIndex(8)).GetAbsoluteBounds().GetCenter(), VirtualKeyModifiers.Shift);
+			mouse.Release(VirtualKeyModifiers.Shift);
+
+			selected.AddRange(items.Where((_, i) => i is >= 1 and <= 8 and not 6).ToList());
+			await AssertSelected();
+
+			async Task AssertSelected()
+			{
+				await WindowHelper.WaitForIdle();
+				selected.ForEach(item => Assert.AreEqual(item.IsSelected, true));
+				items.Except(selected).ForEach(item => Assert.AreEqual(item.IsSelected, false));
+			}
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_Horizontal_Keyboard_Navigation()
+		{
+			var SUT = (ListView)XamlReader.Load("""
+				<ListView
+					xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
+					ItemsSource="12345"
+				        ScrollViewer.HorizontalScrollBarVisibility="Visible"
+				        ScrollViewer.HorizontalScrollMode="Enabled"
+				        ScrollViewer.VerticalScrollMode="Disabled">
+					<ListView.ItemsPanel>
+						<ItemsPanelTemplate>
+							<ItemsStackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ListView.ItemsPanel>
+				</ListView>
+			""");
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectedIndex = 1;
+			var result = await FocusManager.TryFocusAsync(SUT.ContainerFromIndex(1), FocusState.Pointer);
+			Assert.IsTrue(result.Succeeded);
+
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			KeyboardHelper.Right();
+			KeyboardHelper.Right();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(3, SUT.SelectedIndex);
+
+			KeyboardHelper.Left();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
 		public async Task When_IsItsOwnItemContainer_Recycling()
 		{
 			var SUT = new ListView()
@@ -967,7 +1610,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				await Task.Delay(200);
 				await WindowHelper.WaitForIdle();
 
-				ScrollTo(list, 5); // Scroll to end
+				ScrollTo(list, 5); // Scroll back up
 
 				await Task.Delay(200);
 				await WindowHelper.WaitForIdle();
@@ -981,6 +1624,373 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				secondContainer.Should().NotBeNull();
 				LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if __IOS__ || __ANDROID__
+		[Ignore("Disabled because of animated scrolling, even when explicitly requested.")]
+#elif __WASM__
+		[Ignore("Flaky in CI.")]
+#endif
+		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_And_First_Item2()
+		{
+			var container = new Grid { Height = 500, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new List<string>();
+
+			var random = new Random(42);
+			string RandomString(int length)
+			{
+				const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+				return new string(Enumerable.Repeat(chars, length)
+					.Select(s => s[random.Next(s.Length)]).ToArray());
+			}
+
+			for (var i = 0; i < 100; i++)
+			{
+				source.Add(RandomString(5));
+			}
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			ScrollTo(list, 1000000); // Scroll to end
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			ScrollTo(list, 50); // scroll back up but not all the way
+			ScrollTo(list, 0);
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			var firstContainer = (FrameworkElement)list.ContainerFromIndex(0);
+
+			firstContainer.Should().NotBeNull();
+			LayoutInformation.GetLayoutSlot(firstContainer).Y.Should().BeLessOrEqualTo(0);
+
+			var secondContainer = (FrameworkElement)list.ContainerFromIndex(1);
+
+			secondContainer.Should().NotBeNull();
+			LayoutInformation.GetLayoutSlot(secondContainer).Y.Should().Be(50);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_Large_List_Scroll_To_End_Then_Back_Up_TryClick()
+		{
+			var container = new Grid { Height = 500, Width = 100 };
+
+			var list = new ListView
+			{
+				ItemTemplate = new DataTemplate(() =>
+				{
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = 50,
+						Child = tb
+					};
+
+					return border;
+				})
+			};
+			container.Children.Add(list);
+
+			var source = new List<string>();
+
+			var random = new Random(42);
+			string RandomString(int length)
+			{
+				const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+				return new string(Enumerable.Repeat(chars, length)
+					.Select(s => s[random.Next(s.Length)]).ToArray());
+			}
+
+			for (var i = 0; i < 100; i++)
+			{
+				source.Add(RandomString(5));
+			}
+			list.ItemsSource = source;
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			var mouse = injector.GetMouse();
+
+			var bounds = list.GetAbsoluteBounds();
+			mouse.MoveTo(new Point(bounds.GetMidX(), bounds.Top + 10));
+			mouse.Press();
+			mouse.Release();
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// This problem is incredibly difficult to reproduce. These are the exact
+			// mouse wheel deltas that my trackpad produced when I reproduced this manually.
+			var deltas = new[]
+			{
+				-266,
+				-393,
+				-626,
+				-730,
+				-410,
+				-644,
+				-666,
+				-328,
+				-584,
+				-671,
+				-535,
+				-250,
+				-460,
+				-514,
+				-538,
+				-382,
+				-692,
+				-342,
+				-557,
+				-331,
+				-540,
+				-320,
+				-523,
+				-385,
+				-428,
+				-397,
+				-388,
+				-143,
+				-382,
+				-370,
+				-366,
+				-358,
+				-566,
+				-128,
+				-545,
+				-121,
+				-540,
+				-97,
+				-536,
+				-55,
+				-476,
+				-246,
+				-344,
+				-203,
+				-311,
+				-190,
+				-295,
+				-225,
+				-234,
+				-86,
+				-209,
+				-26,
+				-389,
+				-189,
+				-329,
+				-57,
+				-282,
+				-130,
+				-205,
+				-108,
+				-183,
+				-106,
+				-172,
+				-102,
+				-86,
+				-75,
+				-108,
+				-112,
+				-64,
+				-24,
+				-20,
+				-20,
+				-13,
+				-11,
+				-7,
+				-4,
+				-5,
+				-2,
+				231,
+				122,
+				164,
+				266,
+				887,
+				167,
+				565,
+				434,
+				382,
+				372,
+				344,
+				170,
+				269,
+				547,
+				158,
+				272,
+				434,
+				168,
+				253,
+				386,
+				154,
+				269,
+				244,
+				238,
+				399,
+				91,
+				374,
+				153,
+				282,
+				143,
+				225,
+				194,
+				60,
+				183,
+				154,
+				262,
+				60,
+				249,
+				55,
+				232,
+				46,
+				168,
+				37,
+				128,
+				55,
+				82,
+				37,
+				68,
+				27,
+				35,
+				27,
+				17,
+				13,
+				12,
+				2,
+				6,
+				3,
+				2,
+			};
+
+			foreach (var delta in deltas.Where(i => i < 0))
+			{
+				mouse.Wheel(delta);
+			}
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveTo(new Point(bounds.GetMidX(), bounds.Top + 220));
+			mouse.Press();
+			mouse.Release();
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			foreach (var delta in deltas.Where(i => i > 0))
+			{
+				mouse.Wheel(delta);
+				await WindowHelper.WaitForIdle();
+			}
+
+			mouse.MoveTo(new Point(bounds.GetMidX(), bounds.Top + 10));
+			mouse.Press();
+			mouse.Release();
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveTo(new Point(bounds.GetMidX(), bounds.Top + 60));
+			mouse.Press();
+			mouse.Release();
+
+			await Task.Delay(200);
+			await WindowHelper.WaitForIdle();
+
+			// The second container should be selected and nothing else.
+			// Trying to check for this with references could be misleading,
+			// since this is originally a virtualization issue and references
+			// could be to different things than those shown on the screen.
+			var si = await UITestHelper.ScreenShot(list, true);
+			ImageAssert.HasColorAt(si, 70, 65, Colors.FromARGB("#66AEE7")); // selected
+
+			// check starting from below the second item that nothing looks selected or hovered
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#66AEE7")); // selected
+			ImageAssert.DoesNotHaveColorInRectangle(si, new Rectangle(100, 110, si.Width - 100, si.Height - 110), Colors.FromARGB("#FFE6E6E6")); // hovered
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if !__CROSSRUNTIME__
+		[Ignore("Native listviews differ in virtualization mechanics")]
+#endif
+		public async Task ListView_ObservableCollection_Creation_Count()
+		{
+			var SUT = new ListView_ObservableCollection_CreationCount();
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			await AdvanceAutomation("Added");
+			await AdvanceAutomation("Scrolled1");
+
+			var expectedTemplateCreationCount = GetTemplateCreationCount();
+			//var expectedTemplateBindCount = GetTemplateBindCount(); // For some reason WASM performs extra bindings on scrolling
+			var expectedContainerCreationCount = GetContainerCreationCount();
+
+			await AdvanceAutomation("Scrolled2");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+
+			var expectedTemplateBindCount = GetTemplateBindCount();
+
+			await AdvanceAutomation("Added above");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount()); // Note: this doesn't actually seem to be the case on Windows - the bind count increases for some reason
+
+			await AdvanceAutomation("Removed above");
+
+			Assert.AreEqual(expectedTemplateCreationCount, GetTemplateCreationCount());
+			Assert.AreEqual(expectedContainerCreationCount, GetContainerCreationCount());
+			Assert.AreEqual(expectedTemplateBindCount, GetTemplateBindCount());
+
+			int GetTemplateCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCountText")).Text);
+			int GetTemplateBindCount() => int.Parse(((TextBlock)SUT.FindName("BindCountText")).Text);
+			int GetContainerCreationCount() => int.Parse(((TextBlock)SUT.FindName("CreationCount2Text")).Text);
+
+			async Task AdvanceAutomation(string automationStep)
+			{
+				var button = (Button)SUT.FindName("AutomateButton");
+				button.RaiseClick();
+				await WindowHelper.WaitFor(() => ((TextBlock)SUT.FindName("AutomationStepTextBlock")).Text == automationStep);
+				await WindowHelper.WaitForIdle();
 			}
 		}
 
@@ -1889,7 +2899,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForLoaded(list);
 			var container1 = await WindowHelper.WaitForNonNull(() => list.ContainerFromItem("Item1") as ListViewItem);
-			Assert.AreEqual(29, GetTop(container1, outer));
+			Assert.AreEqual(29, GetTop(container1, outer), Epsilon);
 			Assert.AreEqual(0, list.SelectedIndex);
 			Assert.AreEqual("Item0", list.SelectedItem);
 
@@ -2232,7 +3242,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForNonNull(() => SUT.ContainerFromIndex(source.Count - 1));
 
-			Assert.AreEqual(969, sv.VerticalOffset, delta: 1);
+			Assert.AreEqual(969, sv.VerticalOffset, delta: 2);
 
 			source.RemoveAt(0);
 
@@ -2253,7 +3263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var listBounds = SUT.GetOnScreenBounds();
 			var itemBounds = firstContainer.GetOnScreenBounds();
-			Assert.AreEqual(listBounds.Y, itemBounds.Y); // Top of first item should align with top of list
+			Assert.AreEqual(listBounds.Y, itemBounds.Y, 2); // Top of first item should align with top of list
 		}
 
 		[TestMethod]
@@ -2291,7 +3301,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await WindowHelper.WaitForIdle();
 
-			Assert.AreEqual(880, sv.VerticalOffset, delta: 1);
+			Assert.AreEqual(880, sv.VerticalOffset, delta: 2);
 
 			source[0].ItemHeight = 143;
 
@@ -3067,6 +4077,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if HAS_UNO
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_ThemeChange()
+		{
+			const double TotalHeight = 500; // The ListView height.
+			const double ItemHeight = 50; // The ListViewItem height
+			const int NumberOfItemsShownAtATime = (int)(TotalHeight / ItemHeight); // The number of ListViewItems shown at a time.
+			const int NumberOfItems = 50; // The total number of items.
+			var grid = new Grid() { Height = TotalHeight };
+			var SUT = new ListView()
+			{
+				ItemsSource = Enumerable.Range(0, NumberOfItems).Select(x => $"Item {x}").ToList(),
+				ItemContainerStyle = NoSpaceContainerStyle,
+				ItemTemplate = new DataTemplate(() =>
+				{
+
+					var tb = new TextBlock();
+					tb.SetBinding(TextBlock.TextProperty, new Binding());
+					var border = new Border()
+					{
+						Height = ItemHeight,
+						Child = tb
+					};
+
+					return border;
+				})
+			};
+
+			grid.AddChild(SUT);
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForIdle();
+			var exploredTextBlocks = new HashSet<TextBlock>();
+			foreach (var listViewItem in GetPanelVisibleChildren(SUT))
+			{
+				var tb = listViewItem.FindFirstChild<TextBlock>();
+				exploredTextBlocks.Add(tb);
+				Assert.AreEqual(Colors.Black, ((SolidColorBrush)tb.Foreground).Color);
+			}
+
+			using (ThemeHelper.UseDarkTheme())
+			{
+				ScrollTo(SUT, NumberOfItemsShownAtATime * ItemHeight);
+				await WindowHelper.WaitForIdle();
+				var seenNewTextBlock = false;
+				foreach (var listViewItem in GetPanelVisibleChildren(SUT))
+				{
+					var tb = listViewItem.FindFirstChild<TextBlock>();
+					seenNewTextBlock |= exploredTextBlocks.Add(tb);
+					Assert.AreEqual(Colors.White, ((SolidColorBrush)tb.Foreground).Color);
+				}
+
+				Assert.AreEqual(true, seenNewTextBlock);
+			}
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 #if __WASM__ || __SKIA__
 		[Ignore("https://github.com/unoplatform/uno/issues/234")]
 #endif
@@ -3492,16 +4557,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(reference.IsAlive);
 		}
+	}
 
-		public partial class OnItemsChangedListView : ListView
+	public partial class OnItemsChangedListView : ListView
+	{
+		public Action ItemsChangedAction;
+
+		protected override void OnItemsChanged(object e)
 		{
-			public Action ItemsChangedAction;
-
-			protected override void OnItemsChanged(object e)
-			{
-				base.OnItemsChanged(e);
-				ItemsChangedAction?.Invoke();
-			}
+			base.OnItemsChanged(e);
+			ItemsChangedAction?.Invoke();
 		}
 	}
 }

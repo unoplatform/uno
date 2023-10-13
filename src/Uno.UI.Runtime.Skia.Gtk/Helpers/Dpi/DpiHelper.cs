@@ -2,10 +2,10 @@
 using System.Runtime.InteropServices;
 using Gtk;
 using Uno.Helpers;
-using Uno.UI.Runtime.Skia.Helpers.Windows;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Windows;
 using Windows.Graphics.Display;
 
-namespace Uno.UI.Runtime.Skia.Helpers.Dpi;
+namespace Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
 
 internal class DpiHelper
 {
@@ -43,7 +43,7 @@ internal class DpiHelper
 		GetWindow().Screen.SizeChanged -= OnScreenSizeChanged;
 	}
 
-	private Gtk.Window GetWindow() => GtkHost.Current.MainWindow;
+	private Window GetWindow() => GtkHost.Current.MainWindow;
 
 	private void OnWindowConfigure(object o, ConfigureEventArgs args) => CheckDpiUpdate();
 

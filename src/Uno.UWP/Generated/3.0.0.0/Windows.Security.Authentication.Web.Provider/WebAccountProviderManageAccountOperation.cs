@@ -9,6 +9,11 @@ namespace Windows.Security.Authentication.Web.Provider
 	public partial class WebAccountProviderManageAccountOperation : global::Windows.Security.Authentication.Web.Provider.IWebAccountProviderOperation
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal WebAccountProviderManageAccountOperation()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Security.Credentials.WebAccount WebAccount
 		{

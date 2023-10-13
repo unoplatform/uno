@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Drawing;
 using System.Linq;
@@ -47,14 +48,14 @@ namespace Uno.UI.Controls
 			public const int Window_TouchStop = 2;
 		}
 
-		private UIView _focusedView; // Not really the "focused", but the last view which was touched.
-		private WeakReference<UIScrollView> _scrollViewModifiedForKeyboard;
+		private UIView? _focusedView; // Not really the "focused", but the last view which was touched.
+		private WeakReference<UIScrollView?>? _scrollViewModifiedForKeyboard;
 		private InputPane _inputPane;
-		private EventProviderExtensions.DisposableEventActivity _touchTrace;
+		private EventProviderExtensions.DisposableEventActivity? _touchTrace;
 
-		internal event Action FrameChanged;
+		internal event Action? FrameChanged;
 
-		private ICoreWindowEvents _ownerEvents;
+		private ICoreWindowEvents? _ownerEvents;
 
 		/// <summary>
 		/// ctor.
@@ -83,11 +84,18 @@ namespace Uno.UI.Controls
 #if __MACCATALYST__
 			foreach (UIPress press in presses)
 			{
+				if (press.Key is null)
+				{
+					continue;
+				}
+
 				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+				var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
 				var args = new KeyEventArgs(
 					"keyboard",
 					virtualKey,
+					modifiers,
 					new CorePhysicalKeyStatus
 					{
 						ScanCode = (uint)press.Key.KeyCode,
@@ -105,7 +113,7 @@ namespace Uno.UI.Controls
 					{
 						_ownerEvents.RaiseKeyUp(args);
 
-						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 						{
 							CanBubbleNatively = false
 						};
@@ -135,11 +143,18 @@ namespace Uno.UI.Controls
 #if __MACCATALYST__
 			foreach (UIPress press in presses)
 			{
+				if (press.Key is null)
+				{
+					continue;
+				}
+
 				var virtualKey = VirtualKeyHelper.FromKeyCode(press.Key.KeyCode);
+				var modifiers = VirtualKeyHelper.FromModifierFlags(press.Key.ModifierFlags);
 
 				var args = new KeyEventArgs(
 					"keyboard",
 					virtualKey,
+					modifiers,
 					new CorePhysicalKeyStatus
 					{
 						ScanCode = (uint)press.Key.KeyCode,
@@ -157,7 +172,7 @@ namespace Uno.UI.Controls
 					{
 						_ownerEvents.RaiseKeyDown(args);
 
-						var routerArgs = new KeyRoutedEventArgs(this, virtualKey)
+						var routerArgs = new KeyRoutedEventArgs(this, virtualKey, modifiers)
 						{
 							CanBubbleNatively = false
 						};
@@ -178,6 +193,11 @@ namespace Uno.UI.Controls
 			{
 				foreach (UIPress press in presses)
 				{
+					if (press.Key is null)
+					{
+						continue;
+					}
+
 					if (press.Key.KeyCode == UIKeyboardHidUsage.KeyboardTab)
 					{
 						var shift =
@@ -223,21 +243,20 @@ namespace Uno.UI.Controls
 		/// </summary>
 		public int FocusedViewBringIntoViewOnKeyboardOpensPadding { get; set; }
 
-		private void OnApplicationEnteredBackground(object sender, NSNotificationEventArgs e)
+		private void OnApplicationEnteredBackground(object? sender, NSNotificationEventArgs e)
 		{
 			_focusedView?.EndEditing(true);
 		}
 
-		private void OnContentSizeCategoryChanged(object sender, UIContentSizeCategoryChangedEventArgs e)
+		private void OnContentSizeCategoryChanged(object? sender, UIContentSizeCategoryChangedEventArgs e)
 		{
 			var scalableViews = this.FindSubviewsOfType<IFontScalable>(int.MaxValue);
 			scalableViews.ForEach(v => v.RefreshFont());
 		}
 
-		public override UIView HitTest(CGPoint point, UIEvent uievent)
+		public override UIView HitTest(CGPoint point, UIEvent? uievent)
 		{
-			if (!BypassCheckToCloseKeyboard &&
-				uievent != null && uievent.Type == UIEventType.Touches)
+			if (!BypassCheckToCloseKeyboard && uievent is { Type: UIEventType.Touches })
 			{
 				_touchTrace = _trace.WriteEventActivity(TraceProvider.Window_TouchStart, TraceProvider.Window_TouchStop);
 
@@ -248,7 +267,7 @@ namespace Uno.UI.Controls
 					// In this case we have to send back the currently focused view in order to prevent EndEditing which will cause
 					// the keyboard to disappear and the feeling that touches are going "through the keyboard".
 
-					return _focusedView;
+					return _focusedView!;
 				}
 
 				var previouslyFocusedView = _focusedView;
@@ -289,12 +308,22 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		private void OnKeyboardWillShow(object sender, UIKeyboardEventArgs e)
+		private void OnKeyboardWillShow(object? sender, UIKeyboardEventArgs e)
 		{
+			if (e.Notification.UserInfo is null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().Debug("[OnKeyboardWillShow] Notification UserInfo was null");
+				}
+
+				return;
+			}
+
 			_inputPane.OccludedRect = ((NSValue)e.Notification.UserInfo.ObjectForKey(UIKeyboard.FrameEndUserInfoKey)).CGRectValue;
 		}
 
-		private void OnKeyboardWillHide(object sender, UIKeyboardEventArgs e)
+		private void OnKeyboardWillHide(object? sender, UIKeyboardEventArgs e)
 		{
 			_inputPane.OccludedRect = new Rect(0, 0, 0, 0);
 		}
@@ -318,9 +347,8 @@ namespace Uno.UI.Controls
 			// When keyboard disappear, ensure to restore the scroll state to avoid empty space at the bottom of the screen
 			try
 			{
-				UIScrollView scrollView;
 				if (_scrollViewModifiedForKeyboard != null
-					&& _scrollViewModifiedForKeyboard.TryGetTarget(out scrollView))
+					&& _scrollViewModifiedForKeyboard.TryGetTarget(out var scrollView))
 				{
 					scrollView.ContentInset = UIEdgeInsets.Zero;
 					scrollView.ClearCustomScrollOffset(animationMode: ScrollViewExtensions.ScrollingMode.Forced);
@@ -335,7 +363,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		internal void MakeVisible(UIView view, BringIntoViewMode? bringIntoViewMode, bool useForcedAnimation = false)
+		internal void MakeVisible(UIView? view, BringIntoViewMode? bringIntoViewMode, bool useForcedAnimation = false)
 		{
 			if (view == null)
 			{
@@ -348,7 +376,8 @@ namespace Uno.UI.Controls
 			}
 
 			var scrollView = view.FindSuperviewsOfType<UIScrollView>().LastOrDefault();
-			_scrollViewModifiedForKeyboard = new WeakReference<UIScrollView>(scrollView);
+
+			_scrollViewModifiedForKeyboard = new WeakReference<UIScrollView?>(scrollView);
 
 			if (scrollView == null)
 			{
@@ -384,7 +413,7 @@ namespace Uno.UI.Controls
 			if (multilineTextBoxView != null && multilineTextBoxView.IsFirstResponder)
 			{
 				using var range = Runtime.GetNSObject<UITextRange>(multilineTextBoxView.SelectedTextRange);
-				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(range.Start);
+				viewRectInScrollView = multilineTextBoxView.GetCaretRectForPosition(range?.Start);
 
 				// We need to add an additional margins because the caret is too tight to the text. The font is cutoff under the keyboard.
 				viewRectInScrollView.Y -= KeyboardMargin;
@@ -460,7 +489,7 @@ namespace Uno.UI.Controls
 				|| GetNeedsKeyboard(view);
 		}
 
-		private bool IsWithinAWebView(UIView view)
+		private bool IsWithinAWebView(UIView? view)
 		{
 			return
 #if !__MACCATALYST__

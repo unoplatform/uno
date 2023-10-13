@@ -25,12 +25,9 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_OverridePackageId>Uno.UI.RemoteControl</_OverridePackageId>
-			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</_OverridePackageId>
-
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
+			<_OverridePackageId>Uno.UI.DevServer</_OverridePackageId>
+			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.DevServer</_OverridePackageId>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\tools\rc\host\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />

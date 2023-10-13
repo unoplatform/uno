@@ -6,7 +6,7 @@ using GLib;
 using Gtk;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 /// <summary>
 /// Validation surface for OpenGL rendering, as CreateGRGLContext

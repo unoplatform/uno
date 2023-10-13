@@ -29,7 +29,7 @@ public sealed partial class XamlRoot
 	}
 	private void DispatchQueueRender()
 	{
-		_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () =>
+		NativeDispatcher.Main.Enqueue(() =>
 		{
 			if (_isMeasureWaiting || _isArrangeWaiting)
 			{
@@ -96,7 +96,7 @@ public sealed partial class XamlRoot
 			}
 		}
 
-		_ = CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, () => RunMeasureAndArrange());
+		NativeDispatcher.Main.Enqueue(RunMeasureAndArrange);
 	}
 
 	private void RunMeasureAndArrange()

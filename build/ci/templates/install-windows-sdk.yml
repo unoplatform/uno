@@ -1,7 +1,0 @@
-parameters:
-  sdkVersion: '19041'
-
-steps:
-  - powershell: .\build\Install-WindowsSdkISO.ps1 ${{parameters.sdkVersion}}
-    displayName: Install Windows SDK ${{parameters.sdkVersion}}
-    retryCountOnTaskFailure: 3

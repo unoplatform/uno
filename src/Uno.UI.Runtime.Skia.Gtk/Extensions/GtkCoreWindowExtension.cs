@@ -6,11 +6,12 @@ using Gtk;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Windows.UI.Xaml;
+using Windows.System;
 using Uno.UI.Hosting;
-using Uno.UI.Runtime.Skia.GTK.Hosting;
-using Uno.UI.Runtime.Skia.GTK;
+using Uno.UI.Runtime.Skia.Gtk.Hosting;
+using Uno.UI.Runtime.Skia.Gtk;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
@@ -19,11 +20,7 @@ namespace Uno.UI.Runtime.Skia
 		public GtkCoreWindowExtension(object owner)
 		{
 			_owner = (CoreWindow)owner;
-
-			InitializeKeyboard();
 		}
-
-		partial void InitializeKeyboard();
 
 		internal static Fixed? GetOverlayLayer(XamlRoot xamlRoot) =>
 			GtkManager.XamlRootMap.GetHostForRoot(xamlRoot)?.NativeOverlayLayer;

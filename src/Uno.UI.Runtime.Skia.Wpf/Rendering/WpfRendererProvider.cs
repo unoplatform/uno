@@ -1,7 +1,6 @@
 ﻿using System;
 using Uno.Foundation.Logging;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
-using Uno.UI.Skia;
 
 namespace Uno.UI.Runtime.Skia.Wpf.Rendering;
 

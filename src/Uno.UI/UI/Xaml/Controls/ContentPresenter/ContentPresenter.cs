@@ -40,7 +40,10 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement, IFrameworkTemplatePoolAware
+	public partial class ContentPresenter : FrameworkElement, IFrameworkTemplatePoolAware
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -483,6 +486,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
 					(Thickness)Thickness.Empty,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((ContentPresenter)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -1001,6 +1005,9 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 
 			UpdateBorder();
+#if __WASM__
+			SetAndObserveBackgroundBrush(e.OldValue as Brush, e.NewValue as Brush);
+#endif
 		}
 
 		internal override void UpdateThemeBindings(ResourceUpdateReason updateReason)
@@ -1127,7 +1134,7 @@ namespace Windows.UI.Xaml.Controls
 			var padding = Padding;
 			var borderThickness = BorderThickness;
 
-			var measuredSize = base.MeasureOverride(
+			var measuredSize = MeasureFirstChild(
 				new Size(
 					size.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
 					size.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom

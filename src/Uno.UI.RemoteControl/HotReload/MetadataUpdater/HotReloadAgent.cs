@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
-using System.Reflection.Metadata;
 using Uno;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
@@ -61,7 +60,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
 		Justification = "The handlerType passed to GetHandlerActions is preserved by MetadataUpdateHandlerAttribute with DynamicallyAccessedMemberTypes.All.")]
-	private UpdateHandlerActions GetMetadataUpdateHandlerActions()
+	internal UpdateHandlerActions GetMetadataUpdateHandlerActions()
 	{
 		// We need to execute MetadataUpdateHandlers in a well-defined order. For v1, the strategy that is used is to topologically
 		// sort assemblies so that handlers in a dependency are executed before the dependent (e.g. the reflection cache action
@@ -221,7 +220,7 @@ internal sealed class HotReloadAgent : IDisposable
 
 		try
 		{
-			// Defer discovering metadata updata handlers until after hot reload deltas have been applied.
+			// Defer discovering metadata update handlers until after hot reload deltas have been applied.
 			// This should give enough opportunity for AppDomain.GetAssemblies() to be sufficiently populated.
 			_handlerActions ??= GetMetadataUpdateHandlerActions();
 			var handlerActions = _handlerActions;
@@ -232,6 +231,8 @@ internal sealed class HotReloadAgent : IDisposable
 			handlerActions.UpdateApplication.ForEach(a => a(updatedTypes));
 
 			_log("Deltas applied.");
+
+			MetadataUpdaterHelper.RaiseMetadataUpdated();
 		}
 		catch (Exception ex)
 		{

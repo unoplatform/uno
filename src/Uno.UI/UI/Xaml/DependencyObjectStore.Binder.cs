@@ -54,11 +54,7 @@ namespace Windows.UI.Xaml
 		/// </param>
 		public void SetTemplatedParent(FrameworkElement? templatedParent)
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY
-			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
-#endif
 			{
 				if (_isApplyingTemplateBindings || _bindingsSuspended)
 				{
@@ -86,9 +82,7 @@ namespace Windows.UI.Xaml
 
 				ApplyChildrenBindable(templatedParent, isTemplatedParent: true);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_isApplyingTemplateBindings = false;
 			}
@@ -259,9 +253,7 @@ namespace Windows.UI.Xaml
 
 		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
-			var dataContextBinding = _properties.FindDataContextBinding();
-
-			if (dataContextBinding != null && precedence == DependencyPropertyValuePrecedences.Inheritance)
+			if (precedence == DependencyPropertyValuePrecedences.Inheritance && _properties.FindDataContextBinding() is { } dataContextBinding)
 			{
 				// Set the DataContext for the bindings using the current DataContext, except for the
 				// binding to the DataContext itself, which must use the inherited DataContext.
@@ -277,11 +269,7 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY
-				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-				// See https://github.com/dotnet/runtime/issues/50783 for more details.
 				try
-#endif
 				{
 					if (_isApplyingDataContextBindings || _bindingsSuspended)
 					{
@@ -296,30 +284,17 @@ namespace Windows.UI.Xaml
 
 					if (TryWriteDataContextChangedEventActivity() is { } trace)
 					{
-						/// <remarks>
-						/// This method contains or is called by a try/catch containing method and
-						/// can be significantly slower than other methods as a result on WebAssembly.
-						/// See https://github.com/dotnet/runtime/issues/56309
-						/// </remarks>
-						void ApplyWithTrace(object? actualDataContext, IDisposable trace)
+						using (trace)
 						{
-							using (trace)
-							{
-								ApplyDataContext(actualDataContext);
-							}
+							ApplyDataContext(actualDataContext);
 						}
-
-						// "using" statements are costly under we https://github.com/dotnet/runtime/issues/50783
-						ApplyWithTrace(actualDataContext, trace);
 					}
 					else
 					{
 						ApplyDataContext(actualDataContext);
 					}
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY
 				finally
-#endif
 				{
 					_isApplyingDataContextBindings = false;
 				}

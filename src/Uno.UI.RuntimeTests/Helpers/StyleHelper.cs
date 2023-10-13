@@ -80,7 +80,7 @@ namespace Uno.UI.RuntimeTests.Helpers
 			return null;
 #else
 
-			CoreDispatcher.CheckThreadAccess();
+			NativeDispatcher.CheckThreadAccess();
 
 			var resources = Application.Current.Resources;
 			if (resources is Microsoft.UI.Xaml.Controls.XamlControlsResources || resources.MergedDictionaries.OfType<Microsoft.UI.Xaml.Controls.XamlControlsResources>().Any())

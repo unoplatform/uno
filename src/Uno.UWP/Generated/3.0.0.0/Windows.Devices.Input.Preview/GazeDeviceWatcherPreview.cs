@@ -8,6 +8,11 @@ namespace Windows.Devices.Input.Preview
 #endif
 	public partial class GazeDeviceWatcherPreview
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal GazeDeviceWatcherPreview()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.add
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Added.remove
 		// Forced skipping of method Windows.Devices.Input.Preview.GazeDeviceWatcherPreview.Removed.add

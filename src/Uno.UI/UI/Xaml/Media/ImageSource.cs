@@ -12,6 +12,7 @@ using Uno.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI;
+using System.Net;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -247,6 +248,11 @@ namespace Windows.UI.Xaml.Media
 
 		private protected async Task<Stream> OpenStreamFromUriAsync(Uri uri, CancellationToken ct)
 		{
+			if (uri.IsFile)
+			{
+				return File.Open(uri.LocalPath, FileMode.Open);
+			}
+
 			_httpClient ??= new HttpClient();
 			var response = await _httpClient.GetAsync(uri, HttpCompletionOption.ResponseContentRead, ct);
 			return await response.Content.ReadAsStreamAsync();

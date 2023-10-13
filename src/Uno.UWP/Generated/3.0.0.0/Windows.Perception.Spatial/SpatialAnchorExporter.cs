@@ -9,6 +9,11 @@ namespace Windows.Perception.Spatial
 	public partial class SpatialAnchorExporter
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal SpatialAnchorExporter()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Perception.Spatial.SpatialAnchorExportSufficiency> GetAnchorExportSufficiencyAsync(global::Windows.Perception.Spatial.SpatialAnchor anchor, global::Windows.Perception.Spatial.SpatialAnchorExportPurpose purpose)
 		{

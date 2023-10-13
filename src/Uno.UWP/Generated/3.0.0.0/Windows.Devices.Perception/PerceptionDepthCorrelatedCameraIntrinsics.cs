@@ -10,6 +10,11 @@ namespace Windows.Devices.Perception
 	public partial class PerceptionDepthCorrelatedCameraIntrinsics
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal PerceptionDepthCorrelatedCameraIntrinsics()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Numerics.Vector3 UnprojectPixelAtCorrelatedDepth(global::Windows.Foundation.Point pixelCoordinate, global::Windows.Devices.Perception.PerceptionDepthFrame depthFrame)
 		{

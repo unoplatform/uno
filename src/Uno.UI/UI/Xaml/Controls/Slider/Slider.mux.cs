@@ -815,12 +815,14 @@ public partial class Slider
 		//TODO MZ: Should include handled too?
 		spSliderContainer.PointerPressed += OnPointerPressed;
 		spSliderContainer.PointerReleased += OnPointerReleased;
+		spSliderContainer.PointerMoved += OnPointerMoved;
 		spSliderContainer.PointerCaptureLost += OnPointerCaptureLost;
 		spSliderContainer.SizeChanged += OnSizeChanged;
 		_sliderContainerToken.Disposable = Disposable.Create(() =>
 		{
 			spSliderContainer.PointerPressed -= OnPointerPressed;
 			spSliderContainer.PointerReleased -= OnPointerReleased;
+			spSliderContainer.PointerMoved -= OnPointerMoved;
 			spSliderContainer.PointerCaptureLost -= OnPointerCaptureLost;
 			spSliderContainer.SizeChanged -= OnSizeChanged;
 		});
@@ -869,9 +871,7 @@ public partial class Slider
 		object sender,
 		DragDeltaEventArgs args)
 	{
-#if !HAS_EXPENSIVE_TRYFINALLY
 		try
-#endif
 		{
 			Grid spRootGrid;
 			double nominator = 0.0;
@@ -955,9 +955,7 @@ public partial class Slider
 				}
 			}
 		}
-#if !HAS_EXPENSIVE_TRYFINALLY
 		finally
-#endif
 		{
 			_processingInputEvent = false;
 		}
@@ -1546,9 +1544,7 @@ public partial class Slider
 	// IntermediateValue and Value accordingly.
 	private void MoveThumbToPoint(Point point)
 	{
-#if !HAS_EXPENSIVE_TRYFINALLY
 		try
-#endif
 		{
 			Grid rootGrid;
 			Orientation orientation = Orientation.Horizontal;
@@ -1635,9 +1631,7 @@ public partial class Slider
 				}
 			}
 		}
-#if !HAS_EXPENSIVE_TRYFINALLY
 		finally
-#endif
 		{
 			_processingInputEvent = false;
 		}

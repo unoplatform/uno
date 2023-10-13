@@ -8,6 +8,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 	public partial class SettingsFlyoutTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
+#if __ANDROID__ || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal SettingsFlyoutTemplateSettings()
+		{
+		}
+#endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Xaml.Media.Brush BorderBrush

@@ -40,16 +40,17 @@ namespace Uno.UI.RemoteControl
 		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
 		private List<IRemoteControlPreProcessor> _preprocessors = new List<IRemoteControlPreProcessor>();
 		private Timer? _keepAliveTimer;
+		private TaskCompletionSource _connectedTcs = new();
 
-		private RemoteControlClient(Type appType)
+		private RemoteControlClient(Type appType, ServerEndpointAttribute[]? endpoints = null)
 		{
 			AppType = appType;
 
-			if (appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] endpoints)
+			if (appType.Assembly.GetCustomAttributes(typeof(ServerEndpointAttribute), false) is ServerEndpointAttribute[] embeddedEndpoints)
 			{
 				IEnumerable<(string endpoint, int port)> GetAddresses()
 				{
-					foreach (var endpoint in endpoints)
+					foreach (var endpoint in embeddedEndpoints)
 					{
 						if (endpoint.Port == 0 && !Uri.TryCreate(endpoint.Endpoint, UriKind.Absolute, out _))
 						{
@@ -67,6 +68,13 @@ namespace Uno.UI.RemoteControl
 
 			if ((_serverAddresses?.Length ?? 0) == 0)
 			{
+				_serverAddresses = endpoints
+						?.Select(ep => (ep.Endpoint, ep.Port))
+						.ToArray();
+			}
+
+			if ((_serverAddresses?.Length ?? 0) == 0)
+			{
 				this.Log().LogError("Failed to get any remote control server endpoint from the IDE.");
 
 				return;
@@ -75,6 +83,12 @@ namespace Uno.UI.RemoteControl
 			RegisterProcessor(new HotReload.ClientHotReloadProcessor(this));
 			_ = StartConnection();
 		}
+
+		internal IRemoteControlProcessor[] RegisteredProcessors
+			=> _processors.Values.ToArray();
+
+		internal Task WaitForConnection()
+			=> _connectedTcs.Task;
 
 		private void RegisterProcessor(IRemoteControlProcessor processor)
 		{
@@ -155,6 +169,8 @@ namespace Uno.UI.RemoteControl
 
 						throw;
 					}
+
+					_connectedTcs.SetResult();
 
 					return (serverUri, s);
 				}
@@ -386,11 +402,14 @@ namespace Uno.UI.RemoteControl
 		public static RemoteControlClient Initialize(Type appType)
 			=> Instance = new RemoteControlClient(appType);
 
+		internal static RemoteControlClient Initialize(Type appType, ServerEndpointAttribute[]? endpoints)
+			=> Instance = new RemoteControlClient(appType, endpoints);
+
 		public async Task SendMessage(IMessage message)
 		{
-			if (this.Log().IsEnabled(LogLevel.Error))
+			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().LogError($"Sending message: {message} {message.Name}");
+				this.Log().Trace($"Sending message: {message} {message.Name}");
 			}
 
 			if (_webSocket != null)

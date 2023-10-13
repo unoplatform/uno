@@ -93,8 +93,10 @@ public partial class SkiaApp
 				=> CoreWindow.GetForCurrentThread().PointerPosition;
 #endif
 
-			var deltaX = x - Current().X;
-			var deltaY = y - Current().Y;
+			var x0 = Current().X;
+			var y0 = Current().Y;
+			var deltaX = x - x0;
+			var deltaY = y - y0;
 
 			steps ??= (int)Math.Min(Math.Max(Math.Abs(deltaX), Math.Abs(deltaY)), 512);
 			if (steps is 0)
@@ -102,25 +104,22 @@ public partial class SkiaApp
 				yield break;
 			}
 
+			// Could probably use Bresenham's algorithm if performance issues appear
 			var stepX = deltaX / steps.Value;
 			var stepY = deltaY / steps.Value;
 
-			stepX = stepX is > 0 ? Math.Ceiling(stepX) : Math.Floor(stepX);
-			stepY = stepY is > 0 ? Math.Ceiling(stepY) : Math.Floor(stepY);
+			var prevPositionX = (int)Math.Round(x0);
+			var prevPositionY = (int)Math.Round(y0);
 
-			for (var step = 0; step <= steps && (stepX is not 0 || stepY is not 0); step++)
+			for (var i = 1; i <= steps; i++)
 			{
-				yield return MoveBy((int)stepX, (int)stepY);
+				var newPositionX = (int)Math.Round(x0 + i * stepX);
+				var newPositionY = (int)Math.Round(y0 + i * stepY);
 
-				if (Math.Abs(Current().X - x) < stepX)
-				{
-					stepX = 0;
-				}
+				yield return MoveBy(newPositionX - prevPositionX, newPositionY - prevPositionY);
 
-				if (Math.Abs(Current().Y - y) < stepY)
-				{
-					stepY = 0;
-				}
+				prevPositionX = newPositionX;
+				prevPositionY = newPositionY;
 			}
 		}
 	}

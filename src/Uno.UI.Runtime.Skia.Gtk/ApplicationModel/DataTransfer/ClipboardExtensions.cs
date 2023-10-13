@@ -15,7 +15,7 @@ using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Clipboard = Gtk.Clipboard;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.ApplicationModel.DataTransfer
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 {
 	internal class ClipboardExtensions : IClipboardExtension
 	{

@@ -1,5 +1,6 @@
 #pragma warning disable 108 // new keyword hiding
 using System;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -13,5 +14,7 @@ namespace Windows.UI.Xaml.Controls
 		public VirtualizingPanelLayout GetLayouter() => GetLayouterCore();
 
 		private protected virtual VirtualizingPanelLayout GetLayouterCore() => throw new NotSupportedException($"This method must be overridden by implementing classes.");
+
+		internal override Orientation? InternalOrientation => GetLayouter().Orientation;
 	}
 }

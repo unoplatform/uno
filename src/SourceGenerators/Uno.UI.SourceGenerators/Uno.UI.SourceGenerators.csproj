@@ -1,5 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
+		<!-- Generators must be on netstandard2.0 so that they run in VS (.NET Framework) and dotnet build (.NET Core) -->
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>true</AppendTargetFrameworkToOutputPath>
@@ -62,7 +63,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.netcore.Tests" />
 		<InternalsVisibleTo Include="Uno.UI.SourceGenerators.Tests" />
 		<InternalsVisibleTo Include="Uno.UI.Unit.Tests" />
 	</ItemGroup>
@@ -78,13 +78,10 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-
 			<_OverridePackageId>Uno.UI</_OverridePackageId>
 			<_OverridePackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI</_OverridePackageId>
 
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_OverridePackageId)\$(UnoNugetOverrideVersion)\analyzers\dotnet\cs</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

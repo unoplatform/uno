@@ -10,22 +10,16 @@ using Uno.UI.Xaml.Media;
 using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
 using Uno;
 using Uno.UI.Helpers;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	partial class BorderLayerRenderer
 	{
 		private Brush _background;
-		private (Brush, Thickness) _border;
-		private CornerRadius _cornerRadius;
+		private (Brush, Thickness, CornerRadius) _border;
 
-		private WeakBrushChangedProxy _backgroundSubscription;
 		private Action _backgroundChanged;
-
-		~BorderLayerRenderer()
-		{
-			_backgroundSubscription?.Unsubscribe();
-		}
 
 		public void UpdateLayer(
 			UIElement element,
@@ -38,41 +32,20 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			if (_background != background && element is FrameworkElement fwElt)
 			{
+				var oldValue = _background;
 				_background = background;
-				_backgroundSubscription ??= new();
 
-				SetAndObserveBackgroundBrush(fwElt, background, _backgroundSubscription, ref _backgroundChanged);
+				SetAndObserveBackgroundBrush(fwElt, oldValue, background, ref _backgroundChanged);
 			}
 
-			if (_border != (borderBrush, borderThickness))
+			if (_border != (borderBrush, borderThickness, cornerRadius))
 			{
-				_border = (borderBrush, borderThickness);
-				SetBorder(element, borderThickness, borderBrush);
-			}
-
-			if (_cornerRadius != cornerRadius)
-			{
-				_cornerRadius = cornerRadius;
-				SetCornerRadius(element, cornerRadius);
+				_border = (borderBrush, borderThickness, cornerRadius);
+				SetBorder(element, borderThickness, borderBrush, cornerRadius);
 			}
 		}
 
-		public static void SetCornerRadius(UIElement element, CornerRadius cornerRadius)
-		{
-			if (cornerRadius == CornerRadius.None)
-			{
-				element.ResetStyle("border-radius", "overflow");
-			}
-			else
-			{
-				var borderRadiusCssString = $"min(50%,{cornerRadius.TopLeft.ToStringInvariant()}px) min(50%,{cornerRadius.TopRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomRight.ToStringInvariant()}px) min(50%,{cornerRadius.BottomLeft.ToStringInvariant()}px)";
-				element.SetStyle(
-					("border-radius", borderRadiusCssString),
-					("overflow", "hidden")); // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
-			}
-		}
-
-		public static void SetBorder(UIElement element, Thickness thickness, Brush brush)
+		public static void SetBorder(UIElement element, Thickness thickness, Brush brush, CornerRadius cornerRadius)
 		{
 			if (thickness == Thickness.Empty)
 			{
@@ -95,7 +68,7 @@ namespace Windows.UI.Xaml.Shapes
 							("border-width", borderWidth));
 						break;
 					case GradientBrush gradientBrush:
-						var border = gradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+						var border = gradientBrush.ToCssString(element.RenderSize);
 						element.SetStyle(
 							("border-style", "solid"),
 							("border-color", ""),
@@ -104,7 +77,7 @@ namespace Windows.UI.Xaml.Shapes
 							("border-image-slice", "1"));
 						break;
 					case RadialGradientBrush radialGradientBrush:
-						var radialBorder = radialGradientBrush.ToCssString(element.RenderSize); // TODO: Reevaluate when size is changing
+						var radialBorder = radialGradientBrush.ToCssString(element.RenderSize);
 						element.SetStyle(
 							("border-style", "solid"),
 							("border-color", ""),
@@ -125,21 +98,33 @@ namespace Windows.UI.Xaml.Shapes
 						break;
 				}
 			}
+
+			if (cornerRadius == CornerRadius.None)
+			{
+				element.ResetStyle("border-radius", "overflow");
+			}
+			else
+			{
+				var outer = cornerRadius.GetRadii(element.RenderSize, thickness).Outer;
+				WindowManagerInterop.SetCornerRadius(element.HtmlId, outer.TopLeft.X, outer.TopLeft.Y, outer.TopRight.X, outer.TopRight.Y, outer.BottomRight.X, outer.BottomRight.Y, outer.BottomLeft.X, outer.BottomLeft.Y);
+			}
 		}
 
-		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush brush, WeakBrushChangedProxy brushChangedProxy, ref Action brushChanged)
+		public static void SetAndObserveBackgroundBrush(FrameworkElement element, Brush oldValue, Brush newValue, ref Action brushChanged)
 		{
-			if (brushChangedProxy.TryGetSource(out var oldValue) && oldValue is AcrylicBrush oldAcrylic)
+			if (oldValue is AcrylicBrush oldAcrylic)
 			{
 				AcrylicBrush.ResetStyle(element);
 			}
 
-			if (brush is ImageBrush imgBrush)
+			Action newOnInvalidateRender;
+
+			if (newValue is ImageBrush imgBrush)
 			{
-				SetBackgroundBrush(element, brush);
+				SetBackgroundBrush(element, newValue);
 
 				RecalculateBrushOnSizeChanged(element, false);
-				brushChanged = () =>
+				newOnInvalidateRender = () =>
 				{
 					if (imgBrush.ImageDataCache is not { } img)
 					{
@@ -167,19 +152,29 @@ namespace Windows.UI.Xaml.Shapes
 							break;
 					}
 				};
-				brushChangedProxy.Subscribe(imgBrush, brushChanged);
 			}
-			else if (brush is AcrylicBrush acrylicBrush)
+			else if (newValue is AcrylicBrush acrylicBrush)
 			{
-				SetBackgroundBrush(element, brush);
+				SetBackgroundBrush(element, newValue);
 
-				brushChanged = () => acrylicBrush.Apply(element);
-				brushChangedProxy.Subscribe(acrylicBrush, brushChanged);
+				newOnInvalidateRender = () => acrylicBrush.Apply(element);
 			}
 			else
 			{
-				brushChanged = () => SetBackgroundBrush(element, brush);
-				brushChangedProxy.Subscribe(brush, brushChanged);
+				SetBackgroundBrush(element, newValue);
+				if (newValue is not null)
+				{
+					newOnInvalidateRender = () => SetBackgroundBrush(element, newValue);
+				}
+				else
+				{
+					newOnInvalidateRender = null;
+				}
+			}
+
+			if (newOnInvalidateRender is not null)
+			{
+				Brush.SetupBrushChanged(oldValue, newValue, ref brushChanged, newOnInvalidateRender);
 			}
 		}
 
@@ -233,7 +228,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		internal void Clear()
 		{
-			_backgroundSubscription?.Unsubscribe();
 			_background = null;
 			_border = default;
 

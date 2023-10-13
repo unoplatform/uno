@@ -6,7 +6,7 @@ using System.IO;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.System.LauncherHelpers
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.System.LauncherHelpers
 {
 	internal class MimeAppsList
 	{

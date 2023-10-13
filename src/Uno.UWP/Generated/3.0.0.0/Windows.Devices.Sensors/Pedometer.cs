@@ -3,11 +3,16 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-#if false || false || false || false || __SKIA__ || false || false
-	[global::Uno.NotImplemented("__SKIA__")]
+#if false || false || false || false || false || false || false
+	[global::Uno.NotImplemented]
 #endif
 	public partial class Pedometer
 	{
+#if false || false || false || false || false || false || false
+		internal Pedometer()
+		{
+		}
+#endif
 #if false || false || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public uint ReportInterval
@@ -80,8 +85,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.FromIdAsync(string deviceId) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPedometer%3E%20Pedometer.FromIdAsync%28string%20deviceId%29");
 		}
 #endif
-#if false || false || false || false || __SKIA__ || false || false
-		[global::Uno.NotImplemented("__SKIA__")]
+#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Pedometer> GetDefaultAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.GetDefaultAsync() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=IAsyncOperation%3CPedometer%3E%20Pedometer.GetDefaultAsync%28%29");

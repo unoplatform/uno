@@ -11,9 +11,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
 	internal static partial class XBindExpressionParser
 	{
-		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
-		// However, we could be incorrectly throwing NRE. This should be handled properly.
-		internal static (string? MethodDeclaration, string Expression, ImmutableArray<string> Properties, bool HasFunction) Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, int xBindCounter, Func<string, INamedTypeSymbol?> findType)
+		internal static (string? MethodDeclaration, string Expression, ImmutableArray<string> Properties, bool HasFunction) Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, int xBindCounter, Func<string, INamedTypeSymbol?> findType, string? targetPropertyType)
 		{
 			var parser = new CoreParser(rawFunction);
 			XBindRoot expression = parser.ParseXBind();
@@ -21,9 +19,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			var builder = new CSharpBuilder(contextName, findType);
 			var (csharpExpression, properties) = builder.Build(expression);
-			if (isRValue && contextTypeSymbol is not null)
+			if (contextTypeSymbol is not null)
 			{
-				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter);
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter, isRValue, targetPropertyType);
 				// TODO: We should probably avoid using Roslyn at all.
 				// We could combine nullability rewriter into CSharpBuilder.
 				nullabilityRewriter.Visit(SyntaxFactory.ParseExpression(csharpExpression));
@@ -31,7 +29,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				if (!nullabilityRewriter.Failed)
 				{
 					var methodDeclaration = nullabilityRewriter.MainExpression.ToString();
-					return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)", properties, hasFunction);
+					if (isRValue)
+					{
+						return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)", properties, hasFunction);
+					}
+					else
+					{
+						return (methodDeclaration, $"TrySetInstance_xBind_{xBindCounter}({contextName}, __value)", properties, hasFunction);
+					}
 				}
 			}
 
@@ -55,11 +60,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				_findType = findType;
 			}
 
-			private int FirstIndexOf(char c)
+			private static int LastIndexOf(StringBuilder builder, char c)
 			{
-				for (int i = 0; i < _builder.Length; i++)
+				for (int i = builder.Length - 1; i >= 0; i--)
 				{
-					if (_builder[i] == c)
+					if (builder[i] == c)
 					{
 						return i;
 					}
@@ -68,72 +73,56 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				return -1;
 			}
 
-			private int LastIndexOf(char c)
+			private static void AddIfNotStaticAndClear(StringBuilder propertyBuilder, ImmutableArray<string>.Builder propertiesBuilder)
 			{
-				for (int i = _builder.Length - 1; i >= 0; i--)
+				if (propertyBuilder.Length == 0)
 				{
-					if (_builder[i] == c)
-					{
-						return i;
-					}
+					// Only add to propertiesBuilder if we have something in propertyBuilder.
+					return;
 				}
 
-				return -1;
-			}
-
-			private bool StartsWith(string s, int startIndexToSearchFrom = 0)
-			{
-				if (startIndexToSearchFrom + s.Length > _builder.Length)
+				var property = propertyBuilder.ToString();
+				if (!property.StartsWith("global::", StringComparison.Ordinal) &&
+					property is not ("null" or "true" or "false"))
 				{
-					return false;
+					propertiesBuilder.Add(property);
 				}
 
-				for (int i = 0; i < s.Length; i++)
-				{
-					if (_builder[startIndexToSearchFrom++] != s[i])
-					{
-						return false;
-					}
-				}
-
-				return true;
+				propertyBuilder.Clear();
 			}
 
 			public (string CSharpExpression, ImmutableArray<string> Properties) Build(XBindRoot root)
 			{
+				var propertiesBuilder = ImmutableArray.CreateBuilder<string>();
+				var propertyBuilder = new StringBuilder();
 				if (root is XBindInvocation invocation)
 				{
-					var propertiesBuilder = ImmutableArray.CreateBuilder<string>();
+					BuildPath(invocation.Path, propertyBuilder);
 
-					BuildPath(invocation.Path);
-
-					// If we have an invocation on the form of context.SomePath.Method(...)
+					// If we have an invocation on the form of SomePath.Method(...)
 					// Then we add "SomePath" to the propertiesBuilder
-					var firstIndexOf = FirstIndexOf('.');
-					var lastIndexOf = LastIndexOf('.');
-					if (firstIndexOf != lastIndexOf && StartsWith(_contextName))
+					// Note that the _builder field will contain the contextName followed by '.' at the beginning,
+					// while propertyBuilder doesn't.
+					var lastIndexOf = LastIndexOf(propertyBuilder, '.');
+					if (lastIndexOf != -1)
 					{
-						propertiesBuilder.Add(_builder.ToString(firstIndexOf + 1, lastIndexOf - firstIndexOf - 1));
+						// Setting the Length here will remove the ".Method" part from the string builder since we want to add "SomePath" only.
+						propertyBuilder.Length = lastIndexOf;
+						AddIfNotStaticAndClear(propertyBuilder, propertiesBuilder);
+					}
+					else
+					{
+						propertyBuilder.Clear();
 					}
 
 					_builder.Append('(');
 					for (int i = 0; i < invocation.Arguments.Length; i++)
 					{
-						var oldLength = _builder.Length;
 						var argument = invocation.Arguments[i];
 						if (argument is XBindPathArgument pathArgument)
 						{
-							BuildPath(pathArgument.Path);
-							var newLength = _builder.Length;
-							var argPath = _builder.ToString(oldLength, newLength - oldLength);
-							if (argPath.StartsWith($"{_contextName}.", StringComparison.Ordinal))
-							{
-								propertiesBuilder.Add(argPath.Substring(_contextName.Length + 1));
-							}
-							else if (argPath is not ("null" or "true" or "false")) // TODO: Consider special nodes for these.
-							{
-								propertiesBuilder.Add(argPath);
-							}
+							BuildPath(pathArgument.Path, propertyBuilder);
+							AddIfNotStaticAndClear(propertyBuilder, propertiesBuilder);
 						}
 						else if (argument is XBindLiteralArgument literalArgument)
 						{
@@ -154,14 +143,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				else if (root is XBindPath path)
 				{
-					BuildPath(path);
-					var csharpPath = _builder.ToString();
-					if (csharpPath.StartsWith($"{_contextName}.", StringComparison.Ordinal))
-					{
-						return (csharpPath, ImmutableArray.Create(csharpPath.Substring(_contextName.Length + 1)));
-					}
+					BuildPath(path, propertyBuilder);
+					AddIfNotStaticAndClear(propertyBuilder, propertiesBuilder);
 
-					return (csharpPath, ImmutableArray.Create(csharpPath));
+					var csharpPath = _builder.ToString();
+					return (csharpPath, propertiesBuilder.ToImmutableArray());
 				}
 				else if (root is null)
 				{
@@ -171,17 +157,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				throw new Exception("Unexpected XBindRoot");
 			}
 
-			public void BuildPath(XBindPath path)
+			public void BuildPath(XBindPath path, StringBuilder? propertyBuilder)
 			{
 				if (path is XBindMemberAccess memberAccess)
 				{
-					BuildPath(memberAccess.Path);
+					BuildPath(memberAccess.Path, propertyBuilder);
+					propertyBuilder?.Append($".{memberAccess.Identifier.IdentifierText}");
 					_builder.Append('.');
 					_builder.Append(memberAccess.Identifier.IdentifierText);
 				}
 				else if (path is XBindIndexerAccess indexerAccess)
 				{
-					BuildPath(indexerAccess.Path);
+					BuildPath(indexerAccess.Path, propertyBuilder);
+					propertyBuilder?.Append($"[{indexerAccess.Index}]");
 					_builder.Append('[');
 					_builder.Append(indexerAccess.Index);
 					_builder.Append(']');
@@ -196,6 +184,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					}
 
 					_builder.Append(identifier.IdentifierText);
+					propertyBuilder?.Append(identifier.IdentifierText);
 				}
 				else if (path is XBindAttachedPropertyAccess attachedPropertyAccess)
 				{
@@ -205,19 +194,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					}
 					else
 					{
-						BuildPath(attachedPropertyAccess.PropertyClass);
+						BuildPath(attachedPropertyAccess.PropertyClass, propertyBuilder: null);
 					}
 
 					_builder.Append(".Get");
 					_builder.Append(attachedPropertyAccess.PropertyName.IdentifierText);
 					_builder.Append('(');
-					BuildPath(attachedPropertyAccess.Member);
+					BuildPath(attachedPropertyAccess.Member, propertyBuilder: null);
 					_builder.Append(')');
 				}
 				else if (path is XBindParenthesizedExpression parenthesizedExpression)
 				{
 					_builder.Append('(');
-					BuildPath(parenthesizedExpression.Expression);
+					BuildPath(parenthesizedExpression.Expression, propertyBuilder);
 					_builder.Append(')');
 
 					if (parenthesizedExpression.IsPathlessCast)
@@ -228,9 +217,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				else if (path is XBindCast xBindCast)
 				{
 					_builder.Append('(');
-					BuildPath(xBindCast.Type);
+					BuildPath(xBindCast.Type, propertyBuilder: null);
 					_builder.Append(')');
-					BuildPath(xBindCast.Expression);
+					BuildPath(xBindCast.Expression, propertyBuilder);
 				}
 				else
 				{
@@ -258,6 +247,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			private readonly INamespaceSymbol _globalNamespace;
 			private readonly int _xBindCounter;
 			private readonly StringBuilder _builder = new();
+			private readonly bool _isRValue;
+			private readonly string? _targetPropertyType;
 			private XBindExpressionInfo _activeSubexpression;
 
 			private (ISymbol? Symbol, bool IsTopLevelContext) _lastAccessed;
@@ -268,7 +259,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public XBindExpressionInfo MainExpression { get; }
 
-			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace, int xBindCounter)
+			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace, int xBindCounter, bool isRValue, string? targetPropertyType)
 			{
 				_contextName = contextName;
 				_contextTypeSymbol = contextTypeSymbol;
@@ -281,7 +272,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				// to all members.
 				_globalNamespace = globalNamespace;
 				_xBindCounter = xBindCounter;
-				_activeSubexpression = new(xBindCounter, _contextTypeString, contextName);
+				_isRValue = isRValue;
+				_targetPropertyType = targetPropertyType;
+				_activeSubexpression = new(xBindCounter, _contextTypeString, contextName, isRValue, targetPropertyType);
 				MainExpression = _activeSubexpression;
 			}
 
@@ -369,7 +362,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					_lastAccessed = (null, false);
 					var argument = node.Arguments[i];
 
-					var argumentExpression = new XBindExpressionInfo(_xBindCounter, _contextTypeString, _contextName);
+					var argumentExpression = new XBindExpressionInfo(_xBindCounter, _contextTypeString, _contextName, _isRValue, _targetPropertyType);
 					MainExpression.Arguments.Add(argumentExpression);
 					_activeSubexpression = argumentExpression;
 

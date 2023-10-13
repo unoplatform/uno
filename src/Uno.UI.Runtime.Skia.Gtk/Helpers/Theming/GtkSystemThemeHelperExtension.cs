@@ -2,17 +2,20 @@
 
 using System;
 using System.Runtime.InteropServices;
+using Gtk;
 using Microsoft.Win32;
 using Uno.Helpers.Theming;
 
-namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
+namespace Uno.UI.Runtime.Skia.Gtk.Extensions.Helpers.Theming
 {
 	internal class GtkSystemThemeHelperExtension : ISystemThemeHelperExtension, IDisposable
 	{
 		private bool _disposedValue;
+		private string _previousThemeName;
 
 		internal GtkSystemThemeHelperExtension(object owner)
 		{
+			_previousThemeName = Settings.Default.ThemeName;
 			ObserveSystemTheme();
 		}
 
@@ -26,8 +29,9 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
 			}
 			else
 			{
-				var settings = Gtk.Settings.Default;
+				var settings = Settings.Default;
 				settings.AddNotification(nameof(settings.ApplicationPreferDarkTheme), ApplicationPreferDarkThemeHandler);
+				settings.AddNotification(nameof(settings.ThemeName), ApplicationPreferDarkThemeHandler);
 			}
 		}
 
@@ -39,13 +43,26 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
 			}
 			else
 			{
-				var settings = Gtk.Settings.Default;
+				var settings = Settings.Default;
 				settings.RemoveNotification(nameof(settings.ApplicationPreferDarkTheme), ApplicationPreferDarkThemeHandler);
+				settings.RemoveNotification(nameof(settings.ThemeName), ApplicationPreferDarkThemeHandler);
 			}
 		}
 
 		private void ApplicationPreferDarkThemeHandler(object o, GLib.NotifyArgs args)
-			=> SystemThemeChanged?.Invoke(o, EventArgs.Empty);
+		{
+			var settings = Settings.Default;
+			if (args.Property == nameof(settings.ApplicationPreferDarkTheme) || IsGtkThemeDark(_previousThemeName) != IsGtkThemeDark(settings.ThemeName))
+			{
+				SystemThemeChanged?.Invoke(o, EventArgs.Empty);
+			}
+			_previousThemeName = settings.ThemeName;
+		}
+
+		private bool IsGtkThemeDark(string themeName)
+		{
+			return themeName.Contains("-dark", StringComparison.OrdinalIgnoreCase);
+		}
 
 		public SystemTheme GetSystemTheme()
 		{
@@ -55,7 +72,7 @@ namespace Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.Theming
 			}
 			else
 			{
-				return Gtk.Settings.Default.ApplicationPreferDarkTheme ? SystemTheme.Dark : SystemTheme.Light;
+				return (Settings.Default.ApplicationPreferDarkTheme || IsGtkThemeDark(Settings.Default.ThemeName)) ? SystemTheme.Dark : SystemTheme.Light;
 			}
 		}
 

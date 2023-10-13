@@ -30,7 +30,7 @@ namespace Windows.Services.Maps
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public EnhancedWaypoint(global::Windows.Devices.Geolocation.Geopoint point, global::Windows.Services.Maps.WaypointKind kind) 
+		public EnhancedWaypoint(global::Windows.Devices.Geolocation.Geopoint point, global::Windows.Services.Maps.WaypointKind kind)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Services.Maps.EnhancedWaypoint", "EnhancedWaypoint.EnhancedWaypoint(Geopoint point, WaypointKind kind)");
 		}

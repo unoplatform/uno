@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private readonly static Thickness _thicknessCache = Thickness.Empty;
-
 		protected FrameworkElement()
 		{
 			Initialize();
@@ -37,13 +35,9 @@ namespace Windows.UI.Xaml
 			return Parent != null;
 		}
 
-		internal void SetActualSize(Size size) => AssignedActualSize = size;
-
 		public double ActualWidth => GetActualWidth();
 
 		public double ActualHeight => GetActualHeight();
-
-		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;
 
@@ -53,12 +47,6 @@ namespace Windows.UI.Xaml
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
 		public event SizeChangedEventHandler SizeChanged;
-
-		internal void RaiseSizeChanged(SizeChangedEventArgs args)
-		{
-			SizeChanged?.Invoke(this, args);
-			_renderTransform?.UpdateSize(args.NewSize);
-		}
 
 		#region Name Dependency Property
 

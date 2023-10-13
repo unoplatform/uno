@@ -80,7 +80,7 @@ public class ResourcesGenerationTask_v0 : Task
 		if (language == null)
 		{
 			// TODO: Add support for resources without a language qualifier
-			TraceLog("No language found, resources ignored");
+			TraceWarning("UNOB0003", $"Ignoring resource {resource.ItemSpec}, could not determine the language");
 			yield break;
 		}
 
@@ -253,11 +253,17 @@ public class ResourcesGenerationTask_v0 : Task
 			}
 		);
 	}
+
 	private void TraceLog(string message)
 	{
 		if (EnableTraceLogging)
 		{
 			Log.LogMessage(message);
 		}
+	}
+
+	private void TraceWarning(string warningCode, string message)
+	{
+		Log.LogWarning(null, warningCode, null, null, 0, 0, 0, 0, message);
 	}
 }

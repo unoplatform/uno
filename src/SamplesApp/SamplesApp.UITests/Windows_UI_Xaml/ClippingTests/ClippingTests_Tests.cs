@@ -1,4 +1,7 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Linq;
+using FluentAssertions;
 using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -156,6 +159,53 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ClippingTests
 						.At("bottom-right " + s, rectCtl.Right - 1, rectCtl.Bottom - 1)
 						.Pixel(green)
 				);
+			}
+		}
+
+		// Check that the clipping is applied to the child element using the UIElement_Clipping sample
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // The sample is not working well on WASM
+		public void When_Clip_Is_Set_On_Child_Element()
+		{
+			Run("UITests.Windows_UI_Xaml.UIElementTests.UIElement_Clipping");
+
+			var squares = new[]
+			{
+				_app.Marked("Square1"),
+				_app.Marked("Square2"),
+				_app.Marked("Square3"),
+				_app.Marked("Square4"),
+				_app.Marked("Square5")
+			};
+
+			_app.WaitForElement(squares[0]);
+			_app.WaitForElement(squares[4]);
+
+			var rects = squares
+				.Select(s => s.FirstResult().Rect)
+				.ToArray();
+
+			// Check that all rects are similar
+			for (var i = 1; i < rects.Length; i++)
+			{
+				rects[i].Width.Should().BeApproximately(rects[0].Width, 2, "all squares should have the same width");
+				rects[i].Height.Should().BeApproximately(rects[0].Height, 2, "all squares should have the same height");
+			}
+
+			using var snapshot1 = this.TakeScreenshot("original", ignoreInSnapshotCompare: false);
+			using var snapshot2 = this.TakeScreenshot("validation", ignoreInSnapshotCompare: false);
+
+			// Check that the square bitmaps are similar
+			for (var i = 1; i < squares.Length; i++)
+			{
+				Console.WriteLine($"Checking square #{i + 1} against the first one");
+				ImageAssert.AreAlmostEqual(
+					snapshot1,
+					squares[0].FirstResult().Rect,
+					snapshot2,
+					squares[i].FirstResult().Rect,
+					20);
 			}
 		}
 	}

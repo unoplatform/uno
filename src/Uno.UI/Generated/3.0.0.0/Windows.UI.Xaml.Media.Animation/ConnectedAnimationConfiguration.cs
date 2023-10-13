@@ -8,5 +8,10 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 	public partial class ConnectedAnimationConfiguration
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal ConnectedAnimationConfiguration()
+		{
+		}
+#endif
 	}
 }

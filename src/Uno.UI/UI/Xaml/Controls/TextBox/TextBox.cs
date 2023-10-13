@@ -50,14 +50,13 @@ namespace Windows.UI.Xaml.Controls
 		/// This workaround can be removed if pooling is removed. See https://github.com/unoplatform/uno/issues/12189
 		/// </summary>
 		private bool _suppressTextChanged;
+		private bool _wasTemplateRecycled;
 
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
 		private WeakReference<Button> _deleteButton;
 
-		private WeakBrushChangedProxy _selectionHighlightColorSubscription;
-		private WeakBrushChangedProxy _foregroundBrushSubscription;
 		private Action _selectionHighlightColorChanged;
 		private Action _foregroundBrushChanged;
 #pragma warning restore CS0067, CS0649
@@ -106,21 +105,6 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 		}
 
-		~TextBox()
-		{
-			_selectionHighlightColorSubscription?.Unsubscribe();
-			_foregroundBrushSubscription?.Unsubscribe();
-		}
-
-#if __ANDROID__
-		protected override void JavaFinalize()
-		{
-			_selectionHighlightColorSubscription?.Unsubscribe();
-			_foregroundBrushSubscription?.Unsubscribe();
-			base.JavaFinalize();
-		}
-#endif
-
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
@@ -142,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(IsTextPredictionEnabled);
-			OnSelectionHighlightColorChanged(SelectionHighlightColor);
+			OnSelectionHighlightColorChanged(null, SelectionHighlightColor);
 			OnIsSpellCheckEnabledChanged(IsSpellCheckEnabled);
 			OnTextAlignmentChanged(TextAlignment);
 			OnTextWrappingChanged();
@@ -180,6 +164,22 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
 				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+#else
+				// The template of TextBox contains the following:
+				/*
+					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+				 */
+				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
+				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
+				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
+				// before the support for TemplateBinding for attached DPs.
+				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
 			}
 
@@ -269,16 +269,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!_isInvokingTextChanging)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isInvokingTextChanging = true;
 					TextChanging?.Invoke(this, new TextBoxTextChangingEventArgs());
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isInvokingTextChanging = false;
 				}
@@ -298,9 +294,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_isInvokingTextChanged = true;
 				_isTextChangedPending = false;
@@ -309,9 +303,7 @@ namespace Windows.UI.Xaml.Controls
 					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_isInvokingTextChanged = false;
 				_suppressTextChanged = false;
@@ -422,9 +414,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
 		{
-			_foregroundBrushSubscription ??= new();
-			_foregroundBrushChanged = () => OnForegroundColorChangedPartial(newValue);
-			_foregroundBrushSubscription.Subscribe(newValue, _foregroundBrushChanged);
+			Brush.SetupBrushChanged(oldValue, newValue, ref _foregroundBrushChanged, () => OnForegroundColorChangedPartial(newValue));
 		}
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
@@ -468,14 +458,13 @@ namespace Windows.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					DefaultBrushes.SelectionHighlightColor,
-					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.NewValue)));
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged((SolidColorBrush)e.OldValue, (SolidColorBrush)e.NewValue)));
 
-		private void OnSelectionHighlightColorChanged(SolidColorBrush brush)
+		private void OnSelectionHighlightColorChanged(SolidColorBrush oldBrush, SolidColorBrush newBrush)
 		{
-			_selectionHighlightColorSubscription ??= new();
-			brush ??= DefaultBrushes.SelectionHighlightColor;
-			_selectionHighlightColorChanged = () => OnSelectionHighlightColorChangedPartial(brush);
-			_selectionHighlightColorSubscription.Subscribe(brush, _selectionHighlightColorChanged);
+			oldBrush ??= DefaultBrushes.SelectionHighlightColor;
+			newBrush ??= DefaultBrushes.SelectionHighlightColor;
+			Brush.SetupBrushChanged(oldBrush, newBrush, ref _selectionHighlightColorChanged, () => OnSelectionHighlightColorChangedPartial(newBrush));
 		}
 
 		partial void OnSelectionHighlightColorChangedPartial(SolidColorBrush brush);
@@ -628,6 +617,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextWrappingChangedPartial();
 
 		#endregion
+#if SUPPORTS_RTL
+		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnPropertyChanged2(args);
+			if (args.Property == FrameworkElement.FlowDirectionProperty)
+			{
+				OnFlowDirectionChangedPartial();
+			}
+		}
+
+		partial void OnFlowDirectionChangedPartial();
+#endif
 
 #if __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[Uno.NotImplemented("__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
@@ -851,9 +852,14 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
-				// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
-				var bindingExpression = GetBindingExpression(TextProperty);
-				bindingExpression?.UpdateSource(Text);
+				if (!_wasTemplateRecycled)
+				{
+					// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
+					var bindingExpression = GetBindingExpression(TextProperty);
+					bindingExpression?.UpdateSource(Text);
+				}
+
+				_wasTemplateRecycled = false;
 			}
 
 			UpdateButtonStates();
@@ -1026,16 +1032,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The value of the <see cref="Text"/> property, which may have been modified programmatically.</returns>
 		internal string ProcessTextInput(string newText)
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_isInputModifyingText = true;
 				Text = newText;
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_isInputModifyingText = false;
 			}
@@ -1045,18 +1047,14 @@ namespace Windows.UI.Xaml.Controls
 
 		private void DeleteButtonClick()
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				_isInputClearingText = true;
 
 				Text = string.Empty;
 				OnDeleteButtonClickPartial();
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				_isInputClearingText = false;
 			}
@@ -1069,11 +1067,11 @@ namespace Windows.UI.Xaml.Controls
 			SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 		}
 
-
 		public void OnTemplateRecycled()
 		{
 			_suppressTextChanged = true;
 			Text = string.Empty;
+			_wasTemplateRecycled = true;
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);

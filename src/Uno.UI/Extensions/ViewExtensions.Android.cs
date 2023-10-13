@@ -606,7 +606,7 @@ namespace Uno.UI
 					{
 						Inner(childViewGroup, s);
 					}
-					else if (child is { })
+					else if (child is not null)
 					{
 						AppendView(child, s);
 					}
@@ -628,16 +628,20 @@ namespace Uno.UI
 					.Append(innerView.ToString() + namePart)
 					.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width):F1}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height):F1})@({ViewHelper.PhysicalToLogicalPixels(innerView.Left):F1},{ViewHelper.PhysicalToLogicalPixels(innerView.Top):F1})")
 					.Append($"  {innerView.Visibility}")
-					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
-					.Append(fe != null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
-					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
-					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
-					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
-					.Append(u != null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
-					.Append(u != null && u.NeedsClipToSlot ? " CLIPPED_TO_SLOT" : "")
-					.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
-					.Append(u == null && vg != null ? $" ClipChildren={vg.ClipChildren}" : "")
-					.Append(fe?.Background != null ? $" Background={fe.Background}" : "")
+					.Append(fe is not null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+					.Append(fe is not null && (!double.IsNaN(fe.Width) || !double.IsNaN(fe.Height)) ? $"FE.Width={fe.Width},FE.Height={fe.Height}" : "")
+					.Append(fe is not null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
+					.Append(fe is not null && fe.Opacity < 1 ? $" Opacity={fe.Opacity}" : "")
+					.Append(fe is not null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
+					.Append(fe is not null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
+					.Append(u is not null ? $" DesiredSize={u.DesiredSize.ToString("F1")}" : "")
+					.Append(u is { NeedsClipToSlot: true } ? " CLIPPED_TO_SLOT" : "")
+					.Append(vg is { ClipToOutline: true } ? " vg.CLIP_OUTLINE" : "")
+					.Append(vg is { ClipChildren: true } ? " vg.CLIP_CHILDREN" : "")
+					.Append(vg is { ClipToPadding: true } ? " vg.CLIP_TO_PADDING" : "")
+					.Append(u is { Clip: not null } ? $" Clip={u.Clip.Rect}" : "")
+					.Append(u == null && vg is not null ? $" ClipChildren={vg.ClipChildren}" : "")
+					.Append(fe is { Background: not null } ? $" Background={fe.Background}" : "")
 					.Append(u?.GetElementSpecificDetails())
 					.Append(u?.GetElementGridOrCanvasDetails())
 					.Append(u?.RenderTransform.GetTransformDetails())

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.CompilerServices;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 
@@ -9,8 +10,7 @@ namespace Windows.UI.Xaml
 		private static readonly bool CanUseTypeGetType =
 #if __WASM__
 			// Workaround for https://github.com/dotnet/runtime/issues/45078
-			Uno.Foundation.Runtime.WebAssembly.Interop.PlatformHelper.IsNetCore
-			&& Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE") == "Interpreter";
+			Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_MONO_RUNTIME_MODE") == "Interpreter";
 #else
 			true;
 #endif
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal static DependencyPropertyDescriptor Parse(string propertyPath)
 		{
-			if (propertyPath.Contains(":"))
+			if (propertyPath.Contains(':'))
 			{
 				// (Uno.UI.Tests.BinderTests:Attachable.MyValue)
 
@@ -57,20 +57,7 @@ namespace Windows.UI.Xaml
 
 						if (type == null)
 						{
-							// If not available, search through Reflection
-							type = CanUseTypeGetType ? Type.GetType(qualifiedTypeName) : null;
-
-							if (type == null)
-							{
-								foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
-								{
-									type = asm.GetType(qualifiedTypeName);
-									if (type != null)
-									{
-										break;
-									}
-								}
-							}
+							type = SearchTypeInLoadedAssemblies(qualifiedTypeName);
 						}
 
 						if (type != null)
@@ -96,6 +83,32 @@ namespace Windows.UI.Xaml
 			}
 
 			return null;
+		}
+
+
+		/// <remarks>
+		/// This method is split to avoid Type.GetType causing fallbacks
+		/// on the Wasm interpreter.
+		/// </remarks>
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		private static Type SearchTypeInLoadedAssemblies(string qualifiedTypeName)
+		{
+			// If not available, search through Reflection
+			var type = CanUseTypeGetType ? Type.GetType(qualifiedTypeName) : null;
+
+			if (type == null)
+			{
+				foreach (var asm in AppDomain.CurrentDomain.GetAssemblies())
+				{
+					type = asm.GetType(qualifiedTypeName);
+					if (type != null)
+					{
+						break;
+					}
+				}
+			}
+
+			return type;
 		}
 	}
 }

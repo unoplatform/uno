@@ -92,6 +92,26 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// The newElement is attached to the visual tree and will have data context update, either inherited from parent or copies from the oldElement.
 		/// </summary>
 		public Action<FrameworkElement, FrameworkElement, Type[]?> AfterElementReplaced { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// as part of a preliminary pass through the visual tree prior
+		/// to applying ui updates. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches the type registered for by the handler. 
+		/// Add key-value-pairs to the dictionary parameter
+		/// </summary>
+		public Action<FrameworkElement, IDictionary<string, object>, Type[]?> CaptureState { get; set; } = (_, _, _) => { };
+
+		/// <summary>
+		/// This is invoked whenever UpdateApplication is invoked,
+		/// as part of a pass through the visual tree after applying 
+		/// ui updates. 
+		/// This is invoked for each element in the visual tree that 
+		/// matches the type registered for by the handler. 
+		/// Restore properties from the key-value-pairs to the dictionary parameter
+		/// </summary>
+		public Action<FrameworkElement, IDictionary<string, object>, Type[]?> RestoreState { get; set; } = (_, _, _) => { };
 	}
 
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
@@ -115,11 +135,12 @@ internal sealed class ElementUpdateAgent : IDisposable
 				{
 
 					var ctorArgs = attr.ConstructorArguments;
-					if (ctorArgs.Count != 2 ||
-						ctorArgs[0].Value is not Type elementType ||
-						ctorArgs[1].Value is not Type handlerType)
+					var elementType = ctorArgs.Count == 2 ? ctorArgs[0].Value as Type : typeof(object);
+					var handlerType = ctorArgs.Count == 2 ? ctorArgs[1].Value as Type :
+											ctorArgs.Count == 1 ? ctorArgs[0].Value as Type : default;
+					if (elementType is null || handlerType is null)
 					{
-						_log($"'{attr}' found with invalid arguments.");
+						_log($"'{attr}' found with invalid arguments. elementType '{elementType?.Name}', handlerType '{handlerType?.Name}'");
 						continue;
 					}
 
@@ -137,23 +158,29 @@ internal sealed class ElementUpdateAgent : IDisposable
 	{
 		bool methodFound = false;
 
+		_log($"Loading ElementMetatdataUpdateHandlerAttribute with constructor arguments {elementType.Name} and {handlerType.Name}");
+
+
 		var updateActions = new ElementUpdateHandlerActions();
 		_elementHandlerActions[elementType] = updateActions;
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.BeforeVisualTreeUpdate)) is MethodInfo beforeVisualTreeUpdate)
 		{
-			updateActions.BeforeVisualTreeUpdate = CreateAction(beforeVisualTreeUpdate);
+			_log($"Adding handler for {nameof(updateActions.BeforeVisualTreeUpdate)} for {handlerType}");
+			updateActions.BeforeVisualTreeUpdate = CreateAction(beforeVisualTreeUpdate, handlerType);
 			methodFound = true;
 		}
 
 		if (GetUpdateMethod(handlerType, nameof(ElementUpdateHandlerActions.AfterVisualTreeUpdate)) is MethodInfo afterVisualTreeUpdate)
 		{
-			updateActions.AfterVisualTreeUpdate = CreateAction(afterVisualTreeUpdate);
+			_log($"Adding handler for {nameof(updateActions.AfterVisualTreeUpdate)} for {handlerType}");
+			updateActions.AfterVisualTreeUpdate = CreateAction(afterVisualTreeUpdate, handlerType);
 			methodFound = true;
 		}
 
 		if (GetHandlerMethod(handlerType, nameof(ElementUpdateHandlerActions.ElementUpdate), new[] { typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo elementUpdate)
 		{
+			_log($"Adding handler for {nameof(updateActions.ElementUpdate)} for {handlerType}");
 			updateActions.ElementUpdate = CreateHandlerAction<Action<FrameworkElement, Type[]?>>(elementUpdate);
 			methodFound = true;
 		}
@@ -163,6 +190,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 			nameof(ElementUpdateHandlerActions.BeforeElementReplaced),
 			new[] { typeof(FrameworkElement), typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo beforeElementReplaced)
 		{
+			_log($"Adding handler for {nameof(updateActions.BeforeElementReplaced)} for {handlerType}");
 			updateActions.BeforeElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(beforeElementReplaced);
 			methodFound = true;
 		}
@@ -172,7 +200,28 @@ internal sealed class ElementUpdateAgent : IDisposable
 			nameof(ElementUpdateHandlerActions.AfterElementReplaced),
 			new[] { typeof(FrameworkElement), typeof(FrameworkElement), typeof(Type[]) }) is MethodInfo afterElementReplaced)
 		{
+			_log($"Adding handler for {nameof(updateActions.AfterElementReplaced)} for {handlerType}");
 			updateActions.AfterElementReplaced = CreateHandlerAction<Action<FrameworkElement, FrameworkElement, Type[]?>>(afterElementReplaced);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(
+			handlerType,
+			nameof(ElementUpdateHandlerActions.CaptureState),
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) }) is MethodInfo captureState)
+		{
+			_log($"Adding handler for {nameof(updateActions.CaptureState)} for {handlerType}");
+			updateActions.CaptureState = CreateHandlerAction<Action<FrameworkElement, IDictionary<string, object>, Type[]?>>(captureState);
+			methodFound = true;
+		}
+
+		if (GetHandlerMethod(
+			handlerType,
+			nameof(ElementUpdateHandlerActions.RestoreState),
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) }) is MethodInfo restoreState)
+		{
+			_log($"Adding handler for {nameof(updateActions.RestoreState)} for {handlerType}");
+			updateActions.RestoreState = CreateHandlerAction<Action<FrameworkElement, IDictionary<string, object>, Type[]?>>(restoreState);
 			methodFound = true;
 		}
 
@@ -214,18 +263,18 @@ internal sealed class ElementUpdateAgent : IDisposable
 		return null;
 	}
 
-	private Action<Type[]?> CreateAction(MethodInfo update)
+	private Action<Type[]?> CreateAction(MethodInfo update, Type handlerType)
 	{
 		var action = CreateHandlerAction<Action<Type[]?>>(update);
 		return types =>
 		{
 			try
 			{
-				action(types);
+				action?.Invoke(types);
 			}
 			catch (Exception ex)
 			{
-				_log($"Exception from '{action}': {ex}");
+				_log($"Exception from '{update.Name}' on {handlerType.Name}: {ex}");
 			}
 		};
 	}

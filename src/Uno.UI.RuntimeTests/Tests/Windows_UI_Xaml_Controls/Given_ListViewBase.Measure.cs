@@ -24,6 +24,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	public partial class Given_ListViewBase
 	{
+		// Due to physical/logical pixel conversion on Android, measurements aren't exact
+		private double Epsilon =>
+#if __ANDROID__
+			0.5
+#else
+			0
+#endif
+			;
+
 		[TestMethod]
 		[RunsOnUIThread]
 #if __IOS__ || __ANDROID__
@@ -255,7 +264,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 				var containerRect = container.GetOnScreenBounds();
 				var containerNextRect = containerNext.GetOnScreenBounds();
-				Assert.AreEqual(ExpectedContainerHeight + TopAndBottomMargin, containerNextRect.Y - containerRect.Y);
+				Assert.AreEqual(ExpectedContainerHeight + TopAndBottomMargin, containerNextRect.Y - containerRect.Y, Epsilon);
 			}
 		}
 
@@ -409,7 +418,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			source.Add("Apple");
 			await WindowHelper.WaitForIdle();
-			await WindowHelper.WaitFor(() => SUT.ActualHeight, 29, value => $"ListView failed to grow from adding item: (ActualHeight: {value})");
+			await WindowHelper.WaitFor(() => Math.Abs(SUT.ActualHeight - 29) <= Epsilon, message: $"ListView failed to grow from adding item: (ActualHeight: {SUT.ActualHeight})");
 		}
 
 		[TestMethod]
@@ -429,7 +438,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			source.RemoveAt(source.Count - 1);
-			await WindowHelper.WaitFor(() => SUT.ActualHeight, 29, value => $"ListView failed to shrink from removing item: (ActualHeight: {value})");
+			await WindowHelper.WaitFor(() => Math.Abs(SUT.ActualHeight - 29) <= Epsilon, message: $"ListView failed to shrink from removing item: (ActualHeight: {SUT.ActualHeight})");
 		}
 
 		// Works around ScrollIntoView() not implemented for all platforms

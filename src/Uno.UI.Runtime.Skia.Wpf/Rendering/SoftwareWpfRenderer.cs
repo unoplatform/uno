@@ -85,7 +85,12 @@ internal class SoftwareWpfRenderer : IWpfRenderer
 			surface.Canvas.SetMatrix(SKMatrix.CreateScale((float)dpiScaleX, (float)dpiScaleY));
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
-				WinUI.Window.Current.Compositor.RenderRootVisual(surface, rootVisual);
+				rootVisual.Compositor.RenderRootVisual(surface, rootVisual);
+
+				if (rootVisual.Compositor.IsSoftwareRenderer is null)
+				{
+					rootVisual.Compositor.IsSoftwareRenderer = true;
+				}
 			}
 		}
 

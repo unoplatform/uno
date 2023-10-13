@@ -8,10 +8,6 @@
 		<_IsXamlTrimmingAvailable Condition="'$(MSBuildRuntimeType)'!='Core' and !$([MSBuild]::IsOSPlatform('windows'))">false</_IsXamlTrimmingAvailable>
 	</PropertyGroup>
 
-	<ItemGroup>
-		<UnoSourceGeneratorBeforeTarget Condition="'$(XamarinProjectType)'=='android'" Include="UpdateAndroidAssets" />
-	</ItemGroup>
-
 	<Import Project="uno.ui.tasks.assets.targets"/>
 
 	<UsingTask AssemblyFile="$(UnoUIMSBuildTasksPath)\Uno.UI.Tasks.v0.dll" TaskName="Uno.UI.Tasks.ResourcesGenerator.ResourcesGenerationTask_v0" />
@@ -102,6 +98,9 @@
 
 			<!-- Clear temporary group -->
 			<_UnoTempPRIResource Remove="@(_UnoTempPRIResource)" />
+
+			<!-- Ensure files are tracked properly for incremental build and clean targets -->
+			<FileWrites Include="@(GeneratedFiles)" />
 		</ItemGroup>
 	</Target>
 
@@ -155,10 +154,17 @@
 		<ItemGroup Condition="'$(XamarinProjectType)'=='ios'">
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
 			<BundleResource Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
+
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'image'" Include="@(RetargetedAssets)" />
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' == 'generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
 		<ItemGroup Condition="'$(XamarinProjectType)'=='android'">
 			<AndroidResource Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
 			<AndroidAsset Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
+
+			<!-- Ensure files are tracked properly for incremental build and clean targets -->
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='image'" Include="@(RetargetedAssets)" />
+			<FileWrites Condition="'%(RetargetedAssets.AssetType)' =='generic'" Include="@(RetargetedAssets)" />
 		</ItemGroup>
 	</Target>
 
@@ -187,6 +193,8 @@
 
 		<ItemGroup>
 			<EmbeddedResource Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" LogicalName="ILLink.Substitutions.xml" />
+			
+			<FileWrites Include="$(IntermediateOutputPath)ILLink.Substitutions.xml" />
 		</ItemGroup>
 
 	</Target>

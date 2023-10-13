@@ -9,6 +9,11 @@ namespace Windows.Graphics.Printing.Workflow
 	public partial class PrintWorkflowPdlConverter
 	{
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal PrintWorkflowPdlConverter()
+		{
+		}
+#endif
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.Foundation.IAsyncAction ConvertPdlAsync(global::Windows.Graphics.Printing.PrintTicket.WorkflowPrintTicket printTicket, global::Windows.Storage.Streams.IInputStream inputStream, global::Windows.Storage.Streams.IOutputStream outputStream)
 		{

@@ -206,5 +206,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.BindingTests
 			SUT.ForceLoaded();
 			SUT.sut.Text.Should().Be("Current DataContext: MyDataContext");
 		}
+
+		[TestMethod]
+		public void When_TemplateBinding_Attached_Property()
+		{
+			var SUT = new Binding_TemplateBinding_AttachedDP();
+			SUT.ForceLoaded();
+			var tb = SUT.tb;
+			var sv = (ScrollViewer)tb.GetTemplateRoot();
+
+			Assert.AreEqual(ScrollBarVisibility.Auto, sv.HorizontalScrollBarVisibility);
+			Assert.AreEqual(ScrollBarVisibility.Hidden, sv.VerticalScrollBarVisibility);
+
+			Assert.AreEqual(ScrollBarVisibility.Auto, (ScrollBarVisibility)tb.GetValue(ScrollViewer.HorizontalScrollBarVisibilityProperty));
+			Assert.AreEqual(ScrollBarVisibility.Hidden, (ScrollBarVisibility)tb.GetValue(ScrollViewer.VerticalScrollBarVisibilityProperty));
+		}
 	}
 }

@@ -212,7 +212,7 @@ namespace Windows.Graphics.Display
 		{
 			if (ContextHelper.Current.GetSystemService(Context.WindowService) is { } windowService)
 			{
-				return windowService.JavaCast<IWindowManager>(); ;
+				return windowService.JavaCast<IWindowManager>();
 			}
 
 			throw new InvalidOperationException("Failed to get the system Window Service");

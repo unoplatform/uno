@@ -59,18 +59,12 @@ namespace Windows.UI.Xaml
 			ComputeAreChildrenNativeViewsOnly();
 		}
 
-		/// <summary>
-		/// Invoked when a child view has been added.
-		/// </summary>
-		/// <param name="view">The view being removed</param>
+		/// <inheritdoc />
 		protected override void OnChildViewAdded(View view)
 		{
 			if (view is UIElement uiElement)
 			{
-				uiElement.ResetLayoutFlags();
-				SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
-				uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
+				OnChildManagedViewAddedOrRemoved(uiElement);
 			}
 			else
 			{
@@ -78,6 +72,29 @@ namespace Windows.UI.Xaml
 			}
 
 			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		/// <inheritdoc />
+		protected override void OnChildViewRemoved(View view)
+		{
+			if (view is UIElement uiElement)
+			{
+				OnChildManagedViewAddedOrRemoved(uiElement);
+			}
+			else
+			{
+				_nativeChildrenCount--;
+			}
+
+			ComputeAreChildrenNativeViewsOnly();
+		}
+
+		private void OnChildManagedViewAddedOrRemoved(UIElement uiElement)
+		{
+			uiElement.ResetLayoutFlags();
+			SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.SetLayoutFlags(LayoutFlag.MeasureDirty);
+			uiElement.IsMeasureDirtyPathDisabled = IsMeasureDirtyPathDisabled;
 		}
 
 		public UIElement()
@@ -170,7 +187,18 @@ namespace Windows.UI.Xaml
 
 			ViewCompat.SetClipBounds(this, physicalRect);
 
-			SetClipToPadding(NeedsClipToSlot);
+			if (FeatureConfiguration.UIElement.UseLegacyClipping)
+			{
+				// Old way: apply the clipping for each child on their assigned slot
+				SetClipChildren(NeedsClipToSlot);
+			}
+			else
+			{
+				// "New" correct way: apply the clipping on the parent,
+				// and let the children overflow inside the parent's bounds
+				// This is closer to the XAML way of doing clipping.
+				SetClipToPadding(NeedsClipToSlot);
+			}
 		}
 
 		/// <summary>
@@ -238,7 +266,7 @@ namespace Windows.UI.Xaml
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'ViewGroup' between this element and its parent UIElement.
 		/// </summary>
-		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix, ref TransformToVisualContext context)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref Matrix3x2 matrix)
 		{
 			var parent = this.GetVisualTreeParent();
 			switch (parent)
@@ -272,7 +300,7 @@ namespace Windows.UI.Xaml
 					matrix.M32 += (float)offset.Y;
 
 					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
-					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix, ref context);
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref matrix);
 
 				case View view: // Android.View and Android.IViewParent
 					var windowToFirstParent = new int[2];

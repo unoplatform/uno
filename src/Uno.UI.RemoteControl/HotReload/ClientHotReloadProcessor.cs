@@ -21,6 +21,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		private readonly IRemoteControlClient _rcClient;
 
 		private static Logger _log = typeof(ClientHotReloadProcessor).Log();
+		private Dictionary<string, string>? _msbuildProperties;
 
 		public ClientHotReloadProcessor(IRemoteControlClient rcClient)
 		{
@@ -30,14 +31,14 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		partial void InitializeMetadataUpdater();
 
-		string IRemoteControlProcessor.Scope => HotReloadConstants.ScopeName;
+		string IRemoteControlProcessor.Scope => HotReloadConstants.HotReload;
 
 		public async Task Initialize()
 		{
 			await ConfigureServer();
 		}
 
-		public Task ProcessFrame(Messages.Frame frame)
+		public async Task ProcessFrame(Messages.Frame frame)
 		{
 			switch (frame.Name)
 			{
@@ -47,6 +48,14 @@ namespace Uno.UI.RemoteControl.HotReload
 					break;
 #endif
 
+				case FileReload.Name:
+					await PartialReload(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);
+					break;
+
+				case HotReloadWorkspaceLoadResult.Name:
+					WorkspaceLoadResult(JsonConvert.DeserializeObject<HotReload.Messages.HotReloadWorkspaceLoadResult>(frame.Content)!);
+					break;
+
 				default:
 					if (this.Log().IsEnabled(LogLevel.Error))
 					{
@@ -55,7 +64,7 @@ namespace Uno.UI.RemoteControl.HotReload
 					break;
 			}
 
-			return Task.CompletedTask;
+			return;
 		}
 
 		private async Task ConfigureServer()
@@ -82,7 +91,13 @@ namespace Uno.UI.RemoteControl.HotReload
 					}
 				}
 
-				await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities()));
+				ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), config.MSBuildProperties);
+
+				await _rcClient.SendMessage(message);
+
+				_msbuildProperties = message.MSBuildProperties;
+
+				InitializePartialReload();
 			}
 			else
 			{

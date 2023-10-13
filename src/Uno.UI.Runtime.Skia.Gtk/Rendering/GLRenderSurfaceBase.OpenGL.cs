@@ -4,7 +4,7 @@ using System;
 using System.Diagnostics;
 using Silk.NET.OpenGL;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 	internal abstract partial class GLRenderSurfaceBase
 	{

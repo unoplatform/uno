@@ -2,7 +2,7 @@
 using SkiaSharp;
 using Uno.Foundation.Extensibility;
 using System.Threading;
-using Uno.UI.Runtime.Skia;
+using Uno.UI.Runtime.Skia.Linux.FrameBuffer;
 using Windows.UI.Xaml;
 using Windows.UI.Core;
 
@@ -15,7 +15,7 @@ namespace SkiaSharpExample
 		{
 			try
 			{
-				SamplesApp.App.ConfigureFilters(); // Enable tracing of the host
+				SamplesApp.App.ConfigureLogging(); // Enable tracing of the host
 
 				Console.CursorVisible = false;
 				var host = new FrameBufferHost(() =>

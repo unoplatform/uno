@@ -8,6 +8,11 @@ namespace Windows.ApplicationModel.UserActivities
 #endif
 	public partial class UserActivityRequestManager
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal UserActivityRequestManager()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.add
 		// Forced skipping of method Windows.ApplicationModel.UserActivities.UserActivityRequestManager.UserActivityRequested.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

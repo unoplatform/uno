@@ -2,12 +2,17 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
 	<PropertyGroup>
+	
+		<!-- Wrap WinAppSDK detection until a stable property can be used -->
+		<_UnoIsWinAppSDKDefined>false</_UnoIsWinAppSDKDefined>
+		<_UnoIsWinAppSDKDefined Condition="'$(WindowsAppSDKWinUI)'=='true' or '$(UseWinUITools)'=='true'">true</_UnoIsWinAppSDKDefined>
+
 		<_IsUnoWinUIPackage>$(MSBuildThisFile.ToLower().Equals('uno.winui.targets'))</_IsUnoWinUIPackage>
 	</PropertyGroup>
 
-	<Import Project="../uno.winui.common.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
-	<Import Project="../uno.winui.cross-runtime.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
+	<Import Project="../uno.winui.common.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
+	<Import Project="../uno.winui.cross-runtime.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
 	<Import Project="../uno.winui.single-project.targets" />
-	<Import Project="../uno.winui.runtime-replace.targets" Condition="'$(WindowsAppSDKWinUI)'!='true'" />
-	<Import Project="../uno.winui.winappsdk.targets" Condition="'$(WindowsAppSDKWinUI)'=='true'" />
+	<Import Project="../uno.winui.runtime-replace.targets" Condition="'$(_UnoIsWinAppSDKDefined)'!='true'" />
+	<Import Project="../uno.winui.winappsdk.targets" Condition="'$(_UnoIsWinAppSDKDefined)'=='true'" />
 </Project>

@@ -8,6 +8,11 @@ namespace Windows.UI.ViewManagement.Core
 #endif
 	public partial class CoreInputView
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal CoreInputView()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.OcclusionsChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.Core.CoreInputView.OcclusionsChanged.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

@@ -1,23 +1,16 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using FluentAssertions;
 using FluentAssertions.Execution;
-using NUnit.Framework;
-using Uno.UITest;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.UITest.Helpers.Queries;
-using Windows.UI.Xaml.Controls;
-using SamplesApp.UITests;
-using static Private.Infrastructure.TestServices;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml;
-using MUXControlsTestApp;
+using Windows.Foundation;
 using Windows.Foundation.Metadata;
-
+using Windows.UI;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -59,13 +52,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new Canvas_With_Outer_Clip();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var clippedLocation = canvas.Get_LocatorBorder1();
 			await WindowHelper.WaitForIdle();
@@ -95,13 +83,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new CanvasZIndex();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 
 			var redBorderRect1 = canvas.Get_CanvasBorderRed1();
 			ImageAssert.HasColorAtChild(bitmap, redBorderRect1, (float)redBorderRect1.Width / 2, (float)redBorderRect1.Height / 2, Green);
@@ -138,18 +121,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var canvas = new Canvas_In_Canvas();
-			WindowHelper.WindowContent = canvas;
-			await WindowHelper.WaitForLoaded(canvas);
-
-			var renderer = new RenderTargetBitmap();
-			await WindowHelper.WaitForIdle();
-			await renderer.RenderAsync(canvas);
-			var bitmap = await RawBitmap.From(renderer, canvas);
+			await UITestHelper.Load(canvas);
+			var bitmap = await UITestHelper.ScreenShot(canvas);
 			var clippedLocation = canvas.Get_CanvasBorderBlue1();
 
 			ImageAssert.HasColorAtChild(bitmap, clippedLocation, (float)clippedLocation.Width / 2, clippedLocation.Height / 2, Blue);
 		}
 
+		[TestMethod]
+#if __ANDROID__
+		[Ignore("Fails on Android.")]
+#endif
+		public async Task When_Canvas_Larger_Than_Parent_Should_Not_Clip()
+		{
+			if (!ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.Imaging.RenderTargetBitmap"))
+			{
+				Assert.Inconclusive(); // "System.NotImplementedException: RenderTargetBitmap is not supported on this platform.";
+			}
+
+			var grid = new Grid
+			{
+				Width = 300,
+				Height = 300,
+				Children =
+				{
+					new Grid
+					{
+						Height = 100,
+						Background = new SolidColorBrush(Colors.Red),
+						HorizontalAlignment = HorizontalAlignment.Stretch,
+						Children =
+						{
+							new Canvas
+							{
+								Background = new SolidColorBrush(Colors.Blue),
+								Width = 200,
+								MinHeight = 400,
+								HorizontalAlignment = HorizontalAlignment.Left,
+							},
+						},
+					},
+				},
+			};
+
+			WindowHelper.WindowContent = grid;
+			await WindowHelper.WaitForLoaded(grid);
+
+			var renderer = new RenderTargetBitmap();
+			await renderer.RenderAsync(grid);
+			var bitmap = await RawBitmap.From(renderer, grid);
+
+			var redBounds = ImageAssert.GetColorBounds(bitmap, Colors.Red, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(200, 100), new Size(99, 99)), redBounds);
+
+			var blueBounds = ImageAssert.GetColorBounds(bitmap, Colors.Blue, tolerance: 5);
+			Assert.AreEqual(new Rect(new Point(0, 100), new Size(199, 199)), blueBounds);
+		}
 	}
 }
-

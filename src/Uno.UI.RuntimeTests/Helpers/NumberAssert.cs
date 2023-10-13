@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Uno.UI.RuntimeTests.Helpers
@@ -54,6 +55,27 @@ namespace Uno.UI.RuntimeTests.Helpers
 			{
 				throw new AssertFailedException($"{nameof(arg1)}={arg1} was expected to be less than or equal to {nameof(arg2)}={arg2}");
 			}
+		}
+	}
+
+	public static class AssertionExtensions
+	{
+		public static AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>> BeEquivalentToWithTolerance<T>(this FluentAssertions.Collections.GenericCollectionAssertions<float> assertions, IEnumerable<float> expected, float tolerance)
+		{
+			assertions.Subject.Should().HaveCount(expected.Count());
+
+			var subject = assertions.Subject.ToArray();
+			using var enumerator = expected.GetEnumerator();
+			enumerator.MoveNext();
+
+			foreach (var actual in subject)
+			{
+				var expectedValue = enumerator.Current;
+				enumerator.MoveNext();
+				actual.Should().BeApproximately(expectedValue, tolerance);
+			}
+
+			return new AndConstraint<FluentAssertions.Collections.GenericCollectionAssertions<float>>(assertions);
 		}
 	}
 }

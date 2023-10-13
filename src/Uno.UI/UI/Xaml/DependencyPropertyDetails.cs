@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
 using System.Text;
 using Uno.Buffers;
 using Uno.UI.DataBinding;
@@ -358,7 +359,7 @@ namespace Windows.UI.Xaml
 				{
 					_stack = _pool.Rent(_stackLength);
 
-					Array.Copy(_unsetStack, _stack, _stackLength);
+					MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_unsetStack), _stackLength).CopyTo(MemoryMarshal.CreateSpan(ref MemoryMarshal.GetArrayDataReference(_stack)!, _stackLength));
 
 					var defaultValue = GetDefaultValue();
 

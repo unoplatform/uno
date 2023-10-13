@@ -8,5 +8,10 @@ namespace Windows.ApplicationModel.Appointments
 #endif
 	public partial class AppointmentStoreNotificationTriggerDetails
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal AppointmentStoreNotificationTriggerDetails()
+		{
+		}
+#endif
 	}
 }

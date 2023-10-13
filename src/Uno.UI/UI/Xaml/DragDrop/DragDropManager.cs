@@ -9,20 +9,21 @@ using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Input;
 using Uno.Foundation.Extensibility;
+using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
 {
 	internal sealed class DragDropManager : CoreDragDropManager.IDragDropManager
 	{
-		private readonly Window _window;
+		private readonly InputManager _inputManager;
 		private readonly List<DragOperation> _dragOperations = new List<DragOperation>();
 		private readonly IDragDropExtension? _hostExtension;
 
 		private bool _areWindowEventsRegistered;
 
-		public DragDropManager(Window window)
+		public DragDropManager(InputManager inputManager)
 		{
-			_window = window;
+			_inputManager = inputManager;
 
 #if __MACOS__
 			// Dependency injection not currently supported on macOS
@@ -43,11 +44,12 @@ namespace Windows.UI.Xaml
 		{
 			if (
 #if __WASM__
-				Uno.UI.Dispatching.CoreDispatcher.IsThreadingSupported &&
+				Uno.UI.Dispatching.NativeDispatcher.IsThreadingSupported &&
 #endif
-				!_window.Dispatcher.HasThreadAccess)
+				_inputManager.ContentRoot.Dispatcher is { } dispatcher &&
+				!dispatcher.HasThreadAccess)
 			{
-				_ = _window.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));
+				_ = dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => BeginDragAndDrop(info, target));
 				return;
 			}
 
@@ -61,7 +63,7 @@ namespace Windows.UI.Xaml
 
 			RegisterWindowHandlers();
 
-			var op = new DragOperation(_window, _hostExtension, info, target);
+			var op = new DragOperation(_inputManager, _hostExtension, info, target);
 
 			_dragOperations.Add(op);
 			info.RegisterCompletedCallback(_ => _dragOperations.Remove(op));
@@ -120,7 +122,7 @@ namespace Windows.UI.Xaml
 			//		the current app does not receive any pointer event, but instead receive platform specific drag events,
 			//		that are expected to be interpreted by the IDragDropExtension and forwarded to this manager using the Process* methods.
 
-			var root = _window.RootElement;
+			var root = _inputManager.ContentRoot.VisualTree.RootElement;
 			root.AddHandler(UIElement.PointerEnteredEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerExitedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
 			root.AddHandler(UIElement.PointerMovedEvent, new PointerEventHandler(OnPointerMoved), handledEventsToo: true);
@@ -130,13 +132,10 @@ namespace Windows.UI.Xaml
 			_areWindowEventsRegistered = true;
 		}
 
-		private static void OnPointerMoved(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessMoved(e);
+		private void OnPointerMoved(object snd, PointerRoutedEventArgs e) => ProcessMoved(e);
 
-		private static void OnPointerReleased(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessDropped(e);
+		private void OnPointerReleased(object snd, PointerRoutedEventArgs e) => ProcessDropped(e);
 
-		private static void OnPointerCanceled(object snd, PointerRoutedEventArgs e)
-			=> Window.Current.DragDrop.ProcessAborted(e);
+		private void OnPointerCanceled(object snd, PointerRoutedEventArgs e) => ProcessAborted(e);
 	}
 }

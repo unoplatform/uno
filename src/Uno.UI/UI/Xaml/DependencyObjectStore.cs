@@ -449,9 +449,7 @@ namespace Windows.UI.Xaml
 			{
 				var overrideDisposable = ApplyPrecedenceOverride(ref precedence);
 
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
 					{
@@ -505,9 +503,7 @@ namespace Windows.UI.Xaml
 
 					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					overrideDisposable?.Dispose();
 				}
@@ -1079,7 +1075,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
-		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
+		HashSet<DependencyProperty>? _updatedProperties;
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, object? newValue)
 		{
@@ -1092,10 +1088,10 @@ namespace Windows.UI.Xaml
 				if (
 					localProperty != _dataContextProperty &&
 					localProperty != _templatedParentProperty &&
-					!_updatedProperties.Contains(localProperty)
+					(_updatedProperties is null || !_updatedProperties.Contains(localProperty))
 				)
 				{
-					_updatedProperties.Add(localProperty);
+					(_updatedProperties ??= new HashSet<DependencyProperty>(DependencyPropertyComparer.Default)).Add(localProperty);
 				}
 
 				SetValue(localProperty, newValue, DependencyPropertyValuePrecedences.Inheritance, propertyDetails);
@@ -1141,19 +1137,13 @@ namespace Windows.UI.Xaml
 
 				if (parentProvider != null)
 				{
-#if !HAS_EXPENSIVE_TRYFINALLY
-					// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-					// See https://github.com/dotnet/runtime/issues/50783 for more details.
 					try
-#endif
 					{
 						_registeringInheritedProperties = true;
 
 						_inheritedProperties.Disposable = RegisterInheritedProperties(parentProvider);
 					}
-#if !HAS_EXPENSIVE_TRYFINALLY
 					finally
-#endif
 					{
 						_registeringInheritedProperties = false;
 					}
@@ -1204,11 +1194,7 @@ namespace Windows.UI.Xaml
 
 		private void CleanupInheritedProperties()
 		{
-#if !HAS_EXPENSIVE_TRYFINALLY
-			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-			// See https://github.com/dotnet/runtime/issues/50783 for more details.
 			try
-#endif
 			{
 				_unregisteringInheritedProperties = true;
 
@@ -1216,22 +1202,24 @@ namespace Windows.UI.Xaml
 
 				if (ActualInstance != null)
 				{
-					// This block is a manual enumeration to avoid the foreach pattern
-					// See https://github.com/dotnet/runtime/issues/56309 for details
-					var propertiesEnumerator = _updatedProperties.GetEnumerator();
-					while (propertiesEnumerator.MoveNext())
+					if (_updatedProperties is not null)
 					{
-						var dp = propertiesEnumerator.Current;
-						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						// This block is a manual enumeration to avoid the foreach pattern
+						// See https://github.com/dotnet/runtime/issues/56309 for details
+						var propertiesEnumerator = _updatedProperties.GetEnumerator();
+						while (propertiesEnumerator.MoveNext())
+						{
+							var dp = propertiesEnumerator.Current;
+							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						}
 					}
+
 
 					SetValue(_dataContextProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					SetValue(_templatedParentProperty!, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 				}
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY
 			finally
-#endif
 			{
 				_unregisteringInheritedProperties = false;
 			}
@@ -1297,11 +1285,11 @@ namespace Windows.UI.Xaml
 
 			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false, containingDictionary).ToArray();
 
-			var bindings = _resourceBindings.GetAllBindings().ToList(); //The original collection may be mutated during DP assignations
+			var bindings = _resourceBindings.GetAllBindings();
 
-			foreach (var (property, binding) in bindings)
+			foreach (var binding in bindings)
 			{
-				InnerUpdateResourceBindings(updateReason, dictionariesInScope, property, binding);
+				InnerUpdateResourceBindings(updateReason, dictionariesInScope, binding.Property, binding.Binding);
 			}
 
 			UpdateChildResourceBindings(updateReason);
@@ -1342,6 +1330,17 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				// Add the current dictionaries to the resolver scope,
+				// this allows for StaticResource.ResourceKey to resolve properly
+
+				for (var i = dictionariesInScope.Length - 1; i >= 0; i--)
+				{
+					ResourceResolver.PushSourceToScope(dictionariesInScope[i]);
+				}
+			}
+
 			var wasSet = false;
 			foreach (var dict in dictionariesInScope)
 			{
@@ -1360,6 +1359,14 @@ namespace Windows.UI.Xaml
 					SetResourceBindingValue(property, binding, value);
 				}
 			}
+
+			if ((updateReason & ResourceUpdateReason.ResolvedOnLoading) != 0)
+			{
+				foreach (var dict in dictionariesInScope)
+				{
+					ResourceResolver.PopSourceFromScope();
+				}
+			}
 		}
 
 		private void SetResourceBindingValue(DependencyProperty property, ResourceBinding binding, object? value)
@@ -1367,16 +1374,12 @@ namespace Windows.UI.Xaml
 			var convertedValue = BindingPropertyHelper.Convert(() => property.Type, value);
 			if (binding.SetterBindingPath != null)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isSettingPersistentResourceBinding = binding.IsPersistent;
 					binding.SetterBindingPath.Value = convertedValue;
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isSettingPersistentResourceBinding = false;
 				}
@@ -1485,7 +1488,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources, ResourceDictionary? containingDictionary = null)
 		{
-			if (containingDictionary != null)
+			if (containingDictionary is not null)
 			{
 				yield return containingDictionary;
 			}
@@ -1493,13 +1496,13 @@ namespace Windows.UI.Xaml
 			var candidate = ActualInstance;
 			var candidateFE = candidate as FrameworkElement;
 
-			while (candidate != null)
+			while (candidate is not null)
 			{
 				var parent = candidate.GetParent() as DependencyObject;
 
-				if (candidateFE != null)
+				if (candidateFE is not null)
 				{
-					if (candidateFE.Resources != null) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
+					if (candidateFE.Resources is { IsEmpty: false }) // It's legal (if pointless) on UWP to set Resources to null from user code, so check
 					{
 						yield return candidateFE.Resources;
 					}
@@ -1521,6 +1524,7 @@ namespace Windows.UI.Xaml
 					candidate = parent;
 				}
 			}
+
 			if (includeAppResources && Application.Current != null)
 			{
 				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
@@ -1925,9 +1929,7 @@ namespace Windows.UI.Xaml
 		private void CallChildCallback(DependencyObjectStore childStore, ManagedWeakReference instanceRef, DependencyProperty property, DependencyPropertyChangedEventArgs eventArgs)
 		{
 			var propagateUnregistering = (_unregisteringInheritedProperties || _parentUnregisteringInheritedProperties) && property == _dataContextProperty;
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			try
-#endif
 			{
 				if (propagateUnregistering)
 				{
@@ -1936,9 +1938,7 @@ namespace Windows.UI.Xaml
 
 				childStore.OnParentPropertyChangedCallback(instanceRef, property, eventArgs.NewValue);
 			}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 			finally
-#endif
 			{
 				if (propagateUnregistering)
 				{

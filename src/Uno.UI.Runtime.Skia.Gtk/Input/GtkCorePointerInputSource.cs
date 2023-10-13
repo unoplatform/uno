@@ -6,19 +6,18 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using Gdk;
 using Gtk;
-using Uno.UI.Runtime.Skia.GTK.Extensions;
+using Uno.UI.Runtime.Skia.Gtk.Extensions;
 using Windows.Devices.Input;
-using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Input;
 using Uno.Foundation.Logging;
 using static Windows.UI.Input.PointerUpdateKind;
 using Exception = System.Exception;
 using Windows.Foundation;
-using Uno.UI.Runtime.Skia.GTK.UI.Controls;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.UI.Xaml.Controls;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 {
@@ -111,7 +110,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -124,7 +123,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			Gtk.Device.GrabAdd(_window, entry.dev, block_others: false);
+			global::Gtk.Device.GrabAdd(_window, entry.dev, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -137,7 +136,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_lastUsedDevice is not null)
 		{
-			Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
+			global::Gtk.Device.GrabAdd(_window, _lastUsedDevice, block_others: false);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -150,7 +149,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	{
 		if (_knownDevices.TryGetValue(pointer, out var entry))
 		{
-			Gtk.Device.GrabRemove(_window, entry.dev);
+			global::Gtk.Device.GrabRemove(_window, entry.dev);
 		}
 		else if (this.Log().IsEnabled(LogLevel.Error))
 		{
@@ -196,6 +195,19 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 	private void OnButtonPressEvent(object o, ButtonPressEventArgs args)
 	{
+		// Double clicking on Gtk will produce an event sequence with the following event types on Gtk:
+		// 1. EventType.ButtonPress
+		// 2. EventType.ButtonRelease
+		// 3. EventType.ButtonPress
+		// 4. EventType.TwoButtonPress
+		// 5. EventType.ButtonRelease
+		// We want to receive the "single" presses only as receiving the second press twice is gonna be problematic.
+		// So we skip TwoButtonPress (and also ThreeButtonPress as it has similar issue)
+		if (args.Event.Type is EventType.TwoButtonPress or EventType.ThreeButtonPress)
+		{
+			return;
+		}
+
 		try
 		{
 			if (AsPointerArgs(args.Event) is { } ptArgs)
@@ -380,7 +392,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		var pointerDevice = PointerDevice.For(devType);
 		var rawPosition = new Windows.Foundation.Point(rootX, rootY);
 		var position = new Windows.Foundation.Point(x, y);
-		var modifiers = GetKeyModifiers(state);
+		var modifiers = GtkKeyboardInputSource.GetKeyModifiers(state);
 		var properties = new PointerPointProperties();
 
 		switch (evtType)
@@ -486,24 +498,6 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		return new PointerEventArgs(pointerPoint, modifiers);
 	}
 
-	private static VirtualKeyModifiers GetKeyModifiers(Gdk.ModifierType state)
-	{
-		var modifiers = VirtualKeyModifiers.None;
-		if (state.HasFlag(Gdk.ModifierType.ShiftMask))
-		{
-			modifiers |= VirtualKeyModifiers.Shift;
-		}
-		if (state.HasFlag(Gdk.ModifierType.ControlMask))
-		{
-			modifiers |= VirtualKeyModifiers.Control;
-		}
-		if (state.HasFlag(Gdk.ModifierType.Mod1Mask))
-		{
-			modifiers |= VirtualKeyModifiers.Menu;
-		}
-		return modifiers;
-	}
-
 	private static PointerDeviceType GetDeviceType(Gdk.Device sourceDevice)
 	{
 		switch (sourceDevice.Source)
@@ -526,7 +520,7 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 	}
 
 	private static bool IsPressed(ModifierType state, ModifierType mask, PointerUpdateKind update, PointerUpdateKind pressed, PointerUpdateKind released)
-		=> update == pressed || (state.HasFlag(mask) && update != released);
+		=> update == pressed || (((state & mask) != 0) && update != released);
 	#endregion
 
 	private void RaisePointerEntered(PointerEventArgs ptArgs, [CallerMemberName] string caller = "")

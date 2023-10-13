@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using System.IO;
 using Uno.UI.Samples.Controls;
 using Windows.Media.Capture;
 using Windows.UI.Xaml;
@@ -47,7 +48,16 @@ public sealed partial class CameraCaptureUISample : Page
 	{
 		var captureUI = new CameraCaptureUI();
 
-		_ = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Video);
+		var result = await captureUI.CaptureFileAsync(CameraCaptureUIMode.Video);
+
+		if (result != null)
+		{
+			videoSize.Text = $"Captured file: {result.Path}, Size: {new FileInfo(result?.Path!).Length}";
+		}
+		else
+		{
+			videoSize.Text = "Nothing was selected";
+		}
 	}
 #endif
 }

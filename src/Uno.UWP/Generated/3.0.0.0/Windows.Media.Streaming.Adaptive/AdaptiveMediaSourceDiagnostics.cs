@@ -8,6 +8,11 @@ namespace Windows.Media.Streaming.Adaptive
 #endif
 	public partial class AdaptiveMediaSourceDiagnostics
 	{
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+		internal AdaptiveMediaSourceDiagnostics()
+		{
+		}
+#endif
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.DiagnosticAvailable.add
 		// Forced skipping of method Windows.Media.Streaming.Adaptive.AdaptiveMediaSourceDiagnostics.DiagnosticAvailable.remove
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__

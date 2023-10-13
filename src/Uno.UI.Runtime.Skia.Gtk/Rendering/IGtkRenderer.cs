@@ -1,6 +1,6 @@
 ﻿using Uno.UI.Rendering;
 
-namespace Uno.UI.Runtime.Skia;
+namespace Uno.UI.Runtime.Skia.Gtk;
 
 internal interface IGtkRenderer : IRenderer
 {

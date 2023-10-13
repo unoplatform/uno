@@ -6,6 +6,7 @@
 #endif
 
 using System;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -579,23 +580,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			return (ctl1, ctl2, ctl3);
 		}
 
-		private partial class MeasureAndArrangeCounter : Panel
-		{
-			internal int MeasureCount;
-			internal int ArrangeCount;
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				MeasureCount++;
-				return base.MeasureOverride(availableSize);
-			}
-
-			protected override Size ArrangeOverride(Size finalSize)
-			{
-				ArrangeCount++;
-				return base.ArrangeOverride(finalSize);
-			}
-		}
-
 #if __CROSSRUNTIME__
 		[TestMethod]
 		[RunsOnUIThread]
@@ -660,12 +644,55 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			var clip = new Rect(0, 0, 50, 50);
 
 			sut.ArrangeVisual(rect, clip);
-			Assert.IsNotNull(sut.Visual.Clip);
+			Assert.IsNotNull(sut.Visual.ViewBox);
 
 			sut.ArrangeVisual(rect, null);
-			Assert.IsNull(sut.Visual.Clip);
+			Assert.IsNull(sut.Visual.ViewBox);
 		}
 #endif
+	}
+
+	internal partial class MeasureAndArrangeCounter : Panel
+	{
+		internal int MeasureCount;
+		internal int ArrangeCount;
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureCount++;
+
+			// copied from FrameworkElement.MeasureOverride and modified to compile on Windows
+			var child = Children.Count > 0 ? Children[0] : null;
+#if NETFX_CORE
+			if (child != null)
+			{
+				child.Measure(availableSize);
+				return child.DesiredSize;
+			}
+
+			return new Size(0, 0);
+#else
+			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+#endif
+		}
+
+		protected override Size ArrangeOverride(Size finalSize)
+		{
+			ArrangeCount++;
+
+			// copied from FrameworkElement.ArrangeOverride and modified to compile on Windows
+			var child = Children.Count > 0 ? Children[0] : null;
+
+			if (child != null)
+			{
+#if NETFX_CORE
+				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
+#else
+				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+#endif
+			}
+
+			return finalSize;
+		}
 	}
 
 	internal partial class When_UpdateLayout_Then_ReentrancyNotAllowed_Element : FrameworkElement

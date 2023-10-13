@@ -278,6 +278,41 @@ public class Given_WebView2
 	}
 
 	[TestMethod]
+	public async Task When_LocalFolder_File()
+	{
+		async Task Do()
+		{
+			var border = new Border();
+			var webView = new WebView2();
+			webView.Width = 200;
+			webView.Height = 200;
+			border.Child = webView;
+			TestServices.WindowHelper.WindowContent = border;
+			bool navigated = false;
+			await TestServices.WindowHelper.WaitForLoaded(border);
+			await webView.EnsureCoreWebView2Async();
+			webView.CoreWebView2?.SetVirtualHostNameToFolderMapping(
+				"UnoNativeAssets",
+				"WebContent",
+				CoreWebView2HostResourceAccessKind.Allow);
+			webView.NavigationCompleted += (sender, e) => navigated = true;
+			string message = "";
+			webView.WebMessageReceived += (s, e) =>
+			{
+				Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
+				message = e.WebMessageAsJson;
+			};
+			webView.CoreWebView2.Navigate("http://UnoNativeAssets/index.html");
+			await TestServices.WindowHelper.WaitFor(() => navigated);
+			await TestServices.WindowHelper.WaitFor(() => message is not null, 2000);
+
+			Assert.AreEqual(@"""rgb(255, 0, 0)""", message);
+		}
+
+		await TestHelper.RetryAssert(Do, 3);
+	}
+
+	[TestMethod]
 	public async Task When_ExecuteScriptAsync_Non_String()
 	{
 		async Task Do()
@@ -322,6 +357,7 @@ public class Given_WebView2
 		string message = null;
 		webView.WebMessageReceived += (s, e) =>
 		{
+			Assert.IsTrue(webView.Dispatcher.HasThreadAccess);
 			message = e.WebMessageAsJson;
 		};
 

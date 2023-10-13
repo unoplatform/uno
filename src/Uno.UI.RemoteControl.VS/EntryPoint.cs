@@ -266,7 +266,7 @@ namespace Uno.UI.RemoteControl.VS
 				var sb = new StringBuilder();
 
 				var hostBinPath = Path.Combine(_toolsPath, "host", runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
-				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort}";
+				string arguments = $"\"{hostBinPath}\" --httpPort {RemoteControlServerPort} --ppid {System.Diagnostics.Process.GetCurrentProcess().Id}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{
 					UseShellExecute = false,
@@ -406,16 +406,9 @@ namespace Uno.UI.RemoteControl.VS
 
 		private bool IsApplication(Microsoft.Build.Evaluation.Project project)
 		{
-			var isAndroidApp = project.GetPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isiOSApp = project.GetPropertyValue("ProjectTypeGuids")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
-			var ismacOSApp = project.GetPropertyValue("ProjectTypeGuids")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isExe = project.GetPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
-			var isWasm = project.GetPropertyValue("WasmHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
-
-			return isAndroidApp
-				|| (isiOSApp && isExe)
-				|| (ismacOSApp && isExe)
-				|| isWasm;
+			var outputType = project.GetPropertyValue("OutputType");
+			return outputType is not null &&
+   				(outputType.Equals("Exe", StringComparison.OrdinalIgnoreCase) || outputType.Equals("WinExe", StringComparison.OrdinalIgnoreCase));
 		}
 
 		public void Dispose()

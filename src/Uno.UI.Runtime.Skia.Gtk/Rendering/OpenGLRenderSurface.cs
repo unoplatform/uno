@@ -9,7 +9,7 @@ using Silk.NET.Core.Loader;
 using Silk.NET.Core.Contexts;
 using Uno.UI.Hosting;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Gtk
 {
 
 	internal class OpenGLRenderSurface : GLRenderSurfaceBase

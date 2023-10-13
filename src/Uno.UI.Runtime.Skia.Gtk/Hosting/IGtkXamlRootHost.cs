@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Gtk;
 using Uno.UI.Hosting;
 
-namespace Uno.UI.Runtime.Skia.GTK.Hosting;
+namespace Uno.UI.Runtime.Skia.Gtk.Hosting;
 
 internal interface IGtkXamlRootHost : IXamlRootHost
 {

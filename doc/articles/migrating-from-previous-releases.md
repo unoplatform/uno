@@ -21,6 +21,22 @@ Uno Platform 5.0 continues to supports both UWP and WinUI API sets.
 #### Migrating from Xamarin to net7.0-* targets
 If your current project is built on Xamarin.* targets, you can upgrade by [following this guide](xref:Uno.Development.MigratingFromXamarinToNet6).
 
+#### Migrating `WpfHost`
+
+The `WpfHost` was previously hosted within a WPF `Window` class, but now it takes care of creating individual windows on its own. To migrate, follow these steps:
+
+- Remove the `StartupUri="Wpf/MainWindow.xaml"` attribute from `App.xaml`
+- Delete both `MainWindow.xaml` and `MainWindow.xaml.cs`
+- In `App.xaml.cs` add the following constructor:
+
+```csharp
+public App()
+{
+    var host = new WpfHost(Dispatcher, () => new AppHead());
+    host.Run();
+}
+```
+
 #### Migrating `ApplicationData` on Skia targets
 Previously, `ApplicationData` were stored directly in `Environment.SpecialFolder.LocalApplicationData` folder, and all Uno Platform apps shared this single location. Starting with Uno Platform 5.0, application data are stored in application specific folders under the `LocalApplicationData` root. For more details see the [docs](features/applicationdata.md). To perform the initial migration of existing data you need to make sure to copy the files from the root of the `LocalApplicationData` folder to `ApplicationData.Current.LocalFolder` manually using `System.IO`.
 
@@ -33,10 +49,18 @@ If your existing libraries or UWP/WinAppSDK projects are targeting the Windows S
 #### Xaml generator now always uses strict search
 This change ensures that the XAML parser will only look for types in an explicit way, and avoids fuzzy matching that could lead to incorrect type resolution.
 
+In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+
+#### ResourceDictionary now require an explicit Uri reference
+
+Resources dictionaries are now required to be explicitly referenced by URI to be considered during resource resolution. Applications that are already running properly on WinAppSDK should not be impacted by this change.
+
+The reason for this change is the alignment of the inclusion behavior with WinUI, which does not automatically place dictionaries as ambiently available. 
+
+This behavior can be disabled by using `FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries`, by setting the value `true`.
+
 #### `IsEnabled` property is moved from `FrameworkElement` to `Control`
 This property was incorrectly located on `FrameworkElement` but its behavior has not changed.
-
-In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
 
 #### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace.
 These controls were present in both the `Windows.UI.Xaml` and `Microsoft.UI.Xaml`. Those are now located in the `Microsoft.UI.Xaml` namespace for the UWP version of Uno (Uno.UI).
@@ -112,6 +136,22 @@ Use `Windows.Storage.Streams.Buffer` instead.
 
 #### `ContentPropertyAttribute.Name` is now a field to match UWP.
 This change has no effect on Controls behavior.
+
+#### Remove `FontWeightExtensions` and `CssProviderExtensions`
+`Uno.UI.Runtime.Skia.GTK.UI.Text.FontWeightExtensions` and `Uno.UI.Runtime.Skia.GTK.Extensions.Helpers.CssProviderExtensions` don't exist in UWP/WinUI. So they are made internal.
+
+#### Change `GtkHost`, `WpfHost`, `FrameBufferHost` namespaces
+
+`GtkHost`, `WpfHost`, and `FrameBufferHost` are now `Uno.UI.Runtime.Skia.Gtk.GtkHost`, `Uno.UI.Runtime.Skia.Wpf.WpfHost`, and `Uno.UI.Runtime.Skia.Linux.FrameBuffer.FrameBufferHost` instead of `Uno.UI.Runtime.Skia.GtkHost`, `Uno.UI.Skia.Platform.WpfHost`, and `Uno.UI.Runtime.Skia.FrameBufferHost`, respectively.
+
+#### Change `RenderSurfaceType` namespace
+There used two be two `RenderSurfaceType`s, `Uno.UI.Runtime.Skia.RenderSurfaceType` (for Gtk) and `Uno.UI.Skia.RenderSurfaceType` (for Skia). They are now `Uno.UI.Runtime.Skia.Gtk.RenderSurfaceType` and `Uno.UI.Runtime.Skia.Wpf.RenderSurfaceType` respectively.
+
+#### `Panel`s no longer measure or arrange any children in `MeasureOverride` or `ArrangeOverride`, respectively
+`Panel`s used to measure and arrange the first child in `MeasureOverride` or `ArrangeOverride`, respectively. This is no longer the case. Now, to match WinUI, `Panel`s just return an empty size in `MeasureOverride`, and the `finalSize` as is in `ArrangeOverride`. You should override these layout-override methods in `Panel`-derived subclasses instead.
+
+### Uno Platform 4.10
+This release does not require upgrade steps.
 
 ### Uno Platform 4.9
 This release does not require upgrade steps.

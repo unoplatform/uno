@@ -46,6 +46,11 @@
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
 		<Content Include="Assets\**" />
+		<EmbeddedResource Include="Assets\UnoA4.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Crop.png" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.pdf" />
+		<EmbeddedResource Include="Assets\UnoA4_Protected.png" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -53,6 +58,7 @@
 		<ProjectReference Include="..\Uno.UI\Uno.UI.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UWP\Uno.Wasm.csproj" />
 		<ProjectReference Include="..\Uno.UI.FluentTheme\Uno.UI.FluentTheme.Wasm.csproj" />
+		<ProjectReference Include="..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.Wasm.csproj" />
 	</ItemGroup>
 
 	<PropertyGroup>

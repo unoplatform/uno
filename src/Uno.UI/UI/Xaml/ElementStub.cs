@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Windows.Foundation;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -140,6 +141,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public Func<View> ContentBuilder { get; set; }
 
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
 			base.OnVisibilityChanged(oldValue, newValue);
@@ -186,9 +193,7 @@ namespace Windows.UI.Xaml
 
 			if (_content == null && !_isMaterializing)
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				try
-#endif
 				{
 					_isMaterializing = true;
 
@@ -207,9 +212,7 @@ namespace Windows.UI.Xaml
 
 					MaterializationChanged?.Invoke(this);
 				}
-#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/dotnet/runtime/issues/50783
 				finally
-#endif
 				{
 					_isMaterializing = false;
 				}

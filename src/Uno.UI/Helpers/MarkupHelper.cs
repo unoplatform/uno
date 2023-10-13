@@ -104,5 +104,19 @@ namespace Uno.UI.Helpers
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TInstance? GetElementProperty<TInstance>(object target, string propertyName)
 			=> WeakProperties.GetValue<TInstance>(target, propertyName);
+
+		/// <summary>
+		/// Helper for XAML code generation. Not intended to be used in apps outside of XAML generator.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static ResourceDictionary AddMergedDictionaries(this ResourceDictionary dictionary, params ResourceDictionary[] mergedDictionaries)
+		{
+			foreach (var mergedDictionary in mergedDictionaries)
+			{
+				dictionary.MergedDictionaries.Add(mergedDictionary);
+			}
+
+			return dictionary;
+		}
 	}
 }

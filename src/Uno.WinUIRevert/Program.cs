@@ -2,9 +2,7 @@
 using System;
 using System.IO;
 using System.Linq;
-using System.Net.NetworkInformation;
 using System.Text;
-using System.Text.RegularExpressions;
 
 namespace UnoWinUIRevert
 {
@@ -78,6 +76,7 @@ namespace UnoWinUIRevert
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\PathIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\FontIconSource.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Icons\IconSource.cs"),
+				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Media\RevealBrush.Android.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Controls\Unsupported\RatingControl.cs"),
 				Path.Combine(basePath, @"src\Uno.UI\UI\Xaml\Automation\Peers\RatingControlAutomationPeer.cs"),
 			};
@@ -174,27 +173,23 @@ namespace UnoWinUIRevert
 		{
 			foreach (var file in Directory.EnumerateFiles(basePath, searchPattern, SearchOption.AllDirectories))
 			{
-				if (_exclusions.Any(e => file.Contains(e, StringComparison.OrdinalIgnoreCase)))
+				if (_exclusions.Any(e => file.Contains(e, StringComparison.Ordinal)))
 				{
 					continue;
 				}
 
-				var updated = false;
-				var content = File.ReadAllText(file);
+				var originalContent = File.ReadAllText(file);
+				var updatedContent = originalContent;
 
 				for (int i = 0; i < replacements.Length; i++)
 				{
-					if (content.Contains(replacements[i].from))
-					{
-						content = content.Replace(replacements[i].from, replacements[i].to);
-						updated = true;
-					}
+					updatedContent = updatedContent.Replace(replacements[i].from, replacements[i].to);
 				}
 
-				if (updated)
+				if (!object.ReferenceEquals(originalContent, updatedContent))
 				{
 					Console.WriteLine($"Updating [{file}]");
-					File.WriteAllText(file, content, Encoding.UTF8);
+					File.WriteAllText(file, updatedContent, Encoding.UTF8);
 				}
 			}
 		}
