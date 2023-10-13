@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml.Controls
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			
 			if (Selector is ListView lv)
 			{
 				ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
