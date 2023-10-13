@@ -20,9 +20,6 @@ internal partial class XamlIsland
 		_contentRoot.XamlIslandRoot = this;
 
 		this.Background = new SolidColorBrush(Colors.Transparent);
-
-		//Uno specific - flag as VisualTreeRoot for interop with existing logic
-		IsVisualTreeRoot = true;
 	}
 
 	internal ContentRoot ContentRoot => _contentRoot;
