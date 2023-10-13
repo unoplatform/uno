@@ -229,7 +229,7 @@ internal partial class Given_HotReloadWorkspace
 
 	private static void StartServer(int port)
 	{
-		if (_process is null or {HasExited: true})
+		if (_process is null or { HasExited: true })
 		{
 			var version = GetDotnetMajorVersion();
 			var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
