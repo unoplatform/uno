@@ -244,15 +244,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		internal static DependencyProperty LightDismissOverlayBackgroundProperty { get; } =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
-		
-		internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } = 
-			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
-		
+
 		public DependencyObject OverlayInputPassThroughElement
 		{
 			get => (DependencyObject)GetValue(OverlayInputPassThroughElementProperty);
 			set => SetValue(OverlayInputPassThroughElementProperty, value);
 		}
+
+		internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
+			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
 		/// Gets or sets whether a disabled control can receive focus.

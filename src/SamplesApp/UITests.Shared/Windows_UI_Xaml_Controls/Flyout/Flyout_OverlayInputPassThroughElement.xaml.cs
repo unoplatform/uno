@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Flyout
 
 		private void OnElementTapped(object sender, TappedRoutedEventArgs e)
 		{
-			TappedOutput.Text += $"{DateTime.Now:mm:ss} - {((FrameworkElement)sender).Name} tapped\r\n";;
+			TappedOutput.Text += $"{DateTime.Now:mm:ss} - {((FrameworkElement)sender).Name} tapped\r\n";
 			e.Handled = true;
 		}
 

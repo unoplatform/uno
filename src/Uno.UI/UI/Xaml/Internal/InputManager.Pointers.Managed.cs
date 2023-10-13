@@ -147,7 +147,7 @@ internal partial class InputManager
 				_manager._current = this;
 
 				// Then notify all external components that the dispatching is starting
-				_manager._inputManager.LastInputDeviceType = args.Pointer.PointerDeviceType switch
+				_manager._inputManager.LastInputDeviceType = args.CoreArgs.CurrentPoint.PointerDeviceType switch
 				{
 					PointerDeviceType.Touch => InputDeviceType.Touch,
 					PointerDeviceType.Pen => InputDeviceType.Pen,
