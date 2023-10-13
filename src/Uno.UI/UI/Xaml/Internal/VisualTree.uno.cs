@@ -59,6 +59,11 @@ internal partial class VisualTree : IWeakReferenceProvider
 	{
 		get
 		{
+			if (GetOrCreateXamlRoot().Content?.RenderSize is { } renderSize)
+			{
+				return renderSize;
+			}
+
 			if (RootElement is XamlIsland xamlIsland)
 			{
 				// If the size is set explicitly, prefer this, as ActualSize property values may be
