@@ -4,8 +4,7 @@
 /// This enum specifies Direct2D composite modes supported by Composition APIs<br/><br/>
 /// <remarks>
 /// References:<br/>
-///		1- <see href="https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_CanvasComposite.htm"/><br/>
-///		2- wuceffects.dll!Windows::UI::Composition::g_pszModeNames_0
+///		- <see href="https://microsoft.github.io/Win2D/WinUI2/html/T_Microsoft_Graphics_Canvas_CanvasComposite.htm"/><br/>
 ///	</remarks>
 /// </summary>
 internal enum D2D1CompositeMode

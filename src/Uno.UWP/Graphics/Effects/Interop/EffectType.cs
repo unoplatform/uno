@@ -4,8 +4,7 @@
 /// This enum specifies effects supported by Composition APIs<br/><br/>
 /// <remarks>
 /// References:<br/>
-///		1- <see href="https://microsoft.github.io/Win2D/WinUI2/html/N_Microsoft_Graphics_Canvas_Effects.htm"/><br/>
-///		2- wuceffects.dll
+///		- <see href="https://microsoft.github.io/Win2D/WinUI2/html/N_Microsoft_Graphics_Canvas_Effects.htm"/><br/>
 ///	</remarks>
 /// </summary>
 internal enum EffectType

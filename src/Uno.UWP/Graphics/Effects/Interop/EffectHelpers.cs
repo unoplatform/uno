@@ -158,12 +158,12 @@ internal static partial class EffectHelpers
 
 		// Composition
 
-		if (effectId.Equals(new Guid("91BB5E52-95D1-4F8B-9A5A-6408B24B8C6A"))) // wuceffects.dll!Windows::UI::Composition::CLSID_SceneLightingEffect
+		if (effectId.Equals(new Guid("91BB5E52-95D1-4F8B-9A5A-6408B24B8C6A")))
 		{
 			return EffectType.SceneLightingEffect;
 		}
 
-		if (effectId.Equals(new Guid("6152DFC6-9FBA-4810-8CBA-B280AA27BFF6"))) // wuceffects.dll!Windows::UI::Composition::CLSID_WhiteNoiseEffect
+		if (effectId.Equals(new Guid("6152DFC6-9FBA-4810-8CBA-B280AA27BFF6")))
 		{
 			return EffectType.WhiteNoiseEffect;
 		}
@@ -188,7 +188,7 @@ internal static partial class EffectHelpers
 
 	internal static Vector3 GetLightVector(float azimuthInDegrees, float elevationInDegrees)
 	{
-		// MathEx.ToRadians isn't used here to precisely match the original function
+		// MathEx.ToRadians isn't used here to precisely match the original value
 		float azimuthInRadians = azimuthInDegrees * 0.0174532925199433f;
 		float elevationInRadians = 0.0174532925199433f * elevationInDegrees;
 		float cosElevation = MathF.Cos(elevationInRadians);
@@ -202,7 +202,7 @@ internal static partial class EffectHelpers
 		return lightVector;
 	}
 
-	internal static Vector3 CalcLightTargetVector(Vector3 lightPosition, Vector3 lightTarget)
+	internal static Vector3 CalculateLightTargetVector(Vector3 lightPosition, Vector3 lightTarget)
 	{
 		Vector3 targetVector = new();
 
@@ -214,30 +214,13 @@ internal static partial class EffectHelpers
 		return targetVector;
 	}
 
-	// Uncomment this if we ever needed to switch light effects to pixel shaders
-	/*internal static Vector2 CalcConeAngle(float limitingConeAngle)
-	{
-		float limitingConeAngleInRadians = MathF.Abs(limitingConeAngle) * 0.0174532925199433f;
-
-		Vector2 coneAngle = new();
-		coneAngle.X = MathF.Cos(limitingConeAngleInRadians);
-		if (limitingConeAngle >= 5.0f)
-			coneAngle.Y = MathF.Cos(limitingConeAngleInRadians + 0.0174532925199433f);
-		else
-			coneAngle.Y = MathF.Cos(limitingConeAngleInRadians * 1.2f);
-
-		return coneAngle;
-	}*/
-
 	private static void Normalize3DVector(ref Vector3 vector)
 	{
-		float fa = 0.0f;
-		float flSqSum = 0.0f;
-		float flSqSuma = 0.0f;
-		Vector3 rgflSq = vector * vector;
+		float vecSum = 0.0f;
+		Vector3 vecSquare = vector * vector;
+		float vecInitSum = vecSquare[0] + vecSquare[1] + vecSquare[2];
 
-		flSqSum = rgflSq[0] + rgflSq[1] + rgflSq[2];
-		if (flSqSum <= 0.0000099999997f)
+		if (vecInitSum <= 0.0000099999997f)
 		{
 			vector.X = 0.0f;
 			vector.Y = 0.0f;
@@ -247,20 +230,20 @@ internal static partial class EffectHelpers
 		{
 			for (int i = 0; i < 3; ++i)
 			{
-				if (rgflSq[i] == 0)
+				if (vecSquare[i] == 0)
 				{
 					vector[i] = 0.0f;
 				}
 				else
 				{
-					flSqSuma += rgflSq[i];
+					vecSum += vecSquare[i];
 				}
 			}
 
-			fa = MathF.Sqrt(flSqSuma);
-			vector.X = vector.X / fa;
-			vector.Y = vector.Y / fa;
-			vector.Z = vector.Z / fa;
+			float val = MathF.Sqrt(vecSum);
+			vector.X = vector.X / val;
+			vector.Y = vector.Y / val;
+			vector.Z = vector.Z / val;
 		}
 	}
 }
