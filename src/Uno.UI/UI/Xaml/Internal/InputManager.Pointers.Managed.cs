@@ -116,7 +116,7 @@ internal partial class InputManager
 		/// <remarks>This is set only while a pointer event is currently being dispatched.</remarks>
 		internal PointerRoutedEventArgs? Current => _current?.Args;
 
-		private PointerDispatching StartDispatch(in PointerEvent evt, in PointerRoutedEventArgs args) 
+		private PointerDispatching StartDispatch(in PointerEvent evt, in PointerRoutedEventArgs args)
 			=> new(this, evt, args);
 
 		private readonly record struct PointerDispatching : IDisposable
@@ -173,8 +173,8 @@ internal partial class InputManager
 					// This is valid only because the single element that is able to re-route the event is the PopupRoot, which is already at the top of the visual tree.
 					// When the PopupRoot perform teh HitTest, the visual tree is already updated.
 					result += _manager.Raise(
-						Event, 
-						new VisualTreeHelper.Branch(reRouted.From, reRouted.To), 
+						Event,
+						new VisualTreeHelper.Branch(reRouted.From, reRouted.To),
 						new PointerRoutedEventArgs(reRouted.Args.CoreArgs, reRouted.To) { CanBubbleNatively = false });
 				}
 
