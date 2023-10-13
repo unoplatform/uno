@@ -1654,6 +1654,11 @@
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="Visible" />
 										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectCheck"
+																	   Storyboard.TargetProperty="Visibility">
+											<DiscreteObjectKeyFrame KeyTime="0"
+																	Value="Visible" />
+										</ObjectAnimationUsingKeyFrames>
 										<win:FadeInThemeAnimation TargetName="MultiSelectSquare" />
 									</Storyboard>
 								</VisualState>
@@ -1795,7 +1800,8 @@
 								   StrokeThickness="2"
 								   Opacity="0" />
 						<Border x:Name="MultiSelectSquare"
-								Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}"
+								BorderBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+								BorderThickness="2"
 								Width="20"
 								Height="20"
 								Margin="0,2,2,0"
@@ -1804,12 +1810,13 @@
 								Visibility="Collapsed">
 							<FontIcon x:Name="MultiSelectCheck"
 									  FontFamily="{ThemeResource SymbolThemeFontFamily}"
-									  win:Glyph="&#xE73E;"
-									  not_win:Glyph="&#xE081;"
+									  Glyph="&#xE73E;"
 									  FontSize="16"
-									  Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+									  Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}"
+									  Visibility="Collapsed"
 									  Opacity="0" />
 						</Border>
+
 						<Rectangle x:Name="FocusVisualWhite"
 								   IsHitTestVisible="False"
 								   Stroke="{ThemeResource SystemControlForegroundAltHighBrush}"

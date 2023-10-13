@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			AddHandler(ManipulationStartedEvent, _onManipulationStarted, handledEventsToo: true);
 		}
 
-		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
+		private protected Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
 
 		internal override UIElement VisualParent => Selector ?? base.VisualParent;
 
@@ -283,10 +283,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 
 			UpdateCommonStates();
-			if (Selector is ListView lv)
-			{
-				ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
-			}
 
 			// TODO: This may need to be adjusted later when we remove the Visual State mixins.
 			var state = IsEnabled ? DisabledStates.Enabled : DisabledStates.Disabled;
