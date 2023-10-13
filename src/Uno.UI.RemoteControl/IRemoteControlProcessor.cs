@@ -4,14 +4,13 @@ using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.RemoteControl
+namespace Uno.UI.RemoteControl;
+
+internal interface IRemoteControlProcessor
 {
-	internal interface IRemoteControlProcessor
-	{
-		string Scope { get; }
+	string Scope { get; }
 
-		Task Initialize();
+	Task Initialize();
 
-		Task ProcessFrame(Frame frame);
-	}
+	Task ProcessFrame(Frame frame);
 }

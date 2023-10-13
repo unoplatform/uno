@@ -90,7 +90,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 					typeof(CompilationWorkspaceProvider).Log().LogError($"Unable to start the Remote Control server because the application's TargetFramework version does not match the default runtime. Change the TargetFramework version to match net{version.Major}.0 in your project file.");
 				}
 
-				throw new InvalidOperationException($"Project TargetFramework version mismatch");
+				throw new InvalidOperationException("Project TargetFramework version mismatch");
 			}
 
 			Environment.SetEnvironmentVariable("MSBuildSDKsPath", Path.Combine(MSBuildBasePath, "Sdks"));

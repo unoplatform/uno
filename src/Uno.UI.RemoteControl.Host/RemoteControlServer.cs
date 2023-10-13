@@ -18,8 +18,8 @@ namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
-		private object _loadContextGate = new();
-		private readonly static Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
+		private readonly object _loadContextGate = new();
+		private static readonly Dictionary<string, (AssemblyLoadContext Context, int Count)> _loadContexts = new();
 		private readonly Dictionary<string, IServerProcessor> _processors = new();
 
 		private string? _resolveAssemblyLocation;

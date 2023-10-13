@@ -8,59 +8,60 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 
 [assembly: Uno.UI.RemoteControl.Host.ServerProcessorAttribute(typeof(Uno.UI.RemoteControl.Host.HotReload.FileUpdateProcessor))]
 
-namespace Uno.UI.RemoteControl.Host.HotReload
+namespace Uno.UI.RemoteControl.Host.HotReload;
+
+partial class FileUpdateProcessor : IServerProcessor, IDisposable
 {
-	partial class FileUpdateProcessor : IServerProcessor, IDisposable
+	private readonly IRemoteControlServer _remoteControlServer;
+
+	public FileUpdateProcessor(IRemoteControlServer remoteControlServer)
 	{
-		private readonly IRemoteControlServer _remoteControlServer;
+		_remoteControlServer = remoteControlServer;
+	}
 
-		public FileUpdateProcessor(IRemoteControlServer remoteControlServer)
+	public string Scope => HotReloadConstants.TestingScopeName;
+
+	public void Dispose()
+	{
+	}
+
+	public Task ProcessFrame(Frame frame)
+	{
+		switch (frame.Name)
 		{
-			_remoteControlServer = remoteControlServer;
+			case nameof(UpdateFile):
+				ProcessUpdateFile(JsonConvert.DeserializeObject<UpdateFile>(frame.Content)!);
+				break;
 		}
 
-		public string Scope => HotReloadConstants.TestingScopeName;
+		return Task.CompletedTask;
+	}
 
-		public void Dispose()
+	private void ProcessUpdateFile(UpdateFile? message)
+	{
+		if (message?.IsValid() is not true
+			|| !File.Exists(message.FilePath))
 		{
+			return;
 		}
 
-		public Task ProcessFrame(Frame frame)
+		if (this.Log().IsEnabled(LogLevel.Debug))
 		{
-			switch (frame.Name)
-			{
-				case nameof(UpdateFile):
-					ProcessChangeXaml(JsonConvert.DeserializeObject<UpdateFile>(frame.Content)!);
-					break;
-			}
-
-			return Task.CompletedTask;
+			this.Log().LogDebug($"Apply Changes to {message.FilePath}");
 		}
 
-		private void ProcessChangeXaml(UpdateFile changeXamlMessage)
+		var originalContent = File.ReadAllText(message.FilePath);
+		if (this.Log().IsEnabled(LogLevel.Trace))
 		{
-			if (changeXamlMessage?.IsValid() is not null &&
-				File.Exists(changeXamlMessage.FilePath))
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Apply XAML Changes to {changeXamlMessage.FilePath}");
-				}
-
-				var originalXaml = File.ReadAllText(changeXamlMessage.FilePath);
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace($"Original XAML: {changeXamlMessage.FilePath}");
-				}
-
-				var updatedXaml = originalXaml.Replace(changeXamlMessage.OriginalXaml, changeXamlMessage.ReplacementXaml);
-				if (this.Log().IsEnabled(LogLevel.Trace))
-				{
-					this.Log().LogTrace($"Updated XAML: {changeXamlMessage.FilePath}");
-				}
-
-				File.WriteAllText(changeXamlMessage.FilePath, updatedXaml);
-			}
+			this.Log().LogTrace($"Original content: {message.FilePath}");
 		}
+
+		var updatedContent = originalContent.Replace(message.OldText, message.NewText);
+		if (this.Log().IsEnabled(LogLevel.Trace))
+		{
+			this.Log().LogTrace($"Updated content: {message.FilePath}");
+		}
+
+		File.WriteAllText(message.FilePath, updatedContent);
 	}
 }

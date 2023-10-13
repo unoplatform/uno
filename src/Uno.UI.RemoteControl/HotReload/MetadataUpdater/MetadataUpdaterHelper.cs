@@ -9,7 +9,7 @@ using System;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
-internal static class MetadataUpdaterHelper
+public static class MetadataUpdaterHelper
 {
 	public static event EventHandler? MetadataUpdated;
 
