@@ -52,7 +52,30 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public Size Size => VisualTree.Size;
 
-	internal Rect Bounds => new Rect(default, Size);
+	internal Rect Bounds
+	{
+		get
+		{
+			var rootElement = VisualTree.RootElement;
+			if (rootElement is RootVisual rootVisual)
+			{
+				if (Window.CurrentSafe is null)
+				{
+					throw new InvalidOperationException("Window.Current must be set.");
+				}
+
+				return Window.CurrentSafe.Bounds;
+			}
+			else if (rootElement is XamlIsland xamlIsland)
+			{
+				var width = !double.IsNaN(xamlIsland.Width) ? xamlIsland.Width : 0;
+				var height = !double.IsNaN(xamlIsland.Height) ? xamlIsland.Height : 0;
+				return new Rect(0, 0, width, height);
+			}
+
+			return default;
+		}
+	}
 
 	internal Compositor Compositor => Compositor.GetSharedCompositor();
 
