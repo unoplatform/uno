@@ -14,6 +14,7 @@ using System.Windows.Markup;
 [assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft.UI.Xaml.XamlConstants.Namespaces.Media)]
 [assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft.UI.Xaml.XamlConstants.Namespaces.MediaAnimation)]
 [assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft.UI.Xaml.XamlConstants.Namespaces.Shapes)]
+[assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml/presentation", Microsoft.UI.Xaml.XamlConstants.Namespaces.Automation)]
 
 [assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System")]
 [assembly: Microsoft.UI.Xaml.XmlnsDefinition("http://schemas.microsoft.com/winfx/2006/xaml", "System")]
@@ -59,6 +60,6 @@ internal static class XamlConstants
 		public const string Media = BaseXamlNamespace + ".Media";
 		public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
 		public const string Shapes = BaseXamlNamespace + ".Shapes";
-
+		public const string Automation = BaseXamlNamespace + ".Automation";
 	}
 }
