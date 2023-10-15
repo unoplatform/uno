@@ -70,6 +70,14 @@ internal partial class ContentManager
 
 				AttachToWindow(_rootVisual, window);
 			}
+#if __IOS__
+			if (_owner is not Windows.UI.Xaml.Window windowOuter)
+			{
+				throw new InvalidOperationException("Owner of ContentManager should be a Window");
+			}
+
+			AttachToWindow(_rootVisual, windowOuter);
+#endif
 		}
 
 		_content = newContent;
