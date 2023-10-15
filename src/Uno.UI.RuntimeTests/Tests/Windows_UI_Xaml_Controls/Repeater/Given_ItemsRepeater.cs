@@ -79,6 +79,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls.Repeater
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+#if __WASM__
+		[Ignore("Currently flaky on WASM, part of #9080 epic")]
+#endif
 		public async Task When_NestedInSVAndOutOfViewportOnInitialLoad_Then_MaterializedEvenWhenScrollingOnMinorAxis()
 		{
 			var sut = default(ItemsRepeater);

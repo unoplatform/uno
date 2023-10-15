@@ -230,6 +230,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #if __ANDROID__
 		[TestMethod]
 		[RequiresFullWindow]
+		[Ignore("Flaky #9080")]
 		public async Task Verify_MenuBarItem_Bounds_Native_Popups()
 		{
 			using (FeatureConfigurationHelper.UseNativePopups())

@@ -24,6 +24,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Wasm is flaky #9080
 		public void TestTranslatedTap()
 			=> RunSequence("TranslatedTap", TranslateOverElement);
 
