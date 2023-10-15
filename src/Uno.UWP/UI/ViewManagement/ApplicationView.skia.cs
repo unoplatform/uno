@@ -9,12 +9,14 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		private readonly Lazy<IApplicationViewExtension> _applicationViewExtension = new Lazy<IApplicationViewExtension>(() => ApiExtensibility.CreateInstance<IApplicationViewExtension>(typeof(ApplicationView)));
+		private readonly Lazy<IApplicationViewExtension> _applicationViewExtension;
+
 		private Size _preferredMinSize;
 		private string _title = "";
 
 		public ApplicationView()
 		{
+			_applicationViewExtension = new Lazy<IApplicationViewExtension>(() => ApiExtensibility.CreateInstance<IApplicationViewExtension>(this));
 		}
 
 		public string Title

@@ -28,7 +28,7 @@ public class Given_Window
 	{
 		var app = UnitTestsApp.App.EnsureApplication();
 
-		Windows.UI.Xaml.Window.InitializeWindowCurrent();
+		Windows.UI.Xaml.Window.EnsureWindowCurrent();
 		var existingCurrent = Windows.UI.Xaml.Window.Current;
 		var window = new Microsoft.UI.Xaml.Window();
 		window.Activate();

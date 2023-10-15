@@ -97,7 +97,7 @@ namespace Windows.UI.ViewManagement
 			if (!CoreApplication.IsFullFledgedApp)
 			{
 				// This is specifically needed to provide a stub for Uno Islands.
-				return new ApplicationView();
+				InitializeForWindowId(AppWindow.MainWindowId);
 			}
 
 			return GetForWindowId(AppWindow.MainWindowId);
