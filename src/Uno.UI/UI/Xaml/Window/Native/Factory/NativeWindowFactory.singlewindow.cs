@@ -1,5 +1,5 @@
 ﻿#nullable enable
-#if !SUPPORTS_MULTIWINDOW
+#if !__SKIA__
 
 using System;
 using Uno.Foundation.Extensibility;

@@ -97,6 +97,8 @@ namespace Windows.UI.Xaml
 			InitializePartial();
 		}
 
+		internal bool InitializationComplete => _initializationComplete;
+
 		partial void InitializePartial();
 
 		private static void RegisterExtensions()
@@ -271,11 +273,14 @@ namespace Windows.UI.Xaml
 			_initializationComplete = true;
 
 #if !HAS_UNO_WINUI && !WINUI_WINDOWING
-			Windows.UI.Xaml.Window.InitializeWindowCurrent();
-
-			// Delayed raise of OnWindowCreated.
-			Windows.UI.Xaml.Window.CurrentSafe.RaiseCreated();
+			Windows.UI.Xaml.Window.EnsureWindowCurrent();
 #endif
+
+			// Initialize all windows that have been created before the application was initialized.
+			foreach (var window in ApplicationHelper.Windows)
+			{
+				window.Initialize();
+			}
 		}
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));

@@ -23,6 +23,7 @@ using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using System.Collections.Concurrent;
 using Uno.UI;
+using Windows.Devices.PointOfService;
 
 namespace Windows.UI.Xaml;
 
@@ -36,7 +37,9 @@ public partial class Window
 	private static Window? _current;
 
 	private readonly IWindowImplementation _windowImplementation;
+	private readonly WindowType _windowType;
 
+	private bool _initialized;
 	private Brush? _background;
 	private bool _splashScreenDismissed;
 
@@ -55,14 +58,10 @@ public partial class Window
 		{
 			windowType = WindowType.CoreWindow;
 		}
+		_windowType = windowType;
 
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
-
-		if (windowType is WindowType.CoreWindow)
-		{
-			WinUICoreServices.Instance.InitCoreWindowContentRoot();
-		}
 
 		_windowImplementation = windowType switch
 		{
@@ -74,11 +73,6 @@ public partial class Window
 		Compositor = Windows.UI.Composition.Compositor.GetSharedCompositor();
 
 		InitializeWindowingFlavor();
-		InitPlatform();
-
-#if !HAS_UNO_WINUI
-		RaiseCreated();
-#endif
 
 		Background = SolidColorBrushHelper.White;
 
@@ -86,6 +80,12 @@ public partial class Window
 		Closed += OnWindowClosed;
 
 		ApplicationHelper.AddWindow(this);
+
+		// Eagerly initialize if possible.
+		if (Application.Current?.InitializationComplete == true)
+		{
+			Initialize();
+		}
 	}
 
 	private void OnWindowClosed(object sender, object e) => ApplicationHelper.RemoveWindow(this);
@@ -93,8 +93,6 @@ public partial class Window
 	internal static Window GetFromAppWindow(AppWindow appWindow) => _appWindowMap[appWindow];
 
 	partial void InitializeWindowingFlavor();
-
-	partial void InitPlatform();
 
 #pragma warning disable 67
 	/// <summary>
@@ -171,14 +169,25 @@ public partial class Window
 	/// <summary>
 	/// Gets the window of the current thread.		
 	/// </summary>
-	public static Window? Current => _current;
+	public static Window? Current
+	{
+		get
+		{
+			if (_current is null)
+			{
+				EnsureWindowCurrent();
+			}
+
+			return _current;
+		}
+	}
 
 #pragma warning disable RS0030 // Current is banned
 	/// <summary>
 	/// Use this instead of Window.Current throughout this codebase
 	/// to prove it is intentional (the property is null throughout Uno.WinUI).
 	/// </summary>
-	internal static Window? CurrentSafe => Current;
+	internal static Window? CurrentSafe => _current;
 #pragma warning restore RS0030
 
 	internal static Window? IShouldntUseCurrentWindow => CurrentSafe;
@@ -188,13 +197,47 @@ public partial class Window
 	/// </summary>
 	internal static Window? InitialWindow { get; private set; }
 
-#if !HAS_UNO_WINUI && !WINUI_WINDOWING
-	internal static void InitializeWindowCurrent()
+	/// <summary>
+	/// This is run when Application.Current is set and the UI framework is ready to construct
+	/// visual elements (this is important for eample for Andorid where trying to construct
+	/// UI during Application ctor will fail).
+	/// </summary>
+	internal void Initialize()
 	{
+		if (Application.Current?.InitializationComplete != true)
+		{
+			throw new InvalidOperationException("Application was not yet initialized.");
+		}
+
+		if (_initialized)
+		{
+			return;
+		}
+
+		_initialized = true;
+
+		if (_windowType is WindowType.CoreWindow)
+		{
+			WinUICoreServices.Instance.InitCoreWindowContentRoot();
+		}
+
+		_windowImplementation.Initialize();
+
+#if !HAS_UNO_WINUI
+		RaiseCreated();
+#endif
+	}
+
+	internal static void EnsureWindowCurrent()
+	{
+		if (_current is not null)
+		{
+			return;
+		}
+
 		_current = new Window(WindowType.CoreWindow);
 		InitialWindow = _current;
 	}
-#endif
 
 	/// <summary>
 	/// Gets the CoreDispatcher object for the Window, which is generally the CoreDispatcher for the UI thread.
