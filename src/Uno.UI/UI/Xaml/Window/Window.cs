@@ -24,6 +24,7 @@ using AppWindow = Microsoft.UI.Windowing.AppWindow;
 using System.Collections.Concurrent;
 using Uno.UI;
 using Windows.Devices.PointOfService;
+using Windows.ApplicationModel.Core;
 
 namespace Windows.UI.Xaml;
 
