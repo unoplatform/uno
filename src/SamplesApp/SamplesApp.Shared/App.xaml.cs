@@ -20,6 +20,7 @@ using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using Uno;
 using Uno.UI.RuntimeTests.Extensions;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -58,6 +59,9 @@ namespace SamplesApp
 
 		static App()
 		{
+#if !HAS_UNO_WINUI
+			Assert.IsNotNull(Window.Current);
+#endif
 			ConfigureLogging();
 		}
 
@@ -67,6 +71,10 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
+#if !HAS_UNO_WINUI
+			Assert.IsNotNull(Window.Current);
+#endif
+
 			// Fix language for UI tests
 			Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 			Thread.CurrentThread.CurrentUICulture = new CultureInfo("en-US");
