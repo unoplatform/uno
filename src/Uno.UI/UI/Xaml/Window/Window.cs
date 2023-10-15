@@ -53,10 +53,15 @@ public partial class Window
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
-		_windowType = windowType;
-
 		AppWindow = new AppWindow();
 		_appWindowMap[AppWindow] = this;
+
+		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			windowType = WindowType.CoreWindow;
+		}
+		_windowType = windowType;
 
 		_windowImplementation = windowType switch
 		{
@@ -210,12 +215,6 @@ public partial class Window
 		}
 
 		_initialized = true;
-
-		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			_windowType = WindowType.CoreWindow;
-		}
 
 		if (_windowType is WindowType.CoreWindow)
 		{
