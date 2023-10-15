@@ -42,17 +42,17 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	protected Window Window { get; }
 
-	protected INativeWindowWrapper NativeWindowWrapper { get; private set; } = null!;
+	protected INativeWindowWrapper? NativeWindowWrapper { get; private set; }
 
 	public abstract CoreWindow? CoreWindow { get; }
 
-	public bool Visible => NativeWindowWrapper.Visible;
+	public bool Visible => NativeWindowWrapper?.Visible ?? false;
 
 	public abstract UIElement? Content { get; set; }
 
 	public abstract XamlRoot? XamlRoot { get; }
 
-	public Rect Bounds => NativeWindowWrapper.Bounds;
+	public Rect Bounds => NativeWindowWrapper?.Bounds ?? default;
 
 	public virtual void Initialize()
 	{
@@ -66,11 +66,11 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 			_wasShown = true;
 
 			SetVisibleBoundsFromNative();
-			NativeWindowWrapper.Show();
+			NativeWindowWrapper?.Show();
 		}
 		else
 		{
-			NativeWindowWrapper.Activate();
+			NativeWindowWrapper?.Activate();
 		}
 
 		OnActivationStateChanged(CoreWindowActivationState.CodeActivated);
@@ -134,7 +134,7 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	private void SetVisibleBoundsFromNative()
 	{
-		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper.VisibleBounds);
+		ApplicationView.GetForWindowId(Window.AppWindow.Id).SetVisibleBounds(NativeWindowWrapper?.VisibleBounds ?? default);
 	}
 
 	protected virtual void OnSizeChanged(Size newSize) { }
@@ -195,5 +195,5 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 		SystemThemeHelper.RefreshSystemTheme();
 	}
 
-	public void Close() => NativeWindowWrapper.Close();
+	public void Close() => NativeWindowWrapper?.Close();
 }
