@@ -64,9 +64,6 @@ namespace SamplesApp
 
 		static App()
 		{
-#if !HAS_UNO_WINUI
-			Assert.IsNotNull(Windows.UI.Xaml.Window.Current);
-#endif
 			ConfigureLogging();
 		}
 
