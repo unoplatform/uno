@@ -62,7 +62,7 @@ namespace Windows.UI.Core
 		/// </summary>
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
-		public DispatcherQueue DispatcherQueue { get; } = DispatcherQueue.GetForCurrentThread();
+		public DispatcherQueue DispatcherQueue => DispatcherQueue.Main;
 
 		/// <summary>
 		/// Gets the client coordinates of the pointer.

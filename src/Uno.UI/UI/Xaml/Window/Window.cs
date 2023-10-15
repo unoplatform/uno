@@ -37,11 +37,11 @@ public partial class Window
 	private static Window? _current;
 
 	private readonly IWindowImplementation _windowImplementation;
-	private readonly WindowType _windowType;
 
 	private bool _initialized;
 	private Brush? _background;
 	private bool _splashScreenDismissed;
+	private WindowType _windowType;
 
 	private List<WeakEventHelper.GenericEventHandler> _sizeChangedHandlers = new List<WeakEventHelper.GenericEventHandler>();
 	private List<WeakEventHelper.GenericEventHandler>? _backgroundChangedHandlers;
@@ -53,11 +53,6 @@ public partial class Window
 		_current ??= this; // TODO:MZ: Do we want this?
 #endif
 
-		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
-		if (!NativeWindowFactory.SupportsMultipleWindows)
-		{
-			windowType = WindowType.CoreWindow;
-		}
 		_windowType = windowType;
 
 		AppWindow = new AppWindow();
@@ -216,6 +211,12 @@ public partial class Window
 
 		_initialized = true;
 
+		// TODO: On non-multiwindow targets, keep CoreWindow-only approach for now #8978!
+		if (!NativeWindowFactory.SupportsMultipleWindows)
+		{
+			_windowType = WindowType.CoreWindow;
+		}
+
 		if (_windowType is WindowType.CoreWindow)
 		{
 			WinUICoreServices.Instance.InitCoreWindowContentRoot();
@@ -245,9 +246,9 @@ public partial class Window
 	public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 #if HAS_UNO_WINUI
-	public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue { get; } = global::Microsoft.UI.Dispatching.DispatcherQueue.GetForCurrentThread();
+	public global::Microsoft.UI.Dispatching.DispatcherQueue DispatcherQueue => global::Microsoft.UI.Dispatching.DispatcherQueue.Main;
 #else
-	internal global::Windows.System.DispatcherQueue DispatcherQueue { get; } = global::Windows.System.DispatcherQueue.GetForCurrentThread();
+	internal global::Windows.System.DispatcherQueue DispatcherQueue => global::Windows.System.DispatcherQueue.Main;
 #endif
 
 	/// <summary>

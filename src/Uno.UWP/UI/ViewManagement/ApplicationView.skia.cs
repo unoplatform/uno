@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Uno.Foundation.Extensibility;
@@ -8,13 +9,12 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
-		private readonly IApplicationViewExtension _applicationViewExtension;
+		private readonly Lazy<IApplicationViewExtension> _applicationViewExtension = new Lazy<IApplicationViewExtension>(() => ApiExtensibility.CreateInstance<IApplicationViewExtension>(typeof(ApplicationView)));
 		private Size _preferredMinSize;
 		private string _title = "";
 
 		public ApplicationView()
 		{
-			_applicationViewExtension = ApiExtensibility.CreateInstance<IApplicationViewExtension>(this);
 		}
 
 		public string Title
@@ -39,9 +39,9 @@ namespace Windows.UI.ViewManagement
 
 		internal PropertyChangedEventHandler? PropertyChanged;
 
-		public bool TryEnterFullScreenMode() => _applicationViewExtension.TryEnterFullScreenMode();
+		public bool TryEnterFullScreenMode() => _applicationViewExtension.Value.TryEnterFullScreenMode();
 
-		public void ExitFullScreenMode() => _applicationViewExtension.ExitFullScreenMode();
+		public void ExitFullScreenMode() => _applicationViewExtension.Value.ExitFullScreenMode();
 
 		public bool TryResizeView(Size value)
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.ViewManagement
 			{
 				return false;
 			}
-			return _applicationViewExtension.TryResizeView(value);
+			return _applicationViewExtension.Value.TryResizeView(value);
 		}
 
 		public void SetPreferredMinSize(Size minSize) => PreferredMinSize = minSize;
