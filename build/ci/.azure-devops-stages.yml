@@ -103,6 +103,7 @@ stages:
   displayName: Tests - macOS
   dependsOn:
     - Setup
+    - convert_tree
 
   jobs:
   - template: .azure-devops-macos.yml
@@ -115,6 +116,7 @@ stages:
   displayName: Tests - Android
   dependsOn:
     - Setup
+    - convert_tree
 
   jobs:
   - template: .azure-devops-android-tests.yml
@@ -128,6 +130,7 @@ stages:
   displayName: Tests - iOS
   dependsOn:
     - Setup
+    - convert_tree
 
   jobs:
   - template: .azure-devops-ios-tests.yml

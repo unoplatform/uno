@@ -33,10 +33,14 @@ jobs:
     UnoDisableNetCurrentMobile: true
     UnoDisableNetCurrent: true
 
+    UNO_UWP_BUILD: false
+
   steps:
   - checkout: self
     clean: true
 
+  - template: templates/download-winui-converted-tree.yml
+  
   - template: templates/dotnet7-mobile-install-mac.yml
 
   - template: templates/nuget-cache.yml
