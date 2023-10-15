@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using DirectUI;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -204,70 +205,75 @@ namespace Uno.UI.RemoteControl.HotReload
 				var capturedStates = new Dictionary<string, Dictionary<string, object>>();
 
 				var isCapturingState = true;
-				var treeIterator = EnumerateHotReloadInstances(
-						Windows.UI.Xaml.Window.Current!.Content!,
-						(fe, key) =>
-						{
-							// Get the original type of the element, in case it's been replaced
-							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
 
-							// Get the handler for the type specified
-							var handler = (from h in handlerActions
-										   where originalType == h.Key ||
-												originalType.IsSubclassOf(h.Key)
-										   select h.Value).FirstOrDefault();
-
-							// Get the replacement type, or null if not replaced
-							var mappedType = originalType.GetMappedType();
-
-							if (handler is not null)
+				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
+				foreach (var window in windows)
+				{
+					var treeIterator = EnumerateHotReloadInstances(
+							Windows.UI.Xaml.Window.Current!.Content!,
+							(fe, key) =>
 							{
-								if (!capturedStates.TryGetValue(key, out var dict))
+								// Get the original type of the element, in case it's been replaced
+								var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+
+								// Get the handler for the type specified
+								var handler = (from h in handlerActions
+											   where originalType == h.Key ||
+													originalType.IsSubclassOf(h.Key)
+											   select h.Value).FirstOrDefault();
+
+								// Get the replacement type, or null if not replaced
+								var mappedType = originalType.GetMappedType();
+
+								if (handler is not null)
 								{
-									dict = new();
-								}
-								if (isCapturingState)
-								{
-									handler.CaptureState(fe, dict, updatedTypes);
-									if (dict.Any())
+									if (!capturedStates.TryGetValue(key, out var dict))
 									{
-										capturedStates[key] = dict;
+										dict = new();
+									}
+									if (isCapturingState)
+									{
+										handler.CaptureState(fe, dict, updatedTypes);
+										if (dict.Any())
+										{
+											capturedStates[key] = dict;
+										}
+									}
+									else
+									{
+										handler.RestoreState(fe, dict, updatedTypes);
 									}
 								}
-								else
-								{
-									handler.RestoreState(fe, dict, updatedTypes);
-								}
-							}
 
-							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
-						},
-						parentKey: default);
+								return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+							},
+							parentKey: default);
 
-				// Forced iteration to capture all state before doing ui update
-				var instancesToUpdate = treeIterator.ToArray();
+					// Forced iteration to capture all state before doing ui update
+					var instancesToUpdate = treeIterator.ToArray();
 
 
-				// Iterate through the visual tree and either invole ElementUpdate, 
-				// or replace the element with a new one
-				foreach (var (element, elementHandler, elementMappedType) in instancesToUpdate)
-				{
-					// Action: ElementUpdate
-					// This is invoked for each existing element that is in the tree that needs to be replaced
-					elementHandler?.ElementUpdate(element, updatedTypes);
-
-					if (elementMappedType is not null)
+					// Iterate through the visual tree and either invole ElementUpdate, 
+					// or replace the element with a new one
+					foreach (var (element, elementHandler, elementMappedType) in instancesToUpdate)
 					{
-						ReplaceViewInstance(element, elementMappedType, elementHandler);
+						// Action: ElementUpdate
+						// This is invoked for each existing element that is in the tree that needs to be replaced
+						elementHandler?.ElementUpdate(element, updatedTypes);
+
+						if (elementMappedType is not null)
+						{
+							ReplaceViewInstance(element, elementMappedType, elementHandler);
+						}
 					}
+
+					isCapturingState = false;
+					// Forced iteration again to restore all state after doing ui update
+					_ = treeIterator.ToArray();
+
+					// Action: AfterVisualTreeUpdate
+					_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
 				}
-
-				isCapturingState = false;
-				// Forced iteration again to restore all state after doing ui update
-				_ = treeIterator.ToArray();
-
-				// Action: AfterVisualTreeUpdate
-				_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
 			}
 			catch (Exception ex)
 			{
