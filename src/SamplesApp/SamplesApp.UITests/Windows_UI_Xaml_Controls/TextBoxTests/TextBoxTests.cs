@@ -266,7 +266,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android due to pixel color approximation, will be restored in next PR
+		[ActivePlatforms(Platform.Browser)] // Disabled on Android due to pixel color approximation, will be restored in next PR, flaky on iOS #9080
 		public void PasswordBox_RevealInScrollViewer()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");

@@ -61,6 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Test is flaky on iOS #9080
 		public void FlyoutTest_Target()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
