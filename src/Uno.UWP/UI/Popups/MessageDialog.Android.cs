@@ -13,6 +13,10 @@ using Android.Widget;
 using Windows.UI.Core;
 using Windows.Foundation;
 using System.Threading;
+using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
+using Android.Content.Res;
+using Android;
 
 namespace Windows.UI.Popups;
 
@@ -30,6 +34,8 @@ public partial class MessageDialog
 		// just like under Windows.
 
 		var result = new TaskCompletionSource<IUICommand>();
+
+		var themeResourceId = CoreApplication.RequestedTheme == SystemTheme.Light ? Resource.Style.ThemeDeviceDefaultLightDialogNoActionBar : Resource.Style.ThemeDeviceDefaultDialogNoActionBar;
 		var dialog = Commands
 			.Where(command => !(command is UICommandSeparator)) // Not supported on Android
 			.DefaultIfEmpty(new UICommand("Close")) // TODO: Localize (PBI 28711)
@@ -41,7 +47,7 @@ public partial class MessageDialog
 					ButtonType = GetDialogButtonType(index)
 				})
 			.Aggregate(
-				new global::AndroidX.AppCompat.App.AlertDialog.Builder(ContextHelper.Current)
+				new global::AndroidX.AppCompat.App.AlertDialog.Builder(ContextHelper.Current, themeResourceId)
 					.SetTitle(Title ?? "")
 					.SetMessage(Content ?? "")
 					.SetOnCancelListener(new DialogListener(this, result))
