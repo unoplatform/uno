@@ -88,7 +88,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Popups
 		{
 			if (WindowHelper.IsXamlIsland)
 			{
-				// MessageDialog is not supported in Uno Islands and desktop windows.
+				// MessageDialog is not supported in Uno Islands.
 				return;
 			}
 

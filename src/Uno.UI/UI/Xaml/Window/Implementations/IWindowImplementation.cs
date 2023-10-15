@@ -30,6 +30,8 @@ internal interface IWindowImplementation
 
 	event WindowVisibilityChangedEventHandler? VisibilityChanged;
 
+	void Initialize();
+
 	void Activate();
 
 	void Close();
