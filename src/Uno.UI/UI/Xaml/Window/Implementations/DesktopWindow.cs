@@ -12,17 +12,20 @@ namespace Uno.UI.Xaml.Controls;
 
 internal partial class DesktopWindow : BaseWindowImplementation
 {
-	private readonly WindowChrome _windowChrome;
-	private readonly DesktopWindowXamlSource _desktopWindowXamlSource;
+	private WindowChrome? _windowChrome;
+	private DesktopWindowXamlSource? _desktopWindowXamlSource;
 
-#pragma warning disable CS0649
 	public DesktopWindow(Window window) : base(window)
 	{
-		_windowChrome = new WindowChrome(window);
+	}
+
+	public override void Initialize()
+	{
+		_windowChrome = new WindowChrome(Window);
 		_desktopWindowXamlSource = new DesktopWindowXamlSource();
-		_desktopWindowXamlSource.AttachToWindow(window);
+		_desktopWindowXamlSource.AttachToWindow(Window);
 		_desktopWindowXamlSource.Content = _windowChrome;
-		InitializeNativeWindow();
+		base.Initialize();
 	}
 
 	/// <summary>
@@ -32,14 +35,26 @@ internal partial class DesktopWindow : BaseWindowImplementation
 
 	public override UIElement? Content
 	{
-		get => _windowChrome.Content as UIElement;
-		set => _windowChrome.Content = value;
+		get => _windowChrome?.Content as UIElement;
+		set
+		{
+			if (_windowChrome is null)
+			{
+				throw new InvalidOperationException("Window content is being set before the window is initialized.");
+			}
+			_windowChrome.Content = value;
+		}
 	}
 
-	public override XamlRoot? XamlRoot => _desktopWindowXamlSource.XamlIsland.XamlRoot;
+	public override XamlRoot? XamlRoot => _desktopWindowXamlSource?.XamlIsland.XamlRoot;
 
 	protected override void OnSizeChanged(Size newSize)
 	{
+		if (_desktopWindowXamlSource is null)
+		{
+			return;
+		}
+
 		_desktopWindowXamlSource.XamlIsland.Width = newSize.Width;
 		_desktopWindowXamlSource.XamlIsland.Height = newSize.Height;
 	}

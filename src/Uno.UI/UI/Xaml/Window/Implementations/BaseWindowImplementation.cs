@@ -8,7 +8,6 @@ using Windows.UI.Core;
 using Microsoft.UI.Xaml;
 using Windows.UI.ViewManagement;
 using Uno.Helpers.Theming;
-using Windows.ApplicationModel.Activation;
 
 #if !HAS_UNO_WINUI
 using Windows.UI.Xaml;
@@ -54,6 +53,11 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	public abstract XamlRoot? XamlRoot { get; }
 
 	public Rect Bounds => NativeWindowWrapper.Bounds;
+
+	public virtual void Initialize()
+	{
+		InitializeNativeWindow();
+	}
 
 	public virtual void Activate()
 	{

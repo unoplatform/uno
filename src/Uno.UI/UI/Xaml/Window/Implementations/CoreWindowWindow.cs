@@ -16,8 +16,6 @@ internal partial class CoreWindowWindow : BaseWindowImplementation
 	{
 		_contentManager = new ContentManager(window, true);
 		CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
-
-		InitializeNativeWindow();
 	}
 
 #pragma warning disable CS0067
