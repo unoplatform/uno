@@ -60,7 +60,7 @@ namespace SamplesApp
 		static App()
 		{
 #if !HAS_UNO_WINUI
-			Assert.IsNotNull(Window.Current);
+			Assert.IsNotNull(Windows.UI.Xaml.Window.Current);
 #endif
 			ConfigureLogging();
 		}
@@ -72,7 +72,7 @@ namespace SamplesApp
 		public App()
 		{
 #if !HAS_UNO_WINUI
-			Assert.IsNotNull(Window.Current);
+			Assert.IsNotNull(Windows.UI.Xaml.Window.Current);
 #endif
 
 			// Fix language for UI tests
