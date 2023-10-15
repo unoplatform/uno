@@ -6,6 +6,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using UIKit;
 using Uno.Extensions;
+using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.UI.Core;
 
@@ -48,6 +51,9 @@ public partial class MessageDialog
 		{
 			alertController.PreferredAction = alertActions.ElementAtOrDefault((int)DefaultCommandIndex);
 		}
+
+		// Theme should match the application theme
+		alertController.OverrideUserInterfaceStyle = CoreApplication.RequestedTheme == SystemTheme.Light ? UIUserInterfaceStyle.Light : UIUserInterfaceStyle.Dark;
 
 		using (ct.Register(() =>
 			{
