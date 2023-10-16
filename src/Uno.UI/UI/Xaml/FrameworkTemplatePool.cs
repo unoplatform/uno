@@ -208,19 +208,6 @@ namespace Windows.UI.Xaml
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
 
-		internal void ForceClear()
-		{
-			foreach (var list in _pooledInstances.Values)
-			{
-				list.Clear();
-			}
-
-			_pooledInstances.Clear();
-
-#if USE_HARD_REFERENCES
-			_activeInstances.Clear();
-#endif
-		}
 
 		internal int GetPooledTemplatesCount()
 		{

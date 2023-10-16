@@ -70,7 +70,7 @@ internal class Given_FrameworkTemplatePool
 			await WindowHelper.WaitForIdle();
 
 			Assert.IsNull(targetInstance.Target, "targetInstance.Target is not null");
-			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is not null");
+			Assert.IsNotNull(targetTemplateRoot.Target, "targetTemplateRoot.Target is null");
 
 			Assert.AreEqual(1, FrameworkTemplatePool.Instance.GetPooledTemplatesCount(), "GetPooledTemplatesCount is incorrect");
 
