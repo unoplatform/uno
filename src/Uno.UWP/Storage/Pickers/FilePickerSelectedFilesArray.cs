@@ -35,7 +35,6 @@ namespace Windows.Storage.Pickers
 		public int Count
 		{
 			get => _items.Count;
-			set => throw new InvalidOperationException();
 		}
 	}
 }
