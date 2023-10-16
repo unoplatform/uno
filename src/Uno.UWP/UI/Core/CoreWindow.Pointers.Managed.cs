@@ -57,12 +57,7 @@ public partial class CoreWindow
 	public void SetPointerCapture()
 		=> _pointerSource?.SetPointerCapture();
 
-	internal void SetPointerCapture(PointerIdentifier pointer)
-		=> _pointerSource?.SetPointerCapture(pointer);
-
 	public void ReleasePointerCapture()
 		=> _pointerSource?.ReleasePointerCapture();
-	internal void ReleasePointerCapture(PointerIdentifier pointer)
-		=> _pointerSource?.ReleasePointerCapture(pointer);
 }
 #endif
