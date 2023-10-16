@@ -42,16 +42,17 @@ namespace Uno.UI.Runtime.Skia.Wpf
 		{
 			_manager = (DragDropManager)owner;
 
+			//TODO: Support multi-window drag and drop #13982
 			WpfManager.XamlRootMap.Registered += XamlRootMap_Registered;
+			WpfManager.XamlRootMap.Unregistered += XamlRootMap_Unregistered;
 		}
 
 		private void XamlRootMap_Registered(object? sender, XamlRoot xamlRoot)
 		{
-			// TODO:MZ: Multi-window support
 			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) as WpfControl;
 			_rootControl = host;
 
-			if (host is not null) // TODO: Add support for multiple XamlRoots
+			if (host is not null)
 			{
 				host.AllowDrop = true;
 
@@ -59,6 +60,21 @@ namespace Uno.UI.Runtime.Skia.Wpf
 				host.DragOver += OnHostDragOver;
 				host.DragLeave += OnHostDragLeave;
 				host.Drop += OnHostDrop;
+			}
+		}
+
+		private void XamlRootMap_Unregistered(object? sender, XamlRoot xamlRoot)
+		{
+			var host = WpfManager.XamlRootMap.GetHostForRoot(xamlRoot) as WpfControl;
+
+			if (host is not null)
+			{
+				host.AllowDrop = true;
+
+				host.DragEnter -= OnHostDragEnter;
+				host.DragOver -= OnHostDragOver;
+				host.DragLeave -= OnHostDragLeave;
+				host.Drop -= OnHostDrop;
 			}
 		}
 

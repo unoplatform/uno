@@ -191,8 +191,6 @@ public partial class Window
 	internal static Window? CurrentSafe => _current;
 #pragma warning restore RS0030
 
-	internal static Window? IShouldntUseCurrentWindow => CurrentSafe;
-
 	/// <summary>
 	/// Use this only as a temporary measure on single-window targets.
 	/// </summary>
@@ -263,7 +261,7 @@ public partial class Window
 	/// On platforms like iOS and Android, we might still have few native controls above this.
 	/// </summary>
 	/// <remarks>This element is flagged with IsVisualTreeRoot.</remarks>
-	internal UIElement? RootElement => _windowImplementation.XamlRoot?.VisualTree?.RootElement; //TODO:MZ: Is it ok to change to RootElement instead of PublicRootVisual?
+	internal UIElement? RootElement => _windowImplementation.XamlRoot?.VisualTree?.RootElement;
 
 	internal PopupRoot? PopupRoot => _windowImplementation.XamlRoot?.VisualTree?.PopupRoot;
 
