@@ -132,8 +132,10 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				return base.MeasureOverride(availableSize);
+				return MeasureFirstChild(availableSize);
 			}
 		}
+
+		protected override Size ArrangeOverride(Size finalSize) => ArrangeFirstChild(finalSize);
 	}
 }

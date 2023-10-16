@@ -259,7 +259,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			public ulong AppMemoryUsageLimit { get; set; }
 
 			public Task Delay(TimeSpan duration) => throw new NotImplementedException();
-			public void Schedule(IdleDispatchedHandler action) => throw new NotImplementedException();
+			public void Schedule(Action action) => throw new NotImplementedException();
 		}
 	}
 

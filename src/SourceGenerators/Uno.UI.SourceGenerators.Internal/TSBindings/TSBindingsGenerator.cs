@@ -15,13 +15,6 @@ namespace Uno.UI.SourceGenerators.TSBindings
 	[Generator]
 	class TSBindingsGenerator : ISourceGenerator
 	{
-		private string _bindingsPaths;
-		private string[] _sourceAssemblies;
-
-		private static INamedTypeSymbol _intPtrSymbol;
-		private static INamedTypeSymbol _structLayoutSymbol;
-		private static INamedTypeSymbol _interopMessageSymbol;
-
 		public void Initialize(GeneratorInitializationContext context)
 		{
 		}
@@ -30,35 +23,33 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		{
 			if (!DesignTimeHelper.IsDesignTime(context) && PlatformHelper.IsValidPlatform(context))
 			{
-				_bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath");
-				_sourceAssemblies = context.GetMSBuildPropertyValue("TSBindingAssemblySource").Split(';');
+				string bindingsPaths = context.GetMSBuildPropertyValue("TSBindingsPath");
+				string[] sourceAssemblies = context.GetMSBuildPropertyValue("TSBindingAssemblySource").Split(';');
 
-				if (!string.IsNullOrEmpty(_bindingsPaths))
+				if (!string.IsNullOrEmpty(bindingsPaths))
 				{
-					Directory.CreateDirectory(_bindingsPaths);
+					Directory.CreateDirectory(bindingsPaths);
 
-					_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
-					_structLayoutSymbol = context.Compilation.GetTypeByMetadataName(typeof(StructLayoutAttribute).FullName);
-					_interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
+					INamedTypeSymbol interopMessageSymbol = context.Compilation.GetTypeByMetadataName("Uno.Foundation.Interop.TSInteropMessageAttribute");
 
 					var modules = from ext in context.Compilation.ExternalReferences
 								  let sym = context.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-								  where _sourceAssemblies.Contains(sym.Name)
+								  where sourceAssemblies.Contains(sym.Name)
 								  from module in sym.Modules
 								  select module;
 
 					modules = modules.Concat(context.Compilation.SourceModule);
 
-					GenerateTSMarshallingLayouts(modules);
+					GenerateTSMarshallingLayouts(modules, bindingsPaths, interopMessageSymbol);
 				}
 			}
 		}
 
-		internal void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules)
+		private static void GenerateTSMarshallingLayouts(IEnumerable<IModuleSymbol> modules, string bindingsPaths, INamedTypeSymbol interopMessageSymbol)
 		{
 			var messages = from module in modules
 						   from type in GetNamespaceTypes(module)
-						   let attr = type.FindAttributeFlattened(_interopMessageSymbol)
+						   let attr = type.FindAttributeFlattened(interopMessageSymbol)
 						   where attr is not null && type.TypeKind is TypeKind.Struct
 						   select (type, attr);
 
@@ -115,7 +106,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 					}
 				}
 
-				var outputPath = Path.Combine(_bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
+				var outputPath = Path.Combine(bindingsPaths, $"{(ns is null ? "" : ns.Replace('.', '_') + "_")}{message.type.Name}.ts");
 
 				var fileExists = File.Exists(outputPath);
 				var output = sb.ToString();
@@ -140,7 +131,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private int GetStructPack(ISymbol parametersType)
+		private static int GetStructPack(ISymbol parametersType)
 		{
 			// https://github.com/dotnet/roslyn/blob/master/src/Compilers/Core/Portable/Symbols/TypeLayout.cs is not available.
 
@@ -170,7 +161,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			throw new InvalidOperationException($"Failed to get structure layout, unknown roslyn internal structure");
 		}
 
-		private bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
+		private static bool IsMarshalledExplicitly(IFieldSymbol fieldSymbol)
 		{
 			// https://github.com/dotnet/roslyn/blob/0610c79807fa59d0815f2b89e5283cf6d630b71e/src/Compilers/CSharp/Portable/Symbols/Metadata/PE/PEFieldSymbol.cs#L133 is not available.
 
@@ -195,7 +186,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		/// </summary>
 		/// <param name="symbol"></param>
 		/// <returns></returns>
-		private object GetActualSymbol(ISymbol symbol)
+		private static object GetActualSymbol(ISymbol symbol)
 		{
 			if (symbol.GetType().GetProperty("UnderlyingSymbol", BindingFlags.Instance | BindingFlags.NonPublic) is PropertyInfo info)
 			{
@@ -208,7 +199,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			return symbol;
 		}
 
-		private void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private static void GenerateMarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public marshal(pData:number)"))
 			{
@@ -259,7 +250,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
+		private static void GenerateUnmarshaler(INamedTypeSymbol parametersType, IndentedStringBuilder sb, int packValue)
 		{
 			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
@@ -365,16 +356,17 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private bool CanUseEMHeapProperty(ITypeSymbol type)
+		private static bool CanUseEMHeapProperty(ITypeSymbol type)
 			=> type.SpecialType == SpecialType.System_UInt32;
 
-		private int GetNativeFieldSize(IFieldSymbol field)
+		private static int GetNativeFieldSize(IFieldSymbol field)
 		{
 			if (
 				field.Type.SpecialType is SpecialType.System_String ||
 				field.Type.SpecialType is SpecialType.System_Int32 ||
 				field.Type.SpecialType is SpecialType.System_UInt32 ||
-				SymbolEqualityComparer.Default.Equals(field.Type, _intPtrSymbol) ||
+				field.Type.SpecialType == SpecialType.System_IntPtr ||
+				field.Type.SpecialType == SpecialType.System_UIntPtr ||
 				field.Type.SpecialType is SpecialType.System_Single ||
 				field.Type.SpecialType is SpecialType.System_Boolean ||
 				field.Type.SpecialType is SpecialType.System_Byte ||
@@ -389,17 +381,18 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else
 			{
-				throw new NotSupportedException($"The field [{field} {field.Type}] is not supported");
+				throw new NotSupportedException($"GetNativeFieldSize: The field [{field} {field.Type}] is not supported");
 			}
 		}
 
-		private int GetEMTypeShift(IFieldSymbol field)
+		private static int GetEMTypeShift(IFieldSymbol field)
 		{
 			var fieldType = field.Type;
 
 			if (
 				fieldType.SpecialType == SpecialType.System_String
-				|| SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol)
+				|| fieldType.SpecialType == SpecialType.System_IntPtr
+				|| fieldType.SpecialType == SpecialType.System_UIntPtr
 				|| fieldType is IArrayTypeSymbol
 			)
 			{
@@ -443,7 +436,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		{
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
-				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				fieldType.SpecialType == SpecialType.System_IntPtr ||
+				fieldType.SpecialType == SpecialType.System_UIntPtr ||
 				fieldType is IArrayTypeSymbol
 			)
 			{
@@ -483,11 +477,12 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 		}
 
-		private object GetEMHeapProperty(ITypeSymbol fieldType)
+		private static object GetEMHeapProperty(ITypeSymbol fieldType)
 		{
 			if (
 				fieldType.SpecialType == SpecialType.System_String ||
-				SymbolEqualityComparer.Default.Equals(fieldType, _intPtrSymbol) ||
+				fieldType.SpecialType == SpecialType.System_IntPtr ||
+				fieldType.SpecialType == SpecialType.System_UIntPtr ||
 				fieldType is IArrayTypeSymbol ||
 				fieldType.SpecialType == SpecialType.System_Int32 ||
 				fieldType.SpecialType == SpecialType.System_Boolean
@@ -548,7 +543,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				type.SpecialType == SpecialType.System_Double ||
 				type.SpecialType == SpecialType.System_Byte ||
 				type.SpecialType == SpecialType.System_Int16 ||
-				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
+				type.SpecialType == SpecialType.System_IntPtr ||
+				type.SpecialType == SpecialType.System_UIntPtr
 			)
 			{
 				return "Number";
@@ -559,7 +555,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else
 			{
-				throw new NotSupportedException($"The type {type} is not supported");
+				throw new NotSupportedException($"GetTSType: The type {type} is not supported (SpecialType: {type.SpecialType}, original type: {type.OriginalDefinition})");
 			}
 		}
 
@@ -585,7 +581,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 				type.SpecialType == SpecialType.System_Double ||
 				type.SpecialType == SpecialType.System_Byte ||
 				type.SpecialType == SpecialType.System_Int16 ||
-				SymbolEqualityComparer.Default.Equals(type, _intPtrSymbol)
+				type.SpecialType == SpecialType.System_IntPtr ||
+				type.SpecialType == SpecialType.System_UIntPtr
 			)
 			{
 				return "number";
@@ -596,7 +593,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 			}
 			else
 			{
-				throw new NotSupportedException($"The type {type} is not supported");
+				throw new NotSupportedException($"GetTSFieldType: The type {type} is not supported (SpecialType: {type.SpecialType}, original type: {type.OriginalDefinition})");
 			}
 		}
 

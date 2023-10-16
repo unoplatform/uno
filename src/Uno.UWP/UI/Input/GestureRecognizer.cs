@@ -135,14 +135,8 @@ namespace Windows.UI.Input
 
 		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
-#if IS_UNIT_TESTS || UNO_REFERENCE_API
-			if (_gestures.TryGetValue(value.PointerId, out var gesture))
-			{
-				_gestures.Remove(value.PointerId);
-#else
 			if (_gestures.Remove(value.PointerId, out var gesture))
 			{
-#endif
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
 
@@ -189,25 +183,7 @@ namespace Windows.UI.Input
 		{
 			if (_gestures.TryGetValue(pointerId, out var gesture))
 			{
-				if (events.HasFlag(GestureSettings.Tap))
-				{
-					gesture.PreventTap();
-				}
-
-				if (events.HasFlag(GestureSettings.RightTap))
-				{
-					gesture.PreventRightTap();
-				}
-
-				if (events.HasFlag(GestureSettings.DoubleTap))
-				{
-					gesture.PreventDoubleTap();
-				}
-
-				if (events.HasFlag(GestureSettings.Hold))
-				{
-					gesture.PreventHolding();
-				}
+				gesture.PreventGestures(events & GestureSettingsHelper.SupportedGestures);
 
 				return gesture.Settings;
 			}

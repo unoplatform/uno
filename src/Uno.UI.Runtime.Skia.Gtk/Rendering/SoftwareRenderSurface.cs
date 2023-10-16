@@ -93,6 +93,11 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 			if (_host.RootElement?.Visual is { } rootVisual)
 			{
 				WUX.Window.Current.Compositor.RenderRootVisual(_surface, rootVisual);
+
+				if (WUX.Window.Current.Compositor.IsSoftwareRenderer is null)
+				{
+					WUX.Window.Current.Compositor.IsSoftwareRenderer = true;
+				}
 			}
 		}
 

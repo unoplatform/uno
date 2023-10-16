@@ -11,9 +11,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
 	internal static partial class XBindExpressionParser
 	{
-		// TODO: isRValue feels like a hack so that we generate compilable code when bindings are generated as LValue.
-		// However, we could be incorrectly throwing NRE. This should be handled properly.
-		internal static (string? MethodDeclaration, string Expression, ImmutableArray<string> Properties, bool HasFunction) Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, int xBindCounter, Func<string, INamedTypeSymbol?> findType)
+		internal static (string? MethodDeclaration, string Expression, ImmutableArray<string> Properties, bool HasFunction) Rewrite(string contextName, string rawFunction, INamedTypeSymbol? contextTypeSymbol, INamespaceSymbol globalNamespace, bool isRValue, int xBindCounter, Func<string, INamedTypeSymbol?> findType, string? targetPropertyType)
 		{
 			var parser = new CoreParser(rawFunction);
 			XBindRoot expression = parser.ParseXBind();
@@ -21,9 +19,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			var builder = new CSharpBuilder(contextName, findType);
 			var (csharpExpression, properties) = builder.Build(expression);
-			if (isRValue && contextTypeSymbol is not null)
+			if (contextTypeSymbol is not null)
 			{
-				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter);
+				var nullabilityRewriter = new NullabilityRewriter(contextName, contextTypeSymbol, globalNamespace, xBindCounter, isRValue, targetPropertyType);
 				// TODO: We should probably avoid using Roslyn at all.
 				// We could combine nullability rewriter into CSharpBuilder.
 				nullabilityRewriter.Visit(SyntaxFactory.ParseExpression(csharpExpression));
@@ -31,7 +29,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				if (!nullabilityRewriter.Failed)
 				{
 					var methodDeclaration = nullabilityRewriter.MainExpression.ToString();
-					return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)", properties, hasFunction);
+					if (isRValue)
+					{
+						return (methodDeclaration, $"TryGetInstance_xBind_{xBindCounter}({contextName}, out var bindResult{xBindCounter}) ? (true, bindResult{xBindCounter}) : (false, default)", properties, hasFunction);
+					}
+					else
+					{
+						return (methodDeclaration, $"TrySetInstance_xBind_{xBindCounter}({contextName}, __value)", properties, hasFunction);
+					}
 				}
 			}
 
@@ -242,6 +247,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			private readonly INamespaceSymbol _globalNamespace;
 			private readonly int _xBindCounter;
 			private readonly StringBuilder _builder = new();
+			private readonly bool _isRValue;
+			private readonly string? _targetPropertyType;
 			private XBindExpressionInfo _activeSubexpression;
 
 			private (ISymbol? Symbol, bool IsTopLevelContext) _lastAccessed;
@@ -252,7 +259,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 			public XBindExpressionInfo MainExpression { get; }
 
-			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace, int xBindCounter)
+			public NullabilityRewriter(string contextName, INamedTypeSymbol contextTypeSymbol, INamespaceSymbol globalNamespace, int xBindCounter, bool isRValue, string? targetPropertyType)
 			{
 				_contextName = contextName;
 				_contextTypeSymbol = contextTypeSymbol;
@@ -265,7 +272,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				// to all members.
 				_globalNamespace = globalNamespace;
 				_xBindCounter = xBindCounter;
-				_activeSubexpression = new(xBindCounter, _contextTypeString, contextName);
+				_isRValue = isRValue;
+				_targetPropertyType = targetPropertyType;
+				_activeSubexpression = new(xBindCounter, _contextTypeString, contextName, isRValue, targetPropertyType);
 				MainExpression = _activeSubexpression;
 			}
 
@@ -353,7 +362,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					_lastAccessed = (null, false);
 					var argument = node.Arguments[i];
 
-					var argumentExpression = new XBindExpressionInfo(_xBindCounter, _contextTypeString, _contextName);
+					var argumentExpression = new XBindExpressionInfo(_xBindCounter, _contextTypeString, _contextName, _isRValue, _targetPropertyType);
 					MainExpression.Arguments.Add(argumentExpression);
 					_activeSubexpression = argumentExpression;
 

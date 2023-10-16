@@ -426,6 +426,8 @@
           items:
             - name: Troubleshooting build errors
               href: uno-builds-troubleshooting.md
+            - name: How to create a repro sample
+              href: uno-howto-create-a-repro.md
             - name: Build error codes
               href: uno-build-error-codes.md
             - name: 'Debugging C# on WASM'

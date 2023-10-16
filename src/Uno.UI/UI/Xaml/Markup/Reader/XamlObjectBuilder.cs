@@ -943,7 +943,13 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					case "_PositionalParameters":
 					case nameof(Binding.Path):
-						binding.Path = RewriteAttachedPropertyPath(bindingProperty.Value?.ToString());
+						var path = bindingProperty.Value?.ToString();
+						if (templateBindingNode is not null && TypeResolver.IsAttachedProperty(member))
+						{
+							path = $"({path})";
+						}
+
+						binding.Path = RewriteAttachedPropertyPath(path);
 						break;
 
 					case nameof(Binding.ElementName):
@@ -1332,15 +1338,8 @@ namespace Windows.UI.Xaml.Markup.Reader
 			}
 		}
 
-#if !DISABLE_GENERATED_REGEX
 		[GeneratedRegex(@"(\(.*?\))")]
-#endif
 		private static partial Regex AttachedPropertyMatching();
-
-#if DISABLE_GENERATED_REGEX
-		private static partial Regex AttachedPropertyMatching()
-			=> new Regex(@"(\(.*?\))");
-#endif
 
 		/// <summary>
 		/// Matches non-nested path like string: (xmlns:type.property)
@@ -1352,11 +1351,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		/// For example the parser interprets either "Button.Background" or "Control.Background"
 		/// as being a reference to the Background property in a style for a Button."
 		/// </remarks>
-#if DISABLE_GENERATED_REGEX
-		private static Regex PropertyPathPattern() => new Regex(@"^\(?((?<xmlns>\w+):)?((?<type>\w+)\.)?(?<property>\w+)\)?$", RegexOptions.ExplicitCapture);
-#else
 		[GeneratedRegex(@"^\(?((?<xmlns>\w+):)?((?<type>\w+)\.)?(?<property>\w+)\)?$", RegexOptions.ExplicitCapture)]
 		private static partial Regex PropertyPathPattern();
-#endif
 	}
 }

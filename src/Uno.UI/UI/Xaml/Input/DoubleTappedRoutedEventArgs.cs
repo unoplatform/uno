@@ -23,7 +23,10 @@ namespace Windows.UI.Xaml.Input
 			_originalSource = originalSource;
 			PointerDeviceType = args.PointerDeviceType;
 			_position = args.Position;
+			PointerId = args.PointerId;
 		}
+
+		internal uint PointerId { get; }
 
 		public bool Handled { get; set; }
 

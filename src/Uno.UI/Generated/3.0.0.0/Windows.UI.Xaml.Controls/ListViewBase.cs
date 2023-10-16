@@ -92,20 +92,6 @@ namespace Windows.UI.Xaml.Controls
 #endif
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public bool IsMultiSelectCheckBoxEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsMultiSelectCheckBoxEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsMultiSelectCheckBoxEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Data.ItemIndexRange> SelectedRanges
 		{
 			get
@@ -231,14 +217,6 @@ namespace Windows.UI.Xaml.Controls
 			nameof(ReorderMode), typeof(global::Windows.UI.Xaml.Controls.ListViewReorderMode),
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListViewReorderMode)));
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty IsMultiSelectCheckBoxEnabledProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(IsMultiSelectCheckBoxEnabled), typeof(bool),
-			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
-			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(bool)));
 #endif
 		// Skipping already declared property SingleSelectionFollowsFocusProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.ListViewBase.ListViewBase()

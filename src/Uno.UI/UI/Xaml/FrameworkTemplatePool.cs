@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml
 #endif
 		}
 
-		private async void Scavenger(IdleDispatchedHandlerArgs e)
+		private async void Scavenger()
 		{
 			Scavenge(false);
 

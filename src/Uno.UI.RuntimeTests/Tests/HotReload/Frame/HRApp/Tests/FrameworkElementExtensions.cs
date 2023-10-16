@@ -63,8 +63,8 @@ namespace Uno.UI.RuntimeTests.Tests.HotReload
 			return new UpdateFile
 			{
 				FilePath = fileInfo.FileName,
-				OriginalXaml = originalText,
-				ReplacementXaml = replacementText
+				OldText = originalText,
+				NewText = replacementText
 			};
 
 		}

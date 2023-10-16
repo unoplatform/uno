@@ -72,7 +72,7 @@ namespace Private.Infrastructure
 #else
 				// fall back to a tap event on platforms where InputInjector isn't implemented. Ideally tap should be triggered
 				// by GestureRecognizer when a pointer is pressed and released, but here we do a hacky workaround
-				var args = new TappedEventArgs(PointerDeviceType.Touch, default, 1);
+				var args = new TappedEventArgs(1, PointerDeviceType.Touch, default, 1);
 				element.SafeRaiseEvent(UIElement.TappedEvent, new TappedRoutedEventArgs(element, args));
 #endif
 			}

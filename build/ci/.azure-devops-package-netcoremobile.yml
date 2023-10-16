@@ -1,0 +1,115 @@
+parameters:
+  poolName: ''
+
+jobs:
+- job: netcoremobile_win_build
+  displayName: '.NET Mobile Package Binaries'
+  timeoutInMinutes: 90
+
+  pool: ${{ parameters.poolName }}
+
+  strategy:
+    matrix:
+      UWP_NET8:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+        UnoDisableNet7Mobile: true
+        ZipFileTargetFramework: net8
+
+      WinUI_NET8:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+        UnoDisableNet7Mobile: true
+        ZipFileTargetFramework: net8
+
+      UWP_NET7:
+        UNO_UWP_BUILD: true
+        XAML_FLAVOR_BUILD: UWP
+        UnoDisableNetCurrentMobile: true
+        UnoDisableNetCurrent: true
+        ZipFileTargetFramework: net7
+
+      WinUI_NET7:
+        UNO_UWP_BUILD: false
+        XAML_FLAVOR_BUILD: WinUI
+        UnoDisableNetCurrentMobile: true
+        UnoDisableNetCurrent: true
+        ZipFileTargetFramework: net7
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # Disable trimming for packages creation
+    PublishTrimmed: false
+
+    # Disable AOT for this job
+    RunAOTCompilation: false
+
+    # Use pre-defined local nuget cache for restore
+    NUGET_PACKAGES: 'C:\NugetPackages'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/download-winui-converted-tree.yml
+
+  - template: templates/gitversion.yml
+
+  - script: |
+      cp global.json global-net7.json
+      cp global-net8.json global.json
+    displayName: Replace global.json with .NET 8
+    condition: and(succeeded(), eq(variables.UnoDisableNet7Mobile, 'true'))
+
+  - template: templates/dotnet-mobile-install-windows.yml
+
+  # This task is required to run in separately to avoid hitting targets file
+  # caching issues with msbuild 17.3 or later
+  - task: DotNetCoreCLI@2
+    inputs:
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /nr:false /r /m /t:PrepareBuildAssets "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-prepare-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Preparing assets
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      workingDirectory: Build
+      arguments: Uno.UI.Build.csproj /r /m /t:BuildCIMobile "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer)-netcoremobile-$(ZipFileTargetFramework)-$(XAML_FLAVOR_BUILD).binlog
+    displayName: Building package binaries
+
+  - task: MSBuild@1
+    inputs:
+      solution: build/filters/Uno.UI-packages-windows.slnf
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /m /v:m /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-$(GitVersion.FullSemVer)-windows-$(XAML_FLAVOR_BUILD)-binaries.binlog
+      clean: false
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+    condition: and(succeeded(), eq(variables['ZipFileTargetFramework'], 'net7'))
+    displayName: Building WinAppSDK/UWP package binaries
+
+  - template: templates/copy-package-assets.yml
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: $(build.sourcesdirectory)\build-artifacts\bin-$(XAML_FLAVOR_BUILD)
+      includeRootFolder: false
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/windows-netcoremobile-$(ZipFileTargetFramework)-bin-$(XAML_FLAVOR_BUILD).zip'
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    retryCountOnTaskFailure: 3
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages-Artifacts-netcoremobile-$(XAML_FLAVOR_BUILD)
+      ArtifactType: Container

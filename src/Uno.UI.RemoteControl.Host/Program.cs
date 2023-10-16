@@ -28,7 +28,7 @@ namespace Uno.UI.RemoteControl.Host
 					"ppid=", s => {
 						if(!int.TryParse(s, NumberStyles.Integer, CultureInfo.InvariantCulture, out parentPID))
 						{
-							throw new ArgumentException($"The httpPort parameter is invalid {s}");
+							throw new ArgumentException($"The parent process id parameter is invalid {s}");
 						}
 					}
 				},

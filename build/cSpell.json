@@ -3,6 +3,7 @@
   "language": "en",
   "words": [
 	"Avalonia",
+	"ambiently",
 	"binlog",
 	"Blazor",
 	"blockquotes",
@@ -56,6 +57,7 @@
 	"Pluralsight",
 	"POSIX",
 	"reentrantly",
+	"Resizetizer",
 	"roadmap",
 	"sandboxed",
 	"Segoe",
@@ -79,8 +81,7 @@
 	"UWP's",
 	"VSIX",
 	"walkthrough",
-	"WEBASSEMBLY",
-	"Resizetizer"
+	"WEBASSEMBLY"
   ],
   "ignoreWords": [
 	"ADAL",
@@ -121,7 +122,8 @@
 	"Onoh",
 	"Findlay",
 	"Logpoints",
-	"addin"
+	"addin",
+	"Yowza"
   ],
   "patterns": [
 	{

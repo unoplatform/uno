@@ -109,8 +109,6 @@ public partial class Popup : FrameworkElement, IPopup
 					Focus(FocusState.Programmatic);
 				}
 			}
-
-			Opened?.Invoke(this, newIsOpen);
 		}
 		else
 		{
@@ -131,8 +129,6 @@ public partial class Popup : FrameworkElement, IPopup
 			{
 				elementToFocus.Focus(FocusState.Programmatic);
 			}
-
-			Closed?.Invoke(this, newIsOpen);
 		}
 	}
 

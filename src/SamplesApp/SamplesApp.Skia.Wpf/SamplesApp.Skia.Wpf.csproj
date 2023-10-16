@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetPreviousWpf)</TargetFrameworks>
 		<TargetFrameworks Condition="'$(UnoDisableNetCurrent)'!='true'">$(TargetFrameworks);$(NetCurrentWpf)</TargetFrameworks>

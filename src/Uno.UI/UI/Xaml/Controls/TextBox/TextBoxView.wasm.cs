@@ -115,6 +115,9 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
+
 		internal void SetPasswordRevealState(PasswordRevealState revealState)
 		{
 			if (IsMultiline)

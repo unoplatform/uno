@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				_imageSprite.Size = default;
-				return base.ArrangeOverride(finalSize);
+				return ArrangeFirstChild(finalSize);
 			}
 		}
 

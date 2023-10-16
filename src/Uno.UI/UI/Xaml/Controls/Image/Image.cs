@@ -485,7 +485,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 
-			return base.ArrangeOverride(finalSize);
+			return ArrangeFirstChild(finalSize);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__
+#if __IOS__ || __ANDROID__ || __WASM__
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors;
@@ -15,6 +15,13 @@ public partial class Compass
 	private static bool _initializationAttempted;
 
 	private TypedEventHandler<Compass, CompassReadingChangedEventArgs> _readingChanged;
+
+	/// <summary>
+	/// Hides the public parameterless constructor
+	/// </summary>
+	private Compass()
+	{
+	}
 
 	/// <summary>
 	/// Returns the default compass.

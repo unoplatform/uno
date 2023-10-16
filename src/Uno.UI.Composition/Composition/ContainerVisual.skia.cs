@@ -45,7 +45,7 @@ public partial class ContainerVisual : Visual
 		IsChildrenRenderOrderDirty = false;
 	}
 
-	private protected override void Draw(in DrawingSession session)
+	internal override void Draw(in DrawingSession session)
 	{
 		base.Draw(in session);
 

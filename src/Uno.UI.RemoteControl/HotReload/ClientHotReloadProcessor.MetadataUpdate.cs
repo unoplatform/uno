@@ -1,13 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
@@ -15,14 +13,13 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using System.Threading;
 
 namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
+		private static int _isReloading;
+
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
 		private ElementUpdateAgent? _elementAgent;
@@ -170,26 +167,46 @@ namespace Uno.UI.RemoteControl.HotReload
 			return values;
 		}
 #endif
-		private static void ReloadWithUpdatedTypes(Type[] updatedTypes)
+
+		private static async Task<bool> ShouldReload()
 		{
-			if (updatedTypes.Length == 0)
+			if (Interlocked.CompareExchange(ref _isReloading, 1, 0) == 1)
+			{
+				return false;
+			}
+			try
+			{
+				await TypeMappings.WaitForMappingsToResume();
+			}
+			finally
+			{
+				Interlocked.Exchange(ref _isReloading, 0);
+			}
+			return true;
+		}
+
+		private static async void ReloadWithUpdatedTypes(Type[] updatedTypes)
+		{
+			if (!await ShouldReload())
 			{
 				return;
 			}
 
-			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
+			try
+			{
 
-			// Action: BeforeVisualTreeUpdate
-			// This is called before the visual tree is updated
-			handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes));
+				var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
 
-			// Iterate through the visual tree and either invole ElementUpdate, 
-			// or replace the element with a new one
-			foreach (
-				var (element, elementHandler, elementMappedType) in
-				EnumerateHotReloadInstances(
-					Window.Current.Content,
-					fe =>
+				// Action: BeforeVisualTreeUpdate
+				// This is called before the visual tree is updated
+				_ = handlerActions?.Do(h => h.Value.BeforeVisualTreeUpdate(updatedTypes)).ToArray();
+
+				var capturedStates = new Dictionary<string, Dictionary<string, object>>();
+
+				var isCapturingState = true;
+				var treeIterator = EnumerateHotReloadInstances(
+						Window.Current.Content,
+						(fe, key) =>
 						{
 							// Get the original type of the element, in case it's been replaced
 							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
@@ -203,23 +220,64 @@ namespace Uno.UI.RemoteControl.HotReload
 							// Get the replacement type, or null if not replaced
 							var mappedType = originalType.GetMappedType();
 
+							if (handler is not null)
+							{
+								if (!capturedStates.TryGetValue(key, out var dict))
+								{
+									dict = new();
+								}
+								if (isCapturingState)
+								{
+									handler.CaptureState(fe, dict, updatedTypes);
+									if (dict.Any())
+									{
+										capturedStates[key] = dict;
+									}
+								}
+								else
+								{
+									handler.RestoreState(fe, dict, updatedTypes);
+								}
+							}
+
 							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
 						},
-					enumerateChildrenAfterMatch: true))
-			{
+						parentKey: default);
 
-				// Action: ElementUpdate
-				// This is invoked for each existing element that is in the tree that needs to be replaced
-				elementHandler?.ElementUpdate(element, updatedTypes);
+				// Forced iteration to capture all state before doing ui update
+				var instancesToUpdate = treeIterator.ToArray();
 
-				if (elementMappedType is not null)
+
+				// Iterate through the visual tree and either invole ElementUpdate, 
+				// or replace the element with a new one
+				foreach (var (element, elementHandler, elementMappedType) in instancesToUpdate)
 				{
-					ReplaceViewInstance(element, elementMappedType, elementHandler);
+					// Action: ElementUpdate
+					// This is invoked for each existing element that is in the tree that needs to be replaced
+					elementHandler?.ElementUpdate(element, updatedTypes);
+
+					if (elementMappedType is not null)
+					{
+						ReplaceViewInstance(element, elementMappedType, elementHandler);
+					}
 				}
+
+				isCapturingState = false;
+				// Forced iteration again to restore all state after doing ui update
+				_ = treeIterator.ToArray();
+
+				// Action: AfterVisualTreeUpdate
+				_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
+			}
+			catch (Exception ex)
+			{
+				if (_log.IsEnabled(LogLevel.Error))
+				{
+					_log.Error($"Error doing UI Update - {ex.Message}", ex);
+				}
+				throw;
 			}
 
-			// Action: AfterVisualTreeUpdate
-			handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes));
 		}
 
 		private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
@@ -278,7 +336,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (t.GetCustomAttribute<System.Runtime.CompilerServices.MetadataUpdateOriginalTypeAttribute>() is { } update)
 				{
-					TypeMappingHelper.RegisterMapping(t, update.OriginalType);
+					TypeMappings.RegisterMapping(t, update.OriginalType);
 				}
 			}
 

@@ -45,13 +45,13 @@ public class Given_TextBlock : BaseTestClass
 		};
 
 		// Check the initial text of the TextBlock
-		await UnitTestsUIContentHelper.Content.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockOriginalText);
+		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockOriginalText);
 
 		// Check the updated text of the TextBlock
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
 			FirstPageTextBlockChangedText,
-			() => UnitTestsUIContentHelper.Content.ValidateFirstTextBlockOnCurrentPageText(FirstPageTextBlockChangedText),
+			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(FirstPageTextBlockChangedText),
 			ct);
 	}
 }

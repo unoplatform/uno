@@ -4,6 +4,9 @@ using System.Text;
 
 namespace Windows.Devices.Sensors
 {
+	/// <summary>
+	/// Provides data for the accelerometer-shaken event.
+	/// </summary>
 	public partial class AccelerometerShakenEventArgs
 	{
 		internal AccelerometerShakenEventArgs()
@@ -16,6 +19,9 @@ namespace Windows.Devices.Sensors
 			Timestamp = timestamp;
 		}
 
+		/// <summary>
+		/// Gets the time at which the sensor reported the shaken event.
+		/// </summary>
 		public DateTimeOffset Timestamp { get; }
 #endif
 	}

@@ -2,8 +2,6 @@
 
 	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
-	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
-
 	<PropertyGroup>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>True</DebugSymbols>
@@ -30,11 +28,6 @@
 
 		<DefaultLanguage>en-US</DefaultLanguage>
 
-		<UnoSourceGeneratorUseGenerationHost>true</UnoSourceGeneratorUseGenerationHost>
-
-		<!-- Disable generation controller to conserver CI server memory -->
-		<UnoSourceGeneratorUseGenerationController Condition="'$(CI_Build)'=='true'">false</UnoSourceGeneratorUseGenerationController>
-
 		<!-- Disable source link when not building on GitHub -->
 		<SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
 		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
@@ -42,6 +35,9 @@
 
 		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
 		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
+
+		<!-- Resizetizer codegen is not supported in UWP -->
+		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>
 
 		<DisableImplicitNamespaceImports>true</DisableImplicitNamespaceImports>
 
@@ -71,11 +67,11 @@
 		<NetUnitTests>$(NetPrevious)</NetUnitTests>
 
 		<NetUWPOrWinUI>uap10.0.19041</NetUWPOrWinUI>
-		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">net7.0-windows10.0.19041.0</NetUWPOrWinUI>
+		<NetUWPOrWinUI Condition="'$(UNO_UWP_BUILD)'!='true'">$(NetPrevious)-windows10.0.19041.0</NetUWPOrWinUI>
 	</PropertyGroup>
 
 	<PropertyGroup>
-		<MicrosoftNetCompilersToolsetVersion>4.7.0-2.final</MicrosoftNetCompilersToolsetVersion>
+		<MicrosoftNetCompilersToolsetVersion>4.7.0</MicrosoftNetCompilersToolsetVersion>
 	</PropertyGroup>
 
   <ItemGroup>
@@ -222,37 +218,22 @@
 
 	<PropertyGroup>
 		<IsAndroid>false</IsAndroid>
-		<IsAndroid Condition="
-		'$(TargetFramework)'=='net8.0-android'
-		or '$(TargetFramework)'=='net7.0-android'
-		">true</IsAndroid>
+		<IsAndroid Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='android'">true</IsAndroid>
 
 		<IsIOS>false</IsIOS>
-		<IsIOS Condition="
-		'$(TargetFramework)'=='net8.0-ios'
-		or '$(TargetFramework)'=='net7.0-ios'
-		">true</IsIOS>
+		<IsIOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='ios'">true</IsIOS>
 
 		<IsMacOS>false</IsMacOS>
-		<IsMacOS Condition="
-		'$(TargetFramework)'=='net8.0-macos'
-		or '$(TargetFramework)'=='net7.0-macos'
-		">true</IsMacOS>
+		<IsMacOS Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='macos'">true</IsMacOS>
 
 		<IsCatalyst>false</IsCatalyst>
-		<IsCatalyst Condition="'$(TargetFramework)'=='net8.0-maccatalyst' or '$(TargetFramework)'=='net7.0-maccatalyst'">true</IsCatalyst>
+		<IsCatalyst Condition="'$([MSBuild]::GetTargetPlatformIdentifier($(TargetFramework)))'=='maccatalyst'">true</IsCatalyst>
 
 		<IsIOSOrCatalyst>false</IsIOSOrCatalyst>
 		<IsIOSOrCatalyst Condition="$(IsIOS) or $(IsCatalyst)">true</IsIOSOrCatalyst>
 
 		<_IsUnitTests>false</_IsUnitTests>
 		<_IsUnitTests Condition="$(MSBuildProjectName.Contains('.Tests'))">true</_IsUnitTests>
-
-		<_IsNetCore>false</_IsNetCore>
-		<_IsNetCore Condition="'$(TargetFramework)'=='net8.0' or '$(TargetFramework)'=='net7.0'">true</_IsNetCore>
-
-		<_IsNetStd>false</_IsNetStd>
-		<_IsNetStd Condition="$(_IsNetCore) and !$(_IsUnitTests)">true</_IsNetStd>
 	</PropertyGroup>
 
 	<PropertyGroup>

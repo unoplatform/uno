@@ -293,6 +293,7 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
+							_applyTemplateShouldBeInvoked = false;
 							OnApplyTemplate();
 						}
 					}
@@ -465,6 +466,12 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 		}
+
+		protected override Size MeasureOverride(Size availableSize)
+			=> MeasureFirstChild(availableSize);
+
+		protected override Size ArrangeOverride(Size finalSize)
+			=> ArrangeFirstChild(finalSize);
 
 		/// <summary>
 		/// Loads the relevant control template so that its parts can be referenced.

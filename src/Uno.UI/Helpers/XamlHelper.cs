@@ -13,22 +13,14 @@ internal static partial class XamlHelper
 	/// <remarks>
 	/// It will match an opening or closing or self-closing tag.
 	/// </remarks>
-#if DISABLE_GENERATED_REGEX
-	private static Regex EndOfTagRegex() => new Regex(@"(?=( ?/)?>)");
-#else
 	[GeneratedRegex(@"(?=( ?/)?>)")]
 	private static partial Regex EndOfTagRegex();
-#endif
 
 	/// <summary>
 	/// Matches any tag without xmlns prefix.
 	/// </summary>
-#if DISABLE_GENERATED_REGEX
-	private static Regex NonXmlnsTagRegex() => new Regex(@"<\w+[ />]");
-#else
 	[GeneratedRegex(@"<\w+[ />]")]
 	private static partial Regex NonXmlnsTagRegex();
-#endif
 
 	private static readonly IReadOnlyDictionary<string, string> KnownXmlnses = new Dictionary<string, string>
 	{

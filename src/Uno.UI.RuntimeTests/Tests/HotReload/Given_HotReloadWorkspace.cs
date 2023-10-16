@@ -19,6 +19,7 @@ using System.Threading;
 using System.Xml;
 using Windows.Storage.AccessCache;
 using System.Linq;
+using System.Collections.Immutable;
 
 namespace Uno.UI.RuntimeTests.Tests.HotReload;
 
@@ -53,9 +54,12 @@ internal partial class Given_HotReloadWorkspace
 	/// </remarks>
 	[TestMethod]
 	[Timeout(5 * 60 * 1000)]
-	public async Task When_HotReloadScenario()
+	[Filters]
+	public async Task When_HotReloadScenario(string filters)
 	{
-		var resultFile = await RunTestApp(CancellationToken.None);
+		// Remove this class and this method from the filters
+		filters = string.Join(";", (filters?.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries) ?? Array.Empty<string>()).ToImmutableArray().RemoveAll(x => x == nameof(Given_HotReloadWorkspace) || x == nameof(When_HotReloadScenario)));
+		var resultFile = await RunTestApp(filters, CancellationToken.None);
 
 		// Parse the nunit XML results file and extract all failed tests
 		var tests = NUnitXmlParser.GetTests(resultFile);
@@ -108,14 +112,13 @@ internal partial class Given_HotReloadWorkspace
 		}
 	}
 
-	public static async Task<string> RunTestApp(CancellationToken ct)
+	public static async Task<string> RunTestApp(string filters, CancellationToken ct)
 	{
 		var testOutput = Path.GetTempFileName();
 
 		var hrAppPath = GetHotReloadAppPath();
 
 		typeof(Given_HotReloadWorkspace).Log().Debug($"Starting test app (path{hrAppPath})");
-
 		var p = await ProcessHelpers.RunProcess(
 			ct,
 			"dotnet",
@@ -128,8 +131,11 @@ internal partial class Given_HotReloadWorkspace
 				"Debug",
 
 				"--no-build",
+				"--",
 				"--uitest",
-				testOutput
+				testOutput,
+				"--filters",
+				filters
 			},
 			hrAppPath,
 			"HRApp",
@@ -153,6 +159,7 @@ internal partial class Given_HotReloadWorkspace
 
 	public static async Task BuildTestApp()
 	{
+		var builder = new StringBuilder();
 		var process = ProcessHelpers.StartProcess(
 			"dotnet",
 			new() {
@@ -166,14 +173,15 @@ internal partial class Given_HotReloadWorkspace
 				"Debug"
 			},
 			GetHotReloadAppPath(),
-			"HRAppBuild"
+			"HRAppBuild",
+			output: builder
 		);
 
 		await process.WaitForExitAsync();
 
 		if (process.ExitCode != 0)
 		{
-			throw new InvalidOperationException("Failed to build app");
+			throw new InvalidOperationException($"Failed to build app{Environment.NewLine}{builder}");
 		}
 	}
 
@@ -221,19 +229,14 @@ internal partial class Given_HotReloadWorkspace
 
 	private static void StartServer(int port)
 	{
-		if (_process?.HasExited ?? true)
+		if (_process is null or { HasExited: true })
 		{
 			var version = GetDotnetMajorVersion();
 			var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
 
-			var basePath = Path.GetDirectoryName(Application.Current.GetType().Assembly.Location)!;
-
 			// Use the debug configuration so that remote control
 			// gets properly enabled.
 			var toolsPath = Path.Combine(GetRCHostAppPath(), "Debug");
-
-			var sb = new StringBuilder();
-
 			var hostBinPath = Path.Combine(toolsPath, runtimeVersionPath, "Uno.UI.RemoteControl.Host.dll");
 
 			if (!File.Exists(hostBinPath))
@@ -242,7 +245,7 @@ internal partial class Given_HotReloadWorkspace
 				throw new InvalidOperationException($"Unable to find {hostBinPath}");
 			}
 
-			string arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {Process.GetCurrentProcess().Id} --metadata-updates true";
+			var arguments = $"\"{hostBinPath}\" --httpPort {port} --ppid {Process.GetCurrentProcess().Id} --metadata-updates true";
 			var pi = new ProcessStartInfo("dotnet", arguments)
 			{
 				UseShellExecute = false,

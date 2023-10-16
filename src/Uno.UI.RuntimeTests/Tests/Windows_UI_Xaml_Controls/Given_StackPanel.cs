@@ -25,27 +25,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 	public partial class Given_StackPanel
 	{
-		private partial class MyStackPanel : StackPanel
-		{
-			public int MeasureCount { get; private set; }
-			public int ArrangeCount { get; private set; }
-
-			public Size LastMeasureOverrideReturn { get; private set; }
-			public Size LastArrangeOverrideReturn { get; private set; }
-
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				MeasureCount++;
-				return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
-			}
-
-			protected override Size ArrangeOverride(Size arrangeSize)
-			{
-				ArrangeCount++;
-				return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
-			}
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 #if __IOS__
@@ -97,14 +76,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
 
 			SUT.Children.Remove(SUT.Children.Single());
-#if !__CROSSRUNTIME__
-			await TestServices.WindowHelper.WaitForRelayouted(SUT); // arrange is skipped (incorrectly) when finalRect is default, which is the case after removing the last child from StackPanel.
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
 			expectedMeasureAndArrangeCount++;
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
 			Assert.AreEqual(0, SUT.LastMeasureOverrideReturn.Height);
 			Assert.AreEqual(0, SUT.LastArrangeOverrideReturn.Height);
-#endif
 
 			SUT.Children.Add(new Border()
 			{
@@ -119,14 +96,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(50, SUT.LastArrangeOverrideReturn.Height);
 
 			SUT.Children.Clear();
-#if !__CROSSRUNTIME__
-			await TestServices.WindowHelper.WaitForRelayouted(SUT);  // arrange is skipped (incorrectly) when finalRect is default, which is the case after removing the last child from StackPanel.
+			await TestServices.WindowHelper.WaitForRelayouted(SUT);
 			expectedMeasureAndArrangeCount++;
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.MeasureCount);
 			Assert.AreEqual(expectedMeasureAndArrangeCount, SUT.ArrangeCount);
 			Assert.AreEqual(0, SUT.LastMeasureOverrideReturn.Height);
 			Assert.AreEqual(0, SUT.LastArrangeOverrideReturn.Height);
-#endif
 		}
 
 		[TestMethod]
@@ -409,6 +384,27 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Near).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Far).ToList().Should().BeEmpty();
 			SUT.GetIrregularSnapPoints(Orientation.Vertical, SnapPointsAlignment.Center).ToList().Should().BeEmpty();
+		}
+	}
+
+	internal partial class MyStackPanel : StackPanel
+	{
+		public int MeasureCount { get; private set; }
+		public int ArrangeCount { get; private set; }
+
+		public Size LastMeasureOverrideReturn { get; private set; }
+		public Size LastArrangeOverrideReturn { get; private set; }
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureCount++;
+			return LastMeasureOverrideReturn = base.MeasureOverride(availableSize);
+		}
+
+		protected override Size ArrangeOverride(Size arrangeSize)
+		{
+			ArrangeCount++;
+			return LastArrangeOverrideReturn = base.ArrangeOverride(arrangeSize);
 		}
 	}
 }

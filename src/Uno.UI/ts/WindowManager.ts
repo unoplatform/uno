@@ -35,7 +35,7 @@ namespace Uno.UI {
 
 			WindowManager._isLoadEventsEnabled = isLoadEventsEnabled;
 
-			Windows.UI.Core.CoreDispatcher.init(WindowManager.buildReadyPromise());
+			Uno.UI.Dispatching.NativeDispatcher.init(WindowManager.buildReadyPromise());
 
 			this.current = new WindowManager(containerElementId, loadingElementId);
 			MonoSupport.jsCallDispatcher.registerScope("Uno", this.current);
@@ -1496,6 +1496,12 @@ namespace Uno.UI {
 			else {
 				throw `setImageAsMonochrome: Element id ${viewId} is not an Img.`;
 			}
+		}
+
+		public setCornerRadius(viewId: number, topLeftX: number, topLeftY: number, topRightX: number, topRightY: number, bottomRightX: number, bottomRightY: number, bottomLeftX: number, bottomLeftY: number) {
+			const element = this.getView(viewId);
+			element.style.borderRadius = `${topLeftX}px ${topRightX}px ${bottomRightX}px ${bottomLeftX}px / ${topLeftY}px ${topRightY}px ${bottomRightY}px ${bottomLeftY}px`;
+			element.style.overflow = "hidden"; // overflow: hidden is required here because the clipping can't do its job when it's non-rectangular.
 		}
 
 		public setPointerCapture(viewId: number, pointerId: number): void {

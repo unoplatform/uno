@@ -92,12 +92,7 @@ namespace MonoSupport {
 		public static invokeOnMainThread() {
 
 			if (!jsCallDispatcher.dispatcherCallback) {
-				if ((<any>globalThis).DotnetExports !== undefined) {
-					jsCallDispatcher.dispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.CoreDispatcher.DispatcherCallback;
-				} else {
-					jsCallDispatcher.dispatcherCallback = (<any>Module).mono_bind_static_method(
-						"[Uno.UI.Dispatching] Uno.UI.Dispatching.CoreDispatcher:DispatcherCallback");
-				}
+				jsCallDispatcher.dispatcherCallback = (<any>globalThis).DotnetExports.UnoUIDispatching.Uno.UI.Dispatching.NativeDispatcher.DispatcherCallback;
 			}
 
 			// Use setImmediate to return avoid blocking the background thread

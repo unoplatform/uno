@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetSkiaPreviousAndCurrent)</TargetFrameworks>
 	</PropertyGroup>
@@ -39,11 +39,9 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
 			<_overridePackageId>Uno.UI.Lottie</_overridePackageId>
 			<_overridePackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Lottie</_overridePackageId>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(_overridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(_overridePackageId)\$(UnoNugetOverrideVersion)\uno-runtime\$(TargetFramework)\$(UnoRuntimeIdentifier.ToLowerInvariant())</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

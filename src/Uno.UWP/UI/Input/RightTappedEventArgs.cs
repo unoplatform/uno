@@ -9,8 +9,9 @@ namespace Windows.UI.Input
 {
 	public partial class RightTappedEventArgs
 	{
-		internal RightTappedEventArgs(PointerDeviceType type, Point position)
+		internal RightTappedEventArgs(uint pointerId, PointerDeviceType type, Point position)
 		{
+			PointerId = pointerId;
 			PointerDeviceType = type;
 			Position = position;
 		}
@@ -18,6 +19,8 @@ namespace Windows.UI.Input
 		public PointerDeviceType PointerDeviceType { get; }
 
 		public Point Position { get; }
+
+		internal uint PointerId { get; }
 
 		[global::Uno.NotImplemented]
 		public uint ContactCount

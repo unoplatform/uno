@@ -259,32 +259,54 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void AttachViewToParent(View child, int index, ViewGroup.LayoutParams layoutParams)
 		{
-			var vh = GetChildViewHolder(child);
-			if (vh != null)
+			var holder = GetChildViewHolder(child);
+			if (holder != null)
 			{
-				vh.IsDetached = false;
-				_detachedViews.Remove(vh);
+				holder.IsDetached = false;
+				_detachedViews.Remove(holder);
 			}
+
 			base.AttachViewToParent(child, index, layoutParams);
+		}
+
+		protected override void DetachViewsFromParent(int start, int count)
+		{
+			for (int i = start; i < start + count; i++)
+			{
+				BeforeDetachViewFromParent(GetChildAt(i));
+			}
+
+			base.DetachViewsFromParent(start, count);
+		}
+
+		protected override void DetachViewFromParent(View child)
+		{
+			BeforeDetachViewFromParent(child);
+
+			base.DetachViewFromParent(child);
 		}
 
 		protected override void DetachViewFromParent(int index)
 		{
-			var view = GetChildAt(index);
-			if (view != null)
+			BeforeDetachViewFromParent(GetChildAt(index));
+
+			base.DetachViewFromParent(index);
+		}
+
+		private void BeforeDetachViewFromParent(View child)
+		{
+			if (child is { } view)
 			{
-				var vh = GetChildViewHolder(view);
-				if (vh != null)
+				if (GetChildViewHolder(view) is { } holder)
 				{
-					vh.IsDetached = true;
+					holder.IsDetached = true;
 					if (_trackDetachedViews)
 					{
 						// Avoid memory leak by adding them only when needed
-						_detachedViews.Add(vh);
+						_detachedViews.Add(holder);
 					}
 				}
 			}
-			base.DetachViewFromParent(index);
 		}
 
 		protected override void RemoveDetachedView(View child, bool animate)

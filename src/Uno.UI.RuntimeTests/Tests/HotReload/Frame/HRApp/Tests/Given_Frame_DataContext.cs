@@ -51,17 +51,17 @@ public class Given_Frame_DataContext : BaseTestClass
 		(frame.Content as Page).DataContext = vm;
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 
 		// Check the text of the TextBlock doesn't change
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
 			FirstPageTextBlockChangedText,
-			() => frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1),
+			() => frame.ValidateTextOnChildTextBlock(vm.TitleText, 1),
 			ct);
 
 		// Check that the text is still the original value
-		await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 	}
 
 	/// <summary>
@@ -86,7 +86,7 @@ public class Given_Frame_DataContext : BaseTestClass
 		(frame.Content as Page).DataContext = vm;
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 
 		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
@@ -94,20 +94,20 @@ public class Given_Frame_DataContext : BaseTestClass
 			async () =>
 			{
 				// Check to make sure the TextBlock was updated (see Check_Can_Change_Page1 for this test)
-				await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+				await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 
 				// Navigate to the second page, verify navigation worked, and then navigate back
 				frame.Navigate(typeof(HR_Frame_Pages_Page2));
-				await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockOriginalText);
+				await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 				frame.GoBack();
 
 				// Validate again that the TextBlock still has the updated value
-				await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+				await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 			},
 			ct);
 
 		// Check that after the test has executed, the xaml is back to the original text
-		await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 	}
 
 	/// <summary>
@@ -119,7 +119,7 @@ public class Given_Frame_DataContext : BaseTestClass
 	/// Navigate back to Page1
 	/// </summary>
 	[TestMethod]
-	[Ignore("Not yet working")]
+	//[Ignore("Not yet working")]
 	public async Task Check_Can_Change_Page1_Before_Navigating_Back_With_DataContext()
 	{
 		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
@@ -134,27 +134,27 @@ public class Given_Frame_DataContext : BaseTestClass
 		(frame.Content as Page).DataContext = vm;
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 
 		// Navigate to the second page, verify the TextBlock on the second page has the updated value
 		frame.Navigate(typeof(HR_Frame_Pages_Page2));
-		await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockOriginalText);
+		await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 
-		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page2>(
+		await HotReloadHelper.UpdateServerFileAndRevert<HR_Frame_Pages_Page1>(
 			FirstPageTextBlockOriginalText,
 			FirstPageTextBlockChangedText,
 			async () =>
 			{
 				// Check to make sure the current page wasn't changed
-				await frame.ValidateFirstTextBlockOnCurrentPageText(SecondPageTextBlockOriginalText);
+				await frame.ValidateTextOnChildTextBlock(SecondPageTextBlockOriginalText);
 
 				// Go back and Validate again that the TextBlock has changed value
 				frame.GoBack();
-				await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+				await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 			},
 			ct);
 
 		// Check that after the test has executed, the xaml is back to the original text
-		await frame.ValidateTextBlockOnCurrentPageText(vm.TitleText, 1);
+		await frame.ValidateTextOnChildTextBlock(vm.TitleText, 1);
 	}
 }

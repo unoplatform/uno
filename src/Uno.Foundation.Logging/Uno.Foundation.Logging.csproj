@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<!-- There is no need to multi-target this project -->
 		<!-- We keep it on the oldest supported TFM -->
@@ -33,9 +33,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(TargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

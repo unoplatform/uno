@@ -195,6 +195,19 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 
 	private void OnButtonPressEvent(object o, ButtonPressEventArgs args)
 	{
+		// Double clicking on Gtk will produce an event sequence with the following event types on Gtk:
+		// 1. EventType.ButtonPress
+		// 2. EventType.ButtonRelease
+		// 3. EventType.ButtonPress
+		// 4. EventType.TwoButtonPress
+		// 5. EventType.ButtonRelease
+		// We want to receive the "single" presses only as receiving the second press twice is gonna be problematic.
+		// So we skip TwoButtonPress (and also ThreeButtonPress as it has similar issue)
+		if (args.Event.Type is EventType.TwoButtonPress or EventType.ThreeButtonPress)
+		{
+			return;
+		}
+
 		try
 		{
 			if (AsPointerArgs(args.Event) is { } ptArgs)

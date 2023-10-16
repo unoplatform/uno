@@ -14,8 +14,8 @@ uid: Uno.Features.Compass
 | Feature        |  Windows  | Android |  iOS  |  Web (WASM)  | macOS | Linux (Skia)  | Win 7 (Skia) | 
 |---------------|-------|-------|-------|-------|-------|-------|-|
 | `GetDefault`         | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ | ✔ |
-| `ReadingChanged` | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
-| `ReportInterval`     | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ | ✖ |
+| `ReadingChanged` | ✔ | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ |
+| `ReportInterval`     | ✔ | ✔ | ✔ | ✖ | ✖ | ✖ | ✖ |
 
 ## Using Compass with Uno
  
@@ -31,6 +31,10 @@ If you are planning to use the `HeadingTrueNorth`, your app must declare `androi
 ```csharp
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
 ```
+
+### Web (WASM)
+
+The `Magnetometer` sensor is not currently supported by default on any of the popular browsers. However, users can enable this feature on some browsers. For more information on how to do this, please visit the [Mozilla documentation](https://developer.mozilla.org/en-US/docs/Web/API/Magnetometer) on using the Magnetometer API.
 
 ## Example
 

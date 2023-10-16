@@ -19,9 +19,9 @@ namespace Windows.ApplicationModel.DataTransfer
 
 		public static void SetContent(DataPackage/* ? */ content)
 		{
-			_ = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-				Uno.UI.Dispatching.CoreDispatcherPriority.High,
-				() => _ = SetContentAsync(content));
+			Uno.UI.Dispatching.NativeDispatcher.Main.Enqueue(
+				() => _ = SetContentAsync(content),
+				Uno.UI.Dispatching.NativeDispatcherPriority.High);
 		}
 
 		internal static async Task SetContentAsync(DataPackage/* ? */ content)

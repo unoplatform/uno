@@ -143,8 +143,8 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault(AccelerometerReadingType readingType) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Accelerometer%20Accelerometer.GetDefault%28AccelerometerReadingType%20readingType%29");
 		}
 #endif
-#if false || false || false || false || __SKIA__ || __NETSTD_REFERENCE__ || false
-		[global::Uno.NotImplemented("__SKIA__", "__NETSTD_REFERENCE__")]
+#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Sensors.Accelerometer GetDefault()
 		{
 			throw new global::System.NotImplementedException("The member Accelerometer Accelerometer.GetDefault() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=Accelerometer%20Accelerometer.GetDefault%28%29");

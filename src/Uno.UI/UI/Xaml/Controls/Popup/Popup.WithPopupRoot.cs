@@ -91,16 +91,29 @@ public partial class Popup
 				}
 #endif
 
+				// It's important for PopupPanel to be visible before the popup is opened so that
+				// child controls can be IsFocusable, which depends on all ancestors (including PopupPanel)
+				// being visible
+				PopupPanel.Visibility = Visibility.Visible;
+
 				var currentXamlRoot = XamlRoot ?? Child?.XamlRoot ?? WinUICoreServices.Instance.ContentRootCoordinator.CoreWindowContentRoot.XamlRoot;
 				_closePopup.Disposable = currentXamlRoot?.OpenPopup(this);
 
-				PopupPanel.Visibility = Visibility.Visible;
 			}
 			else
 			{
 				_closePopup.Disposable = null;
 				PopupPanel.Visibility = Visibility.Collapsed;
 			}
+		}
+
+		if (newIsOpen)
+		{
+			Opened?.Invoke(this, newIsOpen);
+		}
+		else
+		{
+			Closed?.Invoke(this, newIsOpen);
 		}
 	}
 

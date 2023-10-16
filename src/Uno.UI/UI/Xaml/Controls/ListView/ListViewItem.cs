@@ -26,5 +26,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return new ListViewItemAutomationPeer(this);
 		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+			if (Selector is ListView lv)
+			{
+				ApplyMultiSelectState(lv.SelectionMode == ListViewSelectionMode.Multiple);
+			}
+		}
 	}
 }

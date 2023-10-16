@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
-		private readonly static Thickness _thicknessCache = Thickness.Empty;
-
 		protected FrameworkElement()
 		{
 			Initialize();
@@ -40,8 +38,6 @@ namespace Windows.UI.Xaml
 		public double ActualWidth => GetActualWidth();
 
 		public double ActualHeight => GetActualHeight();
-
-		public int InvalidateMeasureCallCount { get; private set; }
 
 		private bool IsTopLevelXamlView() => false;
 

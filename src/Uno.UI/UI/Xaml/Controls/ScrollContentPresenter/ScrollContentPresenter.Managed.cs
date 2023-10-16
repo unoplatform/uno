@@ -17,7 +17,10 @@ using Uno.UI.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ICustomClippingElement
+	public partial class ScrollContentPresenter : ContentPresenter
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 
@@ -108,9 +111,9 @@ namespace Windows.UI.Xaml.Controls
 
 			if (horizontalOffset is double hOffset)
 			{
-				var extentWidth = ExtentWidth;
-				var viewportWidth = ViewportWidth;
-				var scrollX = ValidateInputOffset(hOffset, 0, extentWidth - viewportWidth);
+				var maxOffset = Scroller?.ScrollableWidth ?? ExtentWidth - ViewportWidth;
+
+				var scrollX = ValidateInputOffset(hOffset, 0, maxOffset);
 
 				success &= scrollX == hOffset;
 
@@ -122,9 +125,8 @@ namespace Windows.UI.Xaml.Controls
 
 			if (verticalOffset is double vOffset)
 			{
-				var extentHeight = ExtentHeight;
-				var viewportHeight = ViewportHeight;
-				var scrollY = ValidateInputOffset(vOffset, 0, extentHeight - viewportHeight);
+				var maxOffset = Scroller?.ScrollableHeight ?? ExtentHeight - ViewportHeight;
+				var scrollY = ValidateInputOffset(vOffset, 0, maxOffset);
 
 				success &= scrollY == vOffset;
 
@@ -204,8 +206,10 @@ namespace Windows.UI.Xaml.Controls
 			Set(disableAnimation: true, isIntermediate: false);
 		}
 
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+#endif
 	}
 }
 #endif

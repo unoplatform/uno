@@ -169,6 +169,15 @@ namespace Uno.UI
 				= true;
 		}
 
+		public static class ResourceDictionary
+		{
+			/// <summary>
+			/// Determines whether unreferenced ResourceDictionary present in the assembly
+			/// are accessible from app resources.
+			/// </summary>
+			public static bool IncludeUnreferencedDictionaries { get; set; }
+		}
+
 		public static class Font
 		{
 			private static string _symbolsFont =
@@ -217,6 +226,13 @@ namespace Uno.UI
 			/// Setting it to true avoids the use of costly Java->C# interop.
 			/// </remarks>
 			public static bool AndroidUseManagedLoadedUnloaded { get; set; } = true;
+#endif
+
+#if __ANDROID__
+			/// <summary>
+			/// Invalidate native android measure cache when measure-spec has changed since last measure.
+			/// </summary>
+			public static bool InvalidateNativeCacheOnRemeasure { get; set; } = true;
 #endif
 
 			/// <summary>
@@ -633,6 +649,12 @@ namespace Uno.UI
 			/// </remarks>
 			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
+
+			/// <summary>
+			/// For non-holding pointer events, use CompleteGesture when bubbling gesture events.
+			/// This defaults to false, which prevents the specific event instead of calling CompleteGesture
+			/// </summary>
+			public static bool DisablePointersSpecificEventPrevention { get; set; }
 		}
 
 		public static class VisualState

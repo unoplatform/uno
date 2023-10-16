@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
 		<TargetFrameworks>$(NetCurrent)-android;$(NetCurrent)-ios;$(NetCurrent)-maccatalyst</TargetFrameworks>
 		<TargetFrameworks>$(TargetFrameworks);$(NetPrevious)-android;$(NetPrevious)-ios;$(NetPrevious)-maccatalyst</TargetFrameworks>
@@ -61,9 +61,7 @@
 
 		<PropertyGroup>
 			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
-			<_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
-			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+			<_TargetNugetFolder>$(NuGetPackageRoot)\$(PackageId)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

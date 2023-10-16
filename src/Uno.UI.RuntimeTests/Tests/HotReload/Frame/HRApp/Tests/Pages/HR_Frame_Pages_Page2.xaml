@@ -10,6 +10,9 @@
 		<TextBlock Text="Second page"  
 				   x:Name="SecondPageTextBlock" />
 		<TextBlock Text="{Binding TitleText}" />
+		<Viewbox>
+			<local:HR_Frame_Pages_UC1 />
+		</Viewbox>
 	</StackPanel>
 </Page>
 

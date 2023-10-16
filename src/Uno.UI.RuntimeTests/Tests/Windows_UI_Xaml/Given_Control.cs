@@ -18,16 +18,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 	[TestClass]
 	public partial class Given_Control
 	{
-		private partial class CustomControl : Control
-		{
-			public Size AvailableSizePassedToMeasureOverride { get; private set; }
-			protected override Size MeasureOverride(Size availableSize)
-			{
-				AvailableSizePassedToMeasureOverride = availableSize;
-				return new(2000, 2000);
-			}
-		}
-
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Limited_By_Available_Size_Before_Margin_Application()
@@ -151,6 +141,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual(43, testTransform.TranslateY);
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Style_Changed_During_Loading()
+		{
+			var SUT = new OnApplyTemplateCounterControl
+			{
+				Style = new Style
+				{
+					Setters =
+					{
+						new Setter(Control.TemplateProperty, new ControlTemplate(() => new Grid())
+						{
+							TargetType = typeof(OnApplyTemplateCounterControl),
+						})
+					}
+				}
+			};
+
+			TestServices.WindowHelper.WindowContent = new UserControl
+			{
+				Content = SUT
+			};
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(1, SUT.OnApplyTemplateCalls);
+		}
+#endif
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Refresh_Setter_BindingOnInvocation_ElementName()
@@ -217,6 +236,53 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 			// Padding shouldn't affect measure
 			Assert.AreEqual(0, ((UIElement)VisualTreeHelper.GetChild(SUT, 0)).ActualOffset.Y);
+		}
+	}
+
+#if HAS_UNO
+	public partial class OnApplyTemplateCounterControl : Control
+	{
+		public OnApplyTemplateCounterControl() : base()
+		{
+			Loading += (_, _) => OnControlLoading();
+		}
+
+		private ControlTemplate _template;
+		public int OnApplyTemplateCalls { get; private set; }
+
+		protected override void OnApplyTemplate()
+		{
+			// OnApplyTemplate should be called when the Template changes, so we only care
+			// about (unnecessary) calls that happen when the Template doesn't change
+			if (_template != Template)
+			{
+				_template = Template;
+				OnApplyTemplateCalls = 0;
+			}
+
+			OnApplyTemplateCalls++;
+		}
+
+		private void OnControlLoading() => Style = new Style
+		{
+			Setters =
+			{
+				new Setter(TemplateProperty, new ControlTemplate(() => new Grid())
+				{
+					TargetType = typeof(OnApplyTemplateCounterControl),
+				})
+			}
+		};
+	}
+#endif
+
+	public partial class CustomControl : Control
+	{
+		public Size AvailableSizePassedToMeasureOverride { get; private set; }
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			AvailableSizePassedToMeasureOverride = availableSize;
+			return new(2000, 2000);
 		}
 	}
 }

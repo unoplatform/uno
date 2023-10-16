@@ -471,11 +471,10 @@ namespace Windows.UI.Xaml.Controls
 			//We get the view token early to avoid nullvalues when the view has already been detached
 			var viewWindowToken = _textBoxView.WindowToken;
 
-			_keyboardDisposable.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main
+			_keyboardDisposable.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main
 				//The delay is required because the OnFocusChange method is called when the focus is being changed, not when it has changed.
 				//If the focus is moved from one TextBox to another, the CurrentFocus will be null, meaning we would hide the keyboard when we shouldn't.
-				.RunAsync(
-					Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+				.EnqueueOperation(
 					async () =>
 					{
 						await Task.Delay(TimeSpan.FromMilliseconds(_keyboardAccessDelay));

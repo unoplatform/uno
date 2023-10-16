@@ -81,8 +81,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private void ScheduleCompleted(long elapsed)
 		{
-			_scheduledFrame.Disposable = Uno.UI.Dispatching.CoreDispatcher.Main.RunAsync(
-				Uno.UI.Dispatching.CoreDispatcherPriority.Normal,
+			_scheduledFrame.Disposable = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueOperation(
 				async () =>
 				{
 					await Task.Delay(TimeSpan.FromMilliseconds(Duration - elapsed));

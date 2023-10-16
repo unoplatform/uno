@@ -219,20 +219,8 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member LayerVisual Compositor.CreateLayerVisual() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=LayerVisual%20Compositor.CreateLayerVisual%28%29");
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionMaskBrush CreateMaskBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionMaskBrush Compositor.CreateMaskBrush() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionMaskBrush%20Compositor.CreateMaskBrush%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionNineGridBrush CreateNineGridBrush()
-		{
-			throw new global::System.NotImplementedException("The member CompositionNineGridBrush Compositor.CreateNineGridBrush() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionNineGridBrush%20Compositor.CreateNineGridBrush%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateMaskBrush()
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateNineGridBrush()
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.PointLight CreatePointLight()
@@ -350,20 +338,8 @@ namespace Windows.UI.Composition
 #endif
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateGeometricClip()
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateGeometricClip(Windows.UI.Composition.CompositionGeometry)
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual()
-		{
-			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RedirectVisual%20Compositor.CreateRedirectVisual%28%29");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.RedirectVisual CreateRedirectVisual(global::Windows.UI.Composition.Visual source)
-		{
-			throw new global::System.NotImplementedException("The member RedirectVisual Compositor.CreateRedirectVisual(Visual source) is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=RedirectVisual%20Compositor.CreateRedirectVisual%28Visual%20source%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateRedirectVisual()
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateRedirectVisual(Windows.UI.Composition.Visual)
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::Windows.UI.Composition.BooleanKeyFrameAnimation CreateBooleanKeyFrameAnimation()
@@ -393,13 +369,7 @@ namespace Windows.UI.Composition
 		}
 #endif
 		// Skipping already declared method Windows.UI.Composition.Compositor.CreateRadialGradientBrush()
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public global::Windows.UI.Composition.CompositionVisualSurface CreateVisualSurface()
-		{
-			throw new global::System.NotImplementedException("The member CompositionVisualSurface Compositor.CreateVisualSurface() is not implemented. For more information, visit https://aka.platform.uno/notimplemented#m=CompositionVisualSurface%20Compositor.CreateVisualSurface%28%29");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Composition.Compositor.CreateVisualSurface()
 		// Forced skipping of method Windows.UI.Composition.Compositor.DispatcherQueue.get
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]

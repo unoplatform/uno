@@ -32,6 +32,46 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 		[TestMethod]
 		[RunsOnUIThread]
+		public async Task When_xLoad_Order()
+		{
+			var sut = new When_xLoad_Order();
+
+			TestServices.WindowHelper.WindowContent = sut;
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(ElementStub));
+
+			sut.IsLoaded2 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(ElementStub));
+
+			sut.IsLoaded3 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(ElementStub));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(Border));
+
+			sut.IsLoaded1 = true;
+			sut.Refresh();
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.IsInstanceOfType(sut.root.Children[0], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[1], typeof(Border));
+			Assert.IsInstanceOfType(sut.root.Children[2], typeof(Border));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_xLoad_xBind()
 		{
 			var sut = new xLoad_xBind();

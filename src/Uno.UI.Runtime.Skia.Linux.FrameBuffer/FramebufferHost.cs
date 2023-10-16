@@ -12,7 +12,7 @@ using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using WUX = Windows.UI.Xaml;
 
-namespace Uno.UI.Runtime.Skia
+namespace Uno.UI.Runtime.Skia.Linux.FrameBuffer
 {
 	public class FrameBufferHost : ISkiaApplicationHost, IXamlRootHost
 	{
@@ -91,8 +91,9 @@ namespace Uno.UI.Runtime.Skia
 			_isDispatcherThread = true;
 
 			ApiExtensibility.Register(typeof(Uno.ApplicationModel.Core.ICoreApplicationExtension), o => _coreApplicationExtension!);
-			ApiExtensibility.Register(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => new FrameBufferPointerInputSource());
-			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension(o));
+			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoCorePointerInputSource), o => { FrameBufferPointerInputSource.Instance.SetHost(o); return FrameBufferPointerInputSource.Instance; });
+			ApiExtensibility.Register<IXamlRootHost>(typeof(Windows.UI.Core.IUnoKeyboardInputSource), o => { FrameBufferKeyboardInputSource.Instance.SetHost(o); return FrameBufferKeyboardInputSource.Instance; });
+			ApiExtensibility.Register(typeof(Windows.UI.Core.ICoreWindowExtension), o => new CoreWindowExtension());
 			ApiExtensibility.Register(typeof(Windows.UI.ViewManagement.IApplicationViewExtension), o => new ApplicationViewExtension(o));
 			ApiExtensibility.Register(typeof(Windows.Graphics.Display.IDisplayInformationExtension), o => _displayInformationExtension ??= new DisplayInformationExtension(o, DisplayScale));
 
@@ -130,6 +131,8 @@ namespace Uno.UI.Runtime.Skia
 
 			Windows.UI.Core.CoreDispatcher.DispatchOverride = Dispatch;
 			Windows.UI.Core.CoreDispatcher.HasThreadAccessOverride = () => _isDispatcherThread;
+
+			FrameBufferInputProvider.Instance.Initialize();
 
 			_renderer = new Renderer(this);
 

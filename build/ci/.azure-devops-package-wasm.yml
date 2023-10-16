@@ -5,8 +5,7 @@ jobs:
 - job: wasm_package_build
   displayName: 'WebAssembly Package Binaries'
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: ${{ parameters.poolName }}
 
   strategy:
     matrix:

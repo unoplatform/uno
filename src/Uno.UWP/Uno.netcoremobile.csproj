@@ -24,8 +24,6 @@
 		assembly, for non-fully qualified types in System and Windows.System
 		-->
 		<AndroidResgenNamespace>Uno.UWP</AndroidResgenNamespace>
-
-		<UnoSourceGeneratorCaptureGenerationHostOutput>true</UnoSourceGeneratorCaptureGenerationHostOutput>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 

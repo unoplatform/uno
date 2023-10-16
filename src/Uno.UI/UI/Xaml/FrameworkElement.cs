@@ -272,8 +272,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
-			var child = this.FindFirstChild();
-			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+			return default;
 		}
 
 		/// <summary>
@@ -283,21 +282,7 @@ namespace Windows.UI.Xaml
 		/// <returns>The actual size that is used after the element is arranged in layout.</returns>
 		protected virtual Size ArrangeOverride(Size finalSize)
 		{
-			var child = this.FindFirstChild();
-
-			if (child != null)
-			{
-#if UNO_REFERENCE_API
-				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
-#else
-				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
-#endif
-				return finalSize;
-			}
-			else
-			{
-				return finalSize;
-			}
+			return finalSize;
 		}
 
 		/// <summary>
@@ -755,6 +740,23 @@ namespace Windows.UI.Xaml
 		}
 
 		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
+
+		private protected Size MeasureFirstChild(Size availableSize)
+		{
+			var child = this.FindFirstChild();
+			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
+		}
+
+		private protected Size ArrangeFirstChild(Size finalSize)
+		{
+			var child = this.FindFirstChild();
+			if (child != null)
+			{
+				ArrangeElement(child, new Rect(0, 0, finalSize.Width, finalSize.Height));
+			}
+
+			return finalSize;
+		}
 
 #if XAMARIN
 		private static FrameworkElement FindPhaseEnabledRoot(ContentControl content)

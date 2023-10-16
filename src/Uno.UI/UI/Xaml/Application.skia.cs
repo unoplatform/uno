@@ -13,6 +13,7 @@ using System.Threading;
 using System.Globalization;
 using Windows.ApplicationModel.Core;
 using Windows.Globalization;
+using Uno.UI.Dispatching;
 using Uno.UI.Xaml.Core;
 
 namespace Windows.UI.Xaml
@@ -77,7 +78,7 @@ namespace Windows.UI.Xaml
 			_startInvoked = true;
 
 			SynchronizationContext.SetSynchronizationContext(
-				new CoreDispatcherSynchronizationContext(CoreDispatcher.Main, CoreDispatcherPriority.Normal)
+				new NativeDispatcherSynchronizationContext(NativeDispatcher.Main, NativeDispatcherPriority.Normal)
 			);
 
 			callback(new ApplicationInitializationCallbackParams());
