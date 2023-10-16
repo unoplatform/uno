@@ -124,9 +124,15 @@ namespace Microsoft.UI.Xaml
 			CoreDragUIOverride? dragUIOverride,
 			CancellationToken ct)
 		{
+			//TODO: Multi-window support #13982
+			if (Window.CurrentSafe is null)
+			{
+				return null;
+			}
+
 			var target = VisualTreeHelper.HitTest(
 				dragInfo.Position,
-				Window.IShouldntUseCurrentWindow!.RootElement!.XamlRoot, //TODO:MZ:Multi-window //TODO: Choose proper XamlRoot https://github.com/unoplatform/uno/issues/8978
+				Window.CurrentSafe.RootElement?.XamlRoot,
 				getTestability: GetDropHitTestability,
 				isStale: new StalePredicate(elt => elt.IsDragOver(dragInfo.SourceId), "IsDragOver"));
 

@@ -370,7 +370,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 						// want because the status bar is otherwise excluded from layout calculations. We get the transform relative to the managed root view instead.
 						UIElement reference =
 #if __ANDROID__
-							Window.IShouldntUseCurrentWindow.Content;
+							// TODO: Adjust for multiwindow #13827
+							Window.CurrentSafe?.Content;
 #else
 							null;
 #endif
