@@ -37,18 +37,17 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	partial class ClientHotReloadProcessor
 	{
-		private static IEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
+		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
 			object instance,
-			Func<FrameworkElement, string, TMatch?> predicate,
+			Func<FrameworkElement, string, Task<TMatch?>> predicate,
 			string? parentKey)
 		{
 
 			if (instance is FrameworkElement fe)
 			{
-				// TODO: Review as this may be too simplicitic for all scenarios
 				var instanceTypeName = (instance.GetType().GetOriginalType() ?? instance.GetType()).Name;
 				var instanceKey = parentKey is not null ? $"{parentKey}_{instanceTypeName}" : instanceTypeName;
-				var match = predicate(fe, instanceKey);
+				var match = await predicate(fe, instanceKey);
 				if (match is not null)
 				{
 					yield return match;
@@ -59,7 +58,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				{
 					var inner = EnumerateHotReloadInstances(child, predicate, $"{instanceKey}_[{idx}]");
 					idx++;
-					foreach (var validElement in inner)
+					await foreach (var validElement in inner)
 					{
 						yield return validElement;
 					}

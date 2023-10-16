@@ -185,7 +185,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			return true;
 		}
 
-		private static async void ReloadWithUpdatedTypes(Type[] updatedTypes)
+		private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
 		{
 			if (!await ShouldReload())
 			{
@@ -206,7 +206,7 @@ namespace Uno.UI.RemoteControl.HotReload
 				var isCapturingState = true;
 				var treeIterator = EnumerateHotReloadInstances(
 						Window.Current.Content,
-						(fe, key) =>
+						async (fe, key) =>
 						{
 							// Get the original type of the element, in case it's been replaced
 							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
@@ -240,7 +240,7 @@ namespace Uno.UI.RemoteControl.HotReload
 								}
 								else
 								{
-									handler.RestoreState(fe, dict, updatedTypes);
+									await handler.RestoreState(fe, dict, updatedTypes);
 								}
 							}
 
@@ -249,7 +249,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						parentKey: default);
 
 				// Forced iteration to capture all state before doing ui update
-				var instancesToUpdate = treeIterator.ToArray();
+				var instancesToUpdate = await treeIterator.ToArrayAsync();
 
 
 				// Iterate through the visual tree and either invole ElementUpdate, 
@@ -268,7 +268,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				isCapturingState = false;
 				// Forced iteration again to restore all state after doing ui update
-				_ = treeIterator.ToArray();
+				_ = await treeIterator.ToArrayAsync();
 
 				// Action: AfterVisualTreeUpdate
 				_ = handlerActions?.Do(h => h.Value.AfterVisualTreeUpdate(updatedTypes)).ToArray();
@@ -351,7 +351,20 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() => ReloadWithUpdatedTypes(types));
+				async () => await ReloadWithUpdatedTypes(types));
+		}
+	}
+
+	public static class AsyncEnumerableExtensions
+	{
+		public async static Task<T[]> ToArrayAsync<T>(this IAsyncEnumerable<T> enumerable)
+		{
+			var list = new List<T>();
+			await foreach (var item in enumerable)
+			{
+				list.Add(item);
+			}
+			return list.ToArray();
 		}
 	}
 }

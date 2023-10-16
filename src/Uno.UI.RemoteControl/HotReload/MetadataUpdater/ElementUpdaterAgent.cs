@@ -13,7 +13,7 @@ using System.Reflection;
 using System.Reflection.Metadata;
 using Windows.UI.Xaml;
 using Uno;
-
+using System.Threading.Tasks;
 
 namespace Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 
@@ -111,7 +111,7 @@ internal sealed class ElementUpdateAgent : IDisposable
 		/// matches the type registered for by the handler. 
 		/// Restore properties from the key-value-pairs to the dictionary parameter
 		/// </summary>
-		public Action<FrameworkElement, IDictionary<string, object>, Type[]?> RestoreState { get; set; } = (_, _, _) => { };
+		public Func<FrameworkElement, IDictionary<string, object>, Type[]?, Task> RestoreState { get; set; } = (_, _, _) => Task.CompletedTask;
 	}
 
 	[UnconditionalSuppressMessage("Trimmer", "IL2072",
@@ -218,17 +218,18 @@ internal sealed class ElementUpdateAgent : IDisposable
 		if (GetHandlerMethod(
 			handlerType,
 			nameof(ElementUpdateHandlerActions.RestoreState),
-			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) }) is MethodInfo restoreState)
+			new[] { typeof(FrameworkElement), typeof(IDictionary<string, object>), typeof(Type[]) },
+			typeof(Task)) is MethodInfo restoreState)
 		{
 			_log($"Adding handler for {nameof(updateActions.RestoreState)} for {handlerType}");
-			updateActions.RestoreState = CreateHandlerAction<Action<FrameworkElement, IDictionary<string, object>, Type[]?>>(restoreState);
+			updateActions.RestoreState = CreateHandlerAction<Func<FrameworkElement, IDictionary<string, object>, Type[]?, Task>>(restoreState);
 			methodFound = true;
 		}
 
 		if (!methodFound)
 		{
 			_log($"No invokable methods found on metadata handler type '{handlerType}'. " +
-				$"Allowed methods are BeforeVisualTreeUpdate, AfterVisualTreeUpdate, ElementUpdate, BeforeElementReplaced, AfterElementReplaced");
+				$"Allowed methods are BeforeVisualTreeUpdate, AfterVisualTreeUpdate, ElementUpdate, BeforeElementReplaced, AfterElementReplaced, CaptureState, RestoreState");
 		}
 		else
 		{
@@ -243,10 +244,14 @@ internal sealed class ElementUpdateAgent : IDisposable
 
 	private MethodInfo? GetHandlerMethod(
 		[DynamicallyAccessedMembers(HotReloadHandlerLinkerFlags)]
-		Type handlerType, string name, Type[] parameterTypes)
+		Type handlerType, string name, Type[] parameterTypes, Type? returnType = default)
 	{
 		if (handlerType.GetMethod(name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, null, parameterTypes, null) is MethodInfo updateMethod &&
-			updateMethod.ReturnType == typeof(void))
+			(
+				(returnType is null && updateMethod.ReturnType == typeof(void)) ||
+				(updateMethod.ReturnType == returnType)
+			)
+		)
 		{
 			return updateMethod;
 		}

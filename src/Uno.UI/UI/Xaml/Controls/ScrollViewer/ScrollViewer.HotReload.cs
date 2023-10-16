@@ -15,12 +15,10 @@ internal static partial class ScrollViewerMetadataUpdateHandler
 		stateDictionary["HOffset"] = (element as ScrollViewer)?.HorizontalOffset ?? 0.0;
 	}
 
-	public static async void RestoreState(FrameworkElement element, IDictionary<string, object> stateDictionary, Type[] updatedTypes)
+	public static async Task RestoreState(FrameworkElement element, IDictionary<string, object> stateDictionary, Type[] updatedTypes)
 	{
 		if (element is ScrollViewer sv)
 		{
-			// TODO: Is there a better way to ensure the scrollviewer has realized its children than to do a yield?
-			// And should we make the Capture/Restore async to support yielding?
 			await Task.Yield();
 			var voffset = stateDictionary.TryGetValue("VOffset", out var offset) ? (double)offset : 0.0;
 			var hoffset = stateDictionary.TryGetValue("HOffset", out var offset_y) ? (double)offset_y : 0.0;
