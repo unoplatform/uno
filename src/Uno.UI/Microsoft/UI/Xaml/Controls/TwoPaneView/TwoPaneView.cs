@@ -13,7 +13,6 @@ using Windows.UI.Xaml.Media;
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft.UI.Xaml.WindowSizeChangedEventArgs;
 #else
-using WindowSizeChangedEventArgs = Windows.UI.Core.WindowSizeChangedEventArgs;
 #endif
 
 namespace Microsoft.UI.Xaml.Controls
@@ -42,9 +41,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(TwoPaneView);
 
 			SizeChanged += OnSizeChanged;
-			var window = Windows.UI.Xaml.Window.IShouldntUseCurrentWindow;
-			window.SizeChanged += OnWindowSizeChanged;
-			m_windowSizeChangedRevoker.Disposable = Disposable.Create(() => window.SizeChanged -= OnWindowSizeChanged);
+			this.Loaded += TwoPaneView_Loaded;
 
 			// TODO Uno specific: Revoke events - https://github.com/microsoft/microsoft-ui-xaml/issues/6357
 			Unloaded += (s, e) =>
@@ -53,6 +50,18 @@ namespace Microsoft.UI.Xaml.Controls
 				m_pane1LoadedRevoker.Disposable = null;
 				m_pane2LoadedRevoker.Disposable = null;
 			};
+		}
+
+		private void TwoPaneView_Loaded(object sender, RoutedEventArgs e)
+		{
+			// TODO Uno specific: Original code used Window.Current, instead we attach to XamlRoot size changes
+			// to handle multi-windowing properly.
+			if (XamlRoot is not { } xamlRoot)
+			{
+				return;
+			}
+			xamlRoot.Changed += OnXamlRootChanged;
+			m_windowSizeChangedRevoker.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
 		}
 
 		protected override void OnApplyTemplate()
@@ -118,7 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs args)
+		private void OnXamlRootChanged(object sender, object args)
 		{
 			UpdateMode();
 		}
