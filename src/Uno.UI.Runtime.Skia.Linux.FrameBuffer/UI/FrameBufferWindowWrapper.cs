@@ -10,8 +10,6 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 {
 	private static readonly Lazy<FrameBufferWindowWrapper> _instance = new Lazy<FrameBufferWindowWrapper>(() => new());
 
-	private Size _previousWindowSize = new Size(-1, -1);
-
 	internal static FrameBufferWindowWrapper Instance => _instance.Value;
 
 	internal Window? Window { get; private set; }
@@ -29,12 +27,6 @@ internal class FrameBufferWindowWrapper : NativeWindowWrapperBase
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
 	internal void OnNativeClosed() => RaiseClosed();
-
-	public override void Activate() { }
-
-	public override void Close() { }
-
-	protected override void ShowCore() { }
 
 	internal void SetWindow(Window window, XamlRoot xamlRoot)
 	{
