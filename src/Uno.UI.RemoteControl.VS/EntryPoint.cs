@@ -261,7 +261,11 @@ namespace Uno.UI.RemoteControl.VS
 				RemoteControlServerPort = GetTcpPort();
 
 				var version = GetDotnetMajorVersion();
-				var runtimeVersionPath = version <= 5 ? "netcoreapp3.1" : $"net{version}.0";
+				if (version < 7)
+				{
+					throw new InvalidOperationException($"Unsupported dotnet version ({version}) detected");
+				}
+				var runtimeVersionPath = $"net{version}.0";
 
 				var sb = new StringBuilder();
 
