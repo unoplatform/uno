@@ -20,13 +20,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private readonly ActivationPreDrawListener _preDrawListener;
 	private Rect _previousTrueVisibleBounds;
 
-	internal static NativeWindowWrapper Instance => _instance.Value; // TODO: Temporary until proper multi-window support is added #13827
-
 	public NativeWindowWrapper()
 	{
 		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 	}
+
+	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	internal int SystemUiVisibility { get; set; }
 

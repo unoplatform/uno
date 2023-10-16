@@ -68,14 +68,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal Size GetWindowSize()
 	{
-#if __IOS__
-		var nativeFrame = NativeWindow?.Frame ?? CGRect.Empty;
-
-		return new Size(nativeFrame.Width, nativeFrame.Height);
-#else //TODO:MZ: Move to macOS file
 		var applicationFrameSize = NSScreen.MainScreen.VisibleFrame;
 		return new CGSize(applicationFrameSize.Width, applicationFrameSize.Height);
-#endif
 	}
 
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
