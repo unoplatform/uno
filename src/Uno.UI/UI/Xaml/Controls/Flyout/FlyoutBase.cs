@@ -251,7 +251,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			set => SetValue(OverlayInputPassThroughElementProperty, value);
 		}
 
-		internal static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
+		public static DependencyProperty OverlayInputPassThroughElementProperty { get; } =
 			DependencyProperty.Register(nameof(OverlayInputPassThroughElement), typeof(DependencyObject), typeof(FlyoutBase), new FrameworkPropertyMetadata(null));
 
 		/// <summary>
