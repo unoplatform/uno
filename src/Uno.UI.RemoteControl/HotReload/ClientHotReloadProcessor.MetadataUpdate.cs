@@ -206,11 +206,11 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				var isCapturingState = true;
 
-				var windows = Uno.UI.ApplicationHelper.Windows.ToArray();
+				var windows = Uno.UI.ApplicationHelper.Windows.Where(w => w.Content is not null).ToArray();
 				foreach (var window in windows)
 				{
 					var treeIterator = EnumerateHotReloadInstances(
-							Windows.UI.Xaml.Window.Current!.Content!,
+							window.Content!,
 							(fe, key) =>
 							{
 								// Get the original type of the element, in case it's been replaced
