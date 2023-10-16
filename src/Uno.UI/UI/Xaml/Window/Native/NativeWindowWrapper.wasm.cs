@@ -32,9 +32,5 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 		VisibleBounds = bounds;
 	}
 
-	protected override void ShowCore()
-	{
-		WindowManagerInterop.WindowActivate();
-		OnNativeActivated(CoreWindowActivationState.CodeActivated);
-	}
+	protected override void ShowCore() => WindowManagerInterop.WindowActivate();
 }

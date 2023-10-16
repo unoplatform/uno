@@ -70,6 +70,9 @@ internal partial class ContentManager
 
 				AttachToWindow(_rootVisual, window);
 			}
+
+			// For an unknown reason we need to make sure to reset the Frame of the root view controller on iOS when Content changes,
+			// otherwise EVP and When_Mask_All tests fail as the viewport will extend under status bar. This should be investigated in #8978.
 #if __IOS__
 			if (_owner is not Windows.UI.Xaml.Window windowOuter)
 			{
