@@ -16,7 +16,7 @@ public sealed partial class XamlRoot
 
 	internal void InvalidateMeasure()
 	{
-#if !__WASM__ // TODO:MZ: Can we use the same approach on WASM?
+#if !__WASM__ // TODO: Can we use the same approach on WASM? #8978
 		ScheduleInvalidateMeasureOrArrange(invalidateMeasure: true);
 #else
 		InnerInvalidateMeasure();
@@ -25,7 +25,7 @@ public sealed partial class XamlRoot
 
 	internal void InvalidateArrange()
 	{
-#if !__WASM__ // TODO:MZ: Can we use the same approach on WASM?
+#if !__WASM__ // TODO: Can we use the same approach on WASM? #8978
 		ScheduleInvalidateMeasureOrArrange(invalidateMeasure: false);
 #else
 		// We are invalidating both arrange and measure the same way on WASM.

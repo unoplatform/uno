@@ -13,10 +13,7 @@ partial class Window
 	{
 	}
 
-	partial void InitializeWindowingFlavor()
-	{
-		_windowImplementation!.Closed += OnWinUIWindowClosed;
-	}
+	partial void InitializeWindowingFlavor() => _windowImplementation!.Closed += OnWinUIWindowClosed;
 
 	/// <summary>
 	/// Occurs when the window has closed.

@@ -18,8 +18,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 	private RootViewController _mainController;
 	private NSObject _orientationRegistration;
 
-	internal static NativeWindowWrapper Instance => _instance.Value;
-
 	public NativeWindowWrapper()
 	{
 		_nativeWindow = new Uno.UI.Controls.Window();
@@ -34,6 +32,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_nativeWindow.SetOwner(CoreWindow.GetForCurrentThreadSafe());
 #endif
 	}
+
+	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	public override void Activate() { }
 

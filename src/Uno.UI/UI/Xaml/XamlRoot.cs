@@ -29,7 +29,6 @@ public sealed partial class XamlRoot
 	/// </summary>
 	public event TypedEventHandler<XamlRoot, XamlRootChangedEventArgs>? Changed;
 
-	// TODO: This might not be a border potentially, behaves differently on XamlIslands #8978
 	/// <summary>
 	/// Gets the root element of the XAML element tree.
 	/// </summary>
