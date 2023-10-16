@@ -27,8 +27,5 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnChildrenChanged()
 		{
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadiusInternal != CornerRadius.None;
 	}
 }

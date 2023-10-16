@@ -40,7 +40,7 @@ public class Given_Frame : BaseTestClass
 			replacementText: FirstPageTextBlockChangedText);
 
 		// Check the initial text of the TextBlock
-		await frame.ValidateTextOnChildTextBlock(message.OriginalXaml);
+		await frame.ValidateTextOnChildTextBlock(message.OldText);
 	}
 
 	/// <summary>

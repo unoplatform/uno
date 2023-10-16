@@ -44,8 +44,7 @@ partial class Shape
 		var vertical = VerticalAlignment;
 		var stretch = Stretch;
 		var userSize = GetUserSizes();
-		var stroke = Stroke;
-		var strokeThickness = stroke is null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
+		var strokeThickness = StrokeThickness;
 		var halfStrokeThickness = strokeThickness / 2.0;
 		var pathBounds = GetPathBoundingBox(path); // The BoundingBox shouldn't include the control points.
 		var pathSize = (Size)pathBounds.Size;

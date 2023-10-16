@@ -490,7 +490,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 
 	protected override Size ArrangeOverride(Size finalSize)
 	{
-		var result = base.ArrangeOverride(finalSize);
+		var result = ArrangeFirstChild(finalSize);
 		UpdateVideoStretch();
 
 		return result;

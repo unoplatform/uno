@@ -17,7 +17,10 @@ using Uno.UI.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter, ICustomClippingElement
+	public partial class ScrollContentPresenter : ContentPresenter
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
+		, ICustomClippingElement
+#endif
 	{
 		private /*readonly - partial*/ IScrollStrategy _strategy;
 
@@ -203,8 +206,10 @@ namespace Windows.UI.Xaml.Controls
 			Set(disableAnimation: true, isIntermediate: false);
 		}
 
+#if !__CROSSRUNTIME__ && !IS_UNIT_TESTS
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
+#endif
 	}
 }
 #endif

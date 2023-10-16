@@ -53,8 +53,5 @@
 			base.OnBackgroundChanged(e);
 			UpdateHitTest();
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

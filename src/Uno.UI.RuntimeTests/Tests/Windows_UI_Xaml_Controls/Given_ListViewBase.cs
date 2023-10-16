@@ -3806,6 +3806,44 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(vsg.CurrentState?.Name, "MultiSelectEnabled");
 		}
 
+#if HAS_UNO
+		[TestMethod]
+		public async Task Valid_MultipleSelectionMode_ValidSelectionStates()
+		{
+			const string msc = "MultiSelectCheck";
+			var lvi0 = new ListViewItem
+			{
+				Content = "child 1"
+			};
+			var SUT = new ListView
+			{
+				SelectionMode = ListViewSelectionMode.Multiple
+			};
+			SUT.Items.Add(lvi0);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			// Validate the newly materialized item has MultiSelectStates set
+			var root = lvi0 is not null && VisualTreeHelper.GetChildrenCount(lvi0) > 0 ? VisualTreeHelper.GetChild(lvi0, 0) : null;
+			var vsgs = root is FrameworkElement rootAsFE ? VisualStateManager.GetVisualStateGroups(rootAsFE) : null;
+			var vsgMultiSelectStates = vsgs?.FirstOrDefault(x => x.Name == "MultiSelectStates");
+			var vsgCommonStates = vsgs?.FirstOrDefault(x => x.Name == "CommonStates");
+			var mscfe = lvi0.GetTemplateChild(msc) as FrameworkElement;
+
+			Assert.IsNotNull(mscfe, "MultiSelectCheck was not found.");
+			Assert.IsNotNull(vsgMultiSelectStates, "VisualStateGroup[Name=MultiSelectStates] was not found.");
+			Assert.IsNotNull(vsgCommonStates, "VisualStateGroup[Name=CommonStates] was not found.");
+			Assert.AreEqual(vsgMultiSelectStates.CurrentState?.Name, "MultiSelectEnabled");
+			Assert.AreNotEqual(vsgCommonStates.CurrentState?.Name, "Selected");
+			Assert.AreEqual(mscfe.Opacity, 0);
+			lvi0.IsSelected = true;
+			Assert.AreEqual(vsgCommonStates.CurrentState?.Name, "Selected");
+			Assert.AreEqual(mscfe.Opacity, 1);
+		}
+#endif
+
 		[TestMethod]
 		[DataRow(nameof(ListView), "add")]
 		[DataRow(nameof(ListView), "remove")]

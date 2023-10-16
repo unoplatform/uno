@@ -8,14 +8,9 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class ScrollViewer : ICustomClippingElement
+	partial class ScrollViewer
 	{
 		internal Size ScrollBarSize => (_presenter as ScrollContentPresenter)?.ScrollBarSize ?? default;
-
-		// Disable clipping for Scrollviewer (edge seems to disable scrolling if
-		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 
 		private bool ChangeViewNative(double? horizontalOffset, double? verticalOffset, float? zoomFactor, bool disableAnimation)
 		{

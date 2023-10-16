@@ -2585,6 +2585,9 @@ namespace Windows.UI.Xaml.Tests.Enterprise
 #if __MACOS__
 		[Ignore("Currently fails on macOS, part of #9282 epic")]
 #endif
+#if __SKIA__
+		[Ignore("Currently flaky on Skia, part of #9080 epic")]
+#endif
 		public async Task CanChangeDisplayModeBeforeLoaded()
 		{
 			TestCleanupWrapper cleanup;

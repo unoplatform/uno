@@ -212,6 +212,7 @@ namespace Windows.UI.Xaml.Controls
 				bool allowClipToSlot;
 				bool needsClipToSlot;
 
+#if !IS_UNIT_TESTS
 				if (Panel is ICustomClippingElement customClippingElement)
 				{
 					// Some controls may control itself how clipping is applied
@@ -219,6 +220,7 @@ namespace Windows.UI.Xaml.Controls
 					needsClipToSlot = customClippingElement.ForceClippingToLayoutSlot;
 				}
 				else
+#endif
 				{
 					allowClipToSlot = true;
 					needsClipToSlot = false;

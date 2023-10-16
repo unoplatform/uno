@@ -180,13 +180,11 @@ namespace Windows.UI.Xaml
 				.Subtract(marginSize)
 				.AtLeastZero();
 
-			var customClippingElement = (this as ICustomClippingElement);
-			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
-			var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
+			var needsClipToSlot = false;
 
-			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+			_logDebug?.Debug($"{DepthIndentation}{FormatDebugName()}: InnerArrangeCore({finalRect}), arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
-			if (allowClipToSlot && !needsClipToSlot)
+			if (!needsClipToSlot)
 			{
 				if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
 				{
@@ -223,13 +221,13 @@ namespace Windows.UI.Xaml
 			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 			{
 				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
-				needsClipToSlot = allowClipToSlot;
+				needsClipToSlot = true;
 				arrangeSize.Width = effectiveMaxSize.Width;
 			}
 			if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 			{
 				_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
-				needsClipToSlot = allowClipToSlot;
+				needsClipToSlot = true;
 				arrangeSize.Height = effectiveMaxSize.Height;
 			}
 
@@ -249,16 +247,14 @@ namespace Windows.UI.Xaml
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
 
-			if (allowClipToSlot &&
-				(IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
-				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height)))
+			if (IsLessThanAndNotCloseTo(clippedInkSize.Width, innerInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clippedInkSize.Height, innerInkSize.Height))
 			{
 				needsClipToSlot = true;
 			}
 
-			if (allowClipToSlot &&
-				(IsLessThanAndNotCloseTo(clientSize.Width, clippedInkSize.Width) ||
-				IsLessThanAndNotCloseTo(clientSize.Height, clippedInkSize.Height)))
+			if (IsLessThanAndNotCloseTo(clientSize.Width, clippedInkSize.Width) ||
+				IsLessThanAndNotCloseTo(clientSize.Height, clippedInkSize.Height))
 			{
 				needsClipToSlot = true;
 			}

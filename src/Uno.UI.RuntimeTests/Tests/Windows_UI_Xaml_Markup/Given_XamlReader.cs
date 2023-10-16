@@ -264,12 +264,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			var sut = setup.FindFirstDescendant<ScrollViewer>(x => x.Name == "SUT");
 			var expr = sut.GetBindingExpression(ScrollViewer.HorizontalScrollModeProperty);
 
-			Assert.AreEqual(expr.ParentBinding.Path.Path, "ScrollViewer.HorizontalScrollMode");
-
-			// disabled due to https://github.com/unoplatform/uno/issues/13121#issuecomment-1666666795 (point 2)
-			//Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
-			//ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
-			//Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
+			Assert.AreEqual(expr.ParentBinding.Path.Path, "(Windows.UI.Xaml.Controls:ScrollViewer.HorizontalScrollMode)");
+			Assert.AreEqual(ScrollMode.Disabled, sut.HorizontalScrollMode);
+			ScrollViewer.SetHorizontalScrollMode(setup, ScrollMode.Enabled);
+			Assert.AreEqual(ScrollMode.Enabled, sut.HorizontalScrollMode);
 		}
 	}
 
