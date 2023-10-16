@@ -544,7 +544,7 @@ namespace Microsoft.UI.Xaml
 #if UNO_REFERENCE_API // Depth is defined properly only on WASM and Skia
 			// If possible we try to navigate the tree upward so we have a greater chance
 			// to find an element in the parent hierarchy of the other element.
-			if (to is { } && from.Depth < to.Depth)
+			if (to is not null && from.Depth < to.Depth)
 			{
 				return GetTransform(to, from).Inverse();
 			}
@@ -565,7 +565,6 @@ namespace Microsoft.UI.Xaml
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
 				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
-				// Note: We do not propagate the 'intermediatesSelector' as cached transforms would be irrelevant
 				var toToRoot = GetTransform(to, null);
 
 				var rootToTo = toToRoot.Inverse();
@@ -656,13 +655,11 @@ namespace Microsoft.UI.Xaml
 		internal void ApplyFlowDirectionTransform(ref Matrix3x2 matrix)
 		{
 #if SUPPORTS_RTL
-			if (this is FrameworkElement fe && VisualTreeHelper.GetParent(this) is FrameworkElement parent)
+			if (this is FrameworkElement fe 
+				&& VisualTreeHelper.GetParent(this) is FrameworkElement parent 
+				&& fe.FlowDirection != parent.FlowDirection)
 			{
-				if (fe.FlowDirection != parent.FlowDirection)
-				{
-					matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f);
-					matrix *= Matrix3x2.CreateTranslation((float)parent.RenderSize.Width, 0);
-				}
+				matrix *= Matrix3x2.CreateScale(-1.0f, 1.0f, new Vector2(.5f, 0f));
 			}
 #endif
 		}
