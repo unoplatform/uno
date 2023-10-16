@@ -310,4 +310,64 @@ public class Given_Binding
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestDefaultBindingModeInDataTemplateInsideResourceDictionary()
+	{
+		var xamlFile = new XamlFile("MyResourceDictionary.xaml", """
+			<ResourceDictionary
+				x:Class="TestRepro.MyResourceDictionary"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				x:DefaultBindMode="OneWay"
+				mc:Ignorable="d">
+
+					<DataTemplate x:Key="myTemplate" x:DataType="local:MyModel">
+						<TextBlock x:Name="tb" Text="{x:Bind MyString}" />
+					</DataTemplate>
+			</ResourceDictionary>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Windows.UI.Xaml;
+
+					namespace TestRepro
+					{
+						public sealed partial class MyResourceDictionary : ResourceDictionary
+						{
+							public MyResourceDictionary()
+							{
+								this.InitializeComponent();
+							}
+						}
+
+						public partial class MyModel
+						{
+							public string MyString
+							{
+								get => throw new System.NotImplementedException();
+								set => throw new System.NotImplementedException();
+							}
+
+							public static readonly DependencyProperty MyStringProperty =
+								DependencyProperty.Register(nameof(MyString), typeof(string), typeof(MyModel), new FrameworkPropertyMetadata(null));
+						}
+					}
+
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

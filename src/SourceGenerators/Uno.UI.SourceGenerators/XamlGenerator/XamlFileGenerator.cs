@@ -342,7 +342,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineIndented("using _View = UIKit.UIView;");
 			writer.AppendLineIndented("#elif __MACOS__");
 			writer.AppendLineIndented("using _View = AppKit.NSView;");
-			writer.AppendLineIndented("#elif UNO_REFERENCE_API || IS_UNIT_TESTS");
+			writer.AppendLineIndented("#else");
 			writer.AppendLineIndented("using _View = Windows.UI.Xaml.UIElement;");
 			writer.AppendLineIndented("#endif");
 
@@ -356,8 +356,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				_isTopLevelDictionary = true;
 
-				BuildResourceDictionaryBackingClass(writer, topLevelControl);
-				BuildTopLevelResourceDictionary(writer, topLevelControl);
+				using (TrySetDefaultBindMode(topLevelControl))
+				{
+					BuildResourceDictionaryBackingClass(writer, topLevelControl);
+					BuildTopLevelResourceDictionary(writer, topLevelControl);
+				}
 			}
 			else
 			{
