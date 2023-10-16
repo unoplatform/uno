@@ -54,7 +54,8 @@ public partial class NativePopup : NativePopupBase
 		{
 			if (Child is FrameworkElement child)
 			{
-				child.Measure(Window.IShouldntUseCurrentWindow.Bounds.Size);
+				// TODO: Adjust for multiwindow #13827
+				child.Measure(Window.CurrentSafe?.Bounds.Size ?? default);
 				_popupWindow.Width = ViewHelper.LogicalToPhysicalPixels(child.DesiredSize.Width);
 				_popupWindow.Height = ViewHelper.LogicalToPhysicalPixels(child.DesiredSize.Height);
 			}

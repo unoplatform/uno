@@ -111,8 +111,8 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 	private void OnNativeSizeChanged(object? sender, Size size)
 	{
 		OnSizeChanged(size);
-#if __SKIA__ || __WASM__ // TODO:MZ: What about Android & iOS
-		XamlRoot?.InvalidateMeasure(); // Should notify before or after?
+#if __SKIA__ || __WASM__
+		XamlRoot?.InvalidateMeasure(); //TODO:MZ: Should notify before or after?
 #endif
 		XamlRoot?.NotifyChanged();
 		var windowSizeChanged = new WindowSizeChangedEventArgs(size);

@@ -107,8 +107,6 @@ namespace Windows.UI.ViewManagement
 		public static global::Windows.UI.ViewManagement.ApplicationView GetForCurrentViewSafe() => GetForCurrentView();
 #pragma warning restore RS0030 // Do not use banned APIs
 
-		internal static global::Windows.UI.ViewManagement.ApplicationView IShouldntUseGetForCurrentView() => GetForWindowId(AppWindow.MainWindowId); //TODO:MZ: Does not make sense in WinAppSDK
-
 		internal static global::Windows.UI.ViewManagement.ApplicationView GetForWindowId(MUXWindowId windowId) => _windowIdMap[windowId];
 
 		internal static void InitializeForWindowId(MUXWindowId windowId)

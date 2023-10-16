@@ -55,7 +55,7 @@ internal partial class RootVisual : Panel, IRootElement
 	/// Updates the color of the background brush.
 	/// </summary>
 	/// <param name="backgroundColor">Background color.</param>
-	internal void SetBackgroundColor(Color backgroundColor) =>
+	public void SetBackgroundColor(Color backgroundColor) =>
 		SetValue(Panel.BackgroundProperty, new SolidColorBrush(backgroundColor));
 
 	/// <summary>

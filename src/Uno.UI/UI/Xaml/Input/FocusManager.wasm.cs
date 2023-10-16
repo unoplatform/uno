@@ -172,7 +172,8 @@ namespace Microsoft.UI.Xaml.Input
 			else
 			{
 				// This might occur if a non-Uno element receives focus
-				var focusManager = VisualTree.GetFocusManagerForElement(Window.IShouldntUseCurrentWindow.RootElement);
+				// TODO: Adjust for multiwindow #8978
+				var focusManager = VisualTree.GetFocusManagerForElement(Window.CurrentSafe?.RootElement);
 
 				// The focus manager may be null if JS raises focusin/blur before the app is initialized.
 				focusManager?.ClearFocus();
