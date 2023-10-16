@@ -1,9 +1,14 @@
 ﻿#nullable enable
 
 using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Text;
 using Uno.UI.Extensions;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -15,6 +20,7 @@ using AppKit;
 #endif
 
 #if HAS_UNO // Is building using Uno.UI
+using Uno.Collections;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 #endif
@@ -232,7 +238,7 @@ namespace Uno.UI.Toolkit
 					window.Bounds.GetOrientation() == ApplicationView.GetForWindowId(window.AppWindow.Id).VisibleBounds.GetOrientation();
 #else
 				var areBoundsConsistent =
-					ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetCurrentWindow()?.Bounds.GetOrientation()
+					ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetCurrentWindow()?.Bounds.GetOrientation();
 #endif
 				// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which
 				// might arise transiently when the screen orientation changes.
