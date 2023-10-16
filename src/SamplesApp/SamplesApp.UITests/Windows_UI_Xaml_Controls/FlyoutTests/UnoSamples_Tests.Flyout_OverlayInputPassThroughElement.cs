@@ -31,7 +31,7 @@ partial class Flyout_Tests : PopupUITestBase
 #endif
 	public async Task FlyoutTest_When_NoOverlayInputPassThroughElement_Then_DontPassThrough(string testCase)
 	{
-		await App.RunAsync("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_OverlayInputPassThroughElement");
+		await RunAsync("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_OverlayInputPassThroughElement");
 
 		App.WaitForElement(testCase);
 
@@ -101,7 +101,7 @@ partial class Flyout_Tests : PopupUITestBase
 		
 		await App.WaitForDependencyPropertyValueAsync(App.Marked("IsFlyoutOpened"), "Text", "True");
 
-		App.TapCoordinates(x, y);
+		App.TapCoordinates((float)x, (float)y);
 
 		await App.WaitForDependencyPropertyValueAsync(App.Marked("IsFlyoutOpened"), "Text", "False");
 
