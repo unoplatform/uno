@@ -86,7 +86,13 @@ namespace Uno.UI.Toolkit
 #if WINUI || HAS_UNO_WINUI
 				return new();
 #else
-				if (Windows.UI.Xaml.Window.CurrentSafe is not { } window)
+				var window =
+#if HAS_UNO
+					Windows.UI.Xaml.Window.CurrentSafe;
+#else
+					Windows.UI.Xaml.Window.Current;
+#endif
+				if (window is null)
 				{
 					return new();
 				}
@@ -220,7 +226,7 @@ namespace Uno.UI.Toolkit
 #if HAS_UNO
 				return Owner?.XamlRoot?.HostWindow ?? Windows.UI.Xaml.Window.CurrentSafe;
 #else
-				return Windows.UI.Xamml.Window.Current;
+				return Windows.UI.Xaml.Window.Current;
 #endif
 			}
 
@@ -238,7 +244,7 @@ namespace Uno.UI.Toolkit
 					window.Bounds.GetOrientation() == ApplicationView.GetForWindowId(window.AppWindow.Id).VisibleBounds.GetOrientation();
 #else
 				var areBoundsConsistent =
-					ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetCurrentWindow()?.Bounds.GetOrientation();
+					ApplicationView.GetForCurrentView().VisibleBounds.GetOrientation() == GetOwnerWindow()?.Bounds.GetOrientation();
 #endif
 				// If false, ApplicationView.VisibleBounds and Window.Current.Bounds have different aspect ratios (eg portrait vs landscape) which
 				// might arise transiently when the screen orientation changes.
