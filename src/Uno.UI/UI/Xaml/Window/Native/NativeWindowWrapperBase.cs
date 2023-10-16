@@ -74,9 +74,9 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 	public event EventHandler? Closed;
 	public event EventHandler? Shown;
 
-	public abstract void Activate();
+	public virtual void Activate() { }
 
-	public abstract void Close();
+	public virtual void Close() { }
 
 	public virtual void Show()
 	{
@@ -84,7 +84,7 @@ internal abstract class NativeWindowWrapperBase : INativeWindowWrapper
 		Shown?.Invoke(this, EventArgs.Empty);
 	}
 
-	protected abstract void ShowCore();
+	protected virtual void ShowCore() { }
 
 	protected AppWindowClosingEventArgs RaiseClosing()
 	{

@@ -55,10 +55,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal RootViewController MainController => _mainController;
 
-	public override void Activate() { }
-
-	public override void Close() { }
-
 	protected override void ShowCore()
 	{
 		_window.ContentViewController = _mainController;
