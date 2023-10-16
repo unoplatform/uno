@@ -28,6 +28,7 @@ public class RemoteControlClient : IRemoteControlClient
 {
 	public delegate void RemoteControlFrameReceivedEventHandler(object sender, ReceivedFrameEventArgs args);
 	public delegate void RemoteControlClientEventEventHandler(object sender, ClientEventEventArgs args);
+	public delegate void SendMessageFailedEventHandler(object sender, SendMessageFailedEventArgs args);
 
 	public static RemoteControlClient? Instance { get; private set; }
 
@@ -40,6 +41,7 @@ public class RemoteControlClient : IRemoteControlClient
 
 	public event RemoteControlFrameReceivedEventHandler? FrameReceived;
 	public event RemoteControlClientEventEventHandler? ClientEvent;
+	public event SendMessageFailedEventHandler? SendMessageFailed;
 
 	/// <summary>
 	/// Application type used to initialize this client.
@@ -516,6 +518,8 @@ public class RemoteControlClient : IRemoteControlClient
 			{
 				this.Log().LogError("Unable send message, no connection available");
 			}
+
+			SendMessageFailed?.Invoke(this, new SendMessageFailedEventArgs(message));
 
 			return;
 		}
