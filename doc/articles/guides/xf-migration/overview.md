@@ -4,7 +4,7 @@ uid: Uno.XamarinForms.Migration
 
 # Overview of migrating from Xamarin.Forms to Uno Platform
 
-Despite any subtle differences with the XAML flavor of Xamarin.Forms, migrating your team's existing investment to another XAML framework is already a straightforward process. Thanks to its retention of the same battle-tested XAML flavor from [WinUI](https://learn.microsoft.com/windows/apps/get-started/uno-simple-photo-viewer), Uno Platform gives your project a multi-platform path forward to gain compatibility with a multitude of powerful controls and timely support for work done upstream. 
+Despite its subtle differences to other XAML frameworks, the markup language flavor used by Xamarin.Forms makes migrating your team's existing investment a straightforward process. Uno Platform retains the same battle-tested XAML flavor used to develop rich experiences with [WinUI](https://learn.microsoft.com/windows/apps/get-started/uno-simple-photo-viewer). This is how your project has a multi-platform path forward to compatibility with a multitude of powerful controls and timely support for work done upstream.
 
 ## Our approach
 
