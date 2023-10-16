@@ -2538,7 +2538,7 @@ namespace Windows.UI.Tests.Enterprise
 			//UNO ONLY: SetWindowSizeOverride is not supported, so we are fullscreen
 			//double expectedCommandBarWidth = 500;
 
-			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : Window.CurrentSafe!.Bounds.Width;
+			double expectedCommandBarWidth = WindowHelper.IsXamlIsland ? WindowHelper.XamlRoot.Size.Width : WindowHelper.CurrentTestWindow!.Bounds.Width;
 
 #if __IOS__
 			await RunOnUIThread(() =>

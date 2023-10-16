@@ -10,10 +10,6 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
-	public override void Activate() { }
-
-	public override void Close() { }
-
 	internal void OnNativeClosed() => RaiseClosed();
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
@@ -26,10 +22,5 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 		Bounds = bounds;
 		VisibleBounds = bounds;
-	}
-
-	protected override void ShowCore()
-	{
-		OnNativeActivated(CoreWindowActivationState.CodeActivated);
 	}
 }
