@@ -42,7 +42,7 @@ partial class Flyout_Tests : PopupUITestBase
 
 		// When tap on pink
 		AssertDoesNotContains(await RunTest(testCase, blocking.X - 10, pink.CenterY), "PinkBorder");
-		
+
 		// When tap on orange
 		AssertDoesNotContains(await RunTest(testCase, blocking.X + 10, orange.CenterY), "OrangeButton");
 
@@ -98,7 +98,7 @@ partial class Flyout_Tests : PopupUITestBase
 	{
 		App.FastTap("ClearLogButton");
 		App.FastTap(testCase);
-		
+
 		await App.WaitForDependencyPropertyValueAsync(App.Marked("IsFlyoutOpened"), "Text", "True");
 
 		App.TapCoordinates((float)x, (float)y);
