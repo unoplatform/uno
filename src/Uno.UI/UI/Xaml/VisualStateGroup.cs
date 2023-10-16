@@ -1,11 +1,8 @@
 ﻿using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
@@ -31,6 +28,8 @@ namespace Microsoft.UI.Xaml
 		/// The xaml scope in force at the time the VisualStateGroup was created.
 		/// </summary>
 		private readonly XamlScope _xamlScope;
+		private readonly SerialDisposable _parentLoadedDisposable = new();
+
 		private (VisualState state, VisualTransition transition) _current;
 
 		public event VisualStateChangedEventHandler CurrentStateChanging;
@@ -144,6 +143,48 @@ namespace Microsoft.UI.Xaml
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
 		{
 			RefreshStateTriggers(force: true);
+
+			_parentLoadedDisposable.Disposable = null;
+			if (this.GetParent() is IFrameworkElement fe)
+			{
+				fe.Loaded += OnParentLoaded;
+				fe.Unloaded += OnParentUnloaded;
+				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
+				{
+					fe.Loaded -= OnParentLoaded;
+					fe.Unloaded -= OnParentUnloaded;
+				});
+			}
+		}
+
+		private void OnParentLoaded(object sender, object args)
+		{
+			// Notify all states that the parent has been loaded
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
+			{
+				var state = States[stateIndex];
+				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				{
+					var trigger = state.StateTriggers[triggerIndex];
+
+					trigger.OnOwnerElementLoaded();
+				}
+			}
+		}
+
+		private void OnParentUnloaded(object sender, object args)
+		{
+			// Notify all states that the parent has been loaded
+			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
+			{
+				var state = States[stateIndex];
+				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
+				{
+					var trigger = state.StateTriggers[triggerIndex];
+
+					trigger.OnOwnerElementUnloaded();
+				}
+			}
 		}
 
 		internal void RaiseCurrentStateChanging(VisualState oldState, VisualState newState)

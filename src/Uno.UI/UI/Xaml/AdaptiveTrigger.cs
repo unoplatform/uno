@@ -1,8 +1,4 @@
-﻿using System;
 using Uno.Disposables;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
-using Windows.UI.Core;
 
 #if HAS_UNO_WINUI
 using WindowSizeChangedEventArgs = Microsoft/* UWP don't rename */.UI.Xaml.WindowSizeChangedEventArgs;
@@ -18,20 +14,20 @@ namespace Microsoft.UI.Xaml
 
 		public AdaptiveTrigger()
 		{
-			UpdateState();
 		}
 
-		private void OnCurrentWindowSizeChanged(object sender, WindowSizeChangedEventArgs e) =>
-			UpdateState();
+		public XamlRoot XamlRoot => XamlRoot.GetForElement(this);
+
+		private void OnXamlRootChanged(object sender, XamlRootChangedEventArgs e) => UpdateState();
 
 		private void UpdateState()
 		{
-			if (Window.IShouldntUseCurrentWindow is null)
+			if (XamlRoot is not { } xamlRoot)
 			{
 				return;
 			}
 
-			var size = Window.IShouldntUseCurrentWindow.Bounds;
+			var size = xamlRoot.Bounds;
 
 			var w = size.Width;
 			var h = size.Height;
@@ -86,17 +82,34 @@ namespace Microsoft.UI.Xaml
 		{
 			base.OnOwnerChanged();
 
-			_sizeChangedSubscription.Disposable = null;
+			AttachSizeChanged();
+		}
 
-			if (Window.IShouldntUseCurrentWindow is null)
-			{
-				return;
-			}
+		internal override void OnOwnerElementLoaded()
+		{
+			base.OnOwnerElementLoaded();
 
-			if (Owner != null)
+			AttachSizeChanged();
+		}
+
+		internal override void OnOwnerElementUnloaded()
+		{
+			base.OnOwnerElementUnloaded();
+
+			DetachSizeChanged();
+		}
+
+		private void AttachSizeChanged()
+		{
+			if (XamlRoot is { } xamlRoot)
 			{
-				_sizeChangedSubscription.Disposable = Window.IShouldntUseCurrentWindow.RegisterSizeChangedEvent(OnCurrentWindowSizeChanged);
+				xamlRoot.Changed += OnXamlRootChanged;
+				UpdateState();
+
+				_sizeChangedSubscription.Disposable = Disposable.Create(() => xamlRoot.Changed -= OnXamlRootChanged);
 			}
 		}
+
+		private void DetachSizeChanged() => _sizeChangedSubscription.Disposable = null;
 	}
 }
