@@ -12,5 +12,5 @@ internal class SystemNavigationManagerPreviewExtension : ISystemNavigationManage
 	{
 	}
 
-	public void RequestNativeAppClose() => GtkHost.Current!.MainWindow!.Close();
+	public void RequestNativeAppClose() => GtkHost.Current!.InitialWindow!.Close();
 }
