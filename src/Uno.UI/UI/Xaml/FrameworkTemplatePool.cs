@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml
 		/// The root of the behavior is linked to WeakReferences to objects pending for finalizers are considered
 		/// null, something that does not happen on Xamarin.iOS/Android.
 		/// </remarks>
-		private readonly HashSet<UIElement> _activeInstances = new HashSet<View>();
+		private readonly HashSet<View> _activeInstances = new();
 #endif
 
 		/// <summary>
@@ -164,7 +164,19 @@ namespace Windows.UI.Xaml
 
 			foreach (var list in _pooledInstances.Values)
 			{
-				removedInstancesCount += list.RemoveAll(t => isManual || now - t.CreationTime > TimeToLive);
+				removedInstancesCount += list.RemoveAll(t =>
+				{
+					var remove = isManual || now - t.CreationTime > TimeToLive;
+
+#if USE_HARD_REFERENCES
+					if (remove)
+					{
+						_activeInstances.Remove(t.Control);
+					}
+#endif
+
+					return remove;
+				});
 			}
 
 			if (removedInstancesCount > 0)
@@ -174,6 +186,11 @@ namespace Windows.UI.Xaml
 					for (int i = 0; i < removedInstancesCount; i++)
 					{
 						_trace.WriteEvent(TraceProvider.ReleaseTemplate);
+					}
+
+					if (this.Log().IsEnabled(Uno.Foundation.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Released {removedInstancesCount} template instances");
 					}
 				}
 
@@ -190,6 +207,19 @@ namespace Windows.UI.Xaml
 		/// <remarks>The pool will periodically release templates that haven't been reused within the span of <see cref="TimeToLive"/>, so
 		/// normally you shouldn't need to call this method. It may be useful in advanced memory management scenarios.</remarks>
 		public static void Scavenge() => Instance.Scavenge(true);
+
+
+		internal int GetPooledTemplatesCount()
+		{
+			int count = 0;
+
+			foreach (var list in _pooledInstances.Values)
+			{
+				count += list.Count;
+			}
+
+			return count;
+		}
 
 		internal View? DequeueTemplate(FrameworkTemplate template)
 		{
