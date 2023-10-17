@@ -53,6 +53,9 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 		public void Execute(GeneratorExecutionContext context)
 		{
+			var isProjectConfigEnabled = Is("UnoDevServer_IncludeProjectConfiguration");
+			var isServerProcessorsConfigEnabled = Is("UnoDevServer_IncludeServerProcessorsConfiguration");
+
 			if (!DesignTimeHelper.IsDesignTime(context)
 				&& context.GetMSBuildPropertyValue("Configuration") == "Debug")
 			{
@@ -85,6 +88,29 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 					context.AddSource("RemoteControl", sb.ToString());
 				}
 			}
+			else if (isProjectConfigEnabled || isServerProcessorsConfigEnabled)
+			{
+				// This is designed for runtime-tests that wants to test HotReload also in release (i.e. using app built on the CI).
+				// The runtime-test package will add those properties if the dev-server package is referenced so apps will be automatically
+				// configured properly as soon as they reference both the dev-server and the runtime-test package.
+
+				var sb = new IndentedStringBuilder();
+				BuildGeneratedFileHeader(sb);
+				
+				if (isProjectConfigEnabled)
+				{
+					BuildProjectConfiguration(context, sb);
+				}
+				if (isServerProcessorsConfigEnabled)
+				{
+					BuildServerProcessorsPaths(context, sb);
+				}
+
+				context.AddSource("RemoteControl", sb.ToString());
+			}
+
+			bool Is(string propertyName)
+				=> bool.TryParse(context.GetMSBuildPropertyValue(propertyName), out var value) && value;
 		}
 
 		private static bool IsInsideUnoSolution(GeneratorExecutionContext context)
