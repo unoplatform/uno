@@ -211,7 +211,7 @@ namespace Microsoft.UI.Xaml.Media
 
 		public static IReadOnlyList<Popup> GetOpenPopups(Window window)
 		{
-			if (window.RootElement?.XamlRoot?.VisualTree is { } visualTree) // TODO:MZ: Verify if there is not a better way
+			if (window.RootElement?.XamlRoot?.VisualTree is { } visualTree)
 			{
 				return GetOpenPopups(visualTree);
 			}
@@ -812,8 +812,8 @@ namespace Microsoft.UI.Xaml.Media
 		{
 			public static Branch ToPublicRoot(UIElement leaf)
 				=> new Branch(
-					leaf.XamlRoot?.VisualTree?.PublicRootVisual ?? throw new InvalidOperationException("Element must be part of a visual tree"),
-					leaf); // TODO:MZ: Multi-window support
+					leaf.XamlRoot?.VisualTree?.RootElement ?? throw new InvalidOperationException("Element must be part of a visual tree"),
+					leaf);
 
 			public Branch(UIElement root, UIElement leaf)
 			{

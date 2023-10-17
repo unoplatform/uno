@@ -137,6 +137,7 @@ namespace Microsoft.UI.Xaml
 		//Modifies the Owner FrameworkElement when Collection is modified
 		private void VisualStateChanged(object sender, IVectorChangedEventArgs e)
 		{
+			OnOwnerElementChanged();
 			RefreshStateTriggers();
 		}
 
@@ -147,19 +148,28 @@ namespace Microsoft.UI.Xaml
 			_parentLoadedDisposable.Disposable = null;
 			if (this.GetParent() is IFrameworkElement fe)
 			{
-				fe.Loaded += OnParentLoaded;
-				fe.Unloaded += OnParentUnloaded;
+				OnOwnerElementChanged();
+				fe.Loaded += OnOwnerElementLoaded;
+				fe.Unloaded += OnOwnerElementUnloaded;
 				_parentLoadedDisposable.Disposable = Disposable.Create(() =>
 				{
-					fe.Loaded -= OnParentLoaded;
-					fe.Unloaded -= OnParentUnloaded;
+					fe.Loaded -= OnOwnerElementLoaded;
+					fe.Unloaded -= OnOwnerElementUnloaded;
 				});
 			}
 		}
 
-		private void OnParentLoaded(object sender, object args)
+		private void OnOwnerElementChanged() =>
+			ExecuteOnTriggers(t => t.OnOwnerElementChanged());
+
+		private void OnOwnerElementLoaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementLoaded());
+
+		private void OnOwnerElementUnloaded(object sender, RoutedEventArgs args) =>
+			ExecuteOnTriggers(t => t.OnOwnerElementUnloaded());
+
+		private void ExecuteOnTriggers(Action<StateTriggerBase> action)
 		{
-			// Notify all states that the parent has been loaded
 			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
 			{
 				var state = States[stateIndex];
@@ -167,22 +177,7 @@ namespace Microsoft.UI.Xaml
 				{
 					var trigger = state.StateTriggers[triggerIndex];
 
-					trigger.OnOwnerElementLoaded();
-				}
-			}
-		}
-
-		private void OnParentUnloaded(object sender, object args)
-		{
-			// Notify all states that the parent has been loaded
-			for (var stateIndex = 0; stateIndex < States.Count; stateIndex++)
-			{
-				var state = States[stateIndex];
-				for (var triggerIndex = 0; triggerIndex < state.StateTriggers.Count; triggerIndex++)
-				{
-					var trigger = state.StateTriggers[triggerIndex];
-
-					trigger.OnOwnerElementUnloaded();
+					action(trigger);
 				}
 			}
 		}

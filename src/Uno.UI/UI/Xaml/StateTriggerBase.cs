@@ -57,6 +57,10 @@ namespace Microsoft.UI.Xaml
 		{
 		}
 
+		internal virtual void OnOwnerElementChanged()
+		{
+		}
+
 		internal virtual void OnOwnerElementLoaded()
 		{
 		}
