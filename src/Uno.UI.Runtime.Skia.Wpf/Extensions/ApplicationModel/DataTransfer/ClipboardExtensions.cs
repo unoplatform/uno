@@ -7,7 +7,9 @@ using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 using Uno.ApplicationModel.DataTransfer;
+using Uno.Disposables;
 using Uno.UI.Runtime.Skia.Wpf;
+using Uno.UI.Runtime.Skia.Wpf.UI.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
@@ -22,8 +24,23 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 	{
 		private const int WM_CLIPBOARDUPDATE = 0x031D;
 
+		private readonly SerialDisposable _contentChangesSubscription = new();
+		private bool _shouldObserveContentChanges;
+
 		public ClipboardExtensions(object owner)
 		{
+			UnoWpfWindow.NativeWindowShown += UnoWpfWindow_NativeWindowShown;
+		}
+
+		private void UnoWpfWindow_NativeWindowShown(object sender, UnoWpfWindow e)
+		{
+			UnoWpfWindow.NativeWindowShown -= UnoWpfWindow_NativeWindowShown;
+
+			// Ensure we are observing content changes in case it was requested too early.
+			if (_shouldObserveContentChanges)
+			{
+				StartContentChanged();
+			}
 		}
 
 		public event EventHandler<object> ContentChanged;
@@ -36,15 +53,12 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 
 		public void StartContentChanged()
 		{
+			_shouldObserveContentChanges = true;
+			_contentChangesSubscription.Disposable = null;
 			if (WpfApplication.Current.MainWindow is not null)
 			{
 				RegisterClipboardListener();
-			}
-			else if (WpfHost.Current is not null)
-			{
-				// Signals the app to hook when it's ready
-				//TODO:MZ: Replace somehow
-				//WpfHost.Current.MainWindowShown += OnMainWindowShown;
+				_contentChangesSubscription.Disposable = Disposable.Create(() => UnregisterClipboardListener());
 			}
 		}
 
@@ -55,26 +69,17 @@ namespace Uno.Extensions.ApplicationModel.DataTransfer
 			ClipboardNativeFunctions.AddClipboardFormatListener(hwndSource.Handle);
 		}
 
-		private void OnMainWindowShown(object sender, EventArgs e)
+		private void UnregisterClipboardListener()
 		{
-			RegisterClipboardListener();
-			//TODO:MZ: Replace somehow
-			//WpfHost.Current.MainWindowShown -= OnMainWindowShown;
+			var hwndSource = GetHwnd(WpfApplication.Current.MainWindow);
+			hwndSource.RemoveHook(OnWmMessage);
+			ClipboardNativeFunctions.RemoveClipboardFormatListener(hwndSource.Handle);
 		}
 
 		public void StopContentChanged()
 		{
-			if (WpfApplication.Current.MainWindow is not null)
-			{
-				var hwndSource = GetHwnd(WpfApplication.Current.MainWindow);
-				hwndSource.RemoveHook(OnWmMessage);
-				ClipboardNativeFunctions.RemoveClipboardFormatListener(hwndSource.Handle);
-			}
-			else
-			{
-				//TODO:MZ: Replace somehow
-				//WpfHost.Current.MainWindowShown -= OnMainWindowShown;
-			}
+			_shouldObserveContentChanges = false;
+			_contentChangesSubscription.Disposable = null;
 		}
 
 		public void Flush() => WpfClipboard.Flush();
