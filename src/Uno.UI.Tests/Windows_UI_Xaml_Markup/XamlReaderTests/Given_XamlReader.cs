@@ -462,6 +462,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		{
 			var s = GetContent(nameof(When_VisualStateGroup));
 			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as Grid;
+			r.ForceLoaded();
 
 			var groups = VisualStateManager.GetVisualStateGroups(r);
 			Assert.IsNotNull(groups);
