@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml
 		private Border _rootBorder;
 		private bool _invalidateRequested;
 
+		internal object NativeWindow => null;
+
 		partial void InitPlatform()
 		{
 			Dispatcher = CoreDispatcher.Main;

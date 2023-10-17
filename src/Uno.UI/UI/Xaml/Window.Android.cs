@@ -37,6 +37,8 @@ namespace Windows.UI.Xaml
 				+= RaiseNativeSizeChanged;
 		}
 
+		internal Activity NativeWindow => ApplicationActivity.Instance;
+
 		internal void OnActivityCreated() => AddPreDrawListener();
 
 		partial void ShowPartial() => RemovePreDrawListener();
