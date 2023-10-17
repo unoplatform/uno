@@ -52,7 +52,8 @@ namespace Windows.UI.Xaml
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow(_window);
+			CoreWindow = new CoreWindow();
+			CoreWindow.SetWindow(_window);
 		}
 
 		internal NSWindow NativeWindow => _window;

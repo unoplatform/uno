@@ -23,5 +23,14 @@ public sealed partial class Window
 		set => ApplicationView.GetForCurrentView().Title = value;
 	}
 #endif
+
+	/// <summary>
+	/// Occurs when the window has closed.
+	/// </summary>
+	public event TypedEventHandler<object, WindowEventArgs> Closed
+	{
+		add => _windowImplementation.Closed += value;
+		remove => _windowImplementation.Closed -= value;
+	}
 }
 #endif
