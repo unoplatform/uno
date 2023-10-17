@@ -17,6 +17,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
+using System.Collections.Immutable;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -118,7 +119,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath, cancellationToken);
+						var xamlFileDefinition = Visit(reader, file, targetFilePath, cancellationToken);
 						if (!reader.DisableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -228,11 +229,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath, CancellationToken cancellationToken)
+		private XamlFileDefinition Visit(XamlXmlReader reader, AdditionalText source, string targetFilePath, CancellationToken cancellationToken)
 		{
 			WriteState(reader);
 
-			var xamlFile = new XamlFileDefinition(file, targetFilePath);
+			var xamlFile = new XamlFileDefinition(source.Path, targetFilePath, source.GetText(cancellationToken)?.GetChecksum() ?? ImmutableArray<byte>.Empty);
 
 			do
 			{
