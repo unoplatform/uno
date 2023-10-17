@@ -25,6 +25,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 	{
 		UnoGtkWindow.NativeWindowShown -= UnoGtkWindow_NativeWindowShown;
 		_dpiHelper.DpiChanged += OnDpiChanged;
+		OnDpiChanged(null, EventArgs.Empty);
 	}
 
 	private Window? GetWindow()
