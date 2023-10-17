@@ -1,9 +1,8 @@
 ﻿#nullable enable
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using Gtk;
 using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
@@ -18,33 +17,51 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 	public GtkDisplayInformationExtension(object owner)
 	{
 		_displayInformation = (DisplayInformation)owner;
-		//TODO:MZ:
-		//GtkHost.Current!.MainWindowShown += GtkDisplayInformationExtension_MainWindowShown;
+		UnoGtkWindow.NativeWindowShown += UnoGtkWindow_NativeWindowShown;
 		_dpiHelper = new DpiHelper();
 	}
 
-	private void GtkDisplayInformationExtension_MainWindowShown(object? sender, EventArgs e)
+	private void UnoGtkWindow_NativeWindowShown(object? sender, UnoGtkWindow e)
 	{
+		UnoGtkWindow.NativeWindowShown -= UnoGtkWindow_NativeWindowShown;
 		_dpiHelper.DpiChanged += OnDpiChanged;
 		OnDpiChanged(null, EventArgs.Empty);
 	}
 
-	private Window GetWindow()
+	private Window? GetWindow()
 	{
-		_window ??= GtkHost.Current?.MainWindow;
-		if (_window is null)
-		{
-			throw new InvalidOperationException("Main window is not set yet.");
-		}
+		_window ??= GtkHost.Current?.InitialWindow;
 
 		return _window;
 	}
 
 	public DisplayOrientations CurrentOrientation => DisplayOrientations.Landscape;
 
-	public uint ScreenHeightInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Height;
+	public uint ScreenHeightInRawPixels
+	{
+		get
+		{
+			if (GetWindow() is not { } window)
+			{
+				return default;
+			}
 
-	public uint ScreenWidthInRawPixels => (uint)GetWindow().Display.GetMonitorAtWindow(GetWindow().Window).Workarea.Width;
+			return (uint)window.Display.GetMonitorAtWindow(window.Window).Workarea.Height;
+		}
+	}
+
+	public uint ScreenWidthInRawPixels
+	{
+		get
+		{
+			if (GetWindow() is not { } window)
+			{
+				return default;
+			}
+
+			return (uint)window.Display.GetMonitorAtWindow(window.Window).Workarea.Width;
+		}
+	}
 
 	public float LogicalDpi
 	{
@@ -53,8 +70,7 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 			if (_dpi is null)
 			{
 				var window = GetWindow();
-				var nativeWindow = window.Window;
-				if (nativeWindow is not null)
+				if (window?.Window is not null)
 				{
 					_dpi = GetNativeDpi();
 				}
@@ -73,6 +89,11 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	private void OnDpiChanged(object? sender, EventArgs args)
 	{
+		if (GetWindow() is null)
+		{
+			return;
+		}
+		
 		_dpi = GetNativeDpi();
 		_displayInformation.NotifyDpiChanged();
 	}

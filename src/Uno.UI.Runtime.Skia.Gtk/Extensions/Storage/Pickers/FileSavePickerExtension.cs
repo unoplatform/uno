@@ -30,7 +30,7 @@ namespace Uno.Extensions.Storage.Pickers
 
 			using FileChooserDialog dialog = new FileChooserDialog(
 			"Save File",
-			GtkHost.Current!.MainWindow,
+			GtkHost.Current!.InitialWindow,
 			FileChooserAction.Save,
 			"Cancel", ResponseType.Cancel,
 			commitText, ResponseType.Accept);
