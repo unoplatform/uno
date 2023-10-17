@@ -128,7 +128,7 @@ internal partial class SystemFocusVisual : Control
 
 		Visibility = Visibility.Visible;
 
-		var transformToRoot = FocusedElement.TransformToVisual(XamlRoot.Content);
+		var transformToRoot = FocusedElement.TransformToVisual(XamlRoot.VisualTree.RootElement);
 		var point = transformToRoot.TransformPoint(new Windows.Foundation.Point(0, 0));
 		var newRect = new Rect(point.X, point.Y, FocusedElement.ActualSize.X, FocusedElement.ActualSize.Y);
 

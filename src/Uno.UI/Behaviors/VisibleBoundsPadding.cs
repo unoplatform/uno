@@ -83,7 +83,7 @@ namespace Uno.UI.Toolkit
 		{
 			get
 			{
-#if WINUI || HAS_UNO_WINUI
+#if WINUI
 				return new();
 #else
 				var window =
@@ -92,6 +92,7 @@ namespace Uno.UI.Toolkit
 #else
 					Windows.UI.Xaml.Window.Current;
 #endif
+
 				if (window is null)
 				{
 					return new();
