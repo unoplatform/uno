@@ -17,6 +17,8 @@ internal class UnoWpfWindow : WpfWindow
 	private readonly WinUI.Window _winUIWindow;
 	private readonly ApplicationView _applicationView;
 
+	private bool _shown;
+
 	public UnoWpfWindow(WinUI.Window winUIWindow, XamlRoot xamlRoot)
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
@@ -34,10 +36,22 @@ internal class UnoWpfWindow : WpfWindow
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 		Closed += UnoWpfWindow_Closed;
+		Activated += UnoWpfWindow_Activated;
 
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}
+
+	private void UnoWpfWindow_Activated(object? sender, EventArgs e)
+	{
+		if (!_shown)
+		{
+			_shown = true;
+			NativeWindowShown?.Invoke(this, this);
+		}
+	}
+
+	internal static event EventHandler<UnoWpfWindow>? NativeWindowShown;
 
 	private void UnoWpfWindow_Closed(object? sender, EventArgs e)
 	{
