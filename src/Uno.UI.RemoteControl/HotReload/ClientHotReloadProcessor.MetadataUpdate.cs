@@ -53,12 +53,6 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	public Task<bool> WaitForWorkspaceLoaded(CancellationToken ct)
 		=> _hotReloadWorkloadSpaceLoaded.Task;
 
-	/// <summary>
-	/// Determines if the server's hot reload workspace has been loaded
-	/// </summary>
-	internal Task HotReloadWorkspaceLoaded
-		=> _hotReloadWorkloadSpaceLoaded.Task;
-
 	[MemberNotNull(nameof(_agent))]
 	partial void InitializeMetadataUpdater()
 	{
