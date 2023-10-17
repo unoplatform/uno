@@ -52,6 +52,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 		{
 			_displayInformation = DisplayInformation.GetForCurrentView();
 			_displayInformation.DpiChanged += OnDpiChanged;
+			UpdateDpi();
 
 			// Set some event handlers
 			Render += UnoGLDrawingArea_Render;
