@@ -65,11 +65,6 @@ namespace Windows.UI.Xaml
 		public event WindowActivatedEventHandler Activated;
 
 		/// <summary>
-		/// Occurs when the window has closed.
-		/// </summary>
-		public event WindowClosedEventHandler Closed;
-
-		/// <summary>
 		/// Occurs when the app window has first rendered or has changed its rendering size.
 		/// </summary>
 		public event WindowSizeChangedEventHandler SizeChanged;
