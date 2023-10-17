@@ -7,12 +7,13 @@ using System.Threading.Tasks;
 using Gdk;
 using Gtk;
 using Uno.ApplicationModel.DataTransfer;
-using Uno.Extensions;
+using Uno.Disposables;
+using Uno.Foundation.Logging;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.UI.Core;
-using Uno.Foundation.Logging;
 using Clipboard = Gtk.Clipboard;
 
 namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
@@ -25,58 +26,76 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 		static readonly Atom RtfContent = Atom.Intern("text/rtf", false);
 		static readonly Atom GnomeCopiedFilesContent = Atom.Intern("x-special/gnome-copied-files", false);
 
-		private readonly Clipboard _clipboard;
+		private Clipboard _clipboardCache;
+		private readonly SerialDisposable _contentChangesSubscription = new();
+		private bool _shouldObserveContentChanges;
 
 		public ClipboardExtensions(object owner)
 		{
-			_clipboard = Clipboard.GetDefault(GtkHost.Current!.MainWindow.Display);
+			UnoGtkWindow.NativeWindowShown += UnoGtkWindow_NativeWindowShown;
 		}
 
-		public void Clear() => _clipboard.Clear();
+		private void UnoGtkWindow_NativeWindowShown(object sender, UnoGtkWindow e)
+		{
+			// Ensure we are observing content changes in case it was requested too early.
+			if (_shouldObserveContentChanges)
+			{
+				StartContentChanged();
+			}
+		}
+
+		public void Clear() => GetClipboard()?.Clear();
 		public void Flush()
 		{
-			_clipboard.CanStore = null;
-			_clipboard.Store();
+			if (GetClipboard() is { } clipboard)
+			{
+				clipboard.CanStore = null;
+				clipboard.Store();
+			}
 		}
 
 		public DataPackageView GetContent()
 		{
 			var dataPackage = new DataPackage();
+			if (GetClipboard() is not { } clipboard)
+			{
+				return dataPackage.GetView();
+			}
 
-			if (_clipboard.WaitIsImageAvailable())
+			if (clipboard.WaitIsImageAvailable())
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Bitmap, ct =>
 				{
-					var image = _clipboard.WaitForImage();
+					var image = clipboard.WaitForImage();
 					var data = image.SaveToBuffer("bmp");
 					var stream = new MemoryStream(data);
 					return Task.FromResult<object>(RandomAccessStreamReference.CreateFromStream(stream.AsRandomAccessStream()));
 				});
 			}
-			if (_clipboard.WaitIsTargetAvailable(HtmlContent))
+			if (clipboard.WaitIsTargetAvailable(HtmlContent))
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Html, ct =>
 				{
-					var selectionData = _clipboard.WaitForContents(HtmlContent);
+					var selectionData = clipboard.WaitForContents(HtmlContent);
 					return Task.FromResult<object>(Encoding.UTF8.GetString(selectionData.Data));
 				});
 			}
-			if (_clipboard.WaitIsTargetAvailable(RtfContent))
+			if (clipboard.WaitIsTargetAvailable(RtfContent))
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Rtf, ct =>
 				{
-					var selectionData = _clipboard.WaitForContents(RtfContent);
+					var selectionData = clipboard.WaitForContents(RtfContent);
 					return Task.FromResult<object>(Encoding.UTF8.GetString(selectionData.Data));
 				});
 			}
-			if (_clipboard.WaitIsTextAvailable())
+			if (clipboard.WaitIsTextAvailable())
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.Text, ct =>
 				{
-					return Task.FromResult<object>(_clipboard.WaitForText());
+					return Task.FromResult<object>(clipboard.WaitForText());
 				});
 			}
-			if (_clipboard.WaitIsUrisAvailable())
+			if (clipboard.WaitIsUrisAvailable())
 			{
 				// We have to get the actual Uris before determining
 				// the Uri types. Therefore, we will not use SetDataProvider here.
@@ -84,7 +103,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 				// Gtk documentation https://developer.gnome.org/gtk3/stable/gtk3-Clipboards.html#gtk-clipboard-wait-for-uris
 				// says that the function returns an **array** of strings,
 				// while GTK# just exposes 1 string?
-				var uris = _clipboard.WaitForUris();
+				var uris = clipboard.WaitForUris();
 
 				try
 				{
@@ -121,7 +140,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 					}
 				}
 			}
-			if (_clipboard.WaitIsTargetAvailable(GnomeCopiedFilesContent))
+			if (clipboard.WaitIsTargetAvailable(GnomeCopiedFilesContent))
 			{
 				dataPackage.SetDataProvider(StandardDataFormats.StorageItems, async ct =>
 				{
@@ -129,7 +148,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 					// This function does NOT work on distros using Nautilus (the popular Ubuntu), 
 					// as the copied files are visible as **plain text** to all other
 					// programs, and registers no special data type for files on clipboard.
-					var data = _clipboard.WaitForContents(GnomeCopiedFilesContent);
+					var data = clipboard.WaitForContents(GnomeCopiedFilesContent);
 					// The first element is the command (cut, copy,...)
 					var dataList = Encoding.UTF8.GetString(data.Data).Split('\n').Skip(1);
 
@@ -159,7 +178,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 
 		public void SetContent(DataPackage content)
 		{
-			if (content is null)
+			if (content is null || GetClipboard() is null)
 			{
 				throw new ArgumentNullException(nameof(content));
 			}
@@ -171,6 +190,11 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 
 		private void SetContentCore(DataPackage content)
 		{
+			if (GetClipboard() is not { } clipboard)
+			{
+				return;
+			}
+
 			var data = content?.GetView();
 			var targetList = new TargetList();
 			var targetStrings = new List<string>();
@@ -282,22 +306,35 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 				targetList.AddUriTargets(id);
 			}
 
-			_clipboard.SetWithData((TargetEntry[])targetList, SetDataNative, (clipboard) => { });
+			clipboard.SetWithData((TargetEntry[])targetList, SetDataNative, (clipboard) => { });
 		}
 
 		public void StartContentChanged()
 		{
-			_clipboard.OwnerChange += Clipboard_OwnerChange;
+			_shouldObserveContentChanges = true;
+			if (GetClipboard() is { } clipboard)
+			{
+				clipboard.OwnerChange += Clipboard_OwnerChange;
+				_contentChangesSubscription.Disposable = Disposable.Create(() => clipboard.OwnerChange -= Clipboard_OwnerChange);
+			}
 		}
 
 		public void StopContentChanged()
 		{
-			_clipboard.OwnerChange -= Clipboard_OwnerChange;
+			_contentChangesSubscription.Disposable = null;
+			_shouldObserveContentChanges = false;
 		}
 
 		private void Clipboard_OwnerChange(object o, OwnerChangeArgs args)
 		{
 			ContentChanged?.Invoke(this, args);
+		}
+
+		private global::Gtk.Clipboard GetClipboard()
+		{
+			_clipboardCache ??= Clipboard.GetDefault(GtkHost.Current!.InitialWindow.Display);
+
+			return _clipboardCache;
 		}
 	}
 }

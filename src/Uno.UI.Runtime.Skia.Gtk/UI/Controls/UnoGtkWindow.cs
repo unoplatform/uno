@@ -42,18 +42,25 @@ internal class UnoGtkWindow : Window
 		};
 
 		Host = new UnoGtkWindowHost(this, winUIWindow);
-		if (GtkHost.Current is not null) // TODO:MZ: This is a workaround for DPIHelper, should not be done this way.
+
+		if (GtkHost.Current is not null)
 		{
-			GtkHost.Current.MainWindow = this;
+			GtkHost.Current.InitialWindow ??= this;
 		}
+
 		GtkManager.XamlRootMap.Register(xamlRoot, Host);
 
 		_applicationView = ApplicationView.GetForWindowId(winUIWindow.AppWindow.Id);
 		_applicationView.PropertyChanged += OnApplicationViewPropertyChanged;
 		Destroyed += UnoGtkWindow_Destroyed;
+		Shown += UnoGtkWindow_Shown;
 		UpdateWindowPropertiesFromPackage();
 		UpdateWindowPropertiesFromApplicationView();
 	}
+
+	internal static event EventHandler<UnoGtkWindow>? NativeWindowShown;
+
+	private void UnoGtkWindow_Shown(object? sender, EventArgs e) => NativeWindowShown?.Invoke(this, this);
 
 	private void UnoGtkWindow_Destroyed(object? sender, EventArgs e)
 	{
