@@ -37,6 +37,8 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 
 		private void UnoGtkWindow_NativeWindowShown(object sender, UnoGtkWindow e)
 		{
+			UnoGtkWindow.NativeWindowShown -= UnoGtkWindow_NativeWindowShown;
+
 			// Ensure we are observing content changes in case it was requested too early.
 			if (_shouldObserveContentChanges)
 			{
@@ -312,6 +314,7 @@ namespace Uno.UI.Runtime.Skia.Gtk.Extensions.ApplicationModel.DataTransfer
 		public void StartContentChanged()
 		{
 			_shouldObserveContentChanges = true;
+			_contentChangesSubscription.Disposable = null;
 			if (GetClipboard() is { } clipboard)
 			{
 				clipboard.OwnerChange += Clipboard_OwnerChange;
