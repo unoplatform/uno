@@ -449,6 +449,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			var r = Microsoft.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
 
 			var border1 = r.FindName("border1") as Border;
+			r.ForceLoaded();
 			Assert.AreEqual(0, Grid.GetRow(border1));
 
 			Window.Current.SetWindowSize(new Windows.Foundation.Size(721, 100));
