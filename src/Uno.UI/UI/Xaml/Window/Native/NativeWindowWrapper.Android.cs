@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using Android.App;
 using Android.Runtime;
 using Android.Util;
@@ -9,30 +11,49 @@ using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml;
 using Size = Windows.Foundation.Size;
 
 namespace Uno.UI.Xaml.Controls;
 
 internal class NativeWindowWrapper : NativeWindowWrapperBase
 {
-	private static readonly Lazy<NativeWindowWrapper> _instance = new(() => new NativeWindowWrapper());
+	private static Lazy<NativeWindowWrapper> _instanceLazy = new Lazy<NativeWindowWrapper>(() => new NativeWindowWrapper(default!, default!));
 
 	private readonly ActivationPreDrawListener _preDrawListener;
+	private Activity? _activity;
 	private Rect _previousTrueVisibleBounds;
 
-	public NativeWindowWrapper()
+	public NativeWindowWrapper(Windows.UI.Xaml.Window window, XamlRoot xamlRoot)
 	{
 		_preDrawListener = new ActivationPreDrawListener(this);
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 	}
 
-	internal static NativeWindowWrapper Instance => _instance.Value;
+	public static NativeWindowWrapper Instance => _instanceLazy.Value; // TODO:MZ: Remove this
+
+	internal void SetActivity(Activity activity)
+	{
+		_activity = activity;
+	}
 
 	internal int SystemUiVisibility { get; set; }
 
 	internal void OnNativeVisibilityChanged(bool visible) => Visible = visible;
 
-	internal void OnActivityCreated() => AddPreDrawListener();
+	internal void OnActivityCreated()
+	{
+		var decorView = _activity!.Window!.DecorView;
+
+#pragma warning disable 618
+#pragma warning disable CA1422 // Validate platform compatibility
+		NativeWindowWrapper.Instance.SystemUiVisibility = (int)decorView.SystemUiVisibility;
+		decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener());
+#pragma warning restore CA1422 // Validate platform compatibility
+#pragma warning restore 618
+
+		AddPreDrawListener();
+	}
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;
 
@@ -40,13 +61,13 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal bool IsStatusBarTranslucent()
 	{
-		if (!(ContextHelper.Current is Activity activity))
+		if (_activity?.Window?.Attributes is null)
 		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
+			return false;
 		}
 
-		return activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
-			|| activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
+		return _activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.TranslucentStatus)
+			|| _activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 	}
 
 	internal void RaiseNativeSizeChanged()
@@ -69,12 +90,9 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private (Size windowSize, Rect visibleBounds, Rect trueVisibleBounds) GetVisualBounds()
 	{
-		if (ContextHelper.Current is not Activity activity)
-		{
-			return default;
-		}
-
-		var windowInsets = ViewCompat.GetRootWindowInsets(activity.Window.DecorView);
+		var activity = _activity!;
+		var window = activity.Window!;
+		var windowInsets = ViewCompat.GetRootWindowInsets(window.DecorView);
 
 		var insetsTypes = WindowInsetsCompat.Type.SystemBars(); // == WindowInsets.Type.StatusBars() | WindowInsets.Type.NavigationBars() | WindowInsets.Type.CaptionBar();
 
@@ -103,19 +121,16 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private bool IsNavigationBarTranslucent()
 	{
-		if (!(ContextHelper.Current is Activity activity))
-		{
-			throw new Exception("Cannot check NavigationBar translucent property. Activity is not defined yet.");
-		}
-
-		var flags = activity.Window.Attributes.Flags;
+		var activity = _activity!;
+		var window = activity.Window!;
+		var flags = window.Attributes!.Flags;
 		return flags.HasFlag(WindowManagerFlags.TranslucentNavigation)
 			|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 	}
 
 	private Size GetDisplaySize()
 	{
-		if (ContextHelper.Current is not Activity activity)
+		if (_activity?.WindowManager is not { } windowManager)
 		{
 			return default;
 		}
@@ -124,7 +139,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 		if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.R)
 		{
-			var windowMetrics = (ContextHelper.Current as Activity)?.WindowManager?.CurrentWindowMetrics;
+			var windowMetrics = windowManager.CurrentWindowMetrics;
 			displaySize = new Size(windowMetrics.Bounds.Width(), windowMetrics.Bounds.Height());
 		}
 		else
@@ -140,7 +155,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 #pragma warning disable 618
 #pragma warning disable CA1422 // Validate platform compatibility
-			activity.WindowManager?.DefaultDisplay.GetRealMetrics(realMetrics);
+			windowManager.DefaultDisplay?.GetRealMetrics(realMetrics);
 #pragma warning restore CA1422 // Validate platform compatibility
 #pragma warning restore 618
 
@@ -150,25 +165,33 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	private void AddPreDrawListener()
 	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
+		if (_activity?.Window is not { } window)
 		{
-			decorView.ViewTreeObserver.AddOnPreDrawListener(_preDrawListener);
+			return;
+		}
+
+		if (window.DecorView?.ViewTreeObserver is { } viewTreeObserver)
+		{
+			viewTreeObserver.AddOnPreDrawListener(_preDrawListener);
 		}
 	}
 
 	private void RemovePreDrawListener()
 	{
-		if (Uno.UI.ContextHelper.Current is Android.App.Activity activity &&
-			activity.Window.DecorView is { } decorView)
+		if (_activity?.Window is not { } window)
 		{
-			decorView.ViewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
+			return;
+		}
+
+		if (window.DecorView?.ViewTreeObserver is { } viewTreeObserver)
+		{
+			viewTreeObserver.RemoveOnPreDrawListener(_preDrawListener);
 		}
 	}
 
 	private sealed class ActivationPreDrawListener : Java.Lang.Object, ViewTreeObserver.IOnPreDrawListener
 	{
-		private readonly NativeWindowWrapper _windowWrapper;
+		private readonly NativeWindowWrapper? _windowWrapper;
 
 		public ActivationPreDrawListener(NativeWindowWrapper windowWrapper)
 		{
@@ -180,6 +203,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		{
 		}
 
-		public bool OnPreDraw() => _windowWrapper.Visible;
+		public bool OnPreDraw() => _windowWrapper?.Visible ?? false;
 	}
 }

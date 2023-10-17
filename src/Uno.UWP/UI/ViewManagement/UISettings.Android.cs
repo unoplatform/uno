@@ -19,20 +19,20 @@ namespace Windows.UI.ViewManagement
 				{
 
 					duration = Settings.Global.GetFloat(
-								  ContextHelper.Current.ContentResolver,
-								  Settings.Global.AnimatorDurationScale, 1);
+								  ContextHelper.Application.ContentResolver,
+								  Settings.Global.AnimatorDurationScale, 1);;
 					transition = Settings.Global.GetFloat(
-								  ContextHelper.Current.ContentResolver,
+								  ContextHelper.Application.ContentResolver,
 								  Settings.Global.TransitionAnimationScale, 1);
 				}
 				else
 				{
 #pragma warning disable CS0618 // Type or member is obsolete
 					duration = Settings.System.GetFloat(
-								  ContextHelper.Current.ContentResolver,
+								  ContextHelper.Application.ContentResolver,
 								  Settings.System.AnimatorDurationScale, 1);
 					transition = Settings.System.GetFloat(
-								  ContextHelper.Current.ContentResolver,
+								  ContextHelper.Application.ContentResolver,
 								  Settings.System.TransitionAnimationScale, 1);
 #pragma warning restore CS0618 // Type or member is obsolete
 				}

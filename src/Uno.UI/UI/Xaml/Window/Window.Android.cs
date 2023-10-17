@@ -6,5 +6,5 @@ namespace Windows.UI.Xaml;
 
 public sealed partial class Window
 {
-	public bool IsStatusBarTranslucent() => NativeWindowWrapper.Instance.IsStatusBarTranslucent(); //TODO: Can remove as breaking change? #8339
+	public bool IsStatusBarTranslucent() => Uno.UI.Xaml.Controls.NativeWindowWrapper.Instance.IsStatusBarTranslucent(); //TODO: Can remove as breaking change? #8339
 }

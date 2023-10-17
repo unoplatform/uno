@@ -137,6 +137,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Window\Native\Factory\NativeWindowFactory.Android.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="Mixins\Android\BaseActivity.Callbacks.tt">
 	    <LastGenOutput>BaseActivity.Callbacks.g.cs</LastGenOutput>
 	  </None>

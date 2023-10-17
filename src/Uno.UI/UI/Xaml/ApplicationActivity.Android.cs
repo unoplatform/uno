@@ -228,7 +228,12 @@ namespace Windows.UI.Xaml
 				Uno.UI.Composition.CompositorThread.Start(this);
 			}
 
+			var windowId = new Microsoft.UI.WindowId((ulong)Intent.GetLongExtra(NativeWindowFactory.WindowIdExtraName, 1));
+			NativeWindowFactory.AssociateActivity(windowId, this);
+
 			base.OnCreate(bundle);
+
+			NativeWindowWrapper.Instance.SetActivity(this); //TODO:MZ: DO not do this
 			NativeWindowWrapper.Instance.OnActivityCreated();
 
 			LayoutProvider = new LayoutProvider(this);

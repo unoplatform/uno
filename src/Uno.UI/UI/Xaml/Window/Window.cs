@@ -227,6 +227,8 @@ public partial class Window
 #endif
 	}
 
+	internal INativeWindowWrapper? NativeWindowWrapper => _windowImplementation.NativeWindowWrapper;
+
 	internal static void EnsureWindowCurrent()
 	{
 		if (_current is not null)

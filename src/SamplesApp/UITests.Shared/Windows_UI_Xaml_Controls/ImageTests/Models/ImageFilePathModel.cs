@@ -123,7 +123,7 @@ namespace Uno.UI.Samples.UITests.ImageTests.Models
 
 		private async Task<string> StoreFile(_Bitmap bitmap)
 		{
-			var saveFolder = System.IO.Path.Combine(ContextHelper.Current.FilesDir.AbsolutePath, StoredFolderName);
+			var saveFolder = System.IO.Path.Combine(ContextHelper.Application.FilesDir.AbsolutePath, StoredFolderName);
 			var savePath = System.IO.Path.Combine(saveFolder, FileName);
 
 			Directory.CreateDirectory(saveFolder);

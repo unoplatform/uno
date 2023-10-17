@@ -35,4 +35,6 @@ internal interface IWindowImplementation
 	void Activate();
 
 	void Close();
+
+	INativeWindowWrapper? NativeWindowWrapper { get; }
 }

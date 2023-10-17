@@ -23,15 +23,6 @@ namespace Windows.UI.Xaml.Controls
 			base.OnCreate(bundle);
 
 			InitializeComponent();
-
-			var decorView = (ContextHelper.Current as Android.App.Activity).Window.DecorView;
-
-#pragma warning disable 618
-#pragma warning disable CA1422 // Validate platform compatibility
-			NativeWindowWrapper.Instance.SystemUiVisibility = (int)decorView.SystemUiVisibility;
-			decorView.SetOnSystemUiVisibilityChangeListener(new OnSystemUiVisibilityChangeListener());
-#pragma warning restore CA1422 // Validate platform compatibility
-#pragma warning restore 618
 		}
 
 		protected override void OnDestroy()
