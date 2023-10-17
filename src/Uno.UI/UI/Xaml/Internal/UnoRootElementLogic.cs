@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
 
 using PointerIdentifierPool = Windows.Devices.Input.PointerIdentifierPool; // internal type (should be in Uno namespace)
+
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
 #else
@@ -21,6 +22,9 @@ using Windows.UI.Input;
 
 namespace Uno.UI.Xaml.Core;
 
+/// <summary>
+/// Contains Uno-specific root element logic shared across RootVisual and XamlIsland.
+/// </summary>
 internal class UnoRootElementLogic
 {
 	private bool _canUnFocusOnNextLeftPointerRelease = true;

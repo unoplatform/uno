@@ -82,6 +82,15 @@ namespace Windows.UI.Xaml
 		{
 			base.OnOwnerChanged();
 
+			DetachSizeChanged();
+			AttachSizeChanged();
+		}
+
+		internal override void OnOwnerElementChanged()
+		{
+			base.OnOwnerElementChanged();
+
+			DetachSizeChanged();
 			AttachSizeChanged();
 		}
 
