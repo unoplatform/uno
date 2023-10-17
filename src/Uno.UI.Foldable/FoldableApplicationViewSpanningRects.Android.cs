@@ -49,7 +49,7 @@ namespace Uno.UI.Foldable
 		}
 		private void OnStartEvent()
 		{
-			windowInfoTrackerCallbackAdapter.AddWindowLayoutInfoListener(ContextHelper.Current as Activity, runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
+			windowInfoTrackerCallbackAdapter?.AddWindowLayoutInfoListener(ContextHelper.Current as Activity, runOnUiThreadExecutor(), this); // `this` is the IConsumer implementation
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
 				this.Log().Debug($"DualMode: FoldableApplicationViewSpanningRects.OnStartEvent");
@@ -57,7 +57,7 @@ namespace Uno.UI.Foldable
 		}
 		private void OnStopEvent()
 		{
-			windowInfoTrackerCallbackAdapter.RemoveWindowLayoutInfoListener(this);
+			windowInfoTrackerCallbackAdapter?.RemoveWindowLayoutInfoListener(this);
 		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{

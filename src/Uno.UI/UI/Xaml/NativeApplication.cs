@@ -15,6 +15,7 @@ using Uno.Foundation.Logging;
 using Windows.UI.Core;
 using WinUICoreServices = Uno.UI.Xaml.Core.CoreServices;
 using IOnPreDrawListener = Android.Views.ViewTreeObserver.IOnPreDrawListener;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -39,6 +40,8 @@ namespace Windows.UI.Xaml
 			ApiInformation.RegisterAssembly(typeof(Application).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.Storage.ApplicationData).Assembly);
 			ApiInformation.RegisterAssembly(typeof(Windows.UI.Composition.Compositor).Assembly);
+
+			ContextHelper.Application = this;
 
 			// Delay create the Windows.UI.Xaml.Application in order to get the
 			// Android.App.Application.Context to be populated properly. This enables
