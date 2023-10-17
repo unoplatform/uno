@@ -26,9 +26,10 @@ This feature can help blend the background of the window with the background of 
 
 On some platforms, the window is backed by a native type. For those cases, you can use the `GetNativeWindow` helper:
 
-```
+```csharp
 #if HAS_UNO
 var nativeWindow = Uno.UI.Xaml.WindowHelper.GetNativeWindow(Window.Current);
+#endif
 ```
 
 The `nativeWindow` is an object, so you need to cast it to the specific type on the given platform. See the table below:
