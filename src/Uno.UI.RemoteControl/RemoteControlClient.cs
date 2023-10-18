@@ -118,7 +118,7 @@ public class RemoteControlClient : IRemoteControlClient
 		_connection = StartConnection();
 	}
 
-	public IEnumerable<object> Processors 
+	public IEnumerable<object> Processors
 		=> _processors.Values;
 
 	internal IRemoteControlProcessor[] RegisteredProcessors

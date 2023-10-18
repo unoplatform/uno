@@ -96,7 +96,7 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 				var sb = new IndentedStringBuilder();
 				BuildGeneratedFileHeader(sb);
-				
+
 				if (isProjectConfigEnabled)
 				{
 					BuildProjectConfiguration(context, sb);
