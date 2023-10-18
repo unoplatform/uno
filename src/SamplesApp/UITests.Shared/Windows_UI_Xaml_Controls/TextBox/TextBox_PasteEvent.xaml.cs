@@ -19,6 +19,11 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 			InitializeComponent();
 		}
 
+		private void OnMultilineChanged(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+		{
+			SampleTextBox.AcceptsReturn = MultilineCheckBox.IsChecked == true;
+		}
+
 		private void SampleTextBox_Paste(object sender, TextControlPasteEventArgs e)
 		{
 			if (HandlePasteCheckBox.IsChecked == true)

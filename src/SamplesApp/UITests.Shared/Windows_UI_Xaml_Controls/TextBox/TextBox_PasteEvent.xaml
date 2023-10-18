@@ -10,6 +10,7 @@
 
 	 <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Center">        
         <CheckBox x:Name="HandlePasteCheckBox" Content="Handle?" />
+		<CheckBox x:Name="MultilineCheckBox" Checked="OnMultilineChanged" Unchecked="OnMultilineChanged" Content="Multiline" />
 		<TextBox x:Name="SampleTextBox" Header="TextBox" Paste="SampleTextBox_Paste" />
 		<PasswordBox x:Name="SamplePasswordBox" Header="PasswordBox" Paste="SamplePasswordBox_Paste" />
 		<TextBlock x:Name="EventLogTextBlock" />

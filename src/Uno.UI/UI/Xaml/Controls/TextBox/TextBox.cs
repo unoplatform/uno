@@ -69,8 +69,8 @@ namespace Windows.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
-#if __SKIA__ || __ANDROID__ || __CROSSRUNTIME__
-		public event TextControlPasteEventHandler Paste;
+#if __SKIA__ || __ANDROID__ || __CROSSRUNTIME__ || __IOS__
+		public new event TextControlPasteEventHandler Paste;
 #endif
 
 		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
