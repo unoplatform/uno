@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 #endif
 		// Skipping already declared event Windows.UI.Xaml.Controls.PasswordBox.PasswordChanged
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public event global::Windows.UI.Xaml.Controls.TextControlPasteEventHandler Paste
 		{

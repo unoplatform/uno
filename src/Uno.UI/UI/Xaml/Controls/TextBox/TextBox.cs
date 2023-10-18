@@ -69,6 +69,11 @@ namespace Windows.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
+#if __SKIA__
+		public event TextControlPasteEventHandler Paste;
+#endif
+
+		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
 
 		/// <summary>
 		/// Set when <see cref="TextChanged"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
