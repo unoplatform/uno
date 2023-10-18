@@ -41,7 +41,7 @@ namespace UnoApp50
 				await RemoteControlClient.Instance.RegisteredProcessors
 					.OfType<ClientHotReloadProcessor>()
 					.First()
-					.HotReloadWorkspaceLoaded;
+					.WaitForWorkspaceLoaded(default);
 
 				Console.WriteLine($"Initialized remote control");
 			}
