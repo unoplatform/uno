@@ -33,6 +33,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
 
+	public event TextControlPasteEventHandler? Paste;
+
 	/// <summary>
 	/// Represents the root widget of the input layout.
 	/// </summary>

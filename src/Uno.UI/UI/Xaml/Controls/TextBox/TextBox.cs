@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
-#if __SKIA__
+#if __SKIA__ || __ANDROID__
 		public event TextControlPasteEventHandler Paste;
 #endif
 
