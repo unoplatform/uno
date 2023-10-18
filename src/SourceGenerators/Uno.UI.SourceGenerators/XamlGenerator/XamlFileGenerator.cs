@@ -6469,7 +6469,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal) ? "__Resources." : "";
 
-			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
+			// This is needed to avoid having outer classes being marked
+			// as updated types, but not having new types created as a result
+			// of an inner change, which may prevent XAML HR to apply changes.
+			var hashValue = _isHotReloadEnabled && !subClassPrefix.Contains(_fileDefinition.Checksum)
+				? _fileDefinition.Checksum
+				: "";
+
+			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}_{hashValue}";
 
 			RegisterChildSubclass(subclassName, contentOwner, returnType);
 

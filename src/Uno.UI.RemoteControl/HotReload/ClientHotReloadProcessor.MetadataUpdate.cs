@@ -209,7 +209,8 @@ namespace Uno.UI.RemoteControl.HotReload
 						async (fe, key) =>
 						{
 							// Get the original type of the element, in case it's been replaced
-							var originalType = fe.GetType().GetOriginalType() ?? fe.GetType();
+							var liveType = fe.GetType();
+							var originalType = liveType.GetOriginalType() ?? fe.GetType();
 
 							// Get the handler for the type specified
 							// Since we're only interested in handlers for specific element types
@@ -244,15 +245,25 @@ namespace Uno.UI.RemoteControl.HotReload
 								}
 							}
 
-							return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+							if (updatedTypes.Contains(liveType))
+							{
+								// This may happen if one of the nested types has been hot reloaded, but not the type itself.
+								// For instance, a DataTemplate in a resource dictionary may mark the type as updated in `updatedTypes`
+								// but it will not be considered as a new type even if "CreateNewOnMetadataUpdate" was set.
+
+								return (fe, null, liveType);
+							}
+							else
+							{
+								return (handler is not null || mappedType is not null) ? (fe, handler, mappedType) : default;
+							}
 						},
 						parentKey: default);
 
 				// Forced iteration to capture all state before doing ui update
 				var instancesToUpdate = await treeIterator.ToArrayAsync();
 
-
-				// Iterate through the visual tree and either invole ElementUpdate, 
+				// Iterate through the visual tree and either invoke ElementUpdate, 
 				// or replace the element with a new one
 				foreach (var (element, elementHandler, elementMappedType) in instancesToUpdate)
 				{
@@ -262,6 +273,11 @@ namespace Uno.UI.RemoteControl.HotReload
 
 					if (elementMappedType is not null)
 					{
+						if (_log.IsEnabled(LogLevel.Trace))
+						{
+							_log.Error($"Updating element [{element}] to [{elementMappedType}]");
+						}
+
 						ReplaceViewInstance(element, elementMappedType, elementHandler);
 					}
 				}
@@ -281,7 +297,6 @@ namespace Uno.UI.RemoteControl.HotReload
 				}
 				throw;
 			}
-
 		}
 
 		private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
@@ -290,7 +305,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				if (_log.IsEnabled(LogLevel.Trace))
 				{
-					_log.Trace($"Creating instance of type {instance.GetType()}");
+					_log.Trace($"Creating instance of type {replacementType}");
 				}
 
 				var newInstance = Activator.CreateInstance(replacementType);
