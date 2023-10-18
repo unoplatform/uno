@@ -106,6 +106,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 		}
 	}
 
+	protected void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
+
 	private void SetFont(TextBox textBox)
 	{
 		var fontDescription = new FontDescription
