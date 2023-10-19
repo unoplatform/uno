@@ -382,11 +382,6 @@ namespace Windows.UI.Xaml.Controls
 					_contentPresenter.Content = b.Value;
 				}
 
-				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
-				{
-					// Item may have been put back in list, reattach it to _contentPresenter
-					_contentPresenter.AddChild(itemView);
-				}
 				if (!_areItemTemplatesForwarded)
 				{
 					SetContentPresenterBinding(ContentPresenter.ContentTemplateProperty, nameof(ItemTemplate));
