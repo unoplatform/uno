@@ -369,6 +369,28 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
+		/// <summary>
+		/// Refreshes the provided dictionary with the latest version of the dictionary (during hot reload)
+		/// </summary>
+		/// <param name="merged">A dictionary present in the merged dictionaries</param>
+		internal void RefreshMergedDictionary(ResourceDictionary merged)
+		{
+			if (merged.Source is null)
+			{
+				throw new InvalidOperationException("Unable to refresh dictionary without a Source being set");
+			}
+
+			var index = _mergedDictionaries.IndexOf(merged);
+			if (index != -1)
+			{
+				_mergedDictionaries[index] = ResourceResolver.RetrieveDictionaryForSource(merged.Source);
+			}
+			else
+			{
+				throw new InvalidOperationException("The provided dictionary cannot be found in the merged list");
+			}
+		}
+
 		private ResourceDictionary _activeThemeDictionary;
 		private ResourceKey _activeTheme;
 
