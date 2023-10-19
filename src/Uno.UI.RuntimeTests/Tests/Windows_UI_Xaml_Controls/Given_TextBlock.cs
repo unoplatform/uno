@@ -260,5 +260,32 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TextWrapping_Changed()
+		{
+			var SUT = new TextBlock
+			{
+				TextWrapping = TextWrapping.Wrap,
+				Text = "This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! This is Long Text! ",
+			};
+			StackPanel panel = new StackPanel
+			{
+				Width = 100,
+				Children =
+				{
+					SUT
+				}
+			};
+			await UITestHelper.Load(panel);
+			var height1 = SUT.ActualHeight;
+			Console.WriteLine("height1: " + height1);
+			SUT.TextWrapping = TextWrapping.NoWrap;
+			await Task.Delay(500);
+			var height2 = SUT.ActualHeight;
+			Console.WriteLine($"height2: {height2}");
+			Assert.AreNotEqual(height1, height2);
+		}
 	}
 }
