@@ -262,7 +262,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public SourceText GenerateFile()
 		{
 #if DEBUG
-			Console.WriteLine("Processing file {0}".InvariantCultureFormat(_fileDefinition.FilePath));
+			Console.WriteLine("Processing file {0} (cs: {1})".InvariantCultureFormat(_fileDefinition.FilePath, _fileDefinition.Checksum));
 #endif
 
 			try
