@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml
 				+= RaiseNativeSizeChanged;
 		}
 
-		internal Activity NativeWindow => ApplicationActivity.Instance;
+		internal Android.Views.Window NativeWindow => ApplicationActivity.Instance?.Window;
 
 		internal void OnActivityCreated() => AddPreDrawListener();
 
