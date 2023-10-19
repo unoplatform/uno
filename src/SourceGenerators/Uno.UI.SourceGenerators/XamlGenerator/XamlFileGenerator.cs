@@ -377,6 +377,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
+						// Create a public member to avoid having to remove all unused member warnings
+						writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+						writer.AppendLineIndented($"public const string __checksum = \"{_fileDefinition.Checksum}\";");
+
 						BuildBaseUri(writer);
 
 						using (Scope(_xClassName.Namespace, _xClassName.ClassName))
@@ -875,11 +879,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (Scope(ns, className))
 						{
+							var hrInterfaceName = _isHotReloadEnabled ? $"I{className}" : "";
+							var hrInterfaceImpl = _isHotReloadEnabled ? $": {hrInterfaceName}" : "";
+
+							if (_isHotReloadEnabled)
+							{
+								// Build an interface that can be used to hide the actual replaced
+								// implementation of a type during hot reload.
+								using (writer.BlockInvariant($"internal interface {hrInterfaceName}"))
+								{
+									writer.AppendLineIndented($"{kvp.Value.ReturnType} Build(object owner);");
+								}
+							}
+
 							var classAccessibility = isTopLevel ? "" : "private";
 
 							WriteMetadataNewTypeAttribute(writer);
 
-							using (writer.BlockInvariant($"{classAccessibility} class {className}"))
+							using (writer.BlockInvariant($"{classAccessibility} class {className} {hrInterfaceImpl}"))
 							{
 								BuildBaseUri(writer);
 
@@ -1080,13 +1097,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(_xClassName.ClassName);
 
-				using (writer.BlockInvariant($"private interface {bindingsInterfaceName}"))
-				{
-					writer.AppendLineIndented("void Initialize();");
-					writer.AppendLineIndented("void Update();");
-					writer.AppendLineIndented("void UpdateResources();");
-					writer.AppendLineIndented("void StopTracking();");
-				}
+					using (writer.BlockInvariant($"private interface {bindingsInterfaceName}"))
+					{
+						writer.AppendLineIndented("void Initialize();");
+						writer.AppendLineIndented("void Update();");
+						writer.AppendLineIndented("void UpdateResources();");
+						writer.AppendLineIndented("void StopTracking();");
+					}
 
 				writer.AppendLineIndented($"#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.");
 				writer.AppendLineIndented($"private {bindingsInterfaceName} Bindings;");
@@ -1164,6 +1181,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
 						BuildBaseUri(writer);
+
+						if (_isHotReloadEnabled)
+						{
+							// Create a public member to avoid having to remove all unused member warnings
+							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+							writer.AppendLineIndented($"public const string __{_fileDefinition.UniqueID}_checksum = \"{_fileDefinition.Checksum}\";");
+						}
 
 						IDisposable WrapSingleton()
 						{
@@ -6469,18 +6493,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var namespacePrefix = _scopeStack.Count == 1 && _scopeStack.Last().Name.EndsWith("RD", StringComparison.Ordinal) ? "__Resources." : "";
 
-			// This is needed to avoid having outer classes being marked
-			// as updated types, but not having new types created as a result
-			// of an inner change, which may prevent XAML HR to apply changes.
-			var hashValue = _isHotReloadEnabled && !subClassPrefix.Contains(_fileDefinition.Checksum)
-				? _fileDefinition.Checksum
-				: "";
-
-			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}_{hashValue}";
+			var subclassName = $"_{_fileUniqueId}_{subClassPrefix}SC{(_subclassIndex++).ToString(CultureInfo.InvariantCulture)}";
 
 			RegisterChildSubclass(subclassName, contentOwner, returnType);
 
-			writer.AppendLineIndented($"new {namespacePrefix}{subclassName}().Build(__owner)");
+			var activator = _isHotReloadEnabled
+				? $"(({namespacePrefix}I{subclassName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{namespacePrefix}{subclassName}>())"
+				: $"new {namespacePrefix}{subclassName}()";
+
+			writer.AppendLineIndented($"{activator}.Build(__owner)");
 		}
 
 		private string GenerateConstructorParameters(INamedTypeSymbol? type)
