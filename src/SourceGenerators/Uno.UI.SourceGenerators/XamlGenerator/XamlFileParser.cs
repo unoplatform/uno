@@ -25,6 +25,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private static readonly char[] _splitChars = new char[] { '(', ',', ')' };
 		private readonly string _excludeXamlNamespacesProperty;
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
@@ -192,7 +193,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			namespaceUri = valueSplit[0];
-			var elements = valueSplit[1].Split('(', ',', ')');
+			var elements = valueSplit[1].Split(_splitChars);
 
 			var methodName = elements[0];
 
