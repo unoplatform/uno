@@ -34,6 +34,7 @@ public partial class GtkMediaPlayer : FrameworkElement
 	private Windows.UI.Xaml.Media.Stretch _stretch = Windows.UI.Xaml.Media.Stretch.Uniform;
 	private double _videoRatio;
 	private readonly MediaPlayerPresenter _owner;
+	private (double playerHeight, double playerWidth, uint videoHeight, uint videoWidth) _lastSetDimensions;
 
 	public GtkMediaPlayer(MediaPlayerPresenter owner)
 	{
@@ -415,8 +416,12 @@ public partial class GtkMediaPlayer : FrameworkElement
 		}
 	}
 
+	internal void UpdateVideoLayout() => UpdateVideoSizeAllocate(_lastSetDimensions.playerHeight, _lastSetDimensions.playerWidth, _lastSetDimensions.videoHeight, _lastSetDimensions.videoWidth);
+
 	private void UpdateVideoSizeAllocate(double playerHeight, double playerWidth, uint videoHeight, uint videoWidth)
 	{
+		_lastSetDimensions = (playerHeight, playerWidth, videoHeight, videoWidth);
+
 		if (_videoView != null && _mediaPlayer != null && _videoContainer != null)
 		{
 			if (videoWidth == 0 || videoHeight == 0)
@@ -440,7 +445,6 @@ public partial class GtkMediaPlayer : FrameworkElement
 					break;
 
 				case Windows.UI.Xaml.Media.Stretch.Uniform:
-
 					var topInsetUniform = (playerHeight - newHeight) / 2;
 					var leftInsetUniform = (playerWidth - newWidth) / 2;
 
