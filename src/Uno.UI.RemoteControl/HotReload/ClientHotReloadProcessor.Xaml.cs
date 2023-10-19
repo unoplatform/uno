@@ -1,17 +1,17 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
-using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.Storage.Pickers.Provider;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -73,10 +73,10 @@ namespace Uno.UI.RemoteControl.HotReload
 				_log.Trace($"Swapping view {newView.GetType()}");
 			}
 
-			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
-			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
+			var parentAsContentControl = VisualTreeHelper.GetParent(oldView) as ContentControl; // New way?
+			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
 
-			if (parentAsContentControl?.Content == oldView)
+			if ((parentAsContentControl?.Content as _View) == oldView)
 			{
 				parentAsContentControl.Content = newView;
 			}
@@ -88,15 +88,26 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				// Clear any local context, so that the new page can inherit the value coming
 				// from the parent Frame. It may happen if the old page set it explicitly.
+
+#if !WINUI
 				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+#else
+				oldPage.ClearValue(Page.DataContextProperty);
+#endif
 
 				oldPage.Content = newPage;
+#if !WINUI
 				newPage.Frame = oldPage.Frame;
+#endif
 			}
+#if !WINUI
+			// Currently we don't have SwapViews implementation that works with WinUI
+			// so skip swapping non-Page views initially for WinUI
 			else
 			{
 				VisualTreeHelper.SwapViews(oldView, newView);
 			}
+#endif
 
 			if (oldView is FrameworkElement oldViewAsFE && newView is FrameworkElement newViewAsFE)
 			{
