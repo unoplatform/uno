@@ -28,12 +28,12 @@ On some platforms, the window is backed by a native type. For those cases, you c
 
 ```csharp
 #if HAS_UNO
-var nativeWindow = Uno.UI.Xaml.WindowHelper.GetNativeWindow(Window.Current);
+var nativeWindow = Uno.UI.Xaml.WindowHelper.GetNativeWindow(MainWindow);
 #endif
 ```
 
-The `nativeWindow` is an object, so you need to cast it to the specific type on the given platform. See the table below:
+The `nativeWindow` is an `object`, so you need to cast it to the specific type on the given platform. See the table below:
 
 |                            | Skia+GTK | Skia+WPF | iOS   | Android | macOS | Catalyst | WebAssembly |
 | -------------------------- | :------: | :------: | :---: | :-----: | :---: | :------: | :---------: |
-| `WindowHelper.GetNativeWindow`` | `Gtk.Window` |  `System.Windows.Window`    | `UIKit.UIWindow`    |  `Android.App.Activity`     |  `AppKit.NSWindow`  |   `UIKit.UIWindow`     |  `null`         |
+| `WindowHelper.GetNativeWindow`` | `Gtk.Window` |  `System.Windows.Window`    | `UIKit.UIWindow`    |  `Android.View.Window`     |  `AppKit.NSWindow`  |   `UIKit.UIWindow`     |  `null`         |
