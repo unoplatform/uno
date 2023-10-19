@@ -91,8 +91,8 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			var scale = _scale ?? 1f;
 			var scaledGuardBand = (int)(GuardBand * scale);
 
-			var w = (int)Math.Max(0, AllocatedWidth * scale + scaledGuardBand);
-			var h = (int)Math.Max(0, AllocatedHeight * scale + scaledGuardBand);
+			var w = (int)Math.Max(0, AllocatedWidth + scaledGuardBand);
+			var h = (int)Math.Max(0, AllocatedHeight + scaledGuardBand);
 
 			if (_renderTarget == null || _surface == null || _renderTarget.Width != w || _renderTarget.Height != h)
 			{

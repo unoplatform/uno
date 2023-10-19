@@ -9,6 +9,7 @@ using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Hosting;
 using Uno.UI.Runtime.Skia.Gtk.Rendering;
 using Uno.UI.Xaml.Core;
+using Windows.Graphics.Display;
 using WinUI = Windows.UI.Xaml;
 using WinUIWindow = Windows.UI.Xaml.Window;
 
@@ -58,12 +59,14 @@ internal class UnoGtkWindowHost : IGtkXamlRootHost
 
 		_area.Realized += (s, e) =>
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth, _area.AllocatedHeight));
+			var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(_area.AllocatedWidth / scale, _area.AllocatedHeight / scale));
 		};
 
 		_area.SizeAllocated += (s, e) =>
 		{
-			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width, e.Allocation.Height));
+			var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+			_winUIWindow.OnNativeSizeChanged(new Windows.Foundation.Size(e.Allocation.Width / scale, e.Allocation.Height / scale));
 			if (!_firstSizeAllocated)
 			{
 				_firstSizeAllocated = true;
