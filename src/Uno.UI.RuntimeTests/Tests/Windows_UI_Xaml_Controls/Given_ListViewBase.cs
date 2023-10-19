@@ -3204,6 +3204,66 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		public async Task When_Items_DataContext_Without_ItemsSource()
+		{
+			var tb = new TextBlock();
+			tb.SetBinding("Text", new Binding("Message"));
+			var dc = new SimpleLVViewModel();
+			var SUT = new ListView
+			{
+				DataContext = dc,
+				Items =
+				{
+					tb
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var lvi = SUT.FindVisualChildByType<ListViewItem>();
+			Assert.IsNull(lvi.DataContext);
+			Assert.AreEqual(dc, tb.DataContext);
+			Assert.AreEqual("message", tb.Text);
+		}
+
+		[TestMethod]
+        public async Task When_ItemsTemplate_DataContext_Without_ItemsSource()
+		{
+			var SUT = (ListView)XamlReader.Load(
+			"""
+			<ListView xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Media.Transform"
+				xmlns:controls="using:Uno.UI.Samples.Controls"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				x:Name="cb3">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Message}" />
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+			""");
+
+        	var dc = new SimpleLVViewModel();
+			SUT.DataContext = dc;
+			SUT.Items.Add(new Button { Content = "ButtonContent" });
+
+        	WindowHelper.WindowContent = SUT;
+        	await WindowHelper.WaitForLoaded(SUT);
+        	await WindowHelper.WaitForIdle();
+
+			var lvi = SUT.FindVisualChildByType<ListViewItem>();
+			var tb = lvi.FindVisualChildByType<TextBlock>();
+        	Assert.IsNull(lvi.DataContext);
+        	Assert.AreEqual(dc, tb.DataContext);
+        	Assert.AreEqual("message", tb.Text);
+        }
+
+		[TestMethod]
 #if __WASM__
 		[Ignore] // https://github.com/unoplatform/uno/issues/7323
 #endif
@@ -4595,6 +4655,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.IsFalse(reference.IsAlive);
 		}
+	}
+
+	public partial class SimpleLVViewModel
+	{
+		public string Message => "message";
 	}
 
 	public partial class OnItemsChangedListView : ListView
