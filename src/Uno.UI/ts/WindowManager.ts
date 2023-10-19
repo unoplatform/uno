@@ -1417,6 +1417,11 @@ namespace Uno.UI {
 				}
 			}
 
+			// This is necessary because in Safari 17 "white-space" is not selected by index (i.e. elementStyle[i])
+			// This is important to implement the Wrap/NoWrap of Controls
+			if (elementStyle.cssText.includes("white-space") && !updatedStyleString.includes("white-space"))
+				updatedStyleString += "white-space: " + elementStyle.whiteSpace + "; ";
+
 			// We use a string to prevent the browser to update the element between
 			// each style assignation. This way, the browser will update the element only once.
 			return updatedStyleString;
