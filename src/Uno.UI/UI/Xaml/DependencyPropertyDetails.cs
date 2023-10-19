@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Property.GetMetadata(_dependencyObjectType).DefaultValue;
+				_defaultValue = Metadata.DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml
 			=> _callbackManager?.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
-		enum Flags
+		private enum Flags : byte
 		{
 			/// <summary>
 			/// No flag is being set
