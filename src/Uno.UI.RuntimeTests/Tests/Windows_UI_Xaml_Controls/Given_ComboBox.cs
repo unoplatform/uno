@@ -16,6 +16,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.RuntimeTests.Tests.Uno_UI_Xaml_Core;
 using Windows.UI.Input.Preview.Injection;
+using Windows.UI.Xaml.Markup;
+using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 
 
@@ -195,6 +197,147 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				}
 			}
 		}
+
+		[TestMethod]
+		public async Task When_Items_DataContext_Without_ItemsSource()
+		{
+			var tb = new TextBlock();
+			tb.SetBinding("Text", new Binding("Message"));
+			var dc = new SimpleLVViewModel();
+			var SUT = new ComboBox
+			{
+				DataContext = dc,
+				Items =
+				{
+					tb
+				}
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var lvi = SUT.FindVisualChildByType<ComboBoxItem>();
+			Assert.IsNull(lvi.DataContext);
+			Assert.AreEqual(dc, tb.DataContext);
+			Assert.AreEqual("message", tb.Text);
+		}
+
+		[TestMethod]
+		public async Task When_ItemsTemplate_DataContext_Without_ItemsSource()
+		{
+			var SUT = (ComboBox)XamlReader.Load(
+				"""
+				<ComboBox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Media.Transform"
+					xmlns:controls="using:Uno.UI.Samples.Controls"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					x:Name="cb3">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				""");
+
+			var dc = new SimpleLVViewModel();
+			SUT.DataContext = dc;
+			var btn = new Button
+			{
+				Content = "ButtonContent"
+			};
+			SUT.Items.Add(btn);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.IsDropDownOpen = true;
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count > 0);
+			await WindowHelper.WaitForIdle();
+
+			var popupChild = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child;
+
+			var cbi = popupChild.FindVisualChildByType<ComboBoxItem>();
+			var tb = cbi.FindVisualChildByType<TextBlock>();
+
+			Assert.IsNotNull(cbi.DataContext);
+			Assert.AreEqual(btn, tb.DataContext);
+			Assert.IsTrue(tb.Text.EndsWith(".Button"));
+
+			SUT.SelectedIndex = 0;
+			await WindowHelper.WaitForIdle();
+
+			var contentPresenter = (ContentPresenter)SUT.FindName("ContentPresenter");
+			Assert.AreEqual(1, contentPresenter.GetChildren().Count());
+			Assert.IsTrue(((TextBlock)contentPresenter.FindFirstChild()).Text.EndsWith("SimpleLVViewModel"));
+		}
+
+#if HAS_UNO
+		[TestMethod]
+#if !__SKIA__
+		[Ignore("InputInjector is only supported on skia")]
+#endif
+		public async Task When_ItemsTemplate_DataContext_Without_ItemsSource_Pointer()
+		{
+			var SUT = (ComboBox)XamlReader.Load(
+				"""
+				<ComboBox xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Media.Transform"
+					xmlns:controls="using:Uno.UI.Samples.Controls"
+					xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+					xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+					x:Name="cb3">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				""");
+
+			var dc = new SimpleLVViewModel();
+			SUT.DataContext = dc;
+			var btn = new Button
+			{
+				Content = "ButtonContent"
+			};
+			SUT.Items.Add(btn);
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.IsDropDownOpen = true;
+			await WindowHelper.WaitFor(() => VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot).Count > 0);
+			await WindowHelper.WaitForIdle();
+
+			var popupChild = VisualTreeHelper.GetOpenPopupsForXamlRoot(SUT.XamlRoot)[0].Child;
+
+			var cbi = popupChild.FindVisualChildByType<ComboBoxItem>();
+			var tb = cbi.FindVisualChildByType<TextBlock>();
+
+			Assert.IsNotNull(cbi.DataContext);
+			Assert.AreEqual(btn, tb.DataContext);
+			Assert.IsTrue(tb.Text.EndsWith(".Button"));
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			mouse.MoveTo(tb.GetAbsoluteBounds().GetCenter());
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			var contentPresenter = (ContentPresenter)SUT.FindName("ContentPresenter");
+			Assert.AreEqual(1, contentPresenter.GetChildren().Count());
+			Assert.IsTrue(((TextBlock)contentPresenter.FindFirstChild()).Text.EndsWith("SimpleLVViewModel"));
+		}
+#endif
 
 		[TestMethod]
 #if __IOS__ || __ANDROID__
