@@ -46,12 +46,12 @@ namespace TestRepro
 			"myTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0_().Build(__owner)
+				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner)
 				)			)
 			;
 		}
 
-		private class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0_
+		private class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0 
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -176,7 +176,7 @@ namespace MyProject
 
 			// Method for resource myTemplate 
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1_().Build(__owner)
+				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1().Build(__owner)
 				)				;
 
 			private global::Windows.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
@@ -195,7 +195,7 @@ namespace MyProject
 							"myTemplate"
 							] = 
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-								new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 								new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2_().Build(__owner)
+								new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 								new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner)
 								)							)
 							,
 						}
@@ -215,7 +215,7 @@ namespace MyProject
 }
 namespace MyProject.__Resources
 {
-	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1_
+	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1 
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -303,7 +303,7 @@ namespace MyProject.__Resources
 			return true;
 		}
 	}
-	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2_
+	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2 
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";

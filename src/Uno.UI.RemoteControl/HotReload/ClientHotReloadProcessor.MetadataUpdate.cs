@@ -121,32 +121,47 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 #if __WASM__ || __SKIA__
 	private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 	{
-		if (assemblyDeltaReload.IsValid())
+		try
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			if (assemblyDeltaReload.IsValid())
 			{
-				this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Applying IL Delta after {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+				}
+
+				var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
+				var changedTypesReader = new BinaryReader(changedTypesStreams);
+
+				var delta = new UpdateDelta()
+				{
+					MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
+					ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
+					PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
+					ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
+					UpdatedTypes = ReadIntArray(changedTypesReader)
+				};
+
+				_agent.ApplyDeltas(new[] { delta });
+
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Done applying IL Delta for {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}");
+				}
 			}
-
-			var changedTypesStreams = new MemoryStream(Convert.FromBase64String(assemblyDeltaReload.UpdatedTypes));
-			var changedTypesReader = new BinaryReader(changedTypesStreams);
-
-			var delta = new UpdateDelta()
+			else
 			{
-				MetadataDelta = Convert.FromBase64String(assemblyDeltaReload.MetadataDelta),
-				ILDelta = Convert.FromBase64String(assemblyDeltaReload.ILDelta),
-				PdbBytes = Convert.FromBase64String(assemblyDeltaReload.PdbDelta),
-				ModuleId = Guid.Parse(assemblyDeltaReload.ModuleId),
-				UpdatedTypes = ReadIntArray(changedTypesReader)
-			};
-
-			_agent.ApplyDeltas(new[] { delta });
+				if (this.Log().IsEnabled(LogLevel.Trace))
+				{
+					this.Log().Trace($"Failed to apply IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload})");
+				}
+			}
 		}
-		else
+		catch (Exception e)
 		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
+			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Trace($"Failed to apply IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload})");
+				this.Log().Error($"Failed to process assembly reload {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}: {e}");
 			}
 		}
 	}
@@ -196,6 +211,7 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 		try
 		{
+			UpdateGlobalResources(updatedTypes);
 
 			var handlerActions = _instance?.ElementAgent?.ElementHandlerActions;
 
@@ -298,6 +314,128 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				_log.Error($"Error doing UI Update - {ex.Message}", ex);
 			}
 			throw;
+		}
+	}
+
+	/// <summary>
+	/// Updates App-level resources (from app.xaml) using the provided updated types list.
+	/// </summary>
+	private static void UpdateGlobalResources(Type[] updatedTypes)
+	{
+		var globalResourceTypes = updatedTypes
+			.Where(t => t?.FullName != null && (
+				t.FullName.EndsWith("GlobalStaticResources", StringComparison.OrdinalIgnoreCase)
+				|| t.FullName[..^2].EndsWith("GlobalStaticResources", StringComparison.OrdinalIgnoreCase)))
+			.ToArray();
+
+		if (globalResourceTypes.Length != 0)
+		{
+			if (_log.IsEnabled(LogLevel.Debug))
+			{
+				_log.Debug($"Updating app resources");
+			}
+
+			MethodInfo? GetInitMethod(Type type, string name)
+			{
+				if (type.GetMethod(
+					name,
+					BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static, Array.Empty<Type>()) is { } initializeMethod)
+				{
+					return initializeMethod;
+				}
+				else
+				{
+					if (_log.IsEnabled(LogLevel.Debug))
+					{
+						_log.Debug($"{name} method not found on {type}");
+					}
+
+					return null;
+				}
+			}
+
+			// First, register all dictionaries
+			foreach (var globalResourceType in globalResourceTypes)
+			{
+				// Follow the initialization sequence implemented by
+				// App.InitializeComponent (Initialize then RegisterResourceDictionariesBySourceLocal).
+
+				if (GetInitMethod(globalResourceType, "Initialize") is { } initializeMethod)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Initializing resources for {globalResourceType}");
+					}
+
+					// Invoke initializers so default types and other resources get updated.
+					initializeMethod.Invoke(null, null);
+				}
+
+				if (GetInitMethod(globalResourceType, "RegisterResourceDictionariesBySourceLocal") is { } registerResourceDictionariesBySourceLocalMethod)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Initializing resources sources for {globalResourceType}");
+					}
+
+					// Invoke initializers so default types and other resources get updated.
+					registerResourceDictionariesBySourceLocalMethod.Invoke(null, null);
+				}
+			}
+
+
+			// Then find over updated types to find the ones that are implementing IXamlResourceDictionaryProvider
+			List<Uri> updatedDictionaries = new();
+
+			foreach (var updatedType in updatedTypes)
+			{
+				if (updatedType.GetInterfaces().Contains(typeof(IXamlResourceDictionaryProvider)))
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Updating resources for {updatedType}");
+					}
+
+					// This assumes that we're using an explicit implementation of IXamlResourceDictionaryProvider, which
+					// provides an instance property that returns the new dictionary.
+					var staticDictionaryProperty = updatedType
+						.GetProperty("Instance", BindingFlags.Public | BindingFlags.Static | BindingFlags.NonPublic);
+
+					if (staticDictionaryProperty?.GetMethod is { } getMethod)
+					{
+						if (getMethod.Invoke(null, null) is IXamlResourceDictionaryProvider provider
+							&& provider.GetResourceDictionary() is { Source: not null } dictionary)
+						{
+							updatedDictionaries.Add(dictionary.Source);
+						}
+					}
+				}
+			}
+
+			// Traverse the current app's tree to replace dictionaries matching the source property
+			// with the updated ones.
+			UpdateResourceDictionaries(updatedDictionaries, Application.Current.Resources);
+
+			// Force the app reevaluate global resources changes
+			Application.Current.UpdateResourceBindingsForHotReload();
+		}
+	}
+
+	/// <summary>
+	/// Refreshes ResourceDictionary instances that have been detected as updated
+	/// </summary>
+	/// <param name="updatedDictionaries"></param>
+	/// <param name="root"></param>
+	private static void UpdateResourceDictionaries(List<Uri> updatedDictionaries, ResourceDictionary root)
+	{
+		var dictionariesToRefresh = root
+			.MergedDictionaries
+			.Where(merged => updatedDictionaries.Any(d => d == merged.Source))
+			.ToArray();
+
+		foreach (var merged in dictionariesToRefresh)
+		{
+			root.RefreshMergedDictionary(merged);
 		}
 	}
 
