@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SkiaSharp;
 using Windows.Foundation;
@@ -34,11 +35,18 @@ namespace Windows.UI.Xaml.Documents
 		private float _lastDefaultLineHeight;
 		private Size _lastDesiredSize;
 		private Size _lastArrangedSize;
+		private List<(int start, int length)> _lineIntervals;
+		private bool _lineIntervalsValid;
 
 		// these should only be used by TextBox.
 		internal (int startLine, int startIndex, int endLine, int endIndex)? Selection { get; set; }
-		internal (bool atEndOfSelection, Windows.UI.Color color)? Caret { get; set; }
+		internal bool CaretAtEndOfSelection { get; set; }
 		internal bool RenderSelectionAndCaret { get; set; }
+
+		internal event Action DrawingStarted;
+		internal event Action<Rect> SelectionFound;
+		internal event Action DrawingFinished;
+		internal event Action<Rect> CaretFound;
 
 		/// <summary>
 		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
@@ -54,6 +62,7 @@ namespace Windows.UI.Xaml.Documents
 			}
 
 			_invalidationPending = false;
+			_lineIntervalsValid = false;
 
 			_lastMeasuredWidth = availableSize.Width;
 
@@ -80,7 +89,7 @@ namespace Windows.UI.Xaml.Documents
 				if (inline is LineBreak lineBreak)
 				{
 					Segment breakSegment = new(lineBreak);
-					RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0);
+					RenderSegmentSpan breakSegmentSpan = new(breakSegment, 0, 0, 0, 0, 0, 0, 0);
 					lineSegmentSpans.Add(breakSegmentSpan);
 
 					MoveToNextLine(currentLineWrapped: false);
@@ -128,7 +137,7 @@ namespace Windows.UI.Xaml.Documents
 								trailingSpaces++;
 							}
 
-							RenderSegmentSpan segmentSpan = new(segment, start, length, trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces);
+							RenderSegmentSpan segmentSpan = new(segment, start, length, trailingSpaces, characterSpacing, width, widthWithoutTrailingSpaces, end);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
 
@@ -169,7 +178,8 @@ namespace Windows.UI.Xaml.Documents
 
 							if (width > 0)
 							{
-								RenderSegmentSpan segmentSpan = new(segment, 0, spaces, 0, characterSpacing, width, 0);
+								// TODO: confirm FullGlyphsLength is set correctly
+								RenderSegmentSpan segmentSpan = new(segment, 0, spaces, 0, characterSpacing, width, 0, length);
 								lineSegmentSpans.Add(segmentSpan);
 								x += width;
 
@@ -191,7 +201,7 @@ namespace Windows.UI.Xaml.Documents
 						{
 							// Put the whole segment on the line and move to the next line.
 
-							RenderSegmentSpan segmentSpan = new(segment, start, length, segment.TrailingSpaces, characterSpacing, width, width);
+							RenderSegmentSpan segmentSpan = new(segment, start, length, segment.TrailingSpaces, characterSpacing, width, width, length + segment.TrailingSpaces);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
 
@@ -212,7 +222,7 @@ namespace Windows.UI.Xaml.Documents
 								length++;
 							}
 
-							RenderSegmentSpan segmentSpan = new(segment, start, length, 0, characterSpacing, width, width);
+							RenderSegmentSpan segmentSpan = new(segment, start, length, 0, characterSpacing, width, width, length);
 							lineSegmentSpans.Add(segmentSpan);
 							x += width;
 							start += length;
@@ -313,8 +323,11 @@ namespace Windows.UI.Xaml.Documents
 		/// </summary>
 		internal void Draw(in DrawingSession session)
 		{
+			DrawingStarted?.Invoke();
+
 			if (_renderLines.Count == 0)
 			{
+				DrawingFinished?.Invoke();
 				return;
 			}
 
@@ -348,8 +361,6 @@ namespace Windows.UI.Xaml.Documents
 				for (int s = 0; s < line.RenderOrderedSegmentSpans.Count; s++)
 				{
 					var segmentSpan = line.RenderOrderedSegmentSpans[s];
-
-					var currentCharacterCount = segmentSpan.GlyphsLength;
 
 					var segment = segmentSpan.Segment;
 					var inline = segment.Inline;
@@ -445,94 +456,58 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 					{
 						if (RenderSelectionAndCaret && Selection is { } bg && bg.startLine <= lineIndex && lineIndex <= bg.endLine)
 						{
 							var spanStartingIndex = characterCountSoFar;
 
+							// x at this point is set to the right of the rightmost character ignoring spaces.
+
 							float left;
-							if (bg.startLine == lineIndex)
+							if (bg.startIndex < spanStartingIndex)
 							{
-								if (bg.startIndex - spanStartingIndex < 0)
-								{
-									if (positions.Length > 0)
-									{
-										left = positions[0].X;
-									}
-									else
-									{
-										// no glyphs, so we're at the start
-										left = x;
-									}
-								}
-								else if (bg.startIndex - spanStartingIndex < positions.Length)
-								{
-									left = positions[bg.startIndex - spanStartingIndex].X;
-								}
-								else if (bg.startIndex - spanStartingIndex < currentCharacterCount) // positions.Length + TrailingSpaces
-								{
-									// x is set to the end of the glyph sequence (no accounting for spaces yet)
-									left = x + justifySpaceOffset * (currentCharacterCount - (bg.startIndex - spanStartingIndex));
-								}
-								else
-								{
-									left = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
-								}
+								// the selection starts from a previous span, so this span is selected from the very beginning
+								left = positions.Length > 0 ? positions[0].X : x;
+							}
+							else if (bg.startIndex - spanStartingIndex < positions.Length)
+							{
+								// part or all of this span is selected
+								left = positions[bg.startIndex - spanStartingIndex].X;
 							}
 							else
 							{
-								if (positions.Length > 0)
-								{
-									left = positions[0].X;
-								}
-								else
-								{
-									// no glyphs, so we're at the start
-									left = x;
-								}
+								// this span is not a part of the selection, so we select nothing by making the left edge to the far right
+								left = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 							}
 
 							float right;
-							if (bg.endLine == lineIndex)
+							if (bg.endIndex - spanStartingIndex < 0)
 							{
-								if (bg.endIndex - spanStartingIndex < 0)
-								{
-									if (positions.Length > 0)
-									{
-										right = positions[0].X;
-									}
-									else
-									{
-										// no glyphs, so we're at the start
-										right = x;
-									}
-								}
-								else if (bg.endIndex - spanStartingIndex < positions.Length)
-								{
-									right = positions[bg.endIndex - spanStartingIndex].X;
-								}
-								else if (bg.endIndex - spanStartingIndex < currentCharacterCount) // positions.Length + TrailingSpaces
-								{
-									// x is set to the end of the glyph sequence
-									right = x + justifySpaceOffset * (currentCharacterCount - (bg.endIndex - spanStartingIndex));
-								}
-								else
-								{
-									right = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
-								}
+								// this span is not a part of the selection, so we select nothing by making the left edge to the far left
+								right = positions.Length > 0 ? positions[0].X : x;
+							}
+							else if (bg.endIndex - spanStartingIndex < positions.Length)
+							{
+								// part or all of this span is selected
+								right = positions[bg.endIndex - spanStartingIndex].X;
 							}
 							else
 							{
-								// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
-								right = x + justifySpaceOffset * segmentSpan.TrailingSpaces + (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
+								// the selection ends after this span, so this span is selected to the very end
+								var allTrailingSpaces = segmentSpan.FullGlyphsLength - segmentSpan.GlyphsLength; // rendered and non-rendered trailing spaces
+								right = x + justifySpaceOffset * allTrailingSpaces;
+
+								if (bg.startIndex != bg.endIndex && SpanEndsInCR(segment, segmentSpan))
+								{
+									// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
+									right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
+								}
 							}
 
-							canvas.DrawRect(new SKRect(left, y - line.Height, right, y), new SKPaint
+							if (Math.Abs(left - right) > 0.01)
 							{
-								Color = ((TextBlock)parent).SelectionHighlightColor.Color.ToSKColor(),
-								Style = SKPaintStyle.Fill
-							});
+								SelectionFound?.Invoke(new Rect(new Point(left, y - line.Height), new Point(right, y)));
+							}
 						}
 					}
 
@@ -542,42 +517,45 @@ namespace Windows.UI.Xaml.Documents
 						canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
 					}
 
-					// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
 					{
 						var spanStartingIndex = characterCountSoFar;
-						if (RenderSelectionAndCaret && Caret is { } caret && Selection is { } selection)
+						if (RenderSelectionAndCaret && Selection is { } selection)
 						{
-							var (l, i) = caret.atEndOfSelection ? (selection.endLine, selection.endIndex) : (selection.startLine, selection.startIndex);
+							var (l, i) = CaretAtEndOfSelection ? (selection.endLine, selection.endIndex) : (selection.startLine, selection.startIndex);
 
-							float caretLocation = -1f;
+							float caretLocation = float.MinValue;
 
-							if (l == lineIndex && i >= spanStartingIndex && i <= characterCountSoFar + currentCharacterCount)
+							if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
 							{
 								if (i >= spanStartingIndex + positions.Length)
 								{
-									caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length)) - line.Height * 0.05f;
+									caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
 								}
 								else
 								{
 									caretLocation = positions[i - spanStartingIndex].X;
 								}
 							}
-
-							if (caretLocation != -1f)
+							else if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
 							{
-								canvas.DrawRect(new SKRect(caretLocation, y - line.Height, caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y), new SKPaint
-								{
-									Color = new SKColor(caret.color.R, caret.color.G, caret.color.B, caret.color.A),
-									Style = SKPaintStyle.Fill
-								});
+								// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
+								// but we still render the caret at the end of the visible area like WinUI does.
+								caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+							}
+
+							if (caretLocation != float.MinValue)
+							{
+								CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
 							}
 						}
 					}
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
-					characterCountSoFar += currentCharacterCount + (segment.LineBreakAfter ? 1 : 0);
+					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInCR(segment, segmentSpan) ? 1 : 0);
 				}
 			}
+
+			DrawingFinished?.Invoke();
 
 			static void DrawDecoration(SKCanvas canvas, float x, float y, float width, float thickness, SKPaint paint)
 			{
@@ -588,8 +566,8 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 
-		// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
-		internal int GetIndexForTextBlock(Point p)
+		// Warning: this is only tested and currently used by TextBox
+		internal int GetIndexForTextBlock(Point p, bool ignoreEndingSpace)
 		{
 			var line = GetRenderLineAt(p.Y, true)?.line;
 
@@ -598,26 +576,22 @@ namespace Windows.UI.Xaml.Documents
 				return 0;
 			}
 
-			var characterCount = 0;
-			foreach (var currentLine in _renderLines.TakeWhile(l => l != line))
-			{
-				foreach (var SegmentSpan in currentLine.SegmentSpans)
-				{
-					characterCount += SegmentSpan.Segment.Length;
-				}
-			}
+			var characterCount = _renderLines
+				.TakeWhile(l => l != line) // all previous lines
+				.Sum(currentLine => currentLine.SegmentSpans.Sum(GlyphsLengthWithCR)); // all characters in line
 
 			var (span, x) = GetRenderSegmentSpanAt(p, true)!.Value;
 
-			foreach (var currentSpan in line.SegmentSpans.TakeWhile(s => !s.Equals(span)))
-			{
-				characterCount += currentSpan.Segment.Length;
-			}
+			characterCount += line.SegmentSpans
+				.TakeWhile(s => !s.Equals(span)) // all previous spans in line
+				.Sum(GlyphsLengthWithCR); // all characters in span
 
 			var segment = span.Segment;
 			var run = (Run)segment.Inline;
 			var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
+			// The rest of the function uses GlyphsLength and not FullGlyphsLength as we can only really find a rendered glyph with a pointer.
+			// Non-rendered spaces don't matter here.
 			var glyphStart = span.GlyphsStart;
 			var glyphEnd = glyphStart + span.GlyphsLength;
 			for (var i = glyphStart; i < glyphEnd; i++)
@@ -633,26 +607,30 @@ namespace Windows.UI.Xaml.Documents
 				characterCount++;
 			}
 
+			if (ignoreEndingSpace && span == line.SegmentSpans[^1] && span.GlyphsStart + span.GlyphsLength > 0 && segment.Text[span.GlyphsStart + span.GlyphsLength - 1] == ' ')
+			{
+				// in cases like clicking at the end of a line that ends in a wrapping space, we actually want the character right before the space
+				characterCount--;
+			}
+
 			return characterCount;
 		}
 
-		// Warning: this is only tested and currently used by single-line single-run skia-based TextBoxes
+		// Warning: this is only tested and currently used by TextBox
 		internal Rect GetRectForTextBlockIndex(int index)
 		{
 			var characterCount = 0;
 			float y = 0, x = 0;
 			var parent = (IBlock)_collection.GetParent();
 
-			for (var lineIndex = 0; lineIndex < _renderLines.Count; lineIndex++)
+			foreach (var line in _renderLines)
 			{
-				var line = _renderLines[lineIndex];
 				(x, var justifySpaceOffset) = line.GetOffsets((float)_lastArrangedSize.Width, parent.TextAlignment);
 
 				var spans = line.RenderOrderedSegmentSpans;
-				for (var spanIndex = 0; spanIndex < spans.Count; spanIndex++)
+				foreach (var span in spans)
 				{
-					var span = spans[spanIndex];
-					var glyphCount = span.Segment.Length;
+					var glyphCount = GlyphsLengthWithCR(span);
 
 					if (index < characterCount + glyphCount)
 					{
@@ -662,7 +640,7 @@ namespace Windows.UI.Xaml.Documents
 						var characterSpacing = (float)run.FontSize * run.CharacterSpacing / 1000;
 
 						var glyphStart = span.GlyphsStart;
-						var glyphEnd = glyphStart + span.Segment.Length;
+						var glyphEnd = glyphStart + span.GlyphsLength;
 						for (var i = glyphStart; i < glyphEnd; i++)
 						{
 							var glyph = segment.Glyphs[i];
@@ -676,6 +654,9 @@ namespace Windows.UI.Xaml.Documents
 							x += glyphWidth;
 							characterCount++;
 						}
+
+						// we should have returned by now, so this is a case of a trailing \r and/or non-rendered trailing spaces, which are not counted in GlyphsLength
+						return new Rect(x, y, 0, line.Height);
 					}
 
 					characterCount += glyphCount;
@@ -744,5 +725,35 @@ namespace Windows.UI.Xaml.Documents
 
 			return extendedSelection ? (span, spanX - span.Width) : null;
 		}
+
+		// Warning: this is only tested and currently used by TextBox
+		internal List<(int start, int length)> GetLineIntervals()
+		{
+			if (_lineIntervalsValid)
+			{
+				return _lineIntervals;
+			}
+
+			_lineIntervalsValid = true;
+
+			_lineIntervals = new List<(int start, int length)>(_renderLines.Count);
+
+			var start = 0;
+			foreach (var line in _renderLines)
+			{
+				var length = line.SegmentSpans.Sum(GlyphsLengthWithCR);
+				_lineIntervals.Add((start, length));
+				start += length;
+			}
+
+			return _lineIntervals;
+		}
+
+		// RenderSegmentSpan.GlyphsLength includes spaces, but not \r
+		private int GlyphsLengthWithCR(RenderSegmentSpan span)
+			=> span.FullGlyphsLength + (SpanEndsInCR(span.Segment, span) ? 1 : 0);
+
+		private static bool SpanEndsInCR(Segment segment, RenderSegmentSpan segmentSpan)
+			=> segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == '\r';
 	}
 }

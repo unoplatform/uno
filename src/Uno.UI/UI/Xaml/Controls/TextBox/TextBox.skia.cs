@@ -7,6 +7,7 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI;
 
@@ -14,13 +15,17 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class TextBox
 {
+	// made up value, but feels close enough.
 	private const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond / 20;
 
 	private TextBoxView _textBoxView;
+	private readonly Rectangle _cursorRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
+	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
+	private int _usedRects;
 	private (int start, int length) _selection;
 	private bool _selectionEndsAtTheStart;
 	private bool _showCaret = true;
-	private bool _resetSelectionOnChange = true;
+	private (int start, int length)? _pendingSelection;
 	private (PointerPoint point, int repeatedPresses) _lastPointerDown; // point is null before first press
 	private bool _isPressed;
 	private (int start, int length, bool tripleTap)? _multiTapChunk;
@@ -56,10 +61,11 @@ public partial class TextBox
 	partial void OnTextWrappingChangedPartial()
 	{
 		TextBoxView?.SetWrapping();
-		if (TextWrapping == TextWrapping.Wrap && _contentElement is ScrollViewer sv)
+		if (_contentElement is ScrollViewer sv)
 		{
-			// This is to work around sv giving infinite width.
-			sv.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+			// This is to work around sv giving infinite width. This has the unfortunate problem of resetting
+			// locally-set values and/or changes in the template.
+			sv.HorizontalScrollBarVisibility = TextWrapping == TextWrapping.NoWrap ? ScrollBarVisibility.Hidden : ScrollBarVisibility.Disabled;
 		}
 	}
 
@@ -72,9 +78,83 @@ public partial class TextBox
 	private void UpdateTextBoxView()
 	{
 		_textBoxView ??= new TextBoxView(this);
-		if (ContentElement != null && ContentElement.Content != TextBoxView.DisplayBlock)
+		if (ContentElement != null)
 		{
-			ContentElement.Content = TextBoxView.DisplayBlock;
+			var displayBlock = TextBoxView.DisplayBlock;
+			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				if (ContentElement.Content != displayBlock)
+				{
+					ContentElement.Content = displayBlock;
+				}
+			}
+			else
+			{
+				if (ContentElement.Content is not Grid { Name: "TextBoxViewGrid" })
+				{
+					var canvas = new Canvas();
+					var grid = new Grid
+					{
+						Name = "TextBoxViewGrid",
+						Children =
+						{
+							canvas,
+							displayBlock
+						},
+						RowDefinitions =
+						{
+							new RowDefinition { Height = GridLengthHelper.OneStar },
+							new RowDefinition { Height = GridLengthHelper.OneStar }
+						}
+					};
+
+					Grid.SetRow(canvas, 0);
+
+					var inlines = displayBlock.Inlines;
+					inlines.DrawingStarted += () =>
+					{
+						canvas.Children.Clear();
+						_usedRects = 0;
+					};
+
+					inlines.DrawingFinished += () =>
+					{
+						_cachedRects.RemoveRange(_usedRects, _cachedRects.Count - _usedRects);
+					};
+
+					inlines.SelectionFound += rect =>
+					{
+						if (_cachedRects.Count <= _usedRects)
+						{
+							_cachedRects.Add(new Rectangle());
+						}
+						var rectangle = _cachedRects[_usedRects++];
+
+						rectangle.Fill = SelectionHighlightColor;
+						rectangle.Width = Math.Ceiling(rect.Width);
+						rectangle.Height = Math.Ceiling(rect.Height);
+						rectangle.SetValue(Canvas.LeftProperty, rect.Left);
+						rectangle.SetValue(Canvas.TopProperty, rect.Top);
+
+						canvas.Children.Add(rectangle);
+					};
+
+					inlines.CaretFound += rect =>
+					{
+						if (_showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0)
+						{
+							_cursorRect.Width = Math.Ceiling(rect.Width);
+							_cursorRect.Height = Math.Ceiling(rect.Height);
+							_cursorRect.SetValue(Canvas.LeftProperty, rect.Left);
+							_cursorRect.SetValue(Canvas.TopProperty, rect.Top);
+							canvas.Children.Add(_cursorRect);
+						}
+					};
+
+					ContentElement.Content = grid;
+				}
+			}
+
 			TextBoxView.SetTextNative(Text);
 		}
 	}
@@ -141,8 +221,7 @@ public partial class TextBox
 			var endLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart + SelectionLength).GetCenter().Y, true)?.index ?? 0;
 			inlines.Selection = (startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
 			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
-			var showCaret = _showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0;
-			inlines.Caret = (!_selectionEndsAtTheStart, showCaret ? Colors.Black : Colors.Transparent);
+			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
 			TextBoxView?.DisplayBlock.InvalidateInlines(true);
 		}
 	}
@@ -156,7 +235,7 @@ public partial class TextBox
 			var horizontalOffset = sv.HorizontalOffset;
 			var verticalOffset = sv.VerticalOffset;
 
-			var rect = TextBoxView.DisplayBlock.Inlines.GetRectForTextBlockIndex(selectionEnd);
+			var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionEnd);
 
 			var newHorizontalOffset = horizontalOffset.AtMost(rect.Left).AtLeast(rect.Left - sv.ViewportWidth + rect.Height * InlineCollection.CaretThicknessAsRatioOfLineHeight);
 			var newVerticalOffset = verticalOffset.AtMost(rect.Top).AtLeast(rect.Top - sv.ViewportWidth);
@@ -187,28 +266,39 @@ public partial class TextBox
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				if (shift)
-				{
-					selectionLength = -selectionStart;
-				}
-				else
-				{
-					selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
-					selectionLength = 0;
-				}
-				break;
-			case VirtualKey.Down:
-				if (selectionStart != text.Length || selectionLength != 0)
-				{
-					args.Handled = true;
+				{ // new variable scope to avoid clutter
+					var start = selectionStart;
+					var end = selectionStart + selectionLength;
+					var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
 					if (shift)
 					{
-						selectionLength = text.Length - selectionStart;
+						selectionLength = newEnd - selectionStart;
 					}
 					else
 					{
-						selectionStart = text.Length;
+						selectionStart = newEnd;
+						selectionLength = 0;
 					}
+
+					args.Handled = selectionStart != start || selectionLength != end - start;
+				}
+				break;
+			case VirtualKey.Down:
+				{
+					var start = selectionStart;
+					var end = selectionStart + selectionLength;
+					var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
+					if (shift)
+					{
+						selectionLength = newEnd - selectionStart;
+					}
+					else
+					{
+						selectionStart = newEnd;
+						selectionLength = 0;
+					}
+
+					args.Handled = selectionStart != start || selectionLength != end - start;
 				}
 				break;
 			case VirtualKey.Left:
@@ -289,27 +379,70 @@ public partial class TextBox
 				}
 				break;
 			case VirtualKey.Home:
-				args.Handled = selectionLength != 0 || selectionStart > 0;
-				if (shift)
 				{
-					selectionLength = -selectionStart;
-				}
-				else
-				{
-					selectionStart = 0;
-					selectionLength = 0;
+					var start = selectionStart;
+					var end = selectionStart + selectionLength;
+					if (shift)
+					{
+						if (ctrl)
+						{
+							selectionLength = -selectionStart;
+						}
+						else
+						{
+							selectionLength = GetLineAt(text, selectionStart, selectionLength).start - selectionStart;
+						}
+					}
+					else
+					{
+						if (ctrl)
+						{
+							selectionStart = 0;
+						}
+						else
+						{
+							selectionStart = GetLineAt(text, selectionStart, selectionLength).start;
+						}
+						selectionLength = 0;
+					}
+					args.Handled = selectionStart != start || selectionLength != end - start;
 				}
 				break;
 			case VirtualKey.End:
-				args.Handled = selectionLength != 0 || selectionStart < text.Length;
-				if (shift)
 				{
-					selectionLength = text.Length - selectionStart;
-				}
-				else
-				{
-					selectionStart = text.Length;
-					selectionLength = 0;
+					var start = selectionStart;
+					var end = selectionStart + selectionLength;
+					if (shift)
+					{
+						if (ctrl)
+						{
+							selectionLength = text.Length - selectionStart;
+						}
+						else
+						{
+							var line = GetLineAt(text, selectionStart, selectionLength);
+							selectionLength = line.start + line.length - selectionStart;
+						}
+					}
+					else
+					{
+						if (ctrl)
+						{
+							selectionStart = text.Length;
+						}
+						else
+						{
+							var line = GetLineAt(text, selectionStart, selectionLength);
+							selectionStart = line.start + line.length;
+							if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
+							{
+								// a newline is part of the line just before it, but End shouldn't go past the newline
+								selectionStart--;
+							}
+						}
+						selectionLength = 0;
+					}
+					args.Handled = selectionStart != start || selectionLength != end - start;
 				}
 				break;
 			case VirtualKey.Back when !IsReadOnly:
@@ -373,7 +506,7 @@ public partial class TextBox
 				CopySelectionToClipboard();
 				break;
 			default:
-				if (!IsReadOnly && args.UnicodeKey is { } c)
+				if (!IsReadOnly && args.UnicodeKey is { } c && (AcceptsReturn || args.UnicodeKey != '\r'))
 				{
 					var start = Math.Min(selectionStart, selectionStart + selectionLength);
 					var end = Math.Max(selectionStart, selectionStart + selectionLength);
@@ -385,13 +518,18 @@ public partial class TextBox
 				break;
 		}
 
-		_resetSelectionOnChange = false;
-		Text = text;
-		_resetSelectionOnChange = true;
-
 		selectionStart = Math.Max(0, Math.Min(text.Length, selectionStart));
 		selectionLength = Math.Max(-selectionStart, Math.Min(text.Length - selectionStart, selectionLength));
-		SelectInternal(selectionStart, selectionLength);
+
+		if (text == Text)
+		{
+			SelectInternal(selectionStart, selectionLength);
+		}
+		else
+		{
+			_pendingSelection = (selectionStart, selectionLength);
+			Text = text;
+		}
 	}
 
 	/// <summary>
@@ -402,6 +540,7 @@ public partial class TextBox
 	{
 		Select(Math.Min(selectionStart, selectionStart + selectionLength), Math.Abs(selectionLength));
 		_selectionEndsAtTheStart = selectionLength < 0; // set here because Select clears it
+		_pendingSelection = null;
 		UpdateScrolling();
 	}
 
@@ -420,7 +559,7 @@ public partial class TextBox
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
-			var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+			var index = displayBlock.Inlines.GetIndexForTextBlock(point.Position, false);
 			if (_multiTapChunk is { } mtc)
 			{
 				(int start, int length) chunk;
@@ -514,7 +653,7 @@ public partial class TextBox
 				// multiple left presses
 
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position, false);
 
 				if (_lastPointerDown.repeatedPresses == 1)
 				{
@@ -538,7 +677,7 @@ public partial class TextBox
 			{
 				// single click
 				var displayBlock = TextBoxView.DisplayBlock;
-				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
+				var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetCurrentPoint(displayBlock).Position, true);
 				Select(index, 0);
 				_lastPointerDown = (currentPoint, 0);
 			}
@@ -557,13 +696,105 @@ public partial class TextBox
 	{
 		base.OnDoubleTapped(args);
 		args.Handled = true;
-
-		// var displayBlock = TextBoxView.DisplayBlock;
-		// var index = displayBlock.Inlines.GetIndexForTextBlock(args.GetPosition(displayBlock) - new Point(displayBlock.Padding.Left, displayBlock.Padding.Top));
-		// var chunk = FindChunkAt(index, true);
-		// Select(chunk.start, chunk.length);
-		// _lastPointerDown.wasDoubleTap = true;
 	}
+
+	/// <summary>
+	/// The parameters here use the possibly-negative length format
+	/// </summary>
+	private (int start, int length) GetLineAt(string text, int selectionStart, int selectionLength)
+	{
+		if (Text.Length == 0)
+		{
+			return (0, 0);
+		}
+
+		var lines = DisplayBlockInlines.GetLineIntervals();
+		global::System.Diagnostics.Debug.Assert(lines.Count > 0);
+
+		var end = selectionStart + selectionLength;
+
+		foreach (var line in lines)
+		{
+			if (line.start <= end && end < line.start + line.length)
+			{
+				return line;
+			}
+		}
+
+		// end == Text.Length
+		return lines[^1];
+	}
+
+	/// <summary>
+	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
+	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
+	/// GetUpResult and GetDownResult care about the second kind of lines.
+	/// </summary>
+	private int GetUpResult(string text, int selectionStart, int selectionLength, bool shift)
+	{
+		if (text.Length == 0)
+		{
+			return 0;
+		}
+		var startLine = GetLineAt(text, selectionStart, 0);
+		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
+		var lines = DisplayBlockInlines.GetLineIntervals();
+		var startLineIndex = lines.IndexOf(startLine);
+		var endLineIndex = lines.IndexOf(endLine);
+
+		if (shift && endLineIndex == 0)
+		{
+			return 0; // first line, goes to the beginning
+		}
+
+		var newLineIndex = selectionLength < 0 || shift ? Math.Max(0, endLineIndex - 1) : Math.Max(0, startLineIndex - 1);
+
+		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
+		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
+		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
+		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x,y), true);
+		if (text.Length > index - 1 && index - 1 >= 0 && index == lines[newLineIndex].start + lines[newLineIndex].length && (text[index - 1] == '\r' || text[index - 1] == ' '))
+		{
+			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
+			index--;
+		}
+
+		return index;
+	}
+
+	private int GetDownResult(string text, int selectionStart, int selectionLength, bool shift)
+	{
+		if (text.Length == 0)
+		{
+			return 0;
+		}
+		var startLine = GetLineAt(text, selectionStart, 0);
+		var endLine = GetLineAt(text, selectionStart + selectionLength, 0);
+		var lines = DisplayBlockInlines.GetLineIntervals();
+		var startLineIndex = lines.IndexOf(startLine);
+		var endLineIndex = lines.IndexOf(endLine);
+
+		if (!shift && (startLineIndex == lines.Count -1 || endLineIndex == lines.Count -1))
+		{
+			return text.Length; // last line, goes to the end
+		}
+
+		var newLineIndex = selectionLength > 0 || shift ? Math.Min(lines.Count, endLineIndex + 1) : Math.Min(lines.Count, startLineIndex + 1);
+
+		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
+		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
+		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
+		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x,y), true);
+		if (text.Length > index - 1 && index - 1 >= 0 && index == lines[newLineIndex].start + lines[newLineIndex].length && (text[index - 1] == '\r' || text[index - 1] == ' '))
+		{
+			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
+			index--;
+		}
+
+		return index;
+	}
+
+	private InlineCollection DisplayBlockInlines => TextBoxView.DisplayBlock.Inlines;
 
 	private (int start, int length) FindChunkAt(int index, bool right)
 	{
@@ -640,6 +871,11 @@ public partial class TextBox
 		}
 	}
 
+	/// <summary>
+	/// There are 2 concepts of a "line", there's a line that ends at end-of-text, \r, \n, etc.
+	/// and then there's an actual rendered line that may end due to wrapping and not a line break.
+	/// StartOfLine and EndOfLine care about the first kind of lines.
+	/// </summary>
 	private int StartOfLine(int i)
 	{
 		var text = Text;

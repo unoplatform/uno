@@ -296,9 +296,13 @@ namespace Windows.UI.Xaml.Controls
 #if __SKIA__
 			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 			{
-				if (_resetSelectionOnChange)
+				if (_pendingSelection is { } selection)
 				{
-					Select(0, 0);
+					SelectInternal(selection.start, selection.length);
+				}
+				else
+				{
+					SelectInternal(0, 0);
 				}
 			}
 #endif
@@ -1247,16 +1251,12 @@ namespace Windows.UI.Xaml.Controls
 				currentText = currentText.Insert(selectionStart, clipboardText);
 
 #if __SKIA__
-				_resetSelectionOnChange = false;
-#endif
-				Text = currentText;
-#if __SKIA__
-				_resetSelectionOnChange = true;
 				if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 				{
-					Select(selectionStart + clipboardText.Length, 0);
+					_pendingSelection = (selectionStart + clipboardText.Length, 0);
 				}
 #endif
+				Text = currentText;
 			});
 		}
 
@@ -1281,16 +1281,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			CopySelectionToClipboard();
 #if __SKIA__
-			_resetSelectionOnChange = false;
-#endif
-			Text = Text.Remove(SelectionStart, SelectionLength);
-#if __SKIA__
-			_resetSelectionOnChange = true;
 			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
 			{
-				Select(_selection.start, 0);
+				_pendingSelection = (_selection.start, 0);
 			}
 #endif
+			Text = Text.Remove(SelectionStart, SelectionLength);
 		}
 
 		internal override bool CanHaveChildren() => true;
