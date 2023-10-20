@@ -3276,7 +3276,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name);
 
-								if (IsExactlyCollectionOrListType(propertyType))
+								if (member.Objects.Count == 1 && SymbolEqualityComparer.Default.Equals(propertyType, Generation.ResourceDictionarySymbol.Value))
+								{
+									writer.AppendLineInvariantIndented(
+										"{0}.Set{1}({2}, ",
+										ownerType.GetFullyQualifiedTypeIncludingGlobal(),
+										member.Member.Name,
+										closureName
+									);
+
+									using (writer.Indent())
+									{
+										BuildChild(writer, member, member.Objects[0]);
+									}
+
+									writer.AppendLineIndented(");");
+								}
+								else if (IsExactlyCollectionOrListType(propertyType))
 								{
 									// If the property is specifically an IList or an ICollection
 									// we can use C#'s collection initializer.
@@ -3303,6 +3319,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									// If the property is a concrete type that implements an IList or
 									// an ICollection, we must get the property and call add explicitly
 									// on it.
+									Debugger.Launch();
 									var localCollectionName = $"{closureName}_collection_{_collectionIndex++}";
 
 									var getterMethod = $"Get{member.Member.Name}";
