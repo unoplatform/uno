@@ -23,7 +23,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		private bool _linkerEnabled;
 		private HotReloadAgent _agent;
 		private static ClientHotReloadProcessor? _instance;
-		private readonly TaskCompletionSource<bool> _hotreloadWorkloadSpaceLoaded = new();
+		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
 				=> _hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
