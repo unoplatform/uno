@@ -15,11 +15,21 @@ namespace Windows.UI.Xaml.Controls;
 
 public partial class TextBox
 {
+	private enum ContextMenuItem
+	{
+		Cut,
+		Copy,
+		Paste,
+		Undo,
+		Redo,
+		SelectAll
+	}
+
 	// made up value, but feels close enough.
 	private const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond / 20;
 
 	private TextBoxView _textBoxView;
-	private readonly Rectangle _cursorRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
+	private readonly Rectangle _caretRect = new Rectangle { Fill = new SolidColorBrush(Colors.Black) };
 	private readonly List<Rectangle> _cachedRects = new List<Rectangle>();
 	private int _usedRects;
 	private (int start, int length) _selection;
@@ -36,7 +46,7 @@ public partial class TextBox
 	};
 
 	private MenuFlyout _contextMenu;
-	private readonly Dictionary<string, MenuFlyoutItem> _flyoutItems = new();
+	private readonly Dictionary<ContextMenuItem, MenuFlyoutItem> _flyoutItems = new();
 
 	internal TextBoxView TextBoxView => _textBoxView;
 
@@ -81,7 +91,7 @@ public partial class TextBox
 		if (ContentElement != null)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
-			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			if (!IsSkiaTextBox)
 			{
 				if (ContentElement.Content != displayBlock)
 				{
@@ -143,11 +153,11 @@ public partial class TextBox
 					{
 						if (_showCaret && !FeatureConfiguration.TextBox.HideCaret && !IsReadOnly && _selection.length == 0)
 						{
-							_cursorRect.Width = Math.Ceiling(rect.Width);
-							_cursorRect.Height = Math.Ceiling(rect.Height);
-							_cursorRect.SetValue(Canvas.LeftProperty, rect.Left);
-							_cursorRect.SetValue(Canvas.TopProperty, rect.Top);
-							canvas.Children.Add(_cursorRect);
+							_caretRect.Width = Math.Ceiling(rect.Width);
+							_caretRect.Height = Math.Ceiling(rect.Height);
+							_caretRect.SetValue(Canvas.LeftProperty, rect.Left);
+							_caretRect.SetValue(Canvas.TopProperty, rect.Top);
+							canvas.Children.Add(_caretRect);
 						}
 					};
 
@@ -161,7 +171,7 @@ public partial class TextBox
 
 	partial void OnFocusStateChangedPartial(FocusState focusState)
 	{
-		if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+		if (!IsSkiaTextBox)
 		{
 			TextBoxView?.OnFocusStateChanged(focusState);
 		}
@@ -185,7 +195,7 @@ public partial class TextBox
 	{
 		_selectionEndsAtTheStart = false;
 		_selection = (start, length);
-		if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+		if (!IsSkiaTextBox)
 		{
 			TextBoxView?.Select(start, length);
 		}
@@ -203,23 +213,23 @@ public partial class TextBox
 
 	public int SelectionStart
 	{
-		get => FeatureConfiguration.TextBox.UseOverlayOnSkia ? TextBoxView?.GetSelectionStart() ?? 0 : _selection.start;
+		get => IsSkiaTextBox ? _selection.start : TextBoxView?.GetSelectionStart() ?? 0;
 		set => Select(start: value, length: SelectionLength);
 	}
 
 	public int SelectionLength
 	{
-		get => FeatureConfiguration.TextBox.UseOverlayOnSkia ? TextBoxView?.GetSelectionLength() ?? 0 : _selection.length;
+		get => IsSkiaTextBox ? _selection.length : TextBoxView?.GetSelectionLength() ?? 0;
 		set => Select(SelectionStart, value);
 	}
 
 	internal void UpdateDisplaySelection()
 	{
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && TextBoxView?.DisplayBlock.Inlines is { } inlines)
+		if (IsSkiaTextBox && TextBoxView?.DisplayBlock.Inlines is { } inlines)
 		{
 			var startLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart).GetCenter().Y, true)?.index ?? 0;
 			var endLine = inlines.GetRenderLineAt(inlines.GetRectForTextBlockIndex(SelectionStart + SelectionLength).GetCenter().Y, true)?.index ?? 0;
-			inlines.Selection = (startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
+			inlines.Selection = new InlineCollection.SelectionDetails(startLine, SelectionStart, endLine, SelectionStart + SelectionLength);
 			inlines.RenderSelectionAndCaret = FocusState != FocusState.Unfocused || (_contextMenu?.IsOpen ?? false);
 			inlines.CaretAtEndOfSelection = !_selectionEndsAtTheStart;
 			TextBoxView?.DisplayBlock.InvalidateInlines(true);
@@ -228,7 +238,7 @@ public partial class TextBox
 
 	private void UpdateScrolling()
 	{
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && _contentElement is ScrollViewer sv)
+		if (IsSkiaTextBox && _contentElement is ScrollViewer sv)
 		{
 			var selectionEnd = _selectionEndsAtTheStart ? _selection.start : _selection.start + _selection.length;
 
@@ -246,7 +256,7 @@ public partial class TextBox
 
 	private partial void OnKeyDownPartial(KeyRoutedEventArgs args)
 	{
-		if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+		if (!IsSkiaTextBox)
 		{
 			OnKeyDownInternal(args);
 			return;
@@ -266,225 +276,29 @@ public partial class TextBox
 		switch (args.Key)
 		{
 			case VirtualKey.Up:
-				{ // new variable scope to avoid clutter
-					var start = selectionStart;
-					var end = selectionStart + selectionLength;
-					var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
-					if (shift)
-					{
-						selectionLength = newEnd - selectionStart;
-					}
-					else
-					{
-						selectionStart = newEnd;
-						selectionLength = 0;
-					}
-
-					args.Handled = selectionStart != start || selectionLength != end - start;
-				}
+				KeyDownUpArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Down:
-				{
-					var start = selectionStart;
-					var end = selectionStart + selectionLength;
-					var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
-					if (shift)
-					{
-						selectionLength = newEnd - selectionStart;
-					}
-					else
-					{
-						selectionStart = newEnd;
-						selectionLength = 0;
-					}
-
-					args.Handled = selectionStart != start || selectionLength != end - start;
-				}
+				KeyDownDownArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Left:
-				var moveOutLeft = !shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0;
-				if (!moveOutLeft)
-				{
-					args.Handled = true;
-
-					if (shift)
-					{
-						var end = selectionStart + selectionLength;
-						if (ctrl)
-						{
-							end = FindChunkAt(end, false).start;
-						}
-						else
-						{
-							end--;
-						}
-
-						selectionLength = end - selectionStart;
-					}
-					else
-					{
-						if (selectionLength == 0)
-						{
-							selectionStart = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
-						}
-						else
-						{
-							selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
-						}
-						selectionLength = 0;
-					}
-				}
+				KeyDownLeftArrow(args, text, shift, ctrl, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Right:
-				var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
-				if (!moveOutRight)
-				{
-					args.Handled = true;
-
-					if (shift)
-					{
-						var end = selectionStart + selectionLength;
-						if (ctrl)
-						{
-							var chunk = FindChunkAt(end, true);
-							end = chunk.start + chunk.length;
-						}
-						else
-						{
-							end++;
-						}
-
-						selectionLength = end - selectionStart;
-					}
-					else
-					{
-						if (selectionLength == 0)
-						{
-							if (ctrl)
-							{
-								var chunk = FindChunkAt(selectionStart, true);
-								selectionStart = chunk.start + chunk.length;
-							}
-							else
-							{
-								selectionStart += 1;
-							}
-						}
-						else
-						{
-							selectionStart = Math.Max(selectionStart, selectionStart + selectionLength);
-						}
-						selectionLength = 0;
-					}
-				}
+				KeyDownRightArrow(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Home:
-				{
-					var start = selectionStart;
-					var end = selectionStart + selectionLength;
-					if (shift)
-					{
-						if (ctrl)
-						{
-							selectionLength = -selectionStart;
-						}
-						else
-						{
-							selectionLength = GetLineAt(text, selectionStart, selectionLength).start - selectionStart;
-						}
-					}
-					else
-					{
-						if (ctrl)
-						{
-							selectionStart = 0;
-						}
-						else
-						{
-							selectionStart = GetLineAt(text, selectionStart, selectionLength).start;
-						}
-						selectionLength = 0;
-					}
-					args.Handled = selectionStart != start || selectionLength != end - start;
-				}
+				KeyDownHome(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.End:
-				{
-					var start = selectionStart;
-					var end = selectionStart + selectionLength;
-					if (shift)
-					{
-						if (ctrl)
-						{
-							selectionLength = text.Length - selectionStart;
-						}
-						else
-						{
-							var line = GetLineAt(text, selectionStart, selectionLength);
-							selectionLength = line.start + line.length - selectionStart;
-						}
-					}
-					else
-					{
-						if (ctrl)
-						{
-							selectionStart = text.Length;
-						}
-						else
-						{
-							var line = GetLineAt(text, selectionStart, selectionLength);
-							selectionStart = line.start + line.length;
-							if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
-							{
-								// a newline is part of the line just before it, but End shouldn't go past the newline
-								selectionStart--;
-							}
-						}
-						selectionLength = 0;
-					}
-					args.Handled = selectionStart != start || selectionLength != end - start;
-				}
+				KeyDownEnd(args, text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
+			// TODO: PageUp/Down
 			case VirtualKey.Back when !IsReadOnly:
-				if (selectionLength != 0)
-				{
-					var start = Math.Min(selectionStart, selectionStart + selectionLength);
-					var end = Math.Max(selectionStart, selectionStart + selectionLength);
-					text = text[..start] + text[end..];
-					selectionLength = 0;
-					selectionStart = start;
-				}
-				else if (selectionStart != 0)
-				{
-					var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
-					text = text[..index] + text[selectionStart..];
-					selectionStart = index;
-				}
+				KeyDownBack(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.Delete when !IsReadOnly:
-				args.Handled = true;
-				if (selectionLength != 0)
-				{
-					var start = Math.Min(selectionStart, selectionStart + selectionLength);
-					var end = Math.Max(selectionStart, selectionStart + selectionLength);
-					text = text[..start] + text[end..];
-					selectionLength = 0;
-					selectionStart = start;
-				}
-				else if (selectionStart != text.Length)
-				{
-					int index;
-					if (ctrl)
-					{
-						var chunk = FindChunkAt(selectionStart, true);
-						index = chunk.start + chunk.length;
-					}
-					else
-					{
-						index = selectionStart + 1;
-					}
-					text = text[..selectionStart] + text[index..];
-				}
+				KeyDownDelete(args, ref text, ctrl, shift, ref selectionStart, ref selectionLength);
 				break;
 			case VirtualKey.A when ctrl:
 				args.Handled = true;
@@ -531,6 +345,227 @@ public partial class TextBox
 			Text = text;
 		}
 	}
+	private void KeyDownBack(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+		if (selectionLength != 0)
+		{
+			var start = Math.Min(selectionStart, selectionStart + selectionLength);
+			var end = Math.Max(selectionStart, selectionStart + selectionLength);
+			text = text[..start] + text[end..];
+			selectionLength = 0;
+			selectionStart = start;
+		}
+		else if (selectionStart != 0)
+		{
+			var index = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+			text = text[..index] + text[selectionStart..];
+			selectionStart = index;
+		}
+	}
+
+	private void KeyDownUpArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+		// TODO ctrl+up
+		var start = selectionStart;
+		var end = selectionStart + selectionLength;
+		var newEnd = GetUpResult(text, selectionStart, selectionLength, shift);
+		if (shift)
+		{
+			selectionLength = newEnd - selectionStart;
+		}
+		else
+		{
+			selectionStart = newEnd;
+			selectionLength = 0;
+		}
+
+		args.Handled = selectionStart != start || selectionLength != end - start;
+	}
+
+	private void KeyDownDownArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+		// TODO ctrl+down
+		var start = selectionStart;
+		var end = selectionStart + selectionLength;
+		var newEnd = GetDownResult(text, selectionStart, selectionLength, shift);
+		if (shift)
+		{
+			selectionLength = newEnd - selectionStart;
+		}
+		else
+		{
+			selectionStart = newEnd;
+			selectionLength = 0;
+		}
+
+		args.Handled = selectionStart != start || selectionLength != end - start;
+	}
+
+	private void KeyDownLeftArrow(KeyRoutedEventArgs args, string text, bool shift, bool ctrl, ref int selectionStart, ref int selectionLength)
+	{
+		if (!shift && selectionStart == 0 && selectionLength == 0 || shift && selectionStart + selectionLength == 0)
+		{
+			return;
+		}
+
+		args.Handled = true;
+
+		if (shift)
+		{
+			var end = selectionStart + selectionLength;
+			if (ctrl)
+			{
+				end = FindChunkAt(end, false).start;
+			}
+			else
+			{
+				end--;
+			}
+
+			selectionLength = end - selectionStart;
+		}
+		else
+		{
+			if (selectionLength == 0)
+			{
+				selectionStart = ctrl ? FindChunkAt(selectionStart, false).start : selectionStart - 1;
+			}
+			else
+			{
+				selectionStart = Math.Min(selectionStart, selectionStart + selectionLength);
+			}
+			selectionLength = 0;
+		}
+	}
+
+	private void KeyDownRightArrow(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+
+		var moveOutRight = !shift && selectionStart == text.Length && selectionLength == 0 || shift && selectionStart + selectionLength == Text.Length;
+		if (!moveOutRight)
+		{
+			args.Handled = true;
+
+			if (shift)
+			{
+				var end = selectionStart + selectionLength;
+				if (ctrl)
+				{
+					var chunk = FindChunkAt(end, true);
+					end = chunk.start + chunk.length;
+				}
+				else
+				{
+					end++;
+				}
+
+				selectionLength = end - selectionStart;
+			}
+			else
+			{
+				if (selectionLength == 0)
+				{
+					if (ctrl)
+					{
+						var chunk = FindChunkAt(selectionStart, true);
+						selectionStart = chunk.start + chunk.length;
+					}
+					else
+					{
+						selectionStart += 1;
+					}
+				}
+				else
+				{
+					selectionStart = Math.Max(selectionStart, selectionStart + selectionLength);
+				}
+				selectionLength = 0;
+			}
+		}
+	}
+
+	private void KeyDownHome(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+
+		var start = selectionStart;
+		var end = selectionStart + selectionLength;
+		if (shift)
+		{
+			selectionLength = ctrl ? -selectionStart : GetLineAt(text, selectionStart, selectionLength).start - selectionStart;
+		}
+		else
+		{
+			selectionStart = ctrl ? 0 : GetLineAt(text, selectionStart, selectionLength).start;
+			selectionLength = 0;
+		}
+		args.Handled = selectionStart != start || selectionLength != end - start;
+	}
+
+	private void KeyDownEnd(KeyRoutedEventArgs args, string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+
+		var start = selectionStart;
+		var end = selectionStart + selectionLength;
+		if (shift)
+		{
+			if (ctrl)
+			{
+				selectionLength = text.Length - selectionStart;
+			}
+			else
+			{
+				var line = GetLineAt(text, selectionStart, selectionLength);
+				selectionLength = line.start + line.length - selectionStart;
+			}
+		}
+		else
+		{
+			if (ctrl)
+			{
+				selectionStart = text.Length;
+			}
+			else
+			{
+				var line = GetLineAt(text, selectionStart, selectionLength);
+				selectionStart = line.start + line.length;
+				if (line.length > 0 && selectionStart < text.Length && text[selectionStart - 1] == '\r')
+				{
+					// a newline is part of the line just before it, but End shouldn't go past the newline
+					selectionStart--;
+				}
+			}
+			selectionLength = 0;
+		}
+		args.Handled = selectionStart != start || selectionLength != end - start;
+	}
+
+	private void KeyDownDelete(KeyRoutedEventArgs args, ref string text, bool ctrl, bool shift, ref int selectionStart, ref int selectionLength)
+	{
+
+		args.Handled = true;
+		if (selectionLength != 0)
+		{
+			var start = Math.Min(selectionStart, selectionStart + selectionLength);
+			var end = Math.Max(selectionStart, selectionStart + selectionLength);
+			text = text[..start] + text[end..];
+			selectionLength = 0;
+			selectionStart = start;
+		}
+		else if (selectionStart != text.Length)
+		{
+			int index;
+			if (ctrl)
+			{
+				var chunk = FindChunkAt(selectionStart, true);
+				index = chunk.start + chunk.length;
+			}
+			else
+			{
+				index = selectionStart + 1;
+			}
+			text = text[..selectionStart] + text[index..];
+		}
+	}
 
 	/// <summary>
 	/// Takes a possibly-negative selection length, indicating a selection that goes backwards.
@@ -555,7 +590,7 @@ public partial class TextBox
 		base.OnPointerMoved(e);
 		e.Handled = true;
 
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && _isPressed)
+		if (IsSkiaTextBox && _isPressed)
 		{
 			var displayBlock = TextBoxView.DisplayBlock;
 			var point = e.GetCurrentPoint(displayBlock);
@@ -598,35 +633,37 @@ public partial class TextBox
 		base.OnRightTapped(e);
 		e.Handled = true;
 
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+		if (IsSkiaTextBox)
 		{
 			if (_contextMenu is null)
 			{
 				_contextMenu = new MenuFlyout();
 				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
 
-				_flyoutItems.Add("Cut", new MenuFlyoutItem { Text = "Cut", Command = new TextBoxCommand(CutSelectionToClipboard), Icon = new SymbolIcon(Symbol.Cut) });
-				_flyoutItems.Add("Copy", new MenuFlyoutItem { Text = "Copy", Command = new TextBoxCommand(CopySelectionToClipboard), Icon = new SymbolIcon(Symbol.Copy) });
-				_flyoutItems.Add("Paste", new MenuFlyoutItem { Text = "Paste", Command = new TextBoxCommand(PasteFromClipboard), Icon = new SymbolIcon(Symbol.Paste) });
+				// TODO: confirm localized names match WinUI
+				var resourceLoader = ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxCut"), Command = new TextBoxCommand(CutSelectionToClipboard), Icon = new SymbolIcon(Symbol.Cut) });
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxCopy"), Command = new TextBoxCommand(CopySelectionToClipboard), Icon = new SymbolIcon(Symbol.Copy) });
+				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxPaste"), Command = new TextBoxCommand(PasteFromClipboard), Icon = new SymbolIcon(Symbol.Paste) });
 				// undo/redo
-				_flyoutItems.Add("Select All", new MenuFlyoutItem { Text = "Select All", Command = new TextBoxCommand(SelectAll), Icon = new SymbolIcon(Symbol.SelectAll) });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxSelectAll"), Command = new TextBoxCommand(SelectAll), Icon = new SymbolIcon(Symbol.SelectAll) });
 			}
 
 			_contextMenu.Items.Clear();
 
 			if (_selection.length == 0)
 			{
-				_contextMenu.Items.Add(_flyoutItems["Paste"]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
 				// undo/redo
-				_contextMenu.Items.Add(_flyoutItems["Select All"]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
 			else
 			{
-				_contextMenu.Items.Add(_flyoutItems["Cut"]);
-				_contextMenu.Items.Add(_flyoutItems["Copy"]);
-				_contextMenu.Items.Add(_flyoutItems["Paste"]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Cut]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Copy]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.Paste]);
 				// undo/redo
-				_contextMenu.Items.Add(_flyoutItems["Select All"]);
+				_contextMenu.Items.Add(_flyoutItems[ContextMenuItem.SelectAll]);
 			}
 
 			_contextMenu.ShowAt(this, e.GetPosition(this));
@@ -644,11 +681,15 @@ public partial class TextBox
 			&& !GestureRecognizer.Gesture.IsOutOfTapRange(previousTap.position, currentPosition);
 	}
 
-	partial void OnPointerPressedNative(PointerRoutedEventArgs args)
+	partial void OnPointerPressedPartial(PointerRoutedEventArgs args)
 	{
-		if (!FeatureConfiguration.TextBox.UseOverlayOnSkia && args.GetCurrentPoint(null) is var currentPoint && (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
+		if (IsSkiaTextBox
+			&& args.GetCurrentPoint(null) is var currentPoint
+			&& (!currentPoint.Properties.IsRightButtonPressed || SelectionLength == 0))
 		{
-			if (currentPoint.Properties.IsLeftButtonPressed && _lastPointerDown.point is { } p && IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
+			if (currentPoint.Properties.IsLeftButtonPressed
+				&& _lastPointerDown.point is { } p
+				&& IsMultiTapGesture((p.PointerId, p.Timestamp, p.Position), currentPoint))
 			{
 				// multiple left presses
 
@@ -686,7 +727,7 @@ public partial class TextBox
 		}
 	}
 
-	partial void OnPointerReleasedNative(PointerRoutedEventArgs args)
+	partial void OnPointerReleasedPartial(PointerRoutedEventArgs args)
 	{
 		_isPressed = false;
 		_multiTapChunk = null;
@@ -753,7 +794,10 @@ public partial class TextBox
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x,y), true);
-		if (text.Length > index - 1 && index - 1 >= 0 && index == lines[newLineIndex].start + lines[newLineIndex].length && (text[index - 1] == '\r' || text[index - 1] == ' '))
+		if (text.Length > index - 1
+			&& index - 1 >= 0
+			&& index == lines[newLineIndex].start + lines[newLineIndex].length
+			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
 		{
 			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
 			index--;
@@ -785,7 +829,10 @@ public partial class TextBox
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
 		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x,y), true);
-		if (text.Length > index - 1 && index - 1 >= 0 && index == lines[newLineIndex].start + lines[newLineIndex].length && (text[index - 1] == '\r' || text[index - 1] == ' '))
+		if (text.Length > index - 1
+			&& index - 1 >= 0
+			&& index == lines[newLineIndex].start + lines[newLineIndex].length
+			&& (text[index - 1] == '\r' || text[index - 1] == ' '))
 		{
 			// if we're past \r or space, we will actually be at the beginning of the next line, so we take a step back
 			index--;
@@ -796,6 +843,7 @@ public partial class TextBox
 
 	private InlineCollection DisplayBlockInlines => TextBoxView.DisplayBlock.Inlines;
 
+	/// <param name="right">Where to look for a chunk to the right or left of the caret when the caret is between chunks</param>
 	private (int start, int length) FindChunkAt(int index, bool right)
 	{
 		if (Text.GetHashCode() != _cachedChunks.hashCode)
@@ -806,7 +854,9 @@ public partial class TextBox
 		var i = 0;
 		foreach (var chunk in _cachedChunks.chunks)
 		{
-			if (chunk.start < index && chunk.start + chunk.length > index || chunk.start == index && right || chunk.start + chunk.length == index && !right)
+			if (chunk.start < index && chunk.start + chunk.length > index
+				|| chunk.start == index && right
+				|| chunk.start + chunk.length == index && !right)
 			{
 				return chunk;
 			}
@@ -833,7 +883,7 @@ public partial class TextBox
 		{
 			var start = i;
 			var c = text[i];
-			if (c == '\r' || c == '\t')
+			if (c is '\r' or '\t')
 			{
 				i++;
 			}
@@ -897,6 +947,50 @@ public partial class TextBox
 	{
         var index = Text.IndexOf('\r', i);
 		return index == -1 ? Text.Length - 1 : index;
+	}
+
+	private partial void OnTextChangedPartial()
+	{
+		if (IsSkiaTextBox)
+		{
+			if (_pendingSelection is { } selection)
+			{
+				SelectInternal(selection.start, selection.length);
+			}
+			else
+			{
+				SelectInternal(0, 0);
+			}
+		}
+	}
+
+	private partial void OnFocusStateChangedPartial2(FocusState focusState)
+	{
+		if (IsSkiaTextBox)
+		{
+			// this is needed so that we UpdateScrolling after the button appears/disappears.
+			UpdateLayout();
+			// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
+			_contentElement?.InvalidateMeasure();
+			UpdateLayout();
+			UpdateScrolling();
+		}
+	}
+
+	private partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
+	{
+		if (IsSkiaTextBox)
+		{
+			_pendingSelection = (selectionStart + clipboardText.Length, 0);
+		}
+	}
+
+	private partial void CutSelectionToClipboardPartial()
+	{
+		if (IsSkiaTextBox)
+		{
+			_pendingSelection = (_selection.start, 0);
+		}
 	}
 
 	private sealed class TextBoxCommand : ICommand

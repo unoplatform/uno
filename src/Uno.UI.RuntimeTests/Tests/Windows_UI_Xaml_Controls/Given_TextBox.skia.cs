@@ -1960,6 +1960,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.SelectAll();
 			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
 
 			var canvas = SUT.FindVisualChildByType<Canvas>();
 			var initial = await UITestHelper.ScreenShot(canvas);
@@ -1967,6 +1968,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			SUT.Text = "";
 			await WindowHelper.WaitForIdle();
+			await Task.Delay(100);
 
 			// No residual colors on canvas
 			var cleared = await UITestHelper.ScreenShot(canvas);

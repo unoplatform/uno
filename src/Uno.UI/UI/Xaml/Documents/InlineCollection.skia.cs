@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using SkiaSharp;
 using Windows.Foundation;
-using Windows.UI.Composition;
 using Windows.UI.Text;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Composition;
@@ -39,7 +37,7 @@ namespace Windows.UI.Xaml.Documents
 		private bool _lineIntervalsValid;
 
 		// these should only be used by TextBox.
-		internal (int startLine, int startIndex, int endLine, int endIndex)? Selection { get; set; }
+		internal SelectionDetails? Selection { get; set; }
 		internal bool CaretAtEndOfSelection { get; set; }
 		internal bool RenderSelectionAndCaret { get; set; }
 
@@ -457,22 +455,22 @@ namespace Windows.UI.Xaml.Documents
 					}
 
 					{
-						if (RenderSelectionAndCaret && Selection is { } bg && bg.startLine <= lineIndex && lineIndex <= bg.endLine)
+						if (RenderSelectionAndCaret && Selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
 						{
 							var spanStartingIndex = characterCountSoFar;
 
 							// x at this point is set to the right of the rightmost character ignoring spaces.
 
 							float left;
-							if (bg.startIndex < spanStartingIndex)
+							if (bg.StartIndex < spanStartingIndex)
 							{
 								// the selection starts from a previous span, so this span is selected from the very beginning
 								left = positions.Length > 0 ? positions[0].X : x;
 							}
-							else if (bg.startIndex - spanStartingIndex < positions.Length)
+							else if (bg.StartIndex - spanStartingIndex < positions.Length)
 							{
 								// part or all of this span is selected
-								left = positions[bg.startIndex - spanStartingIndex].X;
+								left = positions[bg.StartIndex - spanStartingIndex].X;
 							}
 							else
 							{
@@ -481,15 +479,15 @@ namespace Windows.UI.Xaml.Documents
 							}
 
 							float right;
-							if (bg.endIndex - spanStartingIndex < 0)
+							if (bg.EndIndex - spanStartingIndex < 0)
 							{
 								// this span is not a part of the selection, so we select nothing by making the left edge to the far left
 								right = positions.Length > 0 ? positions[0].X : x;
 							}
-							else if (bg.endIndex - spanStartingIndex < positions.Length)
+							else if (bg.EndIndex - spanStartingIndex < positions.Length)
 							{
 								// part or all of this span is selected
-								right = positions[bg.endIndex - spanStartingIndex].X;
+								right = positions[bg.EndIndex - spanStartingIndex].X;
 							}
 							else
 							{
@@ -497,7 +495,7 @@ namespace Windows.UI.Xaml.Documents
 								var allTrailingSpaces = segmentSpan.FullGlyphsLength - segmentSpan.GlyphsLength; // rendered and non-rendered trailing spaces
 								right = x + justifySpaceOffset * allTrailingSpaces;
 
-								if (bg.startIndex != bg.endIndex && SpanEndsInCR(segment, segmentSpan))
+								if (bg.StartIndex != bg.EndIndex && SpanEndsInCR(segment, segmentSpan))
 								{
 									// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
 									right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
@@ -521,7 +519,7 @@ namespace Windows.UI.Xaml.Documents
 						var spanStartingIndex = characterCountSoFar;
 						if (RenderSelectionAndCaret && Selection is { } selection)
 						{
-							var (l, i) = CaretAtEndOfSelection ? (selection.endLine, selection.endIndex) : (selection.startLine, selection.startIndex);
+							var (l, i) = CaretAtEndOfSelection ? (selection.EndLine, selection.EndIndex) : (selection.StartLine, selection.StartIndex);
 
 							float caretLocation = float.MinValue;
 
@@ -755,5 +753,7 @@ namespace Windows.UI.Xaml.Documents
 
 		private static bool SpanEndsInCR(Segment segment, RenderSegmentSpan segmentSpan)
 			=> segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == '\r';
+
+		internal record SelectionDetails(int StartLine, int StartIndex, int EndLine, int EndIndex);
 	}
 }

@@ -122,6 +122,13 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
+		private bool IsSkiaTextBox =>
+#if __SKIA__
+			!FeatureConfiguration.TextBox.UseOverlayOnSkia;
+#else
+			false;
+#endif
+
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
@@ -154,9 +161,7 @@ namespace Windows.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-#if __SKIA__
-				if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
-#endif
+				if (!IsSkiaTextBox)
 				{
 					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
 					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
@@ -293,19 +298,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
-#if __SKIA__
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				if (_pendingSelection is { } selection)
-				{
-					SelectInternal(selection.start, selection.length);
-				}
-				else
-				{
-					SelectInternal(0, 0);
-				}
-			}
-#endif
+			OnTextChangedPartial();
 
 			if (!_isTextChangedPending)
 			{
@@ -313,6 +306,8 @@ namespace Windows.UI.Xaml.Controls
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
 			}
 		}
+
+		private partial void OnTextChangedPartial();
 
 		private void RaiseTextChanging()
 		{
@@ -383,12 +378,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				baseString = GetFirstLine(baseString);
 			}
-#if __SKIA__
-			else if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			else if (IsSkiaTextBox)
 			{
 				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
 			}
-#endif
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
 			BeforeTextChanging?.Invoke(this, args);
@@ -628,16 +621,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnAcceptsReturnChanged(bool newValue)
 		{
-#if __SKIA__
-			if (newValue && !FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				if (this.Log().IsEnabled(LogLevel.Warning))
-				{
-					this.Log().LogWarning("Multiline TextBox using the skia-based implementation is not supported.");
-				}
-			}
-#endif
-
 			if (!newValue)
 			{
 				var text = Text;
@@ -935,20 +918,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateVisualState();
-#if __SKIA__
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				// this is needed so that we UpdateScrolling after the button appears/disappears.
-				UpdateLayout();
-				// Another round because a collapsed DeleteButton gets measured on the subsequent layout cycle.
-				_contentElement?.InvalidateMeasure();
-				UpdateLayout();
-				UpdateScrolling();
-			}
-#endif
+
+			OnFocusStateChangedPartial2(newValue);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
+
+		private partial void OnFocusStateChangedPartial2(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -997,12 +973,12 @@ namespace Windows.UI.Xaml.Controls
 
 			args.Handled = true;
 
-			OnPointerPressedNative(args);
+			OnPointerPressedPartial(args);
 		}
 
-		partial void OnPointerPressedNative(PointerRoutedEventArgs args);
+		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
 
-		partial void OnPointerReleasedNative(PointerRoutedEventArgs args);
+		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -1016,7 +992,7 @@ namespace Windows.UI.Xaml.Controls
 
 			args.Handled = true;
 
-			OnPointerReleasedNative(args);
+			OnPointerReleasedPartial(args);
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)
@@ -1250,15 +1226,13 @@ namespace Windows.UI.Xaml.Controls
 
 				currentText = currentText.Insert(selectionStart, clipboardText);
 
-#if __SKIA__
-				if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
-				{
-					_pendingSelection = (selectionStart + clipboardText.Length, 0);
-				}
-#endif
+				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+
 				Text = currentText;
 			});
 		}
+
+		private partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.
@@ -1280,14 +1254,11 @@ namespace Windows.UI.Xaml.Controls
 		public void CutSelectionToClipboard()
 		{
 			CopySelectionToClipboard();
-#if __SKIA__
-			if (!FeatureConfiguration.TextBox.UseOverlayOnSkia)
-			{
-				_pendingSelection = (_selection.start, 0);
-			}
-#endif
+			CutSelectionToClipboardPartial();
 			Text = Text.Remove(SelectionStart, SelectionLength);
 		}
+
+		private partial void CutSelectionToClipboardPartial();
 
 		internal override bool CanHaveChildren() => true;
 
