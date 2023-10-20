@@ -509,9 +509,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(textBox);
 
 			var contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(textBox);
-			// This will no longer be true when we support non-native text box input - test will have to be updated for this option
-			Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
-			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
+			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
+				Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
+			}
+			else
+			{
+				Assert.IsInstanceOfType(contentControl.Content, typeof(Grid));
+				Assert.AreEqual(initialText, contentControl.FindFirstChild<TextBlock>().Text);
+			}
 		}
 #endif
 

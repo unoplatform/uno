@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Drawing;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
-using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input.Preview.Injection;
 using Windows.UI.Xaml;
@@ -12,6 +12,7 @@ using MUXControlsTestApp.Utilities;
 using Uno.Extensions;
 using Uno.UI.RuntimeTests.Helpers;
 using static Private.Infrastructure.TestServices;
+using Point = Windows.Foundation.Point;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -207,6 +208,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Text = "hello world"
 			};
 
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
 			WindowHelper.WindowContent = SUT;
 
 			await WindowHelper.WaitForIdle();
@@ -219,7 +223,148 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, keyDownCount);
 			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.Control, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, keyDownCount);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Home_End()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "lorem\nipsum\r\ndolor"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.End, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Home, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Delete()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "lorem ipsum dolor"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("ipsum dolor", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Delete, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("dolor", SUT.Text);
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Ctrl_Backspace()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "lorem ipsum dolor"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(SUT.Text.Length, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("lorem ipsum ", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Back, VirtualKeyModifiers.Control));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("lorem ", SUT.Text);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Enter_But_Not_Multiline()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(2, 0);
+			await WindowHelper.WaitForIdle();
+
+			var size = SUT.ActualSize;
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Enter, VirtualKeyModifiers.None, unicodeKey: '\r'));
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual("hello world", SUT.Text);
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(size, SUT.ActualSize);
 		}
 
 		[TestMethod]
@@ -575,7 +720,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 			Assert.AreEqual(0, sv.HorizontalOffset);
 
-			for (var i = 0; i < 6; i++)
+			for (var i = 0; i < 7; i++)
 			{
 				SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
 				await WindowHelper.WaitForIdle();
@@ -662,6 +807,82 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(10, SUT.SelectionStart);
 			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_RightClick_No_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(10, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Pointer_RightClick_Selection()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Select(2, 2);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.PressRight();
+			mouse.ReleaseRight();
+			await WindowHelper.WaitForIdle();
+
+			mouse.MoveBy(100, 0); // click out
+			mouse.Press();
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(2, SUT.SelectionStart);
+			Assert.AreEqual(2, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1053,7 +1274,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public async Task When_Multiline()
+		public async Task When_Multiline_Simple()
 		{
 			using var _ = new TextBoxFeatureConfigDisposable();
 
@@ -1128,6 +1349,185 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForIdle();
 
 			Assert.AreEqual("o\rw", SUT.SelectedText);
+		}
+
+		[TestMethod]
+		public async Task When_Up_WithWithout_Shift()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "Lorem ipsum"
+			};
+
+			var keyDownCount = 0;
+			SUT.KeyDown += (_, _) => keyDownCount++;
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Select(4, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+			Assert.AreEqual(1, keyDownCount);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.Shift));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(4, SUT.SelectionLength);
+			Assert.AreEqual(1, keyDownCount);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_NewLine_UpDown()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				AcceptsReturn = true,
+				Text = "Lorem ipsum\rdolor sit\ramet consectetur\radipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(17, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(16, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Wrapping_UpDown()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 120,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet consectetur adipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(17, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(16, SUT.SelectionStart); // notice how up -> down -> up doesn't necessarily end up back where it started, this is correct
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Up, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(4, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Down, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(16, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_NewLine_LeftRight()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				AcceptsReturn = true,
+				Text = "Lorem ipsum\rdolor sit\ramet consectetur\radipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(11, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Wrapping_LeftRight()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 120,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "Lorem ipsum dolor sit amet consectetur adipiscing"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
+
+			SUT.Select(11, 0);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.Right, VirtualKeyModifiers.None));
+			await WindowHelper.WaitForIdle();
+			Assert.AreEqual(12, SUT.SelectionStart);
+			Assert.AreEqual(0, SUT.SelectionLength);
 		}
 
 		[TestMethod]
@@ -1229,6 +1629,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		[TestMethod]
 		public async Task When_Multiline_Text_Ends_In_Return()
 		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
 			var SUT = new TextBox
 			{
 				AcceptsReturn = true,
@@ -1245,6 +1647,68 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			SUT.Text += "\r";
 
 			Assert.IsTrue(SUT.ActualHeight > height * 1.5);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Wrapping_Text_Ends_In_Too_Many_Spaces()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 150,
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text = "mmmmmmmmm               ";
+
+			// Trailing space shouldn't wrap
+			Assert.AreEqual(height, SUT.ActualHeight);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Changed_Events()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Text = "hello world"
+			};
+
+			var output = "";
+			SUT.TextChanged += (o, _) => output += $"TextChanged {((TextBox)o).Text}\n";
+			SUT.SelectionChanged += (o, _) => output += $"SelectionChanged {((TextBox)o).Text}\n";
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SafeRaiseEvent(UIElement.KeyDownEvent, new KeyRoutedEventArgs(SUT, VirtualKey.A, VirtualKeyModifiers.Shift, unicodeKey: 'a'));
+			await WindowHelper.WaitForIdle();
+
+			var expected =
+			"""
+			TextChanged hello world
+			SelectionChanged ahello world
+			TextChanged ahello world
+			
+			""";
+
+			Assert.AreEqual(expected.Replace("\r\n", "\n"), output);
 		}
 
 		[TestMethod]
@@ -1416,6 +1880,97 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(13, SUT.SelectionStart);
 			Assert.AreEqual(26, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Multiline_Pointer_TripleTap_With_Wrapping()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				AcceptsReturn = true,
+				TextWrapping = TextWrapping.Wrap,
+				Text =
+					"""
+					Lorem ipsum dolor sit amet consectetur adipiscing, elit aliquam u
+					llamcorper commodo primis ornare himenaeos, inceptos tellus accumsan praesent laoreet. Pharetra semper ullamcorper neque mollis vestibulum luctus gravida facilisi rhoncus, rutrum massa bibendum vitae imp
+					erdiet quisque fames dignissim, varius curae erat risus platea orci quis scelerisque. Auctor erat vestibulum enim sodales sapien nam litora rhoncus condimentum praesent, platea dui odio eros integer id gravida turpis semper nisi maecenas, nascetur dictumst sed arcu aenean varius dis leo habitant.
+					"""
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			var injector = InputInjector.TryCreate() ?? throw new InvalidOperationException("Failed to init the InputInjector");
+			using var mouse = injector.GetMouse();
+
+			var bounds = SUT.GetAbsoluteBounds();
+			mouse.MoveTo(bounds.GetCenter());
+			await WindowHelper.WaitForIdle();
+
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			mouse.Release();
+			mouse.Press();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(270, SUT.SelectionStart);
+			Assert.AreEqual(297, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -50);
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(66, SUT.SelectionStart);
+			Assert.AreEqual(501, SUT.SelectionLength);
+
+			mouse.MoveBy(0, -100);
+			mouse.Release();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.SelectionStart);
+			Assert.AreEqual(SUT.Text.Length, SUT.SelectionLength);
+		}
+
+		[TestMethod]
+		public async Task When_Text_Cleared_No_Paint()
+		{
+			using var _ = new TextBoxFeatureConfigDisposable();
+
+			var SUT = new TextBox
+			{
+				Width = 250,
+				Text = "Hello world"
+			};
+
+			WindowHelper.WindowContent = SUT;
+
+			await WindowHelper.WaitForIdle();
+			await WindowHelper.WaitForLoaded(SUT);
+
+			SUT.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			SUT.SelectAll();
+			await WindowHelper.WaitForIdle();
+
+			var canvas = SUT.FindVisualChildByType<Canvas>();
+			var initial = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.HasColorInRectangle(initial, new Rectangle(System.Drawing.Point.Empty, initial.Size), SUT.SelectionHighlightColor.Color);
+
+			SUT.Text = "";
+			await WindowHelper.WaitForIdle();
+
+			// No residual colors on canvas
+			var cleared = await UITestHelper.ScreenShot(canvas);
+			ImageAssert.DoesNotHaveColorInRectangle(cleared, new Rectangle(System.Drawing.Point.Empty, cleared.Size), SUT.SelectionHighlightColor.Color);
 		}
 
 		private class TextBoxFeatureConfigDisposable : IDisposable
