@@ -377,9 +377,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("partial class {0} : {1}", _xClassName.ClassName, controlBaseType.GetFullyQualifiedTypeIncludingGlobal()))
 					{
-						// Create a public member to avoid having to remove all unused member warnings
-						writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-						writer.AppendLineIndented($"public const string __checksum = \"{_fileDefinition.Checksum}\";");
+						if (_isHotReloadEnabled)
+						{
+							// Create a public member to avoid having to remove all unused member warnings
+							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+							writer.AppendLineIndented($"public const string __checksum = \"{_fileDefinition.Checksum}\";");
+						}
 
 						BuildBaseUri(writer);
 
