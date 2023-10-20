@@ -40,11 +40,9 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
 		switch (frame.Name)
 		{
-#if __WASM__ || __SKIA__
 			case AssemblyDeltaReload.Name:
 				AssemblyReload(JsonConvert.DeserializeObject<HotReload.Messages.AssemblyDeltaReload>(frame.Content)!);
 				break;
-#endif
 
 			case FileReload.Name:
 				await PartialReload(JsonConvert.DeserializeObject<HotReload.Messages.FileReload>(frame.Content)!);

@@ -14,6 +14,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.Diagnostics;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -137,11 +138,20 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		return Array.Empty<string>();
 	}
 
-#if __WASM__ || __SKIA__
 	private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 	{
 		try
 		{
+			if (Debugger.IsAttached)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Hot Reload is not supported when the debugger is attached.");
+				}
+
+				return;
+			}
+
 			if (assemblyDeltaReload.IsValid())
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -180,9 +190,9 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"Failed to process assembly reload {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}: {e}");
-			}
-		}
+                this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload})", e);
+            }
+        }
 	}
 
 	static int[] ReadIntArray(BinaryReader binaryReader)
@@ -202,7 +212,6 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 		return values;
 	}
-#endif
 
 	private static async Task<bool> ShouldReload()
 	{
