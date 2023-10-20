@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 		{
 			value ??= "";
 
-			if (value.Contains("("))
+			if (value.Contains('('))
 			{
 				foreach (var ns in _fileDefinition.Namespaces)
 				{
@@ -262,7 +262,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				{
 					do
 					{
-						if (!match.Value.Contains(":"))
+						if (!match.Value.Contains(':'))
 						{
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
@@ -1264,7 +1264,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			{
 				var sourceType = propertyType;
 				var methodName = createFromString.MethodName;
-				if (createFromString.MethodName.Contains("."))
+				if (createFromString.MethodName.Contains('.'))
 				{
 					var splitIndex = createFromString.MethodName.LastIndexOf(".", StringComparison.Ordinal);
 					var typeName = createFromString.MethodName.Substring(0, splitIndex);

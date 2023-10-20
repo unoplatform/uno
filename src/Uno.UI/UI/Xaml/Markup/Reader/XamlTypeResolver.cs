@@ -354,9 +354,9 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			var originalName = name;
 
-			if (name.Contains(":"))
+			if (name.Contains(':'))
 			{
-				var fields = name.Split(new[] { ':' });
+				var fields = name.Split(':');
 
 				var ns = FileDefinition.Namespaces.FirstOrDefault(n => n.Prefix == fields[0]);
 

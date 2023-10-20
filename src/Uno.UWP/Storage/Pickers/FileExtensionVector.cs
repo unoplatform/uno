@@ -84,7 +84,7 @@ namespace Windows.Storage.Pickers
 				throw new ArgumentException("Extension must either start with a dot or be an asterisk.");
 			}
 
-			if (extension != "*" && extension.Contains("*"))
+			if (extension != "*" && extension.Contains('*'))
 			{
 				throw new ArgumentException("When extension contains an asterisk, it must not contain any other characters.");
 			}
