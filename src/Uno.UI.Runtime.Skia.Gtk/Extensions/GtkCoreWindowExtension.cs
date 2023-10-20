@@ -17,7 +17,7 @@ namespace Uno.UI.Runtime.Skia.Gtk
 	internal partial class GtkCoreWindowExtension : ICoreWindowExtension
 	{
 		private readonly CoreWindow _owner;
-		private DisplayInformation _displayInformation;
+		private readonly DisplayInformation _displayInformation;
 
 		public GtkCoreWindowExtension(object owner)
 		{
