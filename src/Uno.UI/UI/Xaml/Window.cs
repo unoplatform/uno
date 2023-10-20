@@ -56,6 +56,10 @@ namespace Windows.UI.Xaml
 			InitializeCommon();
 		}
 
+#if !__ANDROID__ && !__SKIA__ && !__IOS__ && !__MACOS__
+		internal object NativeWindow => null;
+#endif
+
 		partial void InitPlatform();
 
 #pragma warning disable 67

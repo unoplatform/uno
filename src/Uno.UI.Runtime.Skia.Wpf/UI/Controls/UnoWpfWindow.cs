@@ -22,6 +22,7 @@ internal class UnoWpfWindow : WpfWindow
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 		_winUIWindow.Showing += OnShowing;
+		_winUIWindow.NativeWindow = this;
 
 		Windows.Foundation.Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Windows.Foundation.Size.Empty)
