@@ -464,9 +464,6 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if __SKIA__
-		[Ignore("https://github.com/unoplatform/uno/issues/7271")]
-#endif
 		[TestMethod]
 		public async Task ValidateLayoutRoundingForPixelDimensions()
 		{
