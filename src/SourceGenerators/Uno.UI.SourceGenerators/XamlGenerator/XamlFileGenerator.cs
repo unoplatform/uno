@@ -1097,13 +1097,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(_xClassName.ClassName);
 
-					using (writer.BlockInvariant($"private interface {bindingsInterfaceName}"))
-					{
-						writer.AppendLineIndented("void Initialize();");
-						writer.AppendLineIndented("void Update();");
-						writer.AppendLineIndented("void UpdateResources();");
-						writer.AppendLineIndented("void StopTracking();");
-					}
+				using (writer.BlockInvariant($"private interface {bindingsInterfaceName}"))
+				{
+					writer.AppendLineIndented("void Initialize();");
+					writer.AppendLineIndented("void Update();");
+					writer.AppendLineIndented("void UpdateResources();");
+					writer.AppendLineIndented("void StopTracking();");
+				}
 
 				writer.AppendLineIndented($"#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.");
 				writer.AppendLineIndented($"private {bindingsInterfaceName} Bindings;");
