@@ -42,7 +42,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 			if (_useRoslynHotReload)
 			{
-				CompilationWorkspaceProvider.InitializeRoslyn();
+				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
 				InitializeInner(configureServer);
 			}

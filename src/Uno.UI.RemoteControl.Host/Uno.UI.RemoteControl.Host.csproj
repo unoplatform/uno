@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<RollForward>Major</RollForward>
+		<RollForward>minor</RollForward>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 
@@ -33,20 +33,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Update="Config\*.json">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
-		</Content>
-		<Content Update="Config\global-net7.0.json" Condition="'$(TargetFramework)' == 'net7.0'">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>global.json</TargetPath>
-		</Content>
-		<Content Update="Config\global-net8.0.json" Condition="'$(TargetFramework)' == 'net8.0'">
-			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
-			<TargetPath>global.json</TargetPath>
-		</Content>
 	</ItemGroup>
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
