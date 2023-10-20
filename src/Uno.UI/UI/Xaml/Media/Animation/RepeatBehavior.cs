@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 			else if (str.EndsWith("x", StringComparison.InvariantCultureIgnoreCase))
 			{
-				if (double.TryParse(str.Substring(0, str.Length - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var count))
+				if (double.TryParse(str.AsSpan().Slice(0, str.Length - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var count))
 				{
 					return new RepeatBehavior(count);
 				}

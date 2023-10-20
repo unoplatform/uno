@@ -412,7 +412,7 @@ namespace Uno.Extensions
 		public static TResult MaxOrDefault<TSource, TResult>(IEnumerable<TSource> source, Func<TSource, TResult> selector, TResult defaultValue = default(TResult))
 		{
 			var src = source.Safe().ToArray();
-			return src.Any()
+			return src.Length > 0
 				? src.Max(selector)
 				: defaultValue;
 		}

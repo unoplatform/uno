@@ -124,7 +124,9 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 			}
 
 			var pfd = new pollfd { fd = _libDevFd, events = 1 };
+#pragma warning disable CA1806 // Do not ignore method results
 			Libc.poll(&pfd, (IntPtr)1, -1);
+#pragma warning restore CA1806 // Do not ignore method results
 		}
 	}
 
@@ -132,7 +134,9 @@ unsafe internal class FrameBufferInputProvider : IDisposable
 	{
 		if (_libDevFd != 0)
 		{
+#pragma warning disable CA1806 // Do not ignore method results
 			Libc.close(_libDevFd);
+#pragma warning restore CA1806 // Do not ignore method results
 			_libDevFd = 0;
 
 			_cts.Cancel();

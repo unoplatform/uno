@@ -55,7 +55,7 @@ internal static class TypeConversionExtensions
 	{
 		if (imageSource is Windows.UI.Xaml.Media.Imaging.BitmapImage bitmapSource)
 		{
-			new System.Windows.Media.Imaging.BitmapImage(bitmapSource.UriSource);
+			return new System.Windows.Media.Imaging.BitmapImage(bitmapSource.UriSource);
 		}
 
 		// TODO: Support more image sources.
