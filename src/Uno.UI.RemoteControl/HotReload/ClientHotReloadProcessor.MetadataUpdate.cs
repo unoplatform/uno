@@ -42,39 +42,6 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
-	private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
-		=> _hotreloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
-
-	/// <summary>
-	/// Determines if the server's hot reload workspace has been loaded
-	/// </summary>
-	internal Task HotReloadWorkspaceLoaded
-		=> _hotreloadWorkloadSpaceLoaded.Task;
-
-	[MemberNotNull(nameof(_agent))]
-	partial void InitializeMetadataUpdater()
-	{
-		_instance = this;
-
-		_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
-
-		if (_linkerEnabled)
-		{
-			var message = "The application was compiled with the IL linker enabled, hot reload is disabled. " +
-						"See WasmShellILLinkerEnabled for more details.";
-
-			Console.WriteLine($"[ERROR] {message}");
-		}
-
-		_agent = new HotReloadAgent(s =>
-		{
-			if (this.Log().IsEnabled(LogLevel.Trace))
-			{
-				this.Log().Trace(s);
-			}
-		});
-	}
-
 	private static async Task<bool> ShouldReload()
 	{
 		if (Interlocked.CompareExchange(ref _isReloading, 1, 0) == 1)
@@ -349,12 +316,12 @@ partial class ClientHotReloadProcessor
 			switch (instance)
 			{
 #if __IOS__
-			case UserControl userControl:
-				if (newInstance is UIKit.UIView newUIViewContent)
-				{
-					SwapViews(userControl, newUIViewContent);
-				}
-				break;
+				case UserControl userControl:
+					if (newInstance is UIKit.UIView newUIViewContent)
+					{
+						SwapViews(userControl, newUIViewContent);
+					}
+					break;
 #endif
 				case ContentControl content:
 					if (newInstance is ContentControl newContent)

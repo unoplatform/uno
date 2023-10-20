@@ -73,8 +73,13 @@ namespace Uno.UI.RemoteControl.HotReload
 				_log.Trace($"Swapping view {newView.GetType()}");
 			}
 
-			var parentAsContentControl = VisualTreeHelper.GetParent(oldView) as ContentControl; // New way?
+#if !WINUI
+			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
+			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
+#else
+			var parentAsContentControl = VisualTreeHelper.GetParent(oldView) as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
+#endif
 
 			if ((parentAsContentControl?.Content as _View) == oldView)
 			{
