@@ -28,6 +28,7 @@ namespace Windows.UI.Xaml.Media;
 public partial class ImageSource
 {
 	private readonly bool _isOriginalSourceUIImage;
+	private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 	partial void InitFromResource(Uri uri)
 	{
