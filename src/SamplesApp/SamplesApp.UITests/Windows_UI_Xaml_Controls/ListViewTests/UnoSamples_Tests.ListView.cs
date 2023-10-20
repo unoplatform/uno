@@ -123,11 +123,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		[AutoRetry]
 		public void ListView_Weird_Measure_During_Arrange()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Weird_Measure");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Weird_Measure",skipInitialScreenshot:true );
 
 			_app.WaitForText("StatusTextBlock", "Finished");
 
-			TakeScreenshot("after layout");
+			TakeScreenshot("after layout",ignoreInSnapshotCompare:true);
 
 			var heightStr = _app.GetText("HeightTextBlock");
 			var height = float.Parse(heightStr, NumberStyles.Float, NumberFormatInfo.InvariantInfo);

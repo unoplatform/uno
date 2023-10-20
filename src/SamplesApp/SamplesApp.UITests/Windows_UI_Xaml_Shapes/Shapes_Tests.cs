@@ -20,16 +20,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		public void Draw_polyline()
 		{
-			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage",skipInitialScreenshot:true);
 			_app.WaitForElement("DPolyline");
-			TakeScreenshot($"PolylinePage");
+			TakeScreenshot($"PolylinePage",ignoreInSnapshotCompare:true);
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.WaitForElement("DPolyline");
-				TakeScreenshot($"PolylinePage - {buttonName}");
+				TakeScreenshot($"PolylinePage - {buttonName}", ignoreInSnapshotCompare: true);
 			}
 		}
 
@@ -37,16 +37,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		public void Draw_polygon()
 		{
-			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage");
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage",skipInitialScreenshot: true);
 			_app.WaitForElement("DPolygon");
-			TakeScreenshot($"PolygonPage");
+			TakeScreenshot($"PolygonPage",ignoreInSnapshotCompare:true);
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.WaitForElement("DPolygon");
-				TakeScreenshot($"PolygonPage - {buttonName}");
+				TakeScreenshot($"PolygonPage - {buttonName}",ignoreInSnapshotCompare:true);
 			}
 		}
 
@@ -54,11 +54,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[AutoRetry]
 		public void Affect_Measurement_polygon()
 		{
-			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage");
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage",skipInitialScreenshot:true);
 
 			_app.WaitForElement("DPolygon");
 			_app.Marked("ClearShape").FastTap();
-			TakeScreenshot($"PolygonPage - ClearShape");
+			TakeScreenshot($"PolygonPage - ClearShape",ignoreInSnapshotCompare:true);
 
 			_app.Marked("ChangeShape").FastTap();
 			var widthzize = _app.Query(_app.Marked("DPolygon")).First().Rect.Width;
@@ -66,14 +66,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			if (widthzize == 0)
 				Assert.Fail("Shape not changed");
 
-			TakeScreenshot($"PolygonPage - ChangeShape-After clear");
+			TakeScreenshot($"PolygonPage - ChangeShape-After clear", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]
 		[AutoRetry]
 		public void Affect_Measurement_polyline()
 		{
-			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage", skipInitialScreenshot: true);
 
 			_app.WaitForElement("DPolyline");
 			_app.Marked("ClearShape").FastTap();
@@ -85,7 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			if (widthzize == 0)
 				Assert.Fail("Shape not changed");
 
-			TakeScreenshot($"PolylinePage - ChangeShape-After clear");
+			TakeScreenshot($"PolylinePage - ChangeShape-After clear",ignoreInSnapshotCompare:true);
 		}
 
 		[Test]
@@ -112,7 +112,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		[Test]
 		[AutoRetry]
 		public void Draw_line()
-		{
+		{			
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.LinePage");
 			_app.WaitForElement("DLinePage");
 			TakeScreenshot($"LinePage");

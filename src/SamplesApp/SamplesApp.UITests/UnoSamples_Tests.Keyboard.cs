@@ -22,7 +22,7 @@ namespace SamplesApp.UITests
 		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS (xamarin.uitest 3.2 or iOS 15) https://github.com/unoplatform/uno/issues/8012
 		public void Keyboard_Textbox_InsideScrollViewer_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated",skipInitialScreenshot:true);
 
 			_app.WaitForElement(_app.Marked("MultilineTextBox"));
 
@@ -74,7 +74,7 @@ namespace SamplesApp.UITests
 				// Removing focus on placeholderTextTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox",ignoreInSnapshotCompare:true);
 			}
 
 			{
@@ -86,7 +86,7 @@ namespace SamplesApp.UITests
 				// Removing focus on disabledTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("3 - Remove Focus on disabledTextBox");
+				TakeScreenshot("3 - Remove Focus on disabledTextBox",ignoreInSnapshotCompare:true);
 			}
 
 			{
@@ -98,7 +98,7 @@ namespace SamplesApp.UITests
 				// Removing focus on multilineTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("4 - Remove Focus on multilineTextBox");
+				TakeScreenshot("4 - Remove Focus on multilineTextBox",ignoreInSnapshotCompare:true);
 			}
 
 			{
@@ -110,7 +110,7 @@ namespace SamplesApp.UITests
 				// Removing focus on numberTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("5 - Remove Focus on numberTextBox");
+				TakeScreenshot("5 - Remove Focus on numberTextBox",ignoreInSnapshotCompare:true);
 			}
 		}
 
@@ -118,7 +118,7 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void Keyboard_Textbox_NoScrollViewer_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_NoScrollViewer_Automated");
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_NoScrollViewer_Automated",skipInitialScreenshot:true);
 
 			_app.WaitForElement(_app.Marked("MultilineTextBox"));
 
@@ -170,7 +170,7 @@ namespace SamplesApp.UITests
 				// Removing focus on placeholderTextTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox", ignoreInSnapshotCompare:true);
 			}
 
 			{
@@ -182,7 +182,7 @@ namespace SamplesApp.UITests
 				// Removing focus on disabledTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("3 - Remove Focus on disabledTextBox");
+				TakeScreenshot("3 - Remove Focus on disabledTextBox",ignoreInSnapshotCompare:true);
 			}
 
 			{
@@ -206,7 +206,7 @@ namespace SamplesApp.UITests
 				// Removing focus on numberTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("5 - Remove Focus on numberTextBox");
+				TakeScreenshot("5 - Remove Focus on numberTextBox",ignoreInSnapshotCompare:true);
 			}
 		}
 

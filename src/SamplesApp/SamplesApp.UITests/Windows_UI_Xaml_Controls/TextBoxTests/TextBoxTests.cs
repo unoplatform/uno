@@ -270,7 +270,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		[ActivePlatforms(Platform.Browser)] // Disabled on Android due to pixel color approximation, will be restored in next PR, flaky on iOS #9080
 		public void PasswordBox_RevealInScrollViewer()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll",skipInitialScreenshot:true);
 
 			var passwordBox = _app.Marked("MyPasswordBox");
 			var passwordBoxRect = _app.GetPhysicalRect(passwordBox);

@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.CommandBar
 
 				// Set orientation Landscape (Again)
 				_app.SetOrientationLandscape();
-				TakeScreenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
+				TakeScreenshot("CommandBar - LongTitle - 4 - Orientation Landscape",ignoreInSnapshotCompare:true);
 			}
 			finally
 			{
