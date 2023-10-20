@@ -15,7 +15,6 @@ using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using static System.Net.Mime.MediaTypeNames;
 using Win = Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -32,14 +31,14 @@ public partial class MicaController
 
 	internal bool SetTarget(Windows.UI.Xaml.Window xamlWindow)
 	{
-		_rs = RenderScript.Create(Android.App.Application.Context);
+		_rs = RenderScript.Create(Application.Context);
 
-		var context = Android.App.Application.Context;
+		var context = Application.Context;
 		var value = WallpaperManager.GetInstance(context)?.GetBuiltInDrawable(WallpaperManagerFlags.System);
 
 		if (value is BitmapDrawable bitmapDrawable)
 		{
-			bitmapDrawable = Blur(bitmapDrawable);
+			bitmapDrawable = ApplyMicaOnDrawable(bitmapDrawable, DarkThemeTintOpacity);
 			_ = SetBackground(xamlWindow, bitmapDrawable);
 
 			return true;
@@ -48,54 +47,63 @@ public partial class MicaController
 		return false;
 	}
 
-	private BitmapDrawable Blur(BitmapDrawable bitmapDrawable)
+	private BitmapDrawable ApplyMicaOnDrawable(BitmapDrawable bitmapDrawable, float darkenFactor)
 	{
 		var inputBitmap = bitmapDrawable.Bitmap!;
-		var outputBitmap = Bitmap.CreateBitmap(inputBitmap)!;
+		var outputBitmap = inputBitmap.Copy(inputBitmap.GetConfig(), true)!;
 
-		var input = Allocation.CreateFromBitmap(_rs, inputBitmap);
+		Android.Graphics.Canvas canvas = new Android.Graphics.Canvas(outputBitmap);
+
+		var paint = new Paint();
+		paint.SetARGB((int)(darkenFactor * 255), 32, 32, 32);
+
+		canvas.DrawRect(0, 0, inputBitmap.Width, inputBitmap.Height, paint);
+
+		var input = Allocation.CreateFromBitmap(_rs, outputBitmap);
 		var output = Allocation.CreateFromBitmap(_rs, outputBitmap)!;
 
+		//TODO ScriptIntrinsicBlur seems to be deprecated, need to find a replacement / custom implementation
 		var script = ScriptIntrinsicBlur.Create(_rs, Element.U8_4(_rs))!;
-		script.SetRadius(24);
-		script.SetInput(input);
-		script.ForEach(output);
+
+		for (var i = 0; i < 120; i++)
+		{
+			script.SetRadius(25);
+			script.SetInput(input);
+			script.ForEach(output);
+		}
 
 		output.CopyTo(outputBitmap);
 
-		var resources = Android.App.Application.Context.Resources;
+		var resources = Application.Context.Resources;
 
 		return new BitmapDrawable(resources, outputBitmap);
 	}
 
 	private async Task<bool> SetBackground(Windows.UI.Xaml.Window xamlWindow, BitmapDrawable bitmapDrawable)
 	{
-		using (Bitmap bitmap = bitmapDrawable.Bitmap!)
+		using var bitmap = bitmapDrawable.Bitmap!;
+		using var stream = new MemoryStream();
+
+		bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
+		byte[] byteArray = stream.ToArray();
+
+		//TODO: Maybe there could be a better way to do this without needing to save the img to storage
+		StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync("background.png", CreationCollisionOption.ReplaceExisting);
+		using (Stream fileStream = await file.OpenStreamForWriteAsync())
 		{
-			using (MemoryStream stream = new MemoryStream())
-			{
-				bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
-				byte[] byteArray = stream.ToArray();
+			await fileStream.WriteAsync(byteArray, 0, byteArray.Length);
+		}
 
-				//TODO: Maybe there could be a better way to do this without needing to save the img to storage
-				StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync("background.png", CreationCollisionOption.ReplaceExisting);
-				using (Stream fileStream = await file.OpenStreamForWriteAsync())
-				{
-					await fileStream.WriteAsync(byteArray, 0, byteArray.Length);
-				}
+		ImageBrush backgroundImageBrush = new ImageBrush
+		{
+			ImageSource = new BitmapImage(new Uri(file.Path, UriKind.Absolute))
+		};
 
-				ImageBrush backgroundImageBrush = new ImageBrush
-				{
-					ImageSource = new BitmapImage(new Uri(file.Path, UriKind.Absolute))
-				};
+		if (xamlWindow.RootElement is Panel panel)
+		{
+			panel.Background = backgroundImageBrush;
 
-				if (xamlWindow.RootElement is Panel panel)
-				{
-					panel.Background = backgroundImageBrush;
-
-					return true;
-				}
-			}
+			return true;
 		}
 
 		return false;
