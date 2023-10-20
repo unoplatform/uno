@@ -31,6 +31,8 @@ public sealed partial class DisplayInformation
 
 	public double RawPixelsPerViewPixel => _displayInformationExtension.RawPixelsPerViewPixel;
 
+	internal double FractionalScaleAdjustment => _displayInformationExtension.RawPixelsPerViewPixel / Math.Truncate(_displayInformationExtension.RawPixelsPerViewPixel);
+
 	public ResolutionScale ResolutionScale => _displayInformationExtension.ResolutionScale;
 
 	public double? DiagonalSizeInInches => _displayInformationExtension.DiagonalSizeInInches;

@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media;
 using Uno.UI.Runtime.Skia.Gtk.Extensions;
 using static Windows.UI.Xaml.Shapes.BorderLayerRenderer;
 using GtkWindow = Gtk.Window;
+using Uno.UI.Runtime.Skia.Gtk.Helpers.Dpi;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
@@ -24,11 +26,14 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 	private static bool _warnedAboutSelectionColorChanges;
 
 	private readonly string _textBoxViewId = Guid.NewGuid().ToString();
+	private readonly DisplayInformation _displayInformation;
 	private CssProvider? _foregroundCssProvider;
 	private Windows.UI.Color? _lastForegroundColor;
 
 	protected GtkTextBoxView()
 	{
+		_displayInformation = DisplayInformation.GetForCurrentView();
+
 		// Applies themes from Theming/UnoGtk.css
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
@@ -92,26 +97,29 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 
 	public void SetSize(double width, double height)
 	{
-		RootWidget.SetSizeRequest((int)width, (int)height);
-		InputWidget.SetSizeRequest((int)width, (int)height);
+		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+		RootWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
+		InputWidget.SetSizeRequest((int)(width * sizeAdjustment), (int)(height * sizeAdjustment));
 	}
 
 	public void SetPosition(double x, double y)
 	{
 		if (RootWidget.Parent is Fixed layer)
 		{
-			layer.Move(RootWidget, (int)x, (int)y);
+			var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
+			layer.Move(RootWidget, (int)(x * sizeAdjustment), (int)(y * sizeAdjustment));
 		}
 	}
 
 	private void SetFont(TextBox textBox)
 	{
+		var sizeAdjustment = _displayInformation.FractionalScaleAdjustment;
 		var fontDescription = new FontDescription
 		{
 			Weight = textBox.FontWeight.ToPangoWeight(),
 			Style = textBox.FontStyle.ToGtkFontStyle(),
 			Stretch = textBox.FontStretch.ToGtkFontStretch(),
-			AbsoluteSize = textBox.FontSize * Pango.Scale.PangoScale,
+			AbsoluteSize = textBox.FontSize * Pango.Scale.PangoScale * sizeAdjustment,
 		};
 #pragma warning disable CS0612 // Type or member is obsolete
 		InputWidget.OverrideFont(fontDescription);
