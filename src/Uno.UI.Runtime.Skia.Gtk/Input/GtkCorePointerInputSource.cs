@@ -390,11 +390,12 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		ModifierType state,
 		Event? evt)
 	{
-		var scale = DisplayInformation.GetForCurrentView().RawPixelsPerViewPixel;
+		var displayInformation = DisplayInformation.GetForCurrentView();
+		var positionAdjustment = displayInformation.FractionalScaleAdjustment;
 
 		var pointerDevice = PointerDevice.For(devType);
-		var rawPosition = new Windows.Foundation.Point(rootX / scale, rootY / scale);
-		var position = new Windows.Foundation.Point(x / scale, y / scale);
+		var rawPosition = new Windows.Foundation.Point(rootX / positionAdjustment, rootY / positionAdjustment);
+		var position = new Windows.Foundation.Point(x / positionAdjustment, y / positionAdjustment);
 		var modifiers = GtkKeyboardInputSource.GetKeyModifiers(state);
 		var properties = new PointerPointProperties();
 
