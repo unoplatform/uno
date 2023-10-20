@@ -76,13 +76,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			taskCompletionSource.TrySetResult((currentSolution, hotReloadService));
 		}
 
-		public static void InitializeRoslyn()
+		public static void InitializeRoslyn(string? workDir)
 		{
 			RegisterAssemblyLoader();
 
 			MSBuildBasePath = BuildMSBuildPath();
 
-			var version = GetDotnetVersion();
+			var version = GetDotnetVersion(workDir);
 			if (version.Major != typeof(object).Assembly.GetName().Version?.Major)
 			{
 				if (typeof(CompilationWorkspaceProvider).Log().IsEnabled(LogLevel.Error))
@@ -103,9 +103,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			}
 		}
 
-		private static Version GetDotnetVersion()
+		private static Version GetDotnetVersion(string? workDir)
 		{
-			var result = ProcessHelper.RunProcess("dotnet.exe", "--version");
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--version", workDir);
 
 			if (result.exitCode == 0)
 			{
