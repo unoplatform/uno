@@ -26,16 +26,36 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void InitializePartialReload()
 		{
-			_supportsLightweightHotReload = (_msbuildProperties?.TryGetValue("TargetFramework", out var targetFramework) ?? false)
-				&& (_msbuildProperties?.TryGetValue("BuildingInsideVisualStudio", out var buildingInsideVisualStudio) ?? false)
-				&& buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
+			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+
+			_supportsLightweightHotReload =
+				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
 				&& (
+					// As of VS 17.8, Mobile targets don't invoke MetadataUpdateHandlers
+					// and both targets are not providing updated types. We simulate parts of this process
+					// to determine which types have been updated, particularly those with "CreateNewOnMetadataUpdate".
+
 					targetFramework.Contains("-android")
-					|| targetFramework.Contains("-ios"));
+					|| targetFramework.Contains("-ios")
+					|| (unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
 
 			_mappedTypes = _supportsLightweightHotReload
 				? BuildMappedTypes()
 				: new();
+		}
+
+		private string GetMSBuildProperty(string property, string defaultValue = "")
+		{
+			var output = defaultValue;
+
+			if (_msbuildProperties is not null && !_msbuildProperties.TryGetValue(property, out output))
+			{
+				return defaultValue;
+			}
+
+			return output;
 		}
 
 		private async Task PartialReload(FileReload fileReload)
