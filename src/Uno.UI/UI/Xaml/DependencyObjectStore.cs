@@ -1675,11 +1675,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 					if (instance != null)
 					{
-						if (!hashSet.Contains(instance!))
-						{
-							hashSet.Add(instance);
-						}
-						else
+						if (!hashSet.Add(instance))
 						{
 							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}

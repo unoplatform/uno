@@ -702,21 +702,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private void FlipSelectionInMultipleSelection(object item, SelectorItem container)
 		{
-			if (!SelectedItems.Contains(item))
+			bool wasSelected = SelectedItems.Remove(item);
+			if (!wasSelected)
 			{
 				SelectedItems.Add(item);
-				if (container is { })
-				{
-					container.IsSelected = true;
-				}
 			}
-			else
+
+			if (container is { })
 			{
-				SelectedItems.Remove(item);
-				if (container is { })
-				{
-					container.IsSelected = false;
-				}
+				container.IsSelected = !wasSelected;
 			}
 		}
 

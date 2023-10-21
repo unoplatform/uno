@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Uno.Extensions;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.DataTransfer.DragDrop.Core;
@@ -106,6 +107,7 @@ namespace Windows.UI.Xaml
 		private readonly TranslateTransform _transform;
 
 		private Point _location;
+		internal static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
 		public DragView(DragUI? ui)
 		{
@@ -128,9 +130,8 @@ namespace Windows.UI.Xaml
 		public void Update(DataPackageOperation acceptedOperation, CoreDragUIOverride viewOverride)
 		{
 			// UWP does not allow new lines (trim to the first line, even if blank) and trims the text.
-			var caption = viewOverride
-				.Caption
-				?.Split(new[] { '\r', '\n' }, StringSplitOptions.None)
+			var caption = viewOverride.Caption
+				?.Split(_newLineChars, StringSplitOptions.None)
 				.FirstOrDefault()
 				?.Trim();
 
