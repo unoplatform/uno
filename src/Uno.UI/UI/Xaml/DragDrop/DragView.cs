@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml
 		private readonly TranslateTransform _transform;
 
 		private Point _location;
-		internal static readonly char[] _newLineChars = new[] { '\r', '\n' };
+		private static readonly char[] _newLineChars = new[] { '\r', '\n' };
 
 		public DragView(DragUI? ui)
 		{
