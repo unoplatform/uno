@@ -12,7 +12,7 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
-		private static readonly char[] _asteriskArray = new char[] { '*' };
+		private static readonly string[] _asteriskArray = new string[] { "*" };
 		private static readonly char[] _dotArray = new char[] { '.' };
 
 		private const int ModalResponseOk = 1;
