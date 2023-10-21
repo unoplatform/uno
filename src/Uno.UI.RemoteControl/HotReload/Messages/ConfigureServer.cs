@@ -9,12 +9,13 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public const string Name = nameof(ConfigureServer);
 		private Dictionary<string, string>? _msbuildPropertiesCache;
 
-		public ConfigureServer(string projectPath, string[] xamlPaths, string[] metadataUpdateCapabilities, string[] msbuildPropertiesRaw)
+		public ConfigureServer(string projectPath, string[] xamlPaths, string[] metadataUpdateCapabilities, bool enableMetadataUpdates, string[] msbuildPropertiesRaw)
 		{
 			ProjectPath = projectPath;
 			XamlPaths = xamlPaths;
 			MetadataUpdateCapabilities = metadataUpdateCapabilities;
 			MSBuildPropertiesRaw = msbuildPropertiesRaw;
+			EnableMetadataUpdates = enableMetadataUpdates;
 		}
 
 		public string ProjectPath { get; set; }
@@ -25,28 +26,27 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		public string[] MetadataUpdateCapabilities { get; set; }
 
+		public bool EnableMetadataUpdates { get; set; }
+
 		public string Scope => HotReloadConstants.HotReload;
 
 		string IMessage.Name => Name;
 
-		public Dictionary<string, string> MSBuildProperties
+		public Dictionary<string, string> MSBuildProperties 
+			=> _msbuildPropertiesCache ??= BuildMSBuildProperties(MSBuildPropertiesRaw);
+
+		public static Dictionary<string, string> BuildMSBuildProperties(string[] rawMSBuildProperties)
 		{
-			get
+			var msbuildPropertiesCache = new Dictionary<string, string>();
+
+			foreach (var property in rawMSBuildProperties)
 			{
-				if (_msbuildPropertiesCache is null)
-				{
-					_msbuildPropertiesCache = new Dictionary<string, string>();
-
-					foreach (var property in MSBuildPropertiesRaw)
-					{
-						var firstEqual = property.IndexOf('=');
-						var split = new[] { property.Substring(0, firstEqual), property.Substring(firstEqual + 1) };
-						_msbuildPropertiesCache.Add(split[0], Encoding.UTF8.GetString(Convert.FromBase64String(split[1])));
-					}
-				}
-
-				return _msbuildPropertiesCache;
+				var firstEqual = property.IndexOf('=');
+				var split = new[] { property.Substring(0, firstEqual), property.Substring(firstEqual + 1) };
+				msbuildPropertiesCache.Add(split[0], Encoding.UTF8.GetString(Convert.FromBase64String(split[1])));
 			}
+
+			return msbuildPropertiesCache;
 		}
 	}
 }

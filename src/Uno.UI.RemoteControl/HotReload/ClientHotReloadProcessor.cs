@@ -89,11 +89,11 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				}
 			}
 
-			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), config.MSBuildProperties);
+			_msbuildProperties = Messages.ConfigureServer.BuildMSBuildProperties(config.MSBuildProperties);
+
+			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), MetadataUpdatesEnabled, config.MSBuildProperties);
 
 			await _rcClient.SendMessage(message);
-
-			_msbuildProperties = message.MSBuildProperties;
 
 			InitializePartialReload();
 		}

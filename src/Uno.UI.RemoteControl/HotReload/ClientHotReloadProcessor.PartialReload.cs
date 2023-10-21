@@ -33,17 +33,22 @@ namespace Uno.UI.RemoteControl.HotReload
 			_supportsLightweightHotReload =
 				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
 				&& (
-					// As of VS 17.8, Mobile targets don't invoke MetadataUpdateHandlers
+					// As of VS 17.8, when the debugger is attached, mobile targets don't invoke MetadataUpdateHandlers
 					// and both targets are not providing updated types. We simulate parts of this process
 					// to determine which types have been updated, particularly those with "CreateNewOnMetadataUpdate".
+					(Debugger.IsAttached
+						&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))
 
-					targetFramework.Contains("-android")
-					|| targetFramework.Contains("-ios")
+					// WebAssembly does not support sending updated types, and does not support debugger based hot reload.
 					|| (unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"Partial Hot Reload: Enabled:{_supportsLightweightHotReload} unoRuntimeIdentifier:{unoRuntimeIdentifier} targetFramework:{targetFramework} buildingInsideVisualStudio:{targetFramework}");
+				this.Log().Trace($"Partial Hot Reload Enabled:{_supportsLightweightHotReload} " +
+					$"unoRuntimeIdentifier:{unoRuntimeIdentifier} " +
+					$"targetFramework:{targetFramework} " +
+					$"buildingInsideVisualStudio:{targetFramework}" +
+					$"debuggerAttached: {Debugger.IsAttached}");
 			}
 
 			_mappedTypes = _supportsLightweightHotReload
