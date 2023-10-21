@@ -32,7 +32,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		string IMessage.Name => Name;
 
-		public Dictionary<string, string> MSBuildProperties 
+		public Dictionary<string, string> MSBuildProperties
 			=> _msbuildPropertiesCache ??= BuildMSBuildProperties(MSBuildPropertiesRaw);
 
 		public static Dictionary<string, string> BuildMSBuildProperties(string[] rawMSBuildProperties)
