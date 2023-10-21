@@ -13,6 +13,8 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
+		private static readonly char[] _animationArray = new[] { "Animation" };
+
 		private Handler _handler;
 		private NativeDispatcherImplementor _implementor;
 		private Choreographer _choreographer;
@@ -89,8 +91,8 @@ namespace Uno.UI.Dispatching
 						using var runActivity = _trace.WriteEventActivity(
 							TraceProvider.NativeDispatcher_InvokeStart,
 							TraceProvider.NativeDispatcher_InvokeStop,
-							relatedActivity: _trace.WriteEventActivity(TraceProvider.NativeDispatcher_Schedule, EventOpcode.Send, new[] { "Animation" }),
-							payload: new[] { "Animation" }
+							relatedActivity: _trace.WriteEventActivity(TraceProvider.NativeDispatcher_Schedule, EventOpcode.Send, _animationArray),
+							payload: _animationArray
 						);
 
 						if (ImmutableInterlocked.TryDequeue(ref _animationQueue, out UIAsyncOperation action))

@@ -10,6 +10,8 @@ namespace Windows.Globalization
 {
 	public partial class Calendar
 	{
+		private static readonly char[] _zeroArray = new[] { '0' };
+
 		#region Static id parsing helpers
 		private static _Calendar GetCalendar(string calendar)
 		{
@@ -448,7 +450,7 @@ namespace Windows.Globalization
 		public string HourAsString() =>
 			_time
 				.ToString(_clock == ClockIdentifiers.TwentyFourHour ? "HH" : "hh", _resolvedCulture)
-				.TrimStart(new[] { '0' });
+				.TrimStart(_zeroArray);
 
 		public string HourAsPaddedString(int minDigits) =>
 			_clock == ClockIdentifiers.TwentyFourHour

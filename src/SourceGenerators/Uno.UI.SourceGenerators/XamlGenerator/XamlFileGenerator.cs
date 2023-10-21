@@ -32,6 +32,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private const string GlobalPrefix = "global::";
 		private const string QualifiedNamespaceMarker = ".";
 
+		private static readonly char[] _dotArray = new[] { '.' };
+		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
+
 		private static readonly Dictionary<string, string[]> _knownNamespaces = new Dictionary<string, string[]>
 		{
 			{
@@ -5494,7 +5497,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							// if there is no ":" this means that the type is using the default
 							// namespace, so try to resolve the best way we can.
 
-							var parts = match.Value.Trim(new[] { '(', ')' }).Split('.');
+							var parts = match.Value.Trim(_parenthesesArray).Split(_dotArray);
 
 							if (parts.Length == 2)
 							{
