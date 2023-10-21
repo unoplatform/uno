@@ -217,7 +217,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 				}
 				else
 				{
-					Console.WriteLine($"Got {diagnostics.Length} errors");
+					_reporter.Output($"Got {diagnostics.Length} errors");
 				}
 
 				// HotReloadEventSource.Log.HotReloadEnd(HotReloadEventSource.StartType.CompilationHandler);

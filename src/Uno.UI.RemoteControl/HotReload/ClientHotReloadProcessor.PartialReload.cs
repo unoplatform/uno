@@ -41,6 +41,11 @@ namespace Uno.UI.RemoteControl.HotReload
 					|| targetFramework.Contains("-ios")
 					|| (unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
 
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Partial Hot Reload: Enabled:{_supportsLightweightHotReload} unoRuntimeIdentifier:{unoRuntimeIdentifier} targetFramework:{targetFramework} buildingInsideVisualStudio:{targetFramework}");
+			}
+
 			_mappedTypes = _supportsLightweightHotReload
 				? BuildMappedTypes()
 				: new();
@@ -117,7 +122,13 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				// Arbitrary delay to wait for VS to push updates to the app
 				// so we can discover which types have changed
+				// The scanning operation can take 500ms under wasm, keep the app
+				// running for longer to ensure we don't miss any updates
+#if __WASM__
+				await Task.Delay(1000);
+#else
 				await Task.Delay(250);
+#endif
 
 				var mappedSw = Stopwatch.StartNew();
 
