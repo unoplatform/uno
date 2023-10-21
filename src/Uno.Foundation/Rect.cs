@@ -14,6 +14,8 @@ public partial struct Rect
 	private const string _negativeErrorMessage = "Non-negative number required.";
 	private const float Epsilon = 0.00001f;
 
+	private static readonly char[] _commaSpaceArray = new[] { ',', ' ' };
+
 	public static Rect Empty { get; } = new Rect
 	{
 		X = double.PositiveInfinity,
@@ -128,7 +130,7 @@ public partial struct Rect
 		}
 
 		var parts = text
-			.Split(new[] { ',', ' ' }, StringSplitOptions.RemoveEmptyEntries)
+			.Split(_commaSpaceArray, StringSplitOptions.RemoveEmptyEntries)
 			.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
 
 		if (parts.Length != 4)
