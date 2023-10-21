@@ -9,6 +9,8 @@ namespace Windows.ApplicationModel.Resources.Core
 {
 	public partial class ResourceCandidate
 	{
+		private static readonly char[] _dotArray = new[] { '.' };
+
 		internal ResourceCandidate(IReadOnlyList<ResourceQualifier> qualifiers, string valueAsString, string logicalPath)
 		{
 			Qualifiers = qualifiers;
@@ -51,7 +53,7 @@ namespace Windows.ApplicationModel.Resources.Core
 
 			var fileNameWithoutQualifiers = Path
 				.GetFileName(path)
-				.Split(new[] { '.' })
+				.Split(_dotArray)
 				.Where(x => ResourceQualifier.Parse(x) == null);
 
 			return Path.Combine(Path.Combine(directoryNameWithoutQualifiers), string.Join(".", fileNameWithoutQualifiers));
