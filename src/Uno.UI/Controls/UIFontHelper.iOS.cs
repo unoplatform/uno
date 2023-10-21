@@ -124,13 +124,11 @@ namespace Windows.UI
 
 			UIFont? font;
 			//In Windows we define FontFamily with the path to the font file followed by the font family name, separated by a #
-			if (fontPath.Contains("#"))
+			var indexOfHash = fontPath.IndexOf('#');
+			if (indexOfHash > 0 && indexOfHash < fontPath.Length - 1)
 			{
-				var pathParts = fontPath.Split(new[] { '#' });
-				var file = pathParts[0];
-				var familyName = pathParts[1];
-
-				font = GetFontFromFamilyName(size, familyName) ?? GetFontFromFile(size, file);
+				font = GetFontFromFamilyName(size, fontPath.Substring(indexOfHash + 1))
+					?? GetFontFromFile(size, fontPath.Substring(0, indexOfHash));
 			}
 			else
 			{

@@ -34,7 +34,7 @@ public partial class ImageSource
 	{
 		var path = uri
 			.PathAndQuery
-			.TrimStart(new[] { '/' })
+			.TrimStart('/')
 
 			// UWP supports backward slash in path for directory separators.
 			.Replace("\\", "/");

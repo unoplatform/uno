@@ -458,6 +458,9 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 	}
 
 #if __IOS__
+
+	private static readonly string[] _emptyStringArray = new[] { "" };
+
 	private void ParseUriAndLauchMailto(Uri mailtoUri)
 	{
 		_ = Uno.UI.Dispatching.NativeDispatcher.Main.EnqueueCancellableOperation(
@@ -467,19 +470,19 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 				{
 					var subject = "";
 					var body = "";
-					var cc = new[] { "" };
-					var bcc = new[] { "" };
+					var cc = _emptyStringArray;
+					var bcc = _emptyStringArray;
 
-					var recipients = mailtoUri.AbsoluteUri.Split(new[] { ':' })[1].Split(new[] { '?' })[0].Split(new[] { ',' });
-					var parameters = mailtoUri.Query.Split(new[] { '?' });
+					var recipients = mailtoUri.AbsoluteUri.Split(':')[1].Split('?')[0].Split(',');
+					var parameters = mailtoUri.Query.Split('?');
 
 					parameters = parameters.Length > 1 ?
-									parameters[1].Split(new[] { '&' }) :
+									parameters[1].Split('&') :
 									Array.Empty<string>();
 
 					foreach (string param in parameters)
 					{
-						var keyValue = param.Split(new[] { '=' });
+						var keyValue = param.Split('=');
 						var key = keyValue[0];
 						var value = keyValue[1];
 

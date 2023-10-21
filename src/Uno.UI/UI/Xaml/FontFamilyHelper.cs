@@ -10,7 +10,7 @@ internal static partial class FontFamilyHelper
 #if __IOS__ || __MACOS__
 	internal static string RemoveUri(string familyName)
 	{
-		var slashIndex = familyName.LastIndexOf("/", StringComparison.Ordinal);
+		var slashIndex = familyName.LastIndexOf('/');
 
 		if (slashIndex != -1)
 		{

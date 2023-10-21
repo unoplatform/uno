@@ -20,7 +20,7 @@ namespace Windows.Storage.Pickers
 	public partial class FileOpenPicker
 	{
 		private static bool? _fileSystemAccessApiSupported;
-		private static readonly char[] _asteriskArray = new[] { "*" };
+		private static readonly string[] _asteriskArray = new[] { "*" };
 
 		internal static bool IsNativePickerSupported()
 		{
