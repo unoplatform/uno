@@ -13,7 +13,7 @@ namespace Uno.UI.Dispatching
 {
 	internal sealed partial class NativeDispatcher
 	{
-		private static readonly char[] _animationArray = new[] { "Animation" };
+		private static readonly string[] _animationArray = new[] { "Animation" };
 
 		private Handler _handler;
 		private NativeDispatcherImplementor _implementor;
