@@ -117,8 +117,8 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="property">A dependency property</param>
 		/// <returns>The details of the property if it exists, otherwise null.</returns>
-		public DependencyPropertyDetails FindPropertyDetails(DependencyProperty property)
-			=> TryGetPropertyDetails(property, forceCreate: false)!;
+		public DependencyPropertyDetails? FindPropertyDetails(DependencyProperty property)
+			=> TryGetPropertyDetails(property, forceCreate: false);
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
