@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
@@ -75,6 +76,24 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 				this.Log().Trace(s);
 			}
 		});
+	}
+
+	private bool MetadataUpdatesEnabled
+	{
+		get
+		{
+			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+
+			return
+				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
+				&& (
+					// As of VS 17.8, when the debugger is not attached, mobile targets can use
+					// DevServer's hotreload workspace, as visual studio does not enable it on its own.
+					(!Debugger.IsAttached
+						&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios"))));
+		}
 	}
 
 	private string[] GetMetadataUpdateCapabilities()
