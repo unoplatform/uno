@@ -111,6 +111,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (namedTypeSymbol != null)
 			{
+				if (typeSymbol?.SpecialType == SpecialType.System_Object)
+				{
+					// Everything is an object.
+					return true;
+				}
+
 				do
 				{
 					if (SymbolEqualityComparer.Default.Equals(namedTypeSymbol, typeSymbol))
