@@ -3319,7 +3319,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									// If the property is a concrete type that implements an IList or
 									// an ICollection, we must get the property and call add explicitly
 									// on it.
-									Debugger.Launch();
 									var localCollectionName = $"{closureName}_collection_{_collectionIndex++}";
 
 									var getterMethod = $"Get{member.Member.Name}";
