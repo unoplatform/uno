@@ -3,13 +3,18 @@ using System.Collections.Generic;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.System;
-using Windows.UI.Input;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI;
+
+#if HAS_UNO_WINUI
+using Microsoft.UI.Input;
+#else
+using Windows.UI.Input;
+#endif
 
 namespace Windows.UI.Xaml.Controls;
 
@@ -254,7 +259,7 @@ public partial class TextBox
 		}
 	}
 
-	private partial void OnKeyDownPartial(KeyRoutedEventArgs args)
+	partial void OnKeyDownPartial(KeyRoutedEventArgs args)
 	{
 		if (!IsSkiaTextBox)
 		{
@@ -641,7 +646,7 @@ public partial class TextBox
 				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
 
 				// TODO: confirm localized names match WinUI
-				var resourceLoader = ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
+				var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
 				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxCut"), Command = new TextBoxCommand(CutSelectionToClipboard), Icon = new SymbolIcon(Symbol.Cut) });
 				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxCopy"), Command = new TextBoxCommand(CopySelectionToClipboard), Icon = new SymbolIcon(Symbol.Copy) });
 				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxPaste"), Command = new TextBoxCommand(PasteFromClipboard), Icon = new SymbolIcon(Symbol.Paste) });
@@ -793,7 +798,7 @@ public partial class TextBox
 		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x,y), true);
+		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x, y), true);
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -818,7 +823,7 @@ public partial class TextBox
 		var startLineIndex = lines.IndexOf(startLine);
 		var endLineIndex = lines.IndexOf(endLine);
 
-		if (!shift && (startLineIndex == lines.Count -1 || endLineIndex == lines.Count -1))
+		if (!shift && (startLineIndex == lines.Count - 1 || endLineIndex == lines.Count - 1))
 		{
 			return text.Length; // last line, goes to the end
 		}
@@ -828,7 +833,7 @@ public partial class TextBox
 		var rect = DisplayBlockInlines.GetRectForTextBlockIndex(selectionStart + selectionLength);
 		var x = shift && selectionLength > 0 ? rect.Right : rect.Left;
 		var y = (newLineIndex + 0.5) * rect.Height; // 0.5 is to get the center of the line, rect.Height is line height
-		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x,y), true);
+		var index = DisplayBlockInlines.GetIndexForTextBlock(new Point(x, y), true);
 		if (text.Length > index - 1
 			&& index - 1 >= 0
 			&& index == lines[newLineIndex].start + lines[newLineIndex].length
@@ -931,7 +936,7 @@ public partial class TextBox
 		var text = Text;
 
 		i--;
-		for (;i >= 0; i--)
+		for (; i >= 0; i--)
 		{
 			var c = text[i];
 			if (c == '\r')
@@ -945,11 +950,11 @@ public partial class TextBox
 
 	private int EndOfLine(int i)
 	{
-        var index = Text.IndexOf('\r', i);
+		var index = Text.IndexOf('\r', i);
 		return index == -1 ? Text.Length - 1 : index;
 	}
 
-	private partial void OnTextChangedPartial()
+	partial void OnTextChangedPartial()
 	{
 		if (IsSkiaTextBox)
 		{
@@ -964,7 +969,7 @@ public partial class TextBox
 		}
 	}
 
-	private partial void OnFocusStateChangedPartial2(FocusState focusState)
+	partial void OnFocusStateChangedPartial2(FocusState focusState)
 	{
 		if (IsSkiaTextBox)
 		{
@@ -977,7 +982,7 @@ public partial class TextBox
 		}
 	}
 
-	private partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
+	partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText)
 	{
 		if (IsSkiaTextBox)
 		{
@@ -985,7 +990,7 @@ public partial class TextBox
 		}
 	}
 
-	private partial void CutSelectionToClipboardPartial()
+	partial void CutSelectionToClipboardPartial()
 	{
 		if (IsSkiaTextBox)
 		{

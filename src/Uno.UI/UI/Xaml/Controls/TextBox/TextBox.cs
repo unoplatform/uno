@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private partial void OnTextChangedPartial();
+		partial void OnTextChangedPartial();
 
 		private void RaiseTextChanging()
 		{
@@ -924,7 +924,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
 
-		private partial void OnFocusStateChangedPartial2(FocusState focusState);
+		partial void OnFocusStateChangedPartial2(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -1007,10 +1007,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <inheritdoc />
 		protected override void OnKeyDown(KeyRoutedEventArgs args) => OnKeyDownPartial(args);
 
-		private partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
 
 #if !__SKIA__
-		private partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
 #endif
 
 		private void OnKeyDownInternal(KeyRoutedEventArgs args)
@@ -1232,7 +1232,7 @@ namespace Windows.UI.Xaml.Controls
 			});
 		}
 
-		private partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
+		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.
@@ -1258,7 +1258,7 @@ namespace Windows.UI.Xaml.Controls
 			Text = Text.Remove(SelectionStart, SelectionLength);
 		}
 
-		private partial void CutSelectionToClipboardPartial();
+		partial void CutSelectionToClipboardPartial();
 
 		internal override bool CanHaveChildren() => true;
 
