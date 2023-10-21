@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			if (url.StartsWith("/", StringComparison.Ordinal))
+			if (url.StartsWith('/'))
 			{
 				url = MsAppXScheme + "://" + url;
 			}

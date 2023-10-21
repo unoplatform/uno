@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				return Forever;
 			}
-			else if (str.EndsWith("x", StringComparison.InvariantCultureIgnoreCase))
+			else if (str.EndsWith('x') || str.EndsWith('X'))
 			{
 				if (double.TryParse(str.AsSpan().Slice(0, str.Length - 1), NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var count))
 				{

@@ -127,7 +127,7 @@ namespace Uno.UI.DataBinding
 		{
 			var info = GetPathItems().Last();
 			var propertyName = info.PropertyName
-				.Split(new[] { '.' }).Last()
+				.Split(_dotArray).Last()
 				.Replace("(", "").Replace(")", "");
 
 			return (info.DataContext, propertyName);
@@ -282,6 +282,8 @@ namespace Uno.UI.DataBinding
 			get => _dataContextWeakStorage?.Target;
 			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
+
+		private static readonly char[] _dotArray = new[] { '.' };
 
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)
 		{
@@ -443,7 +445,7 @@ namespace Uno.UI.DataBinding
 		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem bindingItem)
 		{
 			if (!bindingItem.PropertyType.Is(typeof(INotifyCollectionChanged)) ||
-				bindingItem.Next?.PropertyName.StartsWith("[", StringComparison.Ordinal) != true)
+				bindingItem.Next?.PropertyName.StartsWith('[') != true)
 			{
 				return null;
 			}

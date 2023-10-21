@@ -338,7 +338,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 					if (nsName.StartsWith("clr-namespace:", StringComparison.Ordinal))
 					{
-						nsName = nsName.Split(new[] { ';' })[0].TrimStart("clr-namespace:");
+						nsName = nsName.Split(';')[0].TrimStart("clr-namespace:");
 					}
 
 					return nsName + "." + nonQualifiedName;
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				() => Type.GetType(originalName),
 
 				// As a partial name using the non-qualified name
-				() => Type.GetType(originalName.Split(new[] { ':' }).ElementAtOrDefault(1) ?? ""),
+				() => Type.GetType(originalName.Split(':').ElementAtOrDefault(1) ?? ""),
 
 				// Look for the type in all loaded assemblies
 				() => AppDomain.CurrentDomain

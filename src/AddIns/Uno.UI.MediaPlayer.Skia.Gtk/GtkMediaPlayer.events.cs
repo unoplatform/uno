@@ -319,7 +319,7 @@ public partial class GtkMediaPlayer
 		{
 			if (!sourceUri.IsAbsoluteUri || sourceUri.Scheme == "")
 			{
-				sourceUri = new Uri(MsAppXScheme + ":///" + sourceUri.OriginalString.TrimStart(new char[] { '/' }));
+				sourceUri = new Uri(MsAppXScheme + ":///" + sourceUri.OriginalString.TrimStart('/'));
 			}
 
 			if (sourceUri.IsLocalResource())
