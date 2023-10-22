@@ -8,8 +8,6 @@ namespace Uno.Storage.Pickers.Internal
 {
 	internal static class UTTypeMapper
 	{
-		private static readonly char[] _dotArray = new char[] { '.' };
-
 		/// <summary>
 		/// Gets UTTypes for given list of extensions.
 		/// </summary>
@@ -108,7 +106,7 @@ namespace Uno.Storage.Pickers.Internal
 				".xlsx" => "org.openxmlformats.spreadsheetml.sheet",
 				".xml" => UTType.XML,
 				".zip" => UTType.ZipArchive,
-				string unknownExtension => unknownExtension.TrimStart(_dotArray),
+				string unknownExtension => unknownExtension.TrimStart('.'),
 				null => UTType.Content
 			};
 	}

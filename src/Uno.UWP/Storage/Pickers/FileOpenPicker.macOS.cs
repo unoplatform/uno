@@ -13,7 +13,6 @@ namespace Windows.Storage.Pickers
 	public partial class FileOpenPicker
 	{
 		private static readonly string[] _asteriskArray = new string[] { "*" };
-		private static readonly char[] _dotArray = new char[] { '.' };
 
 		private const int ModalResponseOk = 1;
 
@@ -65,7 +64,7 @@ namespace Windows.Storage.Pickers
 
 		private string[] GetFileTypes()
 		{
-			return FileTypeFilter.Except(_asteriskArray).Select(ext => ext.TrimStart(_dotArray)).ToArray();
+			return FileTypeFilter.Except(_asteriskArray).Select(ext => ext.TrimStart('.')).ToArray();
 		}
 	}
 }

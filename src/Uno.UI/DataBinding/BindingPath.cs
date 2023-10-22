@@ -127,7 +127,7 @@ namespace Uno.UI.DataBinding
 		{
 			var info = GetPathItems().Last();
 			var propertyName = info.PropertyName
-				.Split(_dotArray).Last()
+				.Split('.').Last()
 				.Replace("(", "").Replace(")", "");
 
 			return (info.DataContext, propertyName);
@@ -282,8 +282,6 @@ namespace Uno.UI.DataBinding
 			get => _dataContextWeakStorage?.Target;
 			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
-
-		private static readonly char[] _dotArray = new[] { '.' };
 
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)
 		{
