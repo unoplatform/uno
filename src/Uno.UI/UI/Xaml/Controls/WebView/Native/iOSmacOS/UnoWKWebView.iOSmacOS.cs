@@ -819,7 +819,7 @@ public partial class UnoWKWebView : WKWebView, INativeWebView, IWKScriptMessageH
 		if (directFileParentPath.StartsWith(appRootPath, StringComparison.Ordinal))
 		{
 			var relativePath = directFileParentPath.Substring(appRootPath.Length, directFileParentPath.Length - appRootPath.Length);
-			var topFolder = relativePath.Split(separator: new char[] { '/' }, options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+			var topFolder = relativePath.Split(separator: '/', options: StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
 
 			if (topFolder != null)
 			{

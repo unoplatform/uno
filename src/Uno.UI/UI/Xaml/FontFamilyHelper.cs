@@ -23,7 +23,7 @@ internal static partial class FontFamilyHelper
 #if __ANDROID__
 	internal static string RemoveHashFamilyName(string familyName)
 	{
-		var hashIndex = familyName.IndexOf("#", StringComparison.Ordinal);
+		var hashIndex = familyName.IndexOf('#');
 
 		if (hashIndex != -1)
 		{
