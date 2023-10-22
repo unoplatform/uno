@@ -313,7 +313,7 @@ namespace Windows.UI
 		{
 			//based on Fonts available @ http://iosfonts.com/
 			//for Windows parity feature, we will not support FontFamily="HelveticaNeue-Bold" (will ignore Bold and must be set by FontWeight property instead)
-			var rootFontFamilyName = fontFamilyName.Split(new[] { '-' }).FirstOrDefault();
+			var rootFontFamilyName = fontFamilyName.Split('-').FirstOrDefault();
 
 			if (!rootFontFamilyName.IsNullOrEmpty())
 			{
