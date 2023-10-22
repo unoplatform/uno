@@ -31,17 +31,17 @@ namespace Windows.ApplicationModel.Resources.Core
 			if (str.Contains("-"))
 			{
 				var qualifierParts = str.Split(_dashArray, 2);
-				var name = qualifierParts[0];
+				var name = qualifierParts[0].ToLowerInvariant();
 				var value = qualifierParts[1];
 
-
-				if (name.Equals("scale", StringComparison.OrdinalIgnoreCase) ||
-					name.Equals("language", StringComparison.OrdinalIgnoreCase) ||
-					name.Equals("lang", StringComparison.OrdinalIgnoreCase) ||
-					name.Equals("theme", StringComparison.OrdinalIgnoreCase) ||
-					name.Equals("custom", StringComparison.OrdinalIgnoreCase))
+				if (name == "lang")
 				{
-					return new ResourceQualifier(name.ToLowerInvariant(), value);
+					name = "language";
+				}
+
+				if (name == "scale" || name == "language" || name == "theme" || name == "custom")
+				{
+					return new ResourceQualifier(name, value);
 				}
 			}
 
