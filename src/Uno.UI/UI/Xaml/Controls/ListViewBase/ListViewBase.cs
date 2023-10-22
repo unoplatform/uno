@@ -728,9 +728,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UnselectInMultipleSelection(object item, SelectorItem container)
 		{
-			if (SelectedItems.Contains(item))
+			if (SelectedItems.Remove(item))
 			{
-				SelectedItems.Remove(item);
 				if (container is { } selectorItem)
 				{
 					selectorItem.IsSelected = false;
