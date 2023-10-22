@@ -94,8 +94,6 @@ namespace Uno.UI.DataBinding
 		/// </summary>
 		public static IBindableMetadataProvider? BindableMetadataProvider { get; set; }
 
-		private static readonly char[] _dotArray = new[] { '.' };
-
 		public static bool IsEvent(Type type, string property)
 		{
 			var key = CachedTuple.Create(type, property);
@@ -507,7 +505,7 @@ namespace Uno.UI.DataBinding
 			{
 				var parts = property
 					.Replace(":", ".") // ':' is sometimes used to separate namespace from type
-					.Split(_dotArray)
+					.Split('.')
 					.Reverse()
 					.Take(2) // type name + property name
 					.Reverse()

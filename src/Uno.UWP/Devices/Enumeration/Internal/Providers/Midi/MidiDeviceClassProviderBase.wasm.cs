@@ -15,9 +15,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
 	internal abstract partial class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
-		private static readonly char[] _hashArray = new char[] { '#' };
-		private static readonly char[] _ampersandArray = new char[] { '&' };
-
 		private readonly bool _isInput;
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
@@ -108,10 +105,10 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		{
 			var result = NativeMethods.FindDevices(_isInput);
 
-			var devices = result.Split(_ampersandArray, StringSplitOptions.RemoveEmptyEntries);
+			var devices = result.Split('&', StringSplitOptions.RemoveEmptyEntries);
 			foreach (var device in devices)
 			{
-				var deviceMetadata = device.Split(_hashArray, StringSplitOptions.RemoveEmptyEntries);
+				var deviceMetadata = device.Split('#', StringSplitOptions.RemoveEmptyEntries);
 				var id = Uri.UnescapeDataString(deviceMetadata[0]);
 				var name = Uri.UnescapeDataString(deviceMetadata[1]);
 				yield return CreateDeviceInformation(id, name);

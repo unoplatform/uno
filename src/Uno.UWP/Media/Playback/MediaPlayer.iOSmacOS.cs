@@ -108,8 +108,6 @@ namespace Windows.Media.Playback
 				=> _target.GetTarget()?.OnMediaEnded(sender, args);
 		}
 
-		private static readonly char[] _slashArray = new char[] { '/' };
-
 		private Observer _observer;
 
 		private AVQueuePlayer _player;
@@ -276,12 +274,12 @@ namespace Windows.Media.Playback
 		{
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
-				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(_slashArray));
+				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart('/'));
 			}
 
 			if (uri.IsLocalResource())
 			{
-				var filePath = uri.PathAndQuery.TrimStart(_slashArray)
+				var filePath = uri.PathAndQuery.TrimStart('/')
 				// UWP supports backward slash in path for directory separators
 				.Replace("\\", "/");
 				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);
