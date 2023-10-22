@@ -258,7 +258,13 @@ namespace Windows.UI.Xaml
 			}
 
 			// Avoid using groups.FirstOrDefault as it incurs unnecessary Func<VisualStateGroup, bool> allocations
-			foreach (var group in GetVisualStateGroups(templateRoot))
+			var groups = GetVisualStateGroups(templateRoot);
+			if (groups is null)
+			{
+				return null;
+			}
+
+			foreach (var group in groups)
 			{
 				if (group.Name == groupName)
 				{
