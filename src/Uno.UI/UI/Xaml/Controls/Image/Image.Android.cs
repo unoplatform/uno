@@ -319,7 +319,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_openedSource is SvgImageSource svgImageSource && imageData.Kind == ImageDataKind.ByteArray)
 				{
-					SetSvgSource(svgImageSource, imageData.ByteArray);
+					SetSvgSource(svgImageSource);
 					InvalidateMeasure();
 					InvalidateArrange();
 				}
@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml.Controls
 			_nativeImageView.SetImageBitmap(bitmap);
 		}
 
-		private void SetSvgSource(SvgImageSource svgImageSource, byte[] byteArray)
+		private void SetSvgSource(SvgImageSource svgImageSource)
 		{
 			_childViewDisposable.Disposable = null;
 

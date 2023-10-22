@@ -98,7 +98,7 @@ public partial class SvgProvider : ISvgProvider
 #if !__NETSTD_REFERENCE__
 	async
 #endif
-	Task<bool> TryLoadSvgDataAsync(byte[] svgBytes)
+	Task<bool> TryLoadSvgDataAsync(ArraySegment<byte> svgBytes)
 	{
 #if __NETSTD_REFERENCE__
 		return Task.FromResult(false);
@@ -150,13 +150,13 @@ public partial class SvgProvider : ISvgProvider
 	}
 
 #if !__NETSTD_REFERENCE__
-	private Task<SKSvg?> LoadSvgAsync(byte[] svgBytes) =>
+	private Task<SKSvg?> LoadSvgAsync(ArraySegment<byte> svgBytes) =>
 		Task.Run(() =>
 		{
 			var skSvg = new SKSvg();
 			try
 			{
-				using var memoryStream = new MemoryStream(svgBytes);
+				using var memoryStream = new MemoryStream(svgBytes.Array!, svgBytes.Offset, svgBytes.Count);
 				skSvg.Load(memoryStream);
 			}
 			catch (Exception ex)

@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_openedSource is SvgImageSource svgImageSource && imageData.Kind == ImageDataKind.ByteArray)
 				{
-					SetSvgSource(svgImageSource, imageData.ByteArray);
+					SetSvgSource(svgImageSource);
 				}
 				else if (_openedSource is { } source && imageData.Kind == ImageDataKind.NativeImage)
 				{
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void SetSvgSource(SvgImageSource svgImageSource, byte[] byteArray)
+		private void SetSvgSource(SvgImageSource svgImageSource)
 		{
 			_childViewDisposable.Disposable = null;
 

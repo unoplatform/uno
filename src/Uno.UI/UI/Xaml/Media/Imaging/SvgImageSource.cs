@@ -144,10 +144,18 @@ public partial class SvgImageSource : ImageSource
 			stream.Position = 0;
 		}
 
-		var memoryStream = new MemoryStream();
-		await stream.CopyToAsync(memoryStream, 81920, ct);
-		var data = memoryStream.ToArray();
-		return ImageData.FromBytes(data);
+		if (stream is not MemoryStream memoryStream)
+		{
+			memoryStream = new MemoryStream();
+			await stream.CopyToAsync(memoryStream, 81920, ct);
+		}
+
+		if (!memoryStream.TryGetBuffer(out var buffer))
+		{
+			buffer = new ArraySegment<byte>(memoryStream.ToArray());
+		}
+
+		return ImageData.FromBytes(buffer);
 	}
 #endif
 
