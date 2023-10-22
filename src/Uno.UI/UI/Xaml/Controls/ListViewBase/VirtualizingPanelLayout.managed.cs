@@ -317,8 +317,8 @@ namespace Windows.UI.Xaml.Controls
 		private double GetScrollConsumptionIncrement(GeneratorDirection fillDirection)
 		{
 			var incrementView = fillDirection == Forward ?
-				GetFirstMaterializedLine()?.FirstView :
-				GetLastMaterializedLine()?.LastView;
+				GetFirstMaterializedLine()?.View :
+				GetLastMaterializedLine()?.View;
 
 			if (incrementView == null)
 			{
@@ -397,15 +397,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			foreach (var line in _materializedLines)
 			{
-				var indexAdjustment = -1;
-				foreach (var item in line.Items)
-				{
-					indexAdjustment++;
-
-					var bounds = GetBoundsForElement(item.container);
-					var arrangedBounds = GetElementArrangeBounds(line.FirstItemFlat + indexAdjustment, bounds, adjustedVisibleWindow, finalSize);
-					item.container.Arrange(arrangedBounds);
-				}
+				var bounds = GetBoundsForElement(line.View);
+				var arrangedBounds = GetElementArrangeBounds(line.FirstItemFlat, bounds, adjustedVisibleWindow, finalSize);
+				line.View.Arrange(arrangedBounds);
 			}
 		}
 
@@ -511,7 +505,7 @@ namespace Windows.UI.Xaml.Controls
 			void UnfillBackward()
 			{
 				var firstMaterializedLine = GetFirstMaterializedLine();
-				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.FirstView) < ExtendedViewportStart + extentAdjustment)
+				while (firstMaterializedLine != null && GetMeasuredEnd(firstMaterializedLine.View) < ExtendedViewportStart + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
 					RecycleLine(firstMaterializedLine, clearContainer: false);
@@ -523,7 +517,7 @@ namespace Windows.UI.Xaml.Controls
 			void UnfillForward()
 			{
 				var lastMaterializedLine = GetLastMaterializedLine();
-				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.FirstView) > ExtendedViewportEnd + extentAdjustment)
+				while (lastMaterializedLine != null && GetMeasuredStart(lastMaterializedLine.View) > ExtendedViewportEnd + extentAdjustment)
 				{
 					// Dematerialize lines that are entirely outside extended viewport
 					RecycleLine(lastMaterializedLine, clearContainer: false);
@@ -539,10 +533,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="clearContainer">cleanup the container when an associated item is removed</param>
 		private void RecycleLine(Line line, bool clearContainer)
 		{
-			for (int i = 0; i < line.Items.Length; i++)
-			{
-				Generator.RecycleViewForItem(line.Items[i].container, line.FirstItemFlat + i, clearContainer);
-			}
+			Generator.RecycleViewForItem(line.View, line.FirstItemFlat, clearContainer);
 		}
 
 		/// <summary>
@@ -550,10 +541,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLine(Line line)
 		{
-			for (int i = 0; i < line.Items.Length; i++)
-			{
-				Generator.ScrapViewForItem(line.Items[i].container, line.FirstItemFlat + i);
-			}
+			Generator.ScrapViewForItem(line.View, line.FirstItemFlat);
 		}
 
 		/// <summary>
@@ -565,7 +553,7 @@ namespace Windows.UI.Xaml.Controls
 			if (GetFirstMaterializedLine() is { } firstLine)
 			{
 				var neededCorrection = 0d;
-				var start = GetMeasuredStart(firstLine.FirstView);
+				var start = GetMeasuredStart(firstLine.View);
 				if (firstLine.FirstItemFlat == 0)
 				{
 					neededCorrection = -start;
@@ -581,12 +569,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					foreach (var line in _materializedLines)
 					{
-						foreach (var item in line.Items)
-						{
-							var bounds = GetBoundsForElement(item.container);
-							IncrementStart(ref bounds, neededCorrection);
-							SetBounds(item.container, bounds);
-						}
+						var bounds = GetBoundsForElement(line.View);
+						IncrementStart(ref bounds, neededCorrection);
+						SetBounds(line.View, bounds);
 					}
 				}
 			}
@@ -749,18 +734,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateAverageLineHeight()
 		{
-			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetMeasuredExtent(l.FirstView)).Average()
+			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetMeasuredExtent(l.View)).Average()
 				: 0;
 		}
 
-		private double CalculatePanelMeasureBreadth() => _materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
+		private double CalculatePanelMeasureBreadth() => _materializedLines.Select(l => GetDesiredBreadth(l.View)).MaxOrDefault()
 #if __WASM__
 			+ GetBreadth(XamlParent?.ScrollViewer.ScrollBarSize ?? default)
 #endif
 				;
 
 		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					_materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
+					_materializedLines.Select(l => GetActualBreadth(l.View)).MaxOrDefault();
 
 		internal void AddItems(int firstItem, int count, int section)
 		{
@@ -829,7 +814,7 @@ namespace Windows.UI.Xaml.Controls
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
 			if (GetAndUpdateReorderingIndex() is { } reorderIndex && reorderIndex == firstVisibleItem)
 			{
-				firstVisibleItem = _materializedLines.SelectMany(line => line.Items).Skip(1).FirstOrDefault().index;
+				firstVisibleItem = _materializedLines.Skip(1).FirstOrDefault()?.Item;
 			}
 
 			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
@@ -870,12 +855,12 @@ namespace Windows.UI.Xaml.Controls
 
 		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
-			return GetFirstMaterializedLine()?.FirstItem ?? Uno.UI.IndexPath.NotFound;
+			return GetFirstMaterializedLine()?.Item ?? Uno.UI.IndexPath.NotFound;
 		}
 
 		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
-			return GetLastMaterializedLine()?.LastItem ?? Uno.UI.IndexPath.NotFound;
+			return GetLastMaterializedLine()?.Item ?? Uno.UI.IndexPath.NotFound;
 		}
 
 		private IEnumerable<float> GetSnapPointsInner(SnapPointsAlignment alignment)
@@ -968,13 +953,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private Line? GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
-		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
+		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.Item;
 
-		private Uno.UI.IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.LastItem;
+		private Uno.UI.IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.Item;
 
 		private double? GetItemsStart()
 		{
-			var firstView = GetFirstMaterializedLine()?.FirstView;
+			var firstView = GetFirstMaterializedLine()?.View;
 			if (firstView != null)
 			{
 				return GetMeasuredStart(firstView);
@@ -985,7 +970,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double? GetItemsEnd()
 		{
-			var lastView = GetLastMaterializedLine()?.LastView;
+			var lastView = GetLastMaterializedLine()?.View;
 			if (lastView != null)
 			{
 				return GetMeasuredEnd(lastView);
@@ -1137,14 +1122,13 @@ namespace Windows.UI.Xaml.Controls
 			if (_pendingReorder?.index is { } index)
 			{
 				var nextItem = _materializedLines
-					.SelectMany(line => line.Items)
-					.SkipWhile(i => i.index != index)
+					.SkipWhile(i => i.Item != index)
 					.Skip(1)
 					.FirstOrDefault();
 
-				updatedIndex = nextItem.container is null
+				updatedIndex = nextItem?.View is null
 					? Uno.UI.IndexPath.FromRowSection(int.MaxValue, int.MaxValue) // There is no "nextItem", i.e. the item has been moved at the end.
-					: nextItem.index;
+					: nextItem.Item;
 			}
 			_pendingReorder = null;
 
@@ -1191,29 +1175,19 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private protected class Line
 		{
-			public (FrameworkElement container, Uno.UI.IndexPath index)[] Items { get; }
-			public Uno.UI.IndexPath FirstItem { get; }
-			public Uno.UI.IndexPath LastItem { get; }
+			public Uno.UI.IndexPath Item { get; }
 			public int FirstItemFlat { get; }
+			public FrameworkElement View { get; }
 
-			public FrameworkElement FirstView => Items[0].container;
-			public FrameworkElement LastView => Items[Items.Length - 1].container;
-
-			public Line(int firstItemFlat, params (FrameworkElement container, Uno.UI.IndexPath index)[] items)
+			public Line(int firstItemFlat, FrameworkElement container, Uno.UI.IndexPath index)
 			{
-				if (items.Length == 0)
-				{
-					throw new InvalidOperationException("Line must contain at least one view");
-				}
-
-				Items = items;
-				FirstItem = items[0].index;
-				LastItem = items.Last().index;
 				FirstItemFlat = firstItemFlat;
+				View = container;
+				Item = index;
 			}
 
 			public bool Contains(Uno.UI.IndexPath index)
-				=> Items.Any(i => i.index == index);
+				=> Item == index;
 		}
 	}
 }

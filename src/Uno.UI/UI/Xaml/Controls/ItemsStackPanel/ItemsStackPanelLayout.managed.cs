@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 			AddView(view, fillDirection, extentOffset, 0);
 
-			return new Line(item, (view, nextVisibleItem));
+			return new Line(item, view, nextVisibleItem);
 		}
 
 		protected override int GetItemsPerLine() => 1;
