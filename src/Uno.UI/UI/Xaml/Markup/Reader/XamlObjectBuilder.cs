@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			typeof(Media.Matrix),
 			typeof(FontWeight),
 		};
-		
+
 		private static readonly char[] _parenthesesArray = new[] { '(', ')' };
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)
