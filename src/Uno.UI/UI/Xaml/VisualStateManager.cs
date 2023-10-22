@@ -257,11 +257,16 @@ namespace Windows.UI.Xaml
 				return null;
 			}
 
-			var group = GetVisualStateGroups(templateRoot)?
-				.Where(g => g.Name == groupName)
-				.FirstOrDefault();
+			// Avoid using groups.FirstOrDefault as it incurs unnecessary Func<VisualStateGroup, bool> allocations
+			foreach (var group in GetVisualStateGroups(templateRoot))
+			{
+				if (group.Name == groupName)
+				{
+					return group.CurrentState;
+				}
+			}
 
-			return group?.CurrentState;
+			return null;
 		}
 
 		private static (VisualStateGroup, VisualState) GetValidGroupAndState(string stateName, IList<VisualStateGroup> groups)
