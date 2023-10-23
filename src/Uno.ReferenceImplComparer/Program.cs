@@ -46,13 +46,41 @@ namespace Uno.ReferenceImplComparer
 			return hasErrors ? 1 : 0;
 		}
 
+		private static bool IsAccessible(MethodDefinition method)
+		{
+			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/MethodAttributes.cs#L22-L24
+			return method.IsPublic || method.IsFamily || method.IsFamilyOrAssembly;
+		}
+
+		private static bool IsAccessible(FieldDefinition field)
+		{
+			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/FieldAttributes.cs#L22-L24
+			return field.IsPublic || field.IsFamily || field.IsFamilyOrAssembly;
+		}
+
+		private static bool IsAccessible(TypeDefinition type)
+		{
+			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/TypeAttributes.cs#L21-L26
+			return type.IsPublic || type.IsNestedPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly;
+		}
+
+		private static bool IsAccessible(PropertyDefinition property)
+		{
+			return property.GetMethod is not null && IsAccessible(property.GetMethod);
+		}
+
+		private static bool IsAccessible(EventDefinition @event)
+		{
+			return @event.AddMethod is not null && IsAccessible(@event.AddMethod);
+		}
+
 		private static bool CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
 		{
 			var hasError = false;
 			var referenceTypes = referenceAssembly.MainModule.GetTypes();
 			var runtimeTypes = runtimeAssembly.MainModule.GetTypes().ToDictionary(t => t.FullName);
 
-			foreach (var referenceType in referenceTypes.Where(t => t.IsPublic))
+			foreach (var referenceType in referenceTypes.Where(IsAccessible))
 			{
 				if (referenceType.FullName == "Windows.UI.Xaml.Documents.TextElement")
 				{
@@ -62,21 +90,16 @@ namespace Uno.ReferenceImplComparer
 
 				if (runtimeTypes.TryGetValue(referenceType.FullName, out var runtimeType))
 				{
-					if (
-						referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName
-
-						// Ignored because ArbitraryShapeBase only contains non-public members
-						// and that the hierarchy will be adjusted for wasm to match skia.
-						&& referenceType.BaseType?.FullName != "Windows.UI.Xaml.Shapes.ArbitraryShapeBase")
+					if (referenceType.BaseType?.FullName != runtimeType.BaseType?.FullName)
 					{
 						Console.Error.WriteLine($"Error: {referenceType.FullName} base type is different {referenceType.BaseType?.FullName} in reference, {runtimeType.BaseType?.FullName} in {identifier}");
 						hasError = true;
 					}
 
-					hasError |= CompareMembers(referenceType.Methods.Where(m => m.IsPublic), runtimeType.Methods.Where(m => m.IsPublic), identifier);
-					hasError |= CompareMembers(referenceType.Properties.Where(m => m.GetMethod?.IsPublic ?? false), runtimeType.Properties.Where(m => m.GetMethod?.IsPublic ?? false), identifier);
-					hasError |= CompareMembers(referenceType.Fields.Where(m => m.IsPublic), runtimeType.Fields.Where(m => m.IsPublic), identifier);
-					hasError |= CompareMembers(referenceType.Events.Where(m => m.AddMethod?.IsPublic ?? false), runtimeType.Events.Where(m => m.AddMethod?.IsPublic ?? false), identifier);
+					hasError |= CompareMembers(referenceType.Methods.Where(IsAccessible), runtimeType.Methods.Where(IsAccessible), identifier);
+					hasError |= CompareMembers(referenceType.Properties.Where(IsAccessible), runtimeType.Properties.Where(IsAccessible), identifier);
+					hasError |= CompareMembers(referenceType.Fields.Where(IsAccessible), runtimeType.Fields.Where(IsAccessible), identifier);
+					hasError |= CompareMembers(referenceType.Events.Where(IsAccessible), runtimeType.Events.Where(IsAccessible), identifier);
 				}
 				else
 				{
