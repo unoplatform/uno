@@ -52,6 +52,6 @@ namespace Windows.UI.Xaml.Controls
 			SetAttribute("tabindex", isFocusable ? "0" : "-1");
 		}
 
-		protected virtual bool IsDelegatingFocusToTemplateChild() => false;
+		private protected virtual bool IsDelegatingFocusToTemplateChild() => false;
 	}
 }

@@ -236,7 +236,7 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		public virtual IEnumerable<UIElement> GetChildren() => _children;
+		internal virtual IEnumerable<UIElement> GetChildren() => _children;
 
 		public IntPtr Handle { get; set; }
 

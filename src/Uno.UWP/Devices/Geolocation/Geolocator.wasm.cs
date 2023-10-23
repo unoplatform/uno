@@ -266,15 +266,15 @@ namespace Uno.Devices.Geolocation
 	public sealed partial class Geolocator
 	{
 		[JSExport]
-		public static int DispatchAccessRequest(string serializedAccessStatus)
+		internal static int DispatchAccessRequest(string serializedAccessStatus)
 			=> global::Windows.Devices.Geolocation.Geolocator.DispatchAccessRequest(serializedAccessStatus);
 
 		[JSExport]
-		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
+		internal static int DispatchGeoposition(string serializedGeoposition, string requestId)
 			=> global::Windows.Devices.Geolocation.Geolocator.DispatchGeoposition(serializedGeoposition, requestId);
 
 		[JSExport]
-		public static int DispatchError(string currentPositionRequestResult, string requestId)
+		internal static int DispatchError(string currentPositionRequestResult, string requestId)
 			=> global::Windows.Devices.Geolocation.Geolocator.DispatchError(currentPositionRequestResult, requestId);
 
 	}

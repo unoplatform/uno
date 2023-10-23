@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public bool HasParent()
+		internal bool HasParent()
 			=> Parent != null;
 
 		public double ActualWidth => GetActualWidth();

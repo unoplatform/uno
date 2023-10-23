@@ -9,7 +9,7 @@ namespace Windows.UI
 		/// <summary>
 		/// Get color value in CSS format "rgba(r, g, b, a)"
 		/// </summary>
-		public string ToCssString() =>
+		internal string ToCssString() =>
 			"rgba("
 			+ R.ToString(CultureInfo.InvariantCulture) + ","
 			+ G.ToString(CultureInfo.InvariantCulture) + ","
