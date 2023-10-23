@@ -135,15 +135,13 @@ namespace Uno.UWPSyncGenerator
 			InitializeRoslyn();
 		}
 
-		public virtual async Task Build(string basePath, string baseName, string sourceAssembly)
+		public virtual async Task Build()
 		{
-			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
-
 			s_referenceCompilation ??= await LoadUWPReferenceProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\references.txt");
 
 			_dependencyPropertySymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
 
-			var topProject = Path.Combine(Path.GetDirectoryName(basePath), "Uno.UI", "Uno.UI");
+			var topProject = @"..\..\..\Uno.UI\Uno.UI";
 
 			_iOSCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-ios");
 			_androidCompilation = await LoadProject($@"{topProject}.netcoremobile.csproj", "net7.0-android");
@@ -161,6 +159,7 @@ namespace Uno.UWPSyncGenerator
 			FlagsAttributeSymbol = s_referenceCompilation.GetTypeByMetadataName("System.FlagsAttribute");
 			UIElementSymbol = s_referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
 
+			// When adding support for a new WinRT contract here, ensure to add it to the list of supported contracts in ApiInformation.shared.cs
 			var origins = from externalRedfs in s_referenceCompilation.ExternalReferences
 						  let fileNameWithoutExtension = Path.GetFileNameWithoutExtension(externalRedfs.Display)
 						  where fileNameWithoutExtension.StartsWith("Windows.Foundation", StringComparison.Ordinal)
@@ -179,53 +178,14 @@ namespace Uno.UWPSyncGenerator
 						  where asm != null
 						  select asm;
 
-			var excludeNamespaces = new List<string>();
-			var includeNamespaces = new List<string>();
-
-#if !HAS_UNO_WINUI
-			// For UWP compilation we need to ignore these namespaces when not explicitly generating
-			// for related projects.
-			if (baseName == "Uno.UI.Dispatching")
+			foreach (var assembly in origins)
 			{
-				includeNamespaces.Add("Windows.UI.Dispatching");
-			}
-			else if (baseName == "Uno.UI.Composition")
-			{
-				includeNamespaces.Add("Windows.UI.Composition");
-			}
-			else
-			{
-				excludeNamespaces.Add("Windows.UI.Dispatching");
-				excludeNamespaces.Add("Windows.UI.Composition");
-			}
-#endif
-
-			var q = from asm in origins
-					where asm.Name == sourceAssembly
-					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
-					where !SkipNamespace(targetType)
-					where targetType.DeclaredAccessibility == Accessibility.Public
-					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml", StringComparison.Ordinal) && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml", StringComparison.Ordinal))
-					|| (
-						(baseName == "Uno.UI" || baseName == "Uno.UI.Dispatching" || baseName == "Uno.UI.Composition")
-						&& _unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
-					)
-					where !excludeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
-					where (includeNamespaces.Count == 0) || includeNamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n, StringComparison.Ordinal))
-					group targetType by targetType.ContainingNamespace into namespaces
-					orderby namespaces.Key.MetadataName
-					select new
-					{
-						Namespace = namespaces.Key,
-						Types = namespaces
-							.Where(t => t.DeclaredAccessibility == Accessibility.Public)
-					};
-
-			foreach (var ns in q)
-			{
-				foreach (var type in ns.Types)
+				foreach (var type in GetNamespaceTypes(assembly.Modules.First().GlobalNamespace))
 				{
-					ProcessType(type, ns.Namespace);
+					if (!SkipNamespace(type) && type.DeclaredAccessibility == Accessibility.Public)
+					{
+						ProcessType(type, type.ContainingNamespace);
+					}
 				}
 			}
 		}
@@ -245,29 +205,10 @@ namespace Uno.UWPSyncGenerator
 
 		private static void InitializeRoslyn()
 		{
-			var installPath = Environment.GetEnvironmentVariable("VSINSTALLDIR");
-
-			if (string.IsNullOrEmpty(installPath))
-			{
-				var pi = new System.Diagnostics.ProcessStartInfo(
-					"cmd.exe",
-					@"/c ""C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe"" -property installationPath -prerelease"
-				)
-				{
-					RedirectStandardOutput = true,
-					UseShellExecute = false,
-					CreateNoWindow = true
-				};
-
-				var process = System.Diagnostics.Process.Start(pi);
-				process.WaitForExit();
-				installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
-			}
-
-			SetupMSBuildLookupPath(installPath);
+			SetupMSBuildLookupPath();
 		}
 
-		private static void SetupMSBuildLookupPath(string installPath)
+		private static void SetupMSBuildLookupPath()
 		{
 			var result = ProcessHelper.RunProcess("dotnet.exe", "--info");
 
