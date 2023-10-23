@@ -74,13 +74,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			typeof(global::Windows.UI.Xaml.Media.Animation.RepositionThemeAnimation),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(string)));
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public RepositionThemeAnimation() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.RepositionThemeAnimation", "RepositionThemeAnimation.RepositionThemeAnimation()");
-		}
-#endif
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.RepositionThemeAnimation.RepositionThemeAnimation()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.RepositionThemeAnimation.RepositionThemeAnimation()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.RepositionThemeAnimation.TargetName.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.RepositionThemeAnimation.TargetName.set

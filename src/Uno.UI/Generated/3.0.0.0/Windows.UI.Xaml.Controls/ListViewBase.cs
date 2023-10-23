@@ -90,6 +90,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 #endif
+		// Skipping already declared property IsMultiSelectCheckBoxEnabled
 #if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Data.ItemIndexRange> SelectedRanges
@@ -218,6 +219,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.ListViewBase),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ListViewReorderMode)));
 #endif
+		// Skipping already declared property IsMultiSelectCheckBoxEnabledProperty
 		// Skipping already declared property SingleSelectionFollowsFocusProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.ListViewBase.ListViewBase()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ListViewBase.ListViewBase()

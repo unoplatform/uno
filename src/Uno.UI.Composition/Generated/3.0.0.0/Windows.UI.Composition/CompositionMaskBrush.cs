@@ -3,11 +3,13 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionMaskBrush : global::Windows.UI.Composition.CompositionBrush
 	{
+		// Skipping already declared property Source
+		// Skipping already declared property Mask
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Mask.get
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Mask.set
 		// Forced skipping of method Windows.UI.Composition.CompositionMaskBrush.Source.get

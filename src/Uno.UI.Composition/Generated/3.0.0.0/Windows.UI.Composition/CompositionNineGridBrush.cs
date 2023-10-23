@@ -3,11 +3,21 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Composition
 {
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || false || __NETSTD_REFERENCE__ || __MACOS__
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented]
 #endif
 	public partial class CompositionNineGridBrush : global::Windows.UI.Composition.CompositionBrush
 	{
+		// Skipping already declared property TopInsetScale
+		// Skipping already declared property TopInset
+		// Skipping already declared property Source
+		// Skipping already declared property RightInsetScale
+		// Skipping already declared property RightInset
+		// Skipping already declared property LeftInsetScale
+		// Skipping already declared property LeftInset
+		// Skipping already declared property IsCenterHollow
+		// Skipping already declared property BottomInsetScale
+		// Skipping already declared property BottomInset
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInset.get
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.BottomInsetScale.get
@@ -28,7 +38,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInset.set
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.get
 		// Forced skipping of method Windows.UI.Composition.CompositionNineGridBrush.TopInsetScale.set
-
 		// Skipping already declared method Windows.UI.Composition.CompositionNineGridBrush.SetInsets(float)
 		// Skipping already declared method Windows.UI.Composition.CompositionNineGridBrush.SetInsets(float, float, float, float)
 		// Skipping already declared method Windows.UI.Composition.CompositionNineGridBrush.SetInsetScales(float)

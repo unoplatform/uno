@@ -152,6 +152,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
+		// Skipping already declared property FlowDirection
 		// Skipping already declared property ActualHeight
 		// Skipping already declared property ActualWidth
 		// Skipping already declared property BaseUri
@@ -192,6 +193,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.FrameworkElement),
 			new Windows.UI.Xaml.FrameworkPropertyMetadata(default(double)));
 #endif
+		// Skipping already declared property FlowDirectionProperty
 #if false || false || false || false || false || __NETSTD_REFERENCE__ || false
 		[global::Uno.NotImplemented("__NETSTD_REFERENCE__")]
 		public static global::Windows.UI.Xaml.DependencyProperty HeightProperty { get; } =

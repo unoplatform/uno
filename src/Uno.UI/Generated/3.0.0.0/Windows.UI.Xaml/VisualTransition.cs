@@ -24,6 +24,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 #endif
+		// Skipping already declared property GeneratedDuration
 		// Skipping already declared property From
 		// Skipping already declared method Windows.UI.Xaml.VisualTransition.VisualTransition()
 		// Forced skipping of method Windows.UI.Xaml.VisualTransition.VisualTransition()

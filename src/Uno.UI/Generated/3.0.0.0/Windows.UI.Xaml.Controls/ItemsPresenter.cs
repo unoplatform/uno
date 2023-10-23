@@ -9,9 +9,21 @@ namespace Windows.UI.Xaml.Controls
 	public partial class ItemsPresenter : global::Windows.UI.Xaml.FrameworkElement, global::Windows.UI.Xaml.Controls.Primitives.IScrollSnapPointsInfo
 	{
 		// Skipping already declared property Padding
+		// Skipping already declared property HeaderTransitions
+		// Skipping already declared property HeaderTemplate
+		// Skipping already declared property Header
+		// Skipping already declared property FooterTransitions
+		// Skipping already declared property FooterTemplate
+		// Skipping already declared property Footer
 		// Skipping already declared property AreHorizontalSnapPointsRegular
 		// Skipping already declared property AreVerticalSnapPointsRegular
+		// Skipping already declared property HeaderProperty
+		// Skipping already declared property HeaderTemplateProperty
+		// Skipping already declared property HeaderTransitionsProperty
 		// Skipping already declared property PaddingProperty
+		// Skipping already declared property FooterProperty
+		// Skipping already declared property FooterTemplateProperty
+		// Skipping already declared property FooterTransitionsProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.ItemsPresenter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemsPresenter.Header.get
