@@ -190,9 +190,9 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-                this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload.ModuleId})", e);
-            }
-        }
+				this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload.ModuleId})", e);
+			}
+		}
 	}
 
 	static int[] ReadIntArray(BinaryReader binaryReader)
