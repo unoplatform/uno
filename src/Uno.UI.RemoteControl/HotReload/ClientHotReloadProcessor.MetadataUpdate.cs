@@ -242,6 +242,7 @@ partial class ClientHotReloadProcessor
 			}
 
 
+#if !(WINUI || WINDOWS_UWP)
 			// Then find over updated types to find the ones that are implementing IXamlResourceDictionaryProvider
 			List<Uri> updatedDictionaries = new();
 
@@ -276,6 +277,7 @@ partial class ClientHotReloadProcessor
 
 			// Force the app reevaluate global resources changes
 			Application.Current.UpdateResourceBindingsForHotReload();
+#endif
 		}
 	}
 
