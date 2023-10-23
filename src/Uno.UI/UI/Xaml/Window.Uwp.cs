@@ -10,10 +10,12 @@ partial class Window
 	private bool _windowCreatedRaised;
 
 #if !HAS_UNO_WINUI
+#pragma warning disable CS0067
 	/// <summary>
 	/// Occurs when the window has closed.
 	/// </summary>
 	public event WindowClosedEventHandler Closed;
+#pragma warning restore CS0067
 #endif
 
 	internal void RaiseCreated()

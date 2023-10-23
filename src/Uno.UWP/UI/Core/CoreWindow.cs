@@ -34,6 +34,7 @@ namespace Windows.UI.Core
 
 			InitializePartial();
 		}
+
 		partial void InitializePartial();
 
 		/// <summary>

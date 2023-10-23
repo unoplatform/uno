@@ -24,6 +24,7 @@ public sealed partial class Window
 	}
 #endif
 
+#pragma warning disable CS0067
 	/// <summary>
 	/// Occurs when the window has closed.
 	/// </summary>
@@ -33,4 +34,5 @@ public sealed partial class Window
 		remove => _windowImplementation.Closed -= value;
 	}
 }
+#pragma warning restore CS0067
 #endif
