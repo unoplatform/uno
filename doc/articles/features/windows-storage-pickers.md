@@ -347,7 +347,7 @@ namespace Custom.Pickers
 
         public CustomFileSavePickerExtension(object owner)
         {
-            _fileSavePicker = (FileSavePicker)picker;
+            _fileSavePicker = (FileSavePicker)owner;
         }
 
         public async Task<StorageFile> PickSaveFileAsync(CancellationToken token)
