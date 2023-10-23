@@ -38,7 +38,13 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			Dictionary<string, string> properties,
 			CancellationToken cancellationToken)
 		{
+			if (properties.TryGetValue("UnoEnCLogPath", out var EnCLogPath))
+			{
 				// Sets Roslyn's environment variable for troubleshooting HR, see:
+				// https://github.com/dotnet/roslyn/blob/fc6e0c25277ff440ca7ded842ac60278ee6c9695/src/Features/Core/Portable/EditAndContinue/EditAndContinueService.cs#L72
+				Environment.SetEnvironmentVariable("Microsoft_CodeAnalysis_EditAndContinue_LogDir", EnCLogPath);
+			}
+
 			var globalProperties = new Dictionary<string, string> {
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
@@ -46,7 +52,15 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 
 			foreach (var property in properties)
 			{
-				globalProperties.Add(property.Key, property.Value);
+				// Don't set the runtime identifier since it propagates to libraries as well
+				// which do not build using the RuntimeIdentifier being set. For instance, a head
+				// building for `iossimulator` will fail if the RuntimeIdentifier is set globally its
+				// dependent projects, causing the HR engine to search for pdb/dlls in
+				// the bin/Debug/net8.0/iossimulator/*.dll path instead of its original path.
+				if (!property.Key.Equals("RuntimeIdentifier", StringComparison.OrdinalIgnoreCase))
+				{
+					globalProperties.Add(property.Key, property.Value);
+				}
 			}
 
 			var workspace = MSBuildWorkspace.Create(globalProperties);
