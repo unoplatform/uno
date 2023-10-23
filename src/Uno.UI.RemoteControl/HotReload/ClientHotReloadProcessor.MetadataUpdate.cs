@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
+using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
@@ -361,9 +362,14 @@ partial class ClientHotReloadProcessor
 			_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 		}
 
-		_ = Windows.ApplicationModel.Core.CoreApplication.MainView.Dispatcher.RunAsync(
-			Windows.UI.Core.CoreDispatcherPriority.Normal,
-			async () => await ReloadWithUpdatedTypes(types));
+		if (DispatcherQueue.GetForCurrentThread() is { } dispatcherQueue)
+		{
+			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(types));
+		}
+		else if (_log.IsEnabled(LogLevel.Trace))
+		{
+			_log.Trace($"Unable to access DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}");
+		}
 	}
 }
 
