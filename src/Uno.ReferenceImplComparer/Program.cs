@@ -118,6 +118,7 @@ namespace Uno.ReferenceImplComparer
 		{
 			var hasError = false;
 			var runtimeMembersLookup = runtimeMembers.ToDictionary(m => m.ToString());
+			var referenceMembersLookup = referenceMembers.ToDictionary(m => m.ToString());
 
 			foreach (var referenceMember in referenceMembers)
 			{
@@ -126,6 +127,17 @@ namespace Uno.ReferenceImplComparer
 					Console.Error.WriteLine($"Error: The member {referenceMember} cannot be found in {identifier}");
 					hasError = true;
 				}
+			}
+
+			foreach (var runtimeMember in runtimeMembers)
+			{
+				// It's not very necessary for runtime members to exist in reference members.
+				// But there are cases where it's good to know that info.
+				// 1. If the method is overrides. This is very problematic because in app code that is compiled against reference binaries, a base.XYZ call could refer to the wrong method.
+				// 2. Sometimes there is intent to introduce Skia-specific or Wasm-specific API. Doing so
+				//    under `#if __SKIA__` or `#if __WASM__` isn't enough because you can't call it when compiling against the reference binaries.
+				Console.Error.WriteLine($"Error: The member {runtimeMember} cannot be found in {identifier}");
+				hasError = true;
 			}
 
 			return hasError;
