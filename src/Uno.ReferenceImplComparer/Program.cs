@@ -61,7 +61,8 @@ namespace Uno.ReferenceImplComparer
 		private static bool IsAccessible(TypeDefinition type)
 		{
 			// https://github.com/jbevain/cecil/blob/56d4409b8a0165830565c6e3f96f41bead2c418b/Mono.Cecil/TypeAttributes.cs#L21-L26
-			return type.IsPublic || type.IsNestedPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly;
+			return type.IsPublic ||
+				((type.IsNestedPublic || type.IsNestedFamily || type.IsNestedFamilyOrAssembly) && IsAccessible(type.DeclaringType));
 		}
 
 		private static bool IsAccessible(PropertyDefinition property)

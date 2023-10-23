@@ -11,7 +11,7 @@ namespace Uno.AuthenticationBroker
 {
 	partial class WebAuthenticationBrokerProvider
 	{
-		protected virtual string[] GetApplicationCustomSchemes()
+		protected virtual IEnumerable<string> GetApplicationCustomSchemes()
 		{
 			var origin = NativeMethods.GetReturnUrl();
 			return new[] { origin };
