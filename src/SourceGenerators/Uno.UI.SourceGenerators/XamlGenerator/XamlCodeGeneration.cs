@@ -77,7 +77,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _skipUserControlsInVisualTree;
 
 		/// <summary>
-		/// Exists for compatibility only. This option should be removed in Uno 5 and fuzzy matching should be disabled.
+		/// Exists for compatibility only. This option should be removed in Uno 6 and fuzzy matching should be disabled.
 		/// </summary>
 		private readonly bool _enableFuzzyMatching;
 
@@ -235,7 +235,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoEnableXamlFuzzyMatching"), out _enableFuzzyMatching))
 			{
-				_enableFuzzyMatching = true;
+				_enableFuzzyMatching = false;
 			}
 
 			if (!bool.TryParse(context.GetMSBuildPropertyValue("UnoDisableBindableTypeProvidersGeneration"), out _disableBindableTypeProvidersGeneration))
