@@ -38,6 +38,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			Dictionary<string, string> properties,
 			CancellationToken cancellationToken)
 		{
+				// Sets Roslyn's environment variable for troubleshooting HR, see:
 			var globalProperties = new Dictionary<string, string> {
 				// Mark this compilation as hot-reload capable, so generators can act accordingly
 				{ "IsHotReloadHost", "True" },
