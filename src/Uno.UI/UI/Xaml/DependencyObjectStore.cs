@@ -73,12 +73,16 @@ namespace Windows.UI.Xaml
 		private DependencyProperty _parentTemplatedParentProperty = UIElement.TemplatedParentProperty;
 		private DependencyProperty _parentDataContextProperty = UIElement.DataContextProperty;
 
-		private ImmutableList<ExplicitPropertyChangedCallback> _genericCallbacks = ImmutableList<ExplicitPropertyChangedCallback>.Empty;
-		private ImmutableList<DependencyObjectStore> _childrenStores = ImmutableList<DependencyObjectStore>.Empty;
-		private ImmutableList<ParentChangedCallback> _parentChangedCallbacks = ImmutableList<ParentChangedCallback>.Empty;
+		private FreezableList<ExplicitPropertyChangedCallback>? _genericCallbacks;
+		private FreezableList<DependencyObjectStore>? _childrenStores;
+		private FreezableList<ParentChangedCallback>? _parentChangedCallbacks;
 
 		private readonly ManagedWeakReference _originalObjectRef;
 		private DependencyObject? _hardOriginalObjectRef;
+
+		private FreezableList<ExplicitPropertyChangedCallback> GenericCallbacks => _genericCallbacks ??= new();
+		private FreezableList<DependencyObjectStore> ChildrenStores => _childrenStores ??= new();
+		private FreezableList<ParentChangedCallback> ParentChangedCallbacks => _parentChangedCallbacks ??= new();
 
 		/// <summary>
 		/// This field is used to pass a reference to itself in the case
@@ -842,16 +846,16 @@ namespace Windows.UI.Xaml
 		{
 			if (ReferenceEquals(handler.Target, ActualInstance))
 			{
-				_genericCallbacks = _genericCallbacks.Add(handler);
+				GenericCallbacks.Add(handler);
 
-				return Disposable.Create(() => _genericCallbacks = _genericCallbacks.Remove(handler));
+				return Disposable.Create(() => GenericCallbacks.Remove(handler));
 			}
 			else
 			{
 				CreateWeakDelegate(handler, out var weakHandler, out var weakHandlerRelease);
 
 				// Delegates integrate a null check when adding new delegates.
-				_genericCallbacks = _genericCallbacks.Add(weakHandler);
+				GenericCallbacks.Add(weakHandler);
 
 				return new RegisterPropertyChangedCallbackConditionalDisposable(
 					weakHandler,
@@ -896,7 +900,7 @@ namespace Windows.UI.Xaml
 				if (_instanceRef.Target is DependencyObjectStore that)
 				{
 					// Delegates integrate a null check when removing new delegates.
-					that._genericCallbacks = that._genericCallbacks.Remove(_weakCallback);
+					that.GenericCallbacks.Remove(_weakCallback);
 				}
 
 				_weakCallbackRelease.Dispose();
@@ -916,7 +920,7 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal void RegisterPropertyChangedCallbackStrong(ExplicitPropertyChangedCallback handler)
 		{
-			_genericCallbacks = _genericCallbacks.Add(handler);
+			GenericCallbacks.Add(handler);
 		}
 
 		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
@@ -942,7 +946,7 @@ namespace Windows.UI.Xaml
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
 		private InheritedPropertyChangedCallbackDisposable RegisterInheritedPropertyChangedCallback(DependencyObjectStore childStore)
 		{
-			_childrenStores = _childrenStores.Add(childStore);
+			ChildrenStores.Add(childStore);
 
 			PropagateInheritedProperties(childStore);
 
@@ -959,7 +963,7 @@ namespace Windows.UI.Xaml
 			if (objectStoreWeak.Target is DependencyObjectStore that)
 			{
 				// Delegates integrate a null check when removing new delegates.
-				that._childrenStores = that._childrenStores.Remove(childStore);
+				that.ChildrenStores.Remove(childStore);
 			}
 		}
 
@@ -970,7 +974,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>The <see cref="ParentChangedCallback"/> key parameter will always be null</remarks>
 		internal void RegisterSelfParentChangedCallback(ParentChangedCallback callback)
 		{
-			_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
+			ParentChangedCallbacks.Add(callback);
 		}
 
 		/// <summary>
@@ -982,9 +986,9 @@ namespace Windows.UI.Xaml
 		{
 			if (ReferenceEquals(callback.Target, ActualInstance))
 			{
-				_parentChangedCallbacks = _parentChangedCallbacks.Add(callback);
+				ParentChangedCallbacks.Add(callback);
 
-				return Disposable.Create(() => _parentChangedCallbacks = _parentChangedCallbacks.Remove(callback));
+				return Disposable.Create(() => ParentChangedCallbacks.Remove(callback));
 			}
 			else
 			{
@@ -993,7 +997,7 @@ namespace Windows.UI.Xaml
 				ParentChangedCallback weakCallback =
 					(s, _, e) => (!weakCallbackRef.IsDisposed ? weakCallbackRef.Target as ParentChangedCallback : null)?.Invoke(s, key, e);
 
-				_parentChangedCallbacks = _parentChangedCallbacks.Add(weakCallback);
+				ParentChangedCallbacks.Add(weakCallback);
 
 				// This weak reference ensure that the closure will not link
 				// the caller and the callee, in the same way "newValueActionWeak"
@@ -1043,7 +1047,7 @@ namespace Windows.UI.Xaml
 				if (that != null)
 				{
 					// Delegates integrate a null check when removing new delegates.
-					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(_weakCallback);
+					that.ParentChangedCallbacks.Remove(_weakCallback);
 				}
 
 				WeakReferencePool.ReturnWeakReference(that, _weakCallbackRef);
@@ -1060,7 +1064,7 @@ namespace Windows.UI.Xaml
 		/// <param name="key">A key to be passed to the callback parameter.</param>
 		/// <param name="callback">A callback to be called</param>
 		internal void RegisterParentChangedCallbackStrong(object key, ParentChangedCallback callback)
-			=> _parentChangedCallbacks = _parentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
+			=> ParentChangedCallbacks.Add((s, _, e) => callback(s, key, e));
 
 		internal (object? value, DependencyPropertyValuePrecedences precedence) GetValueUnderPrecedence(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
@@ -1104,10 +1108,15 @@ namespace Windows.UI.Xaml
 
 				// If not, propagate the DP down to the child listeners, if any.
 				var localChildrenStores = _childrenStores;
-				for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+				if (localChildrenStores is not null)
 				{
-					var child = localChildrenStores[storeIndex];
-					child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
+					localChildrenStores.Freeze();
+					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+					{
+						var child = localChildrenStores[storeIndex];
+						child.OnParentPropertyChangedCallback(sourceInstance, parentProperty, newValue);
+					}
+					localChildrenStores.Unfreeze();
 				}
 			}
 		}
@@ -1126,7 +1135,7 @@ namespace Windows.UI.Xaml
 					// graph is built in reverse (such as with the
 					// XamlReader)
 					|| _properties.HasBindings
-					|| _childrenStores.Count != 0
+					|| _childrenStores is { Count: > 0 }
 				)
 			)
 			{
@@ -1576,10 +1585,15 @@ namespace Windows.UI.Xaml
 			else
 			{
 				var localChildrenStores = _childrenStores;
-				for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
+				if (localChildrenStores is not null)
 				{
-					var child = localChildrenStores[childStoreIndex];
-					Propagate(child);
+					localChildrenStores.Freeze();
+					for (var childStoreIndex = 0; childStoreIndex < localChildrenStores.Count; childStoreIndex++)
+					{
+						var child = localChildrenStores[childStoreIndex];
+						Propagate(child);
+					}
+					localChildrenStores.Unfreeze();
 				}
 			}
 
@@ -1633,9 +1647,14 @@ namespace Windows.UI.Xaml
 					else
 					{
 						var localChildrenStores = _childrenStores;
-						for (var i = 0; i < localChildrenStores.Count; i++)
+						if (localChildrenStores is not null)
 						{
-							Propagate(localChildrenStores[i]);
+							localChildrenStores.Freeze();
+							for (var i = 0; i < localChildrenStores.Count; i++)
+							{
+								Propagate(localChildrenStores[i]);
+							}
+							localChildrenStores.Unfreeze();
 						}
 					}
 				}
@@ -1876,9 +1895,14 @@ namespace Windows.UI.Xaml
 				if (frameworkPropertyMetadata.Options.HasInherits())
 				{
 					var localChildrenStores = _childrenStores;
-					for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+					if (localChildrenStores is not null)
 					{
-						CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
+						localChildrenStores.Freeze();
+						for (var storeIndex = 0; storeIndex < localChildrenStores.Count; storeIndex++)
+						{
+							CallChildCallback(localChildrenStores[storeIndex], instanceRef, property, eventArgs);
+						}
+						localChildrenStores.Unfreeze();
 					}
 				}
 			}
@@ -1918,11 +1942,16 @@ namespace Windows.UI.Xaml
 			propertyDetails.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 			// Raise the property change for generic handlers
-			var currentCallbacks = _genericCallbacks.Data;
-			for (var callbackIndex = 0; callbackIndex < currentCallbacks.Length; callbackIndex++)
+			var currentCallbacks = _genericCallbacks;
+			if (currentCallbacks is not null)
 			{
-				var callback = currentCallbacks[callbackIndex];
-				callback.Invoke(instanceRef, property, eventArgs);
+				currentCallbacks.Freeze();
+				for (var callbackIndex = 0; callbackIndex < currentCallbacks.Count; callbackIndex++)
+				{
+					var callback = currentCallbacks[callbackIndex];
+					callback.Invoke(instanceRef, property, eventArgs);
+				}
+				currentCallbacks.Unfreeze();
 			}
 		}
 
@@ -2016,7 +2045,7 @@ namespace Windows.UI.Xaml
 
 		private void OnParentChanged(object? previousParent, object? value)
 		{
-			if (_parentChangedCallbacks.Data.Length != 0)
+			if (_parentChangedCallbacks is { Count: > 0 })
 			{
 				var actualInstanceAlias = ActualInstance;
 
@@ -2024,12 +2053,14 @@ namespace Windows.UI.Xaml
 				{
 					var args = new DependencyObjectParentChangedEventArgs(previousParent, value);
 
-					var currentCallbacks = _parentChangedCallbacks.Data;
-					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Length; parentCallbackIndex++)
+					var currentCallbacks = _parentChangedCallbacks;
+					currentCallbacks.Freeze();
+					for (var parentCallbackIndex = 0; parentCallbackIndex < currentCallbacks.Count; parentCallbackIndex++)
 					{
 						var handler = currentCallbacks[parentCallbackIndex];
 						handler.Invoke(actualInstanceAlias, null, args);
 					}
+					currentCallbacks.Unfreeze();
 				}
 			}
 

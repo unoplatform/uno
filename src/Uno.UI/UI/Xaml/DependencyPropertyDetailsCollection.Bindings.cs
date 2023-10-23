@@ -1,8 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿#nullable enable
+
 using Uno.Collections;
-using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
@@ -14,8 +12,11 @@ namespace Windows.UI.Xaml
 	/// </summary>
 	partial class DependencyPropertyDetailsCollection
 	{
-		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
-		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;
+		private FreezableList<BindingExpression>? _bindings;
+		private FreezableList<BindingExpression>? _templateBindings;
+
+		private FreezableList<BindingExpression> Bindings => _bindings ??= new();
+		private FreezableList<BindingExpression> TemplateBindings => _templateBindings ??= new();
 
 		private bool _bindingsSuspended;
 
@@ -23,29 +24,37 @@ namespace Windows.UI.Xaml
 		/// Applies the specified templated parent on the current <see cref="TemplateBinding"/> instances
 		/// </summary>
 		/// <param name="templatedParent"></param>
-		internal void ApplyTemplatedParent(FrameworkElement templatedParent)
+		internal void ApplyTemplatedParent(FrameworkElement? templatedParent)
 		{
-			var templateBindings = _templateBindings.Data;
-
-			for (int i = 0; i < templateBindings.Length; i++)
+			var templateBindings = _templateBindings;
+			if (templateBindings is not null)
 			{
-				ApplyBinding(templateBindings[i], templatedParent);
+				templateBindings.Freeze();
+				for (int i = 0; i < templateBindings.Count; i++)
+				{
+					ApplyBinding(templateBindings[i], templatedParent);
+				}
+				templateBindings.Unfreeze();
 			}
 		}
 
 		public bool HasBindings =>
-			_bindings != ImmutableList<BindingExpression>.Empty || _templateBindings != ImmutableList<BindingExpression>.Empty;
+			_bindings is { Count: > 0 } || _templateBindings is { Count: > 0 };
 
 		/// <summary>
 		/// Applies the specified datacontext on the current <see cref="Binding"/> instances
 		/// </summary>
-		public void ApplyDataContext(object dataContext)
+		public void ApplyDataContext(object? dataContext)
 		{
-			var bindings = _bindings.Data;
-
-			for (int i = 0; i < bindings.Length; i++)
+			var bindings = _bindings;
+			if (bindings is not null)
 			{
-				ApplyBinding(bindings[i], dataContext);
+				bindings.Freeze();
+				for (int i = 0; i < bindings.Count; i++)
+				{
+					ApplyBinding(bindings[i], dataContext);
+				}
+				bindings.Unfreeze();
 			}
 		}
 
@@ -54,11 +63,15 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void ApplyCompiledBindings()
 		{
-			var bindings = _bindings.Data;
-
-			for (int i = 0; i < bindings.Length; i++)
+			var bindings = _bindings;
+			if (bindings is not null)
 			{
-				bindings[i].ApplyCompiledSource();
+				bindings.Freeze();
+				for (int i = 0; i < bindings.Count; i++)
+				{
+					bindings[i].ApplyCompiledSource();
+				}
+				bindings.Unfreeze();
 			}
 		}
 
@@ -67,11 +80,15 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		internal void ApplyElementNameBindings()
 		{
-			var bindings = _bindings.Data;
-
-			for (int i = 0; i < bindings.Length; i++)
+			var bindings = _bindings;
+			if (bindings is not null)
 			{
-				bindings[i].ApplyElementName();
+				bindings.Freeze();
+				for (int i = 0; i < bindings.Count; i++)
+				{
+					bindings[i].ApplyElementName();
+				}
+				bindings.Unfreeze();
 			}
 		}
 
@@ -84,11 +101,15 @@ namespace Windows.UI.Xaml
 			{
 				_bindingsSuspended = true;
 
-				var bindings = _bindings.Data;
-
-				for (int i = 0; i < bindings.Length; i++)
+				var bindings = _bindings;
+				if (bindings is not null)
 				{
-					bindings[i].SuspendBinding();
+					bindings.Freeze();
+					for (int i = 0; i < bindings.Count; i++)
+					{
+						bindings[i].SuspendBinding();
+					}
+					bindings.Unfreeze();
 				}
 			}
 		}
@@ -102,11 +123,15 @@ namespace Windows.UI.Xaml
 			{
 				_bindingsSuspended = false;
 
-				var bindings = _bindings.Data;
-
-				for (int i = 0; i < bindings.Length; i++)
+				var bindings = _bindings;
+				if (bindings is not null)
 				{
-					bindings[i].ResumeBinding();
+					bindings.Freeze();
+					for (int i = 0; i < bindings.Count; i++)
+					{
+						bindings[i].ResumeBinding();
+					}
+					bindings.Unfreeze();
 				}
 
 				ApplyDataContext(DataContextPropertyDetails.GetValue());
@@ -117,7 +142,7 @@ namespace Windows.UI.Xaml
 		/// Gets the DataContext <see cref="Binding"/> instance, if any
 		/// </summary>
 		/// <returns></returns>
-		internal BindingExpression FindDataContextBinding() => DataContextPropertyDetails.GetBinding();
+		internal BindingExpression? FindDataContextBinding() => DataContextPropertyDetails.GetBinding();
 
 		/// <summary>
 		/// Sets the specified <paramref name="binding"/> on the <paramref name="target"/> instance.
@@ -140,13 +165,13 @@ namespace Windows.UI.Xaml
 
 				if (Equals(binding.RelativeSource, RelativeSource.TemplatedParent))
 				{
-					_templateBindings = _templateBindings.Add(bindingExpression);
+					TemplateBindings.Add(bindingExpression);
 
 					ApplyBinding(bindingExpression, TemplatedParentPropertyDetails.GetValue());
 				}
 				else
 				{
-					_bindings = _bindings.Add(bindingExpression);
+					Bindings.Add(bindingExpression);
 
 					if (bindingExpression.TargetPropertyDetails.Property.UniqueId == DataContextPropertyDetails.Property.UniqueId)
 					{
@@ -160,7 +185,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ApplyBinding(BindingExpression binding, object dataContext)
+		private void ApplyBinding(BindingExpression binding, object? dataContext)
 		{
 			if (Equals(binding.ParentBinding.RelativeSource, RelativeSource.TemplatedParent))
 			{
@@ -210,7 +235,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="dependencyProperty"></param>
 		/// <returns></returns>
-		internal BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+		internal BindingExpression? GetBindingExpression(DependencyProperty dependencyProperty)
 		{
 			if (GetPropertyDetails(dependencyProperty) is DependencyPropertyDetails details)
 			{

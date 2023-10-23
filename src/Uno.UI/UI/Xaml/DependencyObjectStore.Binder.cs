@@ -592,7 +592,7 @@ namespace Windows.UI.Xaml
 		}
 
 
-		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
+		public BindingExpression? GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
 		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty)
