@@ -40,7 +40,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 		{
 			_ = bool.TryParse(_remoteControlServer.GetServerConfiguration("metadata-updates"), out _useRoslynHotReload);
 
-			if (_useRoslynHotReload || configureServer.EnableMetadataUpdates)
+			_useRoslynHotReload = _useRoslynHotReload || configureServer.EnableMetadataUpdates;
+
+			if (_useRoslynHotReload)
 			{
 				CompilationWorkspaceProvider.InitializeRoslyn(Path.GetDirectoryName(configureServer.ProjectPath));
 
