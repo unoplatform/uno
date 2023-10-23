@@ -136,8 +136,11 @@ namespace Uno.ReferenceImplComparer
 				// 1. If the method is overrides. This is very problematic because in app code that is compiled against reference binaries, a base.XYZ call could refer to the wrong method.
 				// 2. Sometimes there is intent to introduce Skia-specific or Wasm-specific API. Doing so
 				//    under `#if __SKIA__` or `#if __WASM__` isn't enough because you can't call it when compiling against the reference binaries.
-				Console.Error.WriteLine($"Error: The member {runtimeMember} cannot be found in {identifier}");
-				hasError = true;
+				if (!referenceMembersLookup.ContainsKey(runtimeMember.ToString()))
+				{
+					Console.Error.WriteLine($"Error: The member {runtimeMember} cannot be found in reference API");
+					hasError = true;
+				}
 			}
 
 			return hasError;
