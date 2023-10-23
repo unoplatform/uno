@@ -67,12 +67,14 @@ namespace Uno.ReferenceImplComparer
 
 		private static bool IsAccessible(PropertyDefinition property)
 		{
-			return property.GetMethod is not null && IsAccessible(property.GetMethod);
+			return (property.GetMethod is not null && IsAccessible(property.GetMethod)) ||
+				(property.SetMethod is not null && IsAccessible(property.SetMethod));
 		}
 
 		private static bool IsAccessible(EventDefinition @event)
 		{
-			return @event.AddMethod is not null && IsAccessible(@event.AddMethod);
+			return (@event.AddMethod is not null && IsAccessible(@event.AddMethod)) ||
+				(@event.RemoveMethod is not null && IsAccessible(@event.RemoveMethod));
 		}
 
 		private static bool CompareAssemblies(AssemblyDefinition referenceAssembly, AssemblyDefinition runtimeAssembly, string identifier)
