@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml
 			_gcHandle.Free();
 		}
 
-		internal IntPtr Handle { get; }
+		public IntPtr Handle { get; }
 
 		internal IntPtr HtmlId { get; }
 

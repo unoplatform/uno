@@ -23,5 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			RemoveChild(ContentTemplateRoot);
 		}
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
 	}
 }

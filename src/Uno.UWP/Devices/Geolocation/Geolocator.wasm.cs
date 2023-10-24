@@ -109,7 +109,7 @@ namespace Windows.Devices.Geolocation
 			});
 		}
 
-		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
+		internal static int DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
 			BroadcastStatusChanged(PositionStatus.Ready); //whenever a location is successfully retrieved, GPS has state of Ready
 			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
@@ -134,7 +134,7 @@ namespace Windows.Devices.Geolocation
 			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
 		}
 
-		public static int DispatchError(string currentPositionRequestResult, string requestId)
+		internal static int DispatchError(string currentPositionRequestResult, string requestId)
 		{
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
@@ -174,7 +174,7 @@ namespace Windows.Devices.Geolocation
 		/// </summary>
 		/// <param name="serializedAccessStatus">Serialized string value from the <see cref="GeolocationAccessStatus"/> enum</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
-		public static int DispatchAccessRequest(string serializedAccessStatus)
+		internal static int DispatchAccessRequest(string serializedAccessStatus)
 		{
 			if (serializedAccessStatus is null)
 			{

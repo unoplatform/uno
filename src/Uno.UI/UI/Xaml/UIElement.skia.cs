@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual IEnumerable<UIElement> GetChildren() => _children;
 
-		public IntPtr Handle { get; set; }
+		public IntPtr Handle { get; }
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{
