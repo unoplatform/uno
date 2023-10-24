@@ -983,7 +983,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (hasXBindExpressions || hasResourceExtensions)
 			{
-				writer.AppendLineIndented($"Bindings = new {GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}(this);");
+				var activator = _isHotReloadEnabled
+					? $"(({GetBindingsTypeNames(_xClassName.ClassName).bindingsInterfaceName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}>(this))"
+					: $"new {GetBindingsTypeNames(_xClassName.ClassName).bindingsClassName}(this)";
+
+				writer.AppendLineIndented($"Bindings = {activator};");
 			}
 
 			if (isFrameworkElement && (hasXBindExpressions || hasResourceExtensions))
