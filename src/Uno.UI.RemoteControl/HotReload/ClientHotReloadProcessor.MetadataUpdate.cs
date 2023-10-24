@@ -13,9 +13,15 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload.MetadataUpdater;
+#if !WINUI
 using Windows.System;
+#else
+using Microsoft.UI.Dispatching;
+#endif
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.RemoteControl.HotReload;
 
@@ -60,6 +66,8 @@ partial class ClientHotReloadProcessor
 		return true;
 	}
 
+	internal static Window? CurrentWindow { get; set; }
+
 	private static async Task ReloadWithUpdatedTypes(Type[] updatedTypes)
 	{
 		if (!await ShouldReload())
@@ -81,7 +89,7 @@ partial class ClientHotReloadProcessor
 
 			var isCapturingState = true;
 			var treeIterator = EnumerateHotReloadInstances(
-					Window.Current.Content,
+					CurrentWindow?.Content,
 					async (fe, key) =>
 					{
 						// Get the original type of the element, in case it's been replaced
@@ -281,6 +289,7 @@ partial class ClientHotReloadProcessor
 		}
 	}
 
+#if !(WINUI || WINDOWS_UWP)
 	/// <summary>
 	/// Refreshes ResourceDictionary instances that have been detected as updated
 	/// </summary>
@@ -298,6 +307,7 @@ partial class ClientHotReloadProcessor
 			root.RefreshMergedDictionary(merged);
 		}
 	}
+#endif
 
 	private static void ReplaceViewInstance(UIElement instance, Type replacementType, ElementUpdateAgent.ElementUpdateHandlerActions? handler = default, Type[]? updatedTypes = default)
 	{
@@ -315,28 +325,9 @@ partial class ClientHotReloadProcessor
 				newInstanceFE is not null)
 			{
 				handler?.BeforeElementReplaced(instanceFE, newInstanceFE, updatedTypes);
-			}
-			switch (instance)
-			{
-#if __IOS__
-				case UserControl userControl:
-					if (newInstance is UIKit.UIView newUIViewContent)
-					{
-						SwapViews(userControl, newUIViewContent);
-					}
-					break;
-#endif
-				case ContentControl content:
-					if (newInstance is ContentControl newContent)
-					{
-						SwapViews(content, newContent);
-					}
-					break;
-			}
 
-			if (instanceFE is not null &&
-				newInstanceFE is not null)
-			{
+				SwapViews(instanceFE, newInstanceFE);
+
 				handler?.AfterElementReplaced(instanceFE, newInstanceFE, updatedTypes);
 			}
 		}
@@ -364,7 +355,14 @@ partial class ClientHotReloadProcessor
 			_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 		}
 
-		if (DispatcherQueue.GetForCurrentThread() is { } dispatcherQueue)
+		var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
+#if WINUI
+		if (dispatcherQueue is null)
+		{
+			dispatcherQueue = CurrentWindow?.DispatcherQueue;
+		}
+#endif
+		if (dispatcherQueue is not null)
 		{
 			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(types));
 		}
