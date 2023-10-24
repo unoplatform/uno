@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO_WINUI
 #nullable enable
 
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml;
