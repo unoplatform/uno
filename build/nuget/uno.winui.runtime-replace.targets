@@ -8,6 +8,7 @@
 		<PropertyGroup>
 			<_UnoRuntimeTargetFramework>netstandard2.0</_UnoRuntimeTargetFramework>
 			<_UnoRuntimeTargetFramework Condition="'$(TargetFrameworkVersion)'!='' and '$(TargetFrameworkVersion.Substring(1))'&gt;='7.0'">net7.0</_UnoRuntimeTargetFramework>
+			<_UnoRuntimeTargetFramework Condition="'$(TargetFrameworkVersion)'!='' and '$(TargetFrameworkVersion.Substring(1))'&gt;='8.0'">net8.0</_UnoRuntimeTargetFramework>
 		</PropertyGroup>
 
 		<ItemGroup>
