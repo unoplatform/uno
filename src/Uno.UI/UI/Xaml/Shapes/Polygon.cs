@@ -1,10 +1,5 @@
-﻿using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using System.Linq;
-using System.Collections;
+﻿using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {

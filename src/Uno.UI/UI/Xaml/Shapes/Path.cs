@@ -1,9 +1,7 @@
 ﻿#nullable enable
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Windows.UI.Xaml.Shapes
 {
