@@ -59,17 +59,17 @@ public static class TypeMappings
 	public static object CreateInstance<TOriginalType>()
 		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType());
 
-		/// <summary>
-		/// Creates an instance of the replacement type using its original type.
-		/// </summary>
-		/// <typeparam name="TOriginalType">The original type to be created</typeparam>
-		/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
-		/// <returns>An new instance for the original type</returns>
-		public static object CreateInstance<TOriginalType>(params object[] args)
-			=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
+	/// <summary>
+	/// Creates an instance of the replacement type using its original type.
+	/// </summary>
+	/// <typeparam name="TOriginalType">The original type to be created</typeparam>
+	/// <param name="args">The arguments used to create the instance, passed to the ctor</param>
+	/// <returns>An new instance for the original type</returns>
+	public static object CreateInstance<TOriginalType>(params object[] args)
+		=> Activator.CreateInstance(typeof(TOriginalType).GetReplacementType(), args: args);
 
-		internal static Type GetMappedType(this Type originalType) =>
-			OriginalTypeToMappedType.TryGetValue(originalType, out var mappedType) ? mappedType : default;
+	internal static Type GetMappedType(this Type originalType) =>
+		OriginalTypeToMappedType.TryGetValue(originalType, out var mappedType) ? mappedType : default;
 
 	internal static Type GetOriginalType(this Type mappedType) =>
 		MappedTypeToOrignalTypeMapings.TryGetValue(mappedType, out var originalType) ? originalType : default;

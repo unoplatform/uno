@@ -17,11 +17,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-#if __IOS__
-using _View = UIKit.UIView;
-#else
-using _View = Windows.UI.Xaml.FrameworkElement;
-#endif
 
 #if __IOS__
 using UIKit;
@@ -38,7 +33,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	partial class ClientHotReloadProcessor
 	{
 		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
-			object instance,
+			object? instance,
 			Func<FrameworkElement, string, Task<TMatch?>> predicate,
 			string? parentKey)
 		{
@@ -66,7 +61,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 		}
 
-		private static void SwapViews(_View oldView, _View newView)
+		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
 		{
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
@@ -81,7 +76,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
 #endif
 
-			if ((parentAsContentControl?.Content as _View) == oldView)
+			if ((parentAsContentControl?.Content as FrameworkElement) == oldView)
 			{
 				parentAsContentControl.Content = newView;
 			}
