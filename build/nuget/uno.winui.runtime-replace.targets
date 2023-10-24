@@ -27,6 +27,28 @@
 				Condition="'%(UnoRuntimeEnabledPackage.PackageBasePath)'==''" />
 
 			<!-- 
+			Legacy convention: netstandard2.0 (uno-runtime/**)
+			-->
+			<!-- Add the files for the current selected runtime identifier -->
+			<RuntimeCopyLocalItemsMerged
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
+			<RuntimeCopyLocalItemsMerged
+				Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.dll"
+				NuGetPackageId="%(UnoRuntimeEnabledPackage.Identity)" />
+			<!-- Add metadata so the .deps.json file is generated properly (.NET 5+) -->
+			<RuntimeCopyLocalItemsToUpdate
+				Include="@(RuntimeCopyLocalItemsMerged)"
+				AssetType="runtime"
+				CopyLocal="true"
+				DestinationSubPath="%(FileName)%(Extension)"
+				CopyToPublishDirectory="true"
+				PathInPackage="uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/%(FileName)%(Extension)" />
+			<!-- Publish pdb files -->
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/../uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+			<ReferenceCopyLocalPaths Include="%(UnoRuntimeEnabledPackage.PackageBasePath)/uno-runtime/$(UnoRuntimeIdentifier.ToLowerInvariant())/*.pdb" />
+
+			<!-- 
 			Uno 4.6 or later convention: net7.0 or later (uno-runtime/[TargetFramework]/**)
 			-->
 			<!-- Add the files for the current selected runtime identifier -->
