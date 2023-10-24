@@ -2,6 +2,7 @@
 using Uno.Foundation.Logging;
 using Uno.UI.DataBinding;
 using Uno.UI.Controls;
+using Windows.Foundation;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
