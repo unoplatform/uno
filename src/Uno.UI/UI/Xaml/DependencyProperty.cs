@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml
 		private readonly int _uniqueId;
 		private object _fallbackDefaultValue;
 
-		private static int _globalId;
+		private static int _globalId = -1;
 
 		private DependencyProperty(string name, Type propertyType, Type ownerType, PropertyMetadata defaultMetadata, bool attached)
 		{
