@@ -52,7 +52,7 @@ namespace Windows.UI.Xaml
 			ObserveOrientationAndSize();
 
 			Dispatcher = CoreDispatcher.Main;
-			CoreWindow = new CoreWindow();
+			CoreWindow = CoreWindow.GetOrCreateForCurrentThread();
 			CoreWindow.SetWindow(_window);
 		}
 
