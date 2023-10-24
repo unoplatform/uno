@@ -11,10 +11,14 @@ using Android.App;
 using Android.Graphics;
 using Android.Graphics.Drawables;
 using Android.Renderscripts;
+using Android.Util;
+using Uno.Helpers.Theming;
+using Windows.ApplicationModel.Core;
 using Windows.Storage;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using static System.Net.Mime.MediaTypeNames;
 using Win = Windows.UI;
 
 namespace Microsoft.UI.Xaml.Controls;
@@ -27,19 +31,34 @@ public partial class MicaController
 	internal static readonly Win.Color LightThemeColor = Win.Color.FromArgb(255, 243, 243, 243);
 	internal const float LightThemeTintOpacity = 0.5f;
 
-	private RenderScript? _rs;
-
 	internal bool SetTarget(Windows.UI.Xaml.Window xamlWindow)
 	{
-		_rs = RenderScript.Create(Application.Context);
-
 		var context = Application.Context;
-		var value = WallpaperManager.GetInstance(context)?.GetBuiltInDrawable(WallpaperManagerFlags.System);
+		Drawable? value;
+
+		//Drawable needs ReadExternalStorage permission, if it is not allowed by the user, value is the default system wallpaper with the GetBuiltInDrawable
+		try
+		{
+			value = WallpaperManager.GetInstance(context)?.Drawable;
+		}
+		catch (Java.Lang.SecurityException)
+		{
+			value = WallpaperManager.GetInstance(context)?.GetBuiltInDrawable(WallpaperManagerFlags.System);
+		}
 
 		if (value is BitmapDrawable bitmapDrawable)
 		{
-			bitmapDrawable = ApplyMicaOnDrawable(bitmapDrawable, DarkThemeTintOpacity);
-			_ = SetBackground(xamlWindow, bitmapDrawable);
+			var color = CoreApplication.RequestedTheme == SystemTheme.Dark ? DarkThemeColor : LightThemeColor;
+			var opacity = CoreApplication.RequestedTheme == SystemTheme.Dark ? DarkThemeTintOpacity : LightThemeTintOpacity;
+
+			var blurDrawable = ApplyMicaOnDrawable(bitmapDrawable, opacity, color);
+
+			if (blurDrawable is not { })
+			{
+				return false;
+			}
+
+			_ = SetBackground(xamlWindow, blurDrawable);
 
 			return true;
 		}
@@ -47,32 +66,51 @@ public partial class MicaController
 		return false;
 	}
 
-	private BitmapDrawable ApplyMicaOnDrawable(BitmapDrawable bitmapDrawable, float darkenFactor)
+	private BitmapDrawable? ApplyMicaOnDrawable(BitmapDrawable originalDrawable, float darkenFactor, Color color)
 	{
-		var inputBitmap = bitmapDrawable.Bitmap!;
-		var outputBitmap = inputBitmap.Copy(inputBitmap.GetConfig(), true)!;
+		if (originalDrawable.Bitmap is not { } inputBitmap)
+		{
+			return null;
+		}
 
-		Android.Graphics.Canvas canvas = new Android.Graphics.Canvas(outputBitmap);
+		var outputBitmap = inputBitmap.Copy(inputBitmap.GetConfig(), true);
 
+		if (outputBitmap is not { })
+		{
+			return null;
+		}
+
+		var canvas = new Android.Graphics.Canvas(outputBitmap);
 		var paint = new Paint();
-		paint.SetARGB((int)(darkenFactor * 255), 32, 32, 32);
 
+		paint.SetARGB((int)(darkenFactor * color.A), color.R, color.G, color.B);
 		canvas.DrawRect(0, 0, inputBitmap.Width, inputBitmap.Height, paint);
 
-		var input = Allocation.CreateFromBitmap(_rs, outputBitmap);
-		var output = Allocation.CreateFromBitmap(_rs, outputBitmap)!;
+		var _rs = RenderScript.Create(Application.Context);
 
-		//TODO ScriptIntrinsicBlur seems to be deprecated, need to find a replacement / custom implementation
-		var script = ScriptIntrinsicBlur.Create(_rs, Element.U8_4(_rs))!;
+		var inputAllocation = Allocation.CreateFromBitmap(_rs, outputBitmap);
+		var outputAllocation = Allocation.CreateFromBitmap(_rs, outputBitmap);
+
+		var blurScript = ScriptIntrinsicBlur.Create(_rs, Element.U8_4(_rs));
+
+		if (blurScript is not { })
+		{
+			return null;
+		}
 
 		for (var i = 0; i < 120; i++)
 		{
-			script.SetRadius(25);
-			script.SetInput(input);
-			script.ForEach(output);
+			blurScript.SetRadius(25);
+			blurScript.SetInput(inputAllocation);
+			blurScript.ForEach(outputAllocation);
 		}
 
-		output.CopyTo(outputBitmap);
+		if (outputAllocation is not { })
+		{
+			return null;
+		}
+
+		outputAllocation.CopyTo(outputBitmap);
 
 		var resources = Application.Context.Resources;
 
@@ -81,20 +119,24 @@ public partial class MicaController
 
 	private async Task<bool> SetBackground(Windows.UI.Xaml.Window xamlWindow, BitmapDrawable bitmapDrawable)
 	{
-		using var bitmap = bitmapDrawable.Bitmap!;
+		if (bitmapDrawable.Bitmap is not { } bitmap)
+		{
+			return false;
+		}
+
 		using var stream = new MemoryStream();
 
 		bitmap.Compress(Bitmap.CompressFormat.Png, 100, stream);
-		byte[] byteArray = stream.ToArray();
+		var byteArray = stream.ToArray();
 
-		//TODO: Maybe there could be a better way to do this without needing to save the img to storage
-		StorageFile file = await ApplicationData.Current.LocalFolder.CreateFileAsync("background.png", CreationCollisionOption.ReplaceExisting);
-		using (Stream fileStream = await file.OpenStreamForWriteAsync())
+		var file = await ApplicationData.Current.LocalFolder.CreateFileAsync("background.png", CreationCollisionOption.ReplaceExisting);
+
+		using (var fileStream = await file.OpenStreamForWriteAsync())
 		{
 			await fileStream.WriteAsync(byteArray, 0, byteArray.Length);
 		}
 
-		ImageBrush backgroundImageBrush = new ImageBrush
+		var backgroundImageBrush = new ImageBrush
 		{
 			ImageSource = new BitmapImage(new Uri(file.Path, UriKind.Absolute))
 		};
@@ -102,10 +144,10 @@ public partial class MicaController
 		if (xamlWindow.RootElement is Panel panel)
 		{
 			panel.Background = backgroundImageBrush;
-
 			return true;
 		}
 
 		return false;
 	}
+
 }
