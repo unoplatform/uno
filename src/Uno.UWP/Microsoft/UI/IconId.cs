@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Microsoft.UI
 {
-	public struct IconId : IEquatable<IconId>
+	public partial struct IconId : IEquatable<IconId>
 	{
 		public ulong Value;
 
