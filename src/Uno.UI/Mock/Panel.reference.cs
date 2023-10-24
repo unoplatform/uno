@@ -9,8 +9,6 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using System.Drawing;
-using View = Windows.UI.Xaml.UIElement;
-
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -26,6 +24,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnChildrenChanged()
 		{
+		}
+
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e) => base.OnBackgroundChanged(e);
+
+		public void Add(UIElement view)
+		{
+			Children.Add(view);
 		}
 	}
 }

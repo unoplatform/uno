@@ -14,7 +14,6 @@ using System.Drawing;
 using Uno.UI;
 using Windows.UI.Xaml.Media;
 
-using View = Windows.UI.Xaml.UIElement;
 using Windows.UI.Xaml.Shapes;
 
 namespace Windows.UI.Xaml.Controls
@@ -85,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		/// }
 		/// </summary>
 		/// <param name="view"></param>
-		public void Add(View view)
+		public void Add(UIElement view)
 		{
 			Children.Add(view);
 		}

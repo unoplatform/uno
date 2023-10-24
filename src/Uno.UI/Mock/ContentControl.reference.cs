@@ -10,5 +10,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void RegisterContentTemplateRoot()
 		{
 		}
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
 	}
 }

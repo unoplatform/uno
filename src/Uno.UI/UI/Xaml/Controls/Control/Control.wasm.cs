@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public Control() : this("div") { }
 
-		public Control(string htmlTag) : base(htmlTag)
+		internal Control(string htmlTag) : base(htmlTag)
 		{
 			InitializeControl();
 		}

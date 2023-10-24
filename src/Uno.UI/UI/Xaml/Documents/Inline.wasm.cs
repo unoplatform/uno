@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Documents
 		{
 		}
 
-		protected Inline(string htmlTag = "span") : base(htmlTag)
+		private protected Inline(string htmlTag) : base(htmlTag)
 		{
 		}
 	}

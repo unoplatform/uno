@@ -119,13 +119,6 @@ namespace Windows.UI.Xaml.Controls
 			m_itemsAreSized = false;
 		}
 
-
-		protected override void OnApplyTemplate()
-		{
-			// Call base class implementation
-			base.OnApplyTemplate();
-		}
-
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();

@@ -270,5 +270,9 @@ namespace Windows.UI.Xaml.Controls
 			return result;
 		}
 #endif
+
+#if __WASM__ || __NETSTD_REFERENCE__
+		protected override void OnContentChanged(object oldValue, object newValue) => base.OnContentChanged(oldValue, newValue);
+#endif
 	}
 }

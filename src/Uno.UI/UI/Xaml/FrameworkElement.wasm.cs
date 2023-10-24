@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
 
-		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
+		private protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
 			=> BorderLayerRenderer.SetBorder(this, thickness, brush, cornerRadius);
 
 		partial void OnBackgroundSizingChangedPartial(DependencyPropertyChangedEventArgs dependencyPropertyChangedEventArgs)
@@ -442,16 +442,6 @@ namespace Windows.UI.Xaml
 
 				base.UpdateDOMProperties();
 			}
-		}
-
-		public override string ToString()
-		{
-			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
-			{
-				return $"{base.ToString()}\"{Name}\"";
-			}
-
-			return base.ToString();
 		}
 	}
 }

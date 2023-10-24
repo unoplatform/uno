@@ -41,9 +41,9 @@ namespace Windows.UI.Xaml
 
 		public UIElement() : this(null, false) { }
 
-		public UIElement(string htmlTag = DefaultHtmlTag) : this(htmlTag, false) { }
+		internal UIElement(string htmlTag = DefaultHtmlTag) : this(htmlTag, false) { }
 
-		public UIElement(string htmlTag, bool isSvg)
+		internal UIElement(string htmlTag, bool isSvg)
 		{
 			Initialize();
 
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml
 
 		internal bool HtmlTagIsExternallyDefined => _wasmConfig.HasFlag(WasmConfig.IsExternalElement);
 
-		public Size MeasureView(Size availableSize, bool measureContent = true)
+		internal Size MeasureView(Size availableSize, bool measureContent = true)
 		{
 			return Uno.UI.Xaml.WindowManagerInterop.MeasureView(HtmlId, availableSize, measureContent);
 		}
@@ -419,11 +419,11 @@ namespace Windows.UI.Xaml
 			return base.ToString();
 		}
 
-		public UIElement FindFirstChild() => _children.FirstOrDefault();
+		internal UIElement FindFirstChild() => _children.FirstOrDefault();
 
 		internal virtual IEnumerable<UIElement> GetChildren() => _children;
 
-		public void AddChild(UIElement child, int? index = null)
+		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
 			{
@@ -488,7 +488,7 @@ namespace Windows.UI.Xaml
 			InvalidateMeasure();
 		}
 
-		public void ClearChildren()
+		internal void ClearChildren()
 		{
 			for (var i = 0; i < _children.Count; i++)
 			{
@@ -555,7 +555,7 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		public UIElement ReplaceChild(int index, UIElement child)
+		internal UIElement ReplaceChild(int index, UIElement child)
 		{
 			var previous = _children[index];
 			RemoveChild(previous);
