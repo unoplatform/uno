@@ -234,7 +234,10 @@ namespace SamplesApp
 			Windows.UI.Xaml.Window.Current.Activate();
 			_wasActivated = true;
 			_isSuspended = false;
+			MainWindowActivated?.Invoke(this, EventArgs.Empty);
 		}
+
+		public event EventHandler MainWindowActivated;
 
 #if !HAS_UNO_WINUI
 		protected override void OnWindowCreated(global::Windows.UI.Xaml.WindowCreatedEventArgs args)
