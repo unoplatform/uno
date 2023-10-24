@@ -136,6 +136,18 @@ namespace Uno.ReferenceImplComparer
 				// 1. If the method is overrides. This is very problematic because in app code that is compiled against reference binaries, a base.XYZ call could refer to the wrong method.
 				// 2. Sometimes there is intent to introduce Skia-specific or Wasm-specific API. Doing so
 				//    under `#if __SKIA__` or `#if __WASM__` isn't enough because you can't call it when compiling against the reference binaries.
+
+				if (runtimeMember is MethodReference { Name: "Finalize" } finalizer && finalizer.Resolve().IsVirtual)
+				{
+					// Assumption is that it's okay for finalizers to be in runtime API but not reference API.
+					continue;
+				}
+				else if (runtimeMember is MethodReference @operator && @operator.Name is "op_Implicit" or "op_Explicit")
+				{
+					// Operators must be declared publicly.
+					continue;
+				}
+
 				if (!referenceMembersLookup.ContainsKey(runtimeMember.ToString()))
 				{
 					Console.Error.WriteLine($"Error: The member {runtimeMember} cannot be found in reference API");
