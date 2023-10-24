@@ -14,7 +14,7 @@ partial class Window
 	/// <summary>
 	/// Occurs when the window has closed.
 	/// </summary>
-	public event WindowClosedEventHandler Closed;
+	public event WindowClosedEventHandler? Closed;
 #pragma warning restore CS0067
 #endif
 
