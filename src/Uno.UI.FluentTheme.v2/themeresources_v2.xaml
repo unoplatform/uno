@@ -16531,12 +16531,12 @@
     <Setter Property="BorderBrush" Value="{ThemeResource InfoBarBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource InfoBarBorderThickness}" />
     <Setter Property="AutomationProperties.LandmarkType" Value="Custom" />
-    <contract7Present:Setter Property="AutomationProperties.IsDialog" Value="True" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="AutomationProperties.IsDialog" Value="True" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:InfoBar">
-          <Border x:Name="ContentRoot" VerticalAlignment="Top" Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+          <Border x:Name="ContentRoot" VerticalAlignment="Top" Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="SeverityLevels">
                 <VisualState x:Name="Informational" />
@@ -16607,7 +16607,7 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <!-- Background is used here so that it overrides the severity status color if set. -->
-            <Grid HorizontalAlignment="Stretch" MinHeight="{ThemeResource InfoBarMinHeight}" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{StaticResource InfoBarContentRootPadding}">
+            <Grid HorizontalAlignment="Stretch" MinHeight="{ThemeResource InfoBarMinHeight}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{StaticResource InfoBarContentRootPadding}">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <!-- Icon -->
