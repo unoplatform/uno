@@ -371,6 +371,16 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		protected override void AttachBaseContext(Context @base)
+		{
+			if (FeatureConfiguration.Font.IgnoreTextScaleFactor && @base?.Resources?.Configuration is { } config)
+			{
+				config.FontScale = 1.0f;
+			}
+
+			base.AttachBaseContext(@base);
+		}
+
 		/// <summary>
 		/// This method is used by UI Test frameworks to get
 		/// the Xamarin compatible name for a control in Java.
