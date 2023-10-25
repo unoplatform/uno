@@ -213,6 +213,10 @@ namespace Windows.UI.Xaml.Controls
 				async Task HoverTask(long hoverId)
 				{
 					await Task.Delay(FeatureConfiguration.ToolTip.ShowDelay);
+					if (toolTip.IsOpen == true)
+					{
+						return;
+					}
 					if (toolTip.CurrentHoverId != hoverId)
 					{
 						return;
@@ -221,11 +225,15 @@ namespace Windows.UI.Xaml.Controls
 					if (owner.IsLoaded)
 					{
 						toolTip.IsOpen = true;
-
+						toolTip.IsOpenedByHover = true;
 						await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
 						if (toolTip.CurrentHoverId == hoverId)
 						{
-							toolTip.IsOpen = false;
+							if (toolTip.IsOpen && toolTip.IsOpenedByHover)
+							{
+								toolTip.IsOpen = false;
+								toolTip.IsOpenedByHover = false;
+							}
 						}
 					}
 				}
@@ -236,7 +244,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
-				toolTip.IsOpen = false;
+				if (toolTip.IsOpen && toolTip.IsOpenedByHover)
+				{
+					toolTip.IsOpen = false;
+					toolTip.IsOpenedByHover = false;
+				}
 				toolTip.CurrentHoverId++;
 			}
 		}
@@ -245,7 +257,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is FrameworkElement owner && GetToolTipReference(owner) is { } toolTip)
 			{
-				toolTip.IsOpen = false;
+				if (toolTip.IsOpen && toolTip.IsOpenedByHover)
+				{
+					toolTip.IsOpen = false;
+					toolTip.IsOpenedByHover = false;
+				}
 				toolTip.CurrentHoverId++;
 			}
 		}
@@ -262,7 +278,11 @@ namespace Windows.UI.Xaml.Controls
 					case Windows.System.VirtualKey.Right:
 						return;
 				}
-				toolTip.IsOpen = false;
+				if (toolTip.IsOpen && toolTip.IsOpenedByHover)
+				{
+					toolTip.IsOpen = false;
+					toolTip.IsOpenedByHover = false;
+				}
 				toolTip.CurrentHoverId++;
 			}
 		}
@@ -273,7 +293,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (e.GetCurrentPoint(owner).Properties.IsLeftButtonPressed)
 				{
-					toolTip.IsOpen = false;
+					if (toolTip.IsOpen && toolTip.IsOpenedByHover)
+					{
+						toolTip.IsOpen = false;
+						toolTip.IsOpenedByHover = false;
+					}
 					toolTip.CurrentHoverId++;
 				}
 			}
