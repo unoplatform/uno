@@ -1595,6 +1595,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if !__ANDROID__ && !__IOS__ // ScrollContentPresenter.[Horizontal|Vertical]Offset not implemented on Android and iOS
 		protected override void OnKeyDown(KeyRoutedEventArgs args)
 		{
 			var key = args.Key;
@@ -1667,6 +1668,7 @@ namespace Windows.UI.Xaml.Controls
 				return result;
 			}
 		}
+#endif
 
 #if __CROSSRUNTIME__ || __MACOS__
 		private static bool _warnedAboutZoomedContentAlignment;
