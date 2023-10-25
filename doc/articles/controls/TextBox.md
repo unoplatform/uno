@@ -57,3 +57,17 @@ uid: Uno.Controls.TextBox
 ## Controlling the Keyboard on iOS
 
 If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` attached property.
+
+## Customizing the Enter key appearance
+
+On mobile targets you can customize the visual appearance of the Enter key on the virtual keyboard. This can be done using the `TextBox.ReturnKeyType` property on iOS, the `TextBox.ImeOptions` property on Android, and the `TextBox.EnterKeyHint` property on WebAssembly.
+
+```csharp
+#if __IOS__
+MyTextBox.ReturnKeyType = UIReturnKeyType.Search;
+#elif __ANDROID__
+MyTextBox.ImeOptions = ImeAction.Search;
+#elif __WASM__
+MyTextBox.EnterKeyHint = EnterKeyHint.Search;
+#endif
+```

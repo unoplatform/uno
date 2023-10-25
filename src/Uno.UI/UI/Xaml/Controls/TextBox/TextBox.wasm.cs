@@ -1,4 +1,6 @@
-﻿using Uno.Extensions;
+﻿using System;
+using Uno.Extensions;
+using Uno.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -8,6 +10,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class TextBox : Control
 	{
 		private TextBoxView _textBoxView;
+		private EnterKeyHint? _enterKeyHint;
 
 		internal TextBoxView TextBoxView => _textBoxView;
 
@@ -52,6 +55,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
 			}
+
+			ApplyEnterKeyHint();
 		}
 
 		partial void OnTappedPartial()
@@ -186,6 +191,30 @@ namespace Windows.UI.Xaml.Controls
 
 				_textBoxView.SelectionEnd = _textBoxView.SelectionStart + value;
 			}
+		}
+
+		partial void OnEnterKeyHintChangedPartial(EnterKeyHint enterKeyHint)
+		{
+			_enterKeyHint = enterKeyHint;
+			ApplyEnterKeyHint();
+		}
+
+		private void ApplyEnterKeyHint()
+		{
+			if (_enterKeyHint is not { } enterKeyHint ||
+				TextBoxView is not { } textBoxView)
+			{
+				return;
+			}
+
+			var enterKeyHintValue = enterKeyHint switch
+			{
+				EnterKeyHint.Default => "",
+				_ when Enum.IsDefined(typeof(EnterKeyHint), enterKeyHint) => enterKeyHint.ToString().ToLowerInvariant(),
+				_ => throw new ArgumentOutOfRangeException($"Invalid value of EnterKeyHint ({enterKeyHint})"),
+			};
+
+			textBoxView.SetAttribute("enterkeyhint", enterKeyHintValue);
 		}
 	}
 }

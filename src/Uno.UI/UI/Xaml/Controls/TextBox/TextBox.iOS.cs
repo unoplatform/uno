@@ -298,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static DependencyProperty ReturnKeyTypeProperty { get; } =
 			DependencyProperty.Register(
-				"ReturnKeyType",
+				nameof(ReturnKeyType),
 				typeof(UIReturnKeyType),
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(

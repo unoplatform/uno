@@ -1,0 +1,20 @@
+<UserControl
+	x:Class="Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_EnterKeyHint"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:wasm="http://uno.ui/wasm"
+	mc:Ignorable="d wasm"
+	d:DesignHeight="300"
+	d:DesignWidth="400">
+
+	<wasm:StackPanel>
+		<TextBox x:Name="TestTextBox"
+		 		 Header="Enter data:"
+		         Text="" />
+		<ComboBox x:Name="EnterKeyHintsComboBox" ItemsSource="{x:Bind EnterKeyHints}" />
+		<Button Click="SetHintClick">Set hint</Button>
+	</wasm:StackPanel>
+
+</UserControl>
