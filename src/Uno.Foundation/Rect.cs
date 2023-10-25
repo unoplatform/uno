@@ -159,7 +159,7 @@ public partial struct Rect
 		return sb.ToString();
 	}
 
-	public override string ToString() => (string)this;
+	public override string ToString() => IsEmpty ? "Empty." : base.ToString()!;
 
 	internal string ToDebugString()
 		=> IsEmpty ? "--empty--"
