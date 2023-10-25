@@ -44,7 +44,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private protected override void OnPointerPressedDismissed(PointerRoutedEventArgs args)
 		{
 			if (Flyout.OverlayInputPassThroughElement is not UIElement passThroughElement
-				|| !VisualTreeHelper.EnumerateAncestors(Flyout).Contains(passThroughElement))
+				|| !Flyout.GetAllParents(includeCurrent: false).Contains(passThroughElement))
 			{
 				// The element must be a parent of the Flyout (not 'this') to be able to receive the pointer events.
 				return;
