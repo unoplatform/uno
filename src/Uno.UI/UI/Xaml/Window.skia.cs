@@ -32,6 +32,8 @@ public sealed partial class Window
 		Compositor = new Compositor();
 	}
 
+	internal object NativeWindow { get; set; }
+
 	internal event EventHandler Showing;
 
 	public Compositor Compositor { get; private set; }

@@ -51,7 +51,7 @@ namespace TestRepro
 			;
 		}
 
-		private class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0
+		private class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0 
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -215,7 +215,7 @@ namespace MyProject
 }
 namespace MyProject.__Resources
 {
-	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1
+	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1 
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -303,7 +303,7 @@ namespace MyProject.__Resources
 			return true;
 		}
 	}
-	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2
+	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2 
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";

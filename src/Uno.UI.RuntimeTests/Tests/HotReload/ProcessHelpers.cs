@@ -120,13 +120,13 @@ internal class ProcessHelpers
 		// hookup the event handlers to capture the data that is received
 		process.OutputDataReceived += (sender, args) =>
 		{
-			var logMessage = logPrefix + ": " + args.Data ?? "<Empty>";
+			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Debug(logMessage);
 		};
 		process.ErrorDataReceived += (sender, args) =>
 		{
-			var logMessage = logPrefix + ": " + args.Data ?? "<Empty>";
+			var logMessage = $"[{DateTime.Now}] " + logPrefix + ": " + args.Data ?? "<Empty>";
 			output?.AppendLine(logMessage);
 			typeof(Given_HotReloadWorkspace).Log().Error(logMessage);
 		};

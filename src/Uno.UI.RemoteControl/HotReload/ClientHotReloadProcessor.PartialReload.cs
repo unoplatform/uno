@@ -26,16 +26,46 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void InitializePartialReload()
 		{
-			_supportsLightweightHotReload = (_msbuildProperties?.TryGetValue("TargetFramework", out var targetFramework) ?? false)
-				&& (_msbuildProperties?.TryGetValue("BuildingInsideVisualStudio", out var buildingInsideVisualStudio) ?? false)
-				&& buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
+			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+
+			_supportsLightweightHotReload =
+				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
 				&& (
-					targetFramework.Contains("-android")
-					|| targetFramework.Contains("-ios"));
+					// As of VS 17.8, when the debugger is attached, mobile targets don't invoke MetadataUpdateHandlers
+					// and both targets are not providing updated types. We simulate parts of this process
+					// to determine which types have been updated, particularly those with "CreateNewOnMetadataUpdate".
+					(Debugger.IsAttached
+						&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))
+
+					// WebAssembly does not support sending updated types, and does not support debugger based hot reload.
+					|| (unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Partial Hot Reload Enabled:{_supportsLightweightHotReload} " +
+					$"unoRuntimeIdentifier:{unoRuntimeIdentifier} " +
+					$"targetFramework:{targetFramework} " +
+					$"buildingInsideVisualStudio:{targetFramework}" +
+					$"debuggerAttached: {Debugger.IsAttached}");
+			}
 
 			_mappedTypes = _supportsLightweightHotReload
 				? BuildMappedTypes()
 				: new();
+		}
+
+		private string GetMSBuildProperty(string property, string defaultValue = "")
+		{
+			var output = defaultValue;
+
+			if (_msbuildProperties is not null && !_msbuildProperties.TryGetValue(property, out output))
+			{
+				return defaultValue;
+			}
+
+			return output;
 		}
 
 		private async Task PartialReload(FileReload fileReload)
@@ -97,7 +127,13 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				// Arbitrary delay to wait for VS to push updates to the app
 				// so we can discover which types have changed
+				// The scanning operation can take 500ms under wasm, keep the app
+				// running for longer to ensure we don't miss any updates
+#if __WASM__
+				await Task.Delay(1000);
+#else
 				await Task.Delay(250);
+#endif
 
 				var mappedSw = Stopwatch.StartNew();
 

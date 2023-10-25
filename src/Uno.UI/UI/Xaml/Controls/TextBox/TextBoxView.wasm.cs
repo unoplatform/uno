@@ -12,6 +12,7 @@ using Uno.Foundation;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Helpers;
+using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -71,6 +72,12 @@ namespace Windows.UI.Xaml.Controls
 			remove => UnregisterEventHandler("input", value, GenericEventHandlers.RaiseEventHandler);
 		}
 
+		private event RoutedEventHandlerWithHandled HtmlPaste
+		{
+			add => RegisterEventHandler("paste", value, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+			remove => UnregisterEventHandler("paste", value, GenericEventHandlers.RaiseRoutedEventHandlerWithHandled);
+		}
+
 		internal bool IsMultiline { get; }
 
 		private protected override void OnLoaded()
@@ -78,8 +85,16 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 
 			HtmlInput += OnInput;
+			HtmlPaste += OnPaste;
 
 			SetTextNative(_textBox.Text);
+		}
+
+		private bool OnPaste(object sender, RoutedEventArgs e)
+		{
+			var args = new TextControlPasteEventArgs();
+			_textBox.RaisePaste(args);
+			return args.Handled;
 		}
 
 		private protected override void OnUnloaded()
@@ -87,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnUnloaded();
 
 			HtmlInput -= OnInput;
+			HtmlPaste -= OnPaste;
 		}
 
 		private void OnInput(object sender, EventArgs eventArgs)

@@ -16,6 +16,7 @@ using Exception = System.Exception;
 using Windows.Foundation;
 using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.UI.Xaml.Controls;
+using Windows.Graphics.Display;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -389,9 +390,12 @@ internal sealed class GtkCorePointerInputSource : IUnoCorePointerInputSource
 		ModifierType state,
 		Event? evt)
 	{
+		var displayInformation = DisplayInformation.GetForCurrentView();
+		var positionAdjustment = displayInformation.FractionalScaleAdjustment;
+
 		var pointerDevice = PointerDevice.For(devType);
-		var rawPosition = new Windows.Foundation.Point(rootX, rootY);
-		var position = new Windows.Foundation.Point(x, y);
+		var rawPosition = new Windows.Foundation.Point(rootX / positionAdjustment, rootY / positionAdjustment);
+		var position = new Windows.Foundation.Point(x / positionAdjustment, y / positionAdjustment);
 		var modifiers = GtkKeyboardInputSource.GetKeyModifiers(state);
 		var properties = new PointerPointProperties();
 

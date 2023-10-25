@@ -4,7 +4,7 @@
 		<OutputType>Exe</OutputType>
 		<TargetFrameworks>$(NetPrevious);$(NetCurrent)</TargetFrameworks>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<RollForward>Major</RollForward>
+		<RollForward>minor</RollForward>
 		<Nullable>enable</Nullable>
 	</PropertyGroup>
 

@@ -14,6 +14,14 @@
 		<DefineConstants>$(DefineConstants);IS_RUNTIME_UI_TESTS</DefineConstants>
 		<NoWarn>$(NoWarn);CS1998</NoWarn>
 	</PropertyGroup>
+	
+	<!--
+	Uncomment this block to enable generated source debugging
+	<PropertyGroup>
+		<UnoUISourceGeneratorDebuggerBreak>True</UnoUISourceGeneratorDebuggerBreak>
+		<EmitCompilerGeneratedFiles>true</EmitCompilerGeneratedFiles>
+	</PropertyGroup>
+	-->
 
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" />

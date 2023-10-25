@@ -29,6 +29,7 @@ internal class UnoGtkWindow : Window
 	{
 		_winUIWindow = winUIWindow ?? throw new ArgumentNullException(nameof(winUIWindow));
 		_winUIWindow.Showing += OnShowing;
+		_winUIWindow.NativeWindow = this;
 
 		Size preferredWindowSize = ApplicationView.PreferredLaunchViewSize;
 		if (preferredWindowSize != Size.Empty)

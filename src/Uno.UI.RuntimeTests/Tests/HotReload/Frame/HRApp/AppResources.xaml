@@ -6,6 +6,15 @@
 		<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
 
 	</ResourceDictionary.MergedDictionaries>
-	<!-- Add resources here -->
+
+	<x:String x:Key="HR_Frame_Pages_AppResources_Resource01">** HR_Frame_Pages_AppResources Original String **</x:String>
+	
+	<SolidColorBrush x:Key="HR_Frame_Pages_AppResources_Color_Resource01" Color="Red" />
+
+	<DataTemplate x:Key="HR_Frame_Pages_AppResources_DataTemplate_Resource01">
+		<Grid>
+			<TextBlock Text="** HR_Frame_Pages_AppResources_DataTemplate_Resource01 Original String **" />
+		</Grid>
+	</DataTemplate>
 
 </ResourceDictionary>

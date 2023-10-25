@@ -70,6 +70,19 @@ namespace Windows.UI.Xaml.Controls
 		public event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> BeforeTextChanging;
 		public event RoutedEventHandler SelectionChanged;
 
+#if !IS_UNIT_TESTS && !__MACOS__
+		/// <summary>
+		/// Occurs when text is pasted into the control.
+		/// </summary>
+		public
+#if __IOS__
+			new
+#endif
+			event TextControlPasteEventHandler Paste;
+
+		internal void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
+#endif
+
 		/// <summary>
 		/// Set when <see cref="TextChanged"/> event is being raised, to ensure modifications by handlers don't trigger an infinite loop.
 		/// </summary>

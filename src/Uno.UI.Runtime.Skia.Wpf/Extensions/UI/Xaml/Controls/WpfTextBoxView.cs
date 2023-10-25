@@ -1,10 +1,12 @@
 ﻿#nullable enable
 
 using System;
+using System.Windows;
 using Uno.UI.Hosting;
 using Uno.UI.Runtime.Skia.Wpf.Hosting;
 using Uno.UI.Xaml.Controls.Extensions;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using WpfCanvas = System.Windows.Controls.Canvas;
 using WpfControl = System.Windows.Controls.Control;
 using WpfElement = System.Windows.FrameworkElement;
@@ -33,6 +35,8 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 	/// </summary>
 	protected abstract WpfElement RootElement { get; }
 
+	public event Windows.UI.Xaml.Controls.TextControlPasteEventHandler? Paste;
+
 	public static IOverlayTextBoxView Create(Windows.UI.Xaml.Controls.TextBox textBox) =>
 		textBox is not Windows.UI.Xaml.Controls.PasswordBox ?
 			new TextTextBoxView() :
@@ -43,6 +47,17 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		if (GetOverlayLayer(xamlRoot) is { } layer && RootElement.Parent != layer)
 		{
 			layer.Children.Add(RootElement);
+			DataObject.AddPastingHandler(RootElement, PasteHandler);
+		}
+	}
+
+	private void PasteHandler(object sender, DataObjectPastingEventArgs e)
+	{
+		var args = new TextControlPasteEventArgs();
+		Paste?.Invoke(sender, args);
+		if (args.Handled)
+		{
+			e.CancelCommand();
 		}
 	}
 
@@ -51,6 +66,7 @@ internal abstract class WpfTextBoxView : IOverlayTextBoxView
 		if (RootElement.Parent is WpfCanvas layer)
 		{
 			layer.Children.Remove(RootElement);
+			DataObject.RemovePastingHandler(RootElement, PasteHandler);
 		}
 	}
 

@@ -40,7 +40,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests.Controls
 		private const string __baseUri_prefix_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7 = "ms-appx:///TestProject/";
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_Grid_Uses_Common_Syntax_8659265dc2cabf0b5a684f0f4b26f8b7 = "ms-appx:///TestProject/";
-		global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
+		private global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
 		private void InitializeComponent()
 		{
 			NameScope.SetNameScope(this, __nameScope);

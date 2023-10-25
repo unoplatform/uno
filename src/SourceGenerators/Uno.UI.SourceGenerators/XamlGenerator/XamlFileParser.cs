@@ -17,6 +17,7 @@ using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 using Uno.Roslyn;
 using Windows.Foundation.Metadata;
+using System.Collections.Immutable;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -24,6 +25,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private static readonly char[] _splitChars = new char[] { '(', ',', ')' };
 		private readonly string _excludeXamlNamespacesProperty;
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
@@ -83,7 +85,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 #if DEBUG
-				Console.WriteLine("Pre-processing XAML file: {0}", file);
+				Console.WriteLine("Pre-processing XAML file: {0}", targetFilePath);
 #endif
 
 				var sourceText = file.GetText(cancellationToken)!;
@@ -118,7 +120,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						cancellationToken.ThrowIfCancellationRequested();
 
-						var xamlFileDefinition = Visit(reader, file.Path, targetFilePath, cancellationToken);
+						var xamlFileDefinition = Visit(reader, file, targetFilePath, cancellationToken);
 						if (!reader.DisableCaching)
 						{
 							_cachedFiles[cachedFileKey] = new CachedFile(DateTimeOffset.Now, xamlFileDefinition);
@@ -191,7 +193,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			namespaceUri = valueSplit[0];
-			var elements = valueSplit[1].Split('(', ',', ')');
+			var elements = valueSplit[1].Split(_splitChars);
 
 			var methodName = elements[0];
 
@@ -228,11 +230,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private XamlFileDefinition Visit(XamlXmlReader reader, string file, string targetFilePath, CancellationToken cancellationToken)
+		private XamlFileDefinition Visit(XamlXmlReader reader, AdditionalText source, string targetFilePath, CancellationToken cancellationToken)
 		{
 			WriteState(reader);
 
-			var xamlFile = new XamlFileDefinition(file, targetFilePath);
+			var xamlFile = new XamlFileDefinition(source.Path, targetFilePath, source.GetText(cancellationToken)?.GetChecksum() ?? ImmutableArray<byte>.Empty);
 
 			do
 			{
