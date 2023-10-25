@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference DisplayRegionHelper.cpp, commit 45e6a3f
+// MUX Reference DisplayRegionHelper.cpp, tag winui3/release/1.4.2
 
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
