@@ -1,16 +1,26 @@
 ﻿using System;
 
-namespace Microsoft.UI.Xaml.Controls
-{
-	public partial class TimePickerValueChangedEventArgs
-	{
-		public TimeSpan OldTime { get; }
-		public TimeSpan NewTime { get; }
+namespace Microsoft.UI.Xaml.Controls;
 
-		internal TimePickerValueChangedEventArgs(TimeSpan oldTime, TimeSpan newTime)
-		{
-			OldTime = oldTime;
-			NewTime = newTime;
-		}
+/// <summary>
+/// Provides event data for the TimePicker.SelectedTimeChanged event.
+/// </summary>
+public partial class TimePickerValueChangedEventArgs
+{
+	internal TimePickerValueChangedEventArgs(TimeSpan? oldTime, TimeSpan? newTime)
+	{
+		OldTime = oldTime;
+		NewTime = newTime;
 	}
+
+	/// <summary>
+	/// Gets the time previously selected in the picker.
+	/// </summary>
+	public TimeSpan? OldTime { get; }
+
+	/// <summary>
+	/// Gets the new time selected in the picker.
+	/// </summary>
+	public TimeSpan? NewTime { get; }
+
 }

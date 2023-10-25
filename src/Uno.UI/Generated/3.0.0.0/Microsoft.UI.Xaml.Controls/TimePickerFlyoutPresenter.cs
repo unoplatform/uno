@@ -3,17 +3,17 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Microsoft.UI.Xaml.Controls
 {
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || false || false || false || false
 	[global::Uno.NotImplemented("IS_UNIT_TESTS")]
 #endif
-	public partial class TimePickerFlyoutPresenter
+    public partial class TimePickerFlyoutPresenter
 	{
-#if false || false || IS_UNIT_TESTS || false || false || false || false
+#if false || false || false || false || false || false || false
 		internal TimePickerFlyoutPresenter()
 		{
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public bool IsDefaultShadowEnabled
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 #endif
-#if __ANDROID__ || __IOS__ || IS_UNIT_TESTS || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
+#if false
 		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "IS_UNIT_TESTS", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Microsoft.UI.Xaml.DependencyProperty IsDefaultShadowEnabledProperty { get; } =
 		Microsoft.UI.Xaml.DependencyProperty.Register(

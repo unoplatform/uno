@@ -1,21 +1,12 @@
-﻿using System;
-using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls.Primitives;
+﻿#nullable enable
 
-namespace Microsoft.UI.Xaml.Controls
+using Windows.UI.Xaml.Controls.Primitives;
+
+namespace Microsoft.UI.Xaml.Controls;
+
+/// <summary>
+/// Represents a control that allows a user to pick a time value.
+/// </summary>
+public partial class TimePickerFlyout : PickerFlyoutBase
 {
-	partial class TimePickerFlyout : PickerFlyoutBase
-	{
-#if !__ANDROID__ && !__IOS__
-		protected override Control CreatePresenter() => throw new NotImplementedException();
-#endif
-
-#if __ANDROID__ || __IOS__
-		public event TypedEventHandler<TimePickerFlyout, TimePickedEventArgs> TimePicked;
-#endif
-
-		protected override void OnConfirmed() => throw new NotImplementedException();
-
-		protected override bool ShouldShowConfirmationButtons() => throw new NotImplementedException();
-	}
 }
