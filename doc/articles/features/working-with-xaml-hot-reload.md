@@ -30,7 +30,9 @@ Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. T
 
 WebAssembly is currently providing both full and partial Hot Reload support, depending on the IDE.
 
-- In Visual Studio, once [this VS issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) will be fixed, full XAML Hot Reload will be supported, though MetadataUpdateHandlers are invoked without the list of changed types.
+- In Visual Studio:
+  - once [this VS issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) will be fixed, full XAML Hot Reload will be supported.
+  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types.
 - In Visual Studio Code, both C# and XAML Hot Reload are fully supported.
 - Adding new C# or XAML files to the project is not yet supported.
 
