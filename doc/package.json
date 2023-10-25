@@ -12,7 +12,6 @@
 		"del": "^6.0.0",
 		"gulp": "^4.0.2",
 		"gulp-concat": "^2.6.1",
-		"gulp-if": "^2.0.2",
 		"gulp-ignore": "^3.0.0",
 		"gulp-imagemin": "^7.1.0",
 		"gulp-notify": "^3.2.0",
