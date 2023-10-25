@@ -7,13 +7,46 @@ uid: Uno.Features.XamlHotReload
 The Uno Platform Hot Reload feature provides a way to modify the XAML displayed in a running application, in order to iterate faster on UI changes and Data Binding updates. This makes the inner developer loop faster.
 
 ## Features
-- XAML Hot Reload for iOS, Android, WebAssembly, Skia (Gtk, WebAssembly)
-- Supported in Visual Studio 2019, 2022 (Windows) and VS Code (Linux, macOS, Windows, CodeSpaces and GitPod)
+- XAML Hot Reload for iOS, Catalyst, Android, WebAssembly, Skia (Gtk, WebAssembly)
+- Supported in Visual Studio 2022 (Windows) and VS Code (Linux, macOS, Windows, CodeSpaces and GitPod)
 - Supports XAML files in the main project, in shared projects, and referenced projects
-- Partial hot reload is supported, where modifying a UserControl instantiated in multiple locations will reload it without reloading its parents.
+- Partial tree hot reload is supported, where modifying a `UserControl`` instantiated in multiple locations will reload it without reloading its parents.
 - XAML Bindings Hot Reload
-- x:Bind to events
+- Full x:Bind expressions Hot Reload
+- AppResources.xaml Hot Reload
 - Cross-platform Hot Reload is supported
+
+Hot Reload features vary between platforms and IDE, you can see below the currently supported features.
+
+# [**Skia**](#tab/skia)
+
+Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
+
+- The Visual Studio 2022 support is fully available, with and without running under the debugger
+- The VS Code Uno Platform extension does not support Hot Reload when running with a debugger
+- Adding new C# or XAML files to the project is not yet supported.
+
+# [**WebAssembly**](#tab/windows)
+
+WebAssembly is currently providing both full and partial Hot Reload support, depending on the IDE.
+
+- In Visual Studio, once [this VS issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) will be fixed, full XAML Hot Reload will be supported, though MetadataUpdateHandlers are invoked without the list of changed types.
+- In Visual Studio Code, both C# and XAML Hot Reload are fully supported.
+- Adding new C# or XAML files to the project is not yet supported.
+
+# [**iOS, Android Catalyst**](#tab/mobile)
+
+Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
+
+- In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app
+- In both VS and VS Code, C# Hot Reload is not supported
+- x:Bind hot reload is limited to simple expressions and events
+
+# [**WinAppSDK**](#tab/winappsdk)
+
+Hot Reload is supported by Visual Studio for WinAppSDK and provides support in unpackaged deployment mode.
+
+***
 
 ## How to use the XAML Hot Reload
 
