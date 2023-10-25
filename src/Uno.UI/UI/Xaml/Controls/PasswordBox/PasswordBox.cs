@@ -308,5 +308,16 @@ namespace Windows.UI.Xaml.Controls
 				descriptionPresenter.Visibility = Description != null ? Visibility.Visible : Visibility.Collapsed;
 			}
 		}
+
+#if !IS_UNIT_TESTS && !__MACOS__
+		/// <summary>
+		/// Occurs when text is pasted into the control.
+		/// </summary>
+		public new event TextControlPasteEventHandler Paste
+		{
+			add => base.Paste += value;
+			remove => base.Paste -= value;
+		}
+#endif
 	}
 }

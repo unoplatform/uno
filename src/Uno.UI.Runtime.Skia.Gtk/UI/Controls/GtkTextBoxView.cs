@@ -38,6 +38,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 		InputWidget.StyleContext.AddClass(TextBoxViewCssClass);
 	}
 
+	public event TextControlPasteEventHandler? Paste;
+
 	/// <summary>
 	/// Represents the root widget of the input layout.
 	/// </summary>
@@ -110,6 +112,8 @@ internal abstract class GtkTextBoxView : IOverlayTextBoxView
 			layer.Move(RootWidget, (int)(x * sizeAdjustment), (int)(y * sizeAdjustment));
 		}
 	}
+
+	protected void RaisePaste(TextControlPasteEventArgs args) => Paste?.Invoke(this, args);
 
 	private void SetFont(TextBox textBox)
 	{
