@@ -5,7 +5,32 @@
 	xmlns:controls="using:Uno.UI.Samples.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:interactivity="using:Microsoft.Xaml.Interactivity"
+    xmlns:behaviors="using:CheckBoxPointer.ViewModels"
+	xmlns:mux="using:Microsoft.UI.Xaml.Controls"
 	mc:Ignorable="d">
 
-	<controls:SampleChooserControl x:Name="sampleControl" />
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+		<StackPanel Background="LightGray" BorderBrush="Black" BorderThickness="1">
+			<CheckBox IsChecked="{x:Bind Log.IsSingleSelect, Mode=OneWay}" IsEnabled="False">Single select?</CheckBox>
+			<CheckBox IsChecked="{x:Bind Log.IsMultiSelect, Mode=OneWay}" IsEnabled="False">Multi select?</CheckBox>
+		</StackPanel>
+
+		<mux:ItemsRepeater ItemsSource="{x:Bind Log.CheckBoxes, Mode=OneWay}" Grid.Row="1">
+			<mux:ItemsRepeater.ItemTemplate>
+				<DataTemplate x:DataType="behaviors:CheckBoxViewModel">
+					<CheckBox Content="{x:Bind Label, Mode=OneWay}" IsChecked="{x:Bind IsChecked, Mode=TwoWay}">
+						<interactivity:Interaction.Behaviors>
+							<behaviors:ButtonDisableDataGridRowSelectOnClickBehavior/>
+						</interactivity:Interaction.Behaviors>
+					</CheckBox>
+				</DataTemplate>
+			</mux:ItemsRepeater.ItemTemplate>
+		</mux:ItemsRepeater>
+	</Grid>
 </Page>
