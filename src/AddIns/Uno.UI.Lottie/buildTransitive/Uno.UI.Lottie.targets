@@ -7,7 +7,7 @@
 	</ItemGroup>
 
 	<Target Name="_ValidateLottieDependencySkia"
-			BeforeTargets="CoreCompile"
+			BeforeTargets="Compile"
 			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia' and '$(UnoDisableLottieSkiaVersionCheck)'==''">
 
 		<!--
