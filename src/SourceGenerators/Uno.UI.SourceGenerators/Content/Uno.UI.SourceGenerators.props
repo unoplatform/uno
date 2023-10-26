@@ -68,6 +68,8 @@
 		<CompilerVisibleProperty Include="IsUnoHead" />
 		<CompilerVisibleProperty Include="UnoDisableHotRestartHelperGeneration" />
 		<CompilerVisibleProperty Include="RuntimeIdentifier" />
+		<CompilerVisibleProperty Include="UnoRuntimeIdentifier" />
+		<CompilerVisibleProperty Include="UnoHotReloadMode" />
 
 		<CompilerVisibleProperty Include="SolutionFileName" />
 		<CompilerVisibleProperty Include="LangName" />
