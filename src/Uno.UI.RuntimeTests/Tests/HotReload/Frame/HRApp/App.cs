@@ -1,3 +1,5 @@
+using Uno.UI;
+
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -17,7 +19,7 @@ namespace UnoApp50
 #else
 			_window = Windows.UI.Xaml.Window.Current;
 #endif
-
+			_window.EnableHotReload();
 			// Do not repeat app initialization when the Window already has content,
 			// just ensure that the window is active
 			if (_window.Content is not Frame rootFrame)

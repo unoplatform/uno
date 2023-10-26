@@ -1,27 +1,22 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
-using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.Storage.Pickers.Provider;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-#if __IOS__
-using _View = UIKit.UIView;
-#else
-using _View = Windows.UI.Xaml.FrameworkElement;
-#endif
 
 #if __IOS__
 using UIKit;
@@ -38,7 +33,7 @@ namespace Uno.UI.RemoteControl.HotReload
 	partial class ClientHotReloadProcessor
 	{
 		private static async IAsyncEnumerable<TMatch> EnumerateHotReloadInstances<TMatch>(
-			object instance,
+			object? instance,
 			Func<FrameworkElement, string, Task<TMatch?>> predicate,
 			string? parentKey)
 		{
@@ -66,17 +61,22 @@ namespace Uno.UI.RemoteControl.HotReload
 			}
 		}
 
-		private static void SwapViews(_View oldView, _View newView)
+		private static void SwapViews(FrameworkElement oldView, FrameworkElement newView)
 		{
 			if (_log.IsEnabled(LogLevel.Trace))
 			{
 				_log.Trace($"Swapping view {newView.GetType()}");
 			}
 
+#if !WINUI
 			var parentAsContentControl = oldView.GetVisualTreeParent() as ContentControl;
 			parentAsContentControl = parentAsContentControl ?? (oldView.GetVisualTreeParent() as ContentPresenter)?.FindFirstParent<ContentControl>();
+#else
+			var parentAsContentControl = VisualTreeHelper.GetParent(oldView) as ContentControl;
+			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
+#endif
 
-			if (parentAsContentControl?.Content == oldView)
+			if ((parentAsContentControl?.Content as FrameworkElement) == oldView)
 			{
 				parentAsContentControl.Content = newView;
 			}
@@ -88,15 +88,26 @@ namespace Uno.UI.RemoteControl.HotReload
 
 				// Clear any local context, so that the new page can inherit the value coming
 				// from the parent Frame. It may happen if the old page set it explicitly.
+
+#if !WINUI
 				oldPage.ClearValue(Page.DataContextProperty, DependencyPropertyValuePrecedences.Local);
+#else
+				oldPage.ClearValue(Page.DataContextProperty);
+#endif
 
 				oldPage.Content = newPage;
+#if !WINUI
 				newPage.Frame = oldPage.Frame;
+#endif
 			}
+#if !WINUI
+			// Currently we don't have SwapViews implementation that works with WinUI
+			// so skip swapping non-Page views initially for WinUI
 			else
 			{
 				VisualTreeHelper.SwapViews(oldView, newView);
 			}
+#endif
 
 			if (oldView is FrameworkElement oldViewAsFE && newView is FrameworkElement newViewAsFE)
 			{
