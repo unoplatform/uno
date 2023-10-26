@@ -237,11 +237,25 @@ partial class ClientHotReloadProcessor
 					initializeMethod.Invoke(null, null);
 				}
 
-				if (GetInitMethod(globalResourceType, "RegisterResourceDictionariesBySourceLocal") is { } registerResourceDictionariesBySourceLocalMethod)
+				// This should be called by the init of root app GlobalStaticResource.Initialize(), but here as we are reloading only the StaticResources of the dependency library,
+				// we have to invoke it to make sure that all registrations are updated (including the "ms-appx://[NAME_OF_MY_LIBRARY]/...").
+				if (GetInitMethod(globalResourceType, "RegisterResourceDictionariesBySource") is { } registerResourceDictionariesBySourceMethod)
 				{
 					if (_log.IsEnabled(LogLevel.Trace))
 					{
 						_log.Debug($"Initializing resources sources for {globalResourceType}");
+					}
+
+					// Invoke initializers so default types and other resources get updated.
+					registerResourceDictionariesBySourceMethod.Invoke(null, null);
+				}
+
+				// This is needed for the head only (causes some extra invalid registration ins the ResourceResolver, but it has no negative impact)
+				if (GetInitMethod(globalResourceType, "RegisterResourceDictionariesBySourceLocal") is { } registerResourceDictionariesBySourceLocalMethod)
+				{
+					if (_log.IsEnabled(LogLevel.Trace))
+					{
+						_log.Debug($"Initializing local resources sources for {globalResourceType}");
 					}
 
 					// Invoke initializers so default types and other resources get updated.
