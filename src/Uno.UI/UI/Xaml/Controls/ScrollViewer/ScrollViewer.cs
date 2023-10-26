@@ -23,6 +23,7 @@ using Uno.Extensions;
 using Uno.Foundation.Logging;
 using Uno.UI.Extensions;
 using Windows.Foundation.Metadata;
+using Uno.UI.Xaml.Core;
 
 #if __ANDROID__
 using View = Android.Views.View;
@@ -1591,7 +1592,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (args.GetCurrentPoint(null).Properties.PointerUpdateKind == PointerUpdateKind.LeftButtonReleased)
 			{
-				args.Handled = Focus(FocusState.Pointer);
+				// On Wasm, there is a RootScrollViewer-like outer ScrollViewer that isn't focusable. On Windows, the RootScrollViewer
+				// would be focused (generally ScrollViewers aren't focusable, only the RootScrollViewer is). In uno, we can either
+				// skip focusing, or focus some child of this faux RootScrollViewer. TO match the other platforms, we do the former.
+				if (this.GetParent() is not RootVisual)
+				{
+					args.Handled = Focus(FocusState.Pointer);
+				}
 			}
 		}
 
