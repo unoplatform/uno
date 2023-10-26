@@ -137,6 +137,10 @@ embed.uno-frameworkelement.uno-unarranged {
   overflow: hidden;
 }
 
+.uno-slider {
+  touch-action: none;
+}
+
 /* This fixes the issue for https://github.com/unoplatform/uno/issues/4563, but caused issues for ui tests */
 /*.uno-shape {
     width: auto !important;
