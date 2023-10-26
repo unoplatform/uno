@@ -2,12 +2,11 @@
 uid: Uno.Features.XamlHotReload
 ---
 
-# XAML Hot Reload
+# Hot Reload
 
-The Uno Platform Hot Reload feature provides a way to modify the XAML displayed in a running application, in order to iterate faster on UI changes and Data Binding updates. This makes the inner developer loop faster.
-
+The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of your running application, in order to iterate faster on UI or code changes. This makes the inner developer loop faster.
 ## Features
-- XAML Hot Reload for iOS, Catalyst, Android, WebAssembly, Skia (Gtk, WebAssembly)
+- XAML Hot Reload for iOS, Catalyst, Android, WebAssembly, Skia (Gtk and WPF)
 - Supported in Visual Studio 2022 (Windows) and VS Code (Linux, macOS, Windows, CodeSpaces and GitPod)
 - Supports XAML files in the main project, in shared projects, and referenced projects
 - Partial tree hot reload is supported, where modifying a `UserControl`` instantiated in multiple locations will reload it without reloading its parents.
@@ -16,23 +15,40 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 - AppResources.xaml Hot Reload
 - Cross-platform Hot Reload is supported
 
-Hot Reload features vary between platforms and IDE, you can see below the currently supported features.
+Hot Reload features vary between platforms and IDE, you can see at later in this page the list of currently supported features.
+
+## How to use Hot Reload
+
+# [**Visual Studio 2022**](#tab/vswin)
+- Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
+- Start your application (with or without the debugger, depending on the supported features below)
+- Make changes to your XAML or C# code, save your file then press the red flame icon in the toolbar
+
+# [**Visual Studio Code**](#tab/vscode)
+- Setup your environment by following our [getting started guide](xref:Uno.GetStarted.vscode)
+- Start the application (with or without the debugger, depending on the supported features below)
+- Wait a few seconds for the hot reload engine to become available (see our troubleshooting tips below)
+- Make changes to your XAML or C# code, then save your file
+
+***
+
+## Supported features
 
 # [**Skia**](#tab/skia)
 
 Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. There are some restrictions that are listed below:
 
-- The Visual Studio 2022 support is fully available, with and without running under the debugger
+- The Visual Studio 2022 for Windows support is fully available, with and without running under the debugger
 - The VS Code Uno Platform extension does not support Hot Reload when running with a debugger
-- Adding new C# or XAML files to the project is not yet supported.
+- Adding new C# or XAML files to the project is not yet supported
 
 # [**WebAssembly**](#tab/windows)
 
 WebAssembly is currently providing both full and partial Hot Reload support, depending on the IDE.
 
-- In Visual Studio:
-  - once [this VS issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) will be fixed, full XAML Hot Reload will be supported.
-  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types.
+- In Visual Studio for Windows:
+  - Once [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) is fixed, full XAML Hot Reload will be supported.
+  - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
 - In Visual Studio Code, both C# and XAML Hot Reload are fully supported.
 - Adding new C# or XAML files to the project is not yet supported.
 
@@ -50,61 +66,23 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 
 ***
 
-## How to use the XAML Hot Reload
-
-### Visual Studio 2022
-- Install the [Uno Platform Add-in](https://marketplace.visualstudio.com/items?itemName=unoplatform.uno-platform-addin-2022) from the Visual Studio Marketplace.
-- Create a sample application using the **Uno Platform App** template
-- Build an Uno application head (iOS, Android or WebAssembly), start it (with or without the debugger)
-- Change a XAML file from VS and the app should update
-
-### Visual Studio Code
-- Follow the [getting started guide](../get-started-vscode.md)
-- Start the application (WebAssembly or Skia)
-- Make modifications to XAML files and save the file
-
 ## Troubleshooting
 
 ### Common issues
 - The application logs file changes. You should see diagnostics messages in the app when a XAML file is reloaded.
-- The file named `obj\Debug\XXX\g\RemoteControlGenerator\RemoteControl.g.cs` (Xamarin iOS/Android) or the `RemoteControlGenerator\RemoteControl.g.cs` node (Wasm, `net6` or Skia) in the Analyzers node in your project contains the connection information, verify that the information makes sense, particularly the port number.
-- WebAssembly: `Hot Reload fails to start with Mixed Content: The page at XXX was loaded over HTTPS, but attempted to connect to the insecure WebSocket endpoint`. This issue is caused by Visual Studio 2022 enforcing https connections for locally served apps. You can work around this by either:
-    - Removing the https endpoint in the `Properties/launchSettings.json` file
-    - Unchecking the `Use SSL` option in the project's Debug launch profiles (in VS 2022 17.0 or earlier)
-    - Removing the https App URL in the project's Debug launch profiles (in VS 2022 17.1 or later)
-    - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
+- The file named `RemoteControlGenerator\RemoteControl.g.cs` in the analyzers node for your project contains the connection information, verify that the information host addresses and the port number.
 - WinAppSDK on Windows specific issues
     - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 
-### Visual Studio 2019/2022
-- The output window in VS has an output named "Uno Platform" in its drop down. Diagnostics messages from the VS integration appear there.
-- Android
+### Visual Studio 2022
+- The output window in VS has an output named `Uno Platform` in its drop down. Diagnostics messages from the VS integration appear there.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
-- If there are multiple versions of the Uno.UI Package present in the solution, the newest will be used, regardless of the started application
-- The reload server may start twice (The VS **Uno Platform** output window shows two "Starting server" messages)
-    - Resolution: Restart visual studio, rebuild the app.
+- If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
-    - Ensure you have the right version of the _VSIX_ installed.
-    - Resolution: Rebuild the app until the number is different than zero.
+    - Ensure you have the latest version of the Visual Studio extension installed.
+    - Rebuild the app until the number is different than zero.
 
 ### VS Code
 - The output window in Code has an output named "Uno Platform - Hot Reload" in its drop down. Diagnostics messages from the extension appear there.
+- Depending on your machine's performance, the hot reload engine may take a few moments to initialize.
 - Make sure that the selected project in the status bar is not the solution file, but rather the project platform you are debugging.
-
-## XAML Hot Reload inside of the Uno Solution
-
-- Select the project named `Uno.RemoteControl.Host`, then select **Run without debugging**
-- Select a sample application (iOS, Android, or WebAssembly) and run it
-- Update your XAML files and their content updated in the Samples app
-
-This scenario is designed for contributors to the Uno platform, to test changes to the XAML directly in the running applications.
-
-### Disabling XAML Hot Reload
-
-If you want to disable Uno's XAML Hot Reload support for some reason, you can do so by adding the following code to your `App` constructor:
-```csharp
-#if HAS_UNO
-        // This disables hot reload during debugging.
-        Uno.UI.FeatureConfiguration.Xaml.ForceHotReloadDisabled = true;
-#endif
-```
