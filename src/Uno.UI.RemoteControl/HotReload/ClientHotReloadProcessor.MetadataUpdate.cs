@@ -137,11 +137,20 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		return Array.Empty<string>();
 	}
 
-#if __WASM__ || __SKIA__
 	private void AssemblyReload(AssemblyDeltaReload assemblyDeltaReload)
 	{
 		try
 		{
+			if (Debugger.IsAttached)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Hot Reload is not supported when the debugger is attached.");
+				}
+
+				return;
+			}
+
 			if (assemblyDeltaReload.IsValid())
 			{
 				if (this.Log().IsEnabled(LogLevel.Trace))
@@ -180,7 +189,7 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 		{
 			if (this.Log().IsEnabled(LogLevel.Error))
 			{
-				this.Log().Error($"Failed to process assembly reload {assemblyDeltaReload.FilePath}, Guid:{assemblyDeltaReload.ModuleId}: {e}");
+				this.Log().Error($"An exception occurred when applying IL Delta for {assemblyDeltaReload.FilePath} ({assemblyDeltaReload.ModuleId})", e);
 			}
 		}
 	}
@@ -202,7 +211,6 @@ partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 		return values;
 	}
-#endif
 
 	private static async Task<bool> ShouldReload()
 	{
