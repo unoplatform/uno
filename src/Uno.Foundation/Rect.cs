@@ -148,6 +148,11 @@ public partial struct Rect
 
 	public static implicit operator string(Rect rect)
 	{
+		if (rect.IsEmpty)
+		{
+			return "Empty.";
+		}
+
 		var sb = new StringBuilder();
 		sb.Append(rect.X.ToStringInvariant());
 		sb.Append(',');
@@ -159,7 +164,7 @@ public partial struct Rect
 		return sb.ToString();
 	}
 
-	public override string ToString() => IsEmpty ? "Empty." : base.ToString()!;
+	public override string ToString() => (string)this;
 
 	internal string ToDebugString()
 		=> IsEmpty ? "--empty--"
