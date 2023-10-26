@@ -99,7 +99,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_suppressCheckedChanged = false;
 			}
 		}
-
-		internal void AutomationPeerToggle() => OnClick();
 	}
 }
