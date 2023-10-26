@@ -8,7 +8,7 @@
 
 	<Target Name="_ValidateLottieDependencySkia"
 			BeforeTargets="CoreCompile"
-			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia' and '$(UnoDisableLottieVersionCheck)'==''">
+			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia' and '$(UnoDisableLottieSkiaVersionCheck)'==''">
 
 		<!--
 		Nuget does not support dynamic references in packages, and we need Skottie only for the Skia UnoRuntime
