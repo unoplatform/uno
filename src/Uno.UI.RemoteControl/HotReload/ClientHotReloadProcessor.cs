@@ -20,7 +20,6 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 	private string[]? _xamlPaths;
 	private readonly IRemoteControlClient _rcClient;
 
-	private static readonly Logger _log = typeof(ClientHotReloadProcessor).Log();
 	private Dictionary<string, string>? _msbuildProperties;
 
 	public ClientHotReloadProcessor(IRemoteControlClient rcClient)
