@@ -134,7 +134,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private static void OnIsIndeterminatePropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as ProgressRing)?.ChangeVisualState();
+			if (dependencyObject is ProgressRing pr)
+			{
+				pr._player?.Stop();
+				pr.ChangeVisualState();
+			}
 		}
 
 		private void OnForegroundPropertyChanged(DependencyObject sender, DependencyProperty dp) => SetLottieForegroundColor();
