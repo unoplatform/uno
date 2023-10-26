@@ -10,6 +10,7 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 using Uno.UI.Xaml;
 
 using Uno.UI.Extensions;
@@ -183,6 +184,17 @@ namespace Windows.UI.Xaml.Controls
 			base.OnLoaded();
 			RestoreScroll();
 			RegisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+
+			// a workaround to make scrolling cancelable on WASM
+			AddHandler(PointerWheelChangedEvent, new PointerEventHandler(CancelNativeScrollIfHandled), true);
+		}
+
+		private void CancelNativeScrollIfHandled(object _, PointerRoutedEventArgs args)
+		{
+			if (args.Handled)
+			{
+				((IHtmlHandleableRoutedEventArgs)args).HandledResult |= HtmlEventDispatchResult.PreventDefault;
+			}
 		}
 
 		private void RestoreScroll()
@@ -203,6 +215,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 			UnregisterEventHandler("scroll", (EventHandler)OnScroll, GenericEventHandlers.RaiseEventHandler);
+
+			RemoveHandler(PointerWheelChangedEvent, new PointerEventHandler(CancelNativeScrollIfHandled));
 
 			if (_rootEltUsedToProcessScrollTo is { } rootElt)
 			{
