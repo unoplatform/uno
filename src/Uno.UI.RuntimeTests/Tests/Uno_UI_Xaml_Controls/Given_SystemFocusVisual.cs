@@ -1,4 +1,5 @@
 ﻿#if __WASM__ || __SKIA__
+using System;
 using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +20,10 @@ public class Given_SystemFocusVisual
 	[RequiresFullWindow]
 	public async Task When_Focused_Element_Scrolled()
 	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive($"Not supported under XAML islands");
+		}
 		var scrollViewer = new ScrollViewer()
 		{
 			Height = 200,
@@ -78,8 +83,15 @@ public class Given_SystemFocusVisual
 	}
 
 	[TestMethod]
+#if __WASM__
+	[Ignore("RenderTargetBitmap is not implemented")]
+#endif
 	public async Task When_Focused_Element_Scrolled_Clipping()
 	{
+		if (TestServices.WindowHelper.IsXamlIsland)
+		{
+			Assert.Inconclusive($"Not supported under XAML islands");
+		}
 		var sp = new StackPanel();
 		var sv = new ScrollViewer
 		{
