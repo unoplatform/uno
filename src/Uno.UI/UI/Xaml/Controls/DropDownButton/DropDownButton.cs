@@ -24,6 +24,16 @@ public partial class DropDownButton : Button
 		RegisterFlyoutEvents();
 	}
 
+	internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
+	{
+		if (args.Property == Button.FlyoutProperty)
+		{
+			OnFlyoutPropertyChanged(this, args);
+		}
+
+		base.OnPropertyChanged2(args);
+	}
+
 	private void RegisterFlyoutEvents()
 	{
 		if (Flyout != null)
@@ -40,17 +50,17 @@ public partial class DropDownButton : Button
 
 	internal void OpenFlyout()
 	{
-		if (Flyout is Flyout)
+		if (Flyout is { } flyout)
 		{
-			Flyout.ShowAt(this);
+			flyout.ShowAt(this);
 		}
 	}
 
 	internal void CloseFlyout()
 	{
-		if (Flyout is Flyout)
+		if (Flyout is { } flyout)
 		{
-			Flyout.Hide();
+			flyout.Hide();
 		}
 	}
 
