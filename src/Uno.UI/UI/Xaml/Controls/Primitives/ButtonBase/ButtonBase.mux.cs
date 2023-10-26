@@ -681,7 +681,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// For mouse, we need to wait for PointerExited because the mouse may still be above the ButtonBase when
 			// PointerCaptureLost is received from clicking.
 			var pointerPoint = args.GetCurrentPoint(null);
-			var pointerDeviceType = pointerPoint.PointerDeviceType;
+			var pointerDeviceType = (PointerDeviceType)pointerPoint.PointerDeviceType;
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
 				// Uno TODO
