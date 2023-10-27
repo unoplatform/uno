@@ -7,8 +7,8 @@
 	</ItemGroup>
 
 	<Target Name="_ValidateSvgDependencySkia"
-			BeforeTargets="CoreCompile"
-			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia'">
+			BeforeTargets="Compile"
+			Condition="'$(IsUnoHead)'=='true' and '$(UnoRuntimeIdentifier)'=='Skia' and '$(UnoDisableSvgSkiaVersionCheck)'==''">
 
 		<!--
 		Nuget does not support dynamic references in packages, and we need Skottie only for the Skia UnoRuntime
@@ -21,8 +21,8 @@
 			<_SkiaSharpPackageName Condition="'$(MSBuildThisFile)'=='uno.winui.svg.targets'">SkiaSharp.Views.Uno.WinUI</_SkiaSharpPackageName>
 		</PropertyGroup>
 		<ItemGroup>
-			<_SkiaSharpViewsRefs Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == '$(_SkiaSharpPackageName)'" />
-			<_SvgSkiaRefs Include="@(RuntimeCopyLocalItems)" Condition="'%(RuntimeCopyLocalItems.NuGetPackageId)' == 'Svg.Skia' AND '%(RuntimeCopyLocalItems.NuGetPackageVersion)' >= '1.0.0.1'" />
+			<_SkiaSharpViewsRefs Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)' == '$(_SkiaSharpPackageName)'" />
+			<_SvgSkiaRefs Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)' == 'Svg.Skia' AND '%(ReferencePath.NuGetPackageVersion)' >= '1.0.0.1'" />
 		</ItemGroup>
 
 		<Error Condition="'@(_SkiaSharpViewsRefs)'==''" Text="In order to use Uno Svg support, the '$(_SkiaSharpPackageName)' NuGet Package (2.88.3 or later) must be referenced in the project. You can add &lt;PackageReference Include=&quot;$(_SkiaSharpPackageName)&quot; Version=&quot;2.88.3&quot; /> to your project." />
