@@ -90,24 +90,11 @@ namespace Uno.UI.RemoteControl.HotReload
 						|| uri.OriginalString == i.BaseUri?.OriginalString;
 				}
 
-				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri))
+				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri).OfType<FrameworkElement>())
 				{
-					switch (instance)
+					if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
 					{
-#if __IOS__
-						case UserControl userControl:
-							if (XamlReader.LoadUsingXClass(fileContent, uri.OriginalString) is UIKit.UIView newInstance)
-							{
-								SwapViews(userControl, newInstance);
-							}
-							break;
-#endif
-						case ContentControl content:
-							if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is ContentControl newContent)
-							{
-								SwapViews(content, newContent);
-							}
-							break;
+						SwapViews(instance, newContent);
 					}
 				}
 
