@@ -22,7 +22,8 @@ namespace Uno.UI.RemoteControl.HotReload
 	partial class ClientHotReloadProcessor
 	{
 		private bool _linkerEnabled;
-		private HotReloadAgent _agent;
+		private HotReloadAgent? _agent;
+		private bool _metadataUpdatesEnabled;
 		private static ClientHotReloadProcessor? _instance;
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
@@ -40,6 +41,8 @@ namespace Uno.UI.RemoteControl.HotReload
 		partial void InitializeMetadataUpdater()
 		{
 			_instance = this;
+
+			_metadataUpdatesEnabled = BuildMetadataUpdatesEnabled();
 
 			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
 
@@ -60,23 +63,25 @@ namespace Uno.UI.RemoteControl.HotReload
 			});
 		}
 
-
-		private bool MetadataUpdatesEnabled
+		private bool BuildMetadataUpdatesEnabled()
 		{
-			get
-			{
-				var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
-				var targetFramework = GetMSBuildProperty("TargetFramework");
-				var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
+			//var targetFramework = GetMSBuildProperty("TargetFramework");
+			//var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
 
-				return
-					buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
-					&& (
-						// As of VS 17.8, when the debugger is not attached, mobile targets can use
-						// DevServer's hotreload workspace, as visual studio does not enable it on its own.
-						(!Debugger.IsAttached
-							&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios"))));
-			}
+			return (_forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial)
+				|| unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase)
+				// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
+				//
+				//||
+				//(
+				//	buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
+				//	&& (
+				//		// As of VS 17.8, when the debugger is not attached, mobile targets can use
+				//		// DevServer's hotreload workspace, as visual studio does not enable it on its own.
+				//		(!Debugger.IsAttached
+				//			&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))))
+				;
 		}
 
 		private string[] GetMetadataUpdateCapabilities()
@@ -153,7 +158,7 @@ namespace Uno.UI.RemoteControl.HotReload
 						UpdatedTypes = ReadIntArray(changedTypesReader)
 					};
 
-					_agent.ApplyDeltas(new[] { delta });
+					_agent?.ApplyDeltas(new[] { delta });
 
 					if (this.Log().IsEnabled(LogLevel.Trace))
 					{

@@ -36,7 +36,7 @@
 
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.MetadataUpdate.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\WindowExtensions.cs" Link="Uno.UI.RemoteControl\HotReload\WindowExtensions.cs" />
-		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Xaml.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Xaml.cs" />
+		<Compile Include="..\Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" Link="Uno.UI.RemoteControl\HotReload\ClientHotReloadProcessor.Common.cs" />
 		<Compile Include="..\Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" Link="Uno.UI.RemoteControl\HotReload\MetadataUpdater\ElementUpdaterAgent.cs" />
 
 		<!--<Compile Include="..\Uno.UI\UI\Xaml\Media\VisualTreeHelper.crossruntime.cs" Link="Uno.UI\UI\Xaml\Media\VisualTreeHelper.crossruntime.cs" />-->
