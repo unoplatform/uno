@@ -171,5 +171,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			MenuItemsHost = GetTemplateChild("MenuItemsHost") as NavigationViewList;
 		}
 	}
- #endif
+#endif
 }
