@@ -27,6 +27,7 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
+  - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
 
   - task: MSBuild@1

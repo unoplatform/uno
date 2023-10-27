@@ -20,8 +20,6 @@ stages:
   dependsOn:
     - Setup
   jobs:
-  - template: templates/gitversion.yml
-
   - template: .azure-devops-winui-convert.yml
     parameters:
       poolName: '$(windowsScaledPool)'
