@@ -53,6 +53,9 @@ WebAssembly is currently providing both full and partial Hot Reload support, dep
   - If your app is using port 5000 in development, [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) may cause problems, changing to another port in `Properties/launchSettings.json` (e.g. 5001) will work around it.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
 
+> [!IMPORTANT]
+> If your solution contains iOS/Android/Catalyst or WebAssembly project heads, Hot Reload will only be available when targeting .NET 8 or later (`net8.0` in the `TargetFrameworks` property)
+
 # [**iOS, Android Catalyst**](#tab/mobile)
 
 Mobile targets are currently using a limited version of XAML Hot Reload and do not support C# Hot Reload until [this dotnet runtime](https://github.com/dotnet/runtime/issues/93860) issue is fixed.
