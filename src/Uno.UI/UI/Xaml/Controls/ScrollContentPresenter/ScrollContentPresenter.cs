@@ -54,6 +54,20 @@ namespace Windows.UI.Xaml.Controls
 
 		private ScrollViewer Scroller => ScrollOwner as ScrollViewer;
 
+#if UNO_HAS_MANAGED_SCROLL_PRESENTER || __WASM__
+		public static DependencyProperty SizesContentToTemplatedParentProperty { get; } = DependencyProperty.Register(
+			nameof(SizesContentToTemplatedParent),
+			typeof(bool),
+			typeof(ScrollContentPresenter),
+			new FrameworkPropertyMetadata(false));
+
+		public bool SizesContentToTemplatedParent
+		{
+			get => (bool)GetValue(SizesContentToTemplatedParentProperty);
+			set => SetValue(SizesContentToTemplatedParentProperty, value);
+		}
+#endif
+
 		public Rect MakeVisible(UIElement visual, Rect rectangle)
 		{
 			// Simulate a BringIntoView request
@@ -136,13 +150,30 @@ namespace Windows.UI.Xaml.Controls
 					.AtMost(maxSize)
 					.AtLeast(minSize);
 
+				bool sizesContentToTemplatedParent = SizesContentToTemplatedParent;
+
+				if (ScrollOwner is ScrollViewer scrollViewer)
+				{
+					if (sizesContentToTemplatedParent)
+					{
+						slotSize = scrollViewer.ViewportMeasureSize;
+					}
+				}
+
+
 				if (CanVerticallyScroll)
 				{
-					slotSize.Height = double.PositiveInfinity;
+					if (!sizesContentToTemplatedParent)
+					{
+						slotSize.Height = double.PositiveInfinity;
+					}
 				}
 				if (CanHorizontallyScroll)
 				{
-					slotSize.Width = double.PositiveInfinity;
+					if (!sizesContentToTemplatedParent)
+					{
+						slotSize.Width = double.PositiveInfinity;
+					}
 				}
 
 				child.Measure(slotSize);
