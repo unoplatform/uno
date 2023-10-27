@@ -4,7 +4,7 @@
 	<ResourceDictionary.MergedDictionaries>
 		<!-- Load WinUI resources -->
 		<XamlControlsResources xmlns="using:Microsoft.UI.Xaml.Controls" />
-
+		<ResourceDictionary Source="ms-appx:///SubResourceDictionary.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<x:String x:Key="HR_Frame_Pages_AppResources_Resource01">** HR_Frame_Pages_AppResources Original String **</x:String>
