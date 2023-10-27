@@ -1464,8 +1464,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			using (writer.BlockInvariant("public static void RegisterDefaultStyles_{0}()", _fileUniqueId))
 			{
-				var instance = _isHotReloadEnabled 
-					? $"((dynamic) Instance)" 
+				var instance = _isHotReloadEnabled
+					? $"((dynamic) Instance)"
 					: $"(({SingletonClassName})Instance)";
 
 				writer.AppendLineInvariantIndented("{0}.RegisterDefaultStyles_{1}_Core();", instance, _fileUniqueId);
