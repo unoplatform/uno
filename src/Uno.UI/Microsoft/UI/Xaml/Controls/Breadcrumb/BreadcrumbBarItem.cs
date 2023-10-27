@@ -1,13 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBarItem.cpp, commit f4a2812
+// MUX Reference BreadcrumbBarItem.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
 using System.Collections.ObjectModel;
 using Uno.Disposables;
-using Uno.UI.Helpers.WinUI;
-using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
@@ -24,7 +22,6 @@ using static Microsoft.UI.Xaml.Controls._Tracing;
 using Microsoft.UI.Input;
 using PointerDeviceType = Microsoft.UI.Input.PointerDeviceType;
 #else
-using Windows.UI.Input;
 using PointerDeviceType = Windows.Devices.Input.PointerDeviceType;
 #endif
 
@@ -70,28 +67,13 @@ public partial class BreadcrumbBarItem : ContentControl
 #if HAS_UNO
 		RevokeListeners();
 #endif
-		if (this is UIElement thisAsUIElement7)
+		if (m_childPreviewKeyDownToken.Disposable == null)
 		{
-			if (m_childPreviewKeyDownToken.Disposable == null)
+			PreviewKeyDown += OnChildPreviewKeyDown;
+			m_childPreviewKeyDownToken.Disposable = Disposable.Create(() =>
 			{
-				thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
-				m_childPreviewKeyDownToken.Disposable = Disposable.Create(() =>
-				{
-					thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
-				});
-			}
-		}
-		else if (this is UIElement thisAsUIElement)
-		{
-			if (m_keyDownRevoker.Disposable == null)
-			{
-				var handler = new KeyEventHandler(OnChildPreviewKeyDown);
-				AddHandler(KeyDownEvent, handler, true);
-				m_keyDownRevoker.Disposable = Disposable.Create(() =>
-				{
-					RemoveHandler(KeyDownEvent, handler);
-				});
-			}
+				PreviewKeyDown += OnChildPreviewKeyDown;
+			});
 		}
 
 		if (forEllipsisDropDownItem)
@@ -261,7 +243,7 @@ public partial class BreadcrumbBarItem : ContentControl
 
 	internal void SetEllipsisDropDownItemDataTemplate(object? newDataTemplate)
 	{
-		if (newDataTemplate is DataTemplate dataTemplate)
+		if (newDataTemplate is IElementFactory dataTemplate)
 		{
 			m_ellipsisDropDownItemDataTemplate = dataTemplate;
 		}
@@ -336,19 +318,6 @@ public partial class BreadcrumbBarItem : ContentControl
 			{
 				this.OnClickEvent(sender, null);
 				args.Handled = true;
-			}
-			else if (SharedHelpers.IsRS2OrHigher() && !SharedHelpers.IsRS3OrHigher())
-			{
-				if (args.Key == VirtualKey.Down)
-				{
-					FocusManager.TryMoveFocus(FocusNavigationDirection.Next);
-					args.Handled = true;
-				}
-				else if (args.Key == VirtualKey.Up)
-				{
-					FocusManager.TryMoveFocus(FocusNavigationDirection.Previous);
-					args.Handled = true;
-				}
 			}
 		}
 		else if (args.Key == VirtualKey.Enter || args.Key == VirtualKey.Space)
@@ -425,15 +394,8 @@ public partial class BreadcrumbBarItem : ContentControl
 
 		if (m_ellipsisFlyout is { } flyout)
 		{
-			if (SharedHelpers.IsFlyoutShowOptionsAvailable())
-			{
-				FlyoutShowOptions options = new FlyoutShowOptions();
-				flyout.ShowAt(this, options);
-			}
-			else
-			{
-				flyout.ShowAt(this);
-			}
+			FlyoutShowOptions options = new();
+			flyout.ShowAt(this, options);
 		}
 	}
 
