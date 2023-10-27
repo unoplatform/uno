@@ -41,25 +41,27 @@ public App()
 
 #### Migrating `ApplicationData` on Skia targets
 
+Previously, `ApplicationData` was stored directly in the `Environment.SpecialFolder.LocalApplicationData` folder and all Uno Platform apps shared this single location. Starting with Uno Platform 5.0, application data is stored in application-specific folders under the `LocalApplicationData` root. For more details, see the [docs](features/applicationdata.md). To perform the initial migration of existing data, you need to make sure to copy the files from the root of the `LocalApplicationData` folder to `ApplicationData.Current.LocalFolder` manually using `System.IO`.
 
 #### `ShouldWriteErrorOnInvalidXaml` now defaults to true
 
-#### `ShouldWriteErrorOnInvalidXaml` now defaults to true.
-Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
+Invalid XAML, such as unknown properties or unknown x:Bind targets, will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
 
 #### Updating the Windows SDK from from 18362 to 19041
 
+If your existing libraries or UWP/WinAppSDK projects target the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurrences of `18362` to `19041` in all your solution's `csproj`, `.targets`, `.props` and `.wapproj` files.
 
 #### Xaml generator now always uses strict search
 
+This change ensures that the XAML parser will only look for types explicitly, and avoids fuzzy matching that could lead to incorrect type resolution.
 
-In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+In order to resolve types properly in a conditional XAML namespace, make sure to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
 
 #### ResourceDictionary now require an explicit Uri reference
 
-Resources dictionaries are now required to be explicitly referenced by URI to be considered during resource resolution. Applications that are already running properly on WinAppSDK should not be impacted by this change.
+Resources dictionaries must now be explicitly referenced by URI to be considered during resource resolution. This change should not impact applications that are already running properly on WinAppSDK.
 
-The reason for this change is the alignment of the inclusion behavior with WinUI, which does not automatically place dictionaries as ambiently available. 
+This change is due to the alignment of the inclusion behavior with WinUI, which does not automatically place dictionaries as ambiently available.
 
 This behavior can be disabled by using `FeatureConfiguration.ResourceDictionary.IncludeUnreferencedDictionaries`, by setting the value `true`.
 
@@ -71,18 +73,20 @@ This property was incorrectly located on `FrameworkElement` but its behavior has
 
 This method has been removed as it is not available in WinUI. You can migrate code using this method to use the `FrameworkElement.Loaded` event instead.
 
-#### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace.
+#### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace
 
 These controls were present in both the `Windows.UI.Xaml` and `Microsoft.UI.Xaml`. Those are now located in the `Microsoft.UI.Xaml` namespace for the UWP version of Uno (Uno.UI).
 
+#### Move `AnimatedVisualPlayer`, `IAnimatedVisualSource`, and `IThemableAnimatedVisualSource` from WUX to MUX and `Microsoft.Toolkit.Uwp.UI.Lottie` namespace to `CommunityToolkit.WinUI.Lottie`
 
 This change moves the `AnimatedVisualPlayer` to the appropriate namespace for WinUI, aligned with the WinAppSDK version of the Windows Community Toolkit.
 
 #### `SimpleOrientationSensor` should not schedule on `Dispatcher`
 
+`SimpleOrientationSensor` on Android now raises events from a background thread and needs to be explicitly dispatched to the UI thread as needed.
 
+#### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`
 
-#### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`.
 These legacy classes have been removed. Use the [`CommunityToolkit.Mvvm`](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/) package instead.
 
 #### `SolidColorBrushHelper` isn't available in UWP, so we are making it internal
@@ -107,6 +111,7 @@ The legacy `ResourcesService` and `ResourceHelper` have been removed.
 
 #### Implicit conversion from string to `Point` is removed
 
+The implicit conversion has been removed, but a conversion can be performed using the `XamlBindingHelper` class.
 
 #### Rename `CreateTheamableFromLottieAsset` to `CreateThemableFromLottieAsset`
 
@@ -114,6 +119,7 @@ This change is a rename for an identifier typo. Renaming the invocation to the n
 
 #### Timeline shouldn't implement IDisposable
 
+`Timeline` does not implement `IDisposable` anymore. This class was not supposed be disposable and has been removed.
 
 #### `GridExtensions` and `PanelExtensions` are removed
 
@@ -121,13 +127,14 @@ These legacy class have been removed.
 
 #### `GetLeft`, `GetTop`, `SetLeft`, `SetTop`, `GetZIndex`, and `SetZIndex` overloads that take DependencyObject are now removed
 
+Those legacy overloads are now removed, and the `UIElement`` overloads should be used instead.
 
 #### BaseFragment is not needed and is now removed
 
+The legacy `BaseFragment` class has been removed. Use `Page` navigation instead.
 
 #### `ViewHelper.GetScreenSize` method on iOS/macOS is now internal
 
-#### `ViewHelper.GetScreenSize` method on iOS/macOS is now internal.
 Use the `DisplayInformation` class instead.
 
 #### `FrameworkElement` constructors are now protected instead of public
@@ -148,10 +155,10 @@ Use the related events instead.
 
 #### `FrameBufferHost` and `GtkHost` constructors that takes `args` are now removed. `args` were already unused
 
+You can remove the last argument of the constructor invocation. The host reads the parameters directly.
 
 #### `RegisterDefaultStyleForType` methods were removed
 
-#### `RegisterDefaultStyleForType` methods were removed.
 This legacy method was deprecated in Uno 3.x
 
 #### Xaml code generator was generating an always-null-returning FindResource method. This method is no longer generated
@@ -164,6 +171,7 @@ Use `Windows.Storage.Streams.Buffer` instead.
 
 #### `ContentPropertyAttribute.Name` is now a field to match UWP
 
+This change has no effect on Control's behavior.
 
 #### Remove `FontWeightExtensions` and `CssProviderExtensions`
 
@@ -208,7 +216,7 @@ Uno Platform 4.7 now brings the Uno Fluent Symbols font implicitly. You can remo
 
 ### Breaking change with ms-appx:/// resolution
 
-Uno Platform 4.7 brings a behavior breaking change where the library Assets feature introduced in Uno Platform 4.6 required assembly names to be lower cased.
+Uno Platform 4.7 brings a behavior-breaking change where the library Assets feature introduced in Uno Platform 4.6 required assembly names to be lower cased.
 
 If you had an asset in a nuget package or project named "MyProject", you previously had to write `ms-appx:///myproject/MyAsset.txt`. With 4.7, you'll need to write `ms-appx:///MyProject/MyAsset.txt`.
 
@@ -216,7 +224,7 @@ If you had an asset in a nuget package or project named "MyProject", you previou
 
 #### Breaking change with Android 13
 
-The introduction of Android 13 lead to a breaking change, as some Android members exposed to .NET where removed.
+The introduction of Android 13 led to a breaking change, as some Android members exposed to .NET were removed.
 
 You'll need to migrate from `BaseActivity.PrepareOptionsPanel` to `BaseActivity.PreparePanel` instead.
 
@@ -224,12 +232,13 @@ You'll need to migrate from `BaseActivity.PrepareOptionsPanel` to `BaseActivity.
 
 #### ElevatedView
 
-The built-in `ElevatedView` control has undergone a visual unification, which means existing apps may experience slightly different shadow visuals, especially on Android, which now supports the full range of colors including opacity. If you encounter visual discrepancies, please tweak the `Elevation` and `ShadowColor` properties to fit your needs.
+The built-in `ElevatedView` control has undergone a visual unification, which means existing apps may experience slightly different shadow visuals, especially on Android, which now supports the full range of colors, including opacity. If you encounter visual discrepancies, please tweak the `Elevation` and `ShadowColor` properties to fit your needs.
 
 ### Uno Platform 4.1
 
 #### Android 12 support
 
+Uno 4.1 removes the support for the Android SDK 10 and adds support for Android 12. Note that Android 10  versions and below are still supported at runtime, but you'll need Android 11 SDK or later to build an Uno Platform App. You can upgrade to Android 11 or 12 using the `Compile using Android version: (Targer Framework)` option in Visual Studio Android project properties.
 
 Additionally, here are some specific hints about the migration to Android 12:
 
@@ -290,7 +299,7 @@ To migrate your application to Uno 4.0:
 
 #### Optional upgrade for Microsoft.Extension.Logging
 
-Uno Platform 3.6 templates provide an updated version of the loggers to allow the use of updated `Microsoft.Extension.Logging.*` logging packages. It is not required for applications to upgrade to these newer loggers, yet those provide additional features particularly for iOS and WebAssembly.
+Uno Platform 3.6 templates provide an updated version of the loggers to allow using updated `Microsoft.Extension.Logging.*` logging packages. Applications are not required to upgrade to these newer loggers, yet those provide additional features, particularly for iOS and WebAssembly.
 
 Here's how to upgrade:
 
@@ -382,6 +391,8 @@ Here's how to upgrade:
 
 Note that there are two new loggers:
 
+- `Uno.Extensions.Logging.OSLog` which provides the ability to log the iOS system logs
+- `Uno.Extensions.Logging.WebAssembly.Console` which provides thread-safe and colored logging to the browser debugger console
 
 #### Migrating WebAssembly projects to .NET 5
 
@@ -391,13 +402,13 @@ If your WebAssembly project is using the `netstandard2.0` TargetFramework, migra
 - Upgrade `Uno.Wasm.Bootstrap` and `Uno.Wasm.Bootstrap.DevServer` to `2.0.0` or later
 - Add a reference to the `Microsoft.Windows.Compatibility` package to `5.0.1`
 
-You may also want to apply the changes from the section above (logger updates) to benefits from the update to .NET 5.
+You may also want to apply the changes from the section above (logger updates) to benefit from the update to .NET 5.
 
 ### Uno Platform 2.x to Uno 3.0
 
 Migrating from Uno 2.x to Uno 3.0 requires a small set of changes in the code and configuration.
 
-- **Android 8.0** is not supported anymore, you'll need to update to **Android 9.0** or **10.0**.
+- **Android 8.0** is not supported anymore. You'll need to update to **Android 9.0** or **10.0**.
 - For Android, you'll need to update the `Main.cs` file from:
 
     ```csharp
