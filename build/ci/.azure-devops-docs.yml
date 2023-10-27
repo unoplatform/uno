@@ -15,8 +15,9 @@ jobs:
     NUGET_PACKAGES: 'C:\NugetPackages'
 
   steps:
-  - checkout: self
-    clean: true
+  - checkout: none
+
+  - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -24,7 +25,6 @@ jobs:
 
   - template: templates/dotnet-install.yml
 
-  - template: templates/gitversion.yml
   - template: templates/jdk-setup.yml
 
   - task: MSBuild@1
