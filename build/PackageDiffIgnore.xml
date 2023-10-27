@@ -656,6 +656,27 @@
 
 			<Member fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase" reason="Shapes refactoring" />
 			<Member fullName="Windows.UI.Xaml.Controls.StackPanelExtensions" reason="Shouldn't be public, and removed completely" />
+
+			<!-- Using regex with \. as a hack to prevent WinUIRevert from converting these to MUX namespace in WinUI tree -->
+			<Member fullName="Windows\.UI\.Xaml\.Automation\.Peers\.NavigationViewItemAutomationPeer" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationView" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewBackButtonVisible" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewBackRequestedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewDisplayMode" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewDisplayModeChangedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemHelper" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemHelper`1" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItem" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemBase" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemHeader" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemInvokedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemSeparator" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewList" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewPaneClosingEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewPaneDisplayMode" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewSelectionChangedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewTemplateSettings" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.Primitives.NavigationViewItemPresenter" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
