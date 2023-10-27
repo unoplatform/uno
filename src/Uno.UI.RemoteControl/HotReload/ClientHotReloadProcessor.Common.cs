@@ -77,7 +77,7 @@ namespace Uno.UI.RemoteControl.HotReload
 #endif
 
 			var parentDataContext = (parentAsContentControl as FrameworkElement)?.DataContext;
-			
+
 			if ((parentAsContentControl?.Content as FrameworkElement) == oldView)
 			{
 				parentAsContentControl.Content = newView;
