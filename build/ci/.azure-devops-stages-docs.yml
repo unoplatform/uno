@@ -1,24 +1,7 @@
 
 stages:
-- stage: Setup
-  displayName: Setup
-  jobs:
-  - template: .azure-devops-commitsar.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-spell-check.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
-  - template: .azure-devops-pipeline-validations.yml
-    parameters:
-      vmImage: '$(linuxVMImage)'
-
 - stage: convert_tree
   displayName: WinUI Tree Conversion
-  dependsOn:
-    - Setup
   jobs:
   - template: .azure-devops-winui-convert.yml
     parameters:
