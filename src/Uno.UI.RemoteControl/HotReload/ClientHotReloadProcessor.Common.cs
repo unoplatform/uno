@@ -76,7 +76,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			parentAsContentControl = parentAsContentControl ?? (VisualTreeHelper.GetParent(oldView) as ContentPresenter)?.FindFirstParent<ContentControl>();
 #endif
 
-			var parentDataContext = (parentAsContentControl as FrameworkElement)?.DataContext; 
+			var parentDataContext = (parentAsContentControl as FrameworkElement)?.DataContext;
 			
 			if ((parentAsContentControl?.Content as FrameworkElement) == oldView)
 			{
