@@ -117,4 +117,33 @@ public class Given_Dictionary : BaseTestClass
 		await Task.Yield();
 	}
 
+	[TestMethod]
+	public async Task When_Change_SubDictionary_String()
+	{
+		var ct = new CancellationTokenSource(TimeSpan.FromSeconds(10)).Token;
+
+		// We're not storing the instance explicitly, as the HR engine replaces
+		// the top level content of the window. We keep poking at the UnitTestsUIContentHelper.Content
+		// as it gets updated with reloaded content.
+		UnitTestsUIContentHelper.Content = new HR_Frame_Pages_AppResources();
+
+		var originalText = "** HR_Frame_Pages_AppResources_SubDictionary Original String **";
+		var updatedText = "** HR_Frame_Pages_AppResources_SubDictionary Updated String **";
+
+		// Check the initial text of the TextBlock
+		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 1);
+
+		// Check the updated text of the TextBlock
+		await HotReloadHelper.UpdateProjectFileAndRevert(
+			"SubResourceDictionary.xaml",
+			originalText,
+			updatedText,
+			() => UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(updatedText, 1),
+			ct);
+
+		// Validate that content been returned to the original text
+		await UnitTestsUIContentHelper.Content.ValidateTextOnChildTextBlock(originalText, 1);
+
+		await Task.Yield();
+	}
 }
