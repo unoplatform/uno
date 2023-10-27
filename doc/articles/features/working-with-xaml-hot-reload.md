@@ -42,15 +42,16 @@ Skia-based targets provide support for full XAML Hot Reload and C# Hot Reload. T
 - The VS Code Uno Platform extension does not support Hot Reload when running with a debugger
 - Adding new C# or XAML files to the project is not yet supported
 
-# [**WebAssembly**](#tab/windows)
+# [**WebAssembly**](#tab/wasm)
 
 WebAssembly is currently providing both full and partial Hot Reload support, depending on the IDE.
 
+- In Visual Studio Code:
+  - Both C# and XAML Hot Reload are fully supported
+  - Adding new C# or XAML files to the project is not yet supported
 - In Visual Studio for Windows:
-  - Once [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) is fixed, full XAML Hot Reload will be supported.
+  - If your app is using port 5000 in development, [this Visual Studio issue](https://developercommunity.visualstudio.com/t/BrowserLink-WebSocket-is-disconnecting-a/10500228) may cause problems, changing to another port in `Properties/launchSettings.json` (e.g. 5001) will work around it.
   - [`MetadataUpdateHandlers`](https://learn.microsoft.com/en-us/dotnet/api/system.reflection.metadata.metadataupdatehandlerattribute?view=net-7.0) are invoked without the list of changed types, which means that some hot reload features may not be available.
-- In Visual Studio Code, both C# and XAML Hot Reload are fully supported.
-- Adding new C# or XAML files to the project is not yet supported.
 
 # [**iOS, Android Catalyst**](#tab/mobile)
 
