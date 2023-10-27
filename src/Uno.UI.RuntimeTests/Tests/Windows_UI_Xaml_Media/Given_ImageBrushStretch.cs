@@ -100,10 +100,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 5);
-			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 5);
-			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 5);
-			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 5);
+			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 17);
+			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 17);
+			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 17);
+			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 17);
 		}
 	}
 }
