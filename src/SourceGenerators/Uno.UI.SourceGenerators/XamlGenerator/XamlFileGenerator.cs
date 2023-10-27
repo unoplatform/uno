@@ -153,11 +153,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string ParseContextPropertyAccess =>
 			 (_isTopLevelDictionary, _isInSingletonInstance) switch
 			 {
-				 (true, false) => "{0}{1}.GlobalStaticResources.{2}.Instance.{3}".InvariantCultureFormat(
+				 (true, false) => "{0}{1}.GlobalStaticResources.{2}.{3}()".InvariantCultureFormat(
 					GlobalPrefix,
 					_defaultNamespace,
 					SingletonClassName,
-					XamlCodeGeneration.ParseContextPropertyName
+					XamlCodeGeneration.ParseContextGetterMethod
 				),
 				 (true, true) => "this.{0}".InvariantCultureFormat(XamlCodeGeneration.ParseContextPropertyName),
 				 _ => "{0}{1}.GlobalStaticResources.{2}".InvariantCultureFormat(
@@ -1216,23 +1216,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							// Build singleton
 							writer.AppendLineInvariantIndented("private static global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();");
-							writer.AppendLineInvariantIndented("private static {0} __that;", SingletonClassName);
-							using (writer.BlockInvariant("internal static {0} Instance", SingletonClassName))
+							writer.AppendLineInvariantIndented("private static {0} __that;", DictionaryProviderInterfaceName);
+							using (writer.BlockInvariant("internal static {0} Instance", DictionaryProviderInterfaceName))
 							{
 								using (writer.BlockInvariant("get"))
 								{
 									using (writer.BlockInvariant("if (__that == null)"))
 									{
-										writer.AppendLineInvariantIndented("__that = new {0}();", SingletonClassName);
+										var activator = _isHotReloadEnabled
+											? $"({DictionaryProviderInterfaceName})global::Uno.UI.Helpers.TypeMappings.CreateInstance<{SingletonClassName}>()"
+											: $"new {SingletonClassName}()";
+
+										writer.AppendLineInvariantIndented($"__that = {activator};");
 									}
 									writer.AppendLine();
 									writer.AppendLineIndented("return __that;");
 								}
 							}
 							writer.AppendLine();
-							writer.AppendLineInvariantIndented("internal {0} {1} {{get; }}", XamlCodeGeneration.ParseContextPropertyType, XamlCodeGeneration.ParseContextPropertyName);
+							writer.AppendLineInvariantIndented("private readonly {0} {1};", XamlCodeGeneration.ParseContextPropertyType, XamlCodeGeneration.ParseContextPropertyName);
+							writer.AppendLineInvariantIndented("internal static {0} {1}() => (({2})Instance).{3};", XamlCodeGeneration.ParseContextPropertyType, XamlCodeGeneration.ParseContextGetterMethod, SingletonClassName, XamlCodeGeneration.ParseContextPropertyName);
 							writer.AppendLine();
-							using (writer.BlockInvariant("private {0}()", SingletonClassName))
+							using (writer.BlockInvariant("public {0}()", SingletonClassName))
 							{
 								var outerProperty = "{0}{1}.GlobalStaticResources.{2}".InvariantCultureFormat(
 									GlobalPrefix,
@@ -1280,10 +1285,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							writer.AppendLineInvariantIndented("global::Windows.UI.Xaml.ResourceDictionary {0}.GetResourceDictionary() => {1}_ResourceDictionary;", DictionaryProviderInterfaceName, _fileUniqueId);
 						}
 						writer.AppendLine();
-						writer.AppendLineInvariantIndented("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.{0}_ResourceDictionary;", _fileUniqueId, SingletonClassName);
+						writer.AppendLineInvariantIndented("internal static global::Windows.UI.Xaml.ResourceDictionary {0}_ResourceDictionary => {1}.Instance.GetResourceDictionary();", _fileUniqueId, SingletonClassName);
 						if (hasDefaultStyles)
 						{
-							writer.AppendLineInvariantIndented("static partial void RegisterDefaultStyles_{0}() => {1}.Instance.RegisterDefaultStyles_{0}();", _fileUniqueId, SingletonClassName);
+							writer.AppendLineInvariantIndented("static partial void RegisterDefaultStyles_{0}() => {1}.RegisterDefaultStyles_{0}();", _fileUniqueId, SingletonClassName);
 						}
 
 						BuildXBindTryGetDeclarations(writer);
@@ -1457,7 +1462,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLine();
 
-			using (writer.BlockInvariant("public void RegisterDefaultStyles_{0}()", _fileUniqueId))
+			using (writer.BlockInvariant("public static void RegisterDefaultStyles_{0}()", _fileUniqueId))
+			{
+				if (_isHotReloadEnabled)
+				{
+					writer.AppendLineInvariantIndented("var instance = Instance;");
+					using (writer.BlockInvariant("if (instance is {0} original)", SingletonClassName))
+					{
+						writer.AppendLineInvariantIndented("original.RegisterDefaultStyles_{1}_Core();", SingletonClassName, _fileUniqueId);
+					}
+					using (writer.BlockInvariant("else"))
+					{
+						writer.AppendLineInvariantIndented("instance?.GetType()?.GetMethod(\"RegisterDefaultStyles_{0}_Core\", global::System.Reflection.BindingFlags.Instance | global::System.Reflection.BindingFlags.NonPublic)?.Invoke(instance, null);", _fileUniqueId);
+					}
+				}
+				else
+				{
+					writer.AppendLineInvariantIndented("(({0})Instance).RegisterDefaultStyles_{1}_Core();", SingletonClassName, _fileUniqueId);
+				}
+			}
+
+			using (writer.BlockInvariant("private void RegisterDefaultStyles_{0}_Core()", _fileUniqueId))
 			{
 				foreach (var style in stylesCandidates)
 				{
