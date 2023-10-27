@@ -45,6 +45,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[RunsOnUIThread]
 	public partial class Given_NavigationView
 	{
+#if !HAS_UNO_WINUI
 		[TestMethod]
 		[RunsOnUIThread]
 #if __MACOS__
@@ -79,6 +80,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 			Assert.AreEqual(item2, children.Last());
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -158,6 +160,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 	}
+
+#if !HAS_UNO_WINUI
 	public partial class MyNavigationView : NavigationView
 	{
 		public NavigationViewList MenuItemsHost { get; private set; }
@@ -167,4 +171,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			MenuItemsHost = GetTemplateChild("MenuItemsHost") as NavigationViewList;
 		}
 	}
+ #endif
 }
