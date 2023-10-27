@@ -17,8 +17,6 @@ jobs:
     XAML_FLAVOR_BUILD: WinUI
 
   steps:
-  - checkout: none
-
   - template: templates/download-winui-converted-tree.yml
 
   - template: templates/nuget-cache.yml
