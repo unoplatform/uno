@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// ButtonBase_Partial.h, ButtonBase_Partial.cpp
+// ButtonBase_Partial.h, ButtonBase_Partial.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
@@ -271,6 +271,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (command != null)
 			{
 				var commandParameter = CommandParameter;
+
+				// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
 				canExecute = command.CanExecute(commandParameter);
 			}
 
@@ -288,9 +290,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (command != null)
 			{
 				var commandParameter = CommandParameter;
+
+				// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
 				var canExecute = command.CanExecute(CommandParameter);
 				if (canExecute)
 				{
+					// SYNC_CALL_TO_APP DIRECT - This next line may directly call out to app code.
 					command.Execute(commandParameter);
 				}
 			}
@@ -352,6 +357,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				{
 					IsPressed = false;
 					ReleasePointerCaptureInternal(null);
+					_isSpaceOrEnterKeyDown = false;
+					_isNavigationAcceptOrGamepadAKeyDown = false;
 				}
 			}
 
@@ -453,7 +460,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				if (ClickMode == ClickMode.Hover && IsEnabled)
 				{
 					IsPressed = true;
-					RaiseClick(args);
+					OnClick();
 				}
 			}
 
@@ -576,7 +583,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 				if (ClickMode == ClickMode.Press)
 				{
-					RaiseClick(args);
+					OnClick();
 				}
 			}
 
@@ -674,9 +681,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			// For mouse, we need to wait for PointerExited because the mouse may still be above the ButtonBase when
 			// PointerCaptureLost is received from clicking.
 			var pointerPoint = args.GetCurrentPoint(null);
-			var pointerDeviceType = pointerPoint.PointerDevice?.PointerDeviceType ?? PointerDeviceType.Touch;
+			var pointerDeviceType = (PointerDeviceType)pointerPoint.PointerDeviceType;
 			if (pointerDeviceType == PointerDeviceType.Touch)
 			{
+				// Uno TODO
 				//IsPointerOver = false;
 			}
 
