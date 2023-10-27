@@ -7,9 +7,9 @@ uid: Uno.Features.XamlHotReload
 The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of your running application, in order to iterate faster on UI or code changes. This makes the inner developer loop faster.
 ## Features
 - XAML Hot Reload for iOS, Catalyst, Android, WebAssembly, Skia (Gtk and WPF)
-- Supported in Visual Studio 2022 (Windows) and VS Code (Linux, macOS, Windows, CodeSpaces and GitPod)
+- Supported in Visual Studio 2022 (Windows) and VS Code (Linux, macOS, Windows, CodeSpaces, and GitPod)
 - Supports XAML files in the main project, in shared projects, and referenced projects
-- Partial tree hot reload is supported, where modifying a `UserControl`` instantiated in multiple locations will reload it without reloading its parents.
+- Partial tree hot reload is supported, where modifying a `UserControl` instantiated in multiple locations will reload it without reloading its parents.
 - XAML Bindings Hot Reload
 - Full x:Bind expressions Hot Reload
 - AppResources.xaml Hot Reload
@@ -79,7 +79,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
     - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 
 ### Visual Studio 2022
-- The output window in VS has an output named `Uno Platform` in its drop down. Diagnostics messages from the VS integration appear there.
+- The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 - If there are multiple versions of the Uno.WinUI Package present in the solution, the newest will be used, regardless of the started application
 - The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
