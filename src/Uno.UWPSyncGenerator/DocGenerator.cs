@@ -204,6 +204,12 @@ namespace Uno.UWPSyncGenerator
 
 								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> notImplemented) where T : ISymbol
 								{
+									var notImplemented = notImplemented.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+									if (notImplemented.None())
+									{
+										return;
+									}
+
 									using (_sb.Section($"Not implemented {memberTypePlural}"))
 									{
 										using (_sb.Table(memberTypeSingular, "Not supported on"))
