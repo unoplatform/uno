@@ -150,6 +150,10 @@ There used two be two `RenderSurfaceType`s, `Uno.UI.Runtime.Skia.RenderSurfaceTy
 #### `Panel`s no longer measure or arrange any children in `MeasureOverride` or `ArrangeOverride`, respectively
 `Panel`s used to measure and arrange the first child in `MeasureOverride` or `ArrangeOverride`, respectively. This is no longer the case. Now, to match WinUI, `Panel`s just return an empty size in `MeasureOverride`, and the `finalSize` as is in `ArrangeOverride`. You should override these layout-override methods in `Panel`-derived subclasses instead.
 
+#### Remove `Windows.UI.Xaml.Controls.NavigationView` in Uno.WinUI
+
+Uno.WinUI used to have NavigationView both in `Microsoft.UI.Xaml.Controls` and `Windows.UI.Xaml.Controls` namespaces. It's now removed from `Windows.UI.Xaml.Controls` and kept only in `Microsoft.UI.Xaml.Controls` namespace.
+
 ### Uno Platform 4.10
 This release does not require upgrade steps.
 

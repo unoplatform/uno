@@ -8,17 +8,9 @@
 using System;
 using Uno.UI.Helpers.WinUI;
 using Uno.UI;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Controls.Primitives;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Media;
-#else
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
-#endif
 
 #if __IOS__
 using UIKit;
