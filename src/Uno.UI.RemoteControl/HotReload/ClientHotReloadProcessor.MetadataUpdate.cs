@@ -355,20 +355,22 @@ partial class ClientHotReloadProcessor
 			_log.Trace($"UpdateApplication (changed types: {string.Join(", ", types.Select(s => s.ToString()))})");
 		}
 
-		var dispatcherQueue = DispatcherQueue.GetForCurrentThread();
 #if WINUI
-		if (dispatcherQueue is null)
-		{
-			dispatcherQueue = CurrentWindow?.DispatcherQueue;
-		}
-#endif
+		var dispatcherQueue = CurrentWindow?.DispatcherQueue;
 		if (dispatcherQueue is not null)
 		{
 			dispatcherQueue.TryEnqueue(async () => await ReloadWithUpdatedTypes(types));
 		}
+#else
+		var dispatcher = CurrentWindow?.Dispatcher;
+		if (dispatcher is not null)
+		{
+			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(types));
+		}
+#endif
 		else if (_log.IsEnabled(LogLevel.Trace))
 		{
-			_log.Trace($"Unable to access DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}");
+			_log.Trace($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}");
 		}
 	}
 }
