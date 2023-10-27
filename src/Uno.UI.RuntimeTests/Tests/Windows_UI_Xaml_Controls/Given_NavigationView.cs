@@ -25,9 +25,6 @@ using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Controls.Primitives;
-using NavigationView = Windows.UI.Xaml.Controls.NavigationView;
-using NavigationViewItem = Windows.UI.Xaml.Controls.NavigationViewItem;
-using NavigationViewList = Windows.UI.Xaml.Controls.NavigationViewList;
 #else
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
