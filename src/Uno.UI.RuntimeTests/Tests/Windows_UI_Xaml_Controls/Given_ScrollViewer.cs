@@ -318,6 +318,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 #endif
 
+
+		[TestMethod]
+		[RunsOnUIThread]
+#if NETFX_CORE
+		[Ignore("KeyboardHelper doesn't work on Windows")]
+#endif
+		public async Task When_Space_Already_Handled()
+		{
+			var lv = new ListView
+			{
+				ItemsSource = "012345"
+			};
+
+			var SUT = new ScrollViewer
+			{
+				Height = 50,
+				Content = lv
+			};
+
+			WindowHelper.WindowContent = SUT;
+			await WindowHelper.WaitForIdle();
+
+			var lvi1 = (ListViewItem)lv.ContainerFromIndex(0);
+			lvi1.Focus(FocusState.Programmatic);
+			await WindowHelper.WaitForIdle();
+
+			// This test is targeted at WASM, but this doesn't simulate a real space (like e.g. puppeteer would),
+			// so the test is not really validating much, merely documenting behaviour
+			KeyboardHelper.Space();
+			await WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0, SUT.VerticalOffset);
+		}
+
 		[TestMethod]
 #if __WASM__
 		// Issue needs to be fixed first for WASM for Right and Bottom Margin missing
