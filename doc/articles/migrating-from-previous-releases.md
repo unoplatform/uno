@@ -62,6 +62,9 @@ This behavior can be disabled by using `FeatureConfiguration.ResourceDictionary.
 #### `IsEnabled` property is moved from `FrameworkElement` to `Control`
 This property was incorrectly located on `FrameworkElement` but its behavior has not changed.
 
+#### `RegisterLoadActions` has been removed
+This method has been removed as it is not available in WinUI. You can migrate code using this method to use the `FrameworkElement.Loaded` event instead.
+
 #### Move `SwipeControl`, `SwipeItem`, `SwipeItemInvokedEventArgs`, `SwipeMode`, `SwipeItems`, `SwipeBehaviorOnInvoked`, `MenuBar`, `MenuBarItem`, and `MenuBarItemFlyout` implementation from WUX namespace to MUX namespace.
 These controls were present in both the `Windows.UI.Xaml` and `Microsoft.UI.Xaml`. Those are now located in the `Microsoft.UI.Xaml` namespace for the UWP version of Uno (Uno.UI).
 
