@@ -276,4 +276,12 @@ You can then switch between both profiles according to the type of dotnet projec
 
 You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
+## Explore other features
+
+The Uno Platform extension provides additional features to help you develop your application.
+
+You can explore them by pressing `F1` or `Ctrl-Shift-P` and typing `Uno Platform` to see the list of available commands.
+
+![vs-code-explore-other-features](Assets/quick-start/vs-code-explore-other-features.png)
+
 [!include[getting-help](getting-help.md)]
