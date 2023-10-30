@@ -12,15 +12,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var thickness = element.GetBorderThickness();
 
-			if (Border.UseLayoutRoundingForBorderThickness(element))
+			if (element.GetUseLayoutRounding())
 			{
 				thickness = GetLayoutRoundedThickness(element);
 			}
 
+			// Compute the chrome size added by the border
 			var border = HelperCollapseThickness(thickness);
 
+			// Compute the chrome size added by the padding.
+			// No need to adjust for layout rounding here since padding is not "drawn" by the border.
 			var padding = HelperCollapseThickness(element.GetPadding());
 
+			// Combine both.
 			var combined = new Size(
 				width: border.Width + padding.Width,
 				height: border.Height + padding.Height);
@@ -33,29 +37,6 @@ namespace Windows.UI.Xaml.Controls
 			return new Size(thickness.Left + thickness.Right, thickness.Top + thickness.Bottom);
 		}
 
-		internal static bool UseLayoutRoundingForBorderThickness(FrameworkElement element)
-		{
-			// Only snap BorderThickness if:
-			// 1) LayoutRounding is enabled - prerequisite for any pixel snapping.
-			// 2) There is no CornerRadius - we cannot guarantee snapping when there is a CornerRadius.
-			// 3) Plateau != 1.0 - this snapping is to ensure that integral values of BorderThickness don't cause subpixel rendering at high plateau.
-			// TODO: Remove check for plateau, BorderThickness should be consistently rounded at all plateaus.
-			//return (RootScale.GetRasterizationScaleForElement(element) != 1.0f) &&
-			//       element.GetUseLayoutRounding() &&
-			//       (!HasNonZeroCornerRadius(element.GetCornerRadius()));
-			return (RootScale.GetRasterizationScaleForElement(element) != 1.0f) &&
-				   element.GetUseLayoutRounding() &&
-				   (!HasNonZeroCornerRadius(element.GetCornerRadius()));
-		}
-
-		internal static bool HasNonZeroCornerRadius(CornerRadius cornerRadius)
-		{
-			return (cornerRadius.TopLeft > 0.0f) ||
-				   (cornerRadius.TopRight > 0.0f) ||
-				   (cornerRadius.BottomRight > 0.0f) ||
-				   (cornerRadius.BottomLeft > 0.0f);
-		}
-
 		internal static Thickness GetLayoutRoundedThickness(FrameworkElement element)
 		{
 			// Layout rounding will correctly round element sizes and offsets at the current plateau,
@@ -65,7 +46,6 @@ namespace Windows.UI.Xaml.Controls
 			// inner edges and other rendering artifacts. This method rounds the BorderThickness at the current plateau
 			// using plateau-aware LayoutRound utility.
 			var roundedThickness = new Thickness();
-
 			var thickness = element.GetBorderThickness();
 			roundedThickness.Left = element.LayoutRound(thickness.Left);
 			roundedThickness.Right = element.LayoutRound(thickness.Right);
@@ -81,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 			// Set up the bound rectangle
 			var outerRect = new Rect(0, 0, outerSize.Width, outerSize.Height);
 
-			if (UseLayoutRoundingForBorderThickness(element))
+			if (element.GetUseLayoutRounding())
 			{
 				outerRect.Width = element.LayoutRound(outerRect.Width);
 				outerRect.Height = element.LayoutRound(outerRect.Height);

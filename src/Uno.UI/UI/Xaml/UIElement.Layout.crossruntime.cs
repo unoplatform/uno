@@ -362,6 +362,14 @@ namespace Windows.UI.Xaml
 				return; // Nothing do to
 			}
 
+			if (GetUseLayoutRounding())
+			{
+				finalRect.X = LayoutRound(finalRect.X);
+				finalRect.Y = LayoutRound(finalRect.Y);
+				finalRect.Width = LayoutRound(finalRect.Width);
+				finalRect.Height = LayoutRound(finalRect.Height);
+			}
+
 			var remainingTries = MaxLayoutIterations;
 
 			while (--remainingTries > 0)

@@ -32,46 +32,44 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var padding = Padding;
-			var borderThickness = BorderThickness;
+			Size childAvailableSize = default;
 
-			Size measuredSize;
+			Size combined = HelperGetCombinedThickness(this);
+
+			// Get the child to measure it - if any.
+			//If we have a child
 			if (Child is { } child)
 			{
-				var childSize = new Size(
-					availableSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
-					availableSize.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
-				);
-				measuredSize = MeasureElement(child, childSize);
+				// Remove combined size from child's reference size.
+				childAvailableSize.Width = Math.Max(0.0f, availableSize.Width - combined.Width);
+				childAvailableSize.Height = Math.Max(0.0f, availableSize.Height - combined.Height);
+
+				var desiredSize = MeasureElement(child, childAvailableSize);
+
+				//IFC(pChild->EnsureLayoutStorage());
+
+				// Desired size would be my child's desired size plus the border
+				desiredSize.Width = desiredSize.Width + combined.Width;
+				desiredSize.Height = desiredSize.Height + combined.Height;
+				return desiredSize;
 			}
 			else
 			{
-				measuredSize = default;
+				return combined;
 			}
-
-			return new Size(
-				measuredSize.Width + padding.Left + padding.Right + borderThickness.Left + borderThickness.Right,
-				measuredSize.Height + padding.Top + padding.Bottom + borderThickness.Top + borderThickness.Bottom
-			);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var child = this.FindFirstChild();
-
-			if (child != null)
+			// Get the child to arrange it - if any.
+			//If we have a child
+			if (Child is { } child)
 			{
-				var padding = Padding;
-				var borderThickness = BorderThickness;
+				Rect childRect = HelperGetInnerRect(this, finalSize);
 
-				var finalRect = new Rect(
-					padding.Left + borderThickness.Left,
-					padding.Top + borderThickness.Top,
-					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,
-					finalSize.Height - padding.Top - padding.Bottom - borderThickness.Top - borderThickness.Bottom
-				);
-
-				base.ArrangeElement(child, finalRect);
+				// Give the child the inner rectangle as the available size
+				// and ask it to arrange itself within this rectangle.
+				child.Arrange(childRect);
 			}
 
 			return finalSize;
