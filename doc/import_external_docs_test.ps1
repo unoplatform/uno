@@ -15,7 +15,7 @@ $external_docs = @{
     "uno.resizetizer"    = "main"
     "uno.uitest"         = "master"
     "uno.extensions"     = "main"
-    "workshops-private"     = "dev/shwe/review"      
+    "workshops-private"     = "feature/tubeplayer"      
 }
 
 ./import_external_docs $external_docs
