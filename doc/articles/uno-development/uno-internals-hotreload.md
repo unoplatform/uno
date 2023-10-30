@@ -1,5 +1,5 @@
 ---
-uid: Uno.Contributing.HotReload
+uid: Uno.Contributing.Internals.HotReload
 ---
 
 # Hot Reload Phases
