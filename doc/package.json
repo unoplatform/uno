@@ -22,7 +22,7 @@
 		"gulp-strip-import-export": "^1.0.0",
 		"gulp-uglify": "^3.0.2",
 		"gulp-watch": "^5.0.1",
-		"postcss": "^8.3.6",
+		"postcss": "^8.4.31",
 		"prettier": "^2.3.2"
 	},
 	"description": "nventive gulp automation",
