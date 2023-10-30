@@ -102,19 +102,19 @@ To create an Uno Platform app:
       - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
       
         > [!NOTE] 
-        > If no iOS devices are available, a Visual Studio 17.7+ issue requires to unload/reload the project. Right click on the `.Mobile` project and select **Unload Project** then **Load project**.
+        > If no iOS devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
 
 1. To debug the **Android** platform:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the **Debug toolbar** drop down, select framework `net7.0-android`
     - Select an active device in the "Device" sub-menu
         > [!NOTE] 
-        > If no android devices are available, a Visual Studio 17.7+ issue requires to unload/reload the project. Right click on the `.Mobile` project and select **Unload Project** then **Load project**.
+        > If no android devices are available, a Visual Studio 17.7+ issue requires unloading/reloading the project. Right-click on the `.Mobile` project and select **Unload Project** then **Load project**.
 
 You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
 > [!NOTE] 
-> Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows. You can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
+> Debugging either the macOS or macCatalyst targets is not supported by Visual Studio on Windows. You can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
 
 ## Troubleshooting Installation Issues
 
