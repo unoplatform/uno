@@ -3332,7 +3332,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								var propertyType = GetPropertyTypeByOwnerSymbol(ownerType, member.Member.Name);
 
-								if (IsExactlyCollectionOrListType(propertyType))
+								if (member.Objects.Count == 1 && member.Objects[0] is var child && IsType(child.Type, propertyType))
+								{
+									writer.AppendLineInvariantIndented(
+										"{0}.Set{1}({2}, ",
+										ownerType.GetFullyQualifiedTypeIncludingGlobal(),
+										member.Member.Name,
+										closureName
+									);
+
+									using (writer.Indent())
+									{
+										BuildChild(writer, member, member.Objects[0]);
+									}
+
+									writer.AppendLineIndented(");");
+								}
+								else if (IsExactlyCollectionOrListType(propertyType))
 								{
 									// If the property is specifically an IList or an ICollection
 									// we can use C#'s collection initializer.
@@ -3387,27 +3403,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 										writer.AppendLineIndented(");");
 									}
 								}
+								else if (member.Objects.Count == 1)
+								{
+									var childType = GetType(member.Objects[0].Type).GetFullyQualifiedTypeExcludingGlobal();
+									throw new InvalidOperationException($"Cannot assign child of type '{childType}' to property of type '{propertyType.GetFullyQualifiedTypeExcludingGlobal()}'.'");
+								}
 								else
 								{
-									// If the property is specifically an IList or an ICollection
-									// we can use C#'s collection initializer.
-									writer.AppendLineInvariantIndented(
-										"{0}.Set{1}({2}, ",
-										ownerType.GetFullyQualifiedTypeIncludingGlobal(),
-										member.Member.Name,
-										closureName
-									);
-
-									if (member.Objects.Count == 1)
-									{
-										BuildChild(writer, member, member.Objects.First());
-									}
-									else
-									{
-										throw new InvalidOperationException($"The property {member.Member.Name} of type {propertyType} does not support adding multiple objects.");
-									}
-
-									writer.AppendLineIndented(");");
+									throw new InvalidOperationException($"The property {member.Member.Name} of type {propertyType} does not support adding multiple objects.");
 								}
 							}
 							else
