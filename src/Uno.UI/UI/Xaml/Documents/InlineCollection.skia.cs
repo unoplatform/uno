@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Windows.UI.Text;
 using Windows.UI.Xaml.Documents.TextFormatting;
 using Windows.UI.Xaml.Media;
+using Uno.Foundation.Logging;
 using Uno.UI.Composition;
 
 #nullable enable
@@ -752,7 +753,21 @@ namespace Windows.UI.Xaml.Documents
 			=> span.FullGlyphsLength + (SpanEndsInCR(span.Segment, span) ? 1 : 0);
 
 		private static bool SpanEndsInCR(Segment segment, RenderSegmentSpan segmentSpan)
-			=> segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == '\r';
+		{
+			try
+			{
+				return segment.Length > segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength && segment.Text[segmentSpan.GlyphsStart + segmentSpan.FullGlyphsLength] == '\r';
+			}
+			catch (Exception)
+			{
+				if (segment.Log().IsEnabled(LogLevel.Error))
+				{
+					// There's an exception that happens in CI for some reason. Root cause unknown for now
+					segment.Log().Error($"Unexpected exception: segment.Length = {segment.Length}, segmentSpan.[GlyphsStart,FullGlyphsLength] = [{segmentSpan.GlyphsStart},{segmentSpan.FullGlyphsLength}]");
+				}
+				return false;
+			}
+		}
 
 		internal record SelectionDetails(int StartLine, int StartIndex, int EndLine, int EndIndex);
 	}
