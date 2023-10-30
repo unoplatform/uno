@@ -1,11 +1,13 @@
 ---
 uid: Uno.Development.MigratingToUno5
 ---
-Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes, but are not introducing behavior changes. You can find a list of these changes below.
+Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes. You can find a list of these changes below.
+
 
 Additionally, this version:
 - Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS.
-- Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, .NET 6 (iOS/Android/Catalyst) and netstandard2.0 for WebAssembly.
+- Removes the support for Xamarin.iOS, Xamarin.Android, Xamarin.Mac, .NET 6 (iOS/Android/Catalyst), and netstandard2.0 for WebAssembly.
+
 - .NET 7.0 support for iOS, Android, Mac Catalyst, and macOS remains unchanged.
 - Updates the base Windows SDK version from 18362 to 19041.
 
@@ -17,11 +19,13 @@ Uno Platform 5.0 continues to support both UWP ([Uno.UI](https://www.nuget.org/p
 
 This change ensures that the XAML parser will only look for types in an explicit way, and avoids fuzzy matching that could lead to incorrect type resolution.
 
-In order to resolve types properly in a conditional XAML namespace, make use to use the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+In order to resolve types properly in a conditional XAML namespace, make use of the [new syntax introduced in Uno 4.8](https://platform.uno/docs/articles/platform-specific-xaml.html?q=condition#specifying-namespaces).
+
 
 #### Enabling Hot Reload
 
-Hot Reload support has change in Uno Platform 5.0 and a new API invocation is needed to restore the feature in your existing app.
+Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is needed to restore the feature in your existing app.
+
 
 - If your project is built using a shared class library, you'll need to add the following lines to the `csproj``:
     ```xml
@@ -71,17 +75,20 @@ public App()
 ```
 #### Migrating `ApplicationData` on Skia targets
 
-Previously, `ApplicationData` were stored directly in `Environment.SpecialFolder.LocalApplicationData` folder, and all Uno Platform apps shared this single location. Starting with Uno Platform 5.0, application data are stored in application specific folders under the `LocalApplicationData` root. For more details see the [docs](features/applicationdata.md). To perform the initial migration of existing data you need to make sure to copy the files from the root of the `LocalApplicationData` folder to `ApplicationData.Current.LocalFolder` manually using `System.IO`.
+Previously, `ApplicationData` was stored directly in `Environment.SpecialFolder.LocalApplicationData` folder, and all Uno Platform apps shared this single location. Starting with Uno Platform 5.0, application data are stored in application-specific folders under the `LocalApplicationData` root. For more details see the [docs](features/applicationdata.md). To perform the initial migration of existing data you need to make sure to copy the files from the root of the `LocalApplicationData` folder to `ApplicationData.Current.LocalFolder` manually using `System.IO`.
 
-#### Updating the Windows SDK from from 18362 to 19041
 
-If your existing libraries or UWP/WinAppSDK projects are targeting the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurrences of `18362` to `19041` in all your solution's `csproj`, `.targets`, `.props` and `.wapproj` files.
+#### Updating the Windows SDK from 18362 to 19041
+
+If your existing libraries or UWP/WinAppSDK projects are targeting the Windows SDK 18362, you'll need to upgrade to 19041. A simple way of doing so is to replace all occurrences of `18362` to `19041` in all your solution's `csproj`, `.targets`, `.props`, and `.wapproj` files.
+
 
 #### The Uno.[UI|WinUI].RemoteControl package is deprecated
 
 The `Uno.[UI|WinUI].RemoteControl` is deprecated and should be replaced by `Uno.WinUI.DevServer` (or `Uno.WinUI.DevServer` if you're using UWP). 
 
-This is not a required changes, as the package `Uno.[UI|WinUI].RemoteControl` transitively uses `Uno.WinUI.DevServer`, but the package will eventually be phased out.
+This is not a required change, as the package `Uno.[UI|WinUI].RemoteControl` transitively uses `Uno.WinUI.DevServer`, but the package will eventually be phased out.
+
 
 ## List of other breaking changes
 
@@ -89,7 +96,8 @@ This is not a required changes, as the package `Uno.[UI|WinUI].RemoteControl` tr
 
 Invalid XAML, such as unknown properties or unknown x:Bind targets will generate a compiler error. Those errors must now be fixed as they are no longer ignored.
 
-#### ResourceDictionary now require an explicit Uri reference
+#### ResourceDictionary now requires an explicit Uri reference
+
 
 Resources dictionaries are now required to be explicitly referenced by URI to be considered during resource resolution. Applications that are already running properly on WinAppSDK should not be impacted by this change.
 
@@ -115,7 +123,8 @@ This change moves the `AnimatedVisualPlayer` to the appropriate namespace for Wi
 
 #### `SimpleOrientationSensor` should not schedule on `Dispatcher`
 
-`SimpleOrientationSensor` on Android now raises events from a background thread and need to be explicitly dispatched to the UI thread as needed.
+`SimpleOrientationSensor` on Android now raises events from a background thread and needs to be explicitly dispatched to the UI thread as needed.
+
 
 #### The following types are removed from public API: `DelegateCommand`, `DelegateCommand<T>`, `IResourceService`, `IndexPath`, and `SizeConverter`.
 
@@ -131,7 +140,8 @@ The method has been removed.
 
 #### `DependencyObjectGenerator` no longer generated an empty ApplyCompiledBindings method.
 
-These methods were unused since Uno 3.0 and have been removed.
+These methods have been unused since Uno 3.0 and have been removed.
+
 
 #### `EasingFunctionBase` API is now aligned with WinUI
 
@@ -151,11 +161,13 @@ This change is a rename for an identifier typo. Renaming the invocation to the n
 
 #### Timeline shouldn't implement IDisposable
 
-Timeline does not implement `IDisposable` anymore. This class was not supposed be disposable and has been removed.
+Timeline does not implement `IDisposable` anymore. This class was not supposed to be disposable and has been removed.
+
 
 #### `GridExtensions` and `PanelExtensions` are removed
 
-These legacy class have been removed.
+These legacy classes have been removed.
+
 
 #### `GetLeft`, `GetTop`, `SetLeft`, `SetTop`, `GetZIndex`, and `SetZIndex` overloads that take DependencyObject are now removed
 
@@ -185,7 +197,7 @@ Use the new types instead.
 
 Use the related events instead.
 
-#### `FrameBufferHost` and `GtkHost` constructors that takes `args` are now removed. `args` were already unused
+#### `FrameBufferHost` and `GtkHost` constructors that take `args` are now removed. `args` were already unused
 
 You can remove the last argument of the constructor invocation. The parameters are read by the host directly.
 
@@ -203,7 +215,7 @@ Use `Windows.Storage.Streams.Buffer` instead.
 
 #### `ContentPropertyAttribute.Name` is now a field to match UWP
 
-This change has no effect on Controls behavior.
+This change has no effect on Control's behavior.
 
 #### Remove `FontWeightExtensions` and `CssProviderExtensions`
 

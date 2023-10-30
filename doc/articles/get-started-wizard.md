@@ -102,11 +102,11 @@ On macOS, you'll need to follow the [Uno Platform](get-started-vsmac.md) setup i
 
 #### Hot Reload troubleshooting
 
-The Hot reload provides a Visual Studio for Windows output window name "Uno Platform" with diagnostics messages. You can find additional information there in case XAML Hot Reload does not work properly.
+The Hot Reload provides a Visual Studio for Windows output window named "Uno Platform" with diagnostics messages. You can find additional information there in case XAML Hot Reload does not work properly.
 
 Some common troubleshooting steps:
 - Make sure to rebuild your application if the XAML changes are not applied
-- Ensure that the Uno.WinUI.DevServer package has the same version as the Uno.WinUI package (Similar step is valid for Uno.UI packages)
+- Ensure that the Uno.WinUI.DevServer package has the same version as the Uno.WinUI package (A similar step is valid for Uno.UI packages)
 
 More troubleshooting information is available [in this section](xref:Uno.Features.HotReload).
 

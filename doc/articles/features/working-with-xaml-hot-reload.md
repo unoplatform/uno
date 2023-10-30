@@ -67,7 +67,7 @@ Mobile targets are currently using a limited version of XAML Hot Reload and do n
 > [!NOTE]
 > Help us by giving it a thumbs up to help prioritize it in the .NET team backlog!
 
-- In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio tool bar.
+- In Visual Studio, the "Hot Reload on File Save" feature must be disabled to avoid crashing the app. You can find this feature by clicking on the down arrow next to the red flame in the Visual Studio toolbar.
 - In both VS and VS Code, C# Hot Reload is not yet supported
 - XAML `x:Bind` hot reload is limited to simple expressions and events
 
