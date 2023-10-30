@@ -14,9 +14,9 @@ namespace Windows.UI.Core
 
 		public event TypedEventHandler<CoreWindow, KeyEventArgs> KeyUp;
 
-		private readonly UIWindow _window;
+		private UIWindow _window;
 
-		public CoreWindow(UIWindow window) : this()
+		internal void SetWindow(UIWindow window)
 		{
 			_window = window;
 		}

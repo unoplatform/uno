@@ -5,10 +5,9 @@ namespace Windows.UI.Core
 {
 	partial class CoreWindow
 	{
-		private readonly NSWindow _window;
+		private NSWindow _window;
 
-		public CoreWindow(NSWindow window)
-			: this()
+		internal void SetWindow(NSWindow window)
 		{
 			_window = window;
 		}
