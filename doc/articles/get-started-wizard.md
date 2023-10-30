@@ -36,7 +36,7 @@ See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-refere
 
 This issue has been fixed in Visual Studio 17.8 Preview 5 and later.
 
-If you're using an ealier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
+If you're using an earlier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
 
 To work around this issue, close all XAML editors, open a C# file and select the '[MyApp].Windows' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
@@ -44,11 +44,11 @@ To work around this issue, close all XAML editors, open a C# file and select the
 
 This issue has been fixed in Visual Studio 17.8 Preview 5 and later.
 
-If you're using an ealier version, Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
+If you're using an earlier version, Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
 
 To fix this issue, build your project once, close the solution and reopen it.
 
-It is also important to note that Uno Paltform uses a multi-project structure, for which each project has to be build individually for errors to disappear from the **Error List** window (notice the **Project** column values).
+It is also important to note that Uno Platform uses a multi-project structure, for which each project has to be build individually for errors to disappear from the **Error List** window (notice the **Project** column values).
 
 In order to clear the **Error List** window, build the whole solution completely once. Thereafter, build a specific project and prefer the use of the **Output** tool window (in the menu **View** -> **Output**), taking build messages by order of appearance.
 
