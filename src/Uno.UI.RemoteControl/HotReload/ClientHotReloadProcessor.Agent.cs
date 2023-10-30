@@ -67,10 +67,18 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
 			//var targetFramework = GetMSBuildProperty("TargetFramework");
-			//var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
-			return (_forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial)
-				|| unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase)
+			var enabled = (_forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial)
+
+				// CoreCLR Debugger under VS Win already handles metadata updates
+				// Debugger under VS Code prevents metadata based hot reload
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase))
+
+				// Mono Debugger under VS Win already handles metadata updates
+				// Mono Debugger under VS Code prevents metadata based hot reload
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && unoRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase))
+
 				// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
 				//
 				//||
@@ -82,6 +90,13 @@ namespace Uno.UI.RemoteControl.HotReload
 				//		(!Debugger.IsAttached
 				//			&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))))
 				;
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"MetadataUpdates Enabled:{enabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} unorid: {unoRuntimeIdentifier}");
+			}
+
+			return enabled;
 		}
 
 		private string[] GetMetadataUpdateCapabilities()
