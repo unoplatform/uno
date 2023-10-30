@@ -577,4 +577,8 @@
 
 - name: Workshops
   topicHref: external/workshops-private/README.md
-  href: external/workshops-private/toc.yml
+  items:
+    - name: Tube Player
+    - href: external/workshops-private/tube-player/toc.yml
+    - name: Simple Calc
+    - href: external/workshops-private/simple-calc/toc.yml
