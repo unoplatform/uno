@@ -13,7 +13,7 @@ This getting started will guide you through the creation of an Uno Platform App 
 > To use Xamarin (as opposed to .NET 7 Mobile) with Visual Studio 2019, [follow this guide](get-started-vs.md).
 
 ## Prerequisites
-To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or later**](https://visualstudio.microsoft.com/vs/):
+To create Uno Platform applications you will need [**Visual Studio 2022 17.7 or later**](https://visualstudio.microsoft.com/vs/):
 
 1. **ASP.NET and web development** workload installed (for WebAssembly development)
 
@@ -28,10 +28,7 @@ To create Uno Platform applications you will need [**Visual Studio 2022 17.4 or 
     ![Visual Studio Installer - .NET desktop development workload](Assets/quick-start/vs-install-dotnet.png)    
 
 > [!IMPORTANT] 
-> To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
-
-> [!NOTE]
-> For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+> Uno Platform 5.0 [does not support Xamarin projects anymore](xref:Uno.Development.MigratingToUno5). To build Xamarin-based projects in Visual Studio 2022, in Visual Studio's installer `Individual components` tab, search for Xamarin and select `Xamarin` and `Xamarin Remoted Simulator`. See [this section on migrating Xamarin projects](migrating-from-xamarin-to-net6.md) to .NET 6.
 
 [!include[getting-help](use-uno-check-inline-windows.md)]
 
@@ -66,7 +63,7 @@ To create an Uno Platform app:
     - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
     - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)) or [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept)
     - **Projects** gives the ability to add a Server project for APIs and hosting for the WebAssembly project
-    - **Testing** provides Unit Testing and [UI Testing projects](https://github.com/unoplatform/Uno.UITest)
+    - **Testing** provides Unit Testing and [UI Testing projects](https://g7ithub.com/unoplatform/Uno.UITest)
     - **Features** provides support for WebAssembly PWA and optional [VS Code support](xref:Uno.GetStarted.vscode) files
     - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
     - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
@@ -93,6 +90,9 @@ To create an Uno Platform app:
     - Press the `MyApp.Server` button to deploy the app
 1. To debug for **iOS**:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
+        > [!NOTE]
+        > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+
     - In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
 
       ![Visual Studio - "Debug toolbar" drop-down selecting the "net7.0-ios" framework](Assets/quick-start/net7-ios-debug.png)
@@ -100,19 +100,25 @@ To create an Uno Platform app:
     - Select:
       - An active device, if your IDE is connected to a macOS Host
       - A [local device using Hot Restart](https://learn.microsoft.com/en-us/xamarin/xamarin-forms/deploy-test/hot-restart), to debug your application without connecting to a mac
+      
+        > [!NOTE] 
+        > If no iOS devices are available, a Visual Studio 17.7+ issue requires to unload/reload the project. Right click on the `.Mobile` project and select **Unload Project** then **Load project**.
+
 1. To debug the **Android** platform:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
     - In the **Debug toolbar** drop down, select framework `net7.0-android`
     - Select an active device in the "Device" sub-menu
+        > [!NOTE] 
+        > If no android devices are available, a Visual Studio 17.7+ issue requires to unload/reload the project. Right click on the `.Mobile` project and select **Unload Project** then **Load project**.
 
-You're all set! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
+You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
 > [!NOTE] 
-> Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows.
+> Debugging either the macOS and macCatalyst targets is not supported from Visual Studio on Windows. You can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
 
 ## Troubleshooting Installation Issues
 
-You may encounter installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](https://platform.uno/docs/articles/get-started-wizard.html) we have documented.
+You may encounter installation and/or post-installation Visual Studio issues for which workarounds exist. Please see [Common Issues](xref:Uno.GetStarted.Wizard) we have documented.
 
 [!include[getting-help](getting-help.md)]
 
