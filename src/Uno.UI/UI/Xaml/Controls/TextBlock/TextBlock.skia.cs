@@ -23,8 +23,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly TextVisual _textVisual;
 
-		private float? _cachedFontLineHeight;
-
 		public TextBlock()
 		{
 			SetDefaultForeground(ForegroundProperty);
@@ -45,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding);
-			var defaultLineHeight = (float)GetComputedLineHeight();
+			var defaultLineHeight = GetComputedLineHeight();
 			var desiredSize = Inlines.Measure(availableSizeWithoutPadding, defaultLineHeight);
 
 			return desiredSize.Add(padding);
@@ -89,12 +87,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				if (_cachedFontLineHeight is null)
-				{
-					var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
-					_cachedFontLineHeight = font.LineHeight;
-				}
-				return _cachedFontLineHeight.Value;
+				var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+				return font.LineHeight;
 			}
 		}
 
