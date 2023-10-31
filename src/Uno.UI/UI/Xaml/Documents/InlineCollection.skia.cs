@@ -16,6 +16,8 @@ namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
+		private static SKTextBlobBuilder _textBlobBuilder = new();
+
 		private readonly List<RenderLine> _renderLines = new();
 
 		private bool _invalidationPending;
@@ -375,8 +377,7 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					using var textBlobBuilder = new SKTextBlobBuilder();
-					var run = textBlobBuilder.AllocatePositionedRun(fontInfo.SKFont, segmentSpan.GlyphsLength);
+					var run = _textBlobBuilder.AllocatePositionedRun(fontInfo.SKFont, segmentSpan.GlyphsLength);
 					var glyphs = run.GetGlyphSpan();
 					var positions = run.GetPositionSpan();
 
@@ -427,7 +428,7 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					using var textBlob = textBlobBuilder.Build();
+					using var textBlob = _textBlobBuilder.Build();
 					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
