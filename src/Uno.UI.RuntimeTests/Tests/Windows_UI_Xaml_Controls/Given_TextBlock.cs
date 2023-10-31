@@ -1,9 +1,6 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.RuntimeTests.Helpers;
-using Uno.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI;
@@ -12,7 +9,6 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Imaging;
 using static Private.Infrastructure.TestServices;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
@@ -259,6 +255,79 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
 			ImageAssert.HasColorInRectangle(bitmap, new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height), Colors.Red.WithOpacity(.5));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Empty_TextBlock_Measure()
+		{
+			var container = new Grid()
+			{
+				Height = 200,
+				Width = 200,
+			};
+			var SUT = new TextBlock { Text = "" };
+			container.Children.Add(SUT);
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			Assert.AreEqual(0, SUT.DesiredSize.Width);
+			Assert.IsTrue(SUT.DesiredSize.Height > 0);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Empty_TextBlock_LineHeight_Override()
+		{
+			var container = new Grid()
+			{
+				Height = 200,
+				Width = 200,
+			};
+			var SUT = new TextBlock { Text = "", LineHeight = 100 };
+			container.Children.Add(SUT);
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			Assert.AreEqual(0, SUT.DesiredSize.Width);
+			Assert.AreEqual(100, SUT.DesiredSize.Height);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Empty_TextBlocks_Stacked()
+		{
+			var container = new StackPanel();
+			for (int i = 0; i < 3; i++)
+			{
+				container.Children.Add(new TextBlock { Text = "" });
+			}
+
+			container.Children.Add(new TextBlock { Text = "Some text" });
+
+			for (int i = 0; i < 3; i++)
+			{
+				container.Children.Add(new TextBlock { Text = "" });
+			}
+
+			WindowHelper.WindowContent = container;
+			await WindowHelper.WaitForLoaded(container);
+
+			// Get the transform of the top left of the container
+			var previousTransform = container.TransformToVisual(null);
+			var previousOrigin = previousTransform.TransformPoint(new Point(0, 0));
+
+			for (int i = 1; i < container.Children.Count; i++)
+			{
+				// Get the same for SUT
+				var textBlockTransform = container.Children[i].TransformToVisual(null);
+				var textBlockOrigin = textBlockTransform.TransformPoint(new Point(0, 0));
+
+				Assert.AreEqual(previousOrigin.X, textBlockOrigin.X);
+				Assert.IsTrue(previousOrigin.Y < textBlockOrigin.Y);
+
+				previousOrigin = textBlockOrigin;
+			}
 		}
 	}
 }
