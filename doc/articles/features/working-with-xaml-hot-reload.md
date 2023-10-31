@@ -9,8 +9,8 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of 
 ## Features
 - XAML Hot Reload for **iOS, Catalyst, Android, WebAssembly, Skia (Gtk, WPF and Framebuffer)**
 - Supported in **Visual Studio 2022** (Windows) and **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod)
-- Supports **XAML files** in the **main project**, in **shared projects, and referenced projects
-- Support for partial **tree hot reload**, where modifying a `UserControl` instantiated in multiple locations will reload it without reloading its parents.
+- Supports **XAML files** in the **main project**, in **shared projects**, and **referenced projects**
+- Support for partial **tree hot reload**, where modifying a `UserControl` instantiated in multiple locations will reload it without reloading its parents
 - **XAML Bindings** Hot Reload
 - Full **x:Bind expressions** Hot Reload
 - **AppResources.xaml Hot Reload**
@@ -29,7 +29,7 @@ Hot Reload features vary between platforms and IDE, you can check below the list
 # [**Visual Studio 2022**](#tab/vswin)
 - Setup your environment by following our [getting started guides](xref:Uno.GetStarted.vs2022).
 - Start your application (with or without the debugger, depending on the supported features below)
-- Make changes to your XAML or C# code, save your file then press the red flame icon in the toolbar
+- Make changes to your XAML or C# code, save your file then press the red flame icon in the toolbar or use `Alt+F10`
 
 # [**Visual Studio Code**](#tab/vscode)
 - Setup your environment by following our [getting started guide](xref:Uno.GetStarted.vscode)
@@ -84,6 +84,13 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 - The file named `RemoteControlGenerator\RemoteControl.g.cs` in the analyzers node for your project contains the connection information, verify that the information host addresses and the port number.
 - WinAppSDK on Windows specific issues
     - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
+- If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
+  ```xml
+  <PropertyGroup>
+    <!-- Required for Hot Reload (See https://github.com/unoplatform/uno.templates/issues/376) -->
+    <GenerateAssemblyInfo Condition="'$(Configuration)'=='Debug'">false</GenerateAssemblyInfo>
+  </PropertyGroup>
+  ```
 
 ### Visual Studio 2022
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there.
