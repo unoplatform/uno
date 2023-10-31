@@ -134,10 +134,7 @@ namespace Windows.UI.Xaml
 			//	frameworkAvailableSize = availableSize;
 			//}
 
-
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
-
-
 
 			// We need to round now since we save the values off, and use them to determine
 			// if a layout clip will be applied.
@@ -213,21 +210,23 @@ namespace Windows.UI.Xaml
 
 				// only clip and constrain if the tree wants that.
 				// currently only listviewitems do not want clipping
-				//if (!pLayoutManager->GetIsInNonClippingTree())
-				//{
-				//	// In overconstrained scenario, parent wins and measured size of the child,
-				//	// including any sizes set or computed, can not be larger then
-				//	// available size. We will clip the guy later.
-				//	if (clippedDesiredWidth > availableSize.Width)
-				//	{
-				//		clippedDesiredWidth = availableSize.Width;
-				//	}
+				// UNO TODO
 
-				//	if (clippedDesiredHeight > availableSize.Height)
-				//	{
-				//		clippedDesiredHeight = availableSize.Height;
-				//	}
-				//}
+				//if (!pLayoutManager->GetIsInNonClippingTree())
+				{
+					// In overconstrained scenario, parent wins and measured size of the child,
+					// including any sizes set or computed, can not be larger then
+					// available size. We will clip the guy later.
+					if (clippedDesiredWidth > availableSize.Width)
+					{
+						clippedDesiredWidth = availableSize.Width;
+					}
+
+					if (clippedDesiredHeight > availableSize.Height)
+					{
+						clippedDesiredHeight = availableSize.Height;
+					}
+				}
 
 				//  Note: unclippedDesiredSize is needed in ArrangeCore,
 				//  because due to the layout protocol, arrange should be called
