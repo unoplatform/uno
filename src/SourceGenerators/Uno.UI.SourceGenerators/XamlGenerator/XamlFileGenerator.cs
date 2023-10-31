@@ -380,8 +380,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						if (_isHotReloadEnabled)
 						{
 							// Create a public member to avoid having to remove all unused member warnings
+							// The member is a method to avoid this error: error ENC0011: Updating the initializer of const field requires restarting the application.
 							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-							writer.AppendLineIndented($"public const string __checksum = \"{_fileDefinition.Checksum}\";");
+							writer.AppendLineIndented($"internal string __checksum() => \"{_fileDefinition.Checksum}\";");
 						}
 
 						BuildBaseUri(writer);
@@ -1192,8 +1193,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						if (_isHotReloadEnabled)
 						{
 							// Create a public member to avoid having to remove all unused member warnings
+							// The member is a method to avoid this error: error ENC0011: Updating the initializer of const field requires restarting the application.
 							writer.AppendLineIndented("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-							writer.AppendLineIndented($"public const string __{_fileDefinition.UniqueID}_checksum = \"{_fileDefinition.Checksum}\";");
+							writer.AppendLineIndented($"internal string __{_fileDefinition.UniqueID}_checksum() => \"{_fileDefinition.Checksum}\";");
 						}
 
 						IDisposable WrapSingleton()
