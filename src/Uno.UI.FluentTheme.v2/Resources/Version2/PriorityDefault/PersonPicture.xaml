@@ -20,8 +20,6 @@
                 <VisualState x:Name="Photo">
                   <VisualState.Setters>
                     <Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}" />
-                    <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
-                    <wasm:Setter Target="PersonPictureImage.Source" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush.ImageSource}" />
                   </VisualState.Setters>
                 </VisualState>
                 <!-- Visual State when no Photo is available (but there are initials).-->
@@ -63,10 +61,6 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <Ellipse Fill="{ThemeResource PersonPictureEllipseFillThemeBrush}" Stroke="{ThemeResource PersonPictureEllipseFillStrokeBrush}" StrokeThickness="{ThemeResource PersonPictureEllipseStrokeThickness}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" />
-            <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
-            <wasm:Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="{TemplateBinding Width}" FlowDirection="LeftToRight">
-                <Image x:Name="PersonPictureImage" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
-            </wasm:Border>
             <TextBlock x:Name="InitialsTextBlock" AutomationProperties.AccessibilityView="Raw" FontSize="40" FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" TextLineBounds="Tight" VerticalAlignment="Center" HorizontalAlignment="Center" IsTextScaleFactorEnabled="False" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
             <Ellipse x:Name="PersonPictureEllipse" x:DeferLoadStrategy="Lazy" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" FlowDirection="LeftToRight" />
             <Grid x:Name="BadgeGrid" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="{ThemeResource PersonPictureBadgeGridMargin}">
