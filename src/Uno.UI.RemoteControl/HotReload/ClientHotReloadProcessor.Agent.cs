@@ -23,12 +23,13 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent? _agent;
-		private bool _metadataUpdatesEnabled;
+		private bool _serverMetadataUpdatesEnabled;
 		private static ClientHotReloadProcessor? _instance;
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
 				=> _hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+
 		/// <summary>
 		/// Waits for the server's hot reload workspace to be loaded
 		/// </summary>
@@ -42,7 +43,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			_instance = this;
 
-			_metadataUpdatesEnabled = BuildMetadataUpdatesEnabled();
+			_serverMetadataUpdatesEnabled = BuildServerMetadataUpdatesEnabled();
 
 			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
 
@@ -63,7 +64,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			});
 		}
 
-		private bool BuildMetadataUpdatesEnabled()
+		private bool BuildServerMetadataUpdatesEnabled()
 		{
 			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
 			//var targetFramework = GetMSBuildProperty("TargetFramework");
@@ -93,7 +94,7 @@ namespace Uno.UI.RemoteControl.HotReload
 
 			if (this.Log().IsEnabled(LogLevel.Trace))
 			{
-				this.Log().Trace($"MetadataUpdates Enabled:{enabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} unorid: {unoRuntimeIdentifier}");
+				this.Log().Trace($"ServerMetadataUpdates Enabled:{enabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} unorid: {unoRuntimeIdentifier}");
 			}
 
 			return enabled;
