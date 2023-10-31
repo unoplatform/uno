@@ -20,7 +20,7 @@ public partial class PersonPictureTemplateSettings : DependencyObject
 
 	public string ActualInitials
 	{
-		get => (string)GetValue(ActualInitialsProperty); 
+		get => (string)GetValue(ActualInitialsProperty);
 		internal set => SetValue(ActualInitialsProperty, value);
 	}
 
