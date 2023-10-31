@@ -90,13 +90,10 @@ public class WpfHost : IWpfApplicationHost
 
 		WinUIApplication.StartWithArguments(CreateApp);
 	}
-<<<<<<< HEAD
-=======
 
 	public override string ToString() =>
 		"If you are seeing this, make sure to follow the \"Migrating WpfHost\" section of Migrating from " +
 		"previous releases article in the Uno Platform documentation at " +
 		"https://aka.platform.uno/uno5-wpfhost-migration. " +
 		"WpfHost is used at the application level instead of window level starting Uno Platform 5.0.";
->>>>>>> 0cab29d1b4 (docs: Update link for WPF Host docs)
 }
