@@ -52,8 +52,8 @@ namespace Uno.UI.RemoteControl.HotReload
 				this.Log().Trace($"Partial Hot Reload Enabled:{_supportsLightweightHotReload} " +
 					$"unoRuntimeIdentifier:{unoRuntimeIdentifier} " +
 					$"targetFramework:{targetFramework} " +
-					$"buildingInsideVisualStudio:{targetFramework}" +
-					$"debuggerAttached: {Debugger.IsAttached}");
+					$"buildingInsideVisualStudio:{targetFramework} " +
+					$"debuggerAttached:{Debugger.IsAttached}");
 			}
 
 			_mappedTypes = _supportsLightweightHotReload
