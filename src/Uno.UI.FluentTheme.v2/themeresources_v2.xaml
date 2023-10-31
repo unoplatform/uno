@@ -19919,9 +19919,6 @@
   <Style TargetType="controls:PersonPicture" BasedOn="{StaticResource DefaultPersonPictureStyle}" />
   <Style x:Key="DefaultPersonPictureStyle" TargetType="controls:PersonPicture">
     <Setter Property="Foreground" Value="{ThemeResource PersonPictureForegroundThemeBrush}" />
-    <Setter Property="Background" Value="{ThemeResource PersonPictureEllipseFillThemeBrush}" />
-    <Setter Property="BorderBrush" Value="{ThemeResource PersonPictureEllipseFillStrokeBrush}" />
-    <Setter Property="BorderThickness" Value="{ThemeResource PersonPictureEllipseStrokeThickness}" />
     <Setter Property="Width" Value="96" />
     <Setter Property="Height" Value="96" />
     <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
@@ -19980,13 +19977,13 @@
                 </VisualState>
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
-            <Ellipse Fill="{TemplateBinding Background}" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="{TemplateBinding BorderThickness}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" />
-            <TextBlock x:Name="InitialsTextBlock" AutomationProperties.AccessibilityView="Raw" FontSize="40" FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" TextLineBounds="Tight" VerticalAlignment="Center" HorizontalAlignment="Center" IsTextScaleFactorEnabled="False" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
-            <Ellipse x:Name="PersonPictureEllipse" x:DeferLoadStrategy="Lazy" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" FlowDirection="LeftToRight" />
+            <Ellipse Fill="{ThemeResource PersonPictureEllipseFillThemeBrush}" Stroke="{ThemeResource PersonPictureEllipseFillStrokeBrush}" StrokeThickness="{ThemeResource PersonPictureEllipseStrokeThickness}" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" />
             <!-- UNO WORKAROUND: ImageBrush is not stretching properly https://github.com/unoplatform/uno/issues/4951 -->
             <wasm:Border Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" CornerRadius="{TemplateBinding Width}" FlowDirection="LeftToRight">
               <Image x:Name="PersonPictureImage" Stretch="UniformToFill" HorizontalAlignment="Center" VerticalAlignment="Center" />
             </wasm:Border>
+            <TextBlock x:Name="InitialsTextBlock" AutomationProperties.AccessibilityView="Raw" FontSize="40" FontFamily="{TemplateBinding FontFamily}" Foreground="{TemplateBinding Foreground}" FontWeight="{TemplateBinding FontWeight}" TextLineBounds="Tight" VerticalAlignment="Center" HorizontalAlignment="Center" IsTextScaleFactorEnabled="False" Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualInitials}" />
+            <Ellipse x:Name="PersonPictureEllipse" x:DeferLoadStrategy="Lazy" Width="{TemplateBinding Width}" Height="{TemplateBinding Height}" FlowDirection="LeftToRight" />
             <!-- UNO WORKAROUND: Removed Margin="{ThemeResource PersonPictureBadgeGridMargin}". Clipping issue with negative margin: #-->
             <Grid x:Name="BadgeGrid" Visibility="Collapsed" VerticalAlignment="Top" HorizontalAlignment="Right" Margin="{ThemeResource PersonPictureBadgeGridMargin}">
               <Ellipse x:Name="BadgingBackgroundEllipse" x:DeferLoadStrategy="Lazy" Opacity="{ThemeResource PersonPictureEllipseBadgeStrokeOpacity}" Fill="{ThemeResource PersonPictureEllipseBadgeFillThemeBrush}" Stroke="{ThemeResource PersonPictureEllipseBadgeStrokeThemeBrush}" StrokeThickness="{ThemeResource PersonPictureEllipseBadgeStrokeThickness}" />
