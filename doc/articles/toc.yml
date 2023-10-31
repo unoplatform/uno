@@ -410,20 +410,22 @@
               href: android-activities.md
         - name: Common Tasks
           items:
-            - name: Upgrading from previous releases
-              href: migrating-from-previous-releases.md
-            - name: Migrating to Uno 5.0
-              href: migrating-to-uno-5.md
+            - name: Upgrading your solution
+              items:
+              - name: Upgrading from previous releases
+                href: migrating-from-previous-releases.md
+              - name: Upgrading to Uno 5.0
+                href: migrating-to-uno-5.md
+              - name: Upgrading from Xamarin to .NET 6
+                href: migrating-from-xamarin-to-net6.md
+              - name: Upgrading to WinUI 3.0
+                href: updating-to-winui3.md
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
             - name: Faster Single Target App Builds
               href: guides/solution-building-single-targetframework.md
             - name: Hosting a WebAssembly app
               href: how-to-host-a-webassembly-app.md
-            - name: Updating to WinUI 3.0
-              href: updating-to-winui3.md
-            - name: Migrating from Xamarin to .NET 6
-              href: migrating-from-xamarin-to-net6.md
         - name: Debugging
           items:
             - name: Troubleshooting build errors
