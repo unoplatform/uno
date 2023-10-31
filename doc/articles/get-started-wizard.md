@@ -34,17 +34,21 @@ See [this article](features/winapp-sdk-specifics.md#adjusting-windows-sdk-refere
 
 #### The XAML editor shows `The type 'page' does not support direct content` message
 
-XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
+This issue has been fixed in Visual Studio 17.8 Preview 5 and later.
+
+If you're using an earlier version, XAML Intellisense [is not working properly](https://developercommunity.visualstudio.com/content/problem/587980/xaml-intellisense-does-not-use-contentpropertyattr.html) in Visual Studio when the active project is not the UWP one.
 
 To work around this issue, close all XAML editors, open a C# file and select the '[MyApp].Windows' in the top-left drop-down list of the text editor sector. Once selected, re-open the XAML file.
 
 #### `InitializeComponent` or `x:Name` variable is not available in code-behind
 
-Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
+This issue has been fixed in Visual Studio 17.8 Preview 5 and later.
+
+If you're using an earlier version, Visual Studio [does not refresh the intellisense cache](https://developercommunity.visualstudio.com/content/problem/588021/the-compile-itemgroup-intellisense-cache-is-not-re.html) properly, causing variables to be incorrectly defined.
 
 To fix this issue, build your project once, close the solution and reopen it.
 
-It is also important to note that Uno uses a multi-project structure, for which each project has to be build individually for errors to disappear from the **Error List** window (notice the **Project** column values).
+It is also important to note that Uno Platform uses a multi-project structure, for which each project has to be build individually for errors to disappear from the **Error List** window (notice the **Project** column values).
 
 In order to clear the **Error List** window, build the whole solution completely once. Thereafter, build a specific project and prefer the use of the **Output** tool window (in the menu **View** -> **Output**), taking build messages by order of appearance.
 
@@ -96,15 +100,15 @@ On Windows, you will need to install the [GTK+3 runtime](https://github.com/tsch
 On Linux, you'll need to follow the [Uno Platform](get-started-with-linux.md#setting-up-for-linux) setup instructions.
 On macOS, you'll need to follow the [Uno Platform](get-started-vsmac.md) setup instructions.
 
-#### XAML Hot Reload troubleshooting
+#### Hot Reload troubleshooting
 
-The XAML Hot reload provides a Visual Studio for Windows output window name "Uno Platform" with diagnostics messages. You can find additional information there in case XAML Hot Reload does not work properly.
+The Hot Reload provides a Visual Studio for Windows output window named "Uno Platform" with diagnostics messages. You can find additional information there in case XAML Hot Reload does not work properly.
 
 Some common troubleshooting steps:
 - Make sure to rebuild your application if the XAML changes are not applied
-- Ensure that the Uno.WinUI.DevServer package has the same version as the Uno.UI package (Similar step is valid for Uno.WinUI packages)
+- Ensure that the Uno.WinUI.DevServer package has the same version as the Uno.WinUI package (A similar step is valid for Uno.UI packages)
 
-More troubleshooting information is available [in this section](features/working-with-xaml-hot-reload.md).
+More troubleshooting information is available [in this section](xref:Uno.Features.HotReload).
 
 #### C# Hot Reload troubleshooting
 C# Hot Reload is provided by Visual Studio 2022, and there may be occasions where updates are not applied, or the modified code is incorrectly reported as not compiling.
@@ -113,6 +117,8 @@ If that is the case:
 - Make sure that the top left selector in the C# editor is showing the project head being debugged. For instance, if debugging the Skia.Gtk, select the Skia.Gtk project.
 - WebAssembly does not support C# hot reload when debugging the application. You can start the app without the debugger instead.
 - Try recompiling the application completely (with the `Rebuild` command)
+
+More troubleshooting information is available [in this section](xref:Uno.Features.HotReload).
 
 #### Abnormally long build times with using WebAssembly and WSL
 When building an application that uses native dependencies (such as Skia, SQLite) or using PG-AOT/AOT, using WSL 2 may cause abnormally long build times.
@@ -144,11 +150,6 @@ This issue is caused by visual studio enforcing https connections for local cont
 - Removing the https endpoint in the `Properties/launchSettings.json` file
 - Unchecking the `Use SSL` option in the project's Debug launch profiles
 - Selecting the project name instead of IISExpress in the toolbar debug icon drop down list
-
-#### Build fails with `error : Error reading response`
-In general, this error happens when the XAML parser detects a syntax error. Fixing the error generally fixes the build.
-
-This error may happen occasionally without any explicit error message, rebuilding the project may fix the issue.
 
 #### Error MSB3030: Could not copy the file "MyProject.Shared\MainPage.xbf" because it was not found.
 This issue is present in Visual Studio 17.2 and 17.3, and can be addressed by [taking a look at this issue](https://github.com/unoplatform/uno/discussions/5007#discussioncomment-2583741).
