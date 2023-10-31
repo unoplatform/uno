@@ -1,6 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference PipsPager.cpp, commit 6a79363
+// MUX reference PipsPager.cpp, tag winui3/release/1.4.2
 
 using System;
 using System.Collections.ObjectModel;
@@ -17,8 +17,6 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
-
-using static Uno.UI.Helpers.WinUI.CppWinRTHelpers;
 
 using ButtonVisibility = Microsoft.UI.Xaml.Controls.PipsPagerButtonVisibility;
 using System.Globalization;
@@ -133,11 +131,8 @@ public partial class PipsPager : Control
 				m_pipsPagerElementPreparedRevoker.Disposable = Disposable.Create(() => repeater.ElementPrepared -= OnElementPrepared);
 				repeater.GettingFocus += OnPipsAreaGettingFocus;
 				m_pipsAreaGettingFocusRevoker.Disposable = Disposable.Create(() => repeater.GettingFocus -= OnPipsAreaGettingFocus);
-				if (SharedHelpers.IsRS4OrHigher())
-				{
-					repeater.BringIntoViewRequested += OnPipsAreaBringIntoViewRequested;
-					m_pipsAreaBringIntoViewRequestedRevoker.Disposable = Disposable.Create(() => repeater.BringIntoViewRequested -= OnPipsAreaBringIntoViewRequested);
-				}
+				repeater.BringIntoViewRequested += OnPipsAreaBringIntoViewRequested;
+				m_pipsAreaBringIntoViewRequestedRevoker.Disposable = Disposable.Create(() => repeater.BringIntoViewRequested -= OnPipsAreaBringIntoViewRequested);
 			}
 		}
 		AssignPipsPagerRepeater(GetTemplateChild(c_pipsPagerRepeaterName) as ItemsRepeater);
@@ -147,7 +142,7 @@ public partial class PipsPager : Control
 		void InitScrollViewer(ScrollViewer scrollViewer)
 		{
 			m_pipsPagerScrollViewer = scrollViewer;
-			if (scrollViewer != null && SharedHelpers.IsRS4OrHigher())
+			if (scrollViewer != null)
 			{
 				scrollViewer.BringIntoViewRequested += OnScrollViewerBringIntoViewRequested;
 				m_scrollViewerBringIntoViewRequestedRevoker.Disposable =
@@ -207,12 +202,16 @@ public partial class PipsPager : Control
 
 		if (args.Key == VirtualKey.Left || args.Key == VirtualKey.Up)
 		{
-			FocusManager.TryMoveFocus(previousPipDirection);
+			var options = new FindNextElementOptions();
+			options.SearchRoot = this.XamlRoot.Content;
+			FocusManager.TryMoveFocus(previousPipDirection, options);
 			args.Handled = true;
 		}
 		else if (args.Key == VirtualKey.Right || args.Key == VirtualKey.Down)
 		{
-			FocusManager.TryMoveFocus(nextPipDirection);
+			var options = new FindNextElementOptions();
+			options.SearchRoot = this.XamlRoot.Content;
+			FocusManager.TryMoveFocus(nextPipDirection, options);
 			args.Handled = true;
 		}
 		// Call for all other presses
@@ -269,42 +268,17 @@ public partial class PipsPager : Control
 
 	private void ScrollToCenterOfViewport(UIElement sender, int index)
 	{
-		/* Vertical and Horizontal AligmentsRatio are not available until Win Version 1803 (sdk version 17134) */
-		if (SharedHelpers.IsBringIntoViewOptionsVerticalAlignmentRatioAvailable())
+		var options = new BringIntoViewOptions();
+		if (Orientation == Orientation.Horizontal)
 		{
-			var options = new BringIntoViewOptions();
-			if (Orientation == Orientation.Horizontal)
-			{
-				options.HorizontalAlignmentRatio = 0.5;
-			}
-			else
-			{
-				options.VerticalAlignmentRatio = 0.5;
-			}
-			options.AnimationDesired = true;
-			sender.StartBringIntoView(options);
+			options.HorizontalAlignmentRatio = 0.5;
 		}
-		else if (m_pipsPagerScrollViewer is ScrollViewer scrollViewer)
+		else
 		{
-			double pipSize;
-			Action<double> changeViewFunc;
-			if (Orientation == Orientation.Horizontal)
-			{
-				pipSize = m_defaultPipSize.Width;
-				changeViewFunc = offset => scrollViewer.ChangeView(offset, null, null);
-			}
-			else
-			{
-				pipSize = m_defaultPipSize.Height;
-				changeViewFunc = offset => scrollViewer.ChangeView(null, offset, null);
-			}
-			int maxVisualIndicators = MaxVisiblePips;
-			/* This line makes sure that while having even # of indicators the scrolling will be done correctly */
-			int offSetChangeForEvenSizeWindow = maxVisualIndicators % 2 == 0 && index > m_lastSelectedPageIndex ? 1 : 0;
-			int offSetNumOfElements = index + offSetChangeForEvenSizeWindow - maxVisualIndicators / 2;
-			double offset = Math.Max(0.0, offSetNumOfElements * pipSize);
-			changeViewFunc(offset);
+			options.VerticalAlignmentRatio = 0.5;
 		}
+		options.AnimationDesired = true;
+		sender.StartBringIntoView(options);
 	}
 
 	private void UpdateSelectedPip(int index)
@@ -628,21 +602,8 @@ public partial class PipsPager : Control
 				{
 					if (repeater.GetOrCreateElement(SelectedPageIndex) is UIElement realizedElement)
 					{
-						if (args is { } argsAsIGettingFocusEventArgs2)
+						if (args.TrySetNewFocusedElement(realizedElement))
 						{
-							if (argsAsIGettingFocusEventArgs2.TrySetNewFocusedElement(realizedElement))
-							{
-								args.Handled = true;
-							}
-						}
-
-						else
-						{
-							// Without TrySetNewFocusedElement, we cannot set focus while it is changing.
-							m_dispatcherHelper.RunAsync(() =>
-							{
-								SetFocus(realizedElement, FocusState.Programmatic);
-							});
 							args.Handled = true;
 						}
 					}
