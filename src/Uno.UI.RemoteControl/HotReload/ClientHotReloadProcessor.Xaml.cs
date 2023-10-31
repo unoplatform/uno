@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -38,6 +39,27 @@ namespace Uno.UI.RemoteControl.HotReload
 	partial class ClientHotReloadProcessor
 	{
 		private string? _lastUpdatedFilePath;
+		private bool _supportsXamlReader;
+
+		private void InitializeXamlReader()
+		{
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
+
+			// As of VS 17.8, the only target which supports 
+			//
+			// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
+			//
+			_supportsXamlReader = (targetFramework.Contains("-android", StringComparison.OrdinalIgnoreCase)
+				|| targetFramework.Contains("-ios", StringComparison.OrdinalIgnoreCase)
+				|| targetFramework.Contains("-maccatalyst", StringComparison.OrdinalIgnoreCase));
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"XamlReader Hot Reload Enabled:{_supportsXamlReader} " +
+					$"targetFramework:{targetFramework}");
+			}
+		}
 
 		private void ReloadFileWithXamlReader(FileReload fileReload)
 		{
