@@ -412,6 +412,8 @@
           items:
             - name: Upgrading from previous releases
               href: migrating-from-previous-releases.md
+            - name: Migrating to Uno 5.0
+              href: migrating-to-uno-5.md
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
             - name: Faster Single Target App Builds
