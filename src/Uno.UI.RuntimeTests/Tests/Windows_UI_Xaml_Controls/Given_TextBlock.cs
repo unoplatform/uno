@@ -270,11 +270,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			container.Children.Add(SUT);
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 		}
 
+#if !__IOS__ // Line height is not supported on iOS
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_LineHeight_Override()
@@ -288,10 +290,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			container.Children.Add(SUT);
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForLoaded(container);
+			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
 			Assert.AreEqual(100, SUT.DesiredSize.Height);
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
@@ -312,6 +316,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForLoaded(container);
+			foreach(var child in container.Children)
+			{
+				await WindowHelper.WaitFor(() => child.DesiredSize != default);
+			}
 
 			// Get the transform of the top left of the container
 			var previousTransform = container.TransformToVisual(null);
