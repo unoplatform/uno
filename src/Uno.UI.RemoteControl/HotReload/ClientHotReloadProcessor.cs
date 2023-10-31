@@ -65,7 +65,12 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
 	{
-		if ((!_supportsLightweightHotReload && !_serverMetadataUpdatesEnabled && _supportsXamlReader) || _forcedHotReloadMode == HotReloadMode.XamlReader)
+		if ((
+				_forcedHotReloadMode is null
+				&& !_supportsLightweightHotReload
+				&& !_serverMetadataUpdatesEnabled
+				&& _supportsXamlReader)
+			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
 		{
 			ReloadFileWithXamlReader(fileReload);
 		}
