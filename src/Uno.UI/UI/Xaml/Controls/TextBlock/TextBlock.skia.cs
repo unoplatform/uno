@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly TextVisual _textVisual;
 
+		private float? _cachedFontLineHeight;
+
 		public TextBlock()
 		{
 			SetDefaultForeground(ForegroundProperty);
@@ -43,7 +45,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var padding = Padding;
 			var availableSizeWithoutPadding = availableSize.Subtract(padding);
-			var desiredSize = Inlines.Measure(availableSizeWithoutPadding);
+			var defaultLineHeight = (float)GetComputedLineHeight();
+			var desiredSize = Inlines.Measure(availableSizeWithoutPadding, defaultLineHeight);
 
 			return desiredSize.Add(padding);
 		}
@@ -69,6 +72,35 @@ namespace Windows.UI.Xaml.Controls
 			_textVisual.Offset = new Vector3((float)padding.Left, (float)padding.Top, 0);
 			ApplyFlowDirection((float)finalSize.Width);
 			return base.ArrangeOverride(finalSize);
+		}
+
+		/// <summary>
+		/// Gets the line height of the TextBlock either 
+		/// based on the LineHeight property or the default 
+		/// font line height.
+		/// </summary>
+		/// <returns>Computed line height</returns>
+		internal float GetComputedLineHeight()
+		{
+			var lineHeight = LineHeight;
+			if (!lineHeight.IsNaN() && lineHeight > 0)
+			{
+				return (float)lineHeight;
+			}
+			else
+			{
+				if (_cachedFontLineHeight is null)
+				{
+					var font = FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
+					_cachedFontLineHeight = font.LineHeight;
+				}
+				return _cachedFontLineHeight.Value;
+			}
+		}
+
+		partial void InvalidateTextBlockPartial()
+		{
+			_cachedFontLineHeight = null;
 		}
 
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
