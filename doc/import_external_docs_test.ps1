@@ -16,7 +16,7 @@ $external_docs = @{
     "uno.uitest"         = "master"
     "uno.extensions"     = "main"
     # "workshops"     = "feature/SimpleCalc"      
-    # "workshops"     = "feature/SimpleCalc"      
+    # "workshops"     = "feature/TubePlayer"      
 }
 
 ./import_external_docs $external_docs
