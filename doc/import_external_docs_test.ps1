@@ -15,7 +15,8 @@ $external_docs = @{
     "uno.resizetizer"    = "main"
     "uno.uitest"         = "master"
     "uno.extensions"     = "main"
-    "workshops-private"     = "dev/nr/simplecalctoc"      
+    # "workshops"     = "feature/SimpleCalc"      
+    # "workshops"     = "feature/SimpleCalc"      
 }
 
 ./import_external_docs $external_docs
