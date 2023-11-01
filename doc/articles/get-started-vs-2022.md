@@ -62,7 +62,7 @@ To create an Uno Platform app:
     - **Framework** allows you to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
     - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
     - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)), [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept), or your own.
-    - **Markup** gives the ability to choose between XAML markup or [C# Markup](xref:Extensions.Reference.Markup.GettingStarted).
+    - **Markup** gives the ability to choose between XAML markup or [C# Markup](xref:Reference.Markup.GettingStarted).
     - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
     - **Extensions** allows you to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
     - **Features** provides support for WebAssembly PWA, using the [Uno Toolkit](xref:Toolkit.GettingStarted), add an [ASP.NET Server host](external/uno.wasm.bootstrap/doc/deploy-and-publish.md), [.NET MAUI Extensions](xref:Overview.Maui), or [VS Code debugging support](xref:Uno.GetStarted.vscode) files
