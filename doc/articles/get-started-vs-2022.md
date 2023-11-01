@@ -91,7 +91,7 @@ To create an Uno Platform app:
 1. To debug for **iOS**:
     - Right click on the `MyApp.Mobile` project, select **Set as startup project**
         > [!NOTE]
-        > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
+        > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
 
     - In the "Debug toolbar" drop-down, select framework `net7.0-ios`:
 
@@ -113,8 +113,8 @@ To create an Uno Platform app:
 
 You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
-> [!NOTE] 
-> Debugging either the macOS or macCatalyst targets is not supported by Visual Studio on Windows. You can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
+> [!IMPORTANT]
+> In Visual Studio, until [this issue is fixed](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!), multi-targeted project libraries always build their full set of targets, causing longer builds. In order to make builds and intellisense faster, take a [look at our article](xref:Build.Solution.TargetFramework-override).
 
 ## Troubleshooting Installation Issues
 

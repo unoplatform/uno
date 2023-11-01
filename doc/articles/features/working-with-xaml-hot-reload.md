@@ -80,7 +80,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 ## Troubleshooting
 
 ### Common issues
-- The application logs file changes. You should see diagnostics messages in the app when a XAML file is reloaded.
+- Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - The file named `RemoteControlGenerator\RemoteControl.g.cs` in the analyzers node for your project contains the connection information, verify that the information host addresses and the port number.
 - WinAppSDK on Windows specific issues
     - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
