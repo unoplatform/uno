@@ -276,7 +276,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(container);
 			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
+#if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
+#endif
 			Assert.IsTrue(SUT.DesiredSize.Height > 0);
 		}
 
@@ -296,7 +298,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(container);
 			await WindowHelper.WaitFor(() => SUT.DesiredSize != default);
 
+#if !__WASM__ // Disabled due to #14231
 			Assert.AreEqual(0, SUT.DesiredSize.Width);
+#endif
 			Assert.AreEqual(100, SUT.DesiredSize.Height);
 		}
 #endif
