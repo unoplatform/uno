@@ -190,6 +190,32 @@
               href: uno-app-solution-structure.md
             - name: Best practices
               href: best-practices-uno.md
+            - name: Visual Studio Wizard
+              topicHref: getting-started/wizard/using-wizard.md
+              items:
+                - name: Framework options
+                  href: getting-started/wizard/framework.md
+                - name: Platforms options
+                  href: getting-started/wizard/platforms.md
+                - name: Presentation options
+                  href: getting-started/wizard/presentation.md
+                - name: Markup options
+                  href: getting-started/wizard/markup.md
+                - name: Theme options
+                  href: getting-started/wizard/themes.md
+                - name: Extensions options
+                  href: getting-started/wizard/extensions.md
+                - name: Features options
+                  href: getting-started/wizard/features.md
+                - name: Authentication options
+                  href: getting-started/wizard/authentication.md
+                - name: Application options
+                  href: getting-started/wizard/application.md
+                - name: Testing options
+                  href: getting-started/wizard/testing.md
+                - name: CI Pipeline options
+                  href: getting-started/wizard/cipipeline.md
+
         - name: WinUI Features
           items:
             - name: Accessibility
