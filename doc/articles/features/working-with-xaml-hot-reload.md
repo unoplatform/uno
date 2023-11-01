@@ -7,17 +7,20 @@ uid: Uno.Features.HotReload
 The Uno Platform Hot Reload feature provides a way to modify the XAML and C# of your running application, in order to iterate faster on UI or code changes. This makes the inner developer loop faster.
 
 ## Features
-- XAML Hot Reload for **iOS, Catalyst, Android, WebAssembly, Skia (Gtk, WPF and Framebuffer)**
 - Supported in **Visual Studio 2022** (Windows) and **VS Code** (Linux, macOS, Windows, CodeSpaces, and GitPod)
-- Supports **XAML files** in the **main project**, in **shared projects**, and **referenced projects**
-- Support for partial **tree hot reload**, where modifying a `UserControl` instantiated in multiple locations will reload it without reloading its parents
-- **XAML Bindings** Hot Reload
-- Full **x:Bind expressions** Hot Reload
-- **AppResources.xaml Hot Reload**
+- XAML and [C# Markup](xref:Reference.Markup.GettingStarted) Hot Reload for **iOS, Catalyst, Android, WebAssembly, Skia (Gtk, WPF and Framebuffer)**
+- All **[C# of Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code ([supported code changes](https://learn.microsoft.com/en-us/visualstudio/debugger/supported-code-changes-csharp)).
 - **Simulator and physical devices** support
-- **C# Markup Hot Reload**
-- Extensible [**State restoration**](xref:Uno.Contributing.Internals.HotReload)
-- All **[C# of Hot Reload](https://learn.microsoft.com/en-us/visualstudio/debugger/hot-reload)** in both Visual Studio and VS Code ([supported editions](https://learn.microsoft.com/en-us/visualstudio/debugger/supported-code-changes-csharp)).
+- What can be Hot Reloaded:
+  - **XAML files** in the **main project**, in **shared projects**, and **referenced projects libraries**
+  - **C# Markup controls**
+  - **Bindings**
+  - Full **x:Bind expressions**
+  - **AppResources.xaml** and **referenced resource dictionaries**
+  - **DataTemplates**
+  - **Styles**
+  - Extensible [**State restoration**](xref:Uno.Contributing.Internals.HotReload)
+  - Support for partial **tree hot reload**, where modifying a `UserControl` instantiated in multiple locations will reload it without reloading its parents
 
 Hot Reload features vary between platforms and IDE, you can check below the list of currently supported features.
 
@@ -80,9 +83,9 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
 ## Troubleshooting
 
 ### Common issues
-- The application logs file changes. You should see diagnostics messages in the app when a XAML file is reloaded.
+- Observe the application logs, you should see diagnostics messages in the app when a XAML file is reloaded.
 - The file named `RemoteControlGenerator\RemoteControl.g.cs` in the analyzers node for your project contains the connection information, verify that the information host addresses and the port number.
-- WinAppSDK on Windows specific issues
+- WinAppSDK on Windows-specific issues
     - Grid Succinct syntax [is not supported](https://github.com/microsoft/microsoft-ui-xaml/issues/7043#issuecomment-1120061686)
 - If you're getting `ENC0003: Updating 'attribute' requires restarting the application`, add the following in the `Directory.Build.props` (or in each csproj project heads):
   ```xml
