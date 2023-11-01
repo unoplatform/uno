@@ -941,14 +941,6 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnApplyTemplate();
 
-#if __SKIA__
-			// To work around non-uniformly applied layout rounding behavior, we need to force set layout
-			// rounding on the child Grid currently. #12082
-			if (this.FindFirstDescendant<Grid>() is { } grid)
-			{
-				grid.UseLayoutRounding = false;
-			}
-#endif
 
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as _ScrollContentPresenter;
