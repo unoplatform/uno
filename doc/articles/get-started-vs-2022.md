@@ -62,7 +62,7 @@ To create an Uno Platform app:
     - [**Framework**](xref:Uno.GettingStarted.UsingWizard#1-framework) allows to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
     - [**Platforms**](xref:Uno.GettingStarted.UsingWizard#2-platforms) provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
     - [**Presentation**](xref:Uno.GettingStarted.UsingWizard#3-presentation) gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)) or [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept)
-    - [**Markup**](xref:Uno.GettingStarted.UsingWizard#4-markup) allows to choose between XAML and C# Markup for defining your UI
+    - [**Markup**](xref:Uno.GettingStarted.UsingWizard#4-markup) allows to choose between XAML and [C# Markup](Reference.Markup.GettingStarted) for defining your UI
     - [**Theme**](xref:Uno.GettingStarted.UsingWizard#5-theme) gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
     - [**Extensions**](xref:Uno.GettingStarted.UsingWizard#6-extensions) allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
     - [**Features**](xref:Uno.GettingStarted.UsingWizard#7-features) provides support for WebAssembly PWA and optional [VS Code support](xref:Uno.GetStarted.vscode) files
