@@ -576,9 +576,10 @@
   href: external/figma-docs/toc.yml
 
 - name: Workshops
-  topicHref: external/workshops/README.md
   items:
     - name: Tube Player
+      topicHref: external/workshops/tube-player/README.md
       href: external/workshops/tube-player/toc.yml
     - name: Simple Calc
+      topicHref: external/workshops/simple-calc/README.md
       href: external/workshops/simple-calc/toc.yml
