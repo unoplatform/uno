@@ -92,11 +92,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void InvalidateTextBlockPartial()
-		{
-			_cachedFontLineHeight = null;
-		}
-
 		internal override void OnPropertyChanged2(DependencyPropertyChangedEventArgs args)
 		{
 			base.OnPropertyChanged2(args);

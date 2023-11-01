@@ -316,7 +316,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			WindowHelper.WindowContent = container;
 			await WindowHelper.WaitForLoaded(container);
-			foreach(var child in container.Children)
+			foreach (var child in container.Children)
 			{
 				await WindowHelper.WaitFor(() => child.DesiredSize != default);
 			}
