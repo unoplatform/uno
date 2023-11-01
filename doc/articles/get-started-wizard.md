@@ -24,7 +24,7 @@ The Uno Platform features and support are constantly evolving, but you may encou
 Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
 #### My app is not running as fast as I want
-There could be many reasons for being in this situation, but we're built a list of performance tips in [this article](xref:Uno.Development.Performance) that you can apply to your app. If you haven't found your answer, open a [discussion](https://github.com/unoplatform/uno/discussions) to tell us about it!
+There could be many reasons for being in this situation, but we've built a list of performance tips in [this article](xref:Uno.Development.Performance) that you can apply to your app. If you haven't found your answer, open a [discussion](https://github.com/unoplatform/uno/discussions) to tell us about it!
 
 #### WebAssembly: Access to fetch at 'https://XXXX' from origin 'http://XXXX' has been blocked by CORS policy
 
