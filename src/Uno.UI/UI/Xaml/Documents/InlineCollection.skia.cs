@@ -16,6 +16,15 @@ namespace Windows.UI.Xaml.Documents
 {
 	partial class InlineCollection
 	{
+		// This is safe as a static field.
+		// 1) It's only accessed from UI thread.
+		// 2) Once we call SKTextBlobBuilder.Build(), the instance is reset to its initial state.
+		// See https://api.skia.org/classSkTextBlobBuilder.html#abf5e20208fd5656981191a3778ee5fef:
+		// > Resets SkTextBlobBuilder to its initial empty state, allowing it to be reused to build a new set of runs.
+		// The reset to the initial state happens here:
+		// https://github.com/google/skia/blob/d29cc3fe182f6e8a8539004a6a4ee8251677a6fd/src/core/SkTextBlob.cpp#L652-L656
+		private static SKTextBlobBuilder _textBlobBuilder = new();
+
 		private readonly List<RenderLine> _renderLines = new();
 
 		private bool _invalidationPending;
@@ -375,10 +384,9 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					using var textBlobBuilder = new SKTextBlobBuilder();
-					var run = textBlobBuilder.AllocatePositionedRun(fontInfo.SKFont, segmentSpan.GlyphsLength);
-					var glyphs = run.GetGlyphSpan();
-					var positions = run.GetPositionSpan();
+					var run = _textBlobBuilder.AllocatePositionedRunFast(fontInfo.SKFont, segmentSpan.GlyphsLength);
+					var glyphs = run.GetGlyphSpan(segmentSpan.GlyphsLength);
+					var positions = run.GetPositionSpan(segmentSpan.GlyphsLength);
 
 					if (segment.Direction == FlowDirection.LeftToRight)
 					{
@@ -427,7 +435,7 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					using var textBlob = textBlobBuilder.Build();
+					using var textBlob = _textBlobBuilder.Build();
 					canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;

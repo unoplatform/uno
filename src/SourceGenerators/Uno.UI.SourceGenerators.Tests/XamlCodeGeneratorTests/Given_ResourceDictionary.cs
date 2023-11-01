@@ -108,4 +108,69 @@ public class Given_ResourceDictionary
 
 		await test.RunAsync();
 	}
+
+	[TestMethod]
+	public async Task TestResourceDictionaryAsAttachedPropertyShouldSetTheProperty()
+	{
+		var xamlFile = new XamlFile("MainPage.xaml", """
+			<Page
+				x:Class="TestRepro.MainPage"
+				xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+				xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+				xmlns:local="using:TestRepro"
+				xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+				xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+				mc:Ignorable="d"
+				Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+				<StackPanel>
+					<Button Content="Button">
+						<local:MyClass.X>
+							<ResourceDictionary>
+								<Color x:Key="PrimaryColor">Yellow</Color>
+								<Color x:Key="SecondaryColor">Red</Color>
+							</ResourceDictionary>
+						</local:MyClass.X>
+					</Button>
+
+				</StackPanel>
+			</Page>
+			""");
+
+		var test = new Verify.Test(xamlFile)
+		{
+			TestState =
+			{
+				Sources =
+				{
+					"""
+					using Windows.UI.Xaml;
+					using Windows.UI.Xaml.Controls;
+
+					namespace TestRepro
+					{
+						public class MyClass
+						{
+							public static readonly DependencyProperty XProperty = DependencyProperty.RegisterAttached("X", typeof(ResourceDictionary), typeof(MyClass), new PropertyMetadata(default));
+
+							public static void SetX(DependencyObject element, ResourceDictionary value) => element.SetValue(XProperty, value);
+
+							public static ResourceDictionary GetX(DependencyObject element) => (ResourceDictionary)element.GetValue(XProperty);
+						}
+
+						public partial class MainPage : Page
+						{
+							public MainPage()
+							{
+								this.InitializeComponent();
+							}
+						}
+					}
+					"""
+				}
+			}
+		}.AddGeneratedSources();
+
+		await test.RunAsync();
+	}
 }

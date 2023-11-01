@@ -111,6 +111,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (namedTypeSymbol != null)
 			{
+				if (typeSymbol is INamedTypeSymbol { SpecialType: SpecialType.System_Object })
+				{
+					// Everything is an object.
+					return true;
+				}
+
 				do
 				{
 					if (SymbolEqualityComparer.Default.Equals(namedTypeSymbol, typeSymbol))
@@ -548,8 +554,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return null;
 		}
 
-		private INamedTypeSymbol GetType(string name)
+		private INamedTypeSymbol GetType(string name, XamlObjectDefinition? objectDefinition = null)
 		{
+			while (objectDefinition is not null)
+			{
+				var namespaces = objectDefinition.Namespaces;
+				if (namespaces is { Count: > 0 } && name.IndexOf(':') is int indexOfColon && indexOfColon > 0)
+				{
+					var ns = name.AsSpan().Slice(0, indexOfColon);
+					foreach (var @namespace in namespaces)
+					{
+						if (ns.Equals(@namespace.Prefix.AsSpan(), StringComparison.Ordinal))
+						{
+							if (_metadataHelper.FindTypeByFullName($"{@namespace.Namespace}.{name.Substring(indexOfColon + 1)}") is INamedTypeSymbol namedType)
+							{
+								return namedType;
+							}
+
+							break;
+						}
+					}
+				}
+
+				objectDefinition = objectDefinition.Owner;
+			}
+
 			var type = _findType!(name);
 
 			if (type == null)

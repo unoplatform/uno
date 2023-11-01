@@ -23,12 +23,13 @@ namespace Uno.UI.RemoteControl.HotReload
 	{
 		private bool _linkerEnabled;
 		private HotReloadAgent? _agent;
-		private bool _metadataUpdatesEnabled;
+		private bool _serverMetadataUpdatesEnabled;
 		private static ClientHotReloadProcessor? _instance;
 		private readonly TaskCompletionSource<bool> _hotReloadWorkloadSpaceLoaded = new();
 
 		private void WorkspaceLoadResult(HotReloadWorkspaceLoadResult hotReloadWorkspaceLoadResult)
 				=> _hotReloadWorkloadSpaceLoaded.SetResult(hotReloadWorkspaceLoadResult.WorkspaceInitialized);
+
 		/// <summary>
 		/// Waits for the server's hot reload workspace to be loaded
 		/// </summary>
@@ -42,7 +43,7 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			_instance = this;
 
-			_metadataUpdatesEnabled = BuildMetadataUpdatesEnabled();
+			_serverMetadataUpdatesEnabled = BuildServerMetadataUpdatesEnabled();
 
 			_linkerEnabled = string.Equals(Environment.GetEnvironmentVariable("UNO_BOOTSTRAP_LINKER_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
 
@@ -63,14 +64,22 @@ namespace Uno.UI.RemoteControl.HotReload
 			});
 		}
 
-		private bool BuildMetadataUpdatesEnabled()
+		private bool BuildServerMetadataUpdatesEnabled()
 		{
 			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
 			//var targetFramework = GetMSBuildProperty("TargetFramework");
-			//var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio").Equals("true", StringComparison.OrdinalIgnoreCase);
 
-			return (_forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial)
-				|| unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase)
+			var enabled = (_forcedHotReloadMode is HotReloadMode.MetadataUpdates or HotReloadMode.Partial)
+
+				// CoreCLR Debugger under VS Win already handles metadata updates
+				// Debugger under VS Code prevents metadata based hot reload
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && unoRuntimeIdentifier.Equals("skia", StringComparison.OrdinalIgnoreCase))
+
+				// Mono Debugger under VS Win already handles metadata updates
+				// Mono Debugger under VS Code prevents metadata based hot reload
+				|| (!Debugger.IsAttached && !buildingInsideVisualStudio && unoRuntimeIdentifier.Equals("webassembly", StringComparison.OrdinalIgnoreCase))
+
 				// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
 				//
 				//||
@@ -82,6 +91,13 @@ namespace Uno.UI.RemoteControl.HotReload
 				//		(!Debugger.IsAttached
 				//			&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))))
 				;
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"ServerMetadataUpdates Enabled:{enabled} DebuggerAttached:{Debugger.IsAttached} BuildingInsideVS: {buildingInsideVisualStudio} unorid: {unoRuntimeIdentifier}");
+			}
+
+			return enabled;
 		}
 
 		private string[] GetMetadataUpdateCapabilities()

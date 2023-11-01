@@ -65,7 +65,12 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 
 	private async Task ProcessFileReload(HotReload.Messages.FileReload fileReload)
 	{
-		if ((!_supportsLightweightHotReload && !_metadataUpdatesEnabled) || _forcedHotReloadMode == HotReloadMode.XamlReader)
+		if ((
+				_forcedHotReloadMode is null
+				&& !_supportsLightweightHotReload
+				&& !_serverMetadataUpdatesEnabled
+				&& _supportsXamlReader)
+			|| _forcedHotReloadMode == HotReloadMode.XamlReader)
 		{
 			ReloadFileWithXamlReader(fileReload);
 		}
@@ -104,8 +109,9 @@ public partial class ClientHotReloadProcessor : IRemoteControlProcessor
 			ConfigureHotReloadMode();
 			InitializeMetadataUpdater();
 			InitializePartialReload();
+			InitializeXamlReader();
 
-			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _metadataUpdatesEnabled, config.MSBuildProperties);
+			ConfigureServer message = new(_projectPath, _xamlPaths, GetMetadataUpdateCapabilities(), _serverMetadataUpdatesEnabled, config.MSBuildProperties);
 
 			await _rcClient.SendMessage(message);
 		}
