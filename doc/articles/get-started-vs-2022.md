@@ -61,14 +61,15 @@ To create an Uno Platform app:
 1. You can optionally choose to customize your app based on the sections on the left side:
     - **Framework** allows to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
     - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
-    - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)) or [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept)
-    - **Projects** gives the ability to add a Server project for APIs and hosting for the WebAssembly project
-    - **Testing** provides Unit Testing and [UI Testing projects](https://g7ithub.com/unoplatform/Uno.UITest)
-    - **Features** provides support for WebAssembly PWA and optional [VS Code support](xref:Uno.GetStarted.vscode) files
-    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
-    - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
+    - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)), [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept), or your own.
+    - **Markup** gives the ability to choose between XAML markup or [C# Markup](xref:Extensions.Reference.Markup.GettingStarted).
     - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
-    
+    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
+    - **Features** provides support for WebAssembly PWA, using the [Uno Toolkit](xref:Toolkit.GettingStarted), add an [ASP.NET Server host](external/uno.wasm.bootstrap/doc/deploy-and-publish.md), [.NET MAUI Extensions](xref:Overview.Maui), or [VS Code debugging support](xref:Uno.GetStarted.vscode) files
+    - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
+    - **Testing** provides Unit Testing and [UI Testing projects](https://g7ithub.com/unoplatform/Uno.UITest)
+    - **CI Pipeline** provides optional templates to build your application using Azure Pipelines or GitHub actions.
+
 1. Click the create button
 
 1. Wait for the projects to be created, and their dependencies to be restored
