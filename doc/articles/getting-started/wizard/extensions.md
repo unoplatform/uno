@@ -60,7 +60,7 @@ The available extensions are:
 
 - #### Logging  
     Logging is a crucial component in an app that enables the developer to emit log messages whenever an important action or execution is taken by the app. This then lets you trace back any errors or issues that may arise in the future.
-    There are several Logging tools out there, with one of the most common of them being [Microosft.Extensions.Logging](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging).  
+    There are several Logging tools out there, with one of the most common of them being [Microsoft.Extensions.Logging](https://learn.microsoft.com/en-us/dotnet/core/extensions/logging).  
     Uno Platform provides its Uno.Extensions.Logging to bring Logging to all platforms it supports.
 
     Uno.Extensions.Logging is covered in more detail [here](xref:Overview.Logging).
