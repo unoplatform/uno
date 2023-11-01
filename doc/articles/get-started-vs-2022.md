@@ -59,12 +59,12 @@ To create an Uno Platform app:
     ![Visual Studio - Configure your new project](Assets/quick-start/vsix-new-project-options.png)
 
 1. You can optionally choose to customize your app based on the sections on the left side:
-    - **Framework** allows to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
+    - **Framework** allows you to choose which `TargetFramework` your app will use. [.NET 7.0](https://dotnet.microsoft.com/en-us/download/dotnet/7.0) is a commonly appropriate choice.
     - **Platforms** provides a list of platforms your application will support. You still can [add additional platforms](xref:Uno.Guides.AddAdditionalPlatforms) later.
     - **Presentation** gives a choice about using MVVM (e.g. [MVVM Toolkit](https://learn.microsoft.com/en-us/dotnet/communitytoolkit/mvvm/)), [Uno Platform's MVUX and Feeds](xref:Overview.Reactive.Concept), or your own.
     - **Markup** gives the ability to choose between XAML markup or [C# Markup](xref:Extensions.Reference.Markup.GettingStarted).
     - **Theme** gives the ability to change between [Fluent](xref:uno.themes.fluent.getstarted) and [Material](xref:uno.themes.material.getstarted)
-    - **Extensions** allows to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
+    - **Extensions** allows you to choose for [additional Uno.Extensions](xref:Overview.Features) to kickstart your app faster
     - **Features** provides support for WebAssembly PWA, using the [Uno Toolkit](xref:Toolkit.GettingStarted), add an [ASP.NET Server host](external/uno.wasm.bootstrap/doc/deploy-and-publish.md), [.NET MAUI Extensions](xref:Overview.Maui), or [VS Code debugging support](xref:Uno.GetStarted.vscode) files
     - **Application** sets the App ID for relevant platforms, used when publishing on various app stores.
     - **Testing** provides Unit Testing and [UI Testing projects](https://g7ithub.com/unoplatform/Uno.UITest)
@@ -90,7 +90,7 @@ To create an Uno Platform app:
     - Right click on the `MyApp.Server` project, select **Set as startup project**
     - Press the `MyApp.Server` button to deploy the app
 1. To debug for **iOS**:
-    - Right click on the `MyApp.Mobile` project, select **Set as startup project**
+    - Right-click on the `MyApp.Mobile` project, select **Set as startup project**
         > [!NOTE]
         > For information about connecting Visual Studio to a Mac build host to build iOS apps, see [Pairing to a Mac for .NET iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/). Catalyst apps are not supported in Visual Studio 2022 on Windows, you can use [VS Code Remote SSH](xref:Uno.GetStarted.vscode) to enable this scenario.
 
