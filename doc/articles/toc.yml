@@ -22,8 +22,6 @@
         href: external/uno.check/doc/using-uno-check.md
       - name: Visual Studio 2019
         href: get-started-vs.md
-    - name: Create a blank Uno App using the Wizard
-      href: getting-started/using-wizard.md  
     - name: Create Your First App
       topicHref: getting-started-tutorial-1.md
       items:
