@@ -29,14 +29,16 @@ namespace Windows.UI.Xaml.Documents
 
 		private bool _invalidationPending;
 		private double _lastMeasuredWidth;
+		private float _lastDefaultLineHeight;
 		private Size _lastDesiredSize;
 		private Size _lastArrangedSize;
 
 		/// <summary>
 		/// Measures a block-level inline collection, i.e. one that belongs to a TextBlock (or Paragraph, in the future).
 		/// </summary>
-		internal Size Measure(Size availableSize)
+		internal Size Measure(Size availableSize, float defaultLineHeight)
 		{
+			_lastDefaultLineHeight = defaultLineHeight;
 			if (!_invalidationPending &&
 				availableSize.Width <= _lastMeasuredWidth &&
 				availableSize.Width >= _lastDesiredSize.Width)
@@ -224,7 +226,7 @@ namespace Windows.UI.Xaml.Documents
 
 			if (_renderLines.Count == 0)
 			{
-				_lastDesiredSize = new Size(0, 0);
+				_lastDesiredSize = new Size(0, defaultLineHeight);
 			}
 			else
 			{
@@ -286,7 +288,7 @@ namespace Windows.UI.Xaml.Documents
 				return _lastDesiredSize;
 			}
 
-			return Measure(finalSize);
+			return Measure(finalSize, _lastDefaultLineHeight);
 		}
 
 		internal void InvalidateMeasure()

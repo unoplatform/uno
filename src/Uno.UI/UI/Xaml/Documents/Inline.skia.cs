@@ -29,14 +29,7 @@ namespace Windows.UI.Xaml.Documents
 
 		internal FontDetails FontInfo => _fontInfo ??= FontDetailsCache.GetFont(FontFamily?.Source, (float)FontSize, FontWeight, FontStyle);
 
-		internal float LineHeight
-		{
-			get
-			{
-				var metrics = FontInfo.SKFontMetrics;
-				return metrics.Descent - metrics.Ascent;
-			}
-		}
+		internal float LineHeight => FontInfo.LineHeight;
 
 		internal float AboveBaselineHeight => -FontInfo.SKFontMetrics.Ascent;
 
