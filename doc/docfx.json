@@ -15,12 +15,13 @@
         ],
         "resource": [
             {
-                "files": [
-                    "images/**",
-                    "articles/**.png",
-                    "articles/**.jpg",
-                    "articles/**.gif"
-                ]
+				"files": [
+					"images/**",
+					"articles/**.png",
+					"articles/**.jpg",
+					"articles/**.gif",
+					"articles/**.svg"
+				]
             }
         ],
         "overwrite": [
