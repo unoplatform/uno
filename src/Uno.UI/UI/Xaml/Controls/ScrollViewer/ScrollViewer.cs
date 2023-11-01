@@ -688,6 +688,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
+		private double LayoutRoundIfNeeded(FrameworkElement fe, double value)
+		{
+			return UseLayoutRounding ? fe.LayoutRound(value) : value;
+		}
+
 #if __IOS__
 		internal
 #else
@@ -737,7 +742,7 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualHeight > 0 &&
 						fe.VerticalAlignment == VerticalAlignment.Stretch;
 
-					extentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+					extentHeight = canUseActualHeightAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualHeight) : fe.DesiredSize.Height;
 				}
 
 #if __WASM__
@@ -760,7 +765,7 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualWidth > 0 &&
 						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
 
-					extentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+					extentWidth = canUseActualWidthAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualWidth) : fe.DesiredSize.Width;
 				}
 
 #if __WASM__
