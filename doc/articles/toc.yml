@@ -22,6 +22,8 @@
         href: external/uno.check/doc/using-uno-check.md
       - name: Visual Studio 2019
         href: get-started-vs.md
+    - name: Create a blank Uno App using the Wizard
+      href: getting-started/using-wizard.md  
     - name: Create Your First App
       topicHref: getting-started-tutorial-1.md
       items:
@@ -462,11 +464,11 @@
             - name: Uno.UITest
               href: external/uno.uitest/doc/toc.yml
 
-    - name: Reference
-      items:
-        - name: Implemented Views
-          href: implemented/toc.yml
-          topicHref: implemented-views.md
+    # - name: Reference
+    #   items:
+    #     - name: Implemented Views
+    #       href: implemented/toc.yml
+    #       topicHref: implemented-views.md
 
     - name: Contributing to Uno Platform
       items:
@@ -564,9 +566,9 @@
 - name: Extensions
   topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
-- name: Themes
-  topicHref: external/uno.themes/doc/themes-overview.html
-  href: external/uno.themes/doc/toc.yml
+# - name: Themes
+#   topicHref: external/uno.themes/doc/themes-overview.html
+#   href: external/uno.themes/doc/toc.yml
 - name: Toolkit
   topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
