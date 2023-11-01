@@ -119,7 +119,7 @@ To create an Uno Platform app:
 You're all set, and don't forget to take a look at our [Hot Reload feature](xref:Uno.Features.HotReload)! You can now head to [our tutorials](getting-started-tutorial-1.md) on how to work on your Uno Platform app.
 
 > [!IMPORTANT]
-> In Visual Studio, until [this issue is fixed](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!), multi-targeted project libraries always build their full set of targets, causing longer builds. In order to make builds and intellisense faster, take a [look at our article](xref:Build.Solution.TargetFramework-override).
+> Take a [look at our article](xref:Build.Solution.TargetFramework-override) in order to ensure that your solution is building and showing intellisense as fast as possible, and to avoid [this Visual Studio issue](https://developercommunity.visualstudio.com/t/Building-a-cross-targeted-project-with-m/651372?space=8&q=building-a-cross-targeted-project-with-many-target) (help the community by upvoting it!) where multi-targeted project libraries always build their full set of targets.
 
 ## Troubleshooting Installation Issues
 
