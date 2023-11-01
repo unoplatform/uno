@@ -136,12 +136,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
 					_hasScheduledCompletion = false;
-					if (State != TimelineState.Stopped)
+					if (State == TimelineState.Stopped)
 					{
 						// If the storyboard was force-stopped,
 						// we don't stop again and don't trigger Completed.
 						return;
 					}
+
 					// No children, so we complete immediately
 					State = TimelineState.Stopped;
 					OnCompleted();
