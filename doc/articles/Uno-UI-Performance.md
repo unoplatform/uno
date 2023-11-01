@@ -10,7 +10,7 @@ Here's what to look for:
 - Make sure to always have the simplest visual tree. There's nothing faster than something you don't draw.
 - Reduce panels in panels depth. Use Grids and relative panels where possible.
 - Force the size of images anywhere possible
-- Collapsed elements are not considered when measuring and arranging the visual tree, which makes them almost costless.
+- Collapsed elements are not considered when measuring and arranging the visual tree, which makes them almost costless. Consider `x:Load`` below for further optimizations.
 - When binding or animating (via visual state setters) the visibility property, make sure to enable lazy loading:
 	`x:Load="False"`.
 - Use `x:Load={x:Bind MyVisibility}` where appropriate as toggling to from true false effectively removes a part of the visual tree from memory. Note that setting back to true re-creates the visual tree.
@@ -29,6 +29,7 @@ Here's what to look for:
 			</DataTemplate>
 		```
 		Note that WinUI does not need this, and the issue is [tracked in Uno here](https://github.com/unoplatform/uno/issues/6910).
+	- Avoid controls that contain inline popups, menus or flyouts. Doing so will create as many popups as there are items visible on screen. As in general, there is only one popup visible at a time, it is generally best to move the popup to a separate static resource.
 
 - Updating items in `ItemsControl` can be quite expensive, using `ItemsRepeater` is generally faster at rendering similar content.
 - Animations
@@ -53,6 +54,7 @@ Here's what to look for:
 	- Prefer reusing paths, duplication costs Main and GPU memory.
 	- Prefer using custom fonts over paths where possible. Fonts are rendered extremely fast and have a very low initialization time.
 - Bindings
+	- Using `x:Bind` is generally faster as it involves less or no reflection
 	- Prefer bindings with short paths.
 	- To shorten paths, use the `DataContext` property on containers, such as `StackPanel` or `Grid`.
 	- As of Uno 3.9, adding a control to loaded `Panel` or `ContentControl` does propagate the parent's DataContext immediately. If the new control has its `DataContext` immediately overridden to something else, ensure to set the DataContext before adding the control to its parent.T his will avoid having bindings be refreshed twice needlessly.
