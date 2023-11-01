@@ -594,11 +594,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RegisterContentTemplateRoot();
 
-
-		protected override void OnApplyTemplate()
-		{
-		}
-
 		#region Foreground Dependency Property
 
 		public
