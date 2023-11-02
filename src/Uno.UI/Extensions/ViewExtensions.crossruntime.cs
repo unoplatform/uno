@@ -14,14 +14,16 @@ namespace Uno.UI
 {
 	public static partial class ViewExtensions
 	{
-		internal static UIElement? FindLastChild<T>(this UIElement group, T param, Func<UIElement, T, bool> predicate)
+		internal static TResult? FindLastChild<TParam, TResult>(this UIElement group, TParam param, Func<UIElement, TParam, TResult?> selector)
+			where TResult : class
 		{
 			var children = group.GetChildren();
 			for (int i = children.Count - 1; i >= 0; i--)
 			{
-				if (predicate(children[i], param))
+				var result = selector(children[i], param);
+				if (result is not null)
 				{
-					return children[i];
+					return result;
 				}
 			}
 

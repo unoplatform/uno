@@ -246,12 +246,11 @@ namespace Windows.UI.Xaml
 			}
 
 			// The lambda is static to make sure it doesn't capture anything, for performance reasons.
-			var matchingChild = group.FindLastChild(name, static (c, name) => string.Equals((c as IFrameworkElement)?.Name, name, StringComparison.Ordinal));
-			matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) is IFrameworkElement);
-
-			if (matchingChild is IFrameworkElement iFrameworkElement)
+			var matchingChild = group.FindLastChild(name, static (c, name) => c is IFrameworkElement fe && string.Equals(fe.Name, name, StringComparison.Ordinal) ? fe : null);
+			matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) as IFrameworkElement);
+			if (matchingChild is not null)
 			{
-				return iFrameworkElement.ConvertFromStubToElement(e, name);
+				return matchingChild.ConvertFromStubToElement(e, name);
 			}
 
 			// If element is a ContentControl with a view as Content, include the view and its children in the search,

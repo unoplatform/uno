@@ -25,14 +25,16 @@ namespace Uno.UI
 
 		internal static IEnumerable<View> GetChildren(this UIElement element) => element.ChildrenShadow;
 
-		internal static View? FindLastChild<T>(this View group, T param, Func<View, T, bool> predicate)
+		internal static TResult? FindLastChild<TParam, TResult>(this View group, TParam param, Func<View, TParam, TResult?> selector)
+			where TResult : class
 		{
 			var subviews = group.Subviews;
 			for (int i = subviews.Length - 1; i >= 0; i--)
 			{
-				if (predicate(subviews[i], param))
+				var result = selector(subviews[i], param);
+				if (result is not null)
 				{
-					return subviews[i];
+					return result;
 				}
 			}
 

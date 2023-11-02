@@ -151,7 +151,8 @@ namespace Uno.UI
 			}
 		}
 
-		internal static View? FindLastChild<T>(this ViewGroup group, T param, Func<View, T, bool> predicate)
+		internal static TResult? FindLastChild<TParam, TResult>(this ViewGroup group, TParam param, Func<View, TParam, TResult?> selector)
+			where TResult : class
 		{
 			if (group is IShadowChildrenProvider shadowProvider)
 			{
@@ -160,9 +161,10 @@ namespace Uno.UI
 				var childrenShadow = shadowProvider.ChildrenShadow;
 				for (int i = childrenShadow.Count - 1; i >= 0; i--)
 				{
-					if (predicate(childrenShadow[i], param))
+					var result = selector(childrenShadow[i], param);
+					if (result is not null)
 					{
-						return childrenShadow[i];
+						return result;
 					}
 				}
 
@@ -175,9 +177,10 @@ namespace Uno.UI
 			for (int i = count - 1; i >= 0; i--)
 			{
 				var child = group.GetChildAt(i)!;
-				if (predicate(child, param))
+				var result = selector(child, param);
+				if (result is not null)
 				{
-					return child;
+					return result;
 				}
 			}
 
