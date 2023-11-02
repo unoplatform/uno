@@ -17,6 +17,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using Uno;
 using System.Diagnostics.CodeAnalysis;
+using Uno.UI;
 
 #if !HAS_UNO
 using Uno.Logging;
@@ -231,6 +232,7 @@ namespace SamplesApp
 
 		private void ActivateMainWindow()
 		{
+			Windows.UI.Xaml.Window.Current.EnableHotReload();
 			Windows.UI.Xaml.Window.Current.Activate();
 			_wasActivated = true;
 			_isSuspended = false;
