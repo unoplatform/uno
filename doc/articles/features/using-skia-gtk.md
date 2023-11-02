@@ -35,7 +35,7 @@ host.RenderSurfaceType = RenderSurfaceType.Software;
 
 Hosting native GTK controls is supported through `ContentPresenter` and `ContentControl`.
 
-See this documentation about [embedding native controls](using-skia-hosting-native-controls.md).
+See this documentation about [embedding native controls](xref:Uno.Skia.Embedding.Native).
 
 ### Linux considerations
 When running under Linux, GTK can use OpenGL for the UI rendering but some restrictions can apply depending on the environment and available hardware.
