@@ -1428,24 +1428,7 @@ namespace Windows.UI.Xaml
 		private void InnerUpdateChildResourceBindings(ResourceUpdateReason updateReason)
 		{
 			_isUpdatingChildResourceBindings = true;
-			foreach (var child in GetChildrenDependencyObjects())
-			{
-				if (!(child is IFrameworkElement) && child is IDependencyObjectStoreProvider storeProvider)
-				{
-					storeProvider.Store.UpdateResourceBindings(updateReason);
-				}
-			}
-		}
 
-		/// <summary>
-		/// Returns all discoverable child dependency objects.
-		/// </summary>
-		/// <remarks>
-		/// This method is potentially slow and should only be used where performance isn't a concern (eg updating resource bindings
-		/// when the app theme changes).
-		/// </remarks>
-		private IEnumerable<DependencyObject> GetChildrenDependencyObjects()
-		{
 			foreach (var propertyDetail in _properties.GetAllDetails())
 			{
 				if (propertyDetail == null
@@ -1464,7 +1447,7 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in dependencyObjectCollection)
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
@@ -1472,14 +1455,22 @@ namespace Windows.UI.Xaml
 				{
 					foreach (var innerValue in updateable.GetAdditionalChildObjects())
 					{
-						yield return innerValue;
+						UpdateResourceBindingsIfNeeded(innerValue, updateReason);
 					}
 				}
 
 				if (propertyValue is DependencyObject dependencyObject)
 				{
-					yield return dependencyObject;
+					UpdateResourceBindingsIfNeeded(dependencyObject, updateReason);
 				}
+			}
+		}
+
+		private void UpdateResourceBindingsIfNeeded(DependencyObject dependencyObject, ResourceUpdateReason updateReason)
+		{
+			if (dependencyObject is not IFrameworkElement && dependencyObject is IDependencyObjectStoreProvider storeProvider)
+			{
+				storeProvider.Store.UpdateResourceBindings(updateReason);
 			}
 		}
 
