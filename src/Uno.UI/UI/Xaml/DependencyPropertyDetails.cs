@@ -61,10 +61,12 @@ namespace Windows.UI.Xaml
 		/// Constructor
 		/// </summary>
 		/// <param name="defaultValue">The default value of the Dependency Property</param>
-		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool hasInherits, bool hasValueInherits, bool hasValueDoesNotInherits)
+		internal DependencyPropertyDetails(DependencyProperty property, Type dependencyObjectType, bool isTemplatedParentOrDataContext)
 		{
 			Property = property;
 			_dependencyObjectType = dependencyObjectType;
+
+			GetPropertyInheritanceConfiguration(isTemplatedParentOrDataContext, out var hasInherits, out var hasValueInherits, out var hasValueDoesNotInherits);
 
 			_flags |= property.HasWeakStorage ? Flags.WeakStorage : Flags.None;
 			_flags |= hasValueInherits ? Flags.ValueInherits : Flags.None;
@@ -72,11 +74,39 @@ namespace Windows.UI.Xaml
 			_flags |= hasInherits ? Flags.Inherits : Flags.None;
 		}
 
+		private void GetPropertyInheritanceConfiguration(
+			bool isTemplatedParentOrDataContext,
+			out bool hasInherits,
+			out bool hasValueInherits,
+			out bool hasValueDoesNotInherit)
+		{
+			if (isTemplatedParentOrDataContext)
+			{
+				// TemplatedParent is a DependencyObject but does not propagate datacontext
+				hasValueInherits = false;
+				hasValueDoesNotInherit = true;
+				hasInherits = true;
+				return;
+			}
+
+			if (Metadata is FrameworkPropertyMetadata propertyMetadata)
+			{
+				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
+				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
+				hasInherits = propertyMetadata.Options.HasInherits();
+				return;
+			}
+
+			hasValueInherits = false;
+			hasValueDoesNotInherit = false;
+			hasInherits = false;
+		}
+
 		private object? GetDefaultValue()
 		{
 			if (!HasDefaultValueSet)
 			{
-				_defaultValue = Property.GetMetadata(_dependencyObjectType).DefaultValue;
+				_defaultValue = Metadata.DefaultValue;
 
 				// Ensures that the default value of non-nullable properties is not null
 				if (_defaultValue == null && !Property.IsTypeNullable)
@@ -403,7 +433,7 @@ namespace Windows.UI.Xaml
 			=> _callbackManager?.RaisePropertyChanged(actualInstanceAlias, eventArgs);
 
 		[Flags]
-		enum Flags
+		private enum Flags : byte
 		{
 			/// <summary>
 			/// No flag is being set
