@@ -2,6 +2,17 @@
 
 using System.Collections.Generic;
 using Windows.UI.Xaml;
+using System;
+
+
+#if __IOS__
+using UIKit;
+using View = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using View = AppKit.NSView;
+#endif
+
 
 namespace Uno.UI
 {
@@ -9,17 +20,23 @@ namespace Uno.UI
 	{
 		public static string ShowLocalVisualTree(this UIElement element, int fromHeight = 0)
 		{
-#if __MACOS__
-			return AppKit.UIViewExtensions.ShowLocalVisualTree(element as AppKit.NSView, fromHeight);
-#else
-			return UIKit.UIViewExtensions.ShowLocalVisualTree(element as UIKit.UIView, fromHeight);
-#endif
+			return UIViewExtensions.ShowLocalVisualTree(element as View, fromHeight);
 		}
 
-#if __IOS__
-		internal static IEnumerable<UIKit.UIView> GetChildren(this UIElement element) => element.ChildrenShadow;
-#elif __MACOS__
-		internal static IEnumerable<AppKit.NSView> GetChildren(this UIElement element) => element.ChildrenShadow;
-#endif
+		internal static IEnumerable<View> GetChildren(this UIElement element) => element.ChildrenShadow;
+
+		internal static View? FindLastChild<T>(this View group, T param, Func<View, T, bool> predicate)
+		{
+			var subviews = group.Subviews;
+			for (int i = subviews.Length - 1; i >= 0; i--)
+			{
+				if (predicate(subviews[i], param))
+				{
+					return subviews[i];
+				}
+			}
+
+			return null;
+		}
 	}
 }

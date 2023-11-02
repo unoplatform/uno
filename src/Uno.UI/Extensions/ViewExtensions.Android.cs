@@ -151,6 +151,39 @@ namespace Uno.UI
 			}
 		}
 
+		internal static View? FindLastChild<T>(this ViewGroup group, T param, Func<View, T, bool> predicate)
+		{
+			if (group is IShadowChildrenProvider shadowProvider)
+			{
+				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
+				// a fast path that relies on a shadowed list of the children in BindableView.
+				var childrenShadow = shadowProvider.ChildrenShadow;
+				for (int i = childrenShadow.Count - 1; i >= 0; i--)
+				{
+					if (predicate(childrenShadow[i], param))
+					{
+						return childrenShadow[i];
+					}
+				}
+
+				return null;
+			}
+
+			// Slow path if the current view doesn't implement IShadowChildrenProvider
+			var count = group.ChildCount;
+
+			for (int i = count - 1; i >= 0; i--)
+			{
+				var child = group.GetChildAt(i)!;
+				if (predicate(child, param))
+				{
+					return child;
+				}
+			}
+
+			return null;
+		}
+
 		/// <summary>
 		/// Gets an reverse enumerator containing all the children of a View group
 		/// </summary>

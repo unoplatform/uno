@@ -1,6 +1,5 @@
 ﻿#nullable enable
 
-#if !__NETSTD_REFERENCE__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +14,21 @@ namespace Uno.UI
 {
 	public static partial class ViewExtensions
 	{
+		internal static UIElement? FindLastChild<T>(this UIElement group, T param, Func<UIElement, T, bool> predicate)
+		{
+			var children = group.GetChildren();
+			for (int i = children.Count - 1; i >= 0; i--)
+			{
+				if (predicate(children[i], param))
+				{
+					return children[i];
+				}
+			}
+
+			return null;
+		}
+
+#if !__NETSTD_REFERENCE__
 		/// <summary>
 		/// Find the first child of a specific type.
 		/// </summary>
@@ -128,6 +142,6 @@ namespace Uno.UI
 
 			return ShowDescendants(root, viewOfInterest: element);
 		}
+#endif
 	}
 }
-#endif

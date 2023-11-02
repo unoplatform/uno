@@ -26,6 +26,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Hosting;
 using Uno.UI.Media;
 using Uno.UI.Dispatching;
+using Uno.Collections;
 
 namespace Windows.UI.Xaml
 {
@@ -236,7 +237,7 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		public virtual IEnumerable<UIElement> GetChildren() => _children;
+		internal MaterializableList<UIElement> GetChildren() => _children;
 
 		public IntPtr Handle { get; set; }
 

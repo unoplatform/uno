@@ -441,7 +441,7 @@ namespace Windows.UI.Xaml
 
 		public UIElement FindFirstChild() => _children.FirstOrDefault();
 
-		public virtual IEnumerable<UIElement> GetChildren() => _children;
+		internal MaterializableList<UIElement> GetChildren() => _children;
 
 		public void AddChild(UIElement child, int? index = null)
 		{

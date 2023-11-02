@@ -14,9 +14,11 @@ using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Foundation.Logging;
+using Uno.Collections;
 
 #if __ANDROID__
 using View = Android.Views.View;
+using ViewGroup = Android.Views.ViewGroup;
 using Font = Android.Graphics.Typeface;
 using Android.Graphics;
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
@@ -28,6 +30,7 @@ using _Size = Windows.Foundation.Size;
 using Point = Windows.Foundation.Point;
 #elif __IOS__
 using View = UIKit.UIView;
+using ViewGroup = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
 using CoreGraphics;
@@ -37,6 +40,7 @@ using ObjCRuntime;
 #elif __MACOS__
 using AppKit;
 using View = AppKit.NSView;
+using ViewGroup = AppKit.NSView;
 using Color = AppKit.NSColor;
 using Font = AppKit.NSFont;
 using CoreGraphics;
@@ -52,6 +56,7 @@ using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
 using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #else
 #pragma warning disable CS8981 // The type name 'nint' only contains lower-cased ascii characters. Such names may become reserved for the language
 using nint = System.Int32;
@@ -60,6 +65,7 @@ using CGSize = Windows.Foundation.Size;
 using _Size = Windows.Foundation.Size;
 using NMath = System.Math;
 using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml
@@ -232,44 +238,36 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		public static IFrameworkElement FindName(IFrameworkElement e, IEnumerable<View> subviews, string name)
+		public static IFrameworkElement FindName(IFrameworkElement e, ViewGroup group, string name)
 		{
 			if (string.Equals(e.Name, name, StringComparison.Ordinal))
 			{
 				return e;
 			}
 
-			var frameworkElements = subviews
-				.Safe()
-				.OfType<IFrameworkElement>()
-				.Reverse()
-				.ToArray();
+			// The lambda is static to make sure it doesn't capture anything, for performance reasons.
+			var matchingChild = group.FindLastChild(name, static (c, name) => string.Equals((c as IFrameworkElement)?.Name, name, StringComparison.Ordinal));
+			matchingChild ??= group.FindLastChild(name, static (c, name) => (c as IFrameworkElement)?.FindName(name) is IFrameworkElement);
 
-			if (frameworkElements.Length == 0)
+			if (matchingChild is IFrameworkElement iFrameworkElement)
 			{
-				// If element is a ContentControl with a view as Content, include the view and its children in the search,
-				// to better match Windows behaviour
-				var content =
-					(e as ContentControl)?.Content as IFrameworkElement ??
-					(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
-
-				if (content != null)
-				{
-					frameworkElements = new IFrameworkElement[] { content };
-				}
+				return iFrameworkElement.ConvertFromStubToElement(e, name);
 			}
 
-			foreach (var frameworkElement in frameworkElements)
-			{
-				if (string.Equals(frameworkElement.Name, name, StringComparison.Ordinal))
-				{
-					return frameworkElement.ConvertFromStubToElement(e, name);
-				}
-			}
+			// If element is a ContentControl with a view as Content, include the view and its children in the search,
+			// to better match Windows behaviour
+			var content =
+				(e as ContentControl)?.Content as IFrameworkElement ??
+				(e as Controls.Primitives.Popup)?.Child as IFrameworkElement;
 
-			foreach (var frameworkElement in frameworkElements)
+			if (content != null)
 			{
-				var subviewResult = frameworkElement.FindName(name) as IFrameworkElement;
+				if (string.Equals(content.Name, name, StringComparison.Ordinal))
+				{
+					return content.ConvertFromStubToElement(e, name);
+				}
+
+				var subviewResult = content.FindName(name) as IFrameworkElement;
 				if (subviewResult != null)
 				{
 					return subviewResult.ConvertFromStubToElement(e, name);
@@ -300,7 +298,6 @@ namespace Windows.UI.Xaml
 
 			return null;
 		}
-
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
