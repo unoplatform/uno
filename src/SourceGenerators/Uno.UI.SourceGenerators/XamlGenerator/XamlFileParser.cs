@@ -266,9 +266,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// );
 		}
 
-		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner)
+		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces = null)
 		{
-			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner);
+			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner, namespaces);
 
 			Visit(reader, xamlObject);
 
@@ -316,6 +316,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
 			var lastWasLiteralInline = false;
 			var lastWasTrimSurroundingWhiteSpace = false;
+			List<NamespaceDeclaration>? namespaces = null;
+
 			while (reader.Read())
 			{
 				WriteState(reader);
@@ -351,7 +353,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						var obj = VisitObject(reader, owner);
+						var obj = VisitObject(reader, owner, namespaces);
 						if (!reader.PreserveWhitespace &&
 							lastWasLiteralInline &&
 							obj.Type.TrimSurroundingWhitespace &&
@@ -375,6 +377,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.NamespaceDeclaration:
 						lastWasLiteralInline = false;
 						lastWasTrimSurroundingWhiteSpace = false;
+						(namespaces ??= new List<NamespaceDeclaration>()).Add(reader.Namespace);
 						// Skip
 						break;
 
@@ -412,7 +415,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var textMember = new XamlMember("Text", runType, false);
 
-			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, null)
+			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null)
 			{
 				Members =
 				{

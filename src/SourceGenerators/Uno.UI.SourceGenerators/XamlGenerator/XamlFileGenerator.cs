@@ -4901,7 +4901,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return $"new System.Uri({RewriteUri(uriValue)}, global::System.UriKind.RelativeOrAbsolute)";
 
 					case "System.Type":
-						return $"typeof({GetType(GetMemberValue()).GetFullyQualifiedTypeIncludingGlobal()})";
+						return $"typeof({GetType(GetMemberValue(), owner?.Owner).GetFullyQualifiedTypeIncludingGlobal()})";
 
 					case XamlConstants.Types.Geometry:
 						return $"@\"{memberValue}\"";
@@ -6348,7 +6348,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								if ((!_isTopLevelDictionary || isInsideFrameworkTemplate)
 									&& (HasXBindMarkupExtension(definition) || HasMarkupExtensionNeedingComponent(definition)))
 								{
-									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition);
+									var xamlObjectDef = new XamlObjectDefinition(elementStubType, 0, 0, definition, namespaces: null);
 									xamlObjectDef.Members.AddRange(members);
 
 									AddComponentForParentScope(xamlObjectDef);
