@@ -247,42 +247,6 @@ namespace Uno.Extensions
 		}
 
 		/// <summary>
-		/// Finds an item in the sequence for which a projected value is maximized.
-		/// </summary>
-		/// <typeparam name="TSource">Sequence type.</typeparam>
-		/// <typeparam name="TComparable">Projected value type.</typeparam>
-		/// <param name="source">The sequence of items.</param>
-		/// <param name="selector">Function which projects the sequence into a comparable value.</param>
-		/// <returns>A tuple containing the maximum item and its projected value. If multiple items have the same projected value, this will return the first.</returns>
-		public static (TSource Item, TComparable Value) MaxBy<TSource, TComparable>(this IEnumerable<TSource> source, Func<TSource, TComparable> selector)
-		{
-			var comparer = Comparer<TComparable>.Default;
-
-			var enumerator = source.GetEnumerator();
-
-			if (!enumerator.MoveNext())
-			{
-				throw new InvalidOperationException("Source must contain at least one element.");
-			}
-
-			var maxItem = enumerator.Current;
-			var max = selector(maxItem);
-
-			while (enumerator.MoveNext())
-			{
-				var item = enumerator.Current;
-				var value = selector(item);
-				if (comparer.Compare(value, max) > 0)
-				{
-					maxItem = item;
-					max = value;
-				}
-			}
-
-			return (maxItem, max);
-		}
-
-		/// <summary>
 		/// Takes "before" item and "after" item around the "start" item
 		/// </summary>
 		public static IEnumerable<T> Range<T>(this IEnumerable<T> collection, int start, int before, int after, bool fixedCount = true)
