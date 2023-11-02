@@ -148,6 +148,11 @@ public partial struct Rect
 
 	public static implicit operator string(Rect rect)
 	{
+		if (rect.IsEmpty)
+		{
+			return "Empty.";
+		}
+
 		var sb = new StringBuilder();
 		sb.Append(rect.X.ToStringInvariant());
 		sb.Append(',');
