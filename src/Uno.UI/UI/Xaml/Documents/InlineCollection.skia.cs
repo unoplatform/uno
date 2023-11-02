@@ -37,6 +37,15 @@ namespace Windows.UI.Xaml.Documents
 		private List<(int start, int length)> _lineIntervals;
 		private bool _lineIntervalsValid;
 
+		/// <summary>
+		/// This prevents drawing events below from being sent when we're redrawing the same thing.
+		/// This works around WaitForIdle never hitting in  runtime tests because the canvas that subscribes
+		/// to these events also redraws, so we never actually get to be idle. We need to at least go through
+		/// measure and draw once after each invalidation.
+		/// </summary>
+		private (bool wentThroughMeasure, bool wentThroughDraw) _drawingValid;
+		private (SelectionDetails? selection, bool caretAtEndOfSelection, bool renderSelectionAndCaret) _lastDrawingState;
+
 		// these should only be used by TextBox.
 		internal SelectionDetails? Selection { get; set; }
 		internal bool CaretAtEndOfSelection { get; set; }
@@ -62,6 +71,7 @@ namespace Windows.UI.Xaml.Documents
 
 			_invalidationPending = false;
 			_lineIntervalsValid = false;
+			_drawingValid.wentThroughMeasure = true;
 
 			_lastMeasuredWidth = availableSize.Width;
 
@@ -315,6 +325,7 @@ namespace Windows.UI.Xaml.Documents
 			// last arranged size, so that asynchronous rendering can still
 			// use them to render properly.
 			_invalidationPending = true;
+			_drawingValid = (false, false);
 		}
 
 		/// <summary>
@@ -322,11 +333,21 @@ namespace Windows.UI.Xaml.Documents
 		/// </summary>
 		internal void Draw(in DrawingSession session)
 		{
-			DrawingStarted?.Invoke();
+			var fireEvents = _drawingValid is not { wentThroughDraw: true, wentThroughMeasure: true } && _lastDrawingState != (Selection, CaretAtEndOfSelection, RenderSelectionAndCaret);
+			_drawingValid.wentThroughDraw = true;
+			_lastDrawingState = (Selection, CaretAtEndOfSelection, RenderSelectionAndCaret);
+
+			if (fireEvents)
+			{
+				DrawingStarted?.Invoke();
+			}
 
 			if (_renderLines.Count == 0)
 			{
-				DrawingFinished?.Invoke();
+				if (fireEvents)
+				{
+					DrawingFinished?.Invoke();
+				}
 				return;
 			}
 
@@ -503,7 +524,7 @@ namespace Windows.UI.Xaml.Documents
 								}
 							}
 
-							if (Math.Abs(left - right) > 0.01)
+							if (Math.Abs(left - right) > 0.01 && fireEvents)
 							{
 								SelectionFound?.Invoke(new Rect(new Point(left, y - line.Height), new Point(right, y)));
 							}
@@ -542,7 +563,7 @@ namespace Windows.UI.Xaml.Documents
 								caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
 							}
 
-							if (caretLocation != float.MinValue)
+							if (caretLocation != float.MinValue && fireEvents)
 							{
 								CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
 							}
@@ -554,7 +575,10 @@ namespace Windows.UI.Xaml.Documents
 				}
 			}
 
-			DrawingFinished?.Invoke();
+			if (fireEvents)
+			{
+				DrawingFinished?.Invoke();
+			}
 
 			static void DrawDecoration(SKCanvas canvas, float x, float y, float width, float thickness, SKPaint paint)
 			{
