@@ -58,7 +58,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				var root = (FrameworkElement)WindowContent;
 				var windowBounds = WindowBounds;
 
-				return new Point(X(root, windowBounds.Width), Y(root, windowBounds.Height));
+				var x = X(root, windowBounds.Width);
+				var y = Y(root, windowBounds.Height);
+				if (root.UseLayoutRounding)
+				{
+					x = root.LayoutRound(x);
+					y = root.LayoutRound(y);
+				}
+
+				return new Point(x, y);
 			}
 		}
 
@@ -255,7 +263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				HorizontalAlignment = hAlign,
 				VerticalAlignment = vAlign,
 				Width = width,
-				Height = height
+				Height = height,
 			};
 			using var vp = VP(sut);
 
