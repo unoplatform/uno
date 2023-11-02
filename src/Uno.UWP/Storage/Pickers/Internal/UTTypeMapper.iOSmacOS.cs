@@ -106,7 +106,7 @@ namespace Uno.Storage.Pickers.Internal
 				".xlsx" => "org.openxmlformats.spreadsheetml.sheet",
 				".xml" => UTType.XML,
 				".zip" => UTType.ZipArchive,
-				string unknownExtension => unknownExtension.TrimStart(new char[] { '.' }),
+				string unknownExtension => unknownExtension.TrimStart('.'),
 				null => UTType.Content
 			};
 	}

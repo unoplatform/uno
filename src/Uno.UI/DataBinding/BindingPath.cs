@@ -127,7 +127,7 @@ namespace Uno.UI.DataBinding
 		{
 			var info = GetPathItems().Last();
 			var propertyName = info.PropertyName
-				.Split(new[] { '.' }).Last()
+				.Split('.').Last()
 				.Replace("(", "").Replace(")", "");
 
 			return (info.DataContext, propertyName);
@@ -443,7 +443,7 @@ namespace Uno.UI.DataBinding
 		private static IDisposable? SubscribeToNotifyCollectionChanged(BindingItem bindingItem)
 		{
 			if (!bindingItem.PropertyType.Is(typeof(INotifyCollectionChanged)) ||
-				bindingItem.Next?.PropertyName.StartsWith("[", StringComparison.Ordinal) != true)
+				bindingItem.Next?.PropertyName.StartsWith('[') != true)
 			{
 				return null;
 			}

@@ -309,7 +309,9 @@ namespace Windows.UI.Xaml
 		/// <returns></returns>
 		internal DependencyPropertyValuePrecedences GetCurrentHighestValuePrecedence(DependencyProperty property)
 		{
-			return _properties.GetPropertyDetails(property).CurrentHighestValuePrecedence;
+			// There is no need to force-create property details here.
+			// If it's not yet created, then simply the precedence is DefaultValue
+			return _properties.FindPropertyDetails(property)?.CurrentHighestValuePrecedence ?? DependencyPropertyValuePrecedences.DefaultValue;
 		}
 
 		/// <summary>
@@ -1673,11 +1675,7 @@ namespace Windows.UI.Xaml
 #if DEBUG
 					if (instance != null)
 					{
-						if (!hashSet.Contains(instance!))
-						{
-							hashSet.Add(instance);
-						}
-						else
+						if (!hashSet.Add(instance))
 						{
 							throw new Exception($"Cycle detected: [{prevInstance}/{(prevInstance as FrameworkElement)?.Name}] has already added [{instance}/{(instance as FrameworkElement)?.Name}] as parent/");
 						}

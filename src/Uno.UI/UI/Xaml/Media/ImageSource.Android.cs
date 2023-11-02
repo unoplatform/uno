@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else
 			{
-				ResourceString = uri.PathAndQuery.TrimStart(new[] { '/' });
+				ResourceString = uri.PathAndQuery.TrimStart('/');
 
 				ResourceId = Uno.Helpers.DrawableHelper.FindResourceIdFromPath(ResourceString);
 			}
