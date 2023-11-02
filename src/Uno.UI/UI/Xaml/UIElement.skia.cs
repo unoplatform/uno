@@ -63,8 +63,6 @@ namespace Windows.UI.Xaml
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(true));
 
-		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
