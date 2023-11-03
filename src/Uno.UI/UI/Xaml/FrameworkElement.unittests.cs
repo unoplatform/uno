@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml
 			return _children;
 		}
 
-		public bool HasParent()
+		internal bool HasParent()
 		{
 			return Parent != null;
 		}

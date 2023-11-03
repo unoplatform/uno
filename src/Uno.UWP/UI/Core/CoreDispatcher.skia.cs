@@ -11,7 +11,7 @@ namespace Windows.UI.Core
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Action<Action> DispatchOverride
+		internal static Action<Action> DispatchOverride
 		{
 			get => NativeDispatcher.DispatchOverride;
 			set => NativeDispatcher.DispatchOverride = value;
@@ -21,7 +21,7 @@ namespace Windows.UI.Core
 		/// Provide a action that will delegate the dispach of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Func<bool> HasThreadAccessOverride
+		internal static Func<bool> HasThreadAccessOverride
 		{
 			get => NativeDispatcher.HasThreadAccessOverride;
 			set => NativeDispatcher.HasThreadAccessOverride = value;

@@ -153,5 +153,17 @@ namespace Windows.UI.Xaml
 		partial void OnUnloadedPartial();
 
 		private protected virtual void OnUnloaded() { }
+
+		public override string ToString()
+		{
+#if __WASM__
+			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
+			{
+				return $"{base.ToString()}\"{Name}\"";
+			}
+#endif
+
+			return base.ToString();
+		}
 	}
 }

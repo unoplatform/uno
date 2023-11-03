@@ -696,6 +696,7 @@
 			<Member fullName=".*KeyUp" isRegex="true" reason="KeyUp should be defined on UIElement only" />
 			<Member fullName=".*KeyDown" isRegex="true" reason="KeyDown should be defined on UIElement only" />
 			<!-- END Android TV -->
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; Windows.UI.Core.CoreWindow::PointerCancelled" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 		</Events>
 		<Fields>
 			<Member fullName="System.Runtime.InteropServices.NFloat Uno.UI.ViewHelper::MainScreenScale" reason="Api alignments" />
@@ -907,6 +908,8 @@
 			
 			<Member fullName="System.Double Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings::OpenPaneWidth()" reason="Does not exist in UWP" />
 			<Member fullName="Windows.UI.Xaml.DependencyProperty Microsoft.UI.Xaml.Controls.NavigationViewTemplateSettings::OpenPaneWidthProperty()" reason="Does not exist in UWP" />
+
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 		</Properties>
 		<Methods>
 			<Member fullName="System.Void Windows.UI.Core.CoreDispatcher..ctor()" reason="Align with UWP" />
@@ -1716,6 +1719,11 @@
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />			
+
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.add_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.remove_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 		</Methods>
 	</IgnoreSet>
 	  <!--
