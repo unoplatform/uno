@@ -6,6 +6,7 @@ using Uno.Foundation.Logging;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using WpfUIElement = System.Windows.UIElement;
 using WinUIKeyEventArgs = Windows.UI.Core.KeyEventArgs;
@@ -88,39 +89,8 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 
 	private static char? KeyCodeToUnicode(uint keyCode)
 	{
-		var result = WindowsKeyCodeToUnicode(keyCode);
+		var result = InputHelper.WindowsKeyCodeToUnicode(keyCode);
 		return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
-	}
-
-	[DllImport("user32.dll")]
-	private static extern bool GetKeyboardState(byte[] lpKeyState);
-
-	[DllImport("user32.dll")]
-	private static extern uint MapVirtualKey(uint uCode, uint uMapType);
-
-	[DllImport("user32.dll")]
-	private static extern IntPtr GetKeyboardLayout(uint idThread);
-
-	[DllImport("user32.dll")]
-	private static extern int ToUnicodeEx(uint wVirtKey, uint wScanCode, byte[] lpKeyState, [Out, MarshalAs(UnmanagedType.LPWStr)] StringBuilder pwszBuff, int cchBuff, uint wFlags, IntPtr dwhkl);
-
-	private static string WindowsKeyCodeToUnicode(uint keyCode)
-	{
-		var keyboardState = new byte[255];
-		var keyboardStateStatus = GetKeyboardState(keyboardState);
-
-		if (!keyboardStateStatus)
-		{
-			return "";
-		}
-
-		var scanCode = MapVirtualKey(keyCode, 0);
-		var inputLocaleIdentifier = GetKeyboardLayout((uint)Environment.CurrentManagedThreadId);
-
-		var result = new StringBuilder();
-		ToUnicodeEx(keyCode, scanCode, keyboardState, result, (int)5, (uint)0, inputLocaleIdentifier);
-
-		return result.ToString();
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)
