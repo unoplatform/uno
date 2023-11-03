@@ -1,4 +1,9 @@
-﻿using System.Numerics;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference Expander.cpp, tag winui3/release/1.4.2
+
+using System.Numerics;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -25,22 +30,13 @@ public partial class Expander : ContentControl
 		DefaultStyleKey = typeof(AnimatedIcon);
 
 		SetValue(TemplateSettingsProperty, new ExpanderTemplateSettings());
-
-#if HAS_UNO
-		Loaded += Expander_Loaded;
-		Unloaded += Expander_Unloaded;
-#endif
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new ExpanderAutomationPeer(this);
 
 	protected override void OnApplyTemplate()
 	{
-		// Uno specific: Added to dispose event handlers
-		_eventSubscriptions.Disposable = null;
-		var registrations = new CompositeDisposable();
-
-		if (GetTemplateChild<Control>(c_expanderHeader) is ToggleButton toggleButton)
+		if (GetTemplateChild<Control>(c_expanderHeader) is Control toggleButton)
 		{
 			// We will do 2 things with the toggle button's peer:
 			// 1. Set the events source of the toggle button peer to
@@ -75,6 +71,11 @@ public partial class Expander : ContentControl
 			}
 		}
 
+		// Uno specific: Added to dispose event handlers
+		_eventSubscriptions.Disposable = null;
+		var registrations = new CompositeDisposable();
+		_eventSubscriptions.Disposable = registrations;
+
 		if (GetTemplateChild<Border>(c_expanderContentClip) is Border expanderContentClip)
 		{
 			// TODO Uno specific: The Composition clipping APIs are currently unsupported,
@@ -97,9 +98,6 @@ public partial class Expander : ContentControl
 
 		UpdateExpandState(false);
 		UpdateExpandDirection(false);
-
-		// Uno specific: Added to dispose event handlers
-		_eventSubscriptions.Disposable = registrations;
 	}
 
 #if HAS_UNO
@@ -124,10 +122,10 @@ public partial class Expander : ContentControl
 	}
 
 	private void RaiseExpandingEvent(Expander container) =>
-		Expanding?.Invoke(this, new ExpanderExpandingEventArgs()); // Uno specific: We won't use null for args like WinUI
+		Expanding?.Invoke(this, null);
 
 	private void RaiseCollapsedEvent(Expander container) =>
-		Collapsed?.Invoke(this, new ExpanderCollapsedEventArgs()); // Uno specific: We won't use null for args like WinUI
+		Collapsed?.Invoke(this, null);
 
 	private void OnIsExpandedPropertyChanged(DependencyPropertyChangedEventArgs args)
 	{
@@ -210,16 +208,4 @@ public partial class Expander : ContentControl
 			);
 		}
 	}
-
-#if HAS_UNO // Uno specific: We need to ensure events are subscribed/unsubscribed on load/unload to avoid memory leaks.
-	private void Expander_Loaded(object sender, RoutedEventArgs e)
-	{
-		if (_eventSubscriptions.Disposable is null)
-		{
-			OnApplyTemplate();
-		}
-	}
-
-	private void Expander_Unloaded(object sender, RoutedEventArgs e) => _eventSubscriptions.Disposable = null;
-#endif
 }
