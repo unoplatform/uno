@@ -7,8 +7,8 @@
 
 			.Class("Control")
 				.Property("BackgroundSizing", "BackgroundSizing", "default")
-				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)")
-				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)")				
+				.Property("HorizontalContentAlignment", "HorizontalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? HorizontalAlignment.Left : HorizontalAlignment.Center)", frameworkPropertyOption: "AffectsArrange")
+				.Property("VerticalContentAlignment", "VerticalAlignment", "(Uno.UI.FeatureConfiguration.Control.UseLegacyContentAlignment ? VerticalAlignment.Top : VerticalAlignment.Center)", frameworkPropertyOption: "AffectsArrange")				
 			.Class("Picker", condition: "__IOS__")			
 				.Property("ItemsSource", "object", "null")
 				.Property("SelectedItem", "object", "null")

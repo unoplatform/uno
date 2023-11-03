@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			nameof(SizesContentToTemplatedParent),
 			typeof(bool),
 			typeof(ScrollContentPresenter),
-			new FrameworkPropertyMetadata(false));
+			new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public bool SizesContentToTemplatedParent
 		{

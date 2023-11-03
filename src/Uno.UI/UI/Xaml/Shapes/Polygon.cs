@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Shapes
 			typeof(Polygon),
 			new FrameworkPropertyMetadata(
 				defaultValue: default(PointCollection),
-				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure,
 				propertyChangedCallback: (s, e) =>
 				{
 					(e.OldValue as PointCollection)?.UnRegisterChangedListener(s.InvalidateMeasure);
