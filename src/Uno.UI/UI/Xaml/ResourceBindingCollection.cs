@@ -23,9 +23,9 @@ internal class ResourceBindingCollection
 			// Avoiding the use of LINQ here to reduce unnecessary enumerator boxing.
 			if (_bindings.Count > 0)
 			{
-				foreach (var (_, value) in _bindings)
+				foreach (var entry in _bindings)
 				{
-					if (value.Count > 0)
+					if (entry.Value.Count > 0)
 					{
 						return true;
 					}
