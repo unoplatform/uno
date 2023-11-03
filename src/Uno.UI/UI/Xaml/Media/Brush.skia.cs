@@ -148,6 +148,9 @@ namespace Windows.UI.Xaml.Media
 			{
 				if (brush.ImageDataCache is { } data)
 				{
+					surfaceBrush.Stretch = (CompositionStretch)brush.Stretch;
+					surfaceBrush.HorizontalAlignmentRatio = GetHorizontalAlignmentRatio(brush.AlignmentX);
+					surfaceBrush.VerticalAlignmentRatio = GetVerticalAlignmentRatio(brush.AlignmentY);
 					surfaceBrush.Surface = data.CompositionSurface;
 				}
 			};
@@ -156,6 +159,28 @@ namespace Windows.UI.Xaml.Media
 			brush.InvalidateRender += onInvalidateRender;
 			brushSetter(surfaceBrush);
 			return new DisposableAction(() => brush.InvalidateRender -= onInvalidateRender);
+		}
+
+		private static float GetHorizontalAlignmentRatio(AlignmentX alignmentX)
+		{
+			return alignmentX switch
+			{
+				AlignmentX.Left => 0.0f,
+				AlignmentX.Center => 0.5f,
+				AlignmentX.Right => 1.0f,
+				_ => 0.5f, // this should never happen.
+			};
+		}
+
+		private static float GetVerticalAlignmentRatio(AlignmentY alignmentY)
+		{
+			return alignmentY switch
+			{
+				AlignmentY.Top => 0.0f,
+				AlignmentY.Center => 0.5f,
+				AlignmentY.Bottom => 1.0f,
+				_ => 0.5f, // this should never happen.
+			};
 		}
 
 		private static IDisposable AssignAndObserveRadialGradientBrush(RadialGradientBrush brush, Compositor compositor, BrushSetterHandler brushSetter)
