@@ -41,13 +41,13 @@ internal class FreezableList<T> : List<T>
 		}
 	}
 
-	private bool _isFrozen;
+	private int _freezeCount;
 
 	private List<QueuedOperation>? _queuedOperations;
 
 	public new void Add(T item)
 	{
-		if (_isFrozen)
+		if (_freezeCount > 0)
 		{
 			(_queuedOperations ??= new()).Add(new QueuedOperation(FrozenOperationKind.Add, item));
 		}
@@ -59,7 +59,7 @@ internal class FreezableList<T> : List<T>
 
 	public new void Remove(T item)
 	{
-		if (_isFrozen)
+		if (_freezeCount > 0)
 		{
 			(_queuedOperations ??= new()).Add(new QueuedOperation(FrozenOperationKind.Remove, item));
 		}
@@ -69,12 +69,12 @@ internal class FreezableList<T> : List<T>
 		}
 	}
 
-	public void Freeze() => _isFrozen = true;
+	public void Freeze() => _freezeCount++;
 
 	public void Unfreeze()
 	{
-		_isFrozen = false;
-		if (_queuedOperations is null)
+		_freezeCount--;
+		if (_queuedOperations is null || _freezeCount > 0)
 		{
 			return;
 		}
