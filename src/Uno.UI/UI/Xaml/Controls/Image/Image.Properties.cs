@@ -25,6 +25,7 @@ partial class Image
 			typeof(Image),
 			new FrameworkPropertyMetadata(
 				null,
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((Image)s).OnSourceChanged((ImageSource)e.NewValue)));
 
 	/// <summary>
@@ -46,6 +47,7 @@ partial class Image
 			typeof(Image),
 			new FrameworkPropertyMetadata(
 				Stretch.Uniform,
+				FrameworkPropertyMetadataOptions.AffectsMeasure,
 				(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 #if !__WASM__
