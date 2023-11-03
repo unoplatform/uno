@@ -28,10 +28,11 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
+    fetchDepth: 1
 
   - template: templates/download-winui-converted-tree.yml
 
-  - template: templates/gitversion.yml
   - template: templates/dotnet-install.yml
 
   - template: templates/nuget-cache.yml
@@ -39,7 +40,7 @@ jobs:
       nugetPackages: $(NUGET_PACKAGES)
 
   - bash: |
-      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net6-$(GitVersion.FullSemVer).binlog
+      dotnet msbuild /r /nr:false /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /bl:$(build.artifactstagingdirectory)/build-wasm-uitest-net7.binlog
 
     displayName: 'Build sample app (net7.0)'
 
@@ -58,7 +59,7 @@ jobs:
     retryCountOnTaskFailure: 3
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitest-binaries
+      ArtifactName: wasm-uitest-binaries-$(XAML_FLAVOR_BUILD)
       ArtifactType: Container
 
 
@@ -78,12 +79,14 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
+    fetchDepth: 1
 
   - template: templates/dotnet-install.yml
 
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: wasm-uitest-binaries
+        artifactName: wasm-uitest-binaries-UWP
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - bash: |
@@ -134,16 +137,19 @@ jobs:
   strategy:
     matrix:
       net7_default:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Default'
         UITEST_TEST_TIMEOUT: '120s'
 
       net7_benchmarks:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'Benchmarks'
         UITEST_TEST_TIMEOUT: '120s'
 
       net7_uwp_runtimetests_group_00:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -151,6 +157,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_01:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -158,6 +165,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_uwp_runtimetests_group_02:
+        XAML_FLAVOR_BUILD: 'UWP'
         SITE_SUFFIX: 'net7.0-UWP'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -165,6 +173,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_00:
+        XAML_FLAVOR_BUILD: 'WinUI'
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -172,6 +181,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_01:
+        XAML_FLAVOR_BUILD: 'WinUI'
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -179,6 +189,7 @@ jobs:
         UITEST_RUNTIME_TEST_GROUP_COUNT: 3
 
       net7_winui_runtimetests_group_02:
+        XAML_FLAVOR_BUILD: 'WinUI'
         SITE_SUFFIX: 'net7.0-WinUI'
         UITEST_AUTOMATED_GROUP: 'RuntimeTests'
         UITEST_TEST_TIMEOUT: '1800s'
@@ -193,6 +204,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
 
   - template: templates/dotnet-install.yml
 
@@ -202,7 +214,7 @@ jobs:
 
   - task: DownloadBuildArtifacts@0
     inputs:
-        artifactName: wasm-uitest-binaries
+        artifactName: wasm-uitest-binaries-$(XAML_FLAVOR_BUILD)
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - task: DownloadBuildArtifacts@0

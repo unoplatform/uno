@@ -10,8 +10,9 @@ jobs:
 
   steps:
   - checkout: self
-    fetchDepth: 1
     clean: true
+    fetchTags: false
+    fetchDepth: 1
 
   - task: NodeTool@0
     inputs:

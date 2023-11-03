@@ -62,6 +62,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
+    fetchDepth: 1
 
   - template: templates/nuget-cache.yml
     parameters:
@@ -73,8 +75,6 @@ jobs:
     parameters:
       xCodeRoot: ${{ parameters.xCodeRootBuild }}
       XamarinSDKVersion: ${{ parameters.XamarinSDKVersionBuild }}
-
-  - template: templates/gitversion.yml
 
   - bash: |
       $(build.sourcesdirectory)/build/test-scripts/ios-uitest-build.sh
@@ -127,6 +127,7 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
 
   - task: InstallAppleCertificate@2
     displayName: Install Certificate

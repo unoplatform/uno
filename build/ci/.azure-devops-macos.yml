@@ -20,6 +20,8 @@ jobs:
   steps:
   - checkout: self
     clean: true
+    fetchTags: false
+    fetchDepth: 1
 
   - template: templates/dotnet7-mobile-install-mac.yml
 
