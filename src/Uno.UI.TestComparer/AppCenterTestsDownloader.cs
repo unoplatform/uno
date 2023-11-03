@@ -25,7 +25,7 @@ namespace Uno.UI.TestComparer
 		{
 			System.Net.ServicePointManager.DefaultConnectionLimit = 40;
 
-			Console.WriteLine($"Downloading {runLimit} test results from testcloud to [{basePath}]");
+			Helpers.WriteLineWithTime($"Downloading {runLimit} test results from testcloud to [{basePath}]");
 
 			var appCenterApi = RestService.For<IAppCenterApi>(
 				hostUrl: "https://api.appcenter.ms",
@@ -35,13 +35,13 @@ namespace Uno.UI.TestComparer
 				}
 			);
 
-			Console.WriteLine($"Getting apps...");
+			Helpers.WriteLineWithTime($"Getting apps...");
 			var apps = await appCenterApi.GetApps("nventive");
 			var unoApps = apps.Where(a => a.DisplayName == "Uno.UI Samples");
 
 			foreach (var app in unoApps)
 			{
-				Console.WriteLine($"Getting runs for {app.DisplayName}...");
+				Helpers.WriteLineWithTime($"Getting runs for {app.DisplayName}...");
 				var runs = await appCenterApi.GetTestRuns(app.Owner.Name, app.Name);
 
 				var validRuns = runs
@@ -53,7 +53,7 @@ namespace Uno.UI.TestComparer
 
 				foreach (var run in validRuns.Select((v, i) => new { Index = i, Value = v }))
 				{
-					Console.WriteLine($"Getting run {run.Index + 1} of {validRuns.Length} for {run.Value.Platform} at {run.Value.Date}...");
+					Helpers.WriteLineWithTime($"Getting run {run.Index + 1} of {validRuns.Length} for {run.Value.Platform} at {run.Value.Date}...");
 
 					var runName = $"{run.Value.Date:yyyyMMdd-hhmmss}-{run.Value.Id}";
 					var fullPath = Path.Combine(basePath, run.Value.Platform, runName);
@@ -111,32 +111,32 @@ namespace Uno.UI.TestComparer
 										string fileName = outputPath + "\\" + name.Replace(" ", "_") + ".png";
 										if (!File.Exists(fileName))
 										{
-											Console.WriteLine($"Downloading ({tries} try) for {name}");
+											Helpers.WriteLineWithTime($"Downloading ({tries} try) for {name}");
 											new WebClient().DownloadFile(shot, fileName);
 										}
 										else
 										{
-											Console.WriteLine($"Skipping existing {name}");
+											Helpers.WriteLineWithTime($"Skipping existing {name}");
 										}
 										return;
 									}
 									catch (Exception e)
 									{
-										Console.WriteLine($"Retrying in 1s... {e.Message}");
+										Helpers.WriteLineWithTime($"Retrying in 1s... {e.Message}");
 										Thread.Sleep(1000);
 									}
 								}
 							}
 							else
 							{
-								Console.WriteLine($"Skipping missing screenshot for {name}");
+								Helpers.WriteLineWithTime($"Skipping missing screenshot for {name}");
 							}
 						});
 				}
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine($"Run download failed ({e.Message})");
+				Helpers.WriteLineWithTime($"Run download failed ({e.Message})");
 			}
 		}
 
@@ -161,7 +161,7 @@ namespace Uno.UI.TestComparer
 				}
 				catch (WebException e)
 				{
-					Console.WriteLine($"Retrying in 1s (2) {e.Message}");
+					Helpers.WriteLineWithTime($"Retrying in 1s (2) {e.Message}");
 					await Task.Delay(1000);
 				}
 			} while (tries-- > 0);
