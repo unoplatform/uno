@@ -51,7 +51,7 @@ namespace Uno.UWPSyncGenerator
 
 			using (_sb.Section("List of views implemented in Uno"))
 			{
-				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the UWP API (as of the May 2019 Update (19041)). Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
+				_sb.AppendParagraph("The Uno.UI assembly includes all types and members from the WinUI API. Only some of these are actually implemented. The remainder are marked with the `[NotImplemented]` attribute and will throw an exception at runtime if used.");
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
@@ -131,8 +131,8 @@ namespace Uno.UWPSyncGenerator
 							{
 								_sb.AppendParagraph($"*Implemented for:* {ToDisplayString(view.ImplementedForMain)}");
 
-								var baseDocLinkUrl = @"https://docs.microsoft.com/en-us/uwp/api/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
-								_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI and UWP documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
+								var baseDocLinkUrl = @"https://learn.microsoft.com/windows/windows-app-sdk/api/winrt/" + view.UAPSymbol.ToDisplayString().ToLowerInvariant();
+								_sb.AppendParagraph($"This document lists all properties, methods, and events of {formattedViewName} that are currently implemented by the Uno Platform. See the {Hyperlink("WinUI documentation", baseDocLinkUrl)} for detailed usage guidelines which all automatically apply to Uno Platform. ");
 
 								var customDocLink = GetCustomDocLink(viewName);
 								if (customDocLink != null)
@@ -155,13 +155,20 @@ namespace Uno.UWPSyncGenerator
 								AppendImplementedMembers("methods", "Method", methods);
 								AppendImplementedMembers("events", "Event", events);
 
-								_sb.AppendHorizontalRule();
+								var notImplementedProperties = GetNotImplementedMembers(properties);
+								var notImplementedMethods = GetNotImplementedMembers(methods);
+								var notImplementedEvents = GetNotImplementedMembers(events);
+								if (notImplementedProperties.Any() || notImplementedMethods.Any() || notImplementedEvents.Any())
+								{
+									_sb.AppendHorizontalRule();
 
-								_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
+									_sb.AppendParagraph($"Below are all properties, methods, and events of {formattedViewName} that are **not** currently implemented in Uno.");
 
-								AppendNotImplementedMembers("properties", "Property", properties);
-								AppendNotImplementedMembers("methods", "Method", methods);
-								AppendNotImplementedMembers("events", "Event", events);
+									AppendNotImplementedMembers("properties", "Property", notImplementedProperties);
+									AppendNotImplementedMembers("methods", "Method", notImplementedMethods);
+									AppendNotImplementedMembers("events", "Event", notImplementedEvents);
+
+								}
 
 								_sb.AppendHorizontalRule();
 
@@ -190,13 +197,18 @@ namespace Uno.UWPSyncGenerator
 									}
 								}
 
-								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
+								IEnumerable<PlatformSymbols<T>> GetNotImplementedMembers<T>(IEnumerable<PlatformSymbols<T>> members) where T : ISymbol
 								{
-									var notImplemented = members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+									return members.Where(ps => ps.ImplementedForMain != ImplementedFor.Main);
+								}
+
+								void AppendNotImplementedMembers<T>(string memberTypePlural, string memberTypeSingular, IEnumerable<PlatformSymbols<T>> notImplemented) where T : ISymbol
+								{
 									if (notImplemented.None())
 									{
 										return;
 									}
+
 									using (_sb.Section($"Not implemented {memberTypePlural}"))
 									{
 										using (_sb.Table(memberTypeSingular, "Not supported on"))
