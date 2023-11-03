@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 		internal static int GetViewGroupChildrenCount(_ViewGroup reference)
-#if __CROSSRUNTIME__
+#if __CROSSRUNTIME__ || IS_UNIT_TESTS
 			=> reference.GetChildren().Count;
 #else
 			=> reference.GetChildren().Count();
