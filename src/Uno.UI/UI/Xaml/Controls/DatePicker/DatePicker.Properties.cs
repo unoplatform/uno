@@ -177,7 +177,7 @@ namespace Microsoft.UI.Xaml.Controls
 			name: "HeaderTemplate",
 			propertyType: typeof(DataTemplate),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext));
+			typeMetadata: new FrameworkPropertyMetadata(default(DataTemplate), FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public object Header
 		{
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 			name: "Header",
 			propertyType: typeof(object),
 			ownerType: typeof(DatePicker),
-			typeMetadata: new FrameworkPropertyMetadata(default(object)));
+			typeMetadata: new FrameworkPropertyMetadata(default(object), FrameworkPropertyMetadataOptions.AffectsMeasure));
 
 		public string DayFormat
 		{

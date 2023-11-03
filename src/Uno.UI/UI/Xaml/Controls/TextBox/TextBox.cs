@@ -526,7 +526,7 @@ namespace Microsoft.UI.Xaml.Controls
 				"PlaceholderText",
 				typeof(string),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: string.Empty)
+				new FrameworkPropertyMetadata(defaultValue: string.Empty, options: FrameworkPropertyMetadataOptions.AffectsMeasure)
 			);
 
 		#endregion
@@ -699,6 +699,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: TextWrapping.NoWrap,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnTextWrappingChanged())
 				);
 
@@ -794,7 +795,9 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register("Header",
 				typeof(object),
 				typeof(TextBox),
-				new FrameworkPropertyMetadata(defaultValue: null,
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -811,7 +814,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(TextBox),
 				new FrameworkPropertyMetadata(
 					defaultValue: null,
-					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext,
+					options: FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnHeaderChanged()
 				)
 			);
@@ -893,7 +896,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty TextAlignmentProperty { get; } =
-			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
+			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new FrameworkPropertyMetadata(TextAlignment.Left, FrameworkPropertyMetadataOptions.AffectsMeasure, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged((TextAlignment)e.NewValue)));
 
 
 		private void OnTextAlignmentChanged(TextAlignment newValue) => OnTextAlignmentChangedPartial(newValue);

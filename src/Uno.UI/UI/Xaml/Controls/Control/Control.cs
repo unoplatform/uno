@@ -195,9 +195,15 @@ namespace Microsoft.UI.Xaml.Controls
 			set { SetValue(TemplateProperty, value); }
 		}
 
-		// Using a DependencyProperty as the backing store for Template.  This enables animation, styling, binding, etc...
 		public static DependencyProperty TemplateProperty { get; } =
-			DependencyProperty.Register("Template", typeof(ControlTemplate), typeof(Control), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext, (s, e) => ((Control)s)?.OnTemplateChanged(e)));
+			DependencyProperty.Register(
+				nameof(Template), 
+				typeof(ControlTemplate), 
+				typeof(Control), 
+				new FrameworkPropertyMetadata(
+					null, 
+					FrameworkPropertyMetadataOptions.ValueDoesNotInheritDataContext | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					(s, e) => ((Control)s)?.OnTemplateChanged(e)));
 
 		private void OnTemplateChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -640,7 +646,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontWeights.Normal,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontWeightChanged((FontWeight)e.OldValue, (FontWeight)e.NewValue)
 				)
 			);
@@ -662,7 +668,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					14.0,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
 			);
@@ -684,7 +690,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontFamily.Default,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontFamilyChanged(e.OldValue as FontFamily, e.NewValue as FontFamily)
 				)
 			);
@@ -705,7 +711,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					FontStyle.Normal,
-					FrameworkPropertyMetadataOptions.Inherits,
+					FrameworkPropertyMetadataOptions.Inherits | FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnFontStyleChanged((FontStyle)e.OldValue, (FontStyle)e.NewValue)
 				)
 			);
@@ -739,7 +745,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.None,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnPaddingChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
@@ -762,7 +768,7 @@ namespace Microsoft.UI.Xaml.Controls
 				typeof(Control),
 				new FrameworkPropertyMetadata(
 					Thickness.Empty,
-					FrameworkPropertyMetadataOptions.None,
+					FrameworkPropertyMetadataOptions.AffectsMeasure,
 					(s, e) => ((Control)s)?.OnBorderThicknessChanged((Thickness)e.OldValue, (Thickness)e.NewValue)
 				)
 			);
