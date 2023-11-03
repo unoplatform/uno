@@ -16,7 +16,25 @@ internal class ResourceBindingCollection
 	private readonly Dictionary<DependencyProperty, Dictionary<DependencyPropertyValuePrecedences, ResourceBinding>> _bindings = new();
 	private BindingEntry[]? _cachedAllBindings;
 
-	public bool HasBindings => _bindings.Count > 0 && _bindings.Any(b => b.Value.Any());
+	public bool HasBindings
+	{
+		get
+		{
+			// Avoiding the use of LINQ here to reduce unnecessary enumerator boxing.
+			if (_bindings.Count > 0)
+			{
+				foreach (var (_, value) in _bindings)
+				{
+					if (value.Count > 0)
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
+		}
+	}
 
 	public record struct BindingEntry(DependencyProperty Property, ResourceBinding Binding);
 
