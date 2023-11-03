@@ -60,11 +60,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				var x = X(root, windowBounds.Width);
 				var y = Y(root, windowBounds.Height);
+#if HAS_UNO // LayoutRound isn't public in UWP/WinUI. Ignore that block of code there for now.
 				if (root.UseLayoutRounding)
 				{
 					x = root.LayoutRound(x);
 					y = root.LayoutRound(y);
 				}
+#endif
 
 				return new Point(x, y);
 			}
