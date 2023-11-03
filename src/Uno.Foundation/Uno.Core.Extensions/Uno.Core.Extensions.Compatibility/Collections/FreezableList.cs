@@ -16,9 +16,9 @@ namespace Uno.Collections;
 /// <remarks>
 /// Important: DON'T cast this collection to List<typeparamref name="T"/>.
 /// The way it's implemented is by shadowing "Add".
-/// Casting it will bypass the _isFrozen checks.
+/// Casting it will bypass the _freezeCount checks.
 /// Also note that currently, this collection only supports Add(T item) and Remove(T item) methods.
-/// Any other method will execute code from List<typeparamref name="T"/> directly and bypass the _isFrozen check.
+/// Any other method will execute code from List<typeparamref name="T"/> directly and bypass the _freezeCount check.
 /// </remarks>
 internal class FreezableList<T> : List<T>
 {
