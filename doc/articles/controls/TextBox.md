@@ -57,3 +57,9 @@ uid: Uno.Controls.TextBox
 ## Controlling the Keyboard on iOS
 
 If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` attached property.
+
+## Paste event
+
+Support for capturing and handling the `Paste` event is implemented on all targets except for macOS. 
+
+In case of Android, it is currently limited to the pastes which are triggered by the native context menu (e.g. after long-pressing the `TextBox`). It cannot detect paste triggered from the virtual keyboard or via hardware keyboard shortcut.

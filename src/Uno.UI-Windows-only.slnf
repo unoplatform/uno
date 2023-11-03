@@ -13,6 +13,7 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Internal\\Uno.UI.SourceGenerators.Internal.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "Uno.Foundation.Logging\\Uno.Foundation.Logging.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.Windows.csproj",
       "Uno.UI.Toolkit\\Uno.UI.Toolkit.Windows.csproj"
     ]

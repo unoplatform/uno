@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 		}
 
 		[JSExport]
-		public static int DispatchVisibilityChange(bool isVisible)
+		internal static int DispatchVisibilityChange(bool isVisible)
 		{
 			var application = Windows.UI.Xaml.Application.Current;
 			var window = Windows.UI.Xaml.Window.Current;

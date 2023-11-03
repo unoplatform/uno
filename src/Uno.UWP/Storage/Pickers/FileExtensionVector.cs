@@ -79,12 +79,12 @@ namespace Windows.Storage.Pickers
 				throw new ArgumentNullException(nameof(extension), "Extension must not be null nor empty");
 			}
 
-			if (!extension.StartsWith(".", StringComparison.InvariantCulture) && extension != "*")
+			if (!extension.StartsWith('.') && extension != "*")
 			{
 				throw new ArgumentException("Extension must either start with a dot or be an asterisk.");
 			}
 
-			if (extension != "*" && extension.Contains("*"))
+			if (extension != "*" && extension.Contains('*'))
 			{
 				throw new ArgumentException("When extension contains an asterisk, it must not contain any other characters.");
 			}

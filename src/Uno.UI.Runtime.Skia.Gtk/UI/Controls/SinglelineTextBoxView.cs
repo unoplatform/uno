@@ -4,19 +4,23 @@ using System;
 using System.Threading;
 using Gtk;
 using Uno.Disposables;
+using Uno.UI.Runtime.Skia.Gtk.UI.Controls;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Runtime.Skia.Gtk.UI.Xaml.Controls;
 
 internal class SinglelineTextBoxView : GtkTextBoxView
 {
-	private readonly Entry _entry = new();
+	private readonly UnoGtkEntry _entry = new();
 	private readonly bool _isPassword;
 
 	public SinglelineTextBoxView(bool isPassword)
 	{
 		_isPassword = isPassword;
+		_entry.Paste += OnPaste;
 	}
+
+	private void OnPaste(object sender, TextControlPasteEventArgs args) => RaisePaste(args);
 
 	protected override Widget InputWidget => _entry;
 

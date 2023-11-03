@@ -421,3 +421,10 @@ h3 {
   opacity: 0;
   transition: 500ms opacity ease-in-out;
 }
+
+// This overrides the behavior from normalize.css
+// which is added by the current version of bootstrap
+// This should be removed once we update docfx and bootstrap
+summary {
+  display: list-item;
+}

@@ -135,7 +135,9 @@ namespace Uno.UI.Runtime.Skia
 					_screenInfo.transp = new fb_bitfield();
 				}
 
+#pragma warning disable CA1806 // Do not ignore method results
 				Libc.ioctl(_fd, FbIoCtl.FBIOPUT_VSCREENINFO, pScreenInfo);
+#pragma warning restore CA1806 // Do not ignore method results
 
 				if (Libc.ioctl(_fd, FbIoCtl.FBIOGET_VSCREENINFO, pScreenInfo) == -1)
 				{
@@ -208,7 +210,9 @@ namespace Uno.UI.Runtime.Skia
 		{
 			if (_mappedAddress != IntPtr.Zero)
 			{
+#pragma warning disable CA1806 // Do not ignore method results
 				Libc.munmap(_mappedAddress, _mappedLength);
+#pragma warning restore CA1806 // Do not ignore method results
 				_mappedAddress = IntPtr.Zero;
 			}
 
@@ -217,7 +221,9 @@ namespace Uno.UI.Runtime.Skia
 				return;
 			}
 
+#pragma warning disable CA1806 // Do not ignore method results
 			Libc.close(_fd);
+#pragma warning restore CA1806 // Do not ignore method results
 			_fd = 0;
 		}
 
@@ -228,7 +234,9 @@ namespace Uno.UI.Runtime.Skia
 				throw new ObjectDisposedException("FrameBufferDevice");
 			}
 
+#pragma warning disable CA1806 // Do not ignore method results
 			Libc.ioctl(_fd, FbIoCtl.FBIO_WAITFORVSYNC, null);
+#pragma warning restore CA1806 // Do not ignore method results
 		}
 
 		public void Dispose()

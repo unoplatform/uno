@@ -8,7 +8,7 @@ namespace Uno.UI.Extensions
 		/// <summary>
 		/// Returns the root of the view's local visual tree.
 		/// </summary>
-		public static FrameworkElement GetTopLevelParent(this UIElement view)
+		internal static FrameworkElement GetTopLevelParent(this UIElement view)
 		{
 			var current = view as FrameworkElement;
 			while (current != null)

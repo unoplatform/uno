@@ -1,10 +1,9 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBar.h, commit f4a2812
+// MUX Reference BreadcrumbBar.h, tag winui3/release/1.4.2
 
 #nullable enable
 
-using System.Collections.Specialized;
 using Uno.Disposables;
 using Windows.UI.Xaml.Controls;
 
@@ -31,9 +30,7 @@ public partial class BreadcrumbBar : Control
 	private BreadcrumbIterable? m_itemsIterable = null;
 
 	private ItemsRepeater? m_itemsRepeater = null;
-
 	private BreadcrumbElementFactory? m_itemsRepeaterElementFactory = null;
-
 	private BreadcrumbLayout? m_itemsRepeaterLayout = null;
 
 	// Pointers to first and last items to update visual states

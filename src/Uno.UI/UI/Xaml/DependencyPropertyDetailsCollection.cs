@@ -117,8 +117,8 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="property">A dependency property</param>
 		/// <returns>The details of the property if it exists, otherwise null.</returns>
-		public DependencyPropertyDetails FindPropertyDetails(DependencyProperty property)
-			=> TryGetPropertyDetails(property, forceCreate: false)!;
+		public DependencyPropertyDetails? FindPropertyDetails(DependencyProperty property)
+			=> TryGetPropertyDetails(property, forceCreate: false);
 
 		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
@@ -131,20 +131,13 @@ namespace Windows.UI.Xaml
 			// https://stackoverflow.com/a/17095534/26346
 			var isInRange = (uint)entryIndex <= (_maxId - _minId);
 
-			GetPropertyInheritanceConfiguration(
-				property: property,
-				hasInherits: out var hasInherits,
-				hasValueInherits: out var hasValueInherits,
-				hasValueDoesNotInherit: out var hasValueDoesNotInherits
-			);
-
 			if (isInRange)
 			{
 				ref var propertyEntry = ref Entries![entryIndex];
 
 				if (forceCreate && propertyEntry == null)
 				{
-					propertyEntry = new DependencyPropertyDetails(property, _ownerType, hasInherits, hasValueInherits, hasValueDoesNotInherits);
+					propertyEntry = new DependencyPropertyDetails(property, _ownerType, isTemplatedParentOrDataContext: property == _dataContextProperty || property == _templatedParentProperty);
 
 					if (TryResolveDefaultValueFromProviders(property, out var value))
 					{
@@ -182,7 +175,7 @@ namespace Windows.UI.Xaml
 					}
 
 					ref var propertyEntry = ref Entries![property.UniqueId - _minId];
-					propertyEntry = new DependencyPropertyDetails(property, _ownerType, hasInherits, hasValueInherits, hasValueDoesNotInherits);
+					propertyEntry = new DependencyPropertyDetails(property, _ownerType, isTemplatedParentOrDataContext: property == _dataContextProperty || property == _templatedParentProperty);
 					if (TryResolveDefaultValueFromProviders(property, out var value))
 					{
 						propertyEntry.SetValue(value, DependencyPropertyValuePrecedences.DefaultValue);
@@ -195,35 +188,6 @@ namespace Windows.UI.Xaml
 					return null;
 				}
 			}
-		}
-
-		private void GetPropertyInheritanceConfiguration(
-			DependencyProperty property,
-			out bool hasInherits,
-			out bool hasValueInherits,
-			out bool hasValueDoesNotInherit)
-		{
-			if (property == _templatedParentProperty
-				|| property == _dataContextProperty)
-			{
-				// TemplatedParent is a DependencyObject but does not propagate datacontext
-				hasValueInherits = false;
-				hasValueDoesNotInherit = true;
-				hasInherits = true;
-				return;
-			}
-
-			if (property.GetMetadata(_ownerType) is FrameworkPropertyMetadata propertyMetadata)
-			{
-				hasValueInherits = propertyMetadata.Options.HasValueInheritsDataContext();
-				hasValueDoesNotInherit = propertyMetadata.Options.HasValueDoesNotInheritDataContext();
-				hasInherits = propertyMetadata.Options.HasInherits();
-				return;
-			}
-
-			hasValueInherits = false;
-			hasValueDoesNotInherit = false;
-			hasInherits = false;
 		}
 
 		private bool TryResolveDefaultValueFromProviders(DependencyProperty property, out object? value)

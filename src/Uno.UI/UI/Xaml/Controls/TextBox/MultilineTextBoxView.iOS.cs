@@ -26,6 +26,27 @@ namespace Windows.UI.Xaml.Controls
 		private WeakReference<Uno.UI.Controls.Window> _window;
 		private Action _foregroundChanged;
 
+		public override void Paste(NSObject sender) => HandlePaste(() => base.Paste(sender));
+
+		public override void PasteAndGo(NSObject sender) => HandlePaste(() => base.PasteAndGo(sender));
+
+		public override void PasteAndMatchStyle(NSObject sender) => HandlePaste(() => base.PasteAndMatchStyle(sender));
+
+		public override void PasteAndSearch(NSObject sender) => HandlePaste(() => base.PasteAndSearch(sender));
+
+		public override void Paste(NSItemProvider[] itemProviders) => HandlePaste(() => base.Paste(itemProviders));
+
+		private void HandlePaste(Action baseAction)
+		{
+			var args = new TextControlPasteEventArgs();
+			var textBox = _textBox.GetTarget();
+			textBox?.RaisePaste(args);
+			if (!args.Handled)
+			{
+				baseAction.Invoke();
+			}
+		}
+
 		CGPoint IUIScrollView.UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
 
 		void IUIScrollView.ApplyZoomScale(nfloat scale, bool animated)

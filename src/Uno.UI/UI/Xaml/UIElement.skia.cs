@@ -63,8 +63,6 @@ namespace Windows.UI.Xaml
 				typeof(UIElement),
 				new FrameworkPropertyMetadata(true));
 
-		internal bool IsChildrenRenderOrderDirty { get; set; } = true;
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			UpdateOpacity();
@@ -109,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		internal bool ClippingIsSetByCornerRadius { get; set; }
 
-		public void AddChild(UIElement child, int? index = null)
+		internal void AddChild(UIElement child, int? index = null)
 		{
 			if (child == null)
 			{
@@ -236,9 +234,9 @@ namespace Windows.UI.Xaml
 
 		internal bool IsPointerCaptured { get; set; }
 
-		public virtual IEnumerable<UIElement> GetChildren() => _children;
+		internal virtual IEnumerable<UIElement> GetChildren() => _children;
 
-		public IntPtr Handle { get; set; }
+		public IntPtr Handle { get; }
 
 		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
 		{

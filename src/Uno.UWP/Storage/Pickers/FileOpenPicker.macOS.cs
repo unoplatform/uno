@@ -12,6 +12,8 @@ namespace Windows.Storage.Pickers
 {
 	public partial class FileOpenPicker
 	{
+		private static readonly string[] _asteriskArray = new string[] { "*" };
+
 		private const int ModalResponseOk = 1;
 
 		private Task<StorageFile?> PickSingleFileTaskAsync(CancellationToken token)
@@ -62,7 +64,7 @@ namespace Windows.Storage.Pickers
 
 		private string[] GetFileTypes()
 		{
-			return FileTypeFilter.Except(new[] { "*" }).Select(ext => ext.TrimStart(new[] { '.' })).ToArray();
+			return FileTypeFilter.Except(_asteriskArray).Select(ext => ext.TrimStart('.')).ToArray();
 		}
 	}
 }

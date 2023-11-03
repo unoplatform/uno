@@ -1,9 +1,7 @@
 ﻿#nullable enable
+
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -30,5 +28,9 @@ namespace Windows.UI.Xaml.Shapes
 
 		#endregion
 
+#if __NETSTD_REFERENCE__
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
+		protected override Size ArrangeOverride(Size finalSize) => base.ArrangeOverride(finalSize);
+#endif
 	}
 }

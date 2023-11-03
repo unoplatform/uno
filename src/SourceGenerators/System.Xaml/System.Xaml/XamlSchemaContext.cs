@@ -45,6 +45,7 @@ namespace Uno.Xaml
 	// It should be released at finalizer.
 	public class XamlSchemaContext
 	{
+		private static readonly char[] _semicolonArray = new char[] { ';' };
 		public XamlSchemaContext ()
 			: this (null, null)
 		{
@@ -410,7 +411,7 @@ namespace Uno.Xaml
 			}
 
 			// convert xml namespace to clr namespace and assembly
-			string [] split = ns.Split (new char[] { ';' });
+			string [] split = ns.Split (_semicolonArray);
 			if (split.Length != 2 || split [0].Length < clr_ns_len || split [1].Length <= clr_ass_len)
 				throw new XamlParseException (string.Format (CultureInfo.InvariantCulture, "Cannot resolve runtime namespace from XML namespace '{0}'", ns));
 			string tns = split [0].Substring (clr_ns_len);

@@ -656,6 +656,27 @@
 
 			<Member fullName="Windows.UI.Xaml.Shapes.ArbitraryShapeBase" reason="Shapes refactoring" />
 			<Member fullName="Windows.UI.Xaml.Controls.StackPanelExtensions" reason="Shouldn't be public, and removed completely" />
+
+			<!-- Using regex with \. as a hack to prevent WinUIRevert from converting these to MUX namespace in WinUI tree -->
+			<Member fullName="Windows\.UI\.Xaml\.Automation\.Peers\.NavigationViewItemAutomationPeer" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationView" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewBackButtonVisible" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewBackRequestedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewDisplayMode" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewDisplayModeChangedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemHelper" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemHelper`1" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItem" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemBase" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemHeader" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemInvokedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewItemSeparator" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewList" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewPaneClosingEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewPaneDisplayMode" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewSelectionChangedEventArgs" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.NavigationViewTemplateSettings" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
+			<Member fullName="Windows\.UI\.Xaml\.Controls\.Primitives.NavigationViewItemPresenter" reason="Removed from WinUI tree as it exists in MUXC namespace" isRegex="true" />
 		</Types>
 		<Events>
 			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Microsoft.UI.Xaml.Controls.IInputValidationControl,Microsoft.UI.Xaml.Controls.HasValidationErrorsChangedEventArgs&gt; Microsoft.UI.Xaml.Controls.AutoSuggestBox::HasValidationErrorsChanged" reason="Not present in WinAppSDK 1.2" />
@@ -1695,6 +1716,29 @@
 			<Member fullName="System.Void Windows.UI.Core.CoreWindow..ctor(AppKit.NSWindow window)" reason="Does not exist in UWP" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.add_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />			
+		</Methods>
+	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.0">
+		<Types>
+		</Types>
+
+		<Events>
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; Windows.UI.Core.CoreWindow::PointerCancelled" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.add_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.remove_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
 		</Methods>
 	</IgnoreSet>
 	  <!--

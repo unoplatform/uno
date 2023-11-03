@@ -32,6 +32,9 @@ namespace Uno.Foundation.Interop
 			private bool _isPrototypeExported;
 			private Dictionary<string, MethodInfo> _methods;
 
+			private static readonly char[] _parametersTrimArray = new char[] { '{', '}', ' ' };
+			private static readonly char[] _doubleQuoteSpaceArray = new[] { '"', ' ' };
+
 			public ReflectionMetadata(Type type)
 			{
 				_type = type;
@@ -68,10 +71,10 @@ namespace Uno.Foundation.Interop
 			{
 				// TODO: Properly parse parameters
 				var parameters = jsonParameters
-					.Trim('{', '}', ' ')
-					.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries)
+					.Trim(_parametersTrimArray)
+					.Split(',', StringSplitOptions.RemoveEmptyEntries)
 					.Where(parameter => parameter.HasValueTrimmed())
-					.Select(parameter => parameter.Split(new[] { ':' }, 2)[1].Trim('"', ' '))
+					.Select(parameter => parameter.Split(':', 2)[1].Trim(_doubleQuoteSpaceArray))
 					.ToArray();
 
 				return _methods[method].Invoke(instance, parameters);

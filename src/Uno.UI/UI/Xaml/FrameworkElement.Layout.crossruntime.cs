@@ -24,15 +24,9 @@ namespace Windows.UI.Xaml
 		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
 		/// </summary>
 		private Size _unclippedDesiredSize;
-		private Point _visualOffset;
 
 		private const double SIZE_EPSILON = 0.05d;
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
-
-		/// <summary>
-		/// The origin of the view's bounds relative to its parent.
-		/// </summary>
-		internal Point RelativePosition => _visualOffset;
 
 		private protected string DepthIndentation
 		{
@@ -348,8 +342,6 @@ namespace Windows.UI.Xaml
 		/// <param name="clippedFrame">Zone to clip, if clipping is required</param>
 		private void ArrangeNative(Point offset, bool needsClipToSlot, Rect clippedFrame = default)
 		{
-			_visualOffset = offset;
-
 			var newRect = new Rect(offset, RenderSize);
 
 			if (

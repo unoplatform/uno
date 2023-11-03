@@ -95,7 +95,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 		{
 			RegisterAssemblyLoader();
 
-			MSBuildBasePath = BuildMSBuildPath();
+			MSBuildBasePath = BuildMSBuildPath(workDir);
 
 			var version = GetDotnetVersion(workDir);
 			if (version.Major != typeof(object).Assembly.GetName().Version?.Major)
@@ -135,9 +135,9 @@ namespace Uno.UI.RemoteControl.Host.HotReload.MetadataUpdates
 			throw new InvalidOperationException("Failed to read dotnet version");
 		}
 
-		private static string BuildMSBuildPath()
+		private static string BuildMSBuildPath(string? workDir)
 		{
-			var result = ProcessHelper.RunProcess("dotnet.exe", "--info");
+			var result = ProcessHelper.RunProcess("dotnet.exe", "--info", workDir);
 
 			if (result.exitCode == 0)
 			{
