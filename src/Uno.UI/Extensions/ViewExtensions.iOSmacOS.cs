@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using System;
+using Uno.UI.Controls;
+
 
 
 #if __IOS__
@@ -28,6 +30,21 @@ namespace Uno.UI
 		internal static TResult? FindLastChild<TParam, TResult>(this View group, TParam param, Func<View, TParam, TResult?> selector)
 			where TResult : class
 		{
+			if (group is IShadowChildrenProvider shadowProvider)
+			{
+				var childrenShadow = shadowProvider.ChildrenShadow;
+				for (int i = childrenShadow.Count - 1; i >= 0; i--)
+				{
+					var result = selector(childrenShadow[i], param);
+					if (result is not null)
+					{
+						return result;
+					}
+				}
+
+				return null;
+			}
+
 			var subviews = group.Subviews;
 			for (int i = subviews.Length - 1; i >= 0; i--)
 			{
