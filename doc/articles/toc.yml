@@ -319,6 +319,8 @@
               href: features/bluetoothdevice.md
             - name: Clipboard
               href: features/clipboard.md
+            - name: Compass
+              href: features/compass.md
             - name: Contacts
               href: features/windows-applicationmodel-contacts.md
             - name: Credential Storage
@@ -335,6 +337,8 @@
               href: features/windows-storage-pickers.md
             - name: Flashlight
               href: features/flashlight.md
+            - name: Gamepad
+              href: features/gamepad.md
             - name: Geolocation (GPS)
               href: features/windows-devices-geolocation.md
             - name: Gyrometer
