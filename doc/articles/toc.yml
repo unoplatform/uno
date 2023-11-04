@@ -320,7 +320,7 @@
             - name: Clipboard
               href: features/clipboard.md
             - name: Compass
-              href: features/compass.md  
+              href: features/compass.md
             - name: Contacts
               href: features/windows-applicationmodel-contacts.md
             - name: Credential Storage
@@ -338,7 +338,7 @@
             - name: Flashlight
               href: features/flashlight.md
             - name: Gamepad
-              href: features/gamepad.md  
+              href: features/gamepad.md
             - name: Geolocation (GPS)
               href: features/windows-devices-geolocation.md
             - name: Gyrometer
