@@ -138,7 +138,7 @@ public partial class UIElement : DependencyObject
 	#region Native event dispatch
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	[JSExport]
-	public static void OnNativePointerEvent()
+	internal static void OnNativePointerEvent()
 	{
 		var result = new HtmlEventDispatchResultHelper();
 		try

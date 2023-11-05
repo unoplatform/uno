@@ -921,10 +921,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if !HAS_UNO
 		Vector2 c_frame1point1 = new Vector2(0.9f, 0.1f);
 		Vector2 c_frame1point2 = new Vector2(1.0f, 0.2f);
 		Vector2 c_frame2point1 = new Vector2(0.1f, 0.9f);
 		Vector2 c_frame2point2 = new Vector2(0.2f, 1.0f);
+#endif
 
 		void AnimateSelectionChangedToItem(object selectedItem)
 		{

@@ -276,5 +276,13 @@ namespace Windows.UI.Xaml.Controls
 
 			return element.Background != null;
 		}
+
+#if __NETSTD_REFERENCE__
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
+		{
+			base.OnBackgroundChanged(args);
+		}
+#endif
+
 	}
 }

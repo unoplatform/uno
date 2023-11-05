@@ -66,6 +66,15 @@
     - name: Common Issues
       href: get-started-wizard.md
 
+- name: Workshops
+  items:
+    - name: Tube Player
+      topicHref: external/workshops/tube-player/README.md
+      href: external/workshops/tube-player/toc.yml
+    - name: Simple Calc
+      topicHref: external/workshops/simple-calc/README.md
+      href: external/workshops/simple-calc/toc.yml
+      
 - name: Fundamentals
   topicHref: what-is-uno.md
   items:
@@ -310,6 +319,8 @@
               href: features/bluetoothdevice.md
             - name: Clipboard
               href: features/clipboard.md
+            - name: Compass
+              href: features/compass.md
             - name: Contacts
               href: features/windows-applicationmodel-contacts.md
             - name: Credential Storage
@@ -326,6 +337,8 @@
               href: features/windows-storage-pickers.md
             - name: Flashlight
               href: features/flashlight.md
+            - name: Gamepad
+              href: features/gamepad.md
             - name: Geolocation (GPS)
               href: features/windows-devices-geolocation.md
             - name: Gyrometer
@@ -590,9 +603,11 @@
 - name: Extensions
   topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
+
 - name: Themes
   topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
+
 - name: Toolkit
   topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
@@ -601,11 +616,3 @@
   topicHref: external/figma-docs/overview/getting-started-uno-figma.md
   href: external/figma-docs/toc.yml
 
-- name: Workshops
-  items:
-    - name: Tube Player
-      topicHref: external/workshops/tube-player/README.md
-      href: external/workshops/tube-player/toc.yml
-    - name: Simple Calc
-      topicHref: external/workshops/simple-calc/README.md
-      href: external/workshops/simple-calc/toc.yml

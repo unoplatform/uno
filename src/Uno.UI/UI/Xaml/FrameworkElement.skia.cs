@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 		partial void Initialize();
 
 
-		public bool HasParent()
+		internal bool HasParent()
 		{
 			return Parent != null;
 		}

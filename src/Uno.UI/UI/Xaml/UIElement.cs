@@ -858,7 +858,7 @@ namespace Windows.UI.Xaml
 		internal static string SetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyNameAndValue)
 		{
 			var s = dependencyPropertyNameAndValue;
-			var index = s.IndexOf("|", StringComparison.Ordinal);
+			var index = s.IndexOf('|');
 
 			if (index != -1)
 			{

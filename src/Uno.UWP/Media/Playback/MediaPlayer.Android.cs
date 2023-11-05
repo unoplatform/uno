@@ -178,7 +178,7 @@ namespace Windows.Media.Playback
 
 			if (uri.IsLocalResource())
 			{
-				var filename = uri.PathAndQuery.TrimStart(new[] { '/' });
+				var filename = uri.PathAndQuery.TrimStart('/');
 				var afd = Application.Context.Assets.OpenFd(filename);
 				_player.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);
 				return;
