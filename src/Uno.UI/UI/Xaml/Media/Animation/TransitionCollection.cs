@@ -13,6 +13,8 @@ namespace Windows.UI.Xaml.Media.Animation
 	/// </summary>
 	public partial class TransitionCollection : List<Transition>, IList<Transition>, IEnumerable<Transition>
 	{
-
+#if HAS_UNO_WINUI
+		public new IEnumerator<Transition> GetEnumerator() => base.GetEnumerator();
+#endif
 	}
 }

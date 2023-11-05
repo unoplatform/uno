@@ -2,7 +2,7 @@
 
 namespace Microsoft.UI
 {
-	public struct DisplayId : IEquatable<DisplayId>
+	public partial struct DisplayId : IEquatable<DisplayId>
 	{
 		public ulong Value;
 

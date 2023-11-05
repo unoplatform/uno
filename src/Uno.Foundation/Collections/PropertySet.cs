@@ -27,6 +27,14 @@ public sealed partial class PropertySet :
 	/// </summary>
 	public event MapChangedEventHandler<string, object?>? MapChanged;
 
+#if HAS_UNO_WINUI
+	event MapChangedEventHandler<string, object> IObservableMap<string, object>.MapChanged
+	{
+		add => MapChanged += value;
+		remove => MapChanged -= value;
+	}
+#endif
+
 	/// <summary>
 	/// Gets the number of items contained in the property set.
 	/// </summary>

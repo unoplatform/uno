@@ -1,5 +1,7 @@
 <Project>
 
+	<Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Build.props', '$(MSBuildThisFileDirectory)../'))" />
+
 	<Import Project="$(SolutionDir)\crosstargeting_override.props" Condition="exists('$(SolutionDir)\crosstargeting_override.props')" />
 
 	<PropertyGroup>
@@ -32,9 +34,6 @@
 		<SourceLinkEnabled Condition="'$(BUILD_REPOSITORY_PROVIDER)'!='GitHub'">false</SourceLinkEnabled>
 		<EmbedUntrackedSources Condition="'$(BUILD_REPOSITORY_PROVIDER)'=='GitHub'">true</EmbedUntrackedSources>
 		<Deterministic>true</Deterministic>
-
-		<UNO_UWP_BUILD>true</UNO_UWP_BUILD>
-		<DefineConstants Condition="'$(UNO_UWP_BUILD)'!='true'">$(DefineConstants);HAS_UNO_WINUI</DefineConstants>
 
 		<!-- Resizetizer codegen is not supported in UWP -->
 		<UnoResizetizerDisableWindowIconExtensions Condition="'$(UNO_UWP_BUILD)'=='true'">true</UnoResizetizerDisableWindowIconExtensions>
