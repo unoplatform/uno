@@ -476,60 +476,7 @@ namespace Windows.UI.Xaml.Documents
 						}
 					}
 
-					{
-						if (RenderSelectionAndCaret && Selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
-						{
-							var spanStartingIndex = characterCountSoFar;
-
-							// x at this point is set to the right of the rightmost character ignoring spaces.
-
-							float left;
-							if (bg.StartIndex < spanStartingIndex)
-							{
-								// the selection starts from a previous span, so this span is selected from the very beginning
-								left = positions.Length > 0 ? positions[0].X : x;
-							}
-							else if (bg.StartIndex - spanStartingIndex < positions.Length)
-							{
-								// part or all of this span is selected
-								left = positions[bg.StartIndex - spanStartingIndex].X;
-							}
-							else
-							{
-								// this span is not a part of the selection, so we select nothing by making the left edge to the far right
-								left = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
-							}
-
-							float right;
-							if (bg.EndIndex - spanStartingIndex < 0)
-							{
-								// this span is not a part of the selection, so we select nothing by making the left edge to the far left
-								right = positions.Length > 0 ? positions[0].X : x;
-							}
-							else if (bg.EndIndex - spanStartingIndex < positions.Length)
-							{
-								// part or all of this span is selected
-								right = positions[bg.EndIndex - spanStartingIndex].X;
-							}
-							else
-							{
-								// the selection ends after this span, so this span is selected to the very end
-								var allTrailingSpaces = segmentSpan.FullGlyphsLength - segmentSpan.GlyphsLength; // rendered and non-rendered trailing spaces
-								right = x + justifySpaceOffset * allTrailingSpaces;
-
-								if (bg.StartIndex != bg.EndIndex && SpanEndsInCR(segment, segmentSpan))
-								{
-									// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
-									right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
-								}
-							}
-
-							if (Math.Abs(left - right) > 0.01 && fireEvents)
-							{
-								SelectionFound?.Invoke(new Rect(new Point(left, y - line.Height), new Point(right, y)));
-							}
-						}
-					}
+					HandleSelection(lineIndex, characterCountSoFar, positions, x, justifySpaceOffset, segmentSpan, segment, fontInfo, fireEvents, y, line);
 
 					if (glyphs.Length != 0)
 					{
@@ -537,38 +484,7 @@ namespace Windows.UI.Xaml.Documents
 						canvas.DrawText(textBlob, 0, y + baselineOffsetY, paint);
 					}
 
-					{
-						var spanStartingIndex = characterCountSoFar;
-						if (RenderSelectionAndCaret && Selection is { } selection)
-						{
-							var (l, i) = CaretAtEndOfSelection ? (selection.EndLine, selection.EndIndex) : (selection.StartLine, selection.StartIndex);
-
-							float caretLocation = float.MinValue;
-
-							if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
-							{
-								if (i >= spanStartingIndex + positions.Length)
-								{
-									caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
-								}
-								else
-								{
-									caretLocation = positions[i - spanStartingIndex].X;
-								}
-							}
-							else if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
-							{
-								// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
-								// but we still render the caret at the end of the visible area like WinUI does.
-								caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
-							}
-
-							if (caretLocation != float.MinValue && fireEvents)
-							{
-								CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
-							}
-						}
-					}
+					HandleCaret(characterCountSoFar, lineIndex, segmentSpan, positions, x, justifySpaceOffset, fireEvents, y, line);
 
 					x += justifySpaceOffset * segmentSpan.TrailingSpaces;
 					characterCountSoFar += segmentSpan.FullGlyphsLength + (SpanEndsInCR(segment, segmentSpan) ? 1 : 0);
@@ -586,6 +502,96 @@ namespace Windows.UI.Xaml.Documents
 				paint.IsStroke = true;
 				canvas.DrawLine(x, y, x + width, y, paint);
 				paint.IsStroke = false;
+			}
+		}
+
+		private void HandleSelection(int lineIndex, int characterCountSoFar, Span<SKPoint> positions, float x, float justifySpaceOffset, RenderSegmentSpan segmentSpan, Segment segment, FontDetails fontInfo, bool fireEvents, float y, RenderLine line)
+		{
+			if (RenderSelectionAndCaret && Selection is { } bg && bg.StartLine <= lineIndex && lineIndex <= bg.EndLine)
+			{
+				var spanStartingIndex = characterCountSoFar;
+
+				// x at this point is set to the right of the rightmost character ignoring spaces.
+
+				float left;
+				if (bg.StartIndex < spanStartingIndex)
+				{
+					// the selection starts from a previous span, so this span is selected from the very beginning
+					left = positions.Length > 0 ? positions[0].X : x;
+				}
+				else if (bg.StartIndex - spanStartingIndex < positions.Length)
+				{
+					// part or all of this span is selected
+					left = positions[bg.StartIndex - spanStartingIndex].X;
+				}
+				else
+				{
+					// this span is not a part of the selection, so we select nothing by making the left edge to the far right
+					left = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+				}
+
+				float right;
+				if (bg.EndIndex - spanStartingIndex < 0)
+				{
+					// this span is not a part of the selection, so we select nothing by making the left edge to the far left
+					right = positions.Length > 0 ? positions[0].X : x;
+				}
+				else if (bg.EndIndex - spanStartingIndex < positions.Length)
+				{
+					// part or all of this span is selected
+					right = positions[bg.EndIndex - spanStartingIndex].X;
+				}
+				else
+				{
+					// the selection ends after this span, so this span is selected to the very end
+					var allTrailingSpaces = segmentSpan.FullGlyphsLength - segmentSpan.GlyphsLength; // rendered and non-rendered trailing spaces
+					right = x + justifySpaceOffset * allTrailingSpaces;
+
+					if (bg.StartIndex != bg.EndIndex && SpanEndsInCR(segment, segmentSpan))
+					{
+						// fontInfo.SKFontSize / 3 is a heuristic width of a selected \r, which normally doesn't have a width
+						right += (segment.LineBreakAfter ? fontInfo.SKFontSize / 3 : 0);
+					}
+				}
+
+				if (Math.Abs(left - right) > 0.01 && fireEvents)
+				{
+					SelectionFound?.Invoke(new Rect(new Point(left, y - line.Height), new Point(right, y)));
+				}
+			}
+		}
+
+		private void HandleCaret(int characterCountSoFar, int lineIndex, RenderSegmentSpan segmentSpan, Span<SKPoint> positions, float x, float justifySpaceOffset, bool fireEvents, float y, RenderLine line)
+		{
+			var spanStartingIndex = characterCountSoFar;
+			if (RenderSelectionAndCaret && Selection is { } selection)
+			{
+				var (l, i) = CaretAtEndOfSelection ? (selection.EndLine, selection.EndIndex) : (selection.StartLine, selection.StartIndex);
+
+				float caretLocation = float.MinValue;
+
+				if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.GlyphsLength)
+				{
+					if (i >= spanStartingIndex + positions.Length)
+					{
+						caretLocation = x + justifySpaceOffset * (i - (spanStartingIndex + positions.Length));
+					}
+					else
+					{
+						caretLocation = positions[i - spanStartingIndex].X;
+					}
+				}
+				else if (l == lineIndex && i >= spanStartingIndex && i <= spanStartingIndex + segmentSpan.FullGlyphsLength)
+				{
+					// In case of non-rendered trailing spaces, the caret should theoretically be beyond the width of the TextBox,
+					// but we still render the caret at the end of the visible area like WinUI does.
+					caretLocation = x + justifySpaceOffset * segmentSpan.TrailingSpaces;
+				}
+
+				if (caretLocation != float.MinValue && fireEvents)
+				{
+					CaretFound?.Invoke(new Rect(new Point(caretLocation, y - line.Height), new Point(caretLocation + line.Height * CaretThicknessAsRatioOfLineHeight, y)));
+				}
 			}
 		}
 
