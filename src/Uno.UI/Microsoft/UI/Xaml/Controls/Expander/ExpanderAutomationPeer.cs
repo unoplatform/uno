@@ -66,7 +66,7 @@ public class ExpanderAutomationPeer : FrameworkElementAutomationPeer, IExpandCol
 
 	protected override bool HasKeyboardFocusCore()
 	{
-		if(GetExpanderToggleButtonPeer() is { } toggleButtonPeer)
+		if (GetExpanderToggleButtonPeer() is { } toggleButtonPeer)
 		{
 			// Since the EventsSource of the toggle button
 			// is the same as the expander's, we need to

@@ -203,8 +203,8 @@ public partial class Expander : ContentControl
 			var expanderPeer = peer as ExpanderAutomationPeer;
 			expanderPeer?.RaiseExpandCollapseAutomationEvent(
 				isExpanded ?
-				ExpandCollapseState.Expanded :
-				ExpandCollapseState.Collapsed
+					ExpandCollapseState.Expanded :
+					ExpandCollapseState.Collapsed
 			);
 		}
 	}
