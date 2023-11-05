@@ -132,33 +132,33 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				m_pointerOverRevoker = m_button.RegisterDisposablePropertyChangedCallback(ButtonBase.IsPointerOverProperty, OnVisualPropertyChanged);
 			}
 
+			m_onMenuBarItemPointerPressedRevoker = new DisposableAction(() => RemoveHandler(PointerPressedEvent, (PointerEventHandler)OnMenuBarItemPointerPressed));
 			AddHandler(
 				PointerPressedEvent,
 				(PointerEventHandler)OnMenuBarItemPointerPressed,
 				true /*handledEventsToo*/
 			);
-			m_onMenuBarItemPointerPressedRevoker = new DisposableAction(() => RemoveHandler(PointerPressedEvent, (PointerEventHandler)OnMenuBarItemPointerPressed));
 
+			m_onMenuBarItemKeyDownRevoker = new DisposableAction(() => RemoveHandler(KeyDownEvent, (KeyEventHandler)OnMenuBarItemKeyDown));
 			AddHandler(
 				KeyDownEvent,
 				(KeyEventHandler)OnMenuBarItemKeyDown,
 				true /*handledEventsToo*/
 			);
-			m_onMenuBarItemKeyDownRevoker = new DisposableAction(() => RemoveHandler(KeyDownEvent, (KeyEventHandler)OnMenuBarItemKeyDown));
 
 			if (m_flyout != null)
 			{
-				m_flyout.Closed += OnFlyoutClosed;
 				m_flyoutClosedRevoker.Disposable = new DisposableAction(() => m_flyout.Closed -= OnFlyoutClosed);
-				m_flyout.Opening += OnFlyoutOpening;
+				m_flyout.Closed += OnFlyoutClosed;
 				m_flyoutOpeningRevoker.Disposable = new DisposableAction(() => m_flyout.Opening -= OnFlyoutOpening);
+				m_flyout.Opening += OnFlyoutOpening;
 			}
 
-			PointerEntered += OnMenuBarItemPointerEntered;
 			m_pointerEnteredRevoker.Disposable = new DisposableAction(() => PointerEntered -= OnMenuBarItemPointerEntered);
+			PointerEntered += OnMenuBarItemPointerEntered;
 
-			AccessKeyInvoked += OnMenuBarItemAccessKeyInvoked;
 			m_accessKeyInvokedRevoker.Disposable = new DisposableAction(() => AccessKeyInvoked -= OnMenuBarItemAccessKeyInvoked);
+			AccessKeyInvoked += OnMenuBarItemAccessKeyInvoked;
 		}
 
 		private void DetachEventHandlers()
@@ -315,8 +315,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 					m_flyout.ShowAt(m_button, options);
 
 					// Attach keyboard event handler
-					m_flyout.m_presenter.KeyDown += OnPresenterKeyDown;
 					m_presenterKeyDownRevoker.Disposable = new DisposableAction(() => m_flyout.m_presenter.KeyDown -= OnPresenterKeyDown);
+					m_flyout.m_presenter.KeyDown += OnPresenterKeyDown;
 				}
 			}
 		}
@@ -420,7 +420,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 				if (button.IsPressed)
 				{
 					VisualStateManager.GoToState(this, "Pressed", false);
-				} else if (button.IsPointerOver)
+				}
+				else if (button.IsPointerOver)
 				{
 					VisualStateManager.GoToState(this, "PointerOver", false);
 				}
