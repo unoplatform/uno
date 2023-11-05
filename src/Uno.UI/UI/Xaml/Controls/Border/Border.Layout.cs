@@ -1,24 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Windows.Foundation;
-using Uno.UI;
-
-#if __ANDROID__
-using View = Android.Views.View;
-using Font = Android.Graphics.Typeface;
-#elif __IOS__
-using UIKit;
-using View = UIKit.UIView;
-using Color = UIKit.UIColor;
-using Font = UIKit.UIFont;
-#elif __MACOS__
-using AppKit;
-using View = AppKit.NSView;
-using Color = AppKit.NSColor;
-using Font = AppKit.NSFont;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -69,7 +50,9 @@ namespace Windows.UI.Xaml.Controls
 
 				// Give the child the inner rectangle as the available size
 				// and ask it to arrange itself within this rectangle.
-				child.Arrange(childRect);
+				// Uno TODO: child.Arrange(childRect) doesn't work properly here while it should.
+				//           It fails some tests, e.g, TestVariousArrangedPosition
+				base.ArrangeElement(child, childRect);
 			}
 
 			return finalSize;

@@ -690,7 +690,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double LayoutRoundIfNeeded(FrameworkElement fe, double value)
 		{
-			return UseLayoutRounding ? fe.LayoutRound(value) : value;
+			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
 		}
 
 #if __IOS__
