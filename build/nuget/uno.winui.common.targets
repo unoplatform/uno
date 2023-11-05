@@ -56,7 +56,7 @@
 			<DefineConstants>$(DefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</DefineConstants>
 		</PropertyGroup>
 
-		<PropertyGroup Condition="'$(TargetFrameworkIdentifier)'=='.NETStandard' or '$(TargetFrameworkIdentifier)'=='.NETCoreApp'">
+		<PropertyGroup Condition="'$(UnoRuntimeIdentifier)'=='Skia' or '$(UnoRuntimeIdentifier)'=='WebAssembly' or '$(UnoRuntimeIdentifier)'=='Reference'">
 			<DefineConstants>$(DefineConstants);UNO_REFERENCE_API</DefineConstants>
 		</PropertyGroup>
 
