@@ -69,7 +69,12 @@ internal class FreezableList<T> : List<T>
 		}
 	}
 
-	public void Freeze() => _freezeCount++;
+	public void Freeze()
+	{
+		_freezeCount++;
+		if (_freezeCount == 2)
+			throw new Exception("Double freeze..");
+	}
 
 	public void Unfreeze()
 	{
