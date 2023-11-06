@@ -189,9 +189,14 @@ partial class ClientHotReloadProcessor
 	private static void UpdateGlobalResources(Type[] updatedTypes)
 	{
 		var globalResourceTypes = updatedTypes
-			.Where(t => t?.FullName != null && (
-				t.FullName.EndsWith("GlobalStaticResources", StringComparison.OrdinalIgnoreCase)
-				|| t.FullName[..^2].EndsWith("GlobalStaticResources", StringComparison.OrdinalIgnoreCase)))
+			.Where(t => t?.FullName is { Length: > 0 } name
+				&& !name.Contains('+') // Ignore nested types
+				&& (name.IndexOf('#') switch
+				{
+					< 0 => name,
+					{ } sharp => name[..sharp],
+				}).EndsWith("GlobalStaticResources", StringComparison.OrdinalIgnoreCase)
+			)
 			.ToArray();
 
 		if (globalResourceTypes.Length != 0)
@@ -382,9 +387,9 @@ partial class ClientHotReloadProcessor
 			_ = dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => await ReloadWithUpdatedTypes(types));
 		}
 #endif
-		else if (_log.IsEnabled(LogLevel.Trace))
+		else if (_log.IsEnabled(LogLevel.Warning))
 		{
-			_log.Trace($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}");
+			_log.Warn($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup.");
 		}
 	}
 }
