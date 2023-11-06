@@ -36,22 +36,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			var expected = new TextBlock { Text = "示例文本", FontSize = 24, FontFamily = new FontFamily(fallbackFont.FamilyName) };
 
-			var sp = new StackPanel
-			{
-				Children =
-				{
-					SUT,
-					expected,
-				},
-			};
-
-			await UITestHelper.Load(sp);
-
+			await UITestHelper.Load(SUT);
 			var screenshot1 = await UITestHelper.ScreenShot(SUT);
+
+			await UITestHelper.Load(expected);
 			var screenshot2 = await UITestHelper.ScreenShot(expected);
 
-			Assert.AreEqual(screenshot1.Width, screenshot2.Width);
-			Assert.AreEqual(screenshot1.Height, screenshot2.Height);
+			Assert.AreEqual(screenshot2.Width, screenshot1.Width);
+			Assert.AreEqual(screenshot2.Height, screenshot1.Height);
 
 			await ImageAssert.AreSimilarAsync(screenshot1, screenshot2, imperceptibilityThreshold: 0.15);
 		}
