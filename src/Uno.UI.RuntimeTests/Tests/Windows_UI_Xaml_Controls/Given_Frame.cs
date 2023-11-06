@@ -35,6 +35,10 @@ public class Given_Frame
 			Assert.IsFalse(navigated);
 			navigated = true;
 		};
+		frame.NavigationFailed += (snd, e) =>
+		{
+			Assert.Fail($"Navigation failed: {e.Exception}");
+		};
 		frame.Navigate(typeof(FrameNavigateFirstPage));
 		await TestServices.WindowHelper.WaitFor(() => navigated);
 		Assert.IsInstanceOfType(frame.Content, typeof(FrameNavigateFirstPage));
@@ -77,7 +81,6 @@ public class Given_Frame
 				Assert.Fail($"Unexpected page type: {e.SourcePageType}");
 			}
 		};
-
 		frame.Navigated += (snd, e) =>
 		{
 			if (e.SourcePageType == typeof(FrameNavigateFirstPage))
@@ -101,6 +104,11 @@ public class Given_Frame
 				Assert.Fail($"Unexpected page type: {e.SourcePageType}");
 			}
 		};
+		frame.NavigationFailed += (snd, e) =>
+		{
+			Assert.Fail($"Navigation failed: {e.Exception}");
+		};
+
 		frame.Navigate(typeof(FrameNavigateFirstPage));
 		await TestServices.WindowHelper.WaitFor(() => navigatedSecondPage);
 		Assert.IsInstanceOfType(frame.Content, typeof(FrameNavigateSecondPage));
