@@ -261,8 +261,8 @@ internal partial class Given_HotReloadWorkspace
 			_process = new System.Diagnostics.Process();
 
 			// hookup the eventhandlers to capture the data that is received
-			_process.OutputDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Debug("RCHost: " + args.Data ?? "");
-			_process.ErrorDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Error("RCHost: " + args.Data ?? "");
+			_process.OutputDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Debug($"[{DateTime.Now}] RCHost: " + args.Data ?? "");
+			_process.ErrorDataReceived += (sender, args) => typeof(Given_HotReloadWorkspace).Log().Error($"[{DateTime.Now}] RCHost: " + args.Data ?? "");
 
 			_process.StartInfo = pi;
 			_process.Start();

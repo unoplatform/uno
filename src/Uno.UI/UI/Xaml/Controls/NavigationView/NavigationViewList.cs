@@ -7,13 +7,7 @@
 
 using System;
 using Windows.System;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Xaml.Input;
-#else
 using Windows.UI.Xaml.Input;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {

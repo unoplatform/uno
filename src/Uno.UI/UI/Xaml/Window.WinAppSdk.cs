@@ -1,6 +1,7 @@
 ﻿#if HAS_UNO_WINUI
 #nullable enable
 
+using Windows.Foundation;
 using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml;
@@ -23,5 +24,12 @@ public sealed partial class Window
 		set => ApplicationView.GetForCurrentView().Title = value;
 	}
 #endif
+
+#pragma warning disable CS0067
+	/// <summary>
+	/// Occurs when the window has closed.
+	/// </summary>
+	public event TypedEventHandler<object, WindowEventArgs>? Closed;
+#pragma warning restore CS0067
 }
 #endif

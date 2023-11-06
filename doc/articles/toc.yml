@@ -66,6 +66,15 @@
     - name: Common Issues
       href: get-started-wizard.md
 
+- name: Workshops
+  items:
+    - name: Tube Player
+      topicHref: external/workshops/tube-player/README.md
+      href: external/workshops/tube-player/toc.yml
+    - name: Simple Calc
+      topicHref: external/workshops/simple-calc/README.md
+      href: external/workshops/simple-calc/toc.yml
+      
 - name: Fundamentals
   topicHref: what-is-uno.md
   items:
@@ -190,6 +199,32 @@
               href: uno-app-solution-structure.md
             - name: Best practices
               href: best-practices-uno.md
+            - name: Visual Studio Wizard
+              topicHref: getting-started/wizard/using-wizard.md
+              items:
+                - name: Framework options
+                  href: getting-started/wizard/framework.md
+                - name: Platforms options
+                  href: getting-started/wizard/platforms.md
+                - name: Presentation options
+                  href: getting-started/wizard/presentation.md
+                - name: Markup options
+                  href: getting-started/wizard/markup.md
+                - name: Theme options
+                  href: getting-started/wizard/themes.md
+                - name: Extensions options
+                  href: getting-started/wizard/extensions.md
+                - name: Features options
+                  href: getting-started/wizard/features.md
+                - name: Authentication options
+                  href: getting-started/wizard/authentication.md
+                - name: Application options
+                  href: getting-started/wizard/application.md
+                - name: Testing options
+                  href: getting-started/wizard/testing.md
+                - name: CI Pipeline options
+                  href: getting-started/wizard/cipipeline.md
+
         - name: WinUI Features
           items:
             - name: Accessibility
@@ -284,6 +319,8 @@
               href: features/bluetoothdevice.md
             - name: Clipboard
               href: features/clipboard.md
+            - name: Compass
+              href: features/compass.md
             - name: Contacts
               href: features/windows-applicationmodel-contacts.md
             - name: Credential Storage
@@ -300,6 +337,8 @@
               href: features/windows-storage-pickers.md
             - name: Flashlight
               href: features/flashlight.md
+            - name: Gamepad
+              href: features/gamepad.md
             - name: Geolocation (GPS)
               href: features/windows-devices-geolocation.md
             - name: Gyrometer
@@ -410,18 +449,22 @@
               href: android-activities.md
         - name: Common Tasks
           items:
-            - name: Upgrading from previous releases
-              href: migrating-from-previous-releases.md
+            - name: Upgrading your solution
+              items:
+              - name: Upgrading from previous releases
+                href: migrating-from-previous-releases.md
+              - name: Upgrading to Uno 5.0
+                href: migrating-to-uno-5.md
+              - name: Upgrading from Xamarin to .NET 6
+                href: migrating-from-xamarin-to-net6.md
+              - name: Upgrading to WinUI 3.0
+                href: updating-to-winui3.md
             - name: Creating a cross-targeted library
               href: cross-targeted-libraries.md
             - name: Faster Single Target App Builds
               href: guides/solution-building-single-targetframework.md
             - name: Hosting a WebAssembly app
               href: how-to-host-a-webassembly-app.md
-            - name: Updating to WinUI 3.0
-              href: updating-to-winui3.md
-            - name: Migrating from Xamarin to .NET 6
-              href: migrating-from-xamarin-to-net6.md
         - name: Debugging
           items:
             - name: Troubleshooting build errors
@@ -560,12 +603,16 @@
 - name: Extensions
   topicHref: external/uno.extensions/doc/ExtensionsOverview.md
   href: external/uno.extensions/doc/toc.yml
+
 - name: Themes
   topicHref: external/uno.themes/doc/themes-overview.html
   href: external/uno.themes/doc/toc.yml
+
 - name: Toolkit
   topicHref: external/uno.toolkit.ui/doc/getting-started.md
   href: external/uno.toolkit.ui/doc/toc.yml
+  
 - name: Figma
   topicHref: external/figma-docs/overview/getting-started-uno-figma.md
   href: external/figma-docs/toc.yml
+

@@ -9,6 +9,9 @@
 
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
+		
+		<!-- Required in CI to avoid dependency issues -->
+		<PreBuildUnoUITasks>true</PreBuildUnoUITasks>
 	</PropertyGroup>
 
 	<PropertyGroup>

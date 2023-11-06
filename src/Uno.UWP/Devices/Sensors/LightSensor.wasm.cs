@@ -26,7 +26,7 @@ namespace Windows.Devices.Sensors
 		}
 
 		[JSExport]
-		public static int DispatchReading(float lux)
+		internal static int DispatchReading(float lux)
 		{
 			var reading = new LightSensorReading(lux, DateTimeOffset.UtcNow);
 			OnReadingChanged(reading);

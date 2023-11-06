@@ -351,25 +351,39 @@ namespace Windows.UI.Xaml
 			var hasOld = !oldStateName.IsNullOrEmpty();
 			var hasNew = !newStateName.IsNullOrEmpty();
 
-			if (hasOld && hasNew && Transitions.FirstOrDefault(Match(oldStateName, newStateName)) is { } perfectMatch)
+			if (hasOld && hasNew && GetFirstMatch(oldStateName, newStateName) is { } perfectMatch)
 			{
 				return perfectMatch;
 			}
 
-			if (hasOld && Transitions.FirstOrDefault(Match(oldStateName, null)) is { } fromMatch)
+			if (hasOld && GetFirstMatch(oldStateName, null) is { } fromMatch)
 			{
 				return fromMatch;
 			}
 
-			if (hasNew && Transitions.FirstOrDefault(Match(null, newStateName)) is { } newMatch)
+			if (hasNew && GetFirstMatch(null, newStateName) is { } newMatch)
 			{
 				return newMatch;
 			}
 
 			return default;
 
-			Func<VisualTransition, bool> Match(string from, string to)
-				=> tr => string.Equals(tr.From, oldStateName) && string.Equals(tr.To, newStateName);
+			VisualTransition GetFirstMatch(string from, string to)
+			{
+				// Avoid using Transitions.FirstOrDefault as it incurs unnecessary Func<VisualTransition, bool> allocations.
+				foreach (var transition in Transitions)
+				{
+					if (Match(transition, from, to))
+					{
+						return transition;
+					}
+				}
+
+				return null;
+			}
+
+			bool Match(VisualTransition transition, string from, string to)
+				=> string.Equals(transition.From, oldStateName) && string.Equals(transition.To, newStateName);
 		}
 
 		internal void RefreshStateTriggers(bool force = false)

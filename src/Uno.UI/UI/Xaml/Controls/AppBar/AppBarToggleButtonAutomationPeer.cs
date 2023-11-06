@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 			}
 
 			var owner = GetOwningAppBarToggleButton();
-			owner.AutomationPeerToggle();
+			owner.AutomationToggleButtonOnToggle();
 		}
 
 		public new ToggleState ToggleState

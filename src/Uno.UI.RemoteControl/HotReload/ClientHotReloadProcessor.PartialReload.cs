@@ -26,12 +26,35 @@ namespace Uno.UI.RemoteControl.HotReload
 
 		private void InitializePartialReload()
 		{
-			_supportsLightweightHotReload = (_msbuildProperties?.TryGetValue("TargetFramework", out var targetFramework) ?? false)
-				&& (_msbuildProperties?.TryGetValue("BuildingInsideVisualStudio", out var buildingInsideVisualStudio) ?? false)
-				&& buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
+			var unoRuntimeIdentifier = GetMSBuildProperty("UnoRuntimeIdentifier");
+			var targetFramework = GetMSBuildProperty("TargetFramework");
+			var buildingInsideVisualStudio = GetMSBuildProperty("BuildingInsideVisualStudio");
+
+			_supportsLightweightHotReload =
+				buildingInsideVisualStudio.Equals("true", StringComparison.OrdinalIgnoreCase)
+				&& (_forcedHotReloadMode is null || _forcedHotReloadMode == HotReloadMode.Partial)
 				&& (
-					targetFramework.Contains("-android")
-					|| targetFramework.Contains("-ios"));
+					// As of VS 17.8, when the debugger is attached, mobile targets don't invoke MetadataUpdateHandlers
+					// and both targets are not providing updated types. We simulate parts of this process
+					// to determine which types have been updated, particularly those with "CreateNewOnMetadataUpdate".
+					//
+					// Disabled until https://github.com/dotnet/runtime/issues/93860 is fixed
+					//
+					//(Debugger.IsAttached
+					//	&& (targetFramework.Contains("-android") || targetFramework.Contains("-ios")))
+					//||
+
+					// WebAssembly does not support sending updated types, and does not support debugger based hot reload.
+					(unoRuntimeIdentifier?.Equals("WebAssembly", StringComparison.OrdinalIgnoreCase) ?? false));
+
+			if (this.Log().IsEnabled(LogLevel.Trace))
+			{
+				this.Log().Trace($"Partial Hot Reload Enabled:{_supportsLightweightHotReload} " +
+					$"unoRuntimeIdentifier:{unoRuntimeIdentifier} " +
+					$"targetFramework:{targetFramework} " +
+					$"buildingInsideVisualStudio:{targetFramework} " +
+					$"debuggerAttached:{Debugger.IsAttached}");
+			}
 
 			_mappedTypes = _supportsLightweightHotReload
 				? BuildMappedTypes()
@@ -97,7 +120,13 @@ namespace Uno.UI.RemoteControl.HotReload
 			{
 				// Arbitrary delay to wait for VS to push updates to the app
 				// so we can discover which types have changed
+				// The scanning operation can take 500ms under wasm, keep the app
+				// running for longer to ensure we don't miss any updates
+#if __WASM__
+				await Task.Delay(1000);
+#else
 				await Task.Delay(250);
+#endif
 
 				var mappedSw = Stopwatch.StartNew();
 
@@ -125,14 +154,17 @@ namespace Uno.UI.RemoteControl.HotReload
 						this.Log().Trace($"Found {newTypes.Length} updated types ({types})");
 					}
 
-					var actions = _agent.GetMetadataUpdateHandlerActions();
-
-					actions.ClearCache.ForEach(a => a(newTypes));
-					actions.UpdateApplication.ForEach(a => a(newTypes));
-
-					if (this.Log().IsEnabled(LogLevel.Trace))
+					if (_agent is not null)
 					{
-						this.Log().Trace($"ObserveUpdateTypeMapping: Invoked metadata updaters");
+						var actions = _agent.GetMetadataUpdateHandlerActions();
+
+						actions.ClearCache.ForEach(a => a(newTypes));
+						actions.UpdateApplication.ForEach(a => a(newTypes));
+
+						if (this.Log().IsEnabled(LogLevel.Trace))
+						{
+							this.Log().Trace($"ObserveUpdateTypeMapping: Invoked metadata updaters");
+						}
 					}
 
 					return;

@@ -89,10 +89,12 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 
 			var scale = _scale ?? 1f;
+			var scaleAdjustment = Math.Truncate(scale);
+
 			var scaledGuardBand = (int)(GuardBand * scale);
 
-			var w = (int)Math.Max(0, AllocatedWidth * scale + scaledGuardBand);
-			var h = (int)Math.Max(0, AllocatedHeight * scale + scaledGuardBand);
+			var w = (int)Math.Max(0, AllocatedWidth * scaleAdjustment + scaledGuardBand);
+			var h = (int)Math.Max(0, AllocatedHeight * scaleAdjustment + scaledGuardBand);
 
 			if (_renderTarget == null || _surface == null || _renderTarget.Width != w || _renderTarget.Height != h)
 			{
@@ -190,6 +192,10 @@ namespace Uno.UI.Runtime.Skia.Gtk
 			}
 		}
 
-		private void UpdateDpi() => _scale = (float)_displayInformation.RawPixelsPerViewPixel;
+		private void UpdateDpi()
+		{
+			_scale = (float)_displayInformation.RawPixelsPerViewPixel;
+			InvalidateRender();
+		}
 	}
 }

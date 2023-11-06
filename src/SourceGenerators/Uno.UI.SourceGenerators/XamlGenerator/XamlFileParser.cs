@@ -25,6 +25,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private static readonly ConcurrentDictionary<CachedFileKey, CachedFile> _cachedFiles = new();
 		private static readonly TimeSpan _cacheEntryLifetime = new TimeSpan(hours: 1, minutes: 0, seconds: 0);
+		private static readonly char[] _splitChars = new char[] { '(', ',', ')' };
 		private readonly string _excludeXamlNamespacesProperty;
 		private readonly string _includeXamlNamespacesProperty;
 		private readonly string[] _excludeXamlNamespaces;
@@ -84,7 +85,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 #if DEBUG
-				Console.WriteLine("Pre-processing XAML file: {0}", file);
+				Console.WriteLine("Pre-processing XAML file: {0}", targetFilePath);
 #endif
 
 				var sourceText = file.GetText(cancellationToken)!;
@@ -192,7 +193,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			namespaceUri = valueSplit[0];
-			var elements = valueSplit[1].Split('(', ',', ')');
+			var elements = valueSplit[1].Split(_splitChars);
 
 			var methodName = elements[0];
 
@@ -265,9 +266,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// );
 		}
 
-		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner)
+		private XamlObjectDefinition VisitObject(XamlXmlReader reader, XamlObjectDefinition? owner, List<NamespaceDeclaration>? namespaces = null)
 		{
-			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner);
+			var xamlObject = new XamlObjectDefinition(reader.Type, reader.LineNumber, reader.LinePosition, owner, namespaces);
 
 			Visit(reader, xamlObject);
 
@@ -315,6 +316,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var member = new XamlMemberDefinition(reader.Member, reader.LineNumber, reader.LinePosition, owner);
 			var lastWasLiteralInline = false;
 			var lastWasTrimSurroundingWhiteSpace = false;
+			List<NamespaceDeclaration>? namespaces = null;
+
 			while (reader.Read())
 			{
 				WriteState(reader);
@@ -350,7 +353,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					case XamlNodeType.StartObject:
 						_depth++;
-						var obj = VisitObject(reader, owner);
+						var obj = VisitObject(reader, owner, namespaces);
 						if (!reader.PreserveWhitespace &&
 							lastWasLiteralInline &&
 							obj.Type.TrimSurroundingWhitespace &&
@@ -374,6 +377,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					case XamlNodeType.NamespaceDeclaration:
 						lastWasLiteralInline = false;
 						lastWasTrimSurroundingWhiteSpace = false;
+						(namespaces ??= new List<NamespaceDeclaration>()).Add(reader.Namespace);
 						// Skip
 						break;
 
@@ -411,7 +415,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var textMember = new XamlMember("Text", runType, false);
 
-			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, null)
+			return new XamlObjectDefinition(runType, reader.LineNumber, reader.LinePosition, owner: null, namespaces: null)
 			{
 				Members =
 				{

@@ -22,7 +22,7 @@ namespace Windows.System
 			return null;
 		});
 
-		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
+		internal static async Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			if (_launcherExtension.Value != null)
 			{
@@ -55,7 +55,7 @@ namespace Windows.System
 			}
 		}
 
-		public static async Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
+		internal static async Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
 		{

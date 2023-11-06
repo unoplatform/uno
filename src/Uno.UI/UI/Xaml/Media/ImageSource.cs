@@ -24,7 +24,6 @@ namespace Windows.UI.Xaml.Media
 	[TypeConverter(typeof(ImageSourceConverter))]
 	public partial class ImageSource : DependencyObject, IDisposable
 	{
-		private static readonly IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private protected static HttpClient? _httpClient;
 		private protected ImageData _imageData = ImageData.Empty;
 
@@ -100,7 +99,7 @@ namespace Windows.UI.Xaml.Media
 				return null;
 			}
 
-			if (url.StartsWith("/", StringComparison.Ordinal))
+			if (url.StartsWith('/'))
 			{
 				url = MsAppXScheme + "://" + url;
 			}

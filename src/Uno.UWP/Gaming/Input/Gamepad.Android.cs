@@ -174,10 +174,7 @@ public partial class Gamepad
 		{
 			if (TryGetOrCreateGamepad(deviceId, out var gamepad))
 			{
-				if (!_gamepadCache.ContainsKey(deviceId))
-				{
-					_gamepadCache.Add(deviceId, gamepad!);
-				}
+				_gamepadCache.TryAdd(deviceId, gamepad!);
 			}
 		}
 
@@ -266,10 +263,7 @@ public partial class Gamepad
 		{
 			if (TryGetOrCreateGamepad(deviceId, out var gamepad))
 			{
-				if (!_gamepadCache.ContainsKey(deviceId))
-				{
-					_gamepadCache.Add(deviceId, gamepad!);
-				}
+				_gamepadCache.TryAdd(deviceId, gamepad!);
 				OnGamepadAdded(gamepad);
 			}
 		}

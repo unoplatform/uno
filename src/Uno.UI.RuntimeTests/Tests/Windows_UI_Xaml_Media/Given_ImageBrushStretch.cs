@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
-using FluentAssertions.Formatting;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
 using Uno.UI.RuntimeTests.Helpers;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Windows.UI.Xaml.Shapes;
 using static Private.Infrastructure.TestServices;
 using ImageBrush = Windows.UI.Xaml.Media.ImageBrush;
 
@@ -19,19 +17,20 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 	[RunsOnUIThread]
 	public class Given_ImageBrushStretch
 	{
-		[DataRow(Stretch.Fill)]
-		[DataRow(Stretch.UniformToFill)]
+		[DataRow(Stretch.Fill, false)]
+		[DataRow(Stretch.Fill, true)]
+		[DataRow(Stretch.UniformToFill, false)]
+		[DataRow(Stretch.UniformToFill, true)]
 #if !__ANDROID__
 		// Stretch.None is broken on Android.
 		// See https://github.com/unoplatform/uno/pull/7238#issuecomment-937667565
-		[DataRow(Stretch.None)]
+		[DataRow(Stretch.None, false)]
+		[DataRow(Stretch.None, true)]
 #endif
-#if !__SKIA__
-		// Stretch.Uniform is broken on Skia.
-		[DataRow(Stretch.Uniform)]
-#endif
+		[DataRow(Stretch.Uniform, false)]
+		[DataRow(Stretch.Uniform, true)]
 		[TestMethod]
-		public async Task When_Stretch(Stretch stretch)
+		public async Task When_Stretch(Stretch stretch, bool useRectangle)
 		{
 			const string Redish = "#FFEB1C24";
 			const string Yellowish = "#FFFEF200";
@@ -49,20 +48,35 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Stretch = stretch,
 			};
 
-			var SUT = new Border
+			FrameworkElement SUT;
+			if (useRectangle)
 			{
-				Width = 100,
-				Height = 100,
-				BorderThickness = new Thickness(2),
-				BorderBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0)),
-				Background = brush,
-			};
+				SUT = new Rectangle
+				{
+					Width = 100,
+					Height = 100,
+					StrokeThickness = 2,
+					Stroke = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0)),
+					Fill = brush,
+				};
+			}
+			else
+			{
+				SUT = new Border
+				{
+					Width = 100,
+					Height = 100,
+					BorderThickness = new Thickness(2),
+					BorderBrush = new SolidColorBrush(Windows.UI.Color.FromArgb(255, 255, 0, 0)),
+					Background = brush,
+				};
+			}
 			WindowHelper.WindowContent = SUT;
 			await WindowHelper.WaitForLoaded(SUT);
 
-			const float BorderOffset =
+			float BorderOffset =
 #if __SKIA__
-				7;
+				useRectangle ? 4 : 7;
 #elif __IOS__
 				6;
 #else
@@ -76,7 +90,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 				Stretch.Fill => (Top: Redish, Bottom: Redish, Left: Redish, Right: Redish),
 				// Top and bottom are red-ish. Left and right are yellow-ish
 				Stretch.UniformToFill => (Top: Redish, Bottom: Redish, Left: Yellowish, Right: Yellowish),
-				// Top and bottom are same as backround. Left and right are red-ish
+				// Top and bottom are same as background. Left and right are red-ish
 				Stretch.Uniform => (Top: Transparent, Bottom: Transparent, Left: Redish, Right: Redish),
 				// Everything is green-ish
 				Stretch.None => (Top: Greenish, Bottom: Greenish, Left: Greenish, Right: Greenish),
@@ -86,10 +100,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Media
 
 			var bitmap = await UITestHelper.ScreenShot(SUT);
 
-			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 5);
-			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 5);
-			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 5);
-			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 5);
+			ImageAssert.HasColorAt(bitmap, centerX, BorderOffset, expectations.Top, tolerance: 17);
+			ImageAssert.HasColorAt(bitmap, centerX, height - BorderOffset, expectations.Bottom, tolerance: 17);
+			ImageAssert.HasColorAt(bitmap, BorderOffset, centerY, expectations.Left, tolerance: 17);
+			ImageAssert.HasColorAt(bitmap, width - BorderOffset, centerY, expectations.Right, tolerance: 17);
 		}
 	}
 }

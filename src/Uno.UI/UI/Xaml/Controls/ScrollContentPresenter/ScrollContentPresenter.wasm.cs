@@ -302,8 +302,7 @@ namespace Windows.UI.Xaml.Controls
 			return success; // If if not yet processed, we assume that it will be.
 		}
 
-		// Backward compat, use the shared "Set" method instead.
-		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		void IScrollContentPresenter.ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
 			=> Set(
 				horizontalOffset: horizontalOffset,
 				verticalOffset: verticalOffset,

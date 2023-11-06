@@ -15497,6 +15497,9 @@
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectSquare" Storyboard.TargetProperty="Visibility">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
                     </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="MultiSelectCheck" Storyboard.TargetProperty="Visibility">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="Visible" />
+                    </ObjectAnimationUsingKeyFrames>
                     <win:FadeInThemeAnimation TargetName="MultiSelectSquare" />
                   </Storyboard>
                 </VisualState>
@@ -15588,8 +15591,8 @@
             <Rectangle x:Name="PlaceholderRect" Visibility="Collapsed" Fill="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}" />
             <Rectangle x:Name="MultiArrangeOverlayBackground" IsHitTestVisible="False" Opacity="0" Fill="{ThemeResource ListViewItemDragBackgroundThemeBrush}" Grid.ColumnSpan="2" />
             <Rectangle x:Name="BorderRectangle" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlHighlightListAccentLowBrush}" StrokeThickness="2" Opacity="0" />
-            <Border x:Name="MultiSelectSquare" Background="{ThemeResource SystemControlBackgroundChromeMediumBrush}" Width="20" Height="20" Margin="0,2,2,0" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed">
-              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" win:Glyph="&#xE73E;" not_win:Glyph="&#xE081;" FontSize="16" Foreground="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" Opacity="0" />
+            <Border x:Name="MultiSelectSquare" BorderBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}" BorderThickness="2" Width="20" Height="20" Margin="0,2,2,0" VerticalAlignment="Top" HorizontalAlignment="Right" Visibility="Collapsed">
+              <FontIcon x:Name="MultiSelectCheck" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE73E;" FontSize="16" Foreground="{ThemeResource CheckBoxCheckGlyphForegroundUnchecked}" Visibility="Collapsed" Opacity="0" />
             </Border>
             <Rectangle x:Name="FocusVisualWhite" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundAltHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="1.5" StrokeThickness="2" Opacity="0" />
             <Rectangle x:Name="FocusVisualBlack" IsHitTestVisible="False" Stroke="{ThemeResource SystemControlForegroundBaseHighBrush}" StrokeEndLineCap="Square" StrokeDashArray="1.0,1.0" StrokeDashOffset="0.5" StrokeThickness="2" Opacity="0" />

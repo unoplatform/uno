@@ -21,19 +21,6 @@ using Windows.System;
 using Windows.UI.ViewManagement;
 using Uno.UI;
 using Windows.UI.Core;
-#if HAS_UNO_WINUI
-using Microsoft.UI.Xaml.Controls;
-using Microsoft.UI.Xaml;
-using Microsoft.UI.Composition;
-using Microsoft.UI.Xaml.Automation;
-using Microsoft.UI.Xaml.Automation.Peers;
-using Microsoft.UI.Xaml.Data;
-using Microsoft.UI.Xaml.Hosting;
-using Microsoft.UI.Xaml.Input;
-using Microsoft.UI.Xaml.Media;
-using Microsoft.UI.Xaml.Media.Animation;
-using WindowsWindow = Microsoft.UI.Xaml.Window;
-#else
 using Windows.UI.Composition;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -43,7 +30,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using WindowsWindow = Windows.UI.Xaml.Window;
-#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -935,10 +921,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#if !HAS_UNO
 		Vector2 c_frame1point1 = new Vector2(0.9f, 0.1f);
 		Vector2 c_frame1point2 = new Vector2(1.0f, 0.2f);
 		Vector2 c_frame2point1 = new Vector2(0.1f, 0.9f);
 		Vector2 c_frame2point2 = new Vector2(0.2f, 1.0f);
+#endif
 
 		void AnimateSelectionChangedToItem(object selectedItem)
 		{

@@ -955,8 +955,9 @@
       <StaticResource x:Key="LoopingSelectorItemForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="LoopingSelectorItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
       <StaticResource x:Key="LoopingSelectorItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-      <StaticResource x:Key="DropDownButtonForegroundSecondaryPressed" ResourceKey="TextFillColorTertiaryBrush" />
       <StaticResource x:Key="DropDownButtonForegroundSecondary" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondaryPointerOver" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondaryPressed" ResourceKey="TextFillColorTertiaryBrush" />
       <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="CardBackgroundFillColorDefaultBrush" />
       <StaticResource x:Key="ExpanderHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ExpanderHeaderForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
@@ -2701,8 +2702,9 @@
       <StaticResource x:Key="LoopingSelectorItemForegroundPressed" ResourceKey="TextFillColorSecondaryBrush" />
       <StaticResource x:Key="LoopingSelectorItemBackgroundPointerOver" ResourceKey="SubtleFillColorSecondaryBrush" />
       <StaticResource x:Key="LoopingSelectorItemBackgroundPressed" ResourceKey="SubtleFillColorTertiaryBrush" />
-      <StaticResource x:Key="DropDownButtonForegroundSecondaryPressed" ResourceKey="TextFillColorTertiaryBrush" />
       <StaticResource x:Key="DropDownButtonForegroundSecondary" ResourceKey="TextFillColorSecondaryBrush" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondaryPointerOver" ResourceKey="TextFillColorTertiaryBrush" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondaryPressed" ResourceKey="TextFillColorTertiaryBrush" />
       <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="CardBackgroundFillColorDefaultBrush" />
       <StaticResource x:Key="ExpanderHeaderForeground" ResourceKey="TextFillColorPrimaryBrush" />
       <StaticResource x:Key="ExpanderHeaderForegroundPointerOver" ResourceKey="TextFillColorPrimaryBrush" />
@@ -4432,8 +4434,9 @@
       <StaticResource x:Key="LoopingSelectorItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
       <StaticResource x:Key="LoopingSelectorItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
       <StaticResource x:Key="LoopingSelectorItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
-      <StaticResource x:Key="DropDownButtonForegroundSecondaryPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
-      <StaticResource x:Key="DropDownButtonForegroundSecondary" ResourceKey="SystemColorButtonTextColor" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondary" ResourceKey="SystemColorButtonTextColorBrush" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondaryPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
+      <StaticResource x:Key="DropDownButtonForegroundSecondaryPressed" ResourceKey="SystemColorHighlightColorBrush" />
       <StaticResource x:Key="ExpanderHeaderBackground" ResourceKey="SystemColorButtonFaceColorBrush" />
       <StaticResource x:Key="ExpanderHeaderForeground" ResourceKey="SystemColorButtonTextColorBrush" />
       <StaticResource x:Key="ExpanderHeaderForegroundPointerOver" ResourceKey="SystemColorHighlightColorBrush" />
@@ -15500,15 +15503,15 @@
     <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
     <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
     <Setter Property="FocusVisualMargin" Value="-3" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
-    <contract7Present:Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="BackgroundSizing" Value="InnerBorderEdge" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{ThemeResource ControlCornerRadius}" contract7Present:BackgroundSizing="{TemplateBinding BackgroundSizing}">
-            <contract7Present:Grid.BackgroundTransition>
-              <contract7Present:BrushTransition Duration="0:0:0.083" />
-            </contract7Present:Grid.BackgroundTransition>
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" Padding="{TemplateBinding Padding}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}" BackgroundSizing="{TemplateBinding BackgroundSizing}">
+            <Grid.BackgroundTransition>
+              <BrushTransition Duration="0:0:0.083" />
+            </Grid.BackgroundTransition>
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -15522,6 +15525,9 @@
                     </ObjectAnimationUsingKeyFrames>
                     <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
                       <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource ButtonForegroundPointerOver}" />
+                    </ObjectAnimationUsingKeyFrames>
+                    <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ChevronIcon" Storyboard.TargetProperty="Foreground">
+                      <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DropDownButtonForegroundSecondaryPointerOver}" />
                     </ObjectAnimationUsingKeyFrames>
                   </Storyboard>
                   <VisualState.Setters>
@@ -15575,7 +15581,7 @@
             </Grid.ColumnDefinitions>
             <!-- Uno workaround: template-bind ContentTemplateSelector because it's not automatically propagated from the ContentControl -->
             <ContentPresenter x:Name="ContentPresenter" Content="{TemplateBinding Content}" ContentTransitions="{TemplateBinding ContentTransitions}" ContentTemplate="{TemplateBinding ContentTemplate}" ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" AutomationProperties.AccessibilityView="Raw" />
-            <controls:AnimatedIcon x:Name="ChevronIcon" Grid.Column="1" Margin="8,0,0,0" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="Normal" Width="12" Height="12" Foreground="{ThemeResource DropDownButtonForegroundSecondary}" xmlns:local="using:Microsoft.UI.Xaml.Controls">
+            <controls:AnimatedIcon x:Name="ChevronIcon" Grid.Column="1" Margin="8,0,0,0" Width="12" Height="12" Foreground="{ThemeResource DropDownButtonForegroundSecondary}" AutomationProperties.AccessibilityView="Raw" local:AnimatedIcon.State="Normal" xmlns:local="using:Microsoft.UI.Xaml.Controls">
               <animatedvisuals:AnimatedChevronDownSmallVisualSource />
               <controls:AnimatedIcon.FallbackIconSource>
                 <controls:FontIconSource FontSize="8" FontFamily="{ThemeResource SymbolThemeFontFamily}" Glyph="&#xE96E;" IsTextScaleFactorEnabled="False" />
@@ -16531,12 +16537,12 @@
     <Setter Property="BorderBrush" Value="{ThemeResource InfoBarBorderBrush}" />
     <Setter Property="BorderThickness" Value="{ThemeResource InfoBarBorderThickness}" />
     <Setter Property="AutomationProperties.LandmarkType" Value="Custom" />
-    <contract7Present:Setter Property="AutomationProperties.IsDialog" Value="True" />
-    <contract7Present:Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
+    <Setter Property="AutomationProperties.IsDialog" Value="True" />
+    <Setter Property="CornerRadius" Value="{ThemeResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="controls:InfoBar">
-          <Border x:Name="ContentRoot" VerticalAlignment="Top" Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}">
+          <Border x:Name="ContentRoot" VerticalAlignment="Top" Background="{ThemeResource InfoBarInformationalSeverityBackgroundBrush}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="SeverityLevels">
                 <VisualState x:Name="Informational" />
@@ -16607,7 +16613,7 @@
               </VisualStateGroup>
             </VisualStateManager.VisualStateGroups>
             <!-- Background is used here so that it overrides the severity status color if set. -->
-            <Grid HorizontalAlignment="Stretch" MinHeight="{ThemeResource InfoBarMinHeight}" Background="{TemplateBinding Background}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" Padding="{StaticResource InfoBarContentRootPadding}">
+            <Grid HorizontalAlignment="Stretch" MinHeight="{ThemeResource InfoBarMinHeight}" Background="{TemplateBinding Background}" CornerRadius="{TemplateBinding CornerRadius}" Padding="{StaticResource InfoBarContentRootPadding}">
               <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <!-- Icon -->
@@ -23881,48 +23887,35 @@
                 <VisualState x:Name="ViewMode_LeftRight" />
                 <VisualState x:Name="ViewMode_RightLeft">
                   <VisualState.Setters>
-                    <contract7NotPresent:Setter Target="PART_Pane1.(Grid.Column)" Value="2" />
-                    <contract7NotPresent:Setter Target="PART_Pane2.(Grid.Column)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane1ScrollViewer.(Grid.Column)" Value="2" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
+                    <Setter Target="PART_Pane1ScrollViewer.(Grid.Column)" Value="2" />
+                    <Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ViewMode_TopBottom">
                   <VisualState.Setters>
-                    <contract7NotPresent:Setter Target="PART_Pane1.(Grid.Column)" Value="0" />
-                    <contract7NotPresent:Setter Target="PART_Pane1.(Grid.Row)" Value="0" />
-                    <contract7NotPresent:Setter Target="PART_Pane2.(Grid.Column)" Value="0" />
-                    <contract7NotPresent:Setter Target="PART_Pane2.(Grid.Row)" Value="2" />
-                    <contract7Present:Setter Target="PART_Pane1ScrollViewer.(Grid.Column)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane1ScrollViewer.(Grid.Row)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.(Grid.Row)" Value="2" />
+                    <Setter Target="PART_Pane1ScrollViewer.(Grid.Column)" Value="0" />
+                    <Setter Target="PART_Pane1ScrollViewer.(Grid.Row)" Value="0" />
+                    <Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
+                    <Setter Target="PART_Pane2ScrollViewer.(Grid.Row)" Value="2" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ViewMode_BottomTop">
                   <VisualState.Setters>
-                    <contract7NotPresent:Setter Target="PART_Pane1.(Grid.Column)" Value="0" />
-                    <contract7NotPresent:Setter Target="PART_Pane1.(Grid.Row)" Value="2" />
-                    <contract7NotPresent:Setter Target="PART_Pane2.(Grid.Column)" Value="0" />
-                    <contract7NotPresent:Setter Target="PART_Pane2.(Grid.Row)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane1ScrollViewer.(Grid.Column)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane1ScrollViewer.(Grid.Row)" Value="2" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.(Grid.Row)" Value="0" />
+                    <Setter Target="PART_Pane1ScrollViewer.(Grid.Column)" Value="0" />
+                    <Setter Target="PART_Pane1ScrollViewer.(Grid.Row)" Value="2" />
+                    <Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
+                    <Setter Target="PART_Pane2ScrollViewer.(Grid.Row)" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ViewMode_OneOnly">
                   <VisualState.Setters>
-                    <contract7NotPresent:Setter Target="PART_Pane2.Visibility" Value="Collapsed" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.Visibility" Value="Collapsed" />
+                    <Setter Target="PART_Pane2ScrollViewer.Visibility" Value="Collapsed" />
                   </VisualState.Setters>
                 </VisualState>
                 <VisualState x:Name="ViewMode_TwoOnly">
                   <VisualState.Setters>
-                    <contract7NotPresent:Setter Target="PART_Pane1.Visibility" Value="Collapsed" />
-                    <contract7NotPresent:Setter Target="PART_Pane2.(Grid.Column)" Value="0" />
-                    <contract7Present:Setter Target="PART_Pane1ScrollViewer.Visibility" Value="Collapsed" />
-                    <contract7Present:Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
+                    <Setter Target="PART_Pane1ScrollViewer.Visibility" Value="Collapsed" />
+                    <Setter Target="PART_Pane2ScrollViewer.(Grid.Column)" Value="0" />
                   </VisualState.Setters>
                 </VisualState>
               </VisualStateGroup>
@@ -23937,14 +23930,12 @@
               <RowDefinition x:Name="PART_RowMiddle" Height="0" />
               <RowDefinition x:Name="PART_RowBottom" Height="0" />
             </Grid.RowDefinitions>
-            <contract7Present:ScrollViewer x:Name="PART_Pane1ScrollViewer" Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <ScrollViewer x:Name="PART_Pane1ScrollViewer" Grid.Column="0" VerticalScrollBarVisibility="Auto">
               <Border Child="{TemplateBinding Pane1}" />
-            </contract7Present:ScrollViewer>
-            <contract7Present:ScrollViewer x:Name="PART_Pane2ScrollViewer" Grid.Column="2" VerticalScrollBarVisibility="Auto">
+            </ScrollViewer>
+            <ScrollViewer x:Name="PART_Pane2ScrollViewer" Grid.Column="2" VerticalScrollBarVisibility="Auto">
               <Border Child="{TemplateBinding Pane2}" />
-            </contract7Present:ScrollViewer>
-            <contract7NotPresent:Border x:Name="PART_Pane1" Grid.Column="0" Child="{TemplateBinding Pane1}" />
-            <contract7NotPresent:Border x:Name="PART_Pane2" Grid.Column="2" Child="{TemplateBinding Pane2}" />
+            </ScrollViewer>
           </Grid>
         </ControlTemplate>
       </Setter.Value>

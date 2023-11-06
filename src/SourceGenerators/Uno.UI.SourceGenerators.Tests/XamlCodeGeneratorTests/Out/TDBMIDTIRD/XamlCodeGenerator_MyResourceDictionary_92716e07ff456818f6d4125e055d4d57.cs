@@ -46,12 +46,12 @@ namespace TestRepro
 			"myTemplate"
 			] = 
 			new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0_().Build(__owner)
+				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0().Build(__owner)
 				)			)
 			;
 		}
 
-		private class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0_
+		private class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_TestReproMyResourceDictionarySC0 
 		{
 			[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 			private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -153,8 +153,8 @@ namespace MyProject
 		internal sealed class ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 : global::Uno.UI.IXamlResourceDictionaryProvider
 		{
 			private static global::Windows.UI.Xaml.NameScope __nameScope = new global::Windows.UI.Xaml.NameScope();
-			private static ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 __that;
-			internal static ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 Instance
+			private static global::Uno.UI.IXamlResourceDictionaryProvider __that;
+			internal static global::Uno.UI.IXamlResourceDictionaryProvider Instance
 			{
 				get
 				{
@@ -167,16 +167,17 @@ namespace MyProject
 				}
 			}
 
-			internal global::Uno.UI.Xaml.XamlParseContext __ParseContext_ {get; }
+			private readonly global::Uno.UI.Xaml.XamlParseContext __ParseContext_;
+			internal static global::Uno.UI.Xaml.XamlParseContext GetParseContext() => ((ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57)Instance).__ParseContext_;
 
-			private ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57()
+			public ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57()
 			{
 				__ParseContext_ = global::MyProject.GlobalStaticResources.__ParseContext_;
 			}
 
 			// Method for resource myTemplate 
 			private object Get_1(object __ResourceOwner_1) =>
-				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1_().Build(__owner)
+				new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 				new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1().Build(__owner)
 				)				;
 
 			private global::Windows.UI.Xaml.ResourceDictionary _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
@@ -195,7 +196,7 @@ namespace MyProject
 							"myTemplate"
 							] = 
 							new global::Uno.UI.Xaml.WeakResourceInitializer(this, __ResourceOwner_1 => 
-								new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 								new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2_().Build(__owner)
+								new global::Windows.UI.Xaml.DataTemplate(__ResourceOwner_1 , __owner => 								new __Resources._MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2().Build(__owner)
 								)							)
 							,
 						}
@@ -210,12 +211,12 @@ namespace MyProject
 			global::Windows.UI.Xaml.ResourceDictionary global::Uno.UI.IXamlResourceDictionaryProvider.GetResourceDictionary() => MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
 		}
 
-		internal static global::Windows.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary;
+		internal static global::Windows.UI.Xaml.ResourceDictionary MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_ResourceDictionary => ResourceDictionarySingleton__MyResourceDictionary_92716e07ff456818f6d4125e055d4d57.Instance.GetResourceDictionary();
 	}
 }
 namespace MyProject.__Resources
 {
-	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1_
+	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC1 
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";
@@ -303,7 +304,7 @@ namespace MyProject.__Resources
 			return true;
 		}
 	}
-	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2_
+	 class _MyResourceDictionary_92716e07ff456818f6d4125e055d4d57_MyResourceDictionaryRDSC2 
 	{
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		private const string __baseUri_prefix_MyResourceDictionary_92716e07ff456818f6d4125e055d4d57 = "ms-appx:///TestProject/";

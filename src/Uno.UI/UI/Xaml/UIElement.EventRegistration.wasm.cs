@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml
 		[JSExport]
 		[Preserve]
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static int DispatchEvent(int handle, string eventName, string eventArgs, bool onCapturePhase)
+		internal static int DispatchEvent(int handle, string eventName, string eventArgs, bool onCapturePhase)
 		{
 #if DEBUG
 			try

@@ -1,10 +1,11 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX Reference BreadcrumbBar.cpp, commit 9aedb00
+// MUX Reference BreadcrumbBar.cpp, tag winui3/release/1.4.2
 
 #nullable enable
 
 using System.Collections.ObjectModel;
+using Microsoft.UI.Input;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
@@ -70,20 +71,7 @@ public partial class BreadcrumbBar : Control
 
 		m_itemsRepeater = (ItemsRepeater)GetTemplateChild(s_itemsRepeaterPartName);
 
-		if (this is UIElement thisAsUIElement7)
-		{
-			thisAsUIElement7.PreviewKeyDown += OnChildPreviewKeyDown;
-		}
-		else if (this is UIElement thisAsUIElement)
-		{
-			var handler = new KeyEventHandler(OnChildPreviewKeyDown);
-			m_breadcrumbKeyDownHandlerRevoker.Disposable = Disposable.Create(() =>
-			{
-				RemoveHandler(UIElement.KeyDownEvent, handler);
-			});
-			AddHandler(UIElement.KeyDownEvent, handler, true);
-		}
-
+		PreviewKeyDown += OnChildPreviewKeyDown;
 		AccessKeyInvoked += OnAccessKeyInvoked;
 		GettingFocus += OnGettingFocus;
 
@@ -467,19 +455,15 @@ public partial class BreadcrumbBar : Control
 
 					if (itemsRepeater.TryGetElement(m_focusedIndex) is { } selectedItem)
 					{
-						if (args is GettingFocusEventArgs argsAsIGettingFocusEventArgs2)
+						if (args.TrySetNewFocusedElement(selectedItem))
 						{
-							if (args.TrySetNewFocusedElement(selectedItem))
-							{
-								args.Handled = true;
-							}
+							args.Handled = true;
 						}
 					}
 				}
 
 				// Focus was already in the repeater: in RS3+ Selection follows focus unless control is held down.
-				else if (SharedHelpers.IsRS3OrHigher() &&
-					(global::Windows.UI.Xaml.Window.Current.CoreWindow.GetKeyState(VirtualKey.Control) &
+				else if ((InputKeyboardSource.GetKeyStateForCurrentThread(VirtualKey.Control) &
 						CoreVirtualKeyStates.Down) != CoreVirtualKeyStates.Down)
 				{
 					if (args.NewFocusedElement is UIElement newFocusedElementAsUIE)
@@ -520,9 +504,9 @@ public partial class BreadcrumbBar : Control
 					{
 						if (itemsRepeater.TryGetElement(focusedIndex) is { } item)
 						{
-							if (item is Control itemAsControl)
+							if (item is UIElement itemAsUIE)
 							{
-								if (itemAsControl.Focus(FocusState.Programmatic))
+								if (itemAsUIE.Focus(FocusState.Programmatic))
 								{
 									FocusElementAt(focusedIndex);
 									return true;
@@ -638,7 +622,8 @@ public partial class BreadcrumbBar : Control
 			else if ((flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadRight)) ||
 						(!flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadLeft)))
 			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Next))
+				var options = GetFindNextElementOptions();
+				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Next, options))
 				{
 					args.Handled = true;
 					return;
@@ -657,7 +642,8 @@ public partial class BreadcrumbBar : Control
 			else if ((flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadLeft)) ||
 						(!flowDirectionIsLTR && (args.OriginalKey == VirtualKey.GamepadDPadRight)))
 			{
-				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous))
+				var options = GetFindNextElementOptions();
+				if (FocusManager.TryMoveFocus(FocusNavigationDirection.Previous, options))
 				{
 					args.Handled = true;
 					return;

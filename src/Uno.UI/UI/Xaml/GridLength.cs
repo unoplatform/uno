@@ -11,6 +11,7 @@ namespace Windows.UI.Xaml
 	[DebuggerDisplay("{DebugDisplay,nq}")]
 	public partial struct GridLength : IEquatable<GridLength>
 	{
+		private static readonly char[] _commaArray = new[] { ',' };
 		public static GridLength Auto => GridLengthHelper.Auto;
 
 		public GridUnitType GridUnitType;
@@ -58,7 +59,11 @@ namespace Windows.UI.Xaml
 			{
 				return new GridLength(0, GridUnitType.Auto);
 			}
+#if NETSTANDARD
 			else if (trimmed.EndsWith("*", StringComparison.Ordinal))
+#else
+			else if (trimmed.EndsWith('*'))
+#endif
 			{
 				var stringValue = trimmed.Substring(0, trimmed.Length - 1);
 
@@ -94,22 +99,23 @@ namespace Windows.UI.Xaml
 
 		public static GridLength[] ParseGridLength(string s)
 		{
-			var parts = s.Split(new[] { ',' });
+			var parts = s.Split(_commaArray);
 
-			var result = new List<GridLength>(parts.Length);
+			var result = new GridLength[parts.Length];
 
-			foreach (var part in parts)
+			for (int i = 0; i < parts.Length; i++)
 			{
+				var part = parts[i];
 				if (string.IsNullOrEmpty(part))
 				{
-					result.Add(new GridLength(0, GridUnitType.Auto));
+					result[i] = new GridLength(0, GridUnitType.Auto);
 					continue;
 				}
 
-				result.Add(FromString(part));
+				result[i] = FromString(part);
 			}
 
-			return result.ToArray();
+			return result;
 		}
 
 		public bool Equals(GridLength other)
