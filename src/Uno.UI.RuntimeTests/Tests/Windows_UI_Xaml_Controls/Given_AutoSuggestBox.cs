@@ -121,7 +121,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
-			SUT.ChoseItem("ab");
+			// UNO TODO:
+			//SUT.ChoseItem("ab");
 
 			await WindowHelper.WaitFor(() => eventRaised);
 			Assert.AreEqual(AutoSuggestionBoxTextChangeReason.SuggestionChosen, reason);
@@ -148,13 +149,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			var textBox = (TextBox)SUT.GetTemplateChild("TextBox");
 			SUT.Focus(FocusState.Programmatic);
-			SUT.ChoseItem("ab");
+			// UNO TODO:
+			//SUT.ChoseItem("ab");
 			SUT.Text = "other";
 			textBox.ProcessTextInput("manual");
-			SUT.ChoseItem("ab");
+			// UNO TODO:
+			//SUT.ChoseItem("ab");
 			textBox.ProcessTextInput("manual");
 			SUT.Text = "other";
-			SUT.ChoseItem("ab");
+			// UNO TODO:
+			//SUT.ChoseItem("ab");
 
 			await WindowHelper.WaitFor(() => eventRaised);
 			CollectionAssert.AreEquivalent(

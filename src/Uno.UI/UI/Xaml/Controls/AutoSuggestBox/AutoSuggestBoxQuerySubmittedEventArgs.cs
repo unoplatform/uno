@@ -4,18 +4,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class AutoSuggestBoxQuerySubmittedEventArgs
 	{
-		public object ChosenSuggestion { get; }
+		public object ChosenSuggestion { get; internal set; }
 
-		public string QueryText { get; }
-
-		public AutoSuggestBoxQuerySubmittedEventArgs() : base()
-		{
-		}
-
-		internal AutoSuggestBoxQuerySubmittedEventArgs(object chosenSuggestion, string queryText)
-		{
-			ChosenSuggestion = chosenSuggestion;
-			QueryText = queryText;
-		}
+		public string QueryText { get; internal set; }
 	}
 }

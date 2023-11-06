@@ -1,5 +1,3 @@
-
-using System;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
@@ -48,9 +46,9 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(TextMemberPathProperty, value);
 		}
 
-		public global::Windows.UI.Xaml.Style TextBoxStyle
+		public Style TextBoxStyle
 		{
-			get => (global::Windows.UI.Xaml.Style)this.GetValue(TextBoxStyleProperty);
+			get => (Style)this.GetValue(TextBoxStyleProperty);
 			set => this.SetValue(TextBoxStyleProperty, value);
 		}
 
@@ -60,9 +58,9 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(TextProperty, value);
 		}
 
-		public global::Windows.UI.Xaml.Controls.IconElement QueryIcon
+		public IconElement QueryIcon
 		{
-			get => (global::Windows.UI.Xaml.Controls.IconElement)this.GetValue(QueryIconProperty);
+			get => (IconElement)this.GetValue(QueryIconProperty);
 			set => this.SetValue(QueryIconProperty, value);
 		}
 
@@ -76,80 +74,80 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(DescriptionProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty MaxSuggestionListHeightProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxSuggestionListHeight", typeof(double),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: double.PositiveInfinity)
-		);
+		public static DependencyProperty MaxSuggestionListHeightProperty { get; } =
+			DependencyProperty.Register(
+				"MaxSuggestionListHeight", typeof(double),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: double.PositiveInfinity)
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderText", typeof(string),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: "")
-		);
+		public static DependencyProperty PlaceholderTextProperty { get; } =
+			DependencyProperty.Register(
+				"PlaceholderText", typeof(string),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: "")
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty TextBoxStyleProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextBoxStyle", typeof(global::Windows.UI.Xaml.Style),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+		public static DependencyProperty TextBoxStyleProperty { get; } =
+			DependencyProperty.Register(
+				"TextBoxStyle", typeof(Style),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: null)
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty TextMemberPathProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextMemberPath", typeof(string),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+		public static DependencyProperty TextMemberPathProperty { get; } =
+			DependencyProperty.Register(
+				"TextMemberPath", typeof(string),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: null)
+			);
 
 		public static DependencyProperty TextProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Text", typeof(string),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: "", OnTextChanged)
-		);
+			DependencyProperty.Register(
+				"Text", typeof(string),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: "")
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty UpdateTextOnSelectProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"UpdateTextOnSelect", typeof(bool),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: true)
-		);
+		public static DependencyProperty UpdateTextOnSelectProperty { get; } =
+			DependencyProperty.Register(
+				"UpdateTextOnSelect", typeof(bool),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: true)
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"AutoMaximizeSuggestionArea", typeof(bool),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: false)
-		);
+		public static DependencyProperty AutoMaximizeSuggestionAreaProperty { get; } =
+			DependencyProperty.Register(
+				"AutoMaximizeSuggestionArea", typeof(bool),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: false)
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Header", typeof(object),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
+		public static DependencyProperty HeaderProperty { get; } =
+			DependencyProperty.Register(
+				"Header", typeof(object),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: null)
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty IsSuggestionListOpenProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsSuggestionListOpen", typeof(bool),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
-		);
+		public static DependencyProperty IsSuggestionListOpenProperty { get; } =
+			DependencyProperty.Register(
+				"IsSuggestionListOpen", typeof(bool),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(defaultValue: false, propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.OnIsSuggestionListOpenChanged(e))
+			);
 
-		public static global::Windows.UI.Xaml.DependencyProperty QueryIconProperty { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"QueryIcon", typeof(global::Windows.UI.Xaml.Controls.IconElement),
-			typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateQueryButton()));
+		public static DependencyProperty QueryIconProperty { get; } =
+			DependencyProperty.Register(
+				"QueryIcon", typeof(IconElement),
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(IconElement)));
 
-		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
+		public static DependencyProperty DescriptionProperty { get; } =
+			DependencyProperty.Register(
 				nameof(Description), typeof(object),
-				typeof(global::Windows.UI.Xaml.Controls.AutoSuggestBox),
-				new FrameworkPropertyMetadata(default(object), propertyChangedCallback: (s, e) => (s as AutoSuggestBox)?.UpdateDescriptionVisibility(false)));
+				typeof(AutoSuggestBox),
+				new FrameworkPropertyMetadata(default(object)));
 
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxSuggestionChosenEventArgs> SuggestionChosen;
 		public event TypedEventHandler<AutoSuggestBox, AutoSuggestBoxTextChangedEventArgs> TextChanged;
