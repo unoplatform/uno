@@ -156,6 +156,28 @@ namespace Windows.UI.Xaml.Controls
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
 			_header = GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
 
+			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
+			{
+				_deleteButton = new WeakReference<Button>(button);
+			}
+
+			UpdateTextBoxView();
+			InitializeProperties();
+			UpdateVisualState();
+		}
+
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+#if __ANDROID__
+			SetupTextBoxView();
+#endif
+
+			// This workaround is added in OnLoaded rather than OnApplyTemplate.
+			// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
+			// So, the style setters would override what the workaround does.
+			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
 #if __IOS__ || __MACOS__
@@ -182,15 +204,6 @@ namespace Windows.UI.Xaml.Controls
 				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
 #endif
 			}
-
-			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
-			{
-				_deleteButton = new WeakReference<Button>(button);
-			}
-
-			UpdateTextBoxView();
-			InitializeProperties();
-			UpdateVisualState();
 		}
 
 		partial void InitializePropertiesPartial();
