@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -128,6 +129,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(PasswordBox_Focus_Leak), 15)]
 #endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
+		{
+			// Test for leaks both without and with fluent styles
+			await When_Add_Remove_Inner(controlTypeRaw, count);
+
+			using (var themeHelper = StyleHelper.UseFluentStyles())
+			{
+				await When_Add_Remove_Inner(controlTypeRaw, count);
+			}
+		}
+
+		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
 			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
