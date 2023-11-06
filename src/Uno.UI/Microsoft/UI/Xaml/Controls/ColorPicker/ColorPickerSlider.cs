@@ -1,5 +1,9 @@
-﻿using System;
-using System.Globalization;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ColorPickerSlider.cpp, tag winui3/release/1.4.2
+
+using System;
 using Uno.UI.Helpers.WinUI;
 using Windows.System;
 using Windows.UI;
@@ -79,32 +83,32 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				case ColorPickerHsvChannel.Hue:
 					minBound = parentColorPicker.MinHue;
 					maxBound = parentColorPicker.MaxHue;
-					currentHsv.H = this.Value;
+					currentHsv.H = Value;
 					break;
 
 				case ColorPickerHsvChannel.Saturation:
 					minBound = parentColorPicker.MinSaturation;
 					maxBound = parentColorPicker.MaxSaturation;
-					currentHsv.S = this.Value / 100;
+					currentHsv.S = Value / 100;
 					break;
 
 				case ColorPickerHsvChannel.Value:
 					minBound = parentColorPicker.MinValue;
 					maxBound = parentColorPicker.MaxValue;
-					currentHsv.V = this.Value / 100;
+					currentHsv.V = Value / 100;
 					break;
 
 				case ColorPickerHsvChannel.Alpha:
 					minBound = 0;
 					maxBound = 100;
-					currentAlpha = this.Value / 100;
+					currentAlpha = Value / 100;
 					break;
 
 				default:
 					throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
 			}
 
-			bool shouldInvertHorizontalDirection = this.FlowDirection == FlowDirection.RightToLeft && !this.IsDirectionReversed;
+			bool shouldInvertHorizontalDirection = FlowDirection == FlowDirection.RightToLeft && !IsDirectionReversed;
 
 			ColorHelpers.IncrementDirection direction =
 				((args.Key == VirtualKey.Left && !shouldInvertHorizontalDirection) ||
@@ -115,31 +119,31 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			ColorHelpers.IncrementAmount amount = isControlDown ? ColorHelpers.IncrementAmount.Large : ColorHelpers.IncrementAmount.Small;
 
-			if (this.ColorChannel != ColorPickerHsvChannel.Alpha)
+			if (ColorChannel != ColorPickerHsvChannel.Alpha)
 			{
-				currentHsv = ColorHelpers.IncrementColorChannel(currentHsv, this.ColorChannel, direction, amount, false /* shouldWrap */, minBound, maxBound);
+				currentHsv = ColorHelpers.IncrementColorChannel(currentHsv, ColorChannel, direction, amount, false /* shouldWrap */, minBound, maxBound);
 			}
 			else
 			{
 				currentAlpha = ColorHelpers.IncrementAlphaChannel(currentAlpha, direction, amount, false /* shouldWrap */, minBound, maxBound);
 			}
 
-			switch (this.ColorChannel)
+			switch (ColorChannel)
 			{
 				case ColorPickerHsvChannel.Hue:
-					this.Value = currentHsv.H;
+					Value = currentHsv.H;
 					break;
 
 				case ColorPickerHsvChannel.Saturation:
-					this.Value = currentHsv.S * 100;
+					Value = currentHsv.S * 100;
 					break;
 
 				case ColorPickerHsvChannel.Value:
-					this.Value = currentHsv.V * 100;
+					Value = currentHsv.V * 100;
 					break;
 
 				case ColorPickerHsvChannel.Alpha:
-					this.Value = currentAlpha * 100;
+					Value = currentAlpha * 100;
 					break;
 
 				default:
@@ -214,9 +218,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private string GetToolTipString()
 		{
-			uint sliderValue = (uint)(Math.Round(this.Value));
+			uint sliderValue = (uint)(Math.Round(Value));
 
-			if (this.ColorChannel == ColorPickerHsvChannel.Alpha)
+			if (ColorChannel == ColorPickerHsvChannel.Alpha)
 			{
 				return StringUtil.FormatString(
 					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringAlphaSlider),
@@ -225,26 +229,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			else
 			{
 				ColorPicker parentColorPicker = GetParentColorPicker();
-				if (parentColorPicker != null && DownlevelHelper.ToDisplayNameExists())
+				if (parentColorPicker != null)
 				{
 					Hsv currentHsv = parentColorPicker.GetCurrentHsv();
 					string localizedString;
 
-					switch (this.ColorChannel)
+					switch (ColorChannel)
 					{
 						case ColorPickerHsvChannel.Hue:
-							currentHsv.H = this.Value;
+							currentHsv.H = Value;
 							localizedString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringHueSliderWithColorName);
 							break;
 
 						case ColorPickerHsvChannel.Saturation:
 							localizedString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringSaturationSliderWithColorName);
-							currentHsv.S = this.Value / 100;
+							currentHsv.S = Value / 100;
 							break;
 
 						case ColorPickerHsvChannel.Value:
 							localizedString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringValueSliderWithColorName);
-							currentHsv.V = this.Value / 100;
+							currentHsv.V = Value / 100;
 							break;
 						default:
 							throw new InvalidOperationException("Invalid ColorPickerHsvChannel."); // Uno Doc: 'throw winrt::hresult_error(E_FAIL);'
@@ -258,7 +262,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				else
 				{
 					string localizedString;
-					switch (this.ColorChannel)
+					switch (ColorChannel)
 					{
 						case ColorPickerHsvChannel.Hue:
 							localizedString = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ToolTipStringHueSliderWithoutColorName);

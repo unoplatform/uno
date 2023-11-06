@@ -1,4 +1,9 @@
-﻿namespace Uno.UI.Helpers.WinUI
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ResourceAccessor.h, tag winui3/release/1.4.2
+
+namespace Uno.UI.Helpers.WinUI
 {
 	internal partial class ResourceAccessor
 	{
@@ -31,7 +36,8 @@
 		public const string SR_TextGreenLabel = "TextGreenLabel";
 		public const string SR_AutomationNameGreenTextBox = "AutomationNameGreenTextBox";
 		public const string SR_HelpTextColorSpectrum = "HelpTextColorSpectrum";
-		public const string SR_AutomationNameHexTextBox = "AutomationNameHexTextBox";
+		public const string SR_AutomationNameRGBHexTextBox = "AutomationNameRGBHexTextBox";
+		public const string SR_AutomationNameHSVHexTextBox = "AutomationNameHSVHexTextBox";
 		public const string SR_ContentHSVComboBoxItem = "ContentHSVComboBoxItem";
 		public const string SR_TextHueLabel = "TextHueLabel";
 		public const string SR_AutomationNameHueTextBox = "AutomationNameHueTextBox";
@@ -151,10 +157,24 @@
 		public const string SR_InfoBarClosedNotification = "InfoBarClosedNotification";
 		public const string SR_InfoBarCustomLandmarkName = "InfoBarCustomLandmarkName";
 		public const string SR_InfoBarCloseButtonTooltip = "InfoBarCloseButtonTooltip";
+		public const string SR_InfoBarSeverityInformationalName = "InfoBarSeverityInformationalName";
+		public const string SR_InfoBarSeveritySuccessName = "InfoBarSeveritySuccessName";
+		public const string SR_InfoBarSeverityWarningName = "InfoBarSeverityWarningName";
+		public const string SR_InfoBarSeverityErrorName = "InfoBarSeverityErrorName";
+		public const string SR_InfoBarIconSeverityInformationalName = "InfoBarIconSeverityInformationalName";
+		public const string SR_InfoBarIconSeveritySuccessName = "InfoBarIconSeveritySuccessName";
+		public const string SR_InfoBarIconSeverityWarningName = "InfoBarIconSeverityWarningName";
+		public const string SR_InfoBarIconSeverityErrorName = "InfoBarIconSeverityErrorName";
 
 		public const string SR_AutomationNameEllipsisBreadcrumbBarItem = "AutomationNameEllipsisBreadcrumbBarItem";
 
-		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
+		public const string SR_CommandBarFlyoutCommandBarLocalizedControlType = "CommandBarFlyoutCommandBarLocalizedControlType";
+		public const string SR_CommandBarFlyoutAppBarButtonLocalizedControlType = "CommandBarFlyoutAppBarButtonLocalizedControlType";
+		public const string SR_CommandBarFlyoutAppBarToggleButtonLocalizedControlType = "CommandBarFlyoutAppBarToggleButtonLocalizedControlType";
 
+		public const string SR_WarningSuitableWebView2NotFound = "WarningSuitableWebView2NotFound";
+		public const string SR_DownloadWebView2Runtime = "DownloadWebView2Runtime";
+
+		public const string IR_NoiseAsset_256X256_PNG = "NoiseAsset_256X256_PNG";
 	}
 }

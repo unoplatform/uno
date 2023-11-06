@@ -7,9 +7,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
+using Windows.Storage.Streams;
 using Windows.System;
 using Windows.System.Profile;
 using Windows.System.Threading;
@@ -555,21 +557,21 @@ namespace Uno.UI.Helpers.WinUI
 
 
 		// Stream helpers
-		//InMemoryRandomAccessStream CreateStreamFromBytes(const array_view<const byte>& bytes)
-		//{
-		//	InMemoryRandomAccessStream stream;
-		//	DataWriter writer(stream);
+		public static InMemoryRandomAccessStream CreateStreamFromBytes(byte[] bytes)
+		{
+			InMemoryRandomAccessStream stream = new();
+			DataWriter writer = new(stream);
 
-		//	writer.WriteBytes(array_view<const byte>(bytes));
-		//	SyncWait(writer.StoreAsync());
-		//	SyncWait(writer.FlushAsync());
-		//	writer.DetachStream();
-		//	writer.Close();
+			writer.WriteBytes(bytes);
+			SyncWait(writer.StoreAsync());
+			SyncWait(writer.FlushAsync());
+			var detachedStream = writer.DetachStream();
+			writer.Dispose(); // writer.Close();
 
-		//	stream.Seek(0);
+			stream.Seek(0);
 
-		//	return stream;
-		//}
+			return stream;
+		}
 
 		public static void QueueCallbackForCompositionRendering(Action callback)
 		{
@@ -992,6 +994,37 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				return null;
 			}
+		}
+
+		// Uno Doc: The implementation differs quite a bit from WinUI since that one depends on win32 APIs.
+		public static T SyncWait<T>(IAsyncOperation<T> asyncOperation)
+		{
+			T returnValue = default;
+			// MUXControls::Common::Handle synchronizationHandle(::CreateEvent(nullptr, FALSE, FALSE, nullptr));
+
+			asyncOperation.Completed =
+				(IAsyncOperation<T> asyncOperation, AsyncStatus asyncStatus) =>
+				{
+					if (asyncStatus == AsyncStatus.Completed)
+					{
+						// SetEvent(synchronizationHandle);
+						returnValue = asyncOperation.GetResults();
+					}
+					else if (asyncStatus == AsyncStatus.Error)
+					{
+						throw new InvalidOperationException("Async operation failed!"); // throw winrt::hresult_error(E_FAIL, L"Async operation failed!");
+					}
+				};
+
+			// WaitForSingleObject(synchronizationHandle, INFINITE);
+			var wait = new SpinWait();
+			var taskAwaiter = asyncOperation.GetAwaiter();
+			while (!taskAwaiter.IsCompleted)
+			{
+				wait.SpinOnce();
+			}
+
+			return returnValue;
 		}
 	}
 }

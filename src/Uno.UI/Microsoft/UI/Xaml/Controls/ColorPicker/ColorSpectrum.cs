@@ -1,4 +1,9 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ColorSpectrum.cpp, tag winui3/release/1.4.2
+
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -24,6 +29,8 @@ using Microsoft.UI.Input;
 using Windows.Devices.Input;
 using Windows.UI.Input;
 #endif
+
+using size_t = System.UInt64; // Uno Doc: size_t is 8 bytes on mosts modern machines
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -113,24 +120,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_isPointerPressed = false;
 			m_shouldShowLargeSelection = false;
 
-			m_shapeFromLastBitmapCreation = this.Shape;
-			m_componentsFromLastBitmapCreation = this.Components;
+			m_shapeFromLastBitmapCreation = Shape;
+			m_componentsFromLastBitmapCreation = Components;
 			m_imageWidthFromLastBitmapCreation = 0;
 			m_imageHeightFromLastBitmapCreation = 0;
-			m_minHueFromLastBitmapCreation = this.MinHue;
-			m_maxHueFromLastBitmapCreation = this.MaxHue;
-			m_minSaturationFromLastBitmapCreation = this.MinSaturation;
-			m_maxSaturationFromLastBitmapCreation = this.MaxSaturation;
-			m_minValueFromLastBitmapCreation = this.MinValue;
-			m_maxValueFromLastBitmapCreation = this.MaxValue;
+			m_minHueFromLastBitmapCreation = MinHue;
+			m_maxHueFromLastBitmapCreation = MaxHue;
+			m_minSaturationFromLastBitmapCreation = MinSaturation;
+			m_maxSaturationFromLastBitmapCreation = MaxSaturation;
+			m_minValueFromLastBitmapCreation = MinValue;
+			m_maxValueFromLastBitmapCreation = MaxValue;
 
 			Loaded += OnLoaded; // Uno Doc: Added to re-registered disposed event handlers
 			Unloaded += OnUnloaded;
-
-			if (SharedHelpers.IsRS1OrHigher())
-			{
-				IsFocusEngagementEnabled = true;
-			}
 		}
 
 		// IUIElementOverridesHelper overrides
@@ -158,12 +160,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// Uno Doc: Extracted event registrations into a separate method, so they can be re-registered on reloading.
 			var registrations = SubscribeToEvents();
 
-			if (DownlevelHelper.ToDisplayNameExists())
+			if (m_colorNameToolTip is ToolTip colorNameToolTip)
 			{
-				if (m_colorNameToolTip is ToolTip colorNameToolTip)
-				{
-					colorNameToolTip.Content = ColorHelper.ToDisplayName(this.Color);
-				}
+				colorNameToolTip.Content = ColorHelper.ToDisplayName(Color);
 			}
 
 			if (m_selectionEllipsePanel is Panel selectionEllipsePanel)
@@ -176,6 +175,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			{
 				CreateBitmapsAndColorMap();
 			}
+
 			UpdateEllipse();
 			UpdateVisualState(useTransitions: false);
 
@@ -206,7 +206,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			if (args.Key == VirtualKey.Left ||
 				args.Key == VirtualKey.Right)
 			{
-				switch (this.Components)
+				switch (Components)
 				{
 					case ColorSpectrumComponents.HueSaturation:
 					case ColorSpectrumComponents.HueValue:
@@ -229,7 +229,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			else if (args.Key == VirtualKey.Up ||
 					 args.Key == VirtualKey.Down)
 			{
-				switch (this.Components)
+				switch (Components)
 				{
 					case ColorSpectrumComponents.SaturationHue:
 					case ColorSpectrumComponents.ValueHue:
@@ -256,18 +256,18 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			switch (incrementChannel)
 			{
 				case ColorPickerHsvChannel.Hue:
-					minBound = this.MinHue;
-					maxBound = this.MaxHue;
+					minBound = MinHue;
+					maxBound = MaxHue;
 					break;
 
 				case ColorPickerHsvChannel.Saturation:
-					minBound = this.MinSaturation;
-					maxBound = this.MaxSaturation;
+					minBound = MinSaturation;
+					maxBound = MaxSaturation;
 					break;
 
 				case ColorPickerHsvChannel.Value:
-					minBound = this.MinValue;
-					maxBound = this.MaxValue;
+					minBound = MinValue;
+					maxBound = MaxValue;
 					break;
 			}
 
@@ -299,20 +299,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			ColorHelpers.IncrementAmount amount = isControlDown ? ColorHelpers.IncrementAmount.Large : ColorHelpers.IncrementAmount.Small;
 
-			Vector4 hsvColor = this.HsvColor;
+			Vector4 hsvColor = HsvColor;
 			UpdateColor(ColorHelpers.IncrementColorChannel(new Hsv(Hsv.GetHue(hsvColor), Hsv.GetSaturation(hsvColor), Hsv.GetValue(hsvColor)), incrementChannel, direction, amount, true /* shouldWrap */, minBound, maxBound));
 			args.Handled = true;
 		}
 
 		protected override void OnGotFocus(RoutedEventArgs e)
 		{
-			// We only want to bother with the color name tool tip if we can provide color names.
 			if (m_colorNameToolTip is ToolTip colorNameToolTip)
 			{
-				if (DownlevelHelper.ToDisplayNameExists())
-				{
-					colorNameToolTip.IsOpen = true;
-				}
+				colorNameToolTip.IsOpen = true;
 			}
 
 			UpdateVisualState(useTransitions: true);
@@ -320,13 +316,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected override void OnLostFocus(RoutedEventArgs e)
 		{
-			// We only want to bother with the color name tool tip if we can provide color names.
 			if (m_colorNameToolTip is ToolTip colorNameToolTip)
 			{
-				if (DownlevelHelper.ToDisplayNameExists())
-				{
-					colorNameToolTip.IsOpen = false;
-				}
+				colorNameToolTip.IsOpen = false;
 			}
 
 			UpdateVisualState(useTransitions: true);
@@ -379,11 +371,11 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// If we're in the process of internally updating the color, then we don't want to respond to the Color property changing.
 			if (!m_updatingColor)
 			{
-				Color color = this.Color;
+				Color color = Color;
 
 				m_updatingHsvColor = true;
 				Hsv newHsv = ColorConversion.RgbToHsv(new Rgb(color.R / 255.0, color.G / 255.0, color.B / 255.0));
-				this.HsvColor = new Vector4((float)newHsv.H, (float)newHsv.S, (float)newHsv.V, (float)(color.A / 255.0));
+				HsvColor = new Vector4((float)newHsv.H, (float)newHsv.S, (float)newHsv.V, (float)(color.A / 255.0));
 				m_updatingHsvColor = false;
 
 				UpdateEllipse();
@@ -406,12 +398,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void SetColor()
 		{
-			Vector4 hsvColor = this.HsvColor;
+			Vector4 hsvColor = HsvColor;
 
 			m_updatingColor = true;
 			Rgb newRgb = ColorConversion.HsvToRgb(new Hsv(Hsv.GetHue(hsvColor), Hsv.GetSaturation(hsvColor), Hsv.GetValue(hsvColor)));
 
-			this.Color = ColorConversion.ColorFromRgba(newRgb, Hsv.GetAlpha(hsvColor));
+			Color = ColorConversion.ColorFromRgba(newRgb, Hsv.GetAlpha(hsvColor));
 
 			m_updatingColor = false;
 
@@ -422,7 +414,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void RaiseColorChanged()
 		{
-			Color newColor = this.Color;
+			Color newColor = Color;
 			var colorChanged =
 				m_oldColor.A != newColor.A ||
 				m_oldColor.R != newColor.R ||
@@ -440,29 +432,26 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				colorChangedEventArgs.OldColor = m_oldColor;
 				colorChangedEventArgs.NewColor = newColor;
 
-				this.ColorChanged?.Invoke(this, colorChangedEventArgs);
+				ColorChanged?.Invoke(this, colorChangedEventArgs);
 
-				if (DownlevelHelper.ToDisplayNameExists())
+				if (m_colorNameToolTip is ToolTip colorNameToolTip)
 				{
-					if (m_colorNameToolTip is ToolTip colorNameToolTip)
-					{
-						colorNameToolTip.Content = ColorHelper.ToDisplayName(newColor);
-					}
+					colorNameToolTip.Content = ColorHelper.ToDisplayName(newColor);
 				}
 
 				var peer = FrameworkElementAutomationPeer.FromElement(this);
 				if (peer != null)
 				{
 					ColorSpectrumAutomationPeer colorSpectrumPeer = peer as ColorSpectrumAutomationPeer;
-					colorSpectrumPeer.RaisePropertyChangedEvent(m_oldColor, newColor, m_oldHsvColor, this.HsvColor);
+					colorSpectrumPeer.RaisePropertyChangedEvent(m_oldColor, newColor, m_oldHsvColor, HsvColor);
 				}
 			}
 		}
 
 		protected void OnMinMaxHueChanged(DependencyPropertyChangedEventArgs args)
 		{
-			int minHue = this.MinHue;
-			int maxHue = this.MaxHue;
+			int minHue = MinHue;
+			int maxHue = MaxHue;
 
 			if (minHue < 0 || minHue > 359)
 			{
@@ -473,7 +462,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				throw new ArgumentException("MaxHue must be between 0 and 359.");
 			}
 
-			ColorSpectrumComponents components = this.Components;
+			ColorSpectrumComponents components = Components;
 
 			// If hue is one of the axes in the spectrum bitmap, then we'll need to regenerate it
 			// if the maximum or minimum value has changed.
@@ -486,8 +475,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		protected void OnMinMaxSaturationChanged(DependencyPropertyChangedEventArgs args)
 		{
-			int minSaturation = this.MinSaturation;
-			int maxSaturation = this.MaxSaturation;
+			int minSaturation = MinSaturation;
+			int maxSaturation = MaxSaturation;
 
 			if (minSaturation < 0 || minSaturation > 100)
 			{
@@ -498,7 +487,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				throw new ArgumentException("MaxSaturation must be between 0 and 100.");
 			}
 
-			ColorSpectrumComponents components = this.Components;
+			ColorSpectrumComponents components = Components;
 
 			// If value is one of the axes in the spectrum bitmap, then we'll need to regenerate it
 			// if the maximum or minimum value has changed.
@@ -511,8 +500,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private void OnMinMaxValueChanged(DependencyPropertyChangedEventArgs args)
 		{
-			int minValue = this.MinValue;
-			int maxValue = this.MaxValue;
+			int minValue = MinValue;
+			int maxValue = MaxValue;
 
 			if (minValue < 0 || minValue > 100)
 			{
@@ -523,7 +512,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				throw new ArgumentException("MaxValue must be between 0 and 100.");
 			}
 
-			ColorSpectrumComponents components = this.Components;
+			ColorSpectrumComponents components = Components;
 
 			// If value is one of the axes in the spectrum bitmap, then we'll need to regenerate it
 			// if the maximum or minimum value has changed.
@@ -596,9 +585,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			VisualStateManager.GoToState(this, m_shapeFromLastBitmapCreation == ColorSpectrumShape.Box ? "BoxSelected" : "RingSelected", useTransitions);
 			VisualStateManager.GoToState(this, SelectionEllipseShouldBeLight() ? "SelectionEllipseLight" : "SelectionEllipseDark", useTransitions);
 
-			if (this.IsEnabled && this.FocusState != FocusState.Unfocused)
+			if (IsEnabled && FocusState != FocusState.Unfocused)
 			{
-				if (this.FocusState == FocusState.Pointer)
+				if (FocusState == FocusState.Pointer)
 				{
 					VisualStateManager.GoToState(this, "PointerFocused", useTransitions);
 				}
@@ -619,10 +608,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			m_updatingHsvColor = true;
 
 			Rgb newRgb = ColorConversion.HsvToRgb(newHsv);
-			float alpha = Hsv.GetAlpha(this.HsvColor);
+			float alpha = Hsv.GetAlpha(HsvColor);
 
-			this.Color = ColorConversion.ColorFromRgba(newRgb, alpha);
-			this.HsvColor = new Vector4((float)newHsv.H, (float)newHsv.S, (float)newHsv.V, alpha);
+			Color = ColorConversion.ColorFromRgba(newRgb, alpha);
+			HsvColor = new Vector4((float)newHsv.H, (float)newHsv.S, (float)newHsv.V, alpha);
 
 			UpdateEllipse();
 			UpdateVisualState(useTransitions: true);
@@ -647,7 +636,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			double radius = Math.Min(m_imageWidthFromLastBitmapCreation, m_imageHeightFromLastBitmapCreation) / 2;
 			double distanceFromRadius = Math.Sqrt(Math.Pow(xPosition - radius, 2) + Math.Pow(yPosition - radius, 2));
 
-			var shape = this.Shape;
+			var shape = Shape;
 
 			// If the point is outside the circle, we should bring it back into the circle.
 			if (distanceFromRadius > radius && shape == ColorSpectrumShape.Ring)
@@ -684,8 +673,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// Uno Doc: This can sometimes cause a crash -- possibly due to differences in c# rounding. Therefore, index is now clamped.
 			Hsv hsvAtPoint = m_hsvValues[MathEx.Clamp((y * width + x), 0, m_hsvValues.Count - 1)];
 
-			var components = this.Components;
-			var hsvColor = this.HsvColor;
+			var components = Components;
+			var hsvColor = HsvColor;
 
 			switch (components)
 			{
@@ -732,7 +721,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			double xPosition;
 			double yPosition;
 
-			Vector4 hsvColor = this.HsvColor;
+			Vector4 hsvColor = HsvColor;
 
 			Hsv.SetHue(hsvColor, MathEx.Clamp(Hsv.GetHue(hsvColor), (float)m_minHueFromLastBitmapCreation, (float)m_maxHueFromLastBitmapCreation));
 			Hsv.SetSaturation(hsvColor, MathEx.Clamp(Hsv.GetSaturation(hsvColor), m_minSaturationFromLastBitmapCreation / 100.0f, m_maxSaturationFromLastBitmapCreation / 100.0f));
@@ -880,16 +869,12 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			Canvas.SetLeft(selectionEllipsePanel, xPosition - (selectionEllipsePanel.Width / 2));
 			Canvas.SetTop(selectionEllipsePanel, yPosition - (selectionEllipsePanel.Height / 2));
 
-			// We only want to bother with the color name tool tip if we can provide color names.
-			if (DownlevelHelper.ToDisplayNameExists())
+			if (m_colorNameToolTip is ToolTip colorNameToolTip)
 			{
-				if (m_colorNameToolTip is ToolTip colorNameToolTip)
-				{
-					// ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves,
-					// so toggling IsEnabled induces it to do that without incurring any visual glitches.
-					colorNameToolTip.IsEnabled = false;
-					colorNameToolTip.IsEnabled = true;
-				}
+				// ToolTip doesn't currently provide any way to re-run its placement logic if its placement target moves,
+				// so toggling IsEnabled induces it to do that without incurring any visual glitches.
+				colorNameToolTip.IsEnabled = false;
+				colorNameToolTip.IsEnabled = true;
 			}
 
 			UpdateVisualState(useTransitions: true);
@@ -924,8 +909,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			m_isPointerPressed = true;
 			m_shouldShowLargeSelection =
-				(PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Pen ||
-				(PointerDeviceType)args.Pointer.PointerDeviceType == PointerDeviceType.Touch;
+				args.Pointer.PointerDeviceType == PointerDeviceType.Pen ||
+				args.Pointer.PointerDeviceType == PointerDeviceType.Touch;
 
 			inputTarget.CapturePointer(args.Pointer);
 			UpdateColorFromPoint(args.GetCurrentPoint(inputTarget));
@@ -1023,10 +1008,9 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			sizingGrid.Width = minDimension;
 			sizingGrid.Height = minDimension;
 
-			// Uno Doc: Slightly modified from WinUI
 			if (sizingGrid.Clip is RectangleGeometry clip)
 			{
-				clip.Rect = new Rect(0, 0, minDimension, minDimension);
+				clip.Rect = new Rect(0, 0, (float)minDimension, (float)minDimension);
 			}
 
 			inputTarget.Width = minDimension;
@@ -1040,15 +1024,15 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			spectrumOverlayEllipse.Width = minDimension;
 			spectrumOverlayEllipse.Height = minDimension;
 
-			Vector4 hsvColor = this.HsvColor;
-			int minHue = this.MinHue;
-			int maxHue = this.MaxHue;
-			int minSaturation = this.MinSaturation;
-			int maxSaturation = this.MaxSaturation;
-			int minValue = this.MinValue;
-			int maxValue = this.MaxValue;
-			ColorSpectrumShape shape = this.Shape;
-			ColorSpectrumComponents components = this.Components;
+			Vector4 hsvColor = HsvColor;
+			int minHue = MinHue;
+			int maxHue = MaxHue;
+			int minSaturation = MinSaturation;
+			int maxSaturation = MaxSaturation;
+			int minValue = MinValue;
+			int maxValue = MaxValue;
+			ColorSpectrumShape shape = Shape;
+			ColorSpectrumComponents components = Components;
 
 			// If min >= max, then by convention, min is the only number that a property can have.
 			if (minHue >= maxHue)
@@ -1078,23 +1062,22 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ArrayList<byte> bgraMaxPixelData = new ArrayList<byte>();
 			List<Hsv> newHsvValues = new List<Hsv>();
 
-			// Uno Docs: size_t not available in C# so types were changed
-			var pixelCount = (int)(Math.Round(minDimension) * Math.Round(minDimension));
-			var pixelDataSize = pixelCount * 4;
-			bgraMinPixelData.Capacity = pixelDataSize;
+			size_t pixelCount = (size_t)(Math.Round(minDimension) * Math.Round(minDimension));
+			size_t pixelDataSize = pixelCount * 4;
+			bgraMinPixelData.Capacity = (int)pixelDataSize;
 
 			// We'll only save pixel data for the middle bitmaps if our third dimension is hue.
 			if (components == ColorSpectrumComponents.ValueSaturation ||
 				components == ColorSpectrumComponents.SaturationValue)
 			{
-				bgraMiddle1PixelData.Capacity = pixelDataSize;
-				bgraMiddle2PixelData.Capacity = pixelDataSize;
-				bgraMiddle3PixelData.Capacity = pixelDataSize;
-				bgraMiddle4PixelData.Capacity = pixelDataSize;
+				bgraMiddle1PixelData.Capacity = (int)pixelDataSize;
+				bgraMiddle2PixelData.Capacity = (int)pixelDataSize;
+				bgraMiddle3PixelData.Capacity = (int)pixelDataSize;
+				bgraMiddle4PixelData.Capacity = (int)pixelDataSize;
 			}
 
-			bgraMaxPixelData.Capacity = pixelDataSize;
-			newHsvValues.Capacity = pixelCount;
+			bgraMaxPixelData.Capacity = (int)pixelDataSize;
+			newHsvValues.Capacity = (int)pixelCount;
 
 			int minDimensionInt = (int)Math.Round(minDimension);
 			//WorkItemHandler workItemHandler =
@@ -1170,8 +1153,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			strongThis.m_createImageBitmapAction = null;
 
-			// Uno Doc: Assumed normal priority is acceptable
-			_ = strongThis.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			_ = strongThis.DispatcherQueue.TryEnqueue(() =>
 			{
 				int pixelWidth = (int)Math.Round(minDimension);
 				int pixelHeight = (int)Math.Round(minDimension);
@@ -1614,8 +1596,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			var spectrumRectangle = m_spectrumRectangle;
 			var spectrumEllipse = m_spectrumEllipse;
 
-			Vector4 hsvColor = this.HsvColor;
-			ColorSpectrumComponents components = this.Components;
+			Vector4 hsvColor = HsvColor;
+			ColorSpectrumComponents components = Components;
 
 			// We'll set the base image and the overlay image based on which component is our third dimension.
 			// If it's saturation or luminosity, then the base image is that dimension at its minimum value,
@@ -1839,16 +1821,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			// for the selection ellipse.
 			Color displayedColor;
 
-			if (this.Components == ColorSpectrumComponents.HueSaturation ||
-				this.Components == ColorSpectrumComponents.SaturationHue)
+			if (Components == ColorSpectrumComponents.HueSaturation ||
+				Components == ColorSpectrumComponents.SaturationHue)
 			{
-				Vector4 hsvColor = this.HsvColor;
+				Vector4 hsvColor = HsvColor;
 				Rgb color = ColorConversion.HsvToRgb(new Hsv(Hsv.GetHue(hsvColor), Hsv.GetSaturation(hsvColor), 1.0));
 				displayedColor = ColorConversion.ColorFromRgba(color, Hsv.GetAlpha(hsvColor));
 			}
 			else
 			{
-				displayedColor = this.Color;
+				displayedColor = Color;
 			}
 
 			double rg = displayedColor.R <= 10 ? displayedColor.R / 3294.0 : Math.Pow(displayedColor.R / 269.0 + 0.0513, 2.4);

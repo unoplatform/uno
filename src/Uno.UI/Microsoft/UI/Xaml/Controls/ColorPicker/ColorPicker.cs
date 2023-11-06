@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ColorPicker.cpp, tag winui3/release/1.4.2
+
+using System;
 using System.Globalization;
 using System.Numerics;
 using Microsoft.UI.Xaml.Controls.Primitives;
 using Uno.Disposables;
 using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using Windows.System;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
@@ -108,7 +112,6 @@ namespace Microsoft.UI.Xaml.Controls
 			Unloaded += OnUnloaded;
 		}
 
-		// IFrameworkElementOverrides overrides
 		protected override void OnApplyTemplate()
 		{
 			// Uno Doc: Added to dispose event handlers
@@ -230,7 +233,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_hexTextBox is TextBox hexTextBox)
 			{
-				AutomationProperties.SetName(hexTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameHexTextBox));
+				AutomationProperties.SetName(hexTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameRGBHexTextBox));
 			}
 
 			if (m_RgbComboBoxItem is ComboBoxItem rgbComboBoxItem)
@@ -675,23 +678,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			};
 
-			if (SharedHelpers.IsRS2OrHigher())
-			{
-				// A reentrancy bug with setting TextBox.Text was fixed in RS2,
-				// so we can just directly set the TextBoxes' Text property there.
-				updateTextBoxes();
-			}
-			else if (!SharedHelpers.IsInDesignMode())
-			{
-				// Otherwise, we need to post this to the dispatcher to avoid that reentrancy bug.
-				// Uno Doc: Assumed normal priority is acceptable
-				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					strongThis.m_updatingControls = true;
-					updateTextBoxes();
-					strongThis.m_updatingControls = false;
-				});
-			}
+			updateTextBoxes();
 
 			m_updatingControls = false;
 		}
@@ -841,6 +828,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void OnColorRepresentationComboBoxSelectionChanged(object sender, SelectionChangedEventArgs args)
 		{
+			/* Update UIA Name for Hex TextBox */
+			if (m_colorRepresentationComboBox is { } colorRepresentationComboBox)
+			{
+				if (m_hexTextBox is { } hexTextBox)
+				{
+					if (colorRepresentationComboBox.SelectedIndex == 0)
+					{
+						AutomationProperties.SetName(hexTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameRGBHexTextBox));
+					}
+					else
+					{
+						AutomationProperties.SetName(hexTextBox, ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_AutomationNameHSVHexTextBox));
+					}
+				}
+			}
+
 			UpdateVisualState(useTransitions: true);
 		}
 
@@ -960,8 +963,8 @@ namespace Microsoft.UI.Xaml.Controls
 			// Otherwise, we'll do nothing except mark the text box's contents as invalid.
 			var value = ColorConversion.TryParseInt(m_valueTextBox.Text);
 			if (!value.HasValue ||
-				value.Value < (ulong)this.MinValue ||
-				value.Value > (ulong)this.MaxValue)
+				value.Value < (ulong)MinValue ||
+				value.Value > (ulong)MaxValue)
 			{
 				m_isFocusedTextBoxValid = false;
 			}
@@ -1032,27 +1035,14 @@ namespace Microsoft.UI.Xaml.Controls
 				hexTextBox.SelectionStart = hexTextBox.Text.Length;
 			}
 
-			// Uno Doc: This section assigning rgbValue/alphaValue was re-written in C# to avoid strange usage of functions in C++
-			//const bool isAlphaEnabled = IsAlphaEnabled();
-			//auto [rgbValue, alphaValue] = [this, isAlphaEnabled]() {
-			//    return isAlphaEnabled ?
-			//        HexToRgba(m_hexTextBox.get().Text()) :
-			//        std::make_tuple(HexToRgb(m_hexTextBox.get().Text()), 1.0);
-			//}();
-
 			// We'll respond to the text change if the user has entered a valid value.
 			// Otherwise, we'll do nothing except mark the text box's contents as invalid.
-			Rgb rgbValue;
-			double alphaValue;
-			if (this.IsAlphaEnabled)
+			var (rgbValue, alphaValue) = ((Func<(Rgb, double)>)(() =>
 			{
-				(rgbValue, alphaValue) = ColorConversion.HexToRgba(m_hexTextBox.Text);
-			}
-			else
-			{
-				rgbValue = ColorConversion.HexToRgb(m_hexTextBox.Text);
-				alphaValue = 1.0;
-			}
+				return IsAlphaEnabled ?
+					ColorConversion.HexToRgba(m_hexTextBox.Text) :
+					(ColorConversion.HexToRgb(m_hexTextBox.Text), 1.0);
+			}))();
 
 			if ((rgbValue.R == -1 && rgbValue.G == -1 && rgbValue.B == -1 && alphaValue == -1) || alphaValue < 0 || alphaValue > 1)
 			{
@@ -1068,37 +1058,27 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private Rgb GetRgbColorFromTextBoxes()
 		{
-			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_redTextBox?.Text, out int redValue);
-			_ = int.TryParse(m_greenTextBox?.Text, out int greenValue);
-			_ = int.TryParse(m_blueTextBox?.Text, out int blueValue);
-
-			return new Rgb(redValue / 255.0, greenValue / 255.0, blueValue / 255.0);
+			return new Rgb(_wtoi(m_redTextBox.Text) / 255.0, _wtoi(m_greenTextBox.Text) / 255.0, _wtoi(m_blueTextBox.Text) / 255.0);
 		}
 
 		private Hsv GetHsvColorFromTextBoxes()
 		{
-			// Uno Doc: There is no drop-in C# equivalent for the C++ '_wtoi' function; therefore, this code is re-written.
-			_ = int.TryParse(m_hueTextBox?.Text, out int hueValue);
-			_ = int.TryParse(m_saturationTextBox?.Text, out int saturationValue);
-			_ = int.TryParse(m_valueTextBox?.Text, out int valueValue);
-
-			return new Hsv(hueValue, saturationValue / 100.0, valueValue / 100.0);
+			return new Hsv(_wtoi(m_hueTextBox.Text), _wtoi(m_saturationTextBox.Text) / 100.0, _wtoi(m_valueTextBox.Text) / 100.0);
 		}
 
 		private string GetCurrentHexValue()
 		{
-			return this.IsAlphaEnabled ? ColorConversion.RgbaToHex(m_currentRgb, m_currentAlpha) : ColorConversion.RgbToHex(m_currentRgb);
+			return IsAlphaEnabled ? ColorConversion.RgbaToHex(m_currentRgb, m_currentAlpha) : ColorConversion.RgbToHex(m_currentRgb);
 		}
 
 		private Rgb ApplyConstraintsToRgbColor(Rgb rgb)
 		{
-			double minHue = this.MinHue;
-			double maxHue = this.MaxHue;
-			double minSaturation = this.MinSaturation / 100.0;
-			double maxSaturation = this.MaxSaturation / 100.0;
-			double minValue = this.MinValue / 100.0;
-			double maxValue = this.MaxValue / 100.0;
+			double minHue = MinHue;
+			double maxHue = MaxHue;
+			double minSaturation = MinSaturation / 100.0;
+			double maxSaturation = MaxSaturation / 100.0;
+			double minValue = MinValue / 100.0;
+			double maxValue = MaxValue / 100.0;
 
 			Hsv hsv = ColorConversion.RgbToHsv(rgb);
 
@@ -1276,13 +1256,13 @@ namespace Microsoft.UI.Xaml.Controls
 			// we'll have it go between red, yellow, green, cyan, blue, and purple, in that order.
 			thirdDimensionSliderGradientBrush.GradientStops.Clear();
 
-			switch (this.ColorSpectrumComponents)
+			switch (ColorSpectrumComponents)
 			{
 				case ColorSpectrumComponents.HueValue:
 				case ColorSpectrumComponents.ValueHue:
 					{
-						int minSaturation = this.MinSaturation;
-						int maxSaturation = this.MaxSaturation;
+						int minSaturation = MinSaturation;
+						int maxSaturation = MaxSaturation;
 
 						thirdDimensionSlider.Minimum = minSaturation;
 						thirdDimensionSlider.Maximum = maxSaturation;
@@ -1303,8 +1283,8 @@ namespace Microsoft.UI.Xaml.Controls
 				case ColorSpectrumComponents.HueSaturation:
 				case ColorSpectrumComponents.SaturationHue:
 					{
-						int minValue = this.MinValue;
-						int maxValue = this.MaxValue;
+						int minValue = MinValue;
+						int maxValue = MaxValue;
 
 						thirdDimensionSlider.Minimum = minValue;
 						thirdDimensionSlider.Maximum = maxValue;
@@ -1325,8 +1305,8 @@ namespace Microsoft.UI.Xaml.Controls
 				case ColorSpectrumComponents.ValueSaturation:
 				case ColorSpectrumComponents.SaturationValue:
 					{
-						int minHue = this.MinHue;
-						int maxHue = this.MaxHue;
+						int minHue = MinHue;
+						int maxHue = MaxHue;
 
 						thirdDimensionSlider.Minimum = minHue;
 						thirdDimensionSlider.Maximum = maxHue;
@@ -1369,7 +1349,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (m_thirdDimensionSlider is Primitives.ColorPickerSlider thirdDimensionSlider)
 			{
-				switch (this.ColorSpectrumComponents)
+				switch (ColorSpectrumComponents)
 				{
 					case ColorSpectrumComponents.ValueSaturation:
 					case ColorSpectrumComponents.SaturationValue:
@@ -1436,7 +1416,7 @@ namespace Microsoft.UI.Xaml.Controls
 						GetCheckerColor(),
 						bgraCheckeredPixelData,
 						m_createColorPreviewRectangleCheckeredBackgroundBitmapAction,
-						this.Dispatcher,
+						DispatcherQueue.GetForCurrentThread(), // Uno Doc: this should be a DispatcherQueue
 						(WriteableBitmap checkeredBackgroundSoftwareBitmap) =>
 						{
 							strongThis.m_colorPreviewRectangleCheckeredBackgroundImageBrush.ImageSource = checkeredBackgroundSoftwareBitmap;
@@ -1464,7 +1444,7 @@ namespace Microsoft.UI.Xaml.Controls
 						GetCheckerColor(),
 						bgraCheckeredPixelData,
 						m_alphaSliderCheckeredBackgroundBitmapAction,
-						this.Dispatcher,
+						DispatcherQueue.GetForCurrentThread(), // Uno Doc: this should be a DispatcherQueue
 						(WriteableBitmap checkeredBackgroundSoftwareBitmap) =>
 						{
 							strongThis.m_alphaSliderCheckeredBackgroundImageBrush.ImageSource = checkeredBackgroundSoftwareBitmap;
@@ -1505,5 +1485,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			return checkerColor;
 		}
+
+		// Uno Doc: There is no drop-in C# equivalent for the C++'s '_wtoi' function
+		private int _wtoi(string text) => int.Parse(text);
 	}
 }

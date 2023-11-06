@@ -7,26 +7,22 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
-	public class ColorPickerSliderAutomationPeer : AutomationPeer, IValueProvider
+	public class ColorPickerSliderAutomationPeer : SliderAutomationPeer, IValueProvider
 	{
-		// Uno Doc: Added for the Uno Platform
-		private readonly ColorPickerSlider _owner;
-
-		internal ColorPickerSliderAutomationPeer(ColorPickerSlider owner)
+		public ColorPickerSliderAutomationPeer(ColorPickerSlider owner) : base(owner)
 		{
-			_owner = owner;
 		}
 
-		// IAutomationPeerOverrides
 		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
 			// If this slider is handling the alpha channel, then we don't want to do anything special for it -
 			// in that case, we'll just return the base SliderAutomationPeer.
-			if (_owner.ColorChannel != ColorPickerHsvChannel.Alpha && patternInterface == PatternInterface.Value)
+			if ((Owner as ColorPickerSlider).ColorChannel != ColorPickerHsvChannel.Alpha && patternInterface == PatternInterface.Value)
 			{
 				return this;
 			}
@@ -34,17 +30,19 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return base.GetPatternCore(patternInterface);
 		}
 
-		// IValueProvider properties and methods
-		public bool IsReadOnly
-		{
-			get => false;
-		}
-
-		public string Value
+		bool IValueProvider.IsReadOnly
 		{
 			get
 			{
-				ColorPickerSlider owner = _owner;
+				return false;
+			}
+		}
+
+		string IValueProvider.Value
+		{
+			get
+			{
+				ColorPickerSlider owner = Owner as ColorPickerSlider;
 				DependencyObject currentObject = owner;
 				ColorPicker owningColorPicker = null;
 
@@ -63,7 +61,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 					Color color = owningColorPicker.Color;
 					double sliderValue = owner.Value;
 
-					return GetValueString(color, (Int32)(Math.Round(sliderValue)));
+					return GetValueString(color, (int)(Math.Round(sliderValue)));
 				}
 				else
 				{
@@ -80,6 +78,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		public void RaisePropertyChangedEvent(Color oldColor, Color newColor, int oldValue, int newValue)
 		{
+			// Uno Doc: ValuePatternIdentifiers.ValueProperty is not implemented
 			if (ApiInformation.IsPropertyPresent("Windows.UI.Xaml.Automation.ValuePatternIdentifiers", nameof(ValuePatternIdentifiers.ValueProperty)))
 			{
 				string oldValueString = GetValueString(oldColor, oldValue);
@@ -91,51 +90,28 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 		private string GetValueString(Color color, int value)
 		{
-			if (DownlevelHelper.ToDisplayNameExists())
+			string resourceStringWithName;
+			switch ((Owner as ColorPickerSlider).ColorChannel)
 			{
-				string resourceStringWithName;
-				switch (_owner.ColorChannel)
-				{
-					case ColorPickerHsvChannel.Hue:
-						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithColorName);
-						break;
-					case ColorPickerHsvChannel.Saturation:
-						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringSaturationSliderWithColorName);
-						break;
-					case ColorPickerHsvChannel.Value:
-						resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringValueSliderWithColorName);
-						break;
-					default:
-						return string.Empty;
-				}
-
-				return StringUtil.FormatString(
-					resourceStringWithName,
-					value,
-					ColorHelper.ToDisplayName(color));
+				case ColorPickerHsvChannel.Hue:
+					resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithColorName);
+					break;
+				case ColorPickerHsvChannel.Saturation:
+					resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringSaturationSliderWithColorName);
+					break;
+				case ColorPickerHsvChannel.Value:
+					resourceStringWithName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringValueSliderWithColorName);
+					break;
+				default:
+					return string.Empty;
 			}
-			else
-			{
-				string resourceStringWithoutName;
-				switch (_owner.ColorChannel)
-				{
-					case ColorPickerHsvChannel.Hue:
-						resourceStringWithoutName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringHueSliderWithoutColorName);
-						break;
-					case ColorPickerHsvChannel.Saturation:
-						resourceStringWithoutName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringSaturationSliderWithoutColorName);
-						break;
-					case ColorPickerHsvChannel.Value:
-						resourceStringWithoutName = ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_ValueStringValueSliderWithoutColorName);
-						break;
-					default:
-						return string.Empty;
-				}
 
-				return StringUtil.FormatString(
-					resourceStringWithoutName,
-					value);
-			}
+			return StringUtil.FormatString(
+				resourceStringWithName,
+				value,
+				// Uno Doc: ColorHelper.ToDisplayName is not implemented
+				"");
+				// ColorHelper.ToDisplayName(color));
 		}
 	}
 }

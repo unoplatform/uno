@@ -1,14 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+// MUX Reference ColorHelpers.cpp, tag winui3/release/1.4.2
+
+using System;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
-using Uno.UI.Helpers.WinUI;
 using Windows.Foundation;
+using Windows.Storage.Streams;
+using Windows.System;
 using Windows.System.Threading;
 using Windows.UI;
-using Windows.UI.Core;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.Extensions;
+using Uno.UI.Dispatching;
+using Uno.UI.Helpers.WinUI;
+
+using size_t = System.UInt64; // Uno Doc: size_t is 8 bytes on mosts modern machines
 
 namespace Microsoft.UI.Xaml.Controls.Primitives
 {
@@ -41,7 +52,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 		{
 			Hsv newHsv = originalHsv;
 
-			if (amount == IncrementAmount.Small || !DownlevelHelper.ToDisplayNameExists())
+			if (amount == IncrementAmount.Small)
 			{
 				// In order to avoid working with small values that can incur rounding issues,
 				// we'll multiple saturation and value by 100 to put them in the range of 0-100 instead of 0-1.
@@ -384,7 +395,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			Color checkerColor,
 			ArrayList<byte> bgraCheckeredPixelData,
 			IAsyncAction asyncActionToAssign,
-			CoreDispatcher dispatcherHelper,
+			DispatcherQueue dispatcherQueue,
 			Action<WriteableBitmap> completedFunction)
 		{
 			if (width == 0 || height == 0)
@@ -394,67 +405,120 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			bgraCheckeredPixelData.Capacity = width * height * 4;
 
-			//WorkItemHandler workItemHandler =
-			//(IAsyncAction workItem) =>
-			await Task.Run(() =>
-			{
-				for (int y = 0; y < height; y++)
+			WorkItemHandler workItemHandler =
+				(IAsyncAction workItem) =>
 				{
-					for (int x = 0; x < width; x++)
+					for (int y = 0; y < height; y++)
 					{
-						//if (workItem.Status == AsyncStatus.Canceled)
-						//{
-						//	break;
-						//}
-
-						// We want the checkered pattern to alternate both vertically and horizontally.
-						// In order to achieve that, we'll toggle visibility of the current pixel on or off
-						// depending on both its x- and its y-position.  If x == CheckerSize, we'll turn visibility off,
-						// but then if y == CheckerSize, we'll turn it back on.
-						// The below is a shorthand for the above intent.
-						bool pixelShouldBeBlank = ((x / CheckerSize) + (y / CheckerSize)) % 2 == 0 ? true : false;
-
-						if (pixelShouldBeBlank)
+						for (int x = 0; x < width; x++)
 						{
-							bgraCheckeredPixelData.Add(0);
-							bgraCheckeredPixelData.Add(0);
-							bgraCheckeredPixelData.Add(0);
-							bgraCheckeredPixelData.Add(0);
-						}
-						else
-						{
-							bgraCheckeredPixelData.Add((byte)(checkerColor.B * checkerColor.A / 255));
-							bgraCheckeredPixelData.Add((byte)(checkerColor.G * checkerColor.A / 255));
-							bgraCheckeredPixelData.Add((byte)(checkerColor.R * checkerColor.A / 255));
-							bgraCheckeredPixelData.Add(checkerColor.A);
+							if (workItem.Status == AsyncStatus.Canceled)
+							{
+								break;
+							}
+
+							// We want the checkered pattern to alternate both vertically and horizontally.
+							// In order to achieve that, we'll toggle visibility of the current pixel on or off
+							// depending on both its x- and its y-position.  If x == CheckerSize, we'll turn visibility off,
+							// but then if y == CheckerSize, we'll turn it back on.
+							// The below is a shorthand for the above intent.
+							bool pixelShouldBeBlank = (x / CheckerSize + y / CheckerSize) % 2 == 0 ? true : false;
+
+							if (pixelShouldBeBlank)
+							{
+								bgraCheckeredPixelData.Add(0);
+								bgraCheckeredPixelData.Add(0);
+								bgraCheckeredPixelData.Add(0);
+								bgraCheckeredPixelData.Add(0);
+							}
+							else
+							{
+								bgraCheckeredPixelData.Add((byte)(checkerColor.B * checkerColor.A / 255));
+								bgraCheckeredPixelData.Add((byte)(checkerColor.G * checkerColor.A / 255));
+								bgraCheckeredPixelData.Add((byte)(checkerColor.R * checkerColor.A / 255));
+								bgraCheckeredPixelData.Add(checkerColor.A);
+							}
 						}
 					}
-				}
-			});
+				};
 
-			//if (asyncActionToAssign != null)
-			//{
-			//	asyncActionToAssign.Cancel();
-			//}
+			if (asyncActionToAssign is { })
+			{
+				asyncActionToAssign.Cancel();
+			}
 
-			//asyncActionToAssign = ThreadPool.RunAsync(workItemHandler);
-			//asyncActionToAssign.Completed = new AsyncActionCompletedHandler(
-			//async (IAsyncAction asyncInfo, AsyncStatus asyncStatus) =>
-			//{
-			//	if (asyncStatus != AsyncStatus.Completed)
-			//	{
-			//		return;
-			//	}
+			// Uno Doc: ThreadPool is not implemented, so we work around it
 
-			//	asyncActionToAssign = null;
+			// asyncActionToAssign = ThreadPool.RunAsync(workItemHandler);
+			// asyncActionToAssign.Completed(winrt::AsyncActionCompletedHandler(
+			// 	[width, height, bgraCheckeredPixelData, &asyncActionToAssign, completedFunction, dispatcherQueue]
+			// 	(winrt::IAsyncAction asyncInfo, winrt::AsyncStatus asyncStatus)
+			// {
+			// 	if (asyncStatus != winrt::AsyncStatus::Completed)
+			// 	{
+			// 		return;
+			// 	}
+			//
+			// 	asyncActionToAssign = nullptr;
+			//
+			// 	dispatcherQueue.TryEnqueue(winrt::DispatcherQueueHandler([completedFunction, width, height, bgraCheckeredPixelData]()
+			// 	{
+			// 		winrt::WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
+			// 		completedFunction(checkeredBackgroundBitmap);
+			// 	}));
+			// }));
 
-			// Uno Doc: Assumed normal priority is acceptable
-			await dispatcherHelper.RunAsync(CoreDispatcherPriority.Normal, () =>
+			await Task.Run(() => workItemHandler(new UIAsyncOperation(null)));
+
+			await EnqueueAsync(dispatcherQueue, () =>
 			{
 				WriteableBitmap checkeredBackgroundBitmap = CreateBitmapFromPixelData(width, height, bgraCheckeredPixelData);
 				completedFunction?.Invoke(checkeredBackgroundBitmap);
 			});
-			//});
+		}
+
+		// Copied from WindowsCommunityToolkit/Microsoft.Toolkit.Uwp/Extensions/DispatcherQueueExtensions.cs
+		// Licensed to the .NET Foundation under one or more agreements.
+		// The .NET Foundation licenses this file to you under the MIT license.
+		// See the LICENSE file in the project root for more information.
+		private static Task EnqueueAsync(this DispatcherQueue dispatcher, Action function, DispatcherQueuePriority priority = DispatcherQueuePriority.Normal)
+		{
+			// Run the function directly when we have thread access.
+			// Also reuse Task.CompletedTask in case of success,
+			// to skip an unnecessary heap allocation for every invocation.
+			if (dispatcher.HasThreadAccess)
+			{
+				try
+				{
+					function();
+					return Task.CompletedTask;
+				}
+				catch (Exception e)
+				{
+					return Task.FromException(e);
+				}
+			}
+			static Task TryEnqueueAsync(DispatcherQueue dispatcher, Action function, DispatcherQueuePriority priority)
+			{
+				var taskCompletionSource = new TaskCompletionSource<object>();
+				if (!dispatcher.TryEnqueue(priority, () =>
+				{
+					try
+					{
+						function();
+						taskCompletionSource.SetResult(null);
+					}
+					catch (Exception e)
+					{
+						taskCompletionSource.SetException(e);
+					}
+				}))
+				{
+					taskCompletionSource.SetException(new InvalidOperationException("Failed to enqueue the operation"));
+				}
+				return taskCompletionSource.Task;
+			}
+			return TryEnqueueAsync(dispatcher, function, priority);
 		}
 
 		public static WriteableBitmap CreateBitmapFromPixelData(
@@ -486,27 +550,23 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			return bitmap;
 		}
 
-		// UNO TODO: This method is only used when drawing the color spectrum using WinUI composition API's which are currently unsupported.
-		// This method is only partially ported to C#.
-		/*public static LoadedImageSurface CreateSurfaceFromPixelData(
+		public static LoadedImageSurface CreateSurfaceFromPixelData(
 			int pixelWidth,
 			int pixelHeight,
-			List<byte> bgraPixelData)
+			ArrayList<byte> bgraPixelData)
 		{
-			// Uno Doc: Removed 'MUX_ASSERT(SharedHelpers::IsRS2OrHigher());'
-
 			// LoadedImageSurface uses WIC to load images, so we need to put the pixel data into an image format.
 			// We'll use the BMP format, since it stores uncompressed pixel data.
-			List<byte> bmpData;
+			ArrayList<byte> bmpData = new();
 
 			// Size is header (14 bytes) + DIB header (40 bytes) + Pixel array (size of bgraPixelData).
-			const size_t dibHeaderSize = 40;
-			const size_t headerSize = 14 + dibHeaderSize;
-			const size_t fileSize = headerSize + bgraPixelData.Count;
+			size_t dibHeaderSize = 40;
+			size_t headerSize = 14 + dibHeaderSize;
+			size_t fileSize = headerSize + (uint)bgraPixelData.Count;
 
 			// Header field to identify as BMP.
-			bmpData.Add(Encoding.UTF8.GetBytes("B")[0]);
-			bmpData.Add(Encoding.UTF8.GetBytes("M")[0]);
+			bmpData.Add((byte)'B');
+			bmpData.Add((byte)'M');
 
 			// File size.  Note that the BMP format is always little-endian.
 			bmpData.Add((byte)(fileSize & 0x000000FF));
@@ -600,18 +660,24 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			bmpData.Add((byte)((importantColors & 0xFF000000) >> 24));
 
 			// Pixel data.  BMP images are stored upside-down, so we need to copy the image data backwards.
-			bmpData.resize(fileSize);
-			UInt32 stride = pixelWidth * 4;
+			// bmpData.resize(fileSize); // Uno Doc: no direct equivalent to Vector::resize()
+			bmpData.Array.AddRange(Enumerable.Repeat(default(byte), (int)fileSize - bmpData.Count));
+			UInt32 stride = (uint)pixelWidth * 4;
 
 			for (int y = pixelHeight - 1; y >= 0; y--)
 			{
-				memcpy(bmpData.data() + (headerSize + (pixelHeight - 1 - y) * stride), (*bgraPixelData).data() + (y * stride), stride);
+				// Uno Doc: no direct equivalent to memcpy for Lists
+				// memcpy(bmpData.data() + (headerSize + (pixelHeight - 1 - y) * stride), (*bgraPixelData).data() + (y * stride), stride);
+				for (int i = 0; i < stride; i++)
+				{
+					bmpData.Array[(int)((long)headerSize + (pixelHeight - 1 - y) * stride + i)] = bgraPixelData.Array[(int)(y * stride + i)];
+				}
 			}
 
-			InMemoryRandomAccessStream stream = SharedHelpers::CreateStreamFromBytes(winrt::array_view<const byte>(bmpData));
+			InMemoryRandomAccessStream stream = SharedHelpers.CreateStreamFromBytes(bmpData.Array);
 
 			return LoadedImageSurface.StartLoadFromStream(stream);
-		}*/
+		}
 
 		public static void CancelAsyncAction(IAsyncAction action)
 		{
