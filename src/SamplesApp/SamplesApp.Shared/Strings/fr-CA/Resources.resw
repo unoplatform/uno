@@ -126,23 +126,4 @@
   <data name="PublisherDisplayName" xml:space="preserve">
     <value>Uno Platform</value>
   </data>
-
-  <data name="TextBoxCut" xml:space="preserve">
-    <value>Couper</value>
-  </data>
-  <data name="TextBoxCopy" xml:space="preserve">
-    <value>Copier</value>
-  </data>
-  <data name="TextBoxPaste" xml:space="preserve">
-    <value>Coller</value>
-  </data>
-  <data name="TextBoxUndo" xml:space="preserve">
-    <value>Annuler</value>
-  </data>
-  <data name="TextBoxRedo" xml:space="preserve">
-    <value>Rétablir</value>
-  </data>
-  <data name="TextBoxSelectAll" xml:space="preserve">
-    <value>Sélectionner tout</value>
-  </data>
 </root>

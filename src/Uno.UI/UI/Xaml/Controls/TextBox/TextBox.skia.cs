@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.UI.Helpers.WinUI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -645,13 +646,12 @@ public partial class TextBox
 				_contextMenu = new MenuFlyout();
 				_contextMenu.Opened += (_, _) => UpdateDisplaySelection();
 
-				// TODO: confirm localized names match WinUI
-				var resourceLoader = Windows.ApplicationModel.Resources.ResourceLoader.GetForCurrentView();
-				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxCut"), Command = new TextBoxCommand(CutSelectionToClipboard), Icon = new SymbolIcon(Symbol.Cut) });
-				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxCopy"), Command = new TextBoxCommand(CopySelectionToClipboard), Icon = new SymbolIcon(Symbol.Copy) });
-				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxPaste"), Command = new TextBoxCommand(PasteFromClipboard), Icon = new SymbolIcon(Symbol.Paste) });
+				// TODO: port localized resources from WinUI
+				_flyoutItems.Add(ContextMenuItem.Cut, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCut"), Command = new TextBoxCommand(CutSelectionToClipboard), Icon = new SymbolIcon(Symbol.Cut) });
+				_flyoutItems.Add(ContextMenuItem.Copy, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxCopy"), Command = new TextBoxCommand(CopySelectionToClipboard), Icon = new SymbolIcon(Symbol.Copy) });
+				_flyoutItems.Add(ContextMenuItem.Paste, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxPaste"), Command = new TextBoxCommand(PasteFromClipboard), Icon = new SymbolIcon(Symbol.Paste) });
 				// undo/redo
-				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = resourceLoader.GetString("TextBoxSelectAll"), Command = new TextBoxCommand(SelectAll), Icon = new SymbolIcon(Symbol.SelectAll) });
+				_flyoutItems.Add(ContextMenuItem.SelectAll, new MenuFlyoutItem { Text = ResourceAccessor.GetLocalizedStringResource("TextBoxSelectAll"), Command = new TextBoxCommand(SelectAll), Icon = new SymbolIcon(Symbol.SelectAll) });
 			}
 
 			_contextMenu.Items.Clear();

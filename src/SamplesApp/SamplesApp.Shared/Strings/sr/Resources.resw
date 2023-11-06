@@ -126,23 +126,4 @@
   <data name="PublisherDisplayName" xml:space="preserve">
     <value>Uno Platform</value>
   </data>
-
-  <data name="TextBoxCut" xml:space="preserve">
-    <value>Izreži</value>
-  </data>
-  <data name="TextBoxCopy" xml:space="preserve">
-    <value>Kopiraj</value>
-  </data>
-  <data name="TextBoxPaste" xml:space="preserve">
-    <value>Nalepi</value>
-  </data>
-  <data name="TextBoxUndo" xml:space="preserve">
-    <value>Poništi</value>
-  </data>
-  <data name="TextBoxRedo" xml:space="preserve">
-    <value>Ponovi</value>
-  </data>
-  <data name="TextBoxSelectAll" xml:space="preserve">
-    <value>Odaberi sve</value>
-  </data>
 </root>
