@@ -694,5 +694,61 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			act.Should().NotThrow();
 		}
 #endif
+
+		[TestMethod]
+#if __SKIA__
+		[Ignore("Fails on Skia")]
+#endif
+		public async Task When_TextBox_Wrap_Custom_Style()
+		{
+			var page = new TextBox_Wrapping();
+			await UITestHelper.Load(page);
+
+			page.SUT.Text = "Short";
+			await WindowHelper.WaitForIdle();
+			var height1 = page.SUT.ActualHeight;
+
+			page.SUT.Text = "This is a very very very much longer text. This TextBox should now wrap and have a larger height.";
+			await WindowHelper.WaitForIdle();
+			var height2 = page.SUT.ActualHeight;
+
+			page.SUT.Text = "Short";
+			await WindowHelper.WaitForIdle();
+			var height3 = page.SUT.ActualHeight;
+
+			Assert.AreEqual(height1, height3);
+			height2.Should().BeGreaterThan(height1);
+		}
+
+		[TestMethod]
+#if __SKIA__
+		[Ignore("Fails on Skia")]
+#endif
+		public async Task When_TextBox_Wrap_Fluent()
+		{
+			var SUT = new TextBox()
+			{
+				Width = 200,
+				TextWrapping = TextWrapping.Wrap,
+				AcceptsReturn = true,
+			};
+
+			await UITestHelper.Load(SUT);
+
+			SUT.Text = "Short";
+			await WindowHelper.WaitForIdle();
+			var height1 = SUT.ActualHeight;
+
+			SUT.Text = "This is a very very very much longer text. This TextBox should now wrap and have a larger height.";
+			await WindowHelper.WaitForIdle();
+			var height2 = SUT.ActualHeight;
+
+			SUT.Text = "Short";
+			await WindowHelper.WaitForIdle();
+			var height3 = SUT.ActualHeight;
+
+			Assert.AreEqual(height1, height3);
+			height2.Should().BeGreaterThan(height1);
+		}
 	}
 }
