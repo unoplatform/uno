@@ -10,13 +10,14 @@ public partial class StandardUICommand : XamlUICommand
 	/// </summary>
 	public StandardUICommand()
 	{
+		PrepareState();
 	}
 
 	/// <summary>
 	/// Initializes a new instance of the StandardUICommand class of the specified kind.
 	/// </summary>
 	/// <param name="kind"></param>
-	public StandardUICommand(StandardUICommandKind kind)
+	public StandardUICommand(StandardUICommandKind kind) : this()
 	{
 		Kind = kind;
 	}
@@ -26,7 +27,11 @@ public partial class StandardUICommand : XamlUICommand
 	/// icon, keyboard accelerator, and description) that can be used
 	/// with a StandardUICommand.
 	/// </summary>
-	public StandardUICommandKind Kind { get; set; }
+	public StandardUICommandKind Kind
+	{
+		get => (StandardUICommandKind)GetValue(KindProperty);
+		set => SetValue(KindProperty, value);
+	}
 
 	/// <summary>
 	/// Identifies the Kind dependency property.

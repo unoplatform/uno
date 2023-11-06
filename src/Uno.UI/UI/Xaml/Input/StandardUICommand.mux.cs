@@ -1,4 +1,8 @@
-﻿using System;
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+// MUX reference StandardUICommand_Partial.cpp, tag winui3/release/1.4.2
+
+using System;
 using DirectUI;
 using Uno.Disposables;
 using Windows.System;
@@ -44,13 +48,15 @@ partial class StandardUICommand : IDependencyObjectInternal
 		}
 	}
 
-	private void EnterImpl()
-	{
-		if (Kind == StandardUICommandKind.None)
-		{
-			throw new InvalidOperationException("StandardUICommand Kind must be set");
-		}
-	}
+	// TODO: Uno - this should be called for every DependencyObject when
+	// added to the visual tree
+	//private void EnterImpl()
+	//{
+	//	if (Kind == StandardUICommandKind.None)
+	//	{
+	//		throw new InvalidOperationException("StandardUICommand Kind must be set");
+	//	}
+	//}
 
 	private void PopulateForKind(StandardUICommandKind kind)
 	{
