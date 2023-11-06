@@ -30,6 +30,10 @@ public partial class Expander : ContentControl
 		DefaultStyleKey = typeof(AnimatedIcon);
 
 		SetValue(TemplateSettingsProperty, new ExpanderTemplateSettings());
+
+		// Uno specific: we might leak on iOS: https://github.com/unoplatform/uno/pull/14257#discussion_r1381585268
+		Loaded += Expander_Loaded;
+		Unloaded += Expander_Unloaded;
 	}
 
 	protected override AutomationPeer OnCreateAutomationPeer() => new ExpanderAutomationPeer(this);
@@ -208,4 +212,15 @@ public partial class Expander : ContentControl
 			);
 		}
 	}
+
+	// Uno specific: We need to ensure events are subscribed/unsubscribed on load/unload to avoid memory leaks.
+	private void Expander_Loaded(object sender, RoutedEventArgs e)
+	{
+		if (_eventSubscriptions.Disposable is null)
+		{
+			OnApplyTemplate();
+		}
+	}
+
+	private void Expander_Unloaded(object sender, RoutedEventArgs e) => _eventSubscriptions.Disposable = null;
 }
