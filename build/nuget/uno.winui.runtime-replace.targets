@@ -45,7 +45,7 @@
 		</ItemGroup>
 
 		<!-- 
-		Uno 4.6 or later convention: netstandard2.0, net7.0 or later (uno-runtime/[TargetFramework]/**)
+		Uno 4.6 or later convention: net7.0 or later (uno-runtime/[TargetFramework]/**)
 		-->
 		<RuntimeAssetsSelectorTask_v0
 			UnoRuntimeEnabledPackage="@(UnoRuntimeEnabledPackage)"
@@ -78,7 +78,7 @@
 
 	<!-- Force a rebuild on runtime files changes -->
 	<ItemGroup Condition="'$(UnoRuntimeIdentifier)'!=''">
-		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/uno-runtime/*" />
+		<UpToDateCheckInput Include="$(MSBuildThisFileDirectory)/../uno-runtime/*" />
 	</ItemGroup>
 
 
