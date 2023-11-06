@@ -45,6 +45,9 @@ public class Given_Frame
 	}
 
 	[TestMethod]
+#if HAS_UNO
+	[Ignore("This test fails on Uno Platform targets. See https://github.com/unoplatform/uno/issues/14300")]
+#endif
 	public async Task When_Page_Loaded_Navigates()
 	{
 		var frame = new Frame();
