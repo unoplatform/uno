@@ -48,7 +48,14 @@ public class Given_Frame
 #if HAS_UNO
 	[Ignore("This test fails on Uno Platform targets. See https://github.com/unoplatform/uno/issues/14300")]
 #endif
-	public async Task When_Page_Loaded_Navigates()
+	public Task When_Page_Loaded_Navigates_Without_Yield() =>
+		When_Page_Loaded_Navigates_Inner(false);
+
+	[TestMethod]
+	public Task When_Page_Loaded_Navigates_With_Yield() =>
+		When_Page_Loaded_Navigates_Inner(true);
+
+	public async Task When_Page_Loaded_Navigates_Inner(bool yield)
 	{
 		var frame = new Frame();
 		TestServices.WindowHelper.WindowContent = frame;
@@ -56,6 +63,7 @@ public class Given_Frame
 
 		FrameNavigateFirstPage.TestFrame = frame;
 		FrameNavigateFirstPage.NavigateInCtor = false;
+		FrameNavigateFirstPage.Yield = yield;
 
 		var navigatingFirstPage = false;
 		var navigatingSecondPage = false;
@@ -130,6 +138,8 @@ public partial class FrameNavigateFirstPage : Page
 
 	internal static bool NavigateInCtor { get; set; }
 
+	internal static bool Yield { get; set; }
+
 	public FrameNavigateFirstPage()
 	{
 		if (NavigateInCtor)
@@ -140,10 +150,15 @@ public partial class FrameNavigateFirstPage : Page
 		Loaded += FrameNavigateFirstPage_Loaded;
 	}
 
-	private void FrameNavigateFirstPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+	private async void FrameNavigateFirstPage_Loaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 	{
 		if (!NavigateInCtor)
 		{
+			if (Yield)
+			{
+				await Task.Yield();
+			}
+
 			TestFrame.Navigate(typeof(FrameNavigateSecondPage));
 		}
 	}
