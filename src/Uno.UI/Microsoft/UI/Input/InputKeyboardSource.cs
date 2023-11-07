@@ -10,5 +10,5 @@ internal
 partial class InputKeyboardSource
 {
 	public static Windows.UI.Core.CoreVirtualKeyStates GetKeyStateForCurrentThread(Windows.System.VirtualKey virtualKey)
-		=> Microsoft.UI.Xaml.Window.Current.CoreWindow.GetKeyState(virtualKey);
+		=> KeyboardStateTracker.GetKeyState(virtualKey);
 }

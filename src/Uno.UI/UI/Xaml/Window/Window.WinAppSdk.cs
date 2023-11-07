@@ -38,10 +38,10 @@ public sealed partial class Window
 	}
 #endif
 
-#pragma warning disable CS0067
+#if HAS_UNO_WINUI
 	/// <summary>
 	/// Occurs when the window has closed.
 	/// </summary>
 	public event TypedEventHandler<object, WindowEventArgs>? Closed;
-#pragma warning restore CS0067
+#endif
 }

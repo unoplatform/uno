@@ -89,11 +89,6 @@ internal class GtkDisplayInformationExtension : IDisplayInformationExtension
 
 	private void OnDpiChanged(object? sender, EventArgs args)
 	{
-		if (GetWindow() is null)
-		{
-			return;
-		}
-		
 		_dpi = GetNativeDpi();
 		_displayInformation.NotifyDpiChanged();
 	}
