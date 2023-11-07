@@ -1,21 +1,30 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
-namespace Windows.UI.Xaml.Controls
+namespace Windows.UI.Xaml.Controls;
+
+/// <summary>
+/// Provides event data for the AutoSuggestBox.QuerySubmitted event.
+/// </summary>
+public partial class AutoSuggestBoxQuerySubmittedEventArgs : DependencyObject
 {
-	public partial class AutoSuggestBoxQuerySubmittedEventArgs
+	/// <summary>
+	/// Initializes a new instance of the AutoSuggestBoxQuerySubmittedEventArgs class.
+	/// </summary>
+	public AutoSuggestBoxQuerySubmittedEventArgs() : base()
 	{
-		public object ChosenSuggestion { get; }
-
-		public string QueryText { get; }
-
-		public AutoSuggestBoxQuerySubmittedEventArgs() : base()
-		{
-		}
-
-		internal AutoSuggestBoxQuerySubmittedEventArgs(object chosenSuggestion, string queryText)
-		{
-			ChosenSuggestion = chosenSuggestion;
-			QueryText = queryText;
-		}
 	}
+
+	internal AutoSuggestBoxQuerySubmittedEventArgs(object chosenSuggestion, string queryText)
+	{
+		ChosenSuggestion = chosenSuggestion;
+		QueryText = queryText;
+	}
+
+	/// <summary>
+	/// Gets the suggested result that the user chose.
+	/// </summary>
+	public object ChosenSuggestion { get; }
+
+	/// <summary>
+	/// Gets the query text of the current search.
+	/// </summary>
+	public string QueryText { get; }
 }

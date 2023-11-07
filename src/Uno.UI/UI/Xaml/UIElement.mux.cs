@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml
 			return true;
 		}
 
-		private protected AutomationPeer? GetOrCreateAutomationPeer()
+		internal AutomationPeer? GetOrCreateAutomationPeer()
 		{
 			bool isPopupOpen = true;
 
