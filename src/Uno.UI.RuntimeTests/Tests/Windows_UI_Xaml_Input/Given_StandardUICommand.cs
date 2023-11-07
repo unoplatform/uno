@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿#if HAS_UNO
+using System.Threading.Tasks;
 using Private.Infrastructure;
 using Uno.UI.Common;
 using Windows.System;
@@ -344,3 +345,4 @@ public class Given_StandardUICommand
 		}
 	}
 }
+#endif

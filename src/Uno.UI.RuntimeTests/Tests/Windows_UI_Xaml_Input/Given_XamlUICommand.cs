@@ -1,4 +1,5 @@
-﻿using Uno.UI.Common;
+﻿#if HAS_UNO
+using Uno.UI.Common;
 using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
@@ -73,3 +74,4 @@ public class Given_XamlUICommand
 		Assert.IsTrue(executeCalled);
 	}
 }
+#endif
