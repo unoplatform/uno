@@ -483,7 +483,7 @@ namespace SamplesApp
 				}
 			}
 
-			var regex = new Regex(@"^--(\w+\.\w+)=(.+)$");
+			var regex = new Regex(@"^--FeatureConfiguration\.(\w+\.\w+)=(.+)$");
 			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);
@@ -508,9 +508,13 @@ namespace SamplesApp
 						Console.WriteLine($"Couldn't find the flag {flag}");
 					}
 				}
-				else
+				else if (arg.StartsWith("--FeatureConfiguration"))
 				{
 					Console.WriteLine($"Failed to parse the CLI argument {arg}");
+				}
+				else
+				{
+					Console.WriteLine($"Ignored the CLI argument {arg} for the purposes of FeatureConfiguration.");
 				}
 			}
 		}
