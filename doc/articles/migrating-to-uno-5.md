@@ -1,8 +1,9 @@
 ---
 uid: Uno.Development.MigratingToUno5
 ---
-Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes. You can find a list of these changes below.
+# Migrating to Uno Platform 5.0
 
+Uno Platform 5.0 contains binary-breaking changes in order to further align our API surface with the Windows App SDK. Most of these changes are binary-breaking changes but do not introduce behavior changes. You can find a list of these changes below.
 
 Additionally, this version:
 - Adds support for .NET 8 for iOS, Android, Mac Catalyst, and macOS.
