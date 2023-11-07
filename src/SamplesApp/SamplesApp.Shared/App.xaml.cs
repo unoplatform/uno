@@ -467,6 +467,12 @@ namespace SamplesApp
 		/// </summary>
 		static void ParseCommandLineFeatureFlags()
 		{
+			var commandLineArgs = Environment.GetCommandLineArgs();
+			if (commandLineArgs.Length == 1)
+			{
+				return;
+			}
+
 			var availableFlags = new Dictionary<string, PropertyInfo>();
 
 			foreach (var featureClass in typeof(FeatureConfiguration).GetNestedTypes(BindingFlags.Public | BindingFlags.Static))
@@ -478,7 +484,7 @@ namespace SamplesApp
 			}
 
 			var regex = new Regex(@"^--(\w+\.\w+)=(.+)$");
-			foreach (var arg in Environment.GetCommandLineArgs().Skip(1))
+			foreach (var arg in commandLineArgs.Skip(1))
 			{
 				var match = regex.Match(arg);
 				if (match.Success)
