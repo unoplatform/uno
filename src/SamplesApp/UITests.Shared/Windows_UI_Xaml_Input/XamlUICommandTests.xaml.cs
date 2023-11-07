@@ -4,8 +4,11 @@ using Uno.UI.Samples.Controls;
 using System.Collections.Generic;
 using System;
 using Windows.Foundation;
-using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+
+#if !HAS_UNO_WINUI
+using Windows.UI.Xaml.Controls;
+#endif
 
 #if !WINDOWS_UWP
 using Microsoft.UI.Input;
