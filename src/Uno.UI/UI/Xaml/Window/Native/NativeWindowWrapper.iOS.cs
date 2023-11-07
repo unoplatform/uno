@@ -33,7 +33,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 	}
 
-	public override object NativeWindow => _nativeWindow;
+	public override Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
@@ -43,8 +43,6 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		_nativeWindow.MakeKeyAndVisible();
 		Visible = true;
 	}
-
-	internal Uno.UI.Controls.Window NativeWindow => _nativeWindow;
 
 	internal RootViewController MainController => _mainController;
 
