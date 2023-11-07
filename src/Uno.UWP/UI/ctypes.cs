@@ -8,16 +8,16 @@ namespace Windows.UI;
 
 internal class Ctypes
 {
-	public const Int32 XCLASS_UPPER     = 0x0001;
-	public const Int32 XCLASS_LOWER     = 0x0002;
-	public const Int32 XCLASS_DIGIT     = 0x0004;
-	public const Int32 XCLASS_SPACE     = 0x0008;
-	public const Int32 XCLASS_PUNCT     = 0x0010;
-	public const Int32 XCLASS_CONTROL   = 0x0020;
-	public const Int32 XCLASS_XDIGIT    = 0x0080;
-	public const Int32 XCLASS_FLEADING  = 0x0200;
-	public const Int32 XCLASS_NAME      = 0x0400;
-	public const Int32 XCLASS_JSNAME   = 0x0800;
+	public const Int32 XCLASS_UPPER = 0x0001;
+	public const Int32 XCLASS_LOWER = 0x0002;
+	public const Int32 XCLASS_DIGIT = 0x0004;
+	public const Int32 XCLASS_SPACE = 0x0008;
+	public const Int32 XCLASS_PUNCT = 0x0010;
+	public const Int32 XCLASS_CONTROL = 0x0020;
+	public const Int32 XCLASS_XDIGIT = 0x0080;
+	public const Int32 XCLASS_FLEADING = 0x0200;
+	public const Int32 XCLASS_NAME = 0x0400;
+	public const Int32 XCLASS_JSNAME = 0x0800;
 
 	private static readonly Int32[] s_types =
 	{
@@ -158,14 +158,14 @@ internal class Ctypes
 		0, // 0x7f
 	};
 
-	public static int xisspace(char ch)       { return (ch < 128) ? s_types[ch] & XCLASS_SPACE : 0; }
-	public static int xisdigit(char ch)       { return (ch < 128) ? s_types[ch] & XCLASS_DIGIT : 0; }
-	public static int xisxdigit(char ch)      { return (ch < 128) ? s_types[ch] & XCLASS_XDIGIT : 0; }
-	public static int xisfleading(char ch)    { return (ch < 128) ? s_types[ch] & (XCLASS_FLEADING | XCLASS_DIGIT) : 0; }
-	public static int xisupper(char ch)       { return (ch < 128) ? s_types[ch] & XCLASS_UPPER : 0; }
-	public static int xislower(char ch)       { return (ch < 128) ? s_types[ch] & XCLASS_LOWER : 0; }
-	public static int xisalpha(char ch)       { return (ch < 128) ? s_types[ch] & (XCLASS_UPPER | XCLASS_LOWER) : 0; }
-	public static int xisalnum(char ch)       { return (ch < 128) ? s_types[ch] & (XCLASS_UPPER | XCLASS_LOWER | XCLASS_DIGIT) : 0; }
-	public static int xisname(char ch)        { return (ch < 128) ? s_types[ch] & (XCLASS_NAME | XCLASS_UPPER | XCLASS_LOWER | XCLASS_DIGIT) : 0; }
-	public static int xisname0(char ch)       { return (ch < 128) ? s_types[ch] & (XCLASS_NAME | XCLASS_UPPER | XCLASS_LOWER) : 0; }
+	public static int xisspace(char ch) { return (ch < 128) ? s_types[ch] & XCLASS_SPACE : 0; }
+	public static int xisdigit(char ch) { return (ch < 128) ? s_types[ch] & XCLASS_DIGIT : 0; }
+	public static int xisxdigit(char ch) { return (ch < 128) ? s_types[ch] & XCLASS_XDIGIT : 0; }
+	public static int xisfleading(char ch) { return (ch < 128) ? s_types[ch] & (XCLASS_FLEADING | XCLASS_DIGIT) : 0; }
+	public static int xisupper(char ch) { return (ch < 128) ? s_types[ch] & XCLASS_UPPER : 0; }
+	public static int xislower(char ch) { return (ch < 128) ? s_types[ch] & XCLASS_LOWER : 0; }
+	public static int xisalpha(char ch) { return (ch < 128) ? s_types[ch] & (XCLASS_UPPER | XCLASS_LOWER) : 0; }
+	public static int xisalnum(char ch) { return (ch < 128) ? s_types[ch] & (XCLASS_UPPER | XCLASS_LOWER | XCLASS_DIGIT) : 0; }
+	public static int xisname(char ch) { return (ch < 128) ? s_types[ch] & (XCLASS_NAME | XCLASS_UPPER | XCLASS_LOWER | XCLASS_DIGIT) : 0; }
+	public static int xisname0(char ch) { return (ch < 128) ? s_types[ch] & (XCLASS_NAME | XCLASS_UPPER | XCLASS_LOWER) : 0; }
 }

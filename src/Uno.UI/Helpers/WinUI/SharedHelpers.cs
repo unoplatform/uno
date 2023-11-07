@@ -353,9 +353,9 @@ namespace Uno.UI.Helpers.WinUI
 			if (s_IsXamlRootAvailable == null)
 			{
 				s_IsXamlRootAvailable =
-				   IsSystemDll() ||
-				   IsVanadiumOrHigher() ||
-				   ApiInformation.IsTypePresent("Windows.UI.Xaml.XamlRoot");
+					IsSystemDll() ||
+					IsVanadiumOrHigher() ||
+					ApiInformation.IsTypePresent("Windows.UI.Xaml.XamlRoot");
 
 			}
 			return s_IsXamlRootAvailable.Value;
@@ -369,7 +369,7 @@ namespace Uno.UI.Helpers.WinUI
 				//TODO: Uno specific - had to change condition, as VanadiumOrHigher is available, but Theme Shadow is not implemented in Uno
 				s_isThemeShadowAvailable =
 					(IsSystemDll() ||
-					IsVanadiumOrHigher()) &&
+						IsVanadiumOrHigher()) &&
 					ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.ThemeShadow");
 			}
 			return s_isThemeShadowAvailable.Value;
@@ -401,8 +401,8 @@ namespace Uno.UI.Helpers.WinUI
 			{
 				available =
 					IsSystemDll() ?
-					true :
-					ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", apiVersion);
+						true :
+						ApiInformation.IsApiContractPresent("Windows.Foundation.UniversalApiContract", apiVersion);
 				isApiContractVxAvailable[apiVersion] = available;
 			}
 

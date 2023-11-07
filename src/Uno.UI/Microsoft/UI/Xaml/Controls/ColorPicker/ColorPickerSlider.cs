@@ -112,10 +112,10 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 			ColorHelpers.IncrementDirection direction =
 				((args.Key == VirtualKey.Left && !shouldInvertHorizontalDirection) ||
-				 (args.Key == VirtualKey.Right && shouldInvertHorizontalDirection) ||
-				  args.Key == VirtualKey.Down) ?
-				ColorHelpers.IncrementDirection.Lower :
-				ColorHelpers.IncrementDirection.Higher;
+					(args.Key == VirtualKey.Right && shouldInvertHorizontalDirection) ||
+					args.Key == VirtualKey.Down) ?
+					ColorHelpers.IncrementDirection.Lower :
+					ColorHelpers.IncrementDirection.Higher;
 
 			ColorHelpers.IncrementAmount amount = isControlDown ? ColorHelpers.IncrementAmount.Large : ColorHelpers.IncrementAmount.Small;
 

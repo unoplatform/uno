@@ -12,7 +12,6 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using MUXControlsTestApp.Utilities;
 using Windows.UI.Xaml.Shapes;
-
 using TextBox = Windows.UI.Xaml.Controls.TextBox;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests

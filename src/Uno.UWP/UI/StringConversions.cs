@@ -10,29 +10,29 @@ namespace Windows.UI;
 internal class StringConversions
 {
 	public static void
-	UnsignedFromHexString(
-		int cString,
-		ReadOnlySpan<char> pString,
-		out int pcSuffix,
-		out ReadOnlySpan<char> ppSuffix,
-		out UInt32 pnValue
-	)
+		UnsignedFromHexString(
+			int cString,
+			ReadOnlySpan<char> pString,
+			out int pcSuffix,
+			out ReadOnlySpan<char> ppSuffix,
+			out UInt32 pnValue
+		)
 	{
 		UInt32 nValue = 0;
 
-// Deal with erroneous input
+		// Deal with erroneous input
 
 		if (cString == 0)
-			throw new ArgumentException("Zero-length string");// return E_UNEXPECTED;
+			throw new ArgumentException("Zero-length string"); // return E_UNEXPECTED;
 
-// Consume all the hexadecimal digits
+		// Consume all the hexadecimal digits
 
 		while (cString != 0 && Ctypes.xisxdigit(pString[0]) != 0)
 		{
 			// Return failure on overflow
 
 			if ((nValue & 0xF0000000) != 0)
-				throw new OverflowException("Overflow during conversion");// return E_UNEXPECTED;
+				throw new OverflowException("Overflow during conversion"); // return E_UNEXPECTED;
 
 			// Adjust the value for the next digit
 
@@ -49,7 +49,7 @@ internal class StringConversions
 			cString--;
 		}
 
-// Return the values to the caller
+		// Return the values to the caller
 
 		pnValue = nValue;
 		pcSuffix = cString;

@@ -7,7 +7,7 @@ namespace Windows.UI
 	public static partial class ColorHelper
 	{
 		// Uno Doc: this is a simple implementation that doesn't use localized strings
-		public static string ToDisplayName(Color color)
+		public static string ToDisplayName(Windows.UI.Color color)
 		{
 			// IFCPTR_RETURN(returnValue);
 			//
@@ -17,9 +17,9 @@ namespace Windows.UI
 			//
 			// return S_OK;
 
-			return Enum.GetName(Enum.GetValues(typeof(KnownColors)).Cast<KnownColors>().MinBy(c => ColorDistance(new Color((uint)c), color))!);
+			return Enum.GetName(Enum.GetValues(typeof(KnownColors)).Cast<KnownColors>().MinBy(c => ColorDistance(new Windows.UI.Color((uint)c), color))!);
 
-			static double ColorDistance(Color color1, Color color2)
+			static double ColorDistance(Windows.UI.Color color1, Windows.UI.Color color2)
 			{
 				// https://stackoverflow.com/a/8796867
 				var a1 = (double)color1.A / 255;
@@ -38,10 +38,10 @@ namespace Windows.UI
 		}
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Color FromARGB(byte a, byte r, byte g, byte b)
-			=> Color.FromArgb(a, r, g, b);
+		public static Windows.UI.Color FromARGB(byte a, byte r, byte g, byte b)
+			=> Windows.UI.Color.FromArgb(a, r, g, b);
 
-		public static Color FromArgb(byte a, byte r, byte g, byte b)
-			=> Color.FromArgb(a, r, g, b);
+		public static Windows.UI.Color FromArgb(byte a, byte r, byte g, byte b)
+			=> Windows.UI.Color.FromArgb(a, r, g, b);
 	}
 }

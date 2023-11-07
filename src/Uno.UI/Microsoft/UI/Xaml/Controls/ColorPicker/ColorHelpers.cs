@@ -18,7 +18,6 @@ using Windows.UI.Xaml.Media.Imaging;
 using Uno.Extensions;
 using Uno.UI.Dispatching;
 using Uno.UI.Helpers.WinUI;
-
 using size_t = System.UInt64; // Uno Doc: size_t is 8 bytes on mosts modern machines
 
 namespace Microsoft.UI.Xaml.Controls.Primitives

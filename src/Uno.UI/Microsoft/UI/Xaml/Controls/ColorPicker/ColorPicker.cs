@@ -1487,6 +1487,6 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Uno Doc: There is no drop-in C# equivalent for the C++'s '_wtoi' function
-		private int _wtoi(string text) => int.Parse(text);
+		private int _wtoi(string text) => int.Parse(text, CultureInfo.InvariantCulture);
 	}
 }

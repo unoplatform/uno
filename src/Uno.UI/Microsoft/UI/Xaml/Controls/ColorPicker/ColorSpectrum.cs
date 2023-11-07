@@ -227,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				}
 			}
 			else if (args.Key == VirtualKey.Up ||
-					 args.Key == VirtualKey.Down)
+				args.Key == VirtualKey.Down)
 			{
 				switch (Components)
 				{
@@ -277,8 +277,8 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 			ColorHelpers.IncrementDirection direction =
 				(incrementChannel == ColorPickerHsvChannel.Hue && (args.Key == VirtualKey.Left || args.Key == VirtualKey.Up)) ||
 				(incrementChannel != ColorPickerHsvChannel.Hue && (args.Key == VirtualKey.Right || args.Key == VirtualKey.Down)) ?
-				ColorHelpers.IncrementDirection.Lower :
-				ColorHelpers.IncrementDirection.Higher;
+					ColorHelpers.IncrementDirection.Lower :
+					ColorHelpers.IncrementDirection.Higher;
 
 			// Image is flipped in RightToLeft, so we need to invert direction in that case.
 			// The combination saturation and value is also flipped, so we need to invert in that case too.
@@ -792,16 +792,16 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 
 				double hThetaValue =
 					m_maxHueFromLastBitmapCreation != m_minHueFromLastBitmapCreation ?
-					360 * (Hsv.GetHue(hsvColor) - m_minHueFromLastBitmapCreation) / (m_maxHueFromLastBitmapCreation - m_minHueFromLastBitmapCreation) :
-					0;
+						360 * (Hsv.GetHue(hsvColor) - m_minHueFromLastBitmapCreation) / (m_maxHueFromLastBitmapCreation - m_minHueFromLastBitmapCreation) :
+						0;
 				double sThetaValue =
 					m_maxSaturationFromLastBitmapCreation != m_minSaturationFromLastBitmapCreation ?
-					360 * (Hsv.GetSaturation(hsvColor) * 100.0 - m_minSaturationFromLastBitmapCreation) / (m_maxSaturationFromLastBitmapCreation - m_minSaturationFromLastBitmapCreation) :
-					0;
+						360 * (Hsv.GetSaturation(hsvColor) * 100.0 - m_minSaturationFromLastBitmapCreation) / (m_maxSaturationFromLastBitmapCreation - m_minSaturationFromLastBitmapCreation) :
+						0;
 				double vThetaValue =
 					m_maxValueFromLastBitmapCreation != m_minValueFromLastBitmapCreation ?
-					360 * (Hsv.GetValue(hsvColor) * 100.0 - m_minValueFromLastBitmapCreation) / (m_maxValueFromLastBitmapCreation - m_minValueFromLastBitmapCreation) :
-					0;
+						360 * (Hsv.GetValue(hsvColor) * 100.0 - m_minValueFromLastBitmapCreation) / (m_maxValueFromLastBitmapCreation - m_minValueFromLastBitmapCreation) :
+						0;
 				double hRValue = m_maxHueFromLastBitmapCreation != m_minHueFromLastBitmapCreation ?
 					(Hsv.GetHue(hsvColor) - m_minHueFromLastBitmapCreation) / (m_maxHueFromLastBitmapCreation - m_minHueFromLastBitmapCreation) - 1 :
 					0;

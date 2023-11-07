@@ -111,7 +111,7 @@ namespace Microsoft.UI.Xaml.Controls.Primitives
 				value,
 				// Uno Doc: ColorHelper.ToDisplayName is not implemented
 				"");
-				// ColorHelper.ToDisplayName(color));
+			// ColorHelper.ToDisplayName(color));
 		}
 	}
 }
