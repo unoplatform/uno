@@ -51,7 +51,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
-	public object NativeWindow => _window;
+	public override object NativeWindow => _window;
 
 	internal RootViewController MainController => _mainController;
 

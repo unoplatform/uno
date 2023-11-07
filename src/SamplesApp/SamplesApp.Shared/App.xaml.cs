@@ -191,10 +191,8 @@ namespace SamplesApp
 			_mainWindow ??=
 #if HAS_UNO_WINUI || WINUI_WINDOWING
 				new Windows.UI.Xaml.Window();
-#elif HAS_UNO
-				Windows.UI.Xaml.Window.CurrentSafe!;
 #else
-				Window.Current;
+				Windows.UI.Xaml.Window.Current!;
 #endif
 			Private.Infrastructure.TestServices.WindowHelper.CurrentTestWindow =
 				_mainWindow;
