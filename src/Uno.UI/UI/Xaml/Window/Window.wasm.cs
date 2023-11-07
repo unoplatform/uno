@@ -23,12 +23,11 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml
+namespace Windows.UI.Xaml;
+
+public sealed partial class Window
 {
-	public sealed partial class Window
-	{
-		[JSExport]
-		[Preserve]
-		public static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
-	}
+	[JSExport]
+	[Preserve]
+	public static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
 }
