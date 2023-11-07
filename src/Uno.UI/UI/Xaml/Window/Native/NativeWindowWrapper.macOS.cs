@@ -51,7 +51,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
-	public override object NativeWindow => _window;
+	public override Uno.UI.Controls.Window NativeWindow => _window;
 
 	internal RootViewController MainController => _mainController;
 
