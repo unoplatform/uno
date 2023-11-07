@@ -64,7 +64,7 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			}
 		}
 
-		private void RequestPassThroughElement(MenuBarItem menuBarItem)
+		internal void RequestPassThroughElement(MenuBarItem menuBarItem)
 		{
 			// To enable switching flyout on hover, every menubar item needs the MenuBar root to include it for hit detection with flyouts open
 			menuBarItem.AddPassThroughElement(m_layoutRoot);

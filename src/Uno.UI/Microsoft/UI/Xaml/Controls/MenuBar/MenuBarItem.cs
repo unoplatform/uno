@@ -53,6 +53,10 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			var observableVector = items as IObservableVector<MenuFlyoutItemBase>;
 			observableVector.VectorChanged += OnItemsVectorChanged;
 			SetValue(ItemsProperty, observableVector);
+
+			// Uno Specific: make sure to only subscribe to events while loaded
+			Loaded += (_, _) => OnApplyTemplate();
+			Unloaded += (_, _) => DetachEventHandlers();
 		}
 
 		// IUIElement / IUIElementOverridesHelper
@@ -70,6 +74,8 @@ namespace Microsoft/* UWP don't rename */.UI.Xaml.Controls
 			if (menuBar is { })
 			{
 				m_menuBar = new WeakReference<MenuBar>(menuBar);
+				// Ask parent MenuBar for its root to enable pass through
+				menuBar.RequestPassThroughElement(this);
 			}
 
 			PopulateContent();
