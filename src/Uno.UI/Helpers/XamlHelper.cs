@@ -7,6 +7,7 @@ namespace Uno.UI.Helpers;
 
 internal static partial class XamlHelper
 {
+#if NET7_0_OR_GREATER
 	/// <summary>
 	/// Matches right before the &gt; or \&gt; tail of any tag.
 	/// </summary>
@@ -21,6 +22,20 @@ internal static partial class XamlHelper
 	/// </summary>
 	[GeneratedRegex(@"<\w+[ />]")]
 	private static partial Regex NonXmlnsTagRegex();
+#else
+	/// <summary>
+	/// Matches right before the &gt; or \&gt; tail of any tag.
+	/// </summary>
+	/// <remarks>
+	/// It will match an opening or closing or self-closing tag.
+	/// </remarks>
+	private static Regex EndOfTagRegex() => new Regex(@"(?=( ?/)?>)");
+
+	/// <summary>
+	/// Matches any tag without xmlns prefix.
+	/// </summary>
+	private static Regex NonXmlnsTagRegex() => new Regex(@"<\w+[ />]");
+#endif
 
 	private static readonly IReadOnlyDictionary<string, string> KnownXmlnses = new Dictionary<string, string>
 	{
