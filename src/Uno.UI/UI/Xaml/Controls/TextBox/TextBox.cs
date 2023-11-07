@@ -118,6 +118,46 @@ namespace Windows.UI.Xaml.Controls
 			SizeChanged += OnSizeChanged;
 		}
 
+		private protected override void OnLoaded()
+		{
+			base.OnLoaded();
+
+#if __ANDROID__
+			SetupTextBoxView();
+#endif
+
+			// This workaround is added in OnLoaded rather than OnApplyTemplate.
+			// Apparently, sometimes (e.g, Material style), the TextBox style setters are executed after OnApplyTemplate
+			// So, the style setters would override what the workaround does.
+			// OnLoaded appears to be executed after both OnApplyTemplate and after the style setters, making sure the values set here are not modified after.
+			if (_contentElement is ScrollViewer scrollViewer)
+			{
+#if __IOS__ || __MACOS__
+				// We disable scrolling because the inner ITextBoxView provides its own scrolling
+				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
+				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+#else
+				// The template of TextBox contains the following:
+				/*
+					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
+					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
+					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
+					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
+				 */
+				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
+				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
+				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
+				// before the support for TemplateBinding for attached DPs.
+				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
+#endif
+			}
+		}
+
 		internal bool IsUserModifying => _isInputModifyingText || _isInputClearingText;
 
 		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
@@ -168,33 +208,6 @@ namespace Windows.UI.Xaml.Controls
 			_placeHolder = GetTemplateChild(TextBoxConstants.PlaceHolderPartName) as IFrameworkElement;
 			_contentElement = GetTemplateChild(TextBoxConstants.ContentElementPartName) as ContentControl;
 			_header = GetTemplateChild(TextBoxConstants.HeaderContentPartName) as ContentPresenter;
-
-			if (_contentElement is ScrollViewer scrollViewer)
-			{
-#if __IOS__ || __MACOS__
-				// We disable scrolling because the inner ITextBoxView provides its own scrolling
-				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
-				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled;
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-#else
-				// The template of TextBox contains the following:
-				/*
-					HorizontalScrollBarVisibility="{TemplateBinding ScrollViewer.HorizontalScrollBarVisibility}"
-					HorizontalScrollMode="{TemplateBinding ScrollViewer.HorizontalScrollMode}"
-					VerticalScrollBarVisibility="{TemplateBinding ScrollViewer.VerticalScrollBarVisibility}"
-					VerticalScrollMode="{TemplateBinding ScrollViewer.VerticalScrollMode}"
-				 */
-				// Historically, TemplateBinding for attached DPs wasn't supported, and TextBox worked perfectly fine.
-				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
-				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
-				// before the support for TemplateBinding for attached DPs.
-				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
-#endif
-			}
 
 			if (GetTemplateChild(TextBoxConstants.DeleteButtonPartName) is Button button)
 			{
