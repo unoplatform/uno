@@ -25,7 +25,7 @@ internal class WpfWindowWrapper : NativeWindowWrapperBase
 		_wpfWindow.Closed += OnNativeClosed;
 	}
 
-	public UnoWpfWindow NativeWindow => _wpfWindow;
+	public override object NativeWindow => _wpfWindow;
 
 	protected override void ShowCore() => _wpfWindow.Show();
 
