@@ -1,5 +1,4 @@
-﻿#if HAS_UNO
-using Uno.UI.Common;
+﻿using System.Windows.Input;
 using Windows.UI.Xaml.Input;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input;
@@ -20,7 +19,8 @@ public class Given_XamlUICommand
 	public void When_CanExecute_Default()
 	{
 		var SUT = new XamlUICommand();
-		Assert.IsTrue(SUT.CanExecute(null));
+		var command = (ICommand)SUT;
+		Assert.IsTrue(command.CanExecute(null));
 	}
 
 	[TestMethod]
@@ -28,50 +28,54 @@ public class Given_XamlUICommand
 	{
 		bool executed = false;
 		var SUT = new XamlUICommand();
+		var command = (ICommand)SUT;
 		SUT.ExecuteRequested += (s, e) => executed = true;
-		SUT.Execute(null);
+		command.Execute(null);
 		Assert.IsTrue(executed);
 	}
 
 	[TestMethod]
 	public void When_CanExecute_Handled()
 	{
-		var uiCommand = new XamlUICommand();
-		uiCommand.CanExecuteRequested += (sender, args) => args.CanExecute = false;
-		Assert.IsFalse(uiCommand.CanExecute(null));
+		var SUT = new XamlUICommand();
+		var command = (ICommand)SUT;
+		SUT.CanExecuteRequested += (sender, args) => args.CanExecute = false;
+		Assert.IsFalse(command.CanExecute(null));
 	}
 
 
 	[TestMethod]
 	public void When_CanExecute_Changed()
 	{
-		var uiCommand = new XamlUICommand();
+		var SUT = new XamlUICommand();
+		var command = (ICommand)SUT;
 		bool raised = false;
-		uiCommand.CanExecuteChanged += (sender, args) => raised = true;
-		uiCommand.NotifyCanExecuteChanged();
+		command.CanExecuteChanged += (sender, args) => raised = true;
+		SUT.NotifyCanExecuteChanged();
 		Assert.IsTrue(raised);
 	}
 
+#if HAS_UNO
 	[TestMethod]
 	public void When_Child_Command_CanExecute()
 	{
-		var uiCommand = new XamlUICommand();
+		var SUT = new XamlUICommand();
 
 		var parameter = "Test string";
 		bool executeCalled = false;
-		var childCommand = new DelegateCommand<object>(param => { executeCalled = true; });
+		var childCommand = new Uno.UI.Common.DelegateCommand<object>(param => { executeCalled = true; });
 		childCommand.CanExecuteEnabled = false;
 
-		uiCommand.Command = childCommand;
-		Assert.IsFalse(uiCommand.CanExecute(parameter));
-		uiCommand.Execute(parameter);
+		SUT.Command = childCommand;
+		Assert.IsFalse(SUT.CanExecute(parameter));
+		SUT.Execute(parameter);
 		Assert.IsFalse(executeCalled);
 
 		childCommand.CanExecuteEnabled = true;
-		Assert.IsTrue(uiCommand.CanExecute(parameter));
+		Assert.IsTrue(SUT.CanExecute(parameter));
 
-		uiCommand.Execute(parameter);
+		SUT.Execute(parameter);
 		Assert.IsTrue(executeCalled);
 	}
-}
 #endif
+}
