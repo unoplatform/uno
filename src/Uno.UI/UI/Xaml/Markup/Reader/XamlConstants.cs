@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			public const string MediaAnimation = BaseXamlNamespace + ".Media.Animation";
 			public const string MediaImaging = BaseXamlNamespace + ".Media.Imaging";
 			public const string Shapes = BaseXamlNamespace + ".Shapes";
+			public const string Input = BaseXamlNamespace + ".Input";
 
 			public static readonly string[] PresentationNamespaces =
 			{
@@ -37,6 +38,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 				Controls,
 				Primitives,
 				Data,
+				Input,
 				Documents,
 				Shapes,
 				Media,
