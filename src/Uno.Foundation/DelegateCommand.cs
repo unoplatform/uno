@@ -16,7 +16,15 @@ internal class DelegateCommand : ICommand
 
 	public bool CanExecute(object parameter) => CanExecuteEnabled;
 
-	public void Execute(object parameter) => _action?.Invoke();
+	public void Execute(object parameter)
+	{
+		if (!CanExecuteEnabled)
+		{
+			return;
+		}
+
+		_action?.Invoke();
+	}
 
 	private void OnCanExecuteChanged() => CanExecuteChanged?.Invoke(this, EventArgs.Empty);
 
