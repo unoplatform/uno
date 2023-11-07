@@ -20,6 +20,7 @@ using Windows.UI.ViewManagement;
 using Microsoft.Extensions.Logging;
 using System.Diagnostics.CodeAnalysis;
 using Uno;
+using Uno.UI;
 using Uno.UI.RuntimeTests.Extensions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Linq;
@@ -282,7 +283,7 @@ namespace SamplesApp
 			MainWindowActivated?.Invoke(this, EventArgs.Empty);
 		}
 
-		public event EventHandler MainWindowActivated;
+		public event EventHandler? MainWindowActivated;
 
 #if !HAS_UNO_WINUI
 		protected override void OnWindowCreated(global::Microsoft.UI.Xaml.WindowCreatedEventArgs args)

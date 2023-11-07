@@ -10,6 +10,8 @@ internal partial class NativeWindowWrapper : NativeWindowWrapperBase
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
+	public object NativeWindow => null;
+
 	internal void OnNativeClosed() => RaiseClosed();
 
 	internal void OnNativeActivated(CoreWindowActivationState state) => ActivationState = state;

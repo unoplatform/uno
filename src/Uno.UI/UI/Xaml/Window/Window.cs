@@ -196,6 +196,8 @@ public partial class Window
 	/// </summary>
 	internal static Window? InitialWindow { get; private set; }
 
+	internal object? NativeWindow => _windowImplementation.NativeWindow;
+
 	/// <summary>
 	/// This is run when Application.Current is set and the UI framework is ready to construct
 	/// visual elements (this is important for eample for Andorid where trying to construct

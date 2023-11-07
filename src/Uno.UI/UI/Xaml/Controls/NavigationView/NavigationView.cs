@@ -30,6 +30,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using WindowsWindow = Windows.UI.Xaml.Window;
+using Uno.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {

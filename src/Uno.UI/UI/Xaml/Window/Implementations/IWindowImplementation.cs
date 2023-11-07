@@ -22,6 +22,8 @@ internal interface IWindowImplementation
 
 	UIElement? Content { get; set; }
 
+	object? NativeWindow { get; }
+
 	event WindowActivatedEventHandler? Activated;
 
 	event TypedEventHandler<object, WindowEventArgs>? Closed;

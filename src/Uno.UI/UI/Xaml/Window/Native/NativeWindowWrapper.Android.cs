@@ -26,6 +26,8 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 		CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged += RaiseNativeSizeChanged;
 	}
 
+	public object NativeWindow => ApplicationActivity.Instance?.Window;
+
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
 	internal int SystemUiVisibility { get; set; }

@@ -13,6 +13,7 @@ using Uno.UI.Extensions;
 using Uno.UI.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Uno.UI.Xaml;
 using Windows.Storage.Pickers.Provider;
 using Microsoft.UI.Xaml;
 using Microsoft.UI.Xaml.Controls;
@@ -112,11 +113,19 @@ namespace Uno.UI.RemoteControl.HotReload
 						|| uri.OriginalString == i.BaseUri?.OriginalString;
 				}
 
-				foreach (var instance in EnumerateInstances(Window.Current.Content, IsSameBaseUri).OfType<FrameworkElement>())
+				foreach (var window in ApplicationHelper.Windows)
 				{
-					if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
+					if (window.Content is null)
 					{
-						SwapViews(instance, newContent);
+						return;
+					}
+
+					foreach (var instance in EnumerateInstances(window.Content, IsSameBaseUri).OfType<FrameworkElement>())
+					{
+						if (XamlReader.LoadUsingXClass(fileContent, uri.ToString()) is FrameworkElement newContent)
+						{
+							SwapViews(instance, newContent);
+						}
 					}
 				}
 

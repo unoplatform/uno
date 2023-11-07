@@ -54,6 +54,8 @@ abstract partial class BaseWindowImplementation : IWindowImplementation
 
 	public Rect Bounds => NativeWindowWrapper?.Bounds ?? default;
 
+	public object? NativeWindow => NativeWindowWrapper?.NativeWindow;
+
 	public virtual void Initialize()
 	{
 		InitializeNativeWindow();
