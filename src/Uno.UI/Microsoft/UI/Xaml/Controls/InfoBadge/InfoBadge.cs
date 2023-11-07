@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class InfoBadge : Control
 	{
-		private const string c_IconPresenterName = "IconPresenter";
+		//private const string c_IconPresenterName = "IconPresenter";
 
 		public InfoBadge()
 		{
