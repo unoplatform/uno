@@ -50,8 +50,7 @@ static void AfterElementReplaced(FrameworkElement, FrameworkElement, Type[]?);
 
 Pausing and resuming UI Update is done by calling
 
-TypeMappingHelper.PauseReloading and TypeMappingHelper.ResumeReloading
-// TODO: These method names probably need to be updated to Pause/ResumeUIUpdates
+`TypeMappings.Pause()` and `TypeMappings.Resume()`
 
 Note that pausing UI Updates doesn't stop the Hot Reload process. It only prevents the UI Update from running until UI Updates are resumed.
 
