@@ -52,7 +52,7 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 			await InputHelperLeftClick(fileButton, mouse);
 			await VerifyAreEqualWithRetry(20,
 				() => true,
-				() => menuBarPage.FindViewsByName("NewItem").Any()); // The item should be in the tree
+				() => FindElementById<UIElement>("NewItem") is { }); // The item should be in the tree
 
 			await InputHelperLeftClick(fileButton, mouse);
 			VerifyElementNotFound("NewItem");
@@ -383,11 +383,9 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 			await TestServices.WindowHelper.WaitForIdle();
 		}
 
-		private void VerifyElementFound(string name) => Verify.IsTrue(TestServices.WindowHelper.WindowContent.FindViewsByName(name).Any());
+		private void VerifyElementFound(string name) => Verify.IsNotNull(FindElementById<UIElement>(name));
 
-		private void VerifyElementNotFound(string name) => Verify.IsTrue(TestServices.WindowHelper.WindowContent.FindViewsByName(name).Empty());
-
-		private static T FindElementById<T>(string name) where T : UIElement => TestServices.WindowHelper.WindowContent.FindViewsByName(name).FirstOrDefault() as T;
+		private void VerifyElementNotFound(string name) => Verify.IsNull(FindElementById<UIElement>(name));
 
 		public static async Task VerifyAreEqualWithRetry(int maxRetries, Func<object> expectedFunc, Func<object> actualFunc, Func<Task> retryAction = null)
 		{
@@ -414,6 +412,30 @@ namespace Microsoft.UI.Xaml.Tests.MUXControls.InteractionTests
 					await retryAction();
 				}
 			}
+		}
+
+		private static T FindElementById<T>(string name) where T : UIElement => FindElementById<T>(TestServices.WindowHelper.XamlRoot.VisualTree.RootElement, name);
+
+		private static T FindElementById<T>(DependencyObject parent, string name) where T : UIElement
+		{
+			var count = VisualTreeHelper.GetChildrenCount(parent);
+			for (var i = 0; i < count; i++)
+			{
+				var child = VisualTreeHelper.GetChild(parent, i);
+				if (child is FrameworkElement fe && fe.Name == name)
+				{
+					return fe as T;
+				}
+				else
+				{
+					var result = FindElementById<T>(child, name);
+					if (result != null)
+					{
+						return result;
+					}
+				}
+			}
+			return null;
 		}
 	}
 }

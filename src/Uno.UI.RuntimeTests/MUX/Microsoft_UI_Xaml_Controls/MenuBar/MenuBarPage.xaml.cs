@@ -8,7 +8,7 @@ using Windows.UI.Xaml.Input;
 
 namespace MUXControlsTestApp
 {
-	public sealed partial class MenuBarPage : Page
+	public sealed partial class MenuBarPage : TestPage
 	{
 		public MenuBarPage()
 		{
