@@ -29,5 +29,5 @@ public static class WindowHelper
 	/// </summary>
 	/// <param name="window">Window.</param>
 	/// <returns>Native window type or null.</returns>
-	public static object GetNativeWindow(this Window window) => window.NativeWindow;
+	public static object? GetNativeWindow(this Window window) => window.NativeWindow;
 }

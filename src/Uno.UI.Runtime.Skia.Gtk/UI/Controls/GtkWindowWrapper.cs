@@ -54,7 +54,7 @@ internal class GtkWindowWrapper : NativeWindowWrapperBase
 		ReplayPendingWindowStateChanges();
 	}
 
-	public UnoGtkWindow NativeWindow => _gtkWindow;
+	public override object NativeWindow => _gtkWindow;
 
 	public override void Activate() => _gtkWindow.Activate();
 
