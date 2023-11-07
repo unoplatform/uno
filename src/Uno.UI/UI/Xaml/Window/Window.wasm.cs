@@ -22,12 +22,11 @@ using Microsoft.UI.Xaml.Controls.Primitives;
 using Microsoft.UI.Xaml.Data;
 using Microsoft.UI.Xaml.Media;
 
-namespace Microsoft.UI.Xaml
+namespace Microsoft.UI.Xaml;
+
+public sealed partial class Window
 {
-	public sealed partial class Window
-	{
-		[JSExport]
-		[Preserve]
-		public static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
-	}
+	[JSExport]
+	[Preserve]
+	public static void Resize(double width, double height) => NativeWindowWrapper.Instance.RaiseNativeSizeChanged(width, height);
 }

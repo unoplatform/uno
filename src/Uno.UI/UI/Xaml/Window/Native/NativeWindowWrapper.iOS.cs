@@ -33,7 +33,7 @@ internal class NativeWindowWrapper : NativeWindowWrapperBase
 #endif
 	}
 
-	public object NativeWindow => _nativeWindow;
+	public override object NativeWindow => _nativeWindow;
 
 	internal static NativeWindowWrapper Instance => _instance.Value;
 
