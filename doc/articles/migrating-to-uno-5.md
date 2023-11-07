@@ -28,7 +28,7 @@ In order to resolve types properly in a conditional XAML namespace, make use of 
 Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is needed to restore the feature in your existing app.
 
 
-- If your project is built using a shared class library, you'll need to add the following lines to the `csproj``:
+- If your project is built using a shared class library, you'll need to add the following lines to the `csproj`:
     ```xml
     <ItemGroup>
         <PackageReference Include="Uno.WinUI.DevServer" Version="$UnoWinUIVersion$" Condition="'$(Configuration)'=='Debug'" />
@@ -38,6 +38,10 @@ Hot Reload support has changed in Uno Platform 5.0 and a new API invocation is n
     > If your application is using the UWP API set (Uno.UI packages) you'll need to use the `Uno.UI.DevServer` package instead.
 - Then, in your `App.cs` file, add the following:
     ```csharp
+    using Uno.UI;
+
+    //... in the OnLaunched method
+
     #if DEBUG
             MainWindow.EnableHotReload();
     #endif

@@ -389,7 +389,7 @@ partial class ClientHotReloadProcessor
 #endif
 		else if (_log.IsEnabled(LogLevel.Warning))
 		{
-			_log.Warn($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup.");
+			_log.Warn($"Unable to access Dispatcher/DispatcherQueue in order to invoke {nameof(ReloadWithUpdatedTypes)}. Make sure you have enabled hot-reload (Window.EnableHotReload()) in app startup. See https://aka.platform.uno/hot-reload");
 		}
 	}
 }
