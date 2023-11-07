@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference InfoBadgeTemplateSettings.properties.cpp, commit 76bd573
+
+// MUX Reference InfoBadgeTemplateSettings.cpp & InfoBadgeTemplateSettings.properties.cpp, tag winui3/release/1.4.2
 
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -9,10 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class InfoBadgeTemplateSettings : DependencyObject
 	{
-		public InfoBadgeTemplateSettings()
-		{
-		}
-
 		public IconElement IconElement
 		{
 			get => (IconElement)GetValue(IconElementProperty);

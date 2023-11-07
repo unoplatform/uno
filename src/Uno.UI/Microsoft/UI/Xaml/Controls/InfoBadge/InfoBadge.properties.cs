@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
-// MUX reference InfoBadge.properties.cpp, commit 76bd573
+
+// MUX Reference InfoBadge.properties.cpp, tag winui3/release/1.4.2
 
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,15 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class InfoBadge
 	{
-		public int Value
+		public IconSource IconSource
 		{
-			get => (int)GetValue(ValueProperty);
-			set => SetValue(ValueProperty, value);
+			get => (IconSource)GetValue(IconSourceProperty);
+			set => SetValue(IconSourceProperty, value);
 		}
 
-		public static DependencyProperty ValueProperty { get; } =
-			DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(-1, OnPropertyChanged));
+		public static DependencyProperty IconSourceProperty { get; } =
+			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(InfoBadge), new FrameworkPropertyMetadata(null, OnPropertyChanged));
+
 
 		public InfoBadgeTemplateSettings TemplateSettings
 		{
@@ -31,15 +33,6 @@ namespace Microsoft.UI.Xaml.Controls
 		public static DependencyProperty TemplateSettingsProperty { get; } =
 			DependencyProperty.Register(nameof(TemplateSettings), typeof(InfoBadgeTemplateSettings), typeof(InfoBadge), new FrameworkPropertyMetadata(null, OnPropertyChanged));
 
-		public IconSource IconSource
-		{
-			get => (IconSource)GetValue(IconSourceProperty);
-			set => SetValue(IconSourceProperty, value);
-		}
-
-		public static DependencyProperty IconSourceProperty { get; } =
-			DependencyProperty.Register(nameof(IconSource), typeof(IconSource), typeof(InfoBadge), new FrameworkPropertyMetadata(null, OnPropertyChanged));
-
 		private static void OnPropertyChanged(
 			DependencyObject sender,
 			DependencyPropertyChangedEventArgs args)
@@ -47,5 +40,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var owner = (InfoBadge)sender;
 			owner.OnPropertyChanged(args);
 		}
+
+		public int Value
+		{
+			get => (int)GetValue(ValueProperty);
+			set => SetValue(ValueProperty, value);
+		}
+
+		public static DependencyProperty ValueProperty { get; } =
+			DependencyProperty.Register(nameof(Value), typeof(int), typeof(InfoBadge), new FrameworkPropertyMetadata(-1, OnPropertyChanged));
 	}
 }
