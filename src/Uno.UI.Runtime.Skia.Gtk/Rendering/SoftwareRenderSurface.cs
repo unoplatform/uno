@@ -104,7 +104,6 @@ internal class SoftwareRenderSurface : DrawingArea, IGtkRenderer
 
 		_gtkSurface!.MarkDirty();
 		cr.Save();
-		cr.Scale(1 / _dpi, 1 / _dpi);
 		cr.SetSourceSurface(_gtkSurface, 0, 0);
 		cr.Paint();
 		cr.Restore();
