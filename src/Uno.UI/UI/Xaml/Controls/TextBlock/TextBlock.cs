@@ -560,7 +560,7 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(
 					0d,
 					FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged());
+					propertyChangedCallback: (s, e) => ((TextBlock)s).OnLineHeightChanged()));
 
 		private void OnLineHeightChanged()
 		{
