@@ -22,7 +22,6 @@ namespace Windows.UI.Xaml
 		private readonly Type _dependencyObjectType;
 		private object? _fastLocalValue;
 		private BindingExpression? _binding;
-		private static readonly ArrayPool<object?> _pool = ArrayPool<object?>.Shared;
 		private object?[]? _stack;
 		private PropertyMetadata? _metadata;
 		private object? _defaultValue;
@@ -31,6 +30,8 @@ namespace Windows.UI.Xaml
 
 		private const int DefaultValueIndex = (int)DependencyPropertyValuePrecedences.DefaultValue;
 		private const int StackSize = DefaultValueIndex + 1;
+
+		private static readonly LinearArrayPool<object?> _pool = LinearArrayPool<object?>.CreateAutomaticallyManaged(StackSize, 1);
 
 		private static readonly object[] _unsetStack;
 
