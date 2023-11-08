@@ -82,7 +82,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ToggleSwitch), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
+#if !__ANDROID__ // Disabled #14341
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
+#endif
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
@@ -126,7 +128,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #endif
 #if !__IOS__ // Disabled - #10344
 		[DataRow(typeof(TextBox_Focus_Leak), 15)]
+#if !__ANDROID // Disabled - #14340
 		[DataRow(typeof(PasswordBox_Focus_Leak), 15)]
+#endif
 #endif
 		public async Task When_Add_Remove(object controlTypeRaw, int count)
 		{
