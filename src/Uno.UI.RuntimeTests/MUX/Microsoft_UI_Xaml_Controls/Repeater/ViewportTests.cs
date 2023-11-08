@@ -1353,145 +1353,145 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests.RepeaterTests
 				ArrangeLayoutFunc = (finalSize, context) => finalSize
 			};
 		}
-	}
 
-	internal partial class TestScrollingSurface : ContentControl, IRepeaterScrollingSurface
-	{
-		private bool _isHorizontallyScrollable;
-		private bool _isVerticallyScrollable;
-		private ConfigurationChangedEventHandler _configurationChangedTokenTable;
-
-		public bool InMeasure { get; set; }
-		public bool InArrange { get; set; }
-		public bool InPostArrange { get; private set; }
-
-		public Action ConfigurationChangedAddFunc { get; set; }
-		public Action ConfigurationChangedRemoveFunc { get; set; }
-
-		public Action<UIElement> RegisterAnchorCandidateFunc { get; set; }
-		public Action<UIElement> UnregisterAnchorCandidateFunc { get; set; }
-		public Func<UIElement, Rect> GetRelativeViewportFunc { get; set; }
-
-		public UIElement AnchorElement { get; set; }
-
-		public bool IsHorizontallyScrollable
+		private partial class TestScrollingSurface : ContentControl, IRepeaterScrollingSurface
 		{
-			get { return _isHorizontallyScrollable; }
-			set
-			{
-				_isHorizontallyScrollable = value;
-				RaiseConfigurationChanged();
-				InvalidateMeasure();
-			}
-		}
+			private bool _isHorizontallyScrollable;
+			private bool _isVerticallyScrollable;
+			private ConfigurationChangedEventHandler _configurationChangedTokenTable;
 
-		public bool IsVerticallyScrollable
-		{
-			get { return _isVerticallyScrollable; }
-			set
-			{
-				_isVerticallyScrollable = value;
-				RaiseConfigurationChanged();
-				InvalidateMeasure();
-			}
-		}
+			public bool InMeasure { get; set; }
+			public bool InArrange { get; set; }
+			public bool InPostArrange { get; private set; }
 
-		public event ConfigurationChangedEventHandler ConfigurationChanged
-		{
-			add
+			public Action ConfigurationChangedAddFunc { get; set; }
+			public Action ConfigurationChangedRemoveFunc { get; set; }
+
+			public Action<UIElement> RegisterAnchorCandidateFunc { get; set; }
+			public Action<UIElement> UnregisterAnchorCandidateFunc { get; set; }
+			public Func<UIElement, Rect> GetRelativeViewportFunc { get; set; }
+
+			public UIElement AnchorElement { get; set; }
+
+			public bool IsHorizontallyScrollable
 			{
-				if (ConfigurationChangedAddFunc != null)
+				get { return _isHorizontallyScrollable; }
+				set
 				{
-					ConfigurationChangedAddFunc();
+					_isHorizontallyScrollable = value;
+					RaiseConfigurationChanged();
+					InvalidateMeasure();
 				}
-
-				_configurationChangedTokenTable += value;
 			}
-			remove
+
+			public bool IsVerticallyScrollable
 			{
-				if (ConfigurationChangedRemoveFunc != null)
+				get { return _isVerticallyScrollable; }
+				set
 				{
-					ConfigurationChangedRemoveFunc();
+					_isVerticallyScrollable = value;
+					RaiseConfigurationChanged();
+					InvalidateMeasure();
 				}
-
-				_configurationChangedTokenTable -= value;
 			}
-		}
-		public event PostArrangeEventHandler PostArrange;
+
+			public event ConfigurationChangedEventHandler ConfigurationChanged
+			{
+				add
+				{
+					if (ConfigurationChangedAddFunc != null)
+					{
+						ConfigurationChangedAddFunc();
+					}
+
+					_configurationChangedTokenTable += value;
+				}
+				remove
+				{
+					if (ConfigurationChangedRemoveFunc != null)
+					{
+						ConfigurationChangedRemoveFunc();
+					}
+
+					_configurationChangedTokenTable -= value;
+				}
+			}
+			public event PostArrangeEventHandler PostArrange;
 #pragma warning disable CS0067
-		// Warning CS0067: The event 'ViewportTests.TestScrollingSurface.ViewportChanged' is never used.
-		public event ViewportChangedEventHandler ViewportChanged;
+			// Warning CS0067: The event 'ViewportTests.TestScrollingSurface.ViewportChanged' is never used.
+			public event ViewportChangedEventHandler ViewportChanged;
 #pragma warning restore CS0067
 
-		public void RegisterAnchorCandidate(UIElement element)
-		{
-			RegisterAnchorCandidateFunc(element);
-		}
-
-		public void UnregisterAnchorCandidate(UIElement element)
-		{
-			UnregisterAnchorCandidateFunc(element);
-		}
-
-		public Rect GetRelativeViewport(UIElement child)
-		{
-			return GetRelativeViewportFunc(child);
-		}
-
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			InMeasure = true;
-			var result = base.MeasureOverride(availableSize);
-			InMeasure = false;
-			return result;
-		}
-
-		protected override Size ArrangeOverride(Size finalSize)
-		{
-			InArrange = true;
-
-			var result = base.ArrangeOverride(finalSize);
-
-			InArrange = false;
-			InPostArrange = true;
-
-			if (PostArrange != null)
+			public void RegisterAnchorCandidate(UIElement element)
 			{
-				PostArrange(this);
+				RegisterAnchorCandidateFunc(element);
 			}
 
-			InPostArrange = false;
+			public void UnregisterAnchorCandidate(UIElement element)
+			{
+				UnregisterAnchorCandidateFunc(element);
+			}
 
-			return result;
+			public Rect GetRelativeViewport(UIElement child)
+			{
+				return GetRelativeViewportFunc(child);
+			}
+
+			protected override Size MeasureOverride(Size availableSize)
+			{
+				InMeasure = true;
+				var result = base.MeasureOverride(availableSize);
+				InMeasure = false;
+				return result;
+			}
+
+			protected override Size ArrangeOverride(Size finalSize)
+			{
+				InArrange = true;
+
+				var result = base.ArrangeOverride(finalSize);
+
+				InArrange = false;
+				InPostArrange = true;
+
+				if (PostArrange != null)
+				{
+					PostArrange(this);
+				}
+
+				InPostArrange = false;
+
+				return result;
+			}
+
+			private void RaiseConfigurationChanged()
+			{
+				_configurationChangedTokenTable?.Invoke(this);
+			}
 		}
 
-		private void RaiseConfigurationChanged()
+		private partial class TestStackLayout : StackLayout
 		{
-			_configurationChangedTokenTable?.Invoke(this);
+			public UIElement SuggestedAnchor { get; private set; }
+
+			protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+			{
+				var anchorIndex = context.RecommendedAnchorIndex;
+				SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
+				return base.MeasureOverride(context, availableSize);
+			}
 		}
-	}
 
-	internal partial class TestStackLayout : StackLayout
-	{
-		public UIElement SuggestedAnchor { get; private set; }
-
-		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+		private partial class TestGridLayout : UniformGridLayout
 		{
-			var anchorIndex = context.RecommendedAnchorIndex;
-			SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
-			return base.MeasureOverride(context, availableSize);
-		}
-	}
+			public UIElement SuggestedAnchor { get; private set; }
 
-	internal partial class TestGridLayout : UniformGridLayout
-	{
-		public UIElement SuggestedAnchor { get; private set; }
-
-		protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
-		{
-			var anchorIndex = context.RecommendedAnchorIndex;
-			SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
-			return base.MeasureOverride(context, availableSize);
+			protected internal override Size MeasureOverride(VirtualizingLayoutContext context, Size availableSize)
+			{
+				var anchorIndex = context.RecommendedAnchorIndex;
+				SuggestedAnchor = anchorIndex < 0 ? null : context.GetOrCreateElementAt(anchorIndex);
+				return base.MeasureOverride(context, availableSize);
+			}
 		}
 	}
 }

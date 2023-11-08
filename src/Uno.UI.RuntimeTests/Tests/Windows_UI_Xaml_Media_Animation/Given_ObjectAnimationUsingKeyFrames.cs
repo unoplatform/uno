@@ -338,17 +338,16 @@ namespace Uno.UI.RuntimeTests
 		/// Ensure Fluent styles are available for the course of a single test.
 		/// </summary>
 		private IDisposable UseFluentStyles() => StyleHelper.UseFluentStyles();
-	}
 
-	// TODO: Reintroduce nesting of this class once #13893 is fixed.
-	// Intentionally nested to test NativeCtorsGenerator handling of nested classes.
-	public partial class MyCheckBox : CheckBox
-	{
-		public ContentPresenter ContentPresenter { get; set; }
-		protected override void OnApplyTemplate()
+		// Intentionally nested to test NativeCtorsGenerator handling of nested classes.
+		public partial class MyCheckBox : CheckBox
 		{
-			base.OnApplyTemplate();
-			ContentPresenter = GetTemplateChild("ContentPresenter") as ContentPresenter; // This is a ContentPresenter
+			public ContentPresenter ContentPresenter { get; set; }
+			protected override void OnApplyTemplate()
+			{
+				base.OnApplyTemplate();
+				ContentPresenter = GetTemplateChild("ContentPresenter") as ContentPresenter; // This is a ContentPresenter
+			}
 		}
 	}
 
