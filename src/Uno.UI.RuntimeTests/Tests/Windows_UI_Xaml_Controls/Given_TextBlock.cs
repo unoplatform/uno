@@ -280,11 +280,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			};
 			await UITestHelper.Load(panel);
 			var height1 = SUT.ActualHeight;
-			Console.WriteLine("height1: " + height1);
 			SUT.TextWrapping = TextWrapping.NoWrap;
 			await Task.Delay(500);
 			var height2 = SUT.ActualHeight;
-			Console.WriteLine($"height2: {height2}");
 			Assert.AreNotEqual(height1, height2);
     	}
 
