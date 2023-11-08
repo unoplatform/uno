@@ -22,12 +22,11 @@ namespace Windows.UI.Xaml
 		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
 		private readonly static ArrayPool<short> _offsetsPool = ArrayPool<short>.Shared;
-		private readonly static ArrayPool<DependencyPropertyDetails?> _pool = ArrayPool<DependencyPropertyDetails?>.Shared;
+		private readonly static LinearArrayPool<DependencyPropertyDetails?> _pool = LinearArrayPool<DependencyPropertyDetails?>.CreateAutomaticallyManaged(BucketSize, 16);
 
 		private static readonly DependencyPropertyDetails?[] _empty = Array.Empty<DependencyPropertyDetails?>();
 
 		private DependencyPropertyDetails?[] _entries;
-		private short _entriesLength;
 		private short[]? _entryOffsets;
 
 		private const int BucketSize = 16;
@@ -53,7 +52,7 @@ namespace Windows.UI.Xaml
 		{
 			var entries = _entries;
 
-			var entriesLength = _entriesLength;
+			var entriesLength = entries.Length;
 
 			for (var i = 0; i < entriesLength; i++)
 			{
@@ -124,26 +123,21 @@ namespace Windows.UI.Xaml
 				var offset = entryOffsets[bucketIndex];
 
 				// Offset -1 represents an unallocated bucket, -1 was chosen because 0 is a valid offset
+				// We need to resize the entries array to fit a new bucket
 				if (offset == -1)
 				{
-					entryOffsets[bucketIndex] = offset = _entriesLength;
+					entryOffsets[bucketIndex] = offset = (short)entries.Length;
 
-					// We need to resize the entries array to fit a new bucket
-					if (offset == entries.Length)
+					var newEntries = _pool.Rent(entries.Length + BucketSize);
+
+					if (entries != _empty)
 					{
-						var newEntries = _pool.Rent(entries.Length + BucketSize);
+						entries.AsSpan().CopyTo(newEntries);
 
-						if (entries != _empty)
-						{
-							entries.AsSpan().CopyTo(newEntries);
-
-							_pool.Return(entries, clearArray: true);
-						}
-
-						_entries = entries = newEntries;
+						_pool.Return(entries, clearArray: true);
 					}
 
-					_entriesLength += BucketSize;
+					_entries = entries = newEntries;
 				}
 
 				ref var propertyEntry = ref entries[offset + bucketRemainder];
