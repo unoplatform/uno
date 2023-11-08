@@ -94,6 +94,25 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
     <GenerateAssemblyInfo Condition="'$(Configuration)'=='Debug'">false</GenerateAssemblyInfo>
   </PropertyGroup>
   ```
+- if you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app startup to Uno 5 or later:
+  - Add the following lines to the shared library project `csproj` file :
+    ```xml
+    <ItemGroup>
+        <PackageReference Include="Uno.WinUI.DevServer" Version="$UnoWinUIVersion$" Condition="'$(Configuration)'=='Debug'" />
+    </ItemGroup>
+    ```
+    > [!NOTE]
+    > If your application is using the UWP API set (Uno.UI packages) you'll need to use the `Uno.UI.DevServer` package instead.
+  - Then, in your `App.cs` file, add the following:
+    ```csharp
+    using Uno.UI;
+
+    //... in the OnLaunched method
+
+    #if DEBUG
+            MainWindow.EnableHotReload();
+    #endif
+    ```
 
 ### Visual Studio 2022
 - The output window in VS has an output named `Uno Platform` in its drop-down. Diagnostics messages from the VS integration appear there.
