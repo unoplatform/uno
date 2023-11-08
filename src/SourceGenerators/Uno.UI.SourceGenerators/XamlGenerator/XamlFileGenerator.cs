@@ -448,7 +448,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					if (_isDebug)
+					if (_isHotReloadEnabled)
 					{
 						// Insert hot reload support
 						writer.AppendLineIndented($"var __resourceLocator = new global::System.Uri(\"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
@@ -656,7 +656,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// a nuget package.
 				writer.AppendLineIndented($"// Automatic remote control startup is disabled");
 			}
-			else if (_isDebug)
+			else if (_isHotReloadEnabled)
 			{
 				if (_metadataHelper.FindTypeByFullName("Uno.UI.RemoteControl.RemoteControlClient") != null)
 				{
@@ -1306,7 +1306,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void WriteMetadataNewTypeAttribute(IIndentedStringBuilder writer)
 		{
-			if (_isDebug)
+			if (_isHotReloadEnabled)
 			{
 				writer.AppendLineIndented("[global::System.Runtime.CompilerServices.CreateNewOnMetadataUpdate]");
 			}
@@ -2778,10 +2778,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					// Some resources (such as material colors) are initialized upon creation and so can't be tracked this way,
 					//  as can't add the `SetElementProperty` call in a getter.
-					if (!isInInitializer && _isDebug)
+					if (!isInInitializer && _isHotReloadEnabled)
 					{
 						// Track source location of resources by key as they may be lazily initialized.
-						// Attach the values to the named string for similarity with other places where this informatin is stored.
+						// Attach the values to the named string for similarity with other places where this information is stored.
 						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty(\"ResourceSourceLocations\", \"{key}\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{resource.LineNumber}:{resource.LinePosition}\"){closingPunctuation}");
 					}
 
@@ -3622,7 +3622,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (IsFrameworkElement(objectDefinition.Type))
 					{
-						if (_isDebug)
+						if (_isHotReloadEnabled)
 						{
 							writer.AppendLineIndented(
 								$"global::Uno.UI.FrameworkElementHelper.SetBaseUri(" +
@@ -3639,7 +3639,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
-					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isDebug)
+					if (IsNotFrameworkElementButNeedsSourceLocation(objectDefinition) && _isHotReloadEnabled)
 					{
 						writer.AppendLineIndented($"global::Uno.UI.Helpers.MarkupHelper.SetElementProperty({closureName}, \"OriginalSourceLocation\", \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}#L{objectDefinition.LineNumber}:{objectDefinition.LinePosition}\");");
 					}
