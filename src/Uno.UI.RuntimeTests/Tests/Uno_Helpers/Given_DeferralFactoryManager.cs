@@ -10,12 +10,12 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers;
 
 [TestClass]
 [RunsOnUIThread]
-public class Given_DeferralManager
+public class Given_DeferralFactoryManager
 {
 	[TestMethod]
 	public void When_Completed_Synchronously_After_Event_Raise()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 		Assert.IsTrue(deferralManager.EventRaiseCompleted());
 		Assert.IsTrue(deferralManager.CompletedSynchronously);
 	}
@@ -23,7 +23,7 @@ public class Given_DeferralManager
 	[TestMethod]
 	public void When_Completed_Synchronously_In_Event_Handler()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 		deferralManager.Completed += (s, e) =>
 		{
 			Assert.IsTrue(deferralManager.CompletedSynchronously);
@@ -34,7 +34,7 @@ public class Given_DeferralManager
 	[TestMethod]
 	public void When_Completed_Synchronously_With_Requests()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 		var deferral1 = deferralManager.GetDeferral();
 		var deferral2 = deferralManager.GetDeferral();
 		deferral2.Complete();
@@ -50,7 +50,7 @@ public class Given_DeferralManager
 	[TestMethod]
 	public async Task When_Completed_Asynchronously_With_Requests()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 		var deferral1 = deferralManager.GetDeferral();
 		var deferral2 = deferralManager.GetDeferral();
 
@@ -83,7 +83,7 @@ public class Given_DeferralManager
 	[TestMethod]
 	public void When_Incomplete_Deferral()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 
 		var deferral = deferralManager.GetDeferral();
 
@@ -105,7 +105,7 @@ public class Given_DeferralManager
 	[TestMethod]
 	public void When_Many_Deferrals()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 
 		var random = new Random(42);
 
@@ -138,7 +138,7 @@ public class Given_DeferralManager
 	[TestMethod]
 	public void When_Deferrals_Disposed()
 	{
-		var deferralManager = new DeferralManager<Deferral>(h => new Deferral(h));
+		var deferralManager = new DeferralFactoryManager<Deferral>(h => new Deferral(h));
 
 		var deferral1 = deferralManager.GetDeferral();
 		var deferral2 = deferralManager.GetDeferral();

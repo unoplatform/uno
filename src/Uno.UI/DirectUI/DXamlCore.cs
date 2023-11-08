@@ -11,9 +11,8 @@ using Uno.UI.Xaml.Controls;
 using Uno.UI.Xaml.Core;
 using Windows.ApplicationModel.Resources;
 using Windows.Foundation;
-using Microsoft.UI.Xaml.Controls;
-using Uno.UI.Xaml.Core.Scaling;
-using Windows.Devices.Input;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace DirectUI
 {
@@ -22,8 +21,8 @@ namespace DirectUI
 		private static readonly Lazy<DXamlCore> _current = new Lazy<DXamlCore>(() => new DXamlCore());
 
 		private Dictionary<string, List<WeakReference<RadioButton>>>? _radioButtonGroupsByName;
-
-		private KeyboardCapabilities? _keyboardCapabilities;
+		private ContentDialogMetadata? _contentDialogMetadata;
+		
 		private BuildTreeService? _buildTreeService;
 		private BudgetManager? _budgetManager;
 
@@ -35,6 +34,8 @@ namespace DirectUI
 
 		public static DXamlCore GetCurrentNoCreate() => Current;
 
+		public Window Window => Window.Current; // TODO: Uno specific: This is a very simple solution for now until we have multi-window support.
+
 		public Uno.UI.Xaml.Core.CoreServices GetHandle() => Uno.UI.Xaml.Core.CoreServices.Instance;
 
 		public Rect DipsToPhysicalPixels(float scale, Rect dipRect)
@@ -45,16 +46,6 @@ namespace DirectUI
 			physicalRect.Width = dipRect.Width * scale;
 			physicalRect.Height = dipRect.Height * scale;
 			return physicalRect;
-		}
-
-		public Microsoft.UI.Xaml.Window? GetAssociatedWindow(Microsoft.UI.Xaml.UIElement element)
-		{
-			if (element == null)
-			{
-				throw new ArgumentNullException(nameof(element));
-			}
-
-			return element.XamlRoot?.HostWindow;
 		}
 
 		// TODO Uno: Application-wide bar is not supported yet.
@@ -82,38 +73,6 @@ namespace DirectUI
 			return _radioButtonGroupsByName;
 		}
 
-		internal void OnCompositionContentStateChangedForUWP()
-		{
-			var contentRootCoordinator = Uno.UI.Xaml.Core.CoreServices.Instance.ContentRootCoordinator;
-			var root = contentRootCoordinator.Unsafe_IslandsIncompatible_CoreWindowContentRoot;
-			if (root is null)
-			{
-				// The CoreWindow is not initialized, ignore the content state change.
-				return;
-			}
-
-			var rootScale = RootScale.GetRootScaleForContentRoot(root);
-			if (rootScale is null) // Check that we still have an active tree
-			{
-				return;
-			}
-			rootScale.UpdateSystemScale();
-
-			// TODO Uno: Adjusting for visibility changes on CoreWindow is not supported yet.
-			root?.AddPendingXamlRootChangedEvent(default);
-			root?.RaisePendingXamlRootChangedEventIfNeeded(false);
-
-			// TODO Uno: Not needed now.
-			// OnUWPWindowSizeChanged();
-		}
-
-		internal bool IsKeyboardPresent
-		{
-			get
-			{
-				_keyboardCapabilities ??= new KeyboardCapabilities();
-				return _keyboardCapabilities.KeyboardPresent != 0;
-			}
-		}
+		internal ContentDialogMetadata ContentDialogMetadata => _contentDialogMetadata ??= new ContentDialogMetadata();
 	}
 }

@@ -27,12 +27,15 @@ public partial class ContentDialogClosingEventArgs
 	/// </summary>
 	public ContentDialogResult Result { get; }
 
-	internal DeferralManager<ContentDialogClosingDeferral> DeferralManager { get; }
+	internal DeferralFactoryManager<ContentDialogClosingDeferral> DeferralManager { get; }
 
 	/// <summary>
 	/// Gets a ContentDialogClosingDeferral that the app
 	/// can use to respond asynchronously to the closing event.
 	/// </summary>
-	/// <returns>Deferral</returns>
+	/// <returns>
+	/// A ContentDialogClosingDeferral that the app can use
+	/// to respond asynchronously to the closing event.
+	/// </returns>
 	public ContentDialogClosingDeferral GetDeferral() => DeferralManager.GetDeferral();
 }

@@ -11,7 +11,7 @@ namespace Uno.Helpers;
 /// Handles completion of deferrals. The deferred action is completed when all deferral objects that were taken have called Complete().
 /// </summary>
 /// <typeparam name="T"></typeparam>
-internal class DeferralManager<T>
+internal class DeferralFactoryManager<T>
 {
 	private readonly Func<DeferralCompletedHandler, T> _deferralFactory;
 	private readonly TaskCompletionSource<object?> _allDeferralsCompletedCompletionSource = new();
@@ -22,7 +22,7 @@ internal class DeferralManager<T>
 	/// </summary>
 	private int _deferralsCount = 1;
 
-	public DeferralManager(Func<DeferralCompletedHandler, T> deferralFactory)
+	public DeferralFactoryManager(Func<DeferralCompletedHandler, T> deferralFactory)
 	{
 		_deferralFactory = deferralFactory ?? throw new ArgumentNullException(nameof(deferralFactory));
 	}

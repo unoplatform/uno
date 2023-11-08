@@ -12,7 +12,7 @@ public partial class DataRequest
 {
 	internal DataRequest(Action<DataRequest> complete)
 	{
-		DeferralManager = new DeferralManager<DataRequestDeferral>(h => new DataRequestDeferral(h));
+		DeferralManager = new DeferralFactoryManager<DataRequestDeferral>(h => new DataRequestDeferral(h));
 		DeferralManager.Completed += (s, e) => complete(this);
 	}
 
@@ -27,7 +27,7 @@ public partial class DataRequest
 	/// </summary>
 	public DateTimeOffset Deadline { get; }
 
-	internal DeferralManager<DataRequestDeferral> DeferralManager { get; }
+	internal DeferralFactoryManager<DataRequestDeferral> DeferralManager { get; }
 
 	/// <summary>
 	/// Supports asynchronous sharing operations by creating and returning a DataRequestDeferral object.

@@ -13,11 +13,11 @@ public partial class LeavingBackgroundEventArgs : ILeavingBackgroundEventArgs
 {
 	internal LeavingBackgroundEventArgs(Action? onComplete)
 	{
-		DeferralManager = new DeferralManager<Deferral>(c => new Deferral(c));
+		DeferralManager = new DeferralFactoryManager<Deferral>(c => new Deferral(c));
 		DeferralManager.Completed += (s, e) => onComplete?.Invoke();
 	}
 
-	internal DeferralManager<Deferral> DeferralManager { get; }
+	internal DeferralFactoryManager<Deferral> DeferralManager { get; }
 
 	/// <summary>
 	/// Gets the deferral object which delays the transition from running
