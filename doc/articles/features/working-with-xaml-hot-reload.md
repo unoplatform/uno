@@ -95,7 +95,7 @@ Hot Reload is supported by Visual Studio for WinAppSDK and provides support in u
   </PropertyGroup>
   ```
 - if you're getting the `Unable to access Dispatcher/DispatcherQueue` error, you'll need to update your app startup to Uno 5 or later:
-  - Add the following lines to the shared librar project `csproj` file :
+  - Add the following lines to the shared library project `csproj` file :
     ```xml
     <ItemGroup>
         <PackageReference Include="Uno.WinUI.DevServer" Version="$UnoWinUIVersion$" Condition="'$(Configuration)'=='Debug'" />
