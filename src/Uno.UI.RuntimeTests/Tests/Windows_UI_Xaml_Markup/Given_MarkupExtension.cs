@@ -47,6 +47,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 			Assert.IsInstanceOfType(pvt.TargetObject, typeof(Binding));
 			Assert.AreEqual(property.Name, nameof(Binding.Source));
 		}
+
+		[TestMethod]
+		public void When_MarkupExtension_Enum()
+		{
+			var page = new MarkupExtension_ParserContext();
+
+			Assert.AreEqual(Orientation.Horizontal, page.EnumMarkupExtension_Horizontal.Orientation);
+			Assert.AreEqual(Orientation.Vertical, page.EnumMarkupExtension_Vertical.Orientation);
+		}
 #endif
 	}
 }

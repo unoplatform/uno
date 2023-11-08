@@ -38,4 +38,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Markup
 		}
 #endif
 	}
+
+	public class HorOrientationExtension : MarkupExtension
+	{
+#if HAS_UNO || !WINDOWS_UWP // Winui,UnoUwp,UnoWinui: yes, Uwp: not-supported
+		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+		{
+			return Orientation.Horizontal;
+		}
+#endif
+	}
+
+	public class VerOrientationExtension : MarkupExtension
+	{
+#if HAS_UNO || !WINDOWS_UWP // Winui,UnoUwp,UnoWinui: yes, Uwp: not-supported
+		protected override object ProvideValue(IXamlServiceProvider serviceProvider)
+		{
+			return Orientation.Vertical;
+		}
+#endif
+	}
 }

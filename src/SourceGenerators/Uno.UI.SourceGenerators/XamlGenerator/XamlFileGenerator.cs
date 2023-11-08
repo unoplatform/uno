@@ -4683,13 +4683,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyTypeFullyQualified = propertyType.GetFullyQualifiedTypeIncludingGlobal();
 				if (IsImplementingInterface(propertyType, Generation.IConvertibleSymbol.Value))
 				{
-					// The target property implements IConvertible, therefore
-					// cast ProvideValue() using Convert.ChangeType
-					// It's important to cast to string before performing the conversion
-					provideValue = $"Convert.ChangeType(({provideValue})?.ToString(), typeof({propertyTypeFullyQualified}))";
+					provideValue = $"Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({propertyTypeFullyQualified}), {provideValue})";
 				}
 
-				return "({0}){1}".InvariantCultureFormat(propertyType.GetFullyQualifiedTypeIncludingGlobal(), provideValue);
+				return "({0}){1}".InvariantCultureFormat(propertyTypeFullyQualified, provideValue);
 			}
 			else
 			{
