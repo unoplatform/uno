@@ -1,12 +1,15 @@
 ﻿#nullable enable
 
 using System;
+using System.Runtime.InteropServices;
+using System.Text;
 using Gdk;
 using Gtk;
 using Windows.System;
 using Windows.UI.Core;
 using Uno.Foundation.Logging;
 using Windows.Foundation;
+using Uno.UI.Helpers;
 
 namespace Uno.UI.Runtime.Skia.Gtk;
 
@@ -53,7 +56,8 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 					{
 						ScanCode = evt.HardwareKeycode,
 						RepeatCount = 1,
-					}));
+					},
+					KeyCodeToUnicode(evt.HardwareKeycode, evt.KeyValue)));
 		}
 		catch (Exception e)
 		{
@@ -80,7 +84,8 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 					{
 						ScanCode = evt.HardwareKeycode,
 						RepeatCount = 1,
-					}));
+					},
+					KeyCodeToUnicode(evt.HardwareKeycode, evt.KeyValue)));
 		}
 		catch (Exception e)
 		{
@@ -88,7 +93,20 @@ partial class GtkKeyboardInputSource : IUnoKeyboardInputSource
 		}
 	}
 
-	private VirtualKey ConvertKey(Gdk.Key key)
+	private static char? KeyCodeToUnicode(uint keyCode, uint keyVal)
+	{
+		if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+		{
+			var result = InputHelper.WindowsKeyCodeToUnicode(keyCode);
+			return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
+		}
+
+		var gdkChar = (char)Keyval.ToUnicode(keyVal);
+
+		return gdkChar == 0 ? null : gdkChar;
+	}
+
+	private static VirtualKey ConvertKey(Gdk.Key key)
 	{
 		// In this function, commented out lines correspond to VirtualKeys not yet
 		// mapped to their native counterparts. Uncomment and fix as needed.

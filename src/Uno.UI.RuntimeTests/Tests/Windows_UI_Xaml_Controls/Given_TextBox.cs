@@ -25,7 +25,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	[RunsOnUIThread]
-	public class Given_TextBox
+	public partial class Given_TextBox
 	{
 #if __ANDROID__
 		[TestMethod]
@@ -140,7 +140,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 			textBox.Focus(FocusState.Programmatic);
-			Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
+			// On WinUI, TextBoxes start their selection at 0
+			Assert.AreEqual(
+#if __SKIA__
+				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
+#endif
+					textBox.Text.Length,
+				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 7);
 			Assert.AreEqual(1, textBox.SelectionStart);
@@ -161,7 +167,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 			textBox.Focus(FocusState.Programmatic);
-			Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
+			// On WinUI, TextBoxes start their selection at 0
+			Assert.AreEqual(
+#if __SKIA__
+				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
+#endif
+					textBox.Text.Length,
+				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(1, 20);
 			Assert.AreEqual(1, textBox.SelectionStart);
@@ -182,7 +194,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			WindowHelper.WindowContent = textBox;
 			await WindowHelper.WaitForLoaded(textBox);
 			textBox.Focus(FocusState.Programmatic);
-			Assert.AreEqual(textBox.Text.Length, textBox.SelectionStart);
+			// On WinUI, TextBoxes start their selection at 0
+			Assert.AreEqual(
+#if __SKIA__
+				!FeatureConfiguration.TextBox.UseOverlayOnSkia ? 0 :
+#endif
+					textBox.Text.Length,
+				textBox.SelectionStart);
 			Assert.AreEqual(0, textBox.SelectionLength);
 			textBox.Select(20, 5);
 			Assert.AreEqual(10, textBox.SelectionStart);
@@ -402,6 +420,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			textBox.SelectedText = "1234";
 
 			Assert.AreEqual("1234ABCDEFGHIJKLMNOPQRSTUVWXYZ", textBox.Text);
+#if __SKIA__
+			Xaml.Core.VisualTree.GetFocusManagerForElement(textBox)!.FindAndSetNextFocus(FocusNavigationDirection.Next); // move focus to dismiss the overlay
+#endif
 		}
 
 		[TestMethod]
@@ -488,9 +509,16 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			await WindowHelper.WaitForLoaded(textBox);
 
 			var contentControl = VisualTreeUtils.FindVisualChildByType<ContentControl>(textBox);
-			// This will no longer be true when we support non-native text box input - test will have to be updated for this option
-			Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
-			Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
+			if (FeatureConfiguration.TextBox.UseOverlayOnSkia)
+			{
+				Assert.IsInstanceOfType(contentControl.Content, typeof(TextBlock));
+				Assert.AreEqual(initialText, ((TextBlock)contentControl.Content).Text);
+			}
+			else
+			{
+				Assert.IsInstanceOfType(contentControl.Content, typeof(Grid));
+				Assert.AreEqual(initialText, contentControl.FindFirstChild<TextBlock>().Text);
+			}
 		}
 #endif
 

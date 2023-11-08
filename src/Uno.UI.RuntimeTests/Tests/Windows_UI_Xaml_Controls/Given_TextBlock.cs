@@ -120,6 +120,28 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
+		[Ignore("Fails")]
+		public async Task When_Text_Ends_In_Return()
+		{
+			var SUT = new TextBlock
+			{
+				Text = "hello world"
+			};
+
+			WindowHelper.WindowContent = new Border { Child = SUT };
+
+			await WindowHelper.WaitForLoaded(SUT);
+			await WindowHelper.WaitForIdle();
+
+			var height = SUT.ActualHeight;
+
+			SUT.Text += "\r";
+
+			Assert.IsTrue(SUT.ActualHeight > height * 1.5);
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
 		public void When_Inlines_XamlRoot()
 		{
 			var SUT = new InlineTextInSpan();

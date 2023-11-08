@@ -3,7 +3,6 @@
 #endif
 
 using System;
-
 using Uno.Extensions;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
@@ -22,6 +21,7 @@ using Uno.Disposables;
 using Uno.UI.Helpers;
 using Uno.UI.Xaml.Media;
 using Windows.ApplicationModel.DataTransfer;
+using Uno.UI;
 
 #if HAS_UNO_WINUI
 using Microsoft.UI.Input;
@@ -116,7 +116,18 @@ namespace Windows.UI.Xaml.Controls
 
 			DefaultStyleKey = typeof(TextBox);
 			SizeChanged += OnSizeChanged;
+
+#if __SKIA__
+			_timer.Tick += TimerOnTick;
+#endif
 		}
+
+		private bool IsSkiaTextBox =>
+#if __SKIA__
+			!FeatureConfiguration.TextBox.UseOverlayOnSkia;
+#else
+			false;
+#endif
 
 		private protected override void OnLoaded()
 		{
@@ -150,10 +161,13 @@ namespace Windows.UI.Xaml.Controls
 				// When support for TemplateBinding for attached DPs was added, TextBox broke (test: TextBox_AutoGrow_Vertically_Wrapping_Test) because of
 				// change in the values of these properties. The following code serves as a workaround to set the values to what they used to be
 				// before the support for TemplateBinding for attached DPs.
-				scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
-				scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
-				scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
+				if (!IsSkiaTextBox)
+				{
+					scrollViewer.HorizontalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+					scrollViewer.VerticalScrollMode = ScrollMode.Enabled; // The template sets this to Auto
+					scrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Disabled; // The template sets this to Hidden
+					scrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto; // The template sets this to Hidden
+				}
 #endif
 			}
 		}
@@ -284,12 +298,16 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateButtonStates();
 
+			OnTextChangedPartial();
+
 			if (!_isTextChangedPending)
 			{
 				_isTextChangedPending = true;
 				_ = Dispatcher.RunAsync(CoreDispatcherPriority.Normal, RaiseTextChanged);
 			}
 		}
+
+		partial void OnTextChangedPartial();
 
 		private void RaiseTextChanging()
 		{
@@ -359,6 +377,10 @@ namespace Windows.UI.Xaml.Controls
 			if (!AcceptsReturn)
 			{
 				baseString = GetFirstLine(baseString);
+			}
+			else if (IsSkiaTextBox)
+			{
+				baseString = baseString.Replace("\r\n", "\r").Replace("\n", "\r");
 			}
 
 			var args = new TextBoxBeforeTextChangingEventArgs(baseString);
@@ -896,9 +918,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateVisualState();
+
+			OnFocusStateChangedPartial2(newValue);
 		}
 
 		partial void OnFocusStateChangedPartial(FocusState focusState);
+
+		partial void OnFocusStateChangedPartial2(FocusState focusState);
 
 		protected override void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
@@ -946,7 +972,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+
+			OnPointerPressedPartial(args);
 		}
+
+		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
+
+		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
 
 		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
@@ -959,6 +991,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			args.Handled = true;
+
+			OnPointerReleasedPartial(args);
 		}
 
 		protected override void OnTapped(TappedRoutedEventArgs e)
@@ -971,7 +1005,15 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTappedPartial();
 
 		/// <inheritdoc />
-		protected override void OnKeyDown(KeyRoutedEventArgs args)
+		protected override void OnKeyDown(KeyRoutedEventArgs args) => OnKeyDownPartial(args);
+
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args);
+
+#if !__SKIA__
+		partial void OnKeyDownPartial(KeyRoutedEventArgs args) => OnKeyDownInternal(args);
+#endif
+
+		private void OnKeyDownInternal(KeyRoutedEventArgs args)
 		{
 			base.OnKeyDown(args);
 
@@ -1184,9 +1226,13 @@ namespace Windows.UI.Xaml.Controls
 
 				currentText = currentText.Insert(selectionStart, clipboardText);
 
+				PasteFromClipboardPartial(clipboardText, selectionStart, selectionLength, currentText);
+
 				Text = currentText;
 			});
 		}
+
+		partial void PasteFromClipboardPartial(string clipboardText, int selectionStart, int selectionLength, string newText);
 
 		/// <summary>
 		/// Copies the selected content to the OS clipboard.
@@ -1208,8 +1254,11 @@ namespace Windows.UI.Xaml.Controls
 		public void CutSelectionToClipboard()
 		{
 			CopySelectionToClipboard();
+			CutSelectionToClipboardPartial();
 			Text = Text.Remove(SelectionStart, SelectionLength);
 		}
+
+		partial void CutSelectionToClipboardPartial();
 
 		internal override bool CanHaveChildren() => true;
 
