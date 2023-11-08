@@ -65,7 +65,7 @@ namespace Windows.UI.Xaml
 		}
 
 		public object FindName(string name)
-			=> IFrameworkElementHelper.FindName(this, GetChildren(), name);
+			=> IFrameworkElementHelper.FindName(this, this, name);
 
 		#region Background DependencyProperty
 

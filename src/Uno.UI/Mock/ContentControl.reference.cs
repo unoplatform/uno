@@ -1,5 +1,7 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using Windows.Foundation;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
@@ -10,5 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void RegisterContentTemplateRoot()
 		{
 		}
+
+		protected override Size MeasureOverride(Size availableSize) => base.MeasureOverride(availableSize);
 	}
 }

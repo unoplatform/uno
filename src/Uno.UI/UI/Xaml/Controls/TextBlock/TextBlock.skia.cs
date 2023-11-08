@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 		private Hyperlink? FindHyperlinkAt(Point point)
 		{
 			var padding = Padding;
-			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false);
+			var span = Inlines.GetRenderSegmentSpanAt(point - new Point(padding.Left, padding.Top), false)?.span;
 
 			if (span == null)
 			{

@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal TextBoxView TextBoxView => _textBoxView;
 
-		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
+		private protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
 		partial void OnDeleteButtonClickPartial() => FocusTextView();
 		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
 
@@ -186,6 +186,21 @@ namespace Windows.UI.Xaml.Controls
 
 				_textBoxView.SelectionEnd = _textBoxView.SelectionStart + value;
 			}
+		}
+
+		protected override void OnPointerMoved(PointerRoutedEventArgs e)
+		{
+			base.OnPointerMoved(e);
+		}
+
+		protected override void OnDoubleTapped(DoubleTappedRoutedEventArgs e)
+		{
+			base.OnDoubleTapped(e);
+		}
+
+		protected override void OnRightTapped(RightTappedRoutedEventArgs e)
+		{
+			base.OnRightTapped(e);
 		}
 	}
 }

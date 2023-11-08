@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml
 
 		[JSExport]
 		[Preserve]
-		public static void Resize(double width, double height) => Current.OnNativeSizeChanged(new Size(width, height));
+		internal static void Resize(double width, double height) => Current.OnNativeSizeChanged(new Size(width, height));
 
 		internal void OnNativeSizeChanged(Size size)
 		{

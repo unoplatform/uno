@@ -11,13 +11,13 @@ namespace Windows.UI.Core
 		/// Provide a action that will delegate the dispatch of CoreDispatcher work
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static Action<Action> DispatchOverride
+		internal static Action<Action> DispatchOverride
 		{
 			get => NativeDispatcher.DispatchOverride;
 			set => NativeDispatcher.DispatchOverride = value;
 		}
 
 		// Always reschedule, otherwise we may end up in live-lock.
-		public static bool HasThreadAccessOverride => NativeDispatcher.HasThreadAccessOverride;
+		internal static bool HasThreadAccessOverride => NativeDispatcher.HasThreadAccessOverride;
 	}
 }

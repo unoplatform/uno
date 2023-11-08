@@ -1,10 +1,12 @@
 ﻿using System.Windows.Input;
 using System;
+using System.Runtime.InteropServices;
+using System.Text;
 using Uno.Foundation.Logging;
-using Uno.UI.Core;
 using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Core;
+using Uno.UI.Helpers;
 using Uno.UI.Hosting;
 using WpfUIElement = System.Windows.UIElement;
 using WinUIKeyEventArgs = Windows.UI.Core.KeyEventArgs;
@@ -48,7 +50,8 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 				{
 					ScanCode = (uint)args.SystemKey,
 					RepeatCount = 1,
-				}));
+				},
+				KeyCodeToUnicode((uint)args.SystemKey)));
 		}
 		catch (Exception e)
 		{
@@ -75,12 +78,19 @@ internal class WpfKeyboardInputSource : IUnoKeyboardInputSource
 				{
 					ScanCode = (uint)args.SystemKey,
 					RepeatCount = 1,
-				}));
+				},
+				KeyCodeToUnicode((uint)args.SystemKey)));
 		}
 		catch (Exception e)
 		{
 			Windows.UI.Xaml.Application.Current.RaiseRecoverableUnhandledException(e);
 		}
+	}
+
+	private static char? KeyCodeToUnicode(uint keyCode)
+	{
+		var result = InputHelper.WindowsKeyCodeToUnicode(keyCode);
+		return result.Length > 0 ? result[0] : null; // TODO: supplementary code points
 	}
 
 	private static VirtualKeyModifiers GetKeyModifiers(ModifierKeys modifierKeys)

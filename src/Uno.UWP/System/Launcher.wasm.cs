@@ -8,7 +8,7 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static Task<bool> LaunchUriPlatformAsync(Uri uri)
+		internal static Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			var result = NativeMethods.Open(uri.OriginalString);
 			return Task.FromResult(result == "True");

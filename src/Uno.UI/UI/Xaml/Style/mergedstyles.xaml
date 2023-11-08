@@ -6165,11 +6165,11 @@
     <Setter Property="VerticalContentAlignment" Value="Center" />
     <Setter Property="Width" Value="{StaticResource PipsPagerNavigationButtonWidth}" />
     <Setter Property="Height" Value="{StaticResource PipsPagerNavigationButtonHeight}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{StaticResource ControlCornerRadius}">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />
@@ -6251,11 +6251,11 @@
     <Setter Property="FocusVisualMargin" Value="0" />
     <Setter Property="Content" Value="{StaticResource PipsPagerNormalGlyph}" />
     <Setter Property="FontSize" Value="{StaticResource PipsPagerNormalGlyphFontSize}" />
-    <contract7Present:Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
+    <Setter Property="CornerRadius" Value="{StaticResource ControlCornerRadius}" />
     <Setter Property="Template">
       <Setter.Value>
         <ControlTemplate TargetType="Button">
-          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Width="{StaticResource PipsPagerHorizontalOrientationButtonWidth}" Height="{StaticResource PipsPagerHorizontalOrientationButtonHeight}" contract7Present:CornerRadius="{TemplateBinding CornerRadius}" contract7NotPresent:CornerRadius="{StaticResource ControlCornerRadius}">
+          <Grid x:Name="RootGrid" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" Width="{StaticResource PipsPagerHorizontalOrientationButtonWidth}" Height="{StaticResource PipsPagerHorizontalOrientationButtonHeight}" CornerRadius="{TemplateBinding CornerRadius}">
             <VisualStateManager.VisualStateGroups>
               <VisualStateGroup x:Name="CommonStates">
                 <VisualState x:Name="Normal" />

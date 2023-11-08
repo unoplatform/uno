@@ -38,11 +38,6 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
-		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-		{
-			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
-		}
-
 		#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
 		{

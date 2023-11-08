@@ -1718,6 +1718,29 @@
 			<Member fullName="System.Void Microsoft.UI.Xaml.Window.remove_Closed(Microsoft.UI.Xaml.WindowClosedEventHandler value)" reason="The signature differs in MUX" />			
 		</Methods>
 	</IgnoreSet>
+
+	<IgnoreSet baseVersion="5.0">
+		<Types>
+		</Types>
+
+		<Events>
+			<Member fullName="Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; Windows.UI.Core.CoreWindow::PointerCancelled" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+		</Events>
+
+		<Fields>
+		</Fields>
+
+		<Properties>
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer::BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+		</Properties>
+
+		<Methods>
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.add_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Core.CoreWindow.remove_PointerCancelled(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Core.CoreWindow,Windows.UI.Core.PointerEventArgs&gt; value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="Windows.UI.Color Windows.UI.Xaml.Controls.ScrollViewer.get_BackgroundColor()" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+			<Member fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.set_BackgroundColor(Windows.UI.Color value)" reason="Exists in uno-runtime implementation but not in Reference. Can't be called from user code anyways and shouldn't really be breaking" />
+		</Methods>
+	</IgnoreSet>
 	  <!--
 	Supported nodes (please keep at the bottom of this file):
 	<IgnoreSet baseVersion="0.0">
