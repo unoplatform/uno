@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
@@ -1281,15 +1282,37 @@ namespace Windows.UI.Xaml.Controls
 
 					TryRepairContentConnection(containerAsContentControl, item);
 
-					// Set the datacontext first, then the binding.
-					// This avoids the inner content to go through a partial content being
-					// the result of the fallback value of the binding set below.
-					SetContent(containerAsContentControl, ContentControl.DataContextProperty);
-
-					if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+					if (this is ListViewBase && ItemsSource is null)
 					{
-						containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
-						containerAsContentControl.SetValue(ItemHasManualBindingExpressionProperty, true);
+						// We have Items directly without generating from ItemsSource.
+						// In this case, the container does not get any DC, but the child of the container will.
+						// As a hacky workaround in order to set the child DC when it gets added, we wait for the
+						// container to load to run a one-time callback that sets the child(ren) DC.
+						containerAsContentControl.SetValue(DataContextProperty, null);
+						SetContent(containerAsContentControl, ContentControl.ContentProperty);
+						TypedEventHandler<FrameworkElement, object> setDC = null;
+						setDC = (sender, _) =>
+						{
+							foreach (var child in sender.GetChildren())
+							{
+								child.SetValue(DataContextProperty, DataContext, DependencyPropertyValuePrecedences.TemplatedParent);
+							}
+							containerAsContentControl.Loading -= setDC;
+						};
+						containerAsContentControl.Loading += setDC;
+					}
+					else
+					{
+						// Set the datacontext first, then the binding.
+						// This avoids the inner content to go through a partial content being
+						// the result of the fallback value of the binding set below.
+						SetContent(containerAsContentControl, ContentControl.DataContextProperty);
+
+						if (!containerAsContentControl.IsContainerFromTemplateRoot && containerAsContentControl.GetBindingExpression(ContentControl.ContentProperty) == null)
+						{
+							containerAsContentControl.SetBinding(ContentControl.ContentProperty, new Binding());
+							containerAsContentControl.SetValue(ItemHasManualBindingExpressionProperty, true);
+						}
 					}
 				}
 			}
