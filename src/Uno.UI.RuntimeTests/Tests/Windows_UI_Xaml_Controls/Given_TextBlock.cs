@@ -263,7 +263,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-    public async Task When_TextWrapping_Changed()
+    	public async Task When_TextWrapping_Changed()
 		{
 			var SUT = new TextBlock
 			{
@@ -286,8 +286,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var height2 = SUT.ActualHeight;
 			Console.WriteLine($"height2: {height2}");
 			Assert.AreNotEqual(height1, height2);
-    }
-    
+    	}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Empty_TextBlock_Measure()
