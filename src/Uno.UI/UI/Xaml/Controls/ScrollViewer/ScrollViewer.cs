@@ -688,6 +688,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateZoomedContentAlignment();
 		}
 
+		private double LayoutRoundIfNeeded(FrameworkElement fe, double value)
+		{
+			return this.GetUseLayoutRounding() ? fe.LayoutRound(value) : value;
+		}
+
 #if __IOS__
 		internal
 #else
@@ -737,7 +742,7 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualHeight > 0 &&
 						fe.VerticalAlignment == VerticalAlignment.Stretch;
 
-					extentHeight = canUseActualHeightAsExtent ? fe.ActualHeight : fe.DesiredSize.Height;
+					extentHeight = canUseActualHeightAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualHeight) : fe.DesiredSize.Height;
 				}
 
 #if __WASM__
@@ -760,7 +765,7 @@ namespace Windows.UI.Xaml.Controls
 						fe.ActualWidth > 0 &&
 						fe.HorizontalAlignment == HorizontalAlignment.Stretch;
 
-					extentWidth = canUseActualWidthAsExtent ? fe.ActualWidth : fe.DesiredSize.Width;
+					extentWidth = canUseActualWidthAsExtent ? LayoutRoundIfNeeded(fe, fe.ActualWidth) : fe.DesiredSize.Width;
 				}
 
 #if __WASM__
@@ -936,14 +941,6 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnApplyTemplate();
 
-#if __SKIA__
-			// To work around non-uniformly applied layout rounding behavior, we need to force set layout
-			// rounding on the child Grid currently. #12082
-			if (this.FindFirstDescendant<Grid>() is { } grid)
-			{
-				grid.UseLayoutRounding = false;
-			}
-#endif
 
 			var scpTemplatePart = GetTemplateChild(Parts.WinUI3.Scroller) ?? GetTemplateChild(Parts.Uwp.ScrollContentPresenter);
 			_presenter = scpTemplatePart as _ScrollContentPresenter;

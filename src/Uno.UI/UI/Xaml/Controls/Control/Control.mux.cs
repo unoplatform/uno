@@ -148,6 +148,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			var spFocusVisualWhiteDO = GetTemplateChild("FocusVisualWhite");
+			var spFocusVisualBlackDO = GetTemplateChild("FocusVisualBlack");
+			if (spFocusVisualWhiteDO is Rectangle spFocusVisualWhiteDORect && spFocusVisualBlackDO is Rectangle spFocusVisualBlackDORect)
+			{
+				LayoutRoundRectangleStrokeThickness(spFocusVisualWhiteDORect);
+				LayoutRoundRectangleStrokeThickness(spFocusVisualBlackDORect);
+			}
+		}
+
 		private protected void LayoutRoundRectangleStrokeThickness(Rectangle pRectangle)
 		{
 			bool roundStrokeThickness = false;
