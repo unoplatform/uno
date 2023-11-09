@@ -467,6 +467,7 @@ namespace SamplesApp
 		/// </summary>
 		static void ParseCommandLineFeatureFlags()
 		{
+#if HAS_UNO
 			var commandLineArgs = Environment.GetCommandLineArgs();
 			if (commandLineArgs.Length == 1)
 			{
@@ -517,6 +518,7 @@ namespace SamplesApp
 					Console.WriteLine($"Ignored the CLI argument {arg} for the purposes of FeatureConfiguration.");
 				}
 			}
+#endif
 		}
 
 		public static string GetDisplayScreenScaling(string displayId)
