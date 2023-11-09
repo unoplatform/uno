@@ -17,6 +17,7 @@ using Microsoft.UI.Xaml.Controls;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests.Helpers;
 using Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
@@ -81,7 +82,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		[DataRow(typeof(ToggleSwitch), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.SwipeControl), 15)]
 		[DataRow(typeof(SplitView), 15)]
-		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15)]
+		[DataRow(typeof(Microsoft.UI.Xaml.Controls.AnimatedIcon), 15,
+#if __ANDROID__
+			LeakTestStyles.Default // Fluent styles disabled - #14341
+#else
+			LeakTestStyles.All
+#endif
+			)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBar), 15)]
 		[DataRow(typeof(Microsoft.UI.Xaml.Controls.BreadcrumbBarItem), 15)]
 #if !__IOS__ // Disabled https://github.com/unoplatform/uno/issues/9080
@@ -123,11 +130,40 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 #if !__WASM__ && !__IOS__ // Disabled - https://github.com/unoplatform/uno/issues/7860
 		[DataRow("Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml.Controls.ContentDialog_Leak", 15)]
 #endif
-#if !__IOS__ // Disabled - #10344
-		[DataRow(typeof(TextBox_Focus_Leak), 15)]
-		[DataRow(typeof(PasswordBox_Focus_Leak), 15)]
+		[DataRow(typeof(TextBox_Focus_Leak), 15,
+#if __IOS__
+			LeakTestStyles.None // Disabled - #10344
+#else
+			LeakTestStyles.All
 #endif
-		public async Task When_Add_Remove(object controlTypeRaw, int count)
+			)]
+		[DataRow(typeof(PasswordBox_Focus_Leak), 15,
+#if __IOS__
+			LeakTestStyles.None // Disabled - #10344
+#elif __ANDROID__
+			LeakTestStyles.Default // Fluent styles disabled - #14340
+#else
+			LeakTestStyles.All
+#endif
+			)]
+		public async Task When_Add_Remove(object controlTypeRaw, int count, LeakTestStyles leakTestStyles = LeakTestStyles.All)
+		{
+			if (leakTestStyles.HasFlag(LeakTestStyles.Default))
+			{
+				// Test for leaks both without and with fluent styles
+				await When_Add_Remove_Inner(controlTypeRaw, count);
+			}
+
+			if (leakTestStyles.HasFlag(LeakTestStyles.Fluent))
+			{
+				using (var themeHelper = StyleHelper.UseFluentStyles())
+				{
+					await When_Add_Remove_Inner(controlTypeRaw, count);
+				}
+			}
+		}
+
+		private async Task When_Add_Remove_Inner(object controlTypeRaw, int count)
 		{
 #if TRACK_REFS
 			var initialInactiveStats = Uno.UI.DataBinding.BinderReferenceHolder.GetInactiveViewReferencesStats();
@@ -354,6 +390,15 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 
 			public static void Reset() => _counter = 0;
+		}
+
+		[Flags]
+		public enum LeakTestStyles
+		{
+			None = 0,
+			Default = 1,
+			Fluent = 2,
+			All = Default | Fluent
 		}
 	}
 }
