@@ -37,11 +37,4 @@ public sealed partial class Window
 		set => ApplicationView.GetForWindowId(AppWindow.Id).Title = value;
 	}
 #endif
-
-#if HAS_UNO_WINUI
-	/// <summary>
-	/// Occurs when the window has closed.
-	/// </summary>
-	public event TypedEventHandler<object, WindowEventArgs>? Closed;
-#endif
 }
